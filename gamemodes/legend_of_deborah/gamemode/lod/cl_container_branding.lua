@@ -7,6 +7,12 @@ if not Wall or not MC then return end
 -- Original complete compositions, fitted to the corridor-clear center of the
 -- stock HL2 long face. Section hue and location boards have separate authorities.
 local C = LOD.CrateVisuals
+-- Enclose both physical faces and every fitted composition independently of
+-- native culling bounds, which may be empty/expanded before the first draw.
+local bx=math.max(math.abs(C.CargoMins.x),math.abs(C.CargoMaxs.x))
+local by=math.max(math.abs(C.CargoMins.y),math.abs(C.CargoMaxs.y))
+local bz=math.max(math.abs(C.CargoMins.z),math.abs(C.CargoMaxs.z))
+local BRAND_BOUND_RADIUS=math.sqrt(bx*bx+by*by+bz*bz)+C.SurfaceOffset
 local DRAW_DISTANCE = C.DrawDistance
 local DRAW_DISTANCE_SQR = DRAW_DISTANCE * DRAW_DISTANCE
 local BUCKET_CELLS = 4
@@ -550,10 +556,12 @@ hook.Remove("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding")
 hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function(depth,sky,sky3d)
     if depth or sky or sky3d then return end
     Brand.lastDrawCount, Brand.lastSkippedCount, Brand.lastSkipReason = 0, 0, nil
+    Brand.lastCulledCount, Brand.lastRenderMilliseconds = 0, 0
     local world = Wall.world or {}
     if #world==0 or not IsValid(LocalPlayer()) or not ensureSelection() then return end
     local started=SysTime and SysTime() or 0
-    local eyePos=EyePos()
+    local view=Wall.OverlayView and Wall:OverlayView()
+    local eyePos=view and view.eye or EyePos()
     local gx,gy,gz=gridPosition(eyePos)
     local buckets=Wall.labelBuckets and Wall.labelBuckets[gz]
     if not buckets then return end
@@ -579,9 +587,16 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function(dept
         return a.index<b.index
     end)
     for i=1,math.min(#candidates,C.MaxBrandDraws) do
-        local drawn, reason = Brand.Draw(candidates[i].model,selectedId,selectedMaterial,eyePos)
-        if drawn then Brand.lastDrawCount = Brand.lastDrawCount + 1
-        else Brand.lastSkippedCount = Brand.lastSkippedCount + 1; Brand.lastSkipReason = reason end
+        local model=candidates[i].model
+        -- Keep the original nearest-64 selection before rejecting submissions;
+        -- culling does not fill its slots with farther brands.
+        if Wall.OverlaySphereVisible and not Wall:OverlaySphereVisible(view,model:GetPos(),BRAND_BOUND_RADIUS) then
+            Brand.lastCulledCount=Brand.lastCulledCount+1
+        else
+            local drawn, reason = Brand.Draw(model,selectedId,selectedMaterial,eyePos)
+            if drawn then Brand.lastDrawCount = Brand.lastDrawCount + 1
+            else Brand.lastSkippedCount = Brand.lastSkippedCount + 1; Brand.lastSkipReason = reason end
+        end
     end
     Brand.lastRenderMilliseconds=SysTime and (SysTime()-started)*1000 or nil
 end)
@@ -593,7 +608,7 @@ function Brand.Summary()
     return {brandID=selectedId,company=selectedId and LOD.CrateBrandMetadata[selectedId].name,
         renderer="source-front-face-20260924",
         shader=selectedMaterial and selectedMaterial:GetShader() or "missing",
-        skipped=Brand.lastSkippedCount or 0,skipReason=Brand.lastSkipReason,
+        skipped=Brand.lastSkippedCount or 0,skipReason=Brand.lastSkipReason,culled=Brand.lastCulledCount or 0,
         material=selectedPath,materialOK=ok,loadedTextures=table.Count(loadedBrands),
         shaderSlots=table.Count(materialSlots),branded=brandedCount,containers=#world,
         cap=globalBrandCap,geometryBlocked=geometryBlockedCount,safeWidth=C.SafeWidth,

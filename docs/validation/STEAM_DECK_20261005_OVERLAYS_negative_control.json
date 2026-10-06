@@ -1,0 +1,13 @@
+{
+  "parent_sha": "f657913cb5d719df704148ad0db4341708f1b46d",
+  "overlay_sources": "exact parent branding and wayfinding; repaired common view authority isolates the missing overlay checks",
+  "command": [
+    "python3",
+    "/workspace/scratch/fd74461b3127/wall-repair/tools/run_lua54.py",
+    "/workspace/scratch/fd74461b3127/wall-repair/tools/test_great_crate_render.lua"
+  ],
+  "returncode": 1,
+  "expected_failure": "offscreen overlays still submitted",
+  "stdout": "OVERLAY_SUBMISSIONS unknown_view_boards=300 known_view_boards=300 unknown_view_brands=64 known_view_brands=64\n",
+  "stderr": "/workspace/scratch/fd74461b3127/wall-repair/tools/test_great_crate_render.lua: ...74461b3127/wall-repair/tools/test_great_crate_render.lua:265: offscreen overlays still submitted\n"
+}

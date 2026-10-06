@@ -223,15 +223,28 @@ local function perspective(view)
     local tx=math.tan(math.rad(view.fov)*.5);local ty=tx/view.aspect
     return view.origin,f,r,u,tx,ty,math.sqrt(1+tx*tx),math.sqrt(1+ty*ty)
 end
-local function visible(chunk,eye,f,r,u,tx,ty,nx,ny)
+local function visible(center,radius,eye,f,r,u,tx,ty,nx,ny)
     if not eye then return true end
-    local p=chunk.center
+    local p=center
     local x,y,z=p.x-eye.x,p.y-eye.y,p.z-eye.z
     local depth=x*f.x+y*f.y+z*f.z
-    local radius=chunk.radius
     if depth < -radius then return false end
     return math.abs(x*r.x+y*r.y+z*r.z)-depth*tx<=radius*nx
         and math.abs(x*u.x+y*u.y+z*u.z)-depth*ty<=radius*ny
+end
+
+-- The same conservative current-pass test also serves manually submitted
+-- container overlays. Unknown/orthographic/off-center views draw as before;
+-- this never changes the native models' visibility or render bounds.
+function Wall:OverlayView()
+    local view=render.GetViewSetup and render.GetViewSetup(true)
+    local eye,f,r,u,tx,ty,nx,ny=perspective(view)
+    if eye then return {eye=eye,f=f,r=r,u=u,tx=tx,ty=ty,nx=nx,ny=ny} end
+end
+function Wall:OverlaySphereVisible(view,center,radius)
+    if not view or not center or not finite(radius) or radius<0
+        or not finite(center.x) or not finite(center.y) or not finite(center.z) then return true end
+    return visible(center,radius,view.eye,view.f,view.r,view.u,view.tx,view.ty,view.nx,view.ny)
 end
 
 local function drawChunks(eye,f,r,u,tx,ty,nx,ny)
@@ -239,7 +252,7 @@ local function drawChunks(eye,f,r,u,tx,ty,nx,ny)
     for _,chunk in ipairs(state.chunks) do
         if chunk.mesh then
             stats.visits=stats.visits+1
-            if visible(chunk,eye,f,r,u,tx,ty,nx,ny) then
+            if visible(chunk.center,chunk.radius,eye,f,r,u,tx,ty,nx,ny) then
                 render.SetMaterial(chunk.material);chunk.mesh:Draw();stats.draws=stats.draws+1
             end
         end

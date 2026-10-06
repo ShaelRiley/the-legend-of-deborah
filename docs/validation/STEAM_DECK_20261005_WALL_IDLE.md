@@ -74,3 +74,18 @@ Return performance_client_latest.txt + console_latest.txt. The capture already
 includes population status. No additional manual setup or separate population
 file is needed. Native FPS acceptance and the >=40 FPS target remain open.
 Workshop/VPS remain outside this source checkpoint.
+
+## Subsequent native observation
+
+The October 5, 19:20 Chicago submission runs clean f657913. All 1,364 native wall
+models are complete before sampling; applications stay at 1,364 in all 19 live
+windows, with no retries and no hidden originals. This passes the finite native
+quiescence gate. The author reports that performance improved but needs more
+work. Active throughput is 28.96 FPS over 92.95 seconds, p95 56.397 ms, on a
+smaller maze than the earlier 1,868-wall capture; it is not a controlled FPS
+comparison or 40 FPS acceptance. See [preserved native receipt](STEAM_DECK_20261005_OVERLAYS_native.json).
+
+Four parent CI workflows pass. Complete-matrix run 37377319992 instead fails
+the installer test's temporary cleanup with `Directory not empty` before its
+full matrix starts. This does not erase the frozen local 307-suite pass above.
+The subsequent overlay checkpoint repairs the demonstrated test-child lifetime.

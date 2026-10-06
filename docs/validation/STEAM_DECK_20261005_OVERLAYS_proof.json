@@ -1,0 +1,20 @@
+{
+  "parent_sha": "f657913cb5d719df704148ad0db4341708f1b46d",
+  "total": 307,
+  "passed": 307,
+  "lua_files": 877,
+  "source_before": "7fe877101057da1bf67decc1fc791084e3a668a11fdcf494a2ef60fae8a0dff2",
+  "source_after": "7fe877101057da1bf67decc1fc791084e3a668a11fdcf494a2ef60fae8a0dff2",
+  "source_files": 2481,
+  "changed_during_gate": [],
+  "verified_suite_logs": 307,
+  "receipt_sha256": "95e8629e862317bc70b2fa88392cb9e31af50cc4e24f0db1a0dc6e47ca68421f",
+  "production_files": 562,
+  "production_sha256": "34d60261b2f6bebf9a13b5243463f8169b8272ed7c9b67ff33d4dcac0305e4b0",
+  "gate_archive_bytes": 292118,
+  "gate_archive_sha256": "e6def94f051ba918918536286638cb9c99dd6cb7ec51d437b7bddc2d8924a708",
+  "native_parent_fps": 28.962581420680507,
+  "native_new_build_fps_measured": false,
+  "target_fps": 40,
+  "fps_accepted": false
+}

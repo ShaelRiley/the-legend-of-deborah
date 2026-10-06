@@ -114,6 +114,7 @@ if CLIENT then
         "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua"}
     local populationChannel="LOD_PopulationSnapshot"
     if net and net.Receive and net.ReadUInt and net.ReadData and util.JSONToTable then
@@ -152,6 +153,12 @@ if CLIENT then
             think_calls=wall and wall.batchBuildTicks or 0,
             chunks=stats.chunks or 0,vertices=stats.vertices or 0,draws=stats.draws or 0,visits=stats.visits or 0,
             section=wall and wall.SectionMaterialStatus and wall:SectionMaterialStatus() or nil}
+        local marks=wall and wall.wayfindingStats
+        local brand=LOD.CrateBranding
+        out.overlays={wayfinding=marks and {visits=marks.visits,draws=marks.draws,
+            culled=marks.culled,milliseconds=marks.renderMilliseconds} or nil,
+            branding=brand and {draws=brand.lastDrawCount,culled=brand.lastCulledCount,
+                milliseconds=brand.lastRenderMilliseconds} or nil}
         if hook.GetTable then
             local think=hook.GetTable().Think or {}
             out.hooks={batches=think.LOD_BuildContainerBatches~=nil,
@@ -210,7 +217,7 @@ if CLIENT then
         hook.Remove("PreRender","LOD_PerformanceFrames")
         hook.Remove("Think","LOD_PerformanceDeadline")
         local now=SysTime()
-        local out={version="steam-deck-wall-visibility-20261005",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
+        local out={version="steam-deck-container-overlays-20261005",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
             elapsed_seconds=capture.ready and math.max(0,now-capture.start) or 0,
             total_seconds=math.max(0,now-capture.created),
             renderer_wait_seconds=capture.preparation_wait or math.max(0,now-capture.created),

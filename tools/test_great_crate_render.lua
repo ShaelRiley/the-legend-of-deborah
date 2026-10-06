@@ -203,4 +203,121 @@ for _,inst in ipairs(w.world) do
     assert(inst.bodyColor.r==21 and inst.stencilColor.r==123,'wayfinding tint authority duplicated')
 end
 assert(w.markRevision>2,'sparse mark placement did not run')
+
+-- Loaded overlay hooks share the existing conservative batch-view authority.
+-- Exercise actual 3D2D/mesh submissions; native models stay visible throughout.
+CreateClientConVar=function() return {GetBool=function() return false end} end
+GetConVar=CreateClientConVar;cvars={AddChangeCallback=noop}
+dofile(root..'cl_wall_batch.lua')
+assert(w.OverlayView and w.OverlaySphereVisible,'overlay camera authority missing')
+local A={};A.__index=A
+function Angle(p,y,r) return setmetatable({p=p or 0,y=y or 0,r=r or 0},A) end
+function A:Forward()
+ local p,y=math.rad(self.p),math.rad(self.y)
+ return Vector(math.cos(p)*math.cos(y),math.cos(p)*math.sin(y),-math.sin(p))
+end
+function A:Right()
+ local p,y,r=math.rad(self.p),math.rad(self.y),math.rad(self.r)
+ return Vector(-math.sin(r)*math.sin(p)*math.cos(y)+math.cos(r)*math.sin(y),
+  -math.sin(r)*math.sin(p)*math.sin(y)-math.cos(r)*math.cos(y),-math.sin(r)*math.cos(p))
+end
+function A:Up()
+ local p,y,r=math.rad(self.p),math.rad(self.y),math.rad(self.r)
+ return Vector(math.cos(r)*math.sin(p)*math.cos(y)+math.sin(r)*math.sin(y),
+  math.cos(r)*math.sin(p)*math.sin(y)-math.sin(r)*math.cos(y),math.cos(r)*math.cos(p))
+end
+-- Panel rotations are native boundaries; this checkpoint does not change them.
+A.RotateAroundAxis=noop
+function model:GetAngles() return Angle(0,math.deg(self.yaw),0) end
+function model:GetRenderBounds() return C.CargoMins,C.CargoMaxs end
+local view,metrics,boardDraws,quadDraws=nil,0,0,0
+local boardAnchors={}
+render.GetViewSetup=function(current) assert(current);return view end
+EyePos=function() return Vector(0,0,64) end
+cam.Start3D2D=function(pos,_,scale)
+ assert(scale==0.22);boardDraws=boardDraws+1;boardAnchors[#boardAnchors+1]=pos
+end
+cam.End3D2D=noop
+surface.SetFont=noop;surface.SetDrawColor=noop;surface.SetMaterial=noop
+surface.DrawRect=noop;surface.DrawTexturedRect=noop
+surface.GetTextSize=function(code) metrics=metrics+1;return #code*100,172 end
+draw={SimpleText=noop};TEXT_ALIGN_CENTER=1
+local begin=mesh.Begin
+mesh.Begin=function(a,b,c) if type(a)=='number' then quadDraws=quadDraws+1 end;return begin(a,b,c) end
+w.world={};w.models={};w.labelBuckets={[0]={['2:2']={}}}
+for i=1,600 do
+ local m=setmetatable({pos=Vector(i%2==0 and 1000 or -1000,0,0),yaw=0,valid=true},{__index=model})
+ local inst={marked=i<=300,companyBranded=i>300,brandSurfaceEligible=true,
+  sectionColor=Color(21,43,65),bodyColor=Color(21,43,65),stencilColor=Color(123,145,167),code='1A'}
+ w.world[i]=inst;w.models[i]=m;w.labelBuckets[0]['2:2'][i]=i
+end
+local function overlays()
+ boardDraws,quadDraws,boardAnchors=0,0,{}
+ hooks.LOD_DrawContainerWayfinding();hooks.LOD_DrawContainerBranding()
+ return boardDraws,quadDraws
+end
+local oldBoards,oldBrands=overlays()
+assert(oldBoards==300 and oldBrands==64,'unknown view changed historical submissions')
+assert(metrics==300)
+view={origin=Vector(0,0,64),angles=Angle(),fov=90,aspect=1.6,znear=1}
+local newBoards,newBrands=overlays()
+print(string.format('OVERLAY_SUBMISSIONS unknown_view_boards=%d known_view_boards=%d unknown_view_brands=%d known_view_brands=%d',oldBoards,newBoards,oldBrands,newBrands))
+assert(newBoards==150 and newBrands==32,'offscreen overlays still submitted')
+assert(w.wayfindingStats.culled==150 and Brand.lastCulledCount==32)
+for _,pos in ipairs(boardAnchors) do assert(pos.x>0,'rear board submitted') end
+local fixedMetrics=metrics
+for _=1,600 do overlays() end
+assert(metrics==fixedMetrics,'unchanged stencil layout measured every frame')
+view.angles=Angle(0,180,0);overlays()
+assert(boardDraws==150 and quadDraws==32)
+for _,pos in ipairs(boardAnchors) do assert(pos.x<0,'nested view used player camera') end
+for _,args in ipairs({{true,false,false},{false,true,false},{false,false,true}}) do
+ local oldBoardCount,oldQuadCount=boardDraws,quadDraws
+ hooks.LOD_DrawContainerWayfinding(table.unpack(args));hooks.LOD_DrawContainerBranding(table.unpack(args))
+ assert(boardDraws==oldBoardCount and quadDraws==oldQuadCount,'overlay repeated in excluded pass')
+end
+for _,flag in ipairs({'ortho','offcenter'}) do
+ view[flag]={};overlays();assert(boardDraws==300 and quadDraws==64,'nonperspective view lost overlays');view[flag]=nil
+end
+for _,field in ipairs({'fov','aspect','znear'}) do
+ local old=view[field];view[field]=0/0;overlays()
+ assert(boardDraws==300 and quadDraws==64,'malformed view did not retain overlays');view[field]=old
+end
+local angles,origin=view.angles,view.origin
+view.angles={};overlays();assert(boardDraws==300 and quadDraws==64)
+view.angles=angles;view.origin=Vector(0/0,0,0);overlays();assert(boardDraws==300 and quadDraws==64)
+view.origin=origin
+-- Text/code changes and Lua refresh invalidate only exact instance layouts.
+w.world[1].code='123456789A';overlays();assert(metrics==fixedMetrics+1)
+local layout=w.world[1].stencilLayout
+assert(layout.radius>=math.sqrt((layout.width*.5+5)^2+(layout.height*.5+6)^2)*.22)
+dofile(root..'cl_container_wayfinding_projection.lua');overlays();assert(metrics==fixedMetrics+301)
+assert(appearanceWrites==0,'overlay optimization mutated native appearance')
+assert(w.batchStats.hidden==0 and w.batchStats.status=='off','overlay optimization enabled mesh replacements')
+-- Independent corner projection oracle: every visible corner inside a sphere
+-- must retain its submission, including edge intersections and rolled cameras.
+local projected=0
+for _,aspect in ipairs({.6,1,1.6,2.4}) do for _,fov in ipairs({40,75,110,150}) do
+ for j=1,60 do
+  view.aspect=aspect;view.fov=fov;view.angles=Angle((j*17)%160-80,(j*43)%360,(j*31)%360)
+  view.origin=Vector(57,-93,18)
+  local center=Vector((j*317)%2400-1200,(j*211)%2400-1200,(j*131)%1600-800)
+  local extent=30+j;local radius=math.sqrt(3)*extent
+  local any=false
+  for _,x in ipairs({-extent,extent}) do for _,y in ipairs({-extent,extent}) do for _,z in ipairs({-extent,extent}) do
+   local p=center+Vector(x,y,z)-view.origin;local depth=p:Dot(view.angles:Forward())
+   local half=math.tan(math.rad(fov*.5))
+   if depth>1 and math.abs(p:Dot(view.angles:Right())/depth)<=half
+    and math.abs(p:Dot(view.angles:Up())/depth)<=half/aspect then any=true end
+  end end end
+  if any then
+   assert(w:OverlaySphereVisible(w:OverlayView(),center,radius),'visible projected corner culled')
+   projected=projected+1
+  end
+ end
+end end
+assert(projected>50)
+assert(w:OverlaySphereVisible(w:OverlayView(),Vector(0/0,0,0),55)
+ and w:OverlaySphereVisible(w:OverlayView(),Vector(),0/0),'invalid geometry did not draw conservatively')
+print(string.format('OVERLAY_WORK unknown_view_boards=%d known_view_boards=%d unknown_view_brands=%d known_view_brands=%d stable_600_frames_metric_reads=0 projected_corner_cases=%d native_fps_measured=false',oldBoards,newBoards,oldBrands,newBrands,projected))
 print('CRATE_RENDER_PASS: '..checks..' original composition/orientation checks; independent untinted artwork; two lazy shader slots; 64-draw ceiling for 1000 candidates; rotated/shared slab UV seams; '..quads..' cached opaque grate quads with underside and cleanup')

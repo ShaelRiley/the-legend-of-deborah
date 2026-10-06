@@ -1,0 +1,1505 @@
+{
+  "recorded_at": "2026-10-05T19:20:09-05:00",
+  "installed_parent_sha": "f657913cb5d719df704148ad0db4341708f1b46d",
+  "user_observation": "Impression: performance has improved somewhat, but still has a ways to go.",
+  "input_files": [
+    {
+      "name": "performance_client_latest(3).txt",
+      "sha256": "28baef23373bf53f4d203af804c736bd47f1476ed7e12294e700f9cb7b58b69a",
+      "bytes": 38226
+    },
+    {
+      "name": "console_latest(20261006-001949).txt",
+      "sha256": "4ced7f2132fab6748cfe8fdb79fa821f82c5a2a0d5ba45967d1dddbadfff3fd2",
+      "bytes": 49873
+    }
+  ],
+  "repository_source_hashes_verified": 41,
+  "all_live_windows_native_and_idle": true,
+  "steady_appearance_writes": 0,
+  "full_active_windows": {
+    "count": 18,
+    "frames": 2563,
+    "seconds": 89.96237109999998,
+    "fps": 28.48968928521272,
+    "min_fps": 20.30500183063522,
+    "max_fps": 38.62731801184449
+  },
+  "fps_target": 40,
+  "fps_accepted": false,
+  "controlled_before_after": false,
+  "capture": {
+    "active": {
+      "max_ms": 281.202,
+      "over100": 16,
+      "median_ms": 31.063,
+      "over50": 195,
+      "p95_ms": 56.397,
+      "frames": 2692,
+      "p99_ms": 88.416,
+      "over25": 2309,
+      "seconds": 92.94751599999985,
+      "fps": 28.962581420680507
+    },
+    "version": "steam-deck-wall-visibility-20261005",
+    "active_definition": "deployed, alive, no LOD menu or cinematic",
+    "end_configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": true,
+      "fps_max": "60",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-2",
+      "r_waterforceexpensive": "1",
+      "window_mode": "user-recorded",
+      "mat_picmip": "0",
+      "mat_antialias": "0",
+      "architecture": "x64",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "r_shadows": "1",
+      "lod_wall_batches": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "preparation_limit_seconds": 30,
+    "start_configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": true,
+      "fps_max": "60",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-2",
+      "r_waterforceexpensive": "1",
+      "window_mode": "user-recorded",
+      "mat_picmip": "0",
+      "mat_antialias": "0",
+      "architecture": "x64",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "r_shadows": "1",
+      "lod_wall_batches": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "preparation_timed_out": false,
+    "source": {
+      "verified": true,
+      "checked": 7,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "renderer_at_end": {
+      "visits": 0,
+      "status": "off",
+      "hooks": {
+        "materials": true,
+        "wayfinding": true,
+        "batches": true
+      },
+      "chunks": 0,
+      "section": {
+        "next_model": 1365,
+        "retries": 0,
+        "stable_passes": 2,
+        "applied": 1364,
+        "instances": 1364,
+        "complete": true,
+        "cursor": 1,
+        "calls": 3900,
+        "ready": true
+      },
+      "vertices": 0,
+      "think_calls": 3900,
+      "hidden": 0,
+      "draws": 0
+    },
+    "start_resources": {
+      "lua_kb": 28421,
+      "damsels": "damsels-20260919-01",
+      "jit_version": "LuaJIT 2.1.0-beta3",
+      "lua_errors": 0,
+      "realm": "client",
+      "branch": "unknown",
+      "equipment_generation": "interpreter-generator",
+      "build": "generator-jit-20260917-01",
+      "engine": "2026.09.17",
+      "wall_models": 1364,
+      "meshes": 84,
+      "install": "f657913cb5d719df704148ad0db4341708f1b46d clean ",
+      "missing": "none",
+      "feedback_audio": "feedback-20260919-01",
+      "architecture": "x64",
+      "loot_entities": 0,
+      "entities": 2365
+    },
+    "requested_seconds": 180,
+    "renderer_at_sample_start": {
+      "visits": 0,
+      "status": "native",
+      "hooks": {
+        "materials": true,
+        "wayfinding": true,
+        "batches": true
+      },
+      "chunks": 0,
+      "reason": "wall-batches-disabled",
+      "section": {
+        "next_model": 1365,
+        "retries": 0,
+        "stable_passes": 2,
+        "applied": 1364,
+        "instances": 1364,
+        "complete": true,
+        "cursor": 1,
+        "calls": 1258,
+        "ready": true
+      },
+      "vertices": 0,
+      "think_calls": 1258,
+      "hidden": 0,
+      "draws": 0
+    },
+    "configuration_changes": [],
+    "total_seconds": 96.1825636,
+    "windows": [
+      {
+        "active_seconds": 4.921311799999984,
+        "fps": 27.83810609195712,
+        "over25": 136,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1329,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 1329,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 12,
+        "active_frames": 137,
+        "over100": 4
+      },
+      {
+        "active_seconds": 5.0074161,
+        "fps": 24.164159235738367,
+        "over25": 121,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1466,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 1466,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 24,
+        "active_frames": 121,
+        "over100": 0
+      },
+      {
+        "active_seconds": 5.042340899999999,
+        "fps": 21.61694382860945,
+        "over25": 109,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1587,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 1587,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 33,
+        "active_frames": 109,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.985348000000016,
+        "fps": 27.48052894201158,
+        "over25": 133,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1696,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 1696,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 13,
+        "active_frames": 137,
+        "over100": 0
+      },
+      {
+        "active_seconds": 5.017944299999982,
+        "fps": 37.066971827487336,
+        "over25": 134,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1833,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 1833,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 0,
+        "active_frames": 186,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.982958100000019,
+        "fps": 34.11628125068909,
+        "over25": 151,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2019,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 2019,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 1,
+        "active_frames": 170,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.988530400000002,
+        "fps": 33.075873407526984,
+        "over25": 137,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2189,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 2189,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 1,
+        "active_frames": 165,
+        "over100": 0
+      },
+      {
+        "active_seconds": 5.020491099999987,
+        "fps": 33.46286183038955,
+        "over25": 135,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2354,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 2354,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 2,
+        "active_frames": 168,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.995906500000018,
+        "fps": 32.826875362859454,
+        "over25": 154,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2522,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 2522,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 0,
+        "active_frames": 164,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.996463899999981,
+        "fps": 38.62731801184449,
+        "over25": 95,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2686,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 2686,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 0,
+        "active_frames": 193,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.954190900000015,
+        "fps": 27.451505754451166,
+        "over25": 117,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2879,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 2879,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 8,
+        "active_frames": 136,
+        "over100": 1
+      },
+      {
+        "active_seconds": 5.0194259999999815,
+        "fps": 25.700149778082288,
+        "over25": 123,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3015,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 3015,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 17,
+        "active_frames": 129,
+        "over100": 0
+      },
+      {
+        "active_seconds": 5.034699700000004,
+        "fps": 26.21804831775764,
+        "over25": 132,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3144,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 3144,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 9,
+        "active_frames": 132,
+        "over100": 1
+      },
+      {
+        "active_seconds": 4.986035700000002,
+        "fps": 23.264975820369667,
+        "over25": 116,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3276,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 3276,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 18,
+        "active_frames": 116,
+        "over100": 2
+      },
+      {
+        "active_seconds": 5.007778599999995,
+        "fps": 32.948740984675354,
+        "over25": 157,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3392,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 3392,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 5,
+        "active_frames": 165,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.968839800000012,
+        "fps": 21.534202008283653,
+        "over25": 107,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3557,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 3557,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 16,
+        "active_frames": 107,
+        "over100": 4
+      },
+      {
+        "active_seconds": 5.0233928000000105,
+        "fps": 20.30500183063522,
+        "over25": 102,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3664,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 3664,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 26,
+        "active_frames": 102,
+        "over100": 4
+      },
+      {
+        "active_seconds": 5.0092964999999765,
+        "fps": 25.15323259463691,
+        "over25": 126,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3766,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 3766,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 10,
+        "active_frames": 126,
+        "over100": 0
+      },
+      {
+        "active_seconds": 2.9851394000000084,
+        "fps": 43.214062298062075,
+        "over25": 24,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1365,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1364,
+            "instances": 1364,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3892,
+            "ready": true
+          },
+          "vertices": 0,
+          "think_calls": 3892,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 0,
+        "active_frames": 129,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0,
+        "over25": 0,
+        "fps": 0,
+        "over50": 0,
+        "active_frames": 0,
+        "over100": 0
+      }
+    ],
+    "population": {
+      "sectors": [
+        {
+          "pacing": "ready",
+          "cleared": 0,
+          "discretionary": 3,
+          "discretionarySpawned": 0,
+          "budget": 24,
+          "objectiveSpawned": 0,
+          "spawned": 0,
+          "objectives": 1,
+          "spent": 13.5,
+          "goal": "4:15:1",
+          "routeLength": 18
+        },
+        {
+          "pacing": "ready",
+          "cleared": 0,
+          "discretionary": 4,
+          "discretionarySpawned": 0,
+          "budget": 48,
+          "objectiveSpawned": 0,
+          "spawned": 0,
+          "objectives": 1,
+          "spent": 18.9,
+          "goal": "21:15:0",
+          "routeLength": 32
+        },
+        {
+          "pacing": "ready",
+          "cleared": 0,
+          "discretionary": 4,
+          "discretionarySpawned": 0,
+          "budget": 54,
+          "objectiveSpawned": 0,
+          "spawned": 0,
+          "objectives": 1,
+          "spent": 21.3,
+          "goal": "21:17:1",
+          "routeLength": 20
+        },
+        {
+          "pacing": "ready",
+          "cleared": 0,
+          "discretionary": 4,
+          "discretionarySpawned": 0,
+          "budget": 60,
+          "objectiveSpawned": 0,
+          "spawned": 0,
+          "objectives": 0,
+          "spent": 16.3,
+          "goal": "17:7:1",
+          "routeLength": 9
+        }
+      ],
+      "seed": 1494467310,
+      "nativeProbes": {
+        "supportBound": true,
+        "visibility": "b28-generated-bounds",
+        "visibilityBound": true,
+        "support": "b28-feet-hull"
+      },
+      "roaming": {
+        "floors": [
+          {
+            "initialPending": 0,
+            "target": 18,
+            "living": 18,
+            "floor": 1,
+            "result": "spawned",
+            "types": {
+              "runner": 2,
+              "bioblaster": 3,
+              "arccaster": 1,
+              "deadcrab": 2,
+              "watcher": 1,
+              "repulsor": 1,
+              "soldier": 4,
+              "seeker": 1,
+              "shambler": 2,
+              "sniper": 1
+            },
+            "admission": {
+              "attempts": 18,
+              "no_choices": 0,
+              "blocked_hull": 0,
+              "no_candidates": 0,
+              "spawned": 18,
+              "unsupported_floor": 0
+            },
+            "deficit": 0
+          },
+          {
+            "initialPending": 0,
+            "target": 18,
+            "living": 18,
+            "floor": 2,
+            "result": "spawned",
+            "types": {
+              "repriser": 1,
+              "bioblaster": 1,
+              "flamer": 1,
+              "deadcrab": 3,
+              "runner": 3,
+              "reeler": 1,
+              "arccaster": 1,
+              "pincer": 1,
+              "soldier": 3,
+              "seeker": 1,
+              "redliner": 1,
+              "waylayer": 1
+            },
+            "admission": {
+              "attempts": 18,
+              "no_choices": 0,
+              "blocked_hull": 0,
+              "no_candidates": 0,
+              "spawned": 18,
+              "unsupported_floor": 0
+            },
+            "deficit": 0
+          }
+        ],
+        "supportProbe": {
+          "samples": 8,
+          "lineMisses": 8,
+          "example": {
+            "deckZ": -12271.96875,
+            "cell": "11:13:0",
+            "hullZ": -12271.9375,
+            "lineZ": -12281.96875,
+            "lineHit": false
+          }
+        },
+        "owned": true,
+        "cap": 64
+      },
+      "developerDense": true,
+      "visibilityProbe": {
+        "bboxBlocked": 380,
+        "visible": 0,
+        "checked": 383,
+        "lineBlocked": 3,
+        "example": {
+          "class": "lod_static_box",
+          "cell": "8:17:0"
+        }
+      },
+      "entry": {
+        "ready": true,
+        "version": "b29-entry-safety",
+        "eventSerial": 3,
+        "cells": [
+          "1:14:0",
+          "1:15:0",
+          "1:16:0"
+        ],
+        "heroes": [
+          {
+            "exitedAt": 43.06499903742224,
+            "active": true,
+            "deployedAt": 38.74499913398176,
+            "nearby": 1,
+            "sources": {
+              "wanderer": 1
+            },
+            "highWater": 6,
+            "entity": 1,
+            "depth": 6,
+            "archetypes": {
+              "soldier": 1
+            },
+            "safe": false,
+            "respite": 0,
+            "deployments": 1,
+            "completed": 0,
+            "cap": 1,
+            "nearbySources": {
+              "wanderer": 1
+            },
+            "engaged": 1,
+            "admitted": 1
+          }
+        ],
+        "bindings": {
+          "spawn": true,
+          "damage": true,
+          "ai": true
+        },
+        "stats": {
+          "admissionDenied": 0,
+          "movementDenied": 0,
+          "statusDenied": 0,
+          "damageDenied": 0,
+          "correctedIngress": 0
+        }
+      },
+      "aliveBodies": 36,
+      "source": {
+        "installLabel": "f657913cb5d719df704148ad0db4341708f1b46d clean ",
+        "missing": 0,
+        "mismatches": 0,
+        "checked": 41,
+        "verified": true,
+        "modules": [
+          {
+            "path": "gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua",
+            "installed": "10ddb1f175a657c663577223e467a4c018c27a27b573ac8d6079c47f48304ebd",
+            "mounted": "10ddb1f175a657c663577223e467a4c018c27a27b573ac8d6079c47f48304ebd"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+            "installed": "f3772dff33d67e898f690563e5d80b771e9a79c3ce1fe30d198810c989c3feca",
+            "mounted": "f3772dff33d67e898f690563e5d80b771e9a79c3ce1fe30d198810c989c3feca"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
+            "installed": "e930f48061aa49468c49623e3a14cb7f125b75343bcac38ad2b165ee69af95db",
+            "mounted": "e930f48061aa49468c49623e3a14cb7f125b75343bcac38ad2b165ee69af95db"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua",
+            "installed": "193e83372116ac38839f5eeb766727e7eca28e684038b620153f9a926a3d7f95",
+            "mounted": "193e83372116ac38839f5eeb766727e7eca28e684038b620153f9a926a3d7f95"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua",
+            "installed": "e7536a1b7bbe73e07f70d97ff3882dca0cec592cc3f74efa4ca77220e21298c0",
+            "mounted": "e7536a1b7bbe73e07f70d97ff3882dca0cec592cc3f74efa4ca77220e21298c0"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua",
+            "installed": "717660c5d7adca56c0f418c8fa813ee0298d0de15e7c20e4077dabf200f1e1a0",
+            "mounted": "717660c5d7adca56c0f418c8fa813ee0298d0de15e7c20e4077dabf200f1e1a0"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua",
+            "installed": "6d48ebcd2d04c9c187b1a6318d40cd11c00137dd95acf267faf63531a38eb601",
+            "mounted": "6d48ebcd2d04c9c187b1a6318d40cd11c00137dd95acf267faf63531a38eb601"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+            "installed": "37e21dfaa075fc1c534fd17fb548cd30d9a830d95eaf6847cac42248aeef8a6b",
+            "mounted": "37e21dfaa075fc1c534fd17fb548cd30d9a830d95eaf6847cac42248aeef8a6b"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/cl_init.lua",
+            "installed": "c0bdc6e17fc421fbacfea08dfd494088fd3b174522b39e7343f5ec0e4632816b",
+            "mounted": "c0bdc6e17fc421fbacfea08dfd494088fd3b174522b39e7343f5ec0e4632816b"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/init.lua",
+            "installed": "50386f0439a0cc14fa0d82b4f9e8c31ac886dead929d14bfa64942f38f3a2204",
+            "mounted": "50386f0439a0cc14fa0d82b4f9e8c31ac886dead929d14bfa64942f38f3a2204"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_entry_safety.lua",
+            "installed": "be5ccc26e02dccfd0056793f7565a7c2b144c57ce2fe62a9ae713f00afec025d",
+            "mounted": "be5ccc26e02dccfd0056793f7565a7c2b144c57ce2fe62a9ae713f00afec025d"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua",
+            "installed": "350cce6720fbffc9eb70766e4a8e9787479e4db98d91510af10d1586bf1631a1",
+            "mounted": "350cce6720fbffc9eb70766e4a8e9787479e4db98d91510af10d1586bf1631a1"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_climber.lua",
+            "installed": "6497d7b7c6fb890cc6bc8da9297d5b7b5c4ba70161c920bee7836b43c0968d92",
+            "mounted": "6497d7b7c6fb890cc6bc8da9297d5b7b5c4ba70161c920bee7836b43c0968d92"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab.lua",
+            "installed": "5cbeaaa08a10814e256c43c280fdee80a7c61005f913be0b5544f2684fa2288d",
+            "mounted": "5cbeaaa08a10814e256c43c280fdee80a7c61005f913be0b5544f2684fa2288d"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab_latch_parent_safety.lua",
+            "installed": "8e6aad5a39d825c8eb5919ce77a7aa1f3067f7f331debf122e73cc9aeff1f654",
+            "mounted": "8e6aad5a39d825c8eb5919ce77a7aa1f3067f7f331debf122e73cc9aeff1f654"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_device_motion_safety.lua",
+            "installed": "4aa271365bc4b6fa52e686ac46b409e157cbf9740bd9a0010983fde18cab9410",
+            "mounted": "4aa271365bc4b6fa52e686ac46b409e157cbf9740bd9a0010983fde18cab9410"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua",
+            "installed": "3d663f3d90a9b3c384aab7cd89c8d8043ef874fe36a222fcf1a2a76cb3300743",
+            "mounted": "3d663f3d90a9b3c384aab7cd89c8d8043ef874fe36a222fcf1a2a76cb3300743"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua",
+            "installed": "da26cd689b2a478bd82b3fbaf69414f6449f94ae49c2730a789570349b5446b2",
+            "mounted": "da26cd689b2a478bd82b3fbaf69414f6449f94ae49c2730a789570349b5446b2"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_spawn_variance.lua",
+            "installed": "f635afef84e89848e640bd9de9c2047614c6dfb6188776fd10eab1f45bf643b5",
+            "mounted": "f635afef84e89848e640bd9de9c2047614c6dfb6188776fd10eab1f45bf643b5"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
+            "installed": "9b682a35066e3da7b5d3651f0529ea989d7d1a73ed821babdccf69235dd3f136",
+            "mounted": "9b682a35066e3da7b5d3651f0529ea989d7d1a73ed821babdccf69235dd3f136"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua",
+            "installed": "6f97249a0a292d099276180e8f05aed37fba7cae1047b7804920d5f3479fc9a6",
+            "mounted": "6f97249a0a292d099276180e8f05aed37fba7cae1047b7804920d5f3479fc9a6"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "installed": "3705c829cd435e54c8476ef847dc7b2456957185e963edc8c7850ed7afe1940c",
+            "mounted": "3705c829cd435e54c8476ef847dc7b2456957185e963edc8c7850ed7afe1940c"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua",
+            "installed": "3e59012abe2ae7bab0017387c0a8c4e7b8ab9f49a38a9edc6cdab60ab319452f",
+            "mounted": "3e59012abe2ae7bab0017387c0a8c4e7b8ab9f49a38a9edc6cdab60ab319452f"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "installed": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed",
+            "mounted": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_no_progress_recovery.lua",
+            "installed": "b7ed7d26520bb56c1dee9fd8b88e8fb7565e313c1f3e5c6304ffae6e336e8835",
+            "mounted": "b7ed7d26520bb56c1dee9fd8b88e8fb7565e313c1f3e5c6304ffae6e336e8835"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_stair_recovery.lua",
+            "installed": "86532b3480fadc7cf46b66074950b3097597683402a5d2d3a1c0bbd65f9e0f2c",
+            "mounted": "86532b3480fadc7cf46b66074950b3097597683402a5d2d3a1c0bbd65f9e0f2c"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_m3_run_integration.lua",
+            "installed": "508136fac4c4aadc2c3977d04ddb649cb26db164169a71ee61a4c8704ef6c6ba",
+            "mounted": "508136fac4c4aadc2c3977d04ddb649cb26db164169a71ee61a4c8704ef6c6ba"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua",
+            "installed": "1b6e0583aacc1d9958aaa79c64e242f8de941ba03865b2ec7f095aa9aaed263d",
+            "mounted": "1b6e0583aacc1d9958aaa79c64e242f8de941ba03865b2ec7f095aa9aaed263d"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua",
+            "installed": "49b4d54e5e1701dc3bdd37b9ac953f52823d5942f395bfd6cb6d6925e8b3bfe8",
+            "mounted": "49b4d54e5e1701dc3bdd37b9ac953f52823d5942f395bfd6cb6d6925e8b3bfe8"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua",
+            "installed": "ffda8d11aafdb2ecadd08f1c52aeacbbb900bece39de7e1f32cb3b29d33c4a01",
+            "mounted": "ffda8d11aafdb2ecadd08f1c52aeacbbb900bece39de7e1f32cb3b29d33c4a01"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_pushback.lua",
+            "installed": "82398160993c23104d18f40bae05d988717f9dc6267e850b36b37a0fcbe2f938",
+            "mounted": "82398160993c23104d18f40bae05d988717f9dc6267e850b36b37a0fcbe2f938"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+            "installed": "6046568810bb36029f43b039b09183794a50cb467b5ef2656751ac8c79052b34",
+            "mounted": "6046568810bb36029f43b039b09183794a50cb467b5ef2656751ac8c79052b34"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "installed": "76e444925fd0af730f8fe81dc422dadbd36323110bb8ee094264a31a8eca0829",
+            "mounted": "76e444925fd0af730f8fe81dc422dadbd36323110bb8ee094264a31a8eca0829"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+            "installed": "8db6ed6c061d7efd19da1b1772712b34dcaac3570afba0f21135f2384b447940",
+            "mounted": "8db6ed6c061d7efd19da1b1772712b34dcaac3570afba0f21135f2384b447940"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_seeker.lua",
+            "installed": "52bae9d0bfe30cebdea5b68fae44eb980c0d1af02a018cf6cfbfc8835a4dcdf2",
+            "mounted": "52bae9d0bfe30cebdea5b68fae44eb980c0d1af02a018cf6cfbfc8835a4dcdf2"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_seeker_personality.lua",
+            "installed": "e2e1ced9c7c7978eea3c2a441ca86566fd94316b19c1703b6c27f9d8e45efc73",
+            "mounted": "e2e1ced9c7c7978eea3c2a441ca86566fd94316b19c1703b6c27f9d8e45efc73"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_staging_deployment.lua",
+            "installed": "0e2e11bb814bb25614c3bfbe803ae1d8a23c32b5351fe556e9640f32b451e383",
+            "mounted": "0e2e11bb814bb25614c3bfbe803ae1d8a23c32b5351fe556e9640f32b451e383"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_ungrounded_stall_recovery.lua",
+            "installed": "c43ae70ea06a603395a0396bd5f88fcdac221101647ba157cc5ed3c268b1d325",
+            "mounted": "c43ae70ea06a603395a0396bd5f88fcdac221101647ba157cc5ed3c268b1d325"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua",
+            "installed": "b4c447f9839e281c0f036817ac76484994378a3335f3c0edffb39bca14baf2c0",
+            "mounted": "b4c447f9839e281c0f036817ac76484994378a3335f3c0edffb39bca14baf2c0"
+          },
+          {
+            "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_watcher_instance_dispatch.lua",
+            "installed": "639b3a3398616b20ef9154fb265296b7a64ec14217e38a280dfd04fcb20ed0e9",
+            "mounted": "639b3a3398616b20ef9154fb265296b7a64ec14217e38a280dfd04fcb20ed0e9"
+          },
+          {
+            "path": "lua/autorun/server/lod_population_observability.lua",
+            "installed": "53df3df202f5495984a0c4b9d32cf083d751abac08c87fc40bd7057d8bf95801",
+            "mounted": "53df3df202f5495984a0c4b9d32cf083d751abac08c87fc40bd7057d8bf95801"
+          }
+        ]
+      },
+      "layoutAttempt": 5,
+      "theme": "crossfire",
+      "seconds": 50.054998881183565,
+      "plannedBodies": 43,
+      "aliveWanderers": 36,
+      "level": 1,
+      "gates": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "developerMode": true,
+      "revision": "b28",
+      "planned": {
+        "runner": 6,
+        "bombardier": 1,
+        "forker": 1,
+        "conductor": 1,
+        "surveyor": 1,
+        "fusilier": 1,
+        "shambler": 15,
+        "repulsor": 1,
+        "reeler": 2,
+        "soldier": 7,
+        "seeker": 3,
+        "caromer": 3,
+        "beamsweeper": 1
+      },
+      "ready": true,
+      "reason": "performance_requested",
+      "layoutSeed": 1955315320,
+      "campaign": 244456237,
+      "alive": {
+        "runner": 5,
+        "bioblaster": 4,
+        "sniper": 1,
+        "flamer": 1,
+        "arccaster": 2,
+        "reeler": 1,
+        "deadcrab": 5,
+        "repriser": 1,
+        "watcher": 1,
+        "shambler": 2,
+        "repulsor": 1,
+        "pincer": 1,
+        "soldier": 7,
+        "seeker": 2,
+        "redliner": 1,
+        "waylayer": 1
+      },
+      "server_write": {
+        "path": "legend_of_deborah/population_latest.txt",
+        "ok": true
+      },
+      "currentComposition": {
+        "runner": 6,
+        "bombardier": 1,
+        "forker": 1,
+        "conductor": 1,
+        "surveyor": 1,
+        "fusilier": 1,
+        "shambler": 15,
+        "repulsor": 1,
+        "reeler": 2,
+        "soldier": 7,
+        "seeker": 3,
+        "caromer": 3,
+        "beamsweeper": 1
+      },
+      "frozen": false,
+      "mazeAttempt": 2,
+      "ceiling": 96,
+      "observer": "b29-entry-safety"
+    },
+    "other_frames": 0,
+    "all": {
+      "max_ms": 281.202,
+      "over100": 16,
+      "median_ms": 31.063,
+      "over50": 195,
+      "p95_ms": 56.397,
+      "frames": 2692,
+      "p99_ms": 88.416,
+      "over25": 2309,
+      "seconds": 92.94751599999985,
+      "fps": 28.962581420680507
+    },
+    "sample_precision_ms": 0.001,
+    "population_status": {
+      "server_write": {
+        "path": "legend_of_deborah/population_latest.txt",
+        "ok": true
+      },
+      "client_write": true,
+      "state": "received",
+      "seconds": 50.054998881183565
+    },
+    "elapsed_seconds": 93.1607031,
+    "end_resources": {
+      "lua_kb": 26159,
+      "damsels": "damsels-20260919-01",
+      "jit_version": "LuaJIT 2.1.0-beta3",
+      "lua_errors": 0,
+      "realm": "client",
+      "branch": "unknown",
+      "equipment_generation": "interpreter-generator",
+      "build": "generator-jit-20260917-01",
+      "engine": "2026.09.17",
+      "wall_models": 1364,
+      "meshes": 84,
+      "install": "f657913cb5d719df704148ad0db4341708f1b46d clean ",
+      "missing": "none",
+      "feedback_audio": "feedback-20260919-01",
+      "architecture": "x64",
+      "loot_entities": 0,
+      "entities": 2362
+    },
+    "wall_batches": {
+      "vertices": 0,
+      "draws": 0,
+      "status": "off",
+      "visits": 0,
+      "hidden": 0,
+      "chunks": 0
+    },
+    "reason": "shutdown",
+    "renderer_wait_seconds": 0.021860499999988292,
+    "sample_limit_reached": false
+  }
+}

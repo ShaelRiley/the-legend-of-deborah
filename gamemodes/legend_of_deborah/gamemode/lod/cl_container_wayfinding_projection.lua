@@ -32,6 +32,8 @@ local PANEL_COLOR = Color(198, 168, 120, 255)
 local PANEL_EDGE = Color(72, 55, 38, 235)
 local PANEL_SHADOW = Color(18, 15, 12, 205)
 local PANEL_MATERIAL = Material("models/props_c17/FurnitureWood001a")
+local layoutGeneration={}
+Wall.wayfindingStats={visits=0,draws=0,culled=0,renderMilliseconds=0}
 
 -- GMod ships Roboto Condensed on every client. DIN 1451 research points toward a
 -- low-contrast condensed grotesk/sans for legible technical signage; Roboto
@@ -563,10 +565,10 @@ local STENCIL_BRIDGE_CHARS = {
     ["6"] = true, ["8"] = true
 }
 
-local function drawDINStencil(code, color)
+local function drawDINStencil(code, color, layout)
     code = tostring(code or "?")
     surface.SetFont("LOD_ContainerDINStencil")
-    local totalW, totalH = surface.GetTextSize(code)
+    local totalW, totalH = layout.width, layout.height
 
     -- Underprint separates complementary paint from variable plywood grain while
     -- keeping the colored stencil itself dominant.
@@ -606,8 +608,8 @@ local function drawDINStencil(code, color)
     surface.DrawRect(totalW * 0.28, totalH * 0.44, math.floor(totalW * 0.22), 5)
 end
 
-local function drawMarkedContainer(model, instance, eyePos)
-    if not instance.marked or not IsValid(model) or not instance.sectionColor then return end
+local function drawMarkedContainer(model, instance, eyePos, view)
+    if not instance.marked or not IsValid(model) or not instance.sectionColor then return false end
 
     local mins, maxs = model:GetRenderBounds()
     local spanY = maxs.y - mins.y
@@ -624,6 +626,23 @@ local function drawMarkedContainer(model, instance, eyePos)
     local localZ = mins.z + spanZ * PANEL_Z_FRACTION
     local panelPos = model:LocalToWorld(Vector(localX, localY, localZ))
 
+    local code=tostring(instance.code or "?")
+    local layout=instance.stencilLayout
+    if not layout or layout.code~=code or layout.generation~=layoutGeneration then
+        surface.SetFont("LOD_ContainerDINStencil")
+        local width,height=surface.GetTextSize(code)
+        local halfW=math.max(PANEL_WIDTH*0.5+PANEL_BORDER,width*0.5+5)
+        local halfH=math.max(PANEL_HEIGHT*0.5+PANEL_BORDER,height*0.5+6)
+        layout={code=code,width=width,height=height,generation=layoutGeneration,
+            radius=math.sqrt(halfW*halfW+halfH*halfH)*LABEL_SCALE}
+        instance.stencilLayout=layout
+    end
+    -- This bound includes the board edge, lettering and offset underprint.
+    -- Test the actual anchor, not the model origin or guessed screen settings.
+    if Wall.OverlaySphereVisible and not Wall:OverlaySphereVisible(view,panelPos,layout.radius) then
+        return false,"outside-view"
+    end
+
     local ang = model:GetAngles()
     ang = Angle(ang.p, ang.y, ang.r)
     ang:RotateAroundAxis(ang:Right(), side > 0 and -90 or 90)
@@ -635,8 +654,9 @@ local function drawMarkedContainer(model, instance, eyePos)
 
     cam.Start3D2D(panelPos, ang, LABEL_SCALE)
         drawPlywoodPanel()
-        drawDINStencil(instance.code or "?", stencil)
+        drawDINStencil(code, stencil, layout)
     cam.End3D2D()
+    return true
 end
 
 -- Replace the original all-container generic text projection. Unmarked containers
@@ -644,12 +664,17 @@ end
 -- cast; marked containers get exactly one board/stencil on the currently visible
 -- long side.
 hook.Remove("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding")
-hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding", function()
+hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding", function(depth,sky,sky3d)
+    if depth or sky or sky3d then return end
+    local stats=Wall.wayfindingStats
+    stats.visits,stats.draws,stats.culled,stats.renderMilliseconds=0,0,0,0
     if not Wall.world or #Wall.world == 0 then return end
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
 
-    local eyePos = EyePos()
+    local started=SysTime and SysTime() or 0
+    local view=Wall.OverlayView and Wall:OverlayView()
+    local eyePos = view and view.eye or EyePos()
     local gx, gy, gz = gridPosition(eyePos)
     local floorBuckets = Wall.labelBuckets and Wall.labelBuckets[gz]
     if not floorBuckets then return end
@@ -668,12 +693,16 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding", function()
                     if instance and instance.marked and IsValid(model)
                         and eyePos:DistToSqr(model:GetPos()) <= LABEL_MAX_DISTANCE_SQR
                     then
-                        drawMarkedContainer(model, instance, eyePos)
+                        stats.visits=stats.visits+1
+                        local drawn,reason=drawMarkedContainer(model, instance, eyePos, view)
+                        if drawn then stats.draws=stats.draws+1
+                        elseif reason=="outside-view" then stats.culled=stats.culled+1 end
                     end
                 end
             end
         end
     end
+    stats.renderMilliseconds=SysTime and (SysTime()-started)*1000 or nil
 end)
 
 concommand.Add("lod_container_marking_status", function()

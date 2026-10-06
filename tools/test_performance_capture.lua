@@ -28,10 +28,13 @@ function LocalPlayer() return ply end
 function ply:Alive() return self.alive end
 function ply:GetNW2Bool(name) assert(name=='LOD_Deployed');return self.deployed end
 LOD.WallVisualsClient={world={{}},models={},batchStats={status='building'}}
+LOD.WallVisualsClient.wayfindingStats={visits=300,draws=150,culled=150,renderMilliseconds=0.5}
+LOD.CrateBranding={lastDrawCount=32,lastCulledCount=32,lastRenderMilliseconds=0.25}
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local paths={'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
-    root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',root..'sh_runtime_audit.lua'}
+    root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',
+    root..'cl_container_branding.lua',root..'sh_runtime_audit.lua'}
 local manifest={}
 for _,p in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;files['GAME:'..p]='exact' end
 files['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
@@ -45,7 +48,7 @@ end
 assert(not hooks.PreRender,'idle frame sampler installed')
 assert(commands.lod_perf_start and commands.lod_perf_stop)
 commands.lod_perf_start(nil,nil,{'180'})
-assert(A.PerformanceCapture.source.verified and A.PerformanceCapture.source.checked==7)
+assert(A.PerformanceCapture.source.verified and A.PerformanceCapture.source.checked==8)
 local startReads=reads
 -- Preparing batches is separated from sustained gameplay; no empty warmup data.
 now=20;fire('PreRender');fire('Think');assert(#A.PerformanceCapture.all==0)
@@ -61,11 +64,21 @@ for i=1,6000 do
     ply.alive=not (now>=53 and now<58)
     LOD.UI.ActivePage=now>=73 and now<78 and 'options' or nil
     oracle[#oracle+1]=dt*1000
+    if i==1 then
+        -- Each window owns a scalar copy; later renderer mutations must not
+        -- rewrite evidence from an earlier camera position.
+        LOD.WallVisualsClient.wayfindingStats.draws=12
+        LOD.CrateBranding.lastDrawCount=7
+    end
     if ply.deployed and ply.alive and not LOD.UI.ActivePage then active=active+1 end
     fire('PreRender');fire('Think')
 end
 now=203;fire('Think')
 local out=assert(A.LastPerformanceCapture)
+assert(out.renderer_at_sample_start.overlays.wayfinding.draws==150
+    and out.renderer_at_sample_start.overlays.branding.draws==32)
+assert(out.windows[1].renderer.overlays.wayfinding.draws==12
+    and out.windows[1].renderer.overlays.branding.draws==7)
 assert(out.reason=='complete' and out.source.verified and out.renderer_wait_seconds==20)
 assert(out.all.frames==#oracle and out.active.frames==active and out.other_frames==#oracle-active)
 assert(math.abs(out.active.median_ms-25)<1e-7 and math.abs(out.active.p99_ms-120)<1e-7)
@@ -88,7 +101,7 @@ assert(not A.PerformanceCapture.source.verified and A.PerformanceCapture.source.
 settings.mat_vsync='1';out=A:StopPerformanceCapture('manual')
 assert(out.all.frames==0 and out.active.frames==0 and out.configuration_changes[1]=='mat_vsync')
 files['GAME:'..paths[1]]='exact';files['DATA:legend_of_deborah/dev_population_sources.txt']=''
-A:StartPerformanceCapture('invalid');assert(A.PerformanceCapture.duration==180 and A.PerformanceCapture.source.missing==7)
+A:StartPerformanceCapture('invalid');assert(A.PerformanceCapture.duration==180 and A.PerformanceCapture.source.missing==8)
 A:StopPerformanceCapture('manual')
 -- Lifecycle cleanup and bounded collection, even at absurd synthetic FPS.
 ply.deployed=true;ply.alive=true;LOD.UI.ActivePage=nil

@@ -1,0 +1,123 @@
+{
+  "head_sha": "f657913cb5d719df704148ad0db4341708f1b46d",
+  "run_id": 37377319992,
+  "job_id": 111989744036,
+  "run_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37377319992",
+  "jobs": [
+    {
+      "id": 111989744036,
+      "name": "validate",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_id": 37377319992,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run sudo apt-get update && sudo apt-get install -y liblua5.4-0",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run python3 -m pip install Pillow numpy",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Native-boundary regressions and complete Lua syntax",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 7
+        },
+        {
+          "name": "Complete frozen integration matrix",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8
+        },
+        {
+          "name": "Verify receipt, all suite logs and exact production bytes",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 18
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 19
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        }
+      ]
+    }
+  ],
+  "log_excerpts": [
+    "2026-10-05T21:39:44.2541810Z   ref: f657913cb5d719df704148ad0db4341708f1b46d",
+    "2026-10-05T21:39:44.5291842Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin f657913cb5d719df704148ad0db4341708f1b46d",
+    "2026-10-05T21:39:46.0099188Z  * branch            f657913cb5d719df704148ad0db4341708f1b46d -> FETCH_HEAD",
+    "2026-10-05T21:39:46.0216258Z [command]/usr/bin/git checkout --progress --force f657913cb5d719df704148ad0db4341708f1b46d",
+    "2026-10-05T21:39:46.3099320Z Note: switching to 'f657913cb5d719df704148ad0db4341708f1b46d'.",
+    "2026-10-05T21:39:46.3185292Z HEAD is now at f657913 Make native wall appearance idle after reconciliation",
+    "2026-10-05T21:39:46.3196256Z f657913cb5d719df704148ad0db4341708f1b46d",
+    "2026-10-05T21:39:58.5853244Z \u001b[36;1m    print(\"TARGETED_RESULT=\" + label + \" returncode=\" + str(result.returncode), flush=True)\u001b[0m",
+    "2026-10-05T21:39:58.5856247Z \u001b[36;1m    sys.exit(\"TARGETED_FAILURES=\" + repr(failed))\u001b[0m",
+    "2026-10-05T21:40:20.3707123Z TARGETED_RESULT=tools/test_wall_batch.lua returncode=0",
+    "2026-10-05T21:40:20.5406888Z TARGETED_RESULT=tools/test_performance_capture.lua returncode=0",
+    "2026-10-05T21:40:20.6031008Z TARGETED_RESULT=tools/test_population_transport.lua returncode=0",
+    "2026-10-05T21:40:21.1357960Z TARGETED_RESULT=tools/test_low_end_palette.lua returncode=0",
+    "2026-10-05T21:40:21.2762267Z TARGETED_RESULT=tools/test_great_crate_render.lua returncode=0",
+    "2026-10-05T21:40:21.6524925Z TARGETED_RESULT=tools/test_dev_population_manifest.py returncode=1",
+    "2026-10-05T21:40:21.6538256Z OSError: [Errno 39] Directory not empty: '/tmp/tmpg01rgpyn/garrysmod/data'",
+    "2026-10-05T21:40:22.0360228Z TARGETED_FAILURES=['tools/test_dev_population_manifest.py']",
+    "2026-10-05T21:40:22.0361005Z TARGETED_RESULT=Lua syntax returncode=0"
+  ],
+  "repair": "Installer test now owns process groups and adopts/terminates/reaps all background startup descendants before removing the temporary directory; native waitpid avoids PID-namespace-dependent /proc inspection."
+}

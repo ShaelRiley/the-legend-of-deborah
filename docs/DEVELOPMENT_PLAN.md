@@ -54,14 +54,32 @@ World/palette/model-owner/mode/refresh changes reapply it. Keep the now-accepted
 native renderer; experimental batching remains opt-in. See [fresh evidence and
 idle-writer repair](validation/STEAM_DECK_20261005_WALL_IDLE.md).
 
+The new clean f657913 capture confirms native quiescence: 1,364 applications
+before sampling and no further appearance writes across all 19 live windows,
+with batches disabled and zero hidden originals. It measures 28.96 active FPS
+over 92.95 seconds, median 31.063 ms and p95 56.397 ms. The smaller maze prevents
+a controlled comparison with the previous 1,868-wall run. The appearance-loop
+gate passes; sustained 40 FPS still fails. The author reports an improvement.
+
+The current bounded checkpoint removes off-camera board/logo submissions through
+the existing conservative current-view sphere test, skips signage in depth/sky
+passes and caches exact instance text metrics. Placement, distance and nearest-64
+brand admission stay unchanged; native walls remain enabled. Frame receipts add
+copied overlay counts/timings and verify branding as an eighth renderer source.
+The population/installer manifest grows coherently to 42 sources. The parent's
+complete-matrix CI failed before the full matrix because the installer test raced
+background startup children against temporary-directory cleanup. The repaired
+test owns, terminates and reaps only its installer descendants before cleanup.
+See [capture, finite gate and repair](validation/STEAM_DECK_20261005_OVERLAYS.md).
+
 The next native action after source publication is a fully restarted gm_flatgrass
-capture with `lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180`,
-preserving Proton, windowed Arch Desktop, resolution, graphics settings and
-loaded population. Wall bodies must remain visible; live section applications
-must stop increasing after construction/reconciliation. Return
-performance_client_latest.txt + console_latest.txt. A separate population file
-is not required. New repair FPS and sustained 40 FPS acceptance remain open.
-Workshop and VPS remain outside this pass.
+capture with `lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180`.
+Keep Proton, windowed Arch Desktop, resolution, graphics settings and loaded
+population; play through the full capture before quitting. Wall bodies, nearby
+boards and company artwork must remain visible when turning and crossing stairs.
+Return performance_client_latest.txt + console_latest.txt; overlay counters and
+population are included automatically. New overlay FPS and sustained 40 FPS
+acceptance remain open. Workshop and VPS remain outside this pass.
 
 ---
 
