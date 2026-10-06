@@ -1,5 +1,7 @@
 -- Execute real fit renderer and mesh UV compiler; Source-only boundaries doubled.
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
+local baseline=arg and arg[1]=='--baseline'
+local brandingPath=baseline and assert(arg[2]) or root..'cl_container_branding.lua'
 local noop=function() end
 CurTime=function() return 100 end
 local V={};V.__index=V
@@ -42,7 +44,7 @@ mesh={Begin=function(a,b,c) vertices={};current={};lastMesh=type(a)=='table' and
  AdvanceVertex=function() vertices[#vertices+1]=current;current={} end,
  End=function() if lastMesh then lastMesh.vertices=vertices end end}
 LOD.WallVisualsClient={world={},models={},logical={},labelBuckets={},seed=1}
-dofile(root..'cl_container_branding.lua')
+dofile(brandingPath)
 assert(loads==0 and creates==0,'catalog eagerly materialized')
 local Brand,C=LOD.CrateBranding,LOD.CrateVisuals
 local mat=assert(Brand.MaterialFor(1));Brand.MaterialFor(1);assert(loads==1 and creates==1)
@@ -56,6 +58,7 @@ function model:GetModel() return LOD.Config.Geometry.ContainerModel end
 function model:GetForward() return Vector(math.cos(self.yaw),math.sin(self.yaw),0) end
 function model:GetRight() return Vector(math.sin(self.yaw),-math.cos(self.yaw),0) end
 function model:GetUp() return Vector(0,0,1) end
+function model:GetAngles() return {p=0,y=math.deg(self.yaw),r=0} end
 function model:LocalToWorld(p) return self.pos+self:GetForward()*p.x-self:GetRight()*p.y+self:GetUp()*p.z end
 local checks=0
 -- Independent Source reference: Facepunch render.DrawQuad's upward-facing
@@ -320,4 +323,118 @@ assert(projected>50)
 assert(w:OverlaySphereVisible(w:OverlayView(),Vector(0/0,0,0),55)
  and w:OverlaySphereVisible(w:OverlayView(),Vector(),0/0),'invalid geometry did not draw conservatively')
 print(string.format('OVERLAY_WORK unknown_view_boards=%d known_view_boards=%d unknown_view_brands=%d known_view_brands=%d stable_600_frames_metric_reads=0 projected_corner_cases=%d native_fps_measured=false',oldBoards,newBoards,oldBrands,newBrands,projected))
+
+-- Paired production probe: static logo geometry must stop rebuilding, without
+-- changing immediate quad submissions, world/preview poses or artwork inputs.
+view=nil
+local rawVector,rawFit=Vector,C.FitBrand
+local vectorCalls,fitCalls=0,0
+Vector=function(...) vectorCalls=vectorCalls+1;return rawVector(...) end
+C.FitBrand=function(...) fitCalls=fitCalls+1;return rawFit(...) end
+local probe=setmetatable({pos=Vector(112,328,450),yaw=.7,valid=true},{__index=model})
+Brand.Draw(probe,17,mat,Vector(800,200,500))
+local probeEye=Vector(800,200,500)
+vectorCalls,fitCalls=0,0
+for _=1,600 do assert(Brand.Draw(probe,17,mat,probeEye)) end
+local steadyVectors,steadyFits=vectorCalls,fitCalls
+print(string.format('BRAND_GEOMETRY_WORK draws=600 vectors=%d fit_resolutions=%d native_fps_measured=false',steadyVectors,steadyFits))
+if not baseline then assert(steadyVectors==600 and steadyFits==0,'steady logo geometry was rebuilt') end
+Vector,C.FitBrand=rawVector,rawFit
+
+local function geometryOracle(eye,id)
+ assert(Brand.Draw(probe,id,mat,eye));local fit=assert(C.FitBrand(id))
+ local side=probe:GetForward():Dot(eye-probe:GetPos())>=0 and 1 or -1
+ local center=probe:LocalToWorld(Vector(side>0 and C.CargoMaxs.x+C.SurfaceOffset or C.CargoMins.x-C.SurfaceOffset,
+  (C.CargoMins.y+C.CargoMaxs.y)*.5,C.CargoMins.z+(C.CargoMaxs.z-C.CargoMins.z)*.55))
+ local horizontal=side>0 and -probe:GetRight() or probe:GetRight();local up=probe:GetUp()
+ local positions={center-horizontal*fit.width*.5+up*fit.height*.5,
+  center+horizontal*fit.width*.5+up*fit.height*.5,center+horizontal*fit.width*.5-up*fit.height*.5,
+  center-horizontal*fit.width*.5-up*fit.height*.5}
+ local uv={{fit.u0,fit.v0},{fit.u1,fit.v0},{fit.u1,fit.v1},{fit.u0,fit.v1}}
+ for i,v in ipairs(vertices) do
+  assert(v.pos:DistToSqr(positions[i])<1e-12,'cached projection lost its actual pose')
+  assert(v.u==uv[i][1] and v.v==uv[i][2],'cached projection lost full artwork UVs')
+ end
+end
+for i=1,40 do
+ probe.pos.x=112+i*13;probe.pos.y=328-i*7;probe.pos.z=450+i*11
+ probe.yaw=i*.137;geometryOracle(probe.pos+probe:GetForward()*500,17)
+ geometryOracle(probe.pos-probe:GetForward()*500,232)
+end
+probe.pose=Angle(17,91,23)
+function probe:GetAngles() return self.pose end
+function probe:GetForward() return self.pose:Forward() end
+function probe:GetRight() return self.pose:Right() end
+function probe:GetUp() return self.pose:Up() end
+probe.scale=1
+function probe:GetModelScale() return self.scale end
+function probe:LocalToWorld(p) return self.pos+(self:GetForward()*p.x-self:GetRight()*p.y+self:GetUp()*p.z)*self.scale end
+for i=1,30 do
+ probe.pose.p=(i*17)%140-70;probe.pose.y=(i*43)%360;probe.pose.r=(i*31)%360
+ probe.scale=i%3==0 and 1.25 or 1
+ geometryOracle(probe.pos+probe:GetForward()*500,17)
+ geometryOracle(probe.pos-probe:GetForward()*500,232)
+end
+local metadata=LOD.CrateBrandMetadata[232];local bound=metadata.bounds[1]
+metadata.bounds[1]=bound+1;geometryOracle(probeEye,232);metadata.bounds[1]=bound
+local safeWidth=C.SafeWidth;C.SafeWidth=safeWidth*.5;geometryOracle(probeEye,232);C.SafeWidth=safeWidth
+local offset=C.SurfaceOffset;C.SurfaceOffset=offset+2;geometryOracle(probeEye,232);C.SurfaceOffset=offset
+local cargoZ=C.CargoMaxs.z;C.CargoMaxs.z=cargoZ+10;geometryOracle(probeEye,232);C.CargoMaxs.z=cargoZ
+local metadataWidth=metadata.width;metadata.width=metadataWidth+10;geometryOracle(probeEye,232);metadata.width=metadataWidth
+local oldFit=C.FitBrand;C.FitBrand=function(id) local f=oldFit(id);f.width=f.width*.5;return f end
+geometryOracle(probeEye,232);C.FitBrand=oldFit
+local weak=setmetatable({probe},{__mode='v'});probe=nil;collectgarbage('collect');collectgarbage('collect')
+assert(weak[1]==nil,'geometry cache retained a retired model')
+
+-- Exact nearest-64 oracle, including ties, arbitrary bucket order, excess
+-- candidates, movement, eligibility changes and admission BEFORE view culling.
+local rawDraw,rawSort=Brand.Draw,table.sort
+local selected,maxSorted,selectionCases={},0,0
+Brand.Draw=function(m,...) selected[#selected+1]=m.probeIndex;return rawDraw(m,...) end
+table.sort=function(t,compare) maxSorted=math.max(maxSorted,#t);return rawSort(t,compare) end
+for _,count in ipairs({0,1,63,64,65,128,300,1000}) do for pattern=1,4 do
+ w.world={};w.models={};w.labelBuckets[0]={['2:2']={}}
+ local expected={}
+ for i=1,count do
+  local x=pattern==1 and i or pattern==2 and count-i or pattern==3 and (i%7)*11 or ((i*7919)%1401)-700
+  local m=setmetatable({pos=Vector(x,0,64),yaw=0,valid=true,probeIndex=i},{__index=model})
+  w.world[i]={companyBranded=true,brandSurfaceEligible=true,marked=i%31==0};w.models[i]=m
+  w.labelBuckets[0]['2:2'][count-i+1]=i
+  if not w.world[i].marked then expected[#expected+1]={index=i,distance=EyePos():DistToSqr(m:GetPos())} end
+ end
+ rawSort(expected,function(a,b) return a.distance<b.distance or (a.distance==b.distance and a.index<b.index) end)
+ selected={};hooks.LOD_DrawContainerBranding()
+ assert(#selected==math.min(#expected,C.MaxBrandDraws))
+ for i,index in ipairs(selected) do assert(index==expected[i].index,'nearest/tie order changed') end
+ selectionCases=selectionCases+1
+end end
+Brand.Draw,table.sort=rawDraw,rawSort
+print(string.format('BRAND_SELECTION_WORK exact_scenes=%d largest_sort=%d max_admitted=%d native_fps_measured=false',selectionCases,maxSorted,C.MaxBrandDraws))
+if not baseline then assert(maxSorted<=C.MaxBrandDraws,'unselected population still sorted') end
+
+-- Same loaded scene/engine doubles for both exact parent and candidate. This is
+-- Lua workload timing only; neither native GPU work nor whole-game FPS.
+hooks.LOD_DrawContainerBranding();collectgarbage('collect')
+local started=os.clock()
+for _=1,600 do hooks.LOD_DrawContainerBranding();assert(Brand.lastDrawCount==64) end
+print(string.format('BRAND_SCENE_WORK candidates=968 admitted=64 frames=600 lua_seconds=%.6f native_fps_measured=false',os.clock()-started))
+
+-- A gate/eligibility/model lifetime update is visible on the very next pass.
+w.world[1].marked=true;w.models[2].pos.x=1500;w.models[3].valid=false
+local oracle={}
+for index,instance in ipairs(w.world) do
+ local m=w.models[index]
+ if not instance.marked and IsValid(m) then oracle[#oracle+1]={index=index,distance=EyePos():DistToSqr(m:GetPos())} end
+end
+rawSort(oracle,function(a,b) return a.distance<b.distance or (a.distance==b.distance and a.index<b.index) end)
+selected={};Brand.Draw=function(m,...) selected[#selected+1]=m.probeIndex;return rawDraw(m,...) end
+hooks.LOD_DrawContainerBranding()
+for i,index in ipairs(selected) do assert(index==oracle[i].index,'candidate lifetime change was cached') end
+local visible=w.OverlaySphereVisible
+w.OverlaySphereVisible=function(_,_,pos) return pos.x>=0 end
+selected={};hooks.LOD_DrawContainerBranding()
+local cursor=0
+for i=1,64 do local index=oracle[i].index;if w.models[index].pos.x>=0 then cursor=cursor+1;assert(selected[cursor]==index) end end
+assert(#selected==cursor,'culled admission was filled by farther artwork')
+w.OverlaySphereVisible=visible;Brand.Draw=rawDraw
 print('CRATE_RENDER_PASS: '..checks..' original composition/orientation checks; independent untinted artwork; two lazy shader slots; 64-draw ceiling for 1000 candidates; rotated/shared slab UV seams; '..quads..' cached opaque grate quads with underside and cleanup')

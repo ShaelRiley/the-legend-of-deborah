@@ -1,0 +1,16 @@
+{
+  "parent_commit": "85789e3211c4c9082fc1d938908c7542c7dd10a4",
+  "passed": 33,
+  "total": 33,
+  "lua_syntax_files": 878,
+  "source_before": "2a97cb2821120cd13afd77922ac2e9dea4c4e09884fedb1b0c90f24d53616af4",
+  "source_after": "2a97cb2821120cd13afd77922ac2e9dea4c4e09884fedb1b0c90f24d53616af4",
+  "changed_during_gate": [],
+  "verified_log_count": 33,
+  "production_files": 562,
+  "production_manifest_sha256": "c6a86f84edcd2a61107e23af7774dac15ba79469f98375ff96d59204e444c342",
+  "gate_receipt_sha256": "a088fa1a3118dad3d8bedbd1516b88e792ead11812834a4e50f8aa7f1cf5f8a2",
+  "paired_receipt_sha256": "0aff0c053ce4139785b01e34bafa146e071d5a5ceb2e09727ff06fc15ed82796",
+  "logs_archive_sha256": "a78f8fbdb13d041dbbe264b370addb3dea4c206f5de2d9c6702d95e182da882e",
+  "native_gmod_accepted": false
+}

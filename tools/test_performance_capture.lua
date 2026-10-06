@@ -29,7 +29,7 @@ function ply:Alive() return self.alive end
 function ply:GetNW2Bool(name) assert(name=='LOD_Deployed');return self.deployed end
 LOD.WallVisualsClient={world={{}},models={},batchStats={status='building'}}
 LOD.WallVisualsClient.wayfindingStats={visits=300,draws=150,culled=150,renderMilliseconds=0.5}
-LOD.CrateBranding={lastDrawCount=32,lastCulledCount=32,lastRenderMilliseconds=0.25}
+LOD.CrateBranding={lastDrawCount=32,lastCulledCount=32,lastRenderMilliseconds=0.25,lastCandidateCount=300,lastAdmittedCount=64}
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local paths={'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
@@ -69,6 +69,8 @@ for i=1,6000 do
         -- rewrite evidence from an earlier camera position.
         LOD.WallVisualsClient.wayfindingStats.draws=12
         LOD.CrateBranding.lastDrawCount=7
+        LOD.CrateBranding.lastCandidateCount=80
+        LOD.CrateBranding.lastAdmittedCount=64
     end
     if ply.deployed and ply.alive and not LOD.UI.ActivePage then active=active+1 end
     fire('PreRender');fire('Think')
@@ -76,9 +78,13 @@ end
 now=203;fire('Think')
 local out=assert(A.LastPerformanceCapture)
 assert(out.renderer_at_sample_start.overlays.wayfinding.draws==150
-    and out.renderer_at_sample_start.overlays.branding.draws==32)
+    and out.renderer_at_sample_start.overlays.branding.draws==32
+    and out.renderer_at_sample_start.overlays.branding.candidates==300
+    and out.renderer_at_sample_start.overlays.branding.admitted==64)
 assert(out.windows[1].renderer.overlays.wayfinding.draws==12
-    and out.windows[1].renderer.overlays.branding.draws==7)
+    and out.windows[1].renderer.overlays.branding.draws==7
+    and out.windows[1].renderer.overlays.branding.candidates==80
+    and out.windows[1].renderer.overlays.branding.admitted==64)
 assert(out.reason=='complete' and out.source.verified and out.renderer_wait_seconds==20)
 assert(out.all.frames==#oracle and out.active.frames==active and out.other_frames==#oracle-active)
 assert(math.abs(out.active.median_ms-25)<1e-7 and math.abs(out.active.p99_ms-120)<1e-7)

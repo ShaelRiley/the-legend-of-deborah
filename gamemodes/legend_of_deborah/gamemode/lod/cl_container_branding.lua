@@ -515,21 +515,64 @@ local function addVertex(position, normal, u, v, color)
     mesh.AdvanceVertex()
 end
 
+-- One latest projection per live model, with at most its two physical faces.
+-- Keep the immediate quad renderer; only its unchanged math is retained. Weak
+-- ownership lets cleanup/replacement/preview retirement release every corner.
+local projections=setmetatable({},{__mode="k"})
+local function projection(model,id,eyePos)
+    local metadata=LOD.CrateBrandMetadata[id]
+    if not metadata then return end
+    local bounds=metadata.bounds
+    local pos=model:GetPos()
+    local ang=model.GetAngles and model:GetAngles()
+    local scale=model.GetModelScale and model:GetModelScale() or 1
+    local mins,maxs=C.CargoMins,C.CargoMaxs
+    local cached=ang and projections[model]
+    if not cached or cached.id~=id or cached.metadata~=metadata
+        or cached.fitFunction~=C.FitBrand or cached.width~=metadata.width or cached.height~=metadata.height
+        or cached.b1~=bounds[1] or cached.b2~=bounds[2] or cached.b3~=bounds[3] or cached.b4~=bounds[4]
+        or cached.safeWidth~=C.SafeWidth or cached.safeHeight~=C.SafeHeight or cached.margin~=C.FitMargin
+        or cached.minX~=mins.x or cached.minY~=mins.y or cached.minZ~=mins.z
+        or cached.maxX~=maxs.x or cached.maxY~=maxs.y or cached.maxZ~=maxs.z or cached.offset~=C.SurfaceOffset
+        or cached.x~=pos.x or cached.y~=pos.y or cached.z~=pos.z or cached.scale~=scale
+        or cached.p~=ang.p or cached.yaw~=ang.y or cached.roll~=ang.r
+        or cached.forwardGetter~=model.GetForward or cached.rightGetter~=model.GetRight
+        or cached.upGetter~=model.GetUp or cached.transform~=model.LocalToWorld then
+        local fit=C.FitBrand(id)
+        if not fit then return end
+        cached={id=id,metadata=metadata,fitFunction=C.FitBrand,fit=fit,faces={},
+            width=metadata.width,height=metadata.height,b1=bounds[1],b2=bounds[2],b3=bounds[3],b4=bounds[4],
+            safeWidth=C.SafeWidth,safeHeight=C.SafeHeight,margin=C.FitMargin,
+            minX=mins.x,minY=mins.y,minZ=mins.z,maxX=maxs.x,maxY=maxs.y,maxZ=maxs.z,offset=C.SurfaceOffset,
+            x=pos.x,y=pos.y,z=pos.z,scale=scale,p=ang and ang.p,yaw=ang and ang.y,roll=ang and ang.r,
+            forwardGetter=model.GetForward,rightGetter=model.GetRight,upGetter=model.GetUp,transform=model.LocalToWorld,
+            forward=model:GetForward(),right=model:GetRight(),up=model:GetUp()}
+        if ang then projections[model]=cached end
+    end
+    local side=cached.forward:Dot(eyePos-pos)>=0 and 1 or -1
+    local face=cached.faces[side]
+    if not face then
+        local fit=cached.fit
+        local x=side>0 and maxs.x+C.SurfaceOffset or mins.x-C.SurfaceOffset
+        local center=model:LocalToWorld(Vector(x,(mins.y+maxs.y)*.5,mins.z+(maxs.z-mins.z)*.55))
+        local horizontal=side>0 and -cached.right or cached.right
+        local up=cached.up
+        local hw,hh=fit.width*.5,fit.height*.5
+        face={center=center,horizontal=horizontal,up=up,normal=cached.forward*side,
+            center-horizontal*hw+up*hh,center+horizontal*hw+up*hh,
+            center+horizontal*hw-up*hh,center-horizontal*hw-up*hh}
+        cached.faces[side]=face
+    end
+    return face,cached.fit
+end
+
 function Brand.Draw(model, id, material, eyePos, showSafeArea)
-    local fit = C.FitBrand(id)
-    if not fit or not material or not IsValid(model) then return false, "invalid-input" end
+    if not LOD.CrateBrandMetadata[id] or not material or not IsValid(model) then return false, "invalid-input" end
     if model:GetModel() ~= LOD.Config.Geometry.ContainerModel then return false, "wrong-model" end
     -- GetRenderBounds is a culling volume and can be zero/expanded before drawing.
     -- Use the inspected stock mesh bounds for physical anchors, never that volume.
-    local mins, maxs = C.CargoMins, C.CargoMaxs
-    local spanZ = maxs.z-mins.z
-    local side = model:GetForward():Dot(eyePos-model:GetPos()) >= 0 and 1 or -1
-    local x = side>0 and maxs.x+C.SurfaceOffset or mins.x-C.SurfaceOffset
-    local center = model:LocalToWorld(Vector(x,(mins.y+maxs.y)*0.5,mins.z+spanZ*0.55))
-    local normal = model:GetForward()*side
-    local horizontal = side>0 and -model:GetRight() or model:GetRight()
-    local up = model:GetUp()
-    local hw,hh = fit.width*0.5,fit.height*0.5
+    local face,fit=projection(model,id,eyePos)
+    if not face then return false,"invalid-input" end
     render.SetColorModulation(1,1,1)
     render.SetBlend(1)
     render.SetMaterial(material)
@@ -537,12 +580,13 @@ function Brand.Draw(model, id, material, eyePos, showSafeArea)
     -- normal (also true of the stock cargo VTX). Keep each UV with its corner;
     -- the former reverse order submitted valid but backface-culled sprays.
     mesh.Begin(MATERIAL_QUADS,1)
-        addVertex(center-horizontal*hw+up*hh,normal,fit.u0,fit.v0,color_white)
-        addVertex(center+horizontal*hw+up*hh,normal,fit.u1,fit.v0,color_white)
-        addVertex(center+horizontal*hw-up*hh,normal,fit.u1,fit.v1,color_white)
-        addVertex(center-horizontal*hw-up*hh,normal,fit.u0,fit.v1,color_white)
+        addVertex(face[1],face.normal,fit.u0,fit.v0,color_white)
+        addVertex(face[2],face.normal,fit.u1,fit.v0,color_white)
+        addVertex(face[3],face.normal,fit.u1,fit.v1,color_white)
+        addVertex(face[4],face.normal,fit.u0,fit.v1,color_white)
     mesh.End()
     if showSafeArea then
+        local center,horizontal,up=face.center,face.horizontal,face.up
         local w,h=C.SafeWidth*0.5,C.SafeHeight*0.5
         local points={center-horizontal*w+up*h,center+horizontal*w+up*h,
             center+horizontal*w-up*h,center-horizontal*w-up*h}
@@ -551,12 +595,49 @@ function Brand.Draw(model, id, material, eyePos, showSafeArea)
     return true
 end
 
+local function nearer(distance,index,other)
+    if distance~=other.distance then return distance<other.distance end
+    return index<other.index
+end
+local function siftWorst(candidates,entry,slot,count)
+    while slot*2<=count do
+        local child=slot*2
+        if child<count and nearer(candidates[child].distance,candidates[child].index,candidates[child+1]) then child=child+1 end
+        local other=candidates[child]
+        if not nearer(entry.distance,entry.index,other) then break end
+        candidates[slot]=other;slot=child
+    end
+    candidates[slot]=entry
+end
+-- The worst admitted candidate is the root of this bounded max-heap. Reject
+-- farther candidates immediately, reusing an entry on replacement; sort only
+-- the admitted prefix to preserve exact historical distance/index draw order.
+local function admit(candidates,model,distance,index)
+    local count=#candidates
+    if C.MaxBrandDraws<=0 then return end
+    if count<C.MaxBrandDraws then
+        candidates[count+1]={model=model,distance=distance,index=index}
+        return
+    end
+    -- Ordinary small scenes keep the original append/sort path. Heap work only
+    -- begins when the draw ceiling is actually exceeded.
+    if not candidates.heapReady then
+        for slot=math.floor(count*.5),1,-1 do siftWorst(candidates,candidates[slot],slot,count) end
+        candidates.heapReady=true
+    end
+    if nearer(distance,index,candidates[1]) then
+        local entry=candidates[1];entry.model,entry.distance,entry.index=model,distance,index
+        siftWorst(candidates,entry,1,count)
+    end
+end
+
 hook.Remove("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding")
 hook.Remove("PostDrawTranslucentRenderables", "LOD_DrawContainerBranding")
 hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function(depth,sky,sky3d)
     if depth or sky or sky3d then return end
     Brand.lastDrawCount, Brand.lastSkippedCount, Brand.lastSkipReason = 0, 0, nil
     Brand.lastCulledCount, Brand.lastRenderMilliseconds = 0, 0
+    Brand.lastCandidateCount,Brand.lastAdmittedCount=0,0
     local world = Wall.world or {}
     if #world==0 or not IsValid(LocalPlayer()) or not ensureSelection() then return end
     local started=SysTime and SysTime() or 0
@@ -576,7 +657,8 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function(dept
                     and instance.brandSurfaceEligible and IsValid(model) then
                     local distance=eyePos:DistToSqr(model:GetPos())
                     if distance<=DRAW_DISTANCE_SQR then
-                        candidates[#candidates+1]={model=model,distance=distance,index=index}
+                        Brand.lastCandidateCount=Brand.lastCandidateCount+1
+                        admit(candidates,model,distance,index)
                     end
                 end
             end
@@ -586,6 +668,7 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerBranding", function(dept
         if a.distance~=b.distance then return a.distance<b.distance end
         return a.index<b.index
     end)
+    Brand.lastAdmittedCount=#candidates
     for i=1,math.min(#candidates,C.MaxBrandDraws) do
         local model=candidates[i].model
         -- Keep the original nearest-64 selection before rejecting submissions;
@@ -614,6 +697,7 @@ function Brand.Summary()
         cap=globalBrandCap,geometryBlocked=geometryBlockedCount,safeWidth=C.SafeWidth,
         safeHeight=C.SafeHeight,margin=C.FitMargin,draws=Brand.lastDrawCount or 0,
         maxDraws=C.MaxBrandDraws,renderMilliseconds=Brand.lastRenderMilliseconds,
+        candidates=Brand.lastCandidateCount or 0,admitted=Brand.lastAdmittedCount or 0,
         estimatedTextureMiB=table.Count(loadedBrands)*(8/3)+(loadedBrands[232] and 8/3 or 0),
         coverage=coverageCoveredCount,observations=coverageObservedCount}
 end

@@ -158,6 +158,7 @@ if CLIENT then
         out.overlays={wayfinding=marks and {visits=marks.visits,draws=marks.draws,
             culled=marks.culled,milliseconds=marks.renderMilliseconds} or nil,
             branding=brand and {draws=brand.lastDrawCount,culled=brand.lastCulledCount,
+                candidates=brand.lastCandidateCount,admitted=brand.lastAdmittedCount,
                 milliseconds=brand.lastRenderMilliseconds} or nil}
         if hook.GetTable then
             local think=hook.GetTable().Think or {}

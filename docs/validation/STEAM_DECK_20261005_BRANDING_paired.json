@@ -1,0 +1,49 @@
+{
+  "parent_commit": "85789e3211c4c9082fc1d938908c7542c7dd10a4",
+  "parent_branding_sha256": "597997c6628214b3433f2eabab620f6dc8c81132ed1f30442d3d4c6ec5ad2478",
+  "candidate_branding_sha256": "c3e2cdc7a4e3ad0c4675a9b7d94c43e8cdf9c99bfdc4be06f6b3bd9ce91a1178",
+  "test_sha256": "6ee30ea1f7cfca6871763baf716932f630e24672627d0286830097b868cdbf7b",
+  "runtime": "Lua 5.4 shared library with Source engine-boundary doubles",
+  "native_fps_measured": false,
+  "timing_asserted": false,
+  "rows": {
+    "parent": {
+      "geometry": {
+        "draws": 600,
+        "vectors": 19800,
+        "fit_resolutions": 600
+      },
+      "selection": {
+        "exact_scenes": 32,
+        "largest_sort": 968,
+        "max_admitted": 64
+      },
+      "scene": {
+        "candidates": 968,
+        "admitted": 64,
+        "frames": 600
+      },
+      "scene_lua_seconds": 1.548578,
+      "log_sha256": "7ef0a8afbb0ebb33707e75eac041c45ed49a7f550bb081796b21645c47c96d82"
+    },
+    "candidate": {
+      "geometry": {
+        "draws": 600,
+        "vectors": 600,
+        "fit_resolutions": 0
+      },
+      "selection": {
+        "exact_scenes": 32,
+        "largest_sort": 64,
+        "max_admitted": 64
+      },
+      "scene": {
+        "candidates": 968,
+        "admitted": 64,
+        "frames": 600
+      },
+      "scene_lua_seconds": 0.851677,
+      "log_sha256": "ed2125775390bc31a23847d00b8791b8848f7e64f0b4dba91256a8f7345b8d33"
+    }
+  }
+}

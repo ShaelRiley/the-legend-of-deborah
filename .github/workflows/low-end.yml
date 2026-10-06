@@ -20,4 +20,5 @@ jobs:
       - run: python3 tools/run_lua54.py tools/test_low_end_palette.lua
       - run: python3 tools/run_lua54.py tools/test_low_end_geometry.lua
       - run: python3 tools/run_lua54.py tools/test_low_end_options.lua
+      - run: python3 tools/run_lua54.py tools/test_great_crate_render.lua
       - run: python3 tools/test_dev_population_manifest.py

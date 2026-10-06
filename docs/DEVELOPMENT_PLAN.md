@@ -11,8 +11,8 @@ current catalog has 112 ordinary feats, six fallbacks and nine capstones.
 See [author scope](briefs/HAIR_TRIGGER_20261005.md) and
 [finite source checks](validation/HAIR_TRIGGER_20261005.md).
 
-Publish this validated source correction before the pending optimization retest
-below. It preserves the accepted native wall renderer and the overlay optimization.
+Published on main at `85789e3211c4c9082fc1d938908c7542c7dd10a4` before resuming
+the optimization pass below. It preserves the accepted native wall renderer and the overlay optimization.
 Native firing feel and sustained 40 FPS acceptance remain open; no Workshop/VPS
 operation is included.
 
@@ -89,6 +89,20 @@ complete-matrix CI failed before the full matrix because the installer test race
 background startup children against temporary-directory cleanup. The repaired
 test owns, terminates and reaps only its installer descendants before cleanup.
 See [capture, finite gate and repair](validation/STEAM_DECK_20261005_OVERLAYS.md).
+
+The author now requests autonomous optimization/testing until native evidence is
+necessary. The next bounded source checkpoint keeps only the exact nearest 64
+brand candidates, using the original append/sort path at or below that ceiling
+and a bounded heap above it. It retains immediate quad submissions and weakly
+caches each model's latest fitted corners, with at most two physical faces.
+Pose/scale, artwork/metadata, safe-area, physical bounds, helper and Lua-refresh
+changes invalidate the cache; cleanup/replacement does not retain retired models.
+The paired parent/candidate probe retains the same selected/drawn logos while
+reducing 600 steady draws from 19,800 to 600 vector constructions and from 600
+to zero repeated fit resolutions. Maximum sorting falls from 968 records to
+64 in the fixed loaded scene. Existing capture windows copy candidate/admitted
+counts automatically; no new setting, native mesh, hidden wall or game rule is
+introduced. See [finite checks and limits](validation/STEAM_DECK_20261005_BRANDING.md).
 
 The next native action after source publication is a fully restarted gm_flatgrass
 capture with `lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180`.
