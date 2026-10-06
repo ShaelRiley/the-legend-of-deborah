@@ -346,6 +346,8 @@ if CLIENT then
         "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua"}
     local populationChannel="LOD_PopulationSnapshot"
     if net and net.Receive and net.ReadUInt and net.ReadData and util.JSONToTable then

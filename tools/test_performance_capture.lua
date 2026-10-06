@@ -34,7 +34,8 @@ local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local paths={'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
     root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',
-    root..'cl_container_branding.lua',root..'sh_runtime_audit.lua'}
+    root..'cl_container_branding.lua',root..'cl_ui_theme.lua',
+    root..'cl_combat_roll_feed_semantics.lua',root..'sh_runtime_audit.lua'}
 local manifest={}
 for _,p in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;files['GAME:'..p]='exact' end
 files['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
@@ -48,7 +49,7 @@ end
 assert(not hooks.PreRender,'idle frame sampler installed')
 assert(commands.lod_perf_start and commands.lod_perf_stop)
 commands.lod_perf_start(nil,nil,{'180'})
-assert(A.PerformanceCapture.source.verified and A.PerformanceCapture.source.checked==8)
+assert(A.PerformanceCapture.source.verified and A.PerformanceCapture.source.checked==10)
 local startReads=reads
 -- Preparing batches is separated from sustained gameplay; no empty warmup data.
 now=20;fire('PreRender');fire('Think');assert(#A.PerformanceCapture.all==0)
@@ -107,7 +108,7 @@ assert(not A.PerformanceCapture.source.verified and A.PerformanceCapture.source.
 settings.mat_vsync='1';out=A:StopPerformanceCapture('manual')
 assert(out.all.frames==0 and out.active.frames==0 and out.configuration_changes[1]=='mat_vsync')
 files['GAME:'..paths[1]]='exact';files['DATA:legend_of_deborah/dev_population_sources.txt']=''
-A:StartPerformanceCapture('invalid');assert(A.PerformanceCapture.duration==180 and A.PerformanceCapture.source.missing==8)
+A:StartPerformanceCapture('invalid');assert(A.PerformanceCapture.duration==180 and A.PerformanceCapture.source.missing==10)
 A:StopPerformanceCapture('manual')
 -- Lifecycle cleanup and bounded collection, even at absurd synthetic FPS.
 ply.deployed=true;ply.alive=true;LOD.UI.ActivePage=nil

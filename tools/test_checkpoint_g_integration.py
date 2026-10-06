@@ -26,6 +26,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("HUD Feed Native Text Parity & Bounded Work", ["python3", "tools/run_lua54.py", "tools/test_hud_text_work.lua"]),
     ("Hair Trigger Singleton & All Firearm Cadence", ["python3", "tools/run_lua54.py", "tools/test_hair_trigger.lua"]),
     ("Hostile Sanctuary Route Cache & Exact Paths", ["python3", "tools/run_lua54.py", "tools/test_hostile_route_cache.lua"]),
     ("Entrance Spatial Query & Source Allocation Equivalence", ["python3", "tools/run_lua54.py", "tools/test_entry_safety_hotpath.lua"]),

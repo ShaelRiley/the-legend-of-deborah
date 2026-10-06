@@ -142,27 +142,6 @@ UI.HUDRoles = {
 }
 function UI:HUDText(text, font, x, y, color, alignX, alignY)
     color = color or self.HUDColor
-    if (alignX == nil or alignX == TEXT_ALIGN_LEFT)
-        and (alignY == nil or alignY == TEXT_ALIGN_TOP)
-        and surface.SetTextPos and surface.SetTextColor and surface.DrawText then
-        -- Left/top placement does not use text dimensions. Keep the stock
-        -- one-pixel outline's nine offsets, then foreground, without ten
-        -- identical font selections and native text measurements.
-        text = tostring(text)
-        surface.SetFont(font or "DermaDefault")
-        local px, py = math.ceil(x), math.ceil(y)
-        surface.SetTextColor(0, 0, 0, math.floor((color.a or 255)*0.8))
-        for dx = -1, 1 do
-            for dy = -1, 1 do
-                surface.SetTextPos(math.ceil(x+dx), math.ceil(y+dy))
-                surface.DrawText(text)
-            end
-        end
-        surface.SetTextColor(color.r, color.g, color.b, color.a)
-        surface.SetTextPos(px, py)
-        surface.DrawText(text)
-        return
-    end
     draw.SimpleTextOutlined(text, font, x, y, color, alignX or TEXT_ALIGN_LEFT,
         alignY or TEXT_ALIGN_TOP, 1, Color(0, 0, 0, math.floor((color.a or 255)*0.8)))
 end

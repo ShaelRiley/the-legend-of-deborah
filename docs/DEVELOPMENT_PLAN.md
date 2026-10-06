@@ -234,6 +234,33 @@ After publication, deploy before starting the established three-minute profiled
 capture and return the same two files. Exact source, intact surfaces, safe opening/
 close defense, complete server attribution and sustained >=40 FPS remain the gate.
 
+The next complete native capture independently matches all eight renderer/42
+population authorities to clean main `7de6a8359af27713526a4d0108c110bac3bee9ed`.
+It measures 24.86 active FPS over 165.78 seconds (median 35.727 ms, p95 68.876 ms),
+with 1,340 walls, two floors and 39 living wanderers at its snapshot. Different
+generated workload prevents a controlled comparison with the preceding 1,648-wall
+capture. Complete server attribution arrives and both realms end with zero Lua
+errors; 4,112 of 4,122 active frames exceed 25 ms, so sustained >=40 FPS still fails.
+The parent's four CI workflows have completed successfully.
+
+The current bounded source checkpoint removes repeated native text measurement
+from the measured combat-feed draw path (mean 1.925 ms per HUD callback). Exact
+coalesced-span advances are owned by bounded layouts and invalidate on text/font,
+screen-size and Lua-refresh changes. The existing UI authority selects the font
+once for left/top HUD text and retains the same nine one-pixel outline offsets,
+foreground, ceil placement, semantic colors and fade. Other alignments retain
+the stock helper. There is no event/lifetime/history-cap/ACK or gameplay change.
+In the paired unchanged-parent/native-double probe, 600 steady tails retain
+42,000 text submissions while measurements fall 46,200 → 0, font selections
+46,200 → 4,200 and Color allocations 8,400 → 4,200. Exact installed/mounted
+fingerprints extend coherently to ten render/44 population sources. The frozen
+integration receipt and source hashes are preserved with the
+[finite gate and evidence](validation/STEAM_DECK_20261006_HUD_TEXT.md).
+These work counts do not establish a native FPS gain. After verified source
+publication, repeat the established fully restarted, deployed three-minute
+profile and return the same two files. Check feed/L-history readability and intact
+world surfaces; native sustained >=40 FPS and Workshop/VPS acceptance remain open.
+
 ---
 
 # Current author direction — ambient audio and core gameplay

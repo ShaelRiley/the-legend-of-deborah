@@ -34,7 +34,7 @@ with tempfile.TemporaryDirectory() as tmp:
                 stdout, stderr = process.communicate()
                 assert process.returncode == 0, stdout + stderr
             rows = (data / 'dev_population_sources.txt').read_text().splitlines()
-            assert len(rows) == 42
+            assert len(rows) == 44
             for row in rows:
                 digest, relative = row.split(None, 1)
                 assert hashlib.sha256((repo / relative).read_bytes()).hexdigest() == digest, relative
@@ -58,4 +58,4 @@ with tempfile.TemporaryDirectory() as tmp:
             if remaining:
                 assert time.monotonic() < deadline, 'owned installer children failed to retire'
                 time.sleep(0.01)
-print('DEV_POPULATION_MANIFEST_PASS exact 42-source hashes including branding; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup')
+print('DEV_POPULATION_MANIFEST_PASS exact 44-source hashes including branding and HUD; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup')

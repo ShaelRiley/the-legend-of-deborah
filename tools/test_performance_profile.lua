@@ -30,7 +30,8 @@ ents={GetCount=function() return #entities[side()] end,GetAll=function() scans=s
 local paths={'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
     root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',
-    root..'cl_container_branding.lua',root..'sh_runtime_audit.lua'}
+    root..'cl_container_branding.lua',root..'cl_ui_theme.lua',
+    root..'cl_combat_roll_feed_semantics.lua',root..'sh_runtime_audit.lua'}
 local manifest={};for _,path in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..path end
 for _,f in pairs(files) do
     f.dev_build='profile-test clean';f['legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')

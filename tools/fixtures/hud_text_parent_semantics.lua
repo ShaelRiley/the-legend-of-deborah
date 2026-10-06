@@ -4,10 +4,6 @@ local UI = LOD.UI
 local FONT, ROW_HEIGHT = "LOD_CombatRoll", 22
 local HOLD_SECONDS, FADE_SECONDS, EXPLOSION_FX_SECONDS = 9, 1.4, 0.52
 Feed.RowHeight = ROW_HEIGHT
-local layoutEpoch = {}
-local function invalidateTextMetrics() layoutEpoch = {} end
-hook.Add("OnScreenSizeChanged", "LOD_CombatRollMetrics", invalidateTextMetrics)
-hook.Add("OnReloaded", "LOD_CombatRollMetrics", invalidateTextMetrics)
 
 local function textWidth(text, font)
     surface.SetFont(font or FONT)
@@ -18,10 +14,7 @@ end
 -- never paint outside the bounded paper column or split a continuation away.
 function Feed:Layout(entry, maxWidth, hud)
     local font = hud and "ChatFont" or FONT
-    if entry.layoutWidth == maxWidth and entry.layoutFont == font
-        and entry.layoutEpoch == layoutEpoch and entry.layoutText == entry.text
-        and entry.layoutSegments == entry.segments and entry.layoutFamily == entry.family
-        and entry.lines then return entry.lines, entry.widths end
+    if entry.layoutWidth == maxWidth and entry.layoutFont == font and entry.lines then return entry.lines, entry.widths end
     local segments = entry.segments
     if not LOD.DieLogger:ValidSegments(segments, entry.text) then
         segments = LOD.DieLogger:Segments(entry.text, entry.family)
@@ -50,8 +43,6 @@ function Feed:Layout(entry, maxWidth, hud)
         if span.text:match("^%s+$") then append(span.text, span.role) end
     end
     entry.layoutFont = font
-    entry.layoutEpoch, entry.layoutText = layoutEpoch, entry.text
-    entry.layoutSegments, entry.layoutFamily = entry.segments, entry.family
     entry.layoutWidth, entry.lines, entry.widths = maxWidth, lines, widths
     return lines, widths
 end
@@ -67,14 +58,7 @@ function Feed:DrawLines(lines, x, y, alpha, first, last, hud)
             local color = Color(base.r,base.g,base.b,alpha or 255)
             if hud then UI:HUDText(span.text,font,cursor,y+(i-first)*ROW_HEIGHT,color)
             else draw.SimpleText(span.text,font,cursor,y+(i-first)*ROW_HEIGHT,color) end
-            -- Measure the coalesced string, not the sum of token widths: native
-            -- kerning can change its exact advance. Ownership stays within the
-            -- bounded entry/history layout, with no global string cache.
-            if span.drawText ~= span.text or span.drawFont ~= font or span.drawEpoch ~= layoutEpoch then
-                span.drawWidth = textWidth(span.text, font)
-                span.drawText, span.drawFont, span.drawEpoch = span.text, font, layoutEpoch
-            end
-            cursor = cursor + span.drawWidth
+            cursor = cursor + textWidth(span.text, font)
         end
     end
 end
