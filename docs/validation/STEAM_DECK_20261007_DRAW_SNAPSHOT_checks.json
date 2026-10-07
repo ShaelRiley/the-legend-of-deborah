@@ -1,0 +1,125 @@
+{
+  "parent_sha": "8f6667098481dbcd034efe9013b05a95086f386b",
+  "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "gdd_revision": "ANLCKQn7d-0muOCBGrHxJZ-shoI_Yvc0LXT2Tt_EkfyBDDkUHTdJFncQC8CWpGDv3yesApEO0O5wBPR-vHKFlvLi0w2D5-CQrk7BKIzGhQ",
+  "full_matrix": {
+    "total": 313,
+    "passed": 313,
+    "source_before": "14b9b86f7f1f7a6db9d630fd29be32dcb18e5e5ba7838338d30b933385966ae7",
+    "source_after": "14b9b86f7f1f7a6db9d630fd29be32dcb18e5e5ba7838338d30b933385966ae7",
+    "changed_during_gate": [],
+    "lua_files": 884,
+    "native_gmod_accepted": false
+  },
+  "focused": {
+    "source_before": "14b9b86f7f1f7a6db9d630fd29be32dcb18e5e5ba7838338d30b933385966ae7",
+    "source_after": "14b9b86f7f1f7a6db9d630fd29be32dcb18e5e5ba7838338d30b933385966ae7",
+    "changed_during_gate": [],
+    "sampling": "B29 --runtime: recorded native layout/lifecycle, not the extra 20-seed exposure sweep",
+    "scope": "Static renderer/cache plus affected geometry, camera, hazard and startup regressions; native performance pending",
+    "suite_timeout_seconds": 45,
+    "workers": 2,
+    "passed": 29,
+    "total": 29,
+    "lua_files": 884,
+    "native_gmod_accepted": false
+  },
+  "paired": {
+    "parent": "8f6667098481dbcd034efe9013b05a95086f386b",
+    "probes": [
+      {
+        "name": "parent-parity",
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_low_end_render.lua",
+          "--parity",
+          "/workspace/scratch/01bf015eab4d/static-snapshot-parent/cl_textured_box.lua",
+          "/workspace/scratch/01bf015eab4d/static-snapshot-parent/cl_init.lua",
+          "/workspace/scratch/01bf015eab4d/static-snapshot-evidence-final/parent-submissions.txt"
+        ],
+        "returncode": 0,
+        "native_vector_components": 273600,
+        "stdout_sha256": "e7ad8eaf3efda6f9484bafae66b7f780fe4bdbd77aa5f578601dea4f58ba5a53",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "candidate-parity",
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_low_end_render.lua",
+          "--parity",
+          "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
+          "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+          "/workspace/scratch/01bf015eab4d/static-snapshot-evidence-final/candidate-submissions.txt"
+        ],
+        "returncode": 0,
+        "native_vector_components": 129600,
+        "stdout_sha256": "ebf4cea6ed8ec0fc69985208abc7a739273dcba9699f23d070d2c708b11e81f8",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "parent-negative",
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_low_end_render.lua",
+          "--source",
+          "/workspace/scratch/01bf015eab4d/static-snapshot-parent/cl_textured_box.lua",
+          "/workspace/scratch/01bf015eab4d/static-snapshot-parent/cl_init.lua"
+        ],
+        "returncode": 1,
+        "native_vector_components": 273600,
+        "stdout_sha256": "5bf49e096f57d6bec6c9923bd366a695a65a79c8903e1cab99b1ca65f331ce8d",
+        "stderr_sha256": "8d22115363ba92fc53fbfc6f1694b7f1ec46071d5cfdc10f624136b83e7aae52"
+      },
+      {
+        "name": "candidate-gate",
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_low_end_render.lua"
+        ],
+        "returncode": 0,
+        "native_vector_components": 129600,
+        "stdout_sha256": "ebf4cea6ed8ec0fc69985208abc7a739273dcba9699f23d070d2c708b11e81f8",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "identical_submissions": true,
+    "submission_count": 120,
+    "submission_sha256": "2ca01812775223408159fa32f182cea61241a0020fdb96d26fee0601be2929a1",
+    "submission_bytes": 55599,
+    "native_fps_measured": false
+  },
+  "verified_canonical_commands": 313,
+  "verified_individual_receipts": 313,
+  "verified_raw_stream_hashes": 626,
+  "verified_source_files": 2537,
+  "native_uploads": [
+    {
+      "name": "performance_client_latest(10).txt",
+      "bytes": 247055,
+      "sha256": "41a08abb9c17cf4e519f43c6aa98bc40d33741dd847e3f36206bd2c8e0863dc5"
+    },
+    {
+      "name": "console_latest(20261007-032555).txt",
+      "bytes": 64742,
+      "sha256": "c27ff32de1f5fa0ca4bd8c7a87b81ff225391396040509898ce86f56a1d3f15c"
+    }
+  ],
+  "native_parent_fps": 23.713505710713424,
+  "native_new_checkpoint_accepted": false,
+  "archive_name": "STEAM_DECK_20261007_DRAW_SNAPSHOT_complete.zip",
+  "archive_bytes": 728535,
+  "archive_sha256": "dd65f7dc8b04b9362e0b2070eb202c8a6c86f54e354a3924c61aded9a0d2c4c3",
+  "full_matrix_receipt_sha256": "e027870e4a2aeca91da1c56e66bff8eeafb35eb4e2745f0849a168851a8e1b6f",
+  "full_source_manifest_sha256": "9e003a8b91b707cfe27618f85bbbf148de8831ed73a4a402661c4ac348c9513e",
+  "changed_code_sha256": {
+    "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua": "9113d3abafb9f870628ff5dff5944a6f080c61cfe7b37ecada3abc18ff1a3bd0",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua": "d309ef94683c4933a25636447001c952939f56b4f43325e5055ec204fd060d98",
+    "tools/test_low_end_render.lua": "f0294735f318f8b15caa57a43323286f858017cbe0d48d010a46e6d3cf82397b"
+  },
+  "raw_receipt_location": "Complete per-suite receipts, commands, streams and all source hashes are retained in the complete.zip archive."
+}

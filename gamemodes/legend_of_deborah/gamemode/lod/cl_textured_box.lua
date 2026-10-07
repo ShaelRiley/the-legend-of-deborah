@@ -194,39 +194,53 @@ local function resolveDrawMesh(prefix, position, angles, mins, maxs, tile, build
     if prefix == "slab" then return TexturedBox:GetSlabMesh(mins, maxs, tile, position, angles) end
     return getMesh(prefix, mins, maxs, tile, build)
 end
-local function cachedDraw(owner, prefix, position, angles, mins, maxs, tile, build)
+local function cachedDraw(owner, prefix, position, angles, mins, maxs, tile, build, snapshot)
     if not owner then
         local obj = resolveDrawMesh(prefix, position, angles, mins, maxs, tile, build)
         return obj -- the second getMesh return is a cache entry, not a matrix
     end
     local row = drawCache[owner]
     if not row then row = {}; drawCache[owner] = row end
-    local yaw = angles and angles.y or 0
+    -- The generated renderer has already read and compared every scalar in this
+    -- pass. Borrow that exact owner/argument snapshot rather than crossing the
+    -- native vector/angle boundary again. Other callers keep the ordinary API.
+    local state = type(snapshot) == "table" and snapshot == owner._LODVisualBox
+        and rawequal(snapshot.position, position) and rawequal(snapshot.angles, angles)
+        and rawequal(snapshot.mins, mins) and rawequal(snapshot.maxs, maxs) and snapshot or nil
+    local x0,y0,z0,x1,y1,z1,px,py,pz,pitch,yaw,roll
+    if state then
+        x0,y0,z0,x1,y1,z1=state.x0,state.y0,state.z0,state.x1,state.y1,state.z1
+        px,py,pz=state.px,state.py,state.pz
+        pitch,yaw,roll=state.pitch or 0,state.yaw or 0,state.roll or 0
+    else
+        x0,y0,z0,x1,y1,z1=mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z
+        px,py,pz=position.x,position.y,position.z
+        pitch,yaw,roll=angles and angles.p or 0,angles and angles.y or 0,angles and angles.r or 0
+    end
     local entry = row.entry
     if not entry or not entry.mesh or row.prefix ~= prefix or row.tile ~= tile
-        or row.x0 ~= mins.x or row.y0 ~= mins.y or row.z0 ~= mins.z
-        or row.x1 ~= maxs.x or row.y1 ~= maxs.y or row.z1 ~= maxs.z
-        or (prefix == "slab" and (row.uvX ~= position.x or row.uvY ~= position.y or row.uvYaw ~= yaw)) then
+        or row.x0 ~= x0 or row.y0 ~= y0 or row.z0 ~= z0
+        or row.x1 ~= x1 or row.y1 ~= y1 or row.z1 ~= z1
+        or (prefix == "slab" and (row.uvX ~= px or row.uvY ~= py or row.uvYaw ~= yaw)) then
         local obj
         obj, entry = resolveDrawMesh(prefix, position, angles, mins, maxs, tile, build)
         row.entry = entry
         if not obj then return nil end
         row.prefix, row.tile = prefix, tile
-        row.x0, row.y0, row.z0 = mins.x, mins.y, mins.z
-        row.x1, row.y1, row.z1 = maxs.x, maxs.y, maxs.z
-        row.uvX, row.uvY, row.uvYaw = position.x, position.y, yaw
+        row.x0, row.y0, row.z0 = x0, y0, z0
+        row.x1, row.y1, row.z1 = x1, y1, z1
+        row.uvX, row.uvY, row.uvYaw = px, py, yaw
     else
         clock = clock + 1
         entry.used = clock
     end
-    local pitch, roll = angles and angles.p or 0, angles and angles.r or 0
-    if not row.matrix or row.px ~= position.x or row.py ~= position.y or row.pz ~= position.z
+    if not row.matrix or row.px ~= px or row.py ~= py or row.pz ~= pz
         or row.pitch ~= pitch or row.yaw ~= yaw or row.roll ~= roll then
         local matrix = Matrix()
         matrix:Translate(position)
         if angles and angles ~= angle_zero then matrix:Rotate(angles) end
         row.matrix = matrix
-        row.px, row.py, row.pz = position.x, position.y, position.z
+        row.px, row.py, row.pz = px, py, pz
         row.pitch, row.yaw, row.roll = pitch, yaw, roll
     end
     return entry.mesh, row.matrix
@@ -254,10 +268,10 @@ local function drawMesh(obj, position, angles, material, color, matrix)
     render.SetColorModulation(1, 1, 1)
 end
 
-function TexturedBox:Draw(position, angles, mins, maxs, material, color, tile, owner)
+function TexturedBox:Draw(position, angles, mins, maxs, material, color, tile, owner, snapshot)
     if not position or not mins or not maxs or not material then return end
     local obj, matrix = cachedDraw(owner, "box", position, angles, mins, maxs, tile,
-        buildBoxMesh)
+        buildBoxMesh, snapshot)
     drawMesh(obj, position, angles, material, color, matrix)
 end
 
@@ -266,9 +280,9 @@ end
 -- angles and made a mathematically flat floor look like a staircase. Slab mode
 -- intentionally draws only the walkable top and ceiling underside. Real stair
 -- geometry and the gate continue to use the full six-face renderer.
-function TexturedBox:DrawSlab(position, angles, mins, maxs, material, color, tile, owner)
+function TexturedBox:DrawSlab(position, angles, mins, maxs, material, color, tile, owner, snapshot)
     if not position or not mins or not maxs or not material then return end
-    local obj, matrix = cachedDraw(owner, "slab", position, angles, mins, maxs, tile)
+    local obj, matrix = cachedDraw(owner, "slab", position, angles, mins, maxs, tile, nil, snapshot)
     drawMesh(obj, position, angles, material, color, matrix)
 end
 
@@ -290,9 +304,9 @@ local function buildGrateMesh(mins,maxs,tile)
     mesh.End()
     return obj
 end
-function TexturedBox:DrawGrate(position,angles,mins,maxs,owner)
+function TexturedBox:DrawGrate(position,angles,mins,maxs,owner,snapshot)
     local material=Material("models/props_c17/FurnitureMetal001a")
     local obj, matrix = cachedDraw(owner, "crate-grate", position, angles, mins, maxs, 128,
-        buildGrateMesh)
+        buildGrateMesh, snapshot)
     drawMesh(obj,position,angles,material,Color(105,110,112),matrix)
 end

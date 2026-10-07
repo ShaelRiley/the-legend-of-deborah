@@ -2,7 +2,8 @@
 -- counts below are Lua/native-call work, not GPU timings or Steam Deck FPS.
 -- Optional arguments supply baseline mesh/entity source paths for paired probes.
 local baseline = arg and arg[1] == '--baseline'
-local override = baseline or arg and arg[1] == '--source'
+local parity = arg and arg[1] == '--parity'
+local override = baseline or parity or arg and arg[1] == '--source'
 local meshPath = override and assert(arg[2]) or 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
 local entityPath = override and assert(arg[3]) or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua'
 local noop = function() end
@@ -46,12 +47,21 @@ angle_zero=Angle();vector_origin=Vector()
 local view={origin=Vector(),angles=Angle(),fov=90,aspect=1.6,znear=1}
 EyePos=function() return view.origin end;EyeVector=function() return view.angles:Forward() end
 local formats,matrices,allocations,live,peak,draws,geometryReads=0,0,0,0,0,0,0
+local nativeVectorReads=0
+local function nativeVector(v)
+ return setmetatable({value=v},{__index=function(o,k)
+  if k=='x' or k=='y' or k=='z' then nativeVectorReads=nativeVectorReads+1;return o.value[k] end
+  return V[k]
+ end,__newindex=function(o,k,n) o.value[k]=n end,__add=V.__add,__sub=V.__sub})
+end
 local absoluteValues=0
 local absolute=math.abs
 math.abs=function(n) absoluteValues=absoluteValues+1;return absolute(n) end
 local format=string.format
 string.format=function(...) formats=formats+1;return format(...) end
 local currentMatrix,lastDraw,seen=nil,nil,{}
+local lastMaterial,blend,tint
+local submissionSignature = parity and arg[4] and {} or nil
 function Matrix()
  matrices=matrices+1
  return {Translate=function(self,p) self.pos=Vector(p.x,p.y,p.z) end,
@@ -67,6 +77,15 @@ function Mesh()
    assert(not self.dead,'evicted mesh drawn');assert(currentMatrix)
    draws=draws+1;lastDraw={mesh=self,matrix=currentMatrix}
    seen[format('%g,%g,%g',currentMatrix.pos.x,currentMatrix.pos.y,currentMatrix.pos.z)]=true
+   if submissionSignature then
+    local p,a=currentMatrix.pos,currentMatrix.ang or angle_zero
+    local row={format('%g,%g,%g|%g,%g,%g|%g,%g,%g,%g',p.x,p.y,p.z,a.p,a.y,a.r,tint[1],tint[2],tint[3],blend)}
+    for _,v in ipairs(self.vertices) do
+     row[#row+1]=format('%g,%g,%g|%g,%g,%g|%.17g,%.17g',v.pos.x,v.pos.y,v.pos.z,
+      v.normal.x,v.normal.y,v.normal.z,v.u,v.v)
+    end
+    submissionSignature[#submissionSignature+1]=table.concat(row,';')
+   end
   end}
 end
 mesh={Begin=function(obj) building=obj;vertices={};current={} end,
@@ -76,7 +95,6 @@ mesh={Begin=function(obj) building=obj;vertices={};current={} end,
  End=function() building.vertices=vertices end}
 local material={IsError=function() return false end,GetTexture=function() return {IsError=function() return false end} end}
 Material=function() return material end
-local lastMaterial,blend,tint
 render={GetViewSetup=function(current) assert(current);return view end,
  SetMaterial=function(m) lastMaterial=m end,SetBlend=function(b) blend=b end,
  SetColorModulation=function(r,g,b) tint={r,g,b} end,DrawWireframeBox=noop}
@@ -106,14 +124,24 @@ local function frame()
  seen={};draws=0;fire('PostDrawOpaqueRenderables',false,false,false);return draws
 end
 -- Same 120 visible static entities; alternating floors/stairs share few meshes.
-for i=1,120 do box(Vector(1000+i*2,(i%5)*16,(i%3)*16),i%2+1) end
+for i=1,120 do
+ local e=box(Vector(1000+i*2,(i%5)*16,(i%3)*16),i%2+1)
+ e.pos,e.mins,e.maxs=nativeVector(e.pos),nativeVector(e.mins),nativeVector(e.maxs)
+end
 assert(frame()==120)
-formats,matrices,geometryReads,absoluteValues,axisReads=0,0,0,0,0
+if submissionSignature then
+ table.sort(submissionSignature)
+ local f=assert(io.open(arg[4],'wb'));f:write(table.concat(submissionSignature,'\n'));f:close()
+ submissionSignature=nil
+end
+formats,matrices,geometryReads,absoluteValues,axisReads,nativeVectorReads=0,0,0,0,0,0
 for _=1,120 do assert(frame()==120) end
 print(format('LOW_END_STATIC_WORK entities=120 frames=120 cache_key_formats=%d matrix_allocations=%d native_peak_meshes=%d',formats,matrices,peak))
 if not baseline then assert(formats==0 and matrices==0,'static drawing repeats compilation/transform allocation') end
 print(format('LOW_END_NATIVE_GETTERS entities=120 frames=120 reads=%d native_fps_measured=false',geometryReads))
 if not baseline then assert(geometryReads==4*120*120,'drawable boxes repeat native geometry reads within a pass') end
+print(format('LOW_END_DRAW_SNAPSHOT entities=120 passes=120 native_vector_components=%d native_fps_measured=false',nativeVectorReads))
+if not baseline and not parity then assert(nativeVectorReads==9*120*120,'mesh cache repeats the renderer native scalar reads') end
 print(format('LOW_END_PLANE_WORK entities=120 passes=120 absolute_values=%d basis_component_reads=%d native_fps_measured=false',absoluteValues,axisReads))
 if not baseline then
  assert(absoluteValues<=20*120,'identity-axis support repeats plane arithmetic per box')
@@ -139,6 +167,23 @@ if not baseline then
  assert(e:Think()~=true,'incomplete datatables were put to sleep')
  e.GetBoxMins=getter;assert(e:Think()==true and e.thinkAt>now,'ready datatables did not reschedule')
 end
+resetScene()
+-- Every generated drawing route borrows the same validated snapshot, including
+-- grates and the underdeck. A direct call with different arguments falls back
+-- to the raw API even when the owner carries a valid generated snapshot.
+for i,kind in ipairs({1,2,5,1}) do
+ local e=box(Vector(1000+i*2,0,0),kind)
+ e.pos,e.mins,e.maxs=nativeVector(e.pos),nativeVector(e.mins),nativeVector(e.maxs)
+ if i==4 then e.nw.LOD_CrateGrate=true end
+end
+assert(frame()==4)
+nativeVectorReads=0;assert(frame()==4)
+if not parity then assert(nativeVectorReads==36,'floor/stair/underdeck/grate repeated validated vector reads') end
+local e=entities[1]
+local changedPos=Vector(1400,25,30)
+B:DrawSlab(changedPos,e.ang,e.mins,e.maxs,material,color_white,512,e,e._LODVisualBox)
+assert(lastDraw.matrix.pos.x==1400 and lastDraw.matrix.pos.y==25 and lastDraw.matrix.pos.z==30,
+ 'mismatched draw arguments borrowed the owner snapshot')
 resetScene()
 -- Fixed camera distribution: 100 visible, 200 outside side/top/bottom, 300 rear.
 for i=1,600 do
@@ -295,6 +340,10 @@ local function check(kind)
  assert(blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'render state leaked')
 end
 check('slab');local first=lastDraw.mesh;matrices=0
+-- An unrelated snapshot must never displace the ordinary direct-call inputs.
+owner._LODVisualBox={position=pos,angles=ang,mins=mins,maxs=maxs}
+B:DrawSlab(pos,ang,mins,maxs,material,color_white,512,owner,{px=9999,x0=9999})
+assert(lastDraw.mesh==first and lastDraw.matrix.pos.x==pos.x,'unmatched snapshot bypassed the direct API')
 pos.z=128;check('slab');assert(lastDraw.mesh==first and matrices==1,'Z movement rebuilt planar UVs or left stale matrix')
 pos.x=141;check('slab');assert(lastDraw.mesh~=first)
 ang.y=90;check('slab');ang.p=30;ang.r=25;check('slab')

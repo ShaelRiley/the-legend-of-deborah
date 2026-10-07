@@ -87,7 +87,7 @@ end
 
 local function drawFloorSlab(ent, box, color, getMaterial)
     if ent:GetNW2Bool("LOD_CrateGrate",false) and LOD.TexturedBox and LOD.TexturedBox.DrawGrate then
-        LOD.TexturedBox:DrawGrate(box.position,box.angles,box.mins,box.maxs,ent)
+        LOD.TexturedBox:DrawGrate(box.position,box.angles,box.mins,box.maxs,ent,box)
         return
     end
     local material = getMaterial()
@@ -100,7 +100,8 @@ local function drawFloorSlab(ent, box, color, getMaterial)
             material,
             color,
             textureTile,
-            ent
+            ent,
+            box
         )
         return
     end
@@ -120,7 +121,8 @@ local function drawFullMetalBox(ent, box, color, getMaterial)
             material,
             color,
             textureTile,
-            ent
+            ent,
+            box
         )
         return
     end

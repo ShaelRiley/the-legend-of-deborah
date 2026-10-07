@@ -1,4 +1,27 @@
-# Current intervening correction — Magic costs and map keys
+# Current Steam Deck checkpoint — static draw snapshot reuse
+
+October 7 UTC / October 6 local, 2026: recovered the published Magic/Q/M/toolgun
+checkpoint at `8f6667098481dbcd034efe9013b05a95086f386b`; all four Actions workflows
+pass, including the complete frozen matrix. Resume the authorized performance
+pass using the retained exact-source `9f88e54` capture (23.7135 active FPS and
+fully idle VR). Generated static geometry is the largest measured custom client
+callback. Its existing mesh cache now borrows the box renderer's validated scalar
+snapshot instead of reading native bounds/pose components again in the same pass.
+The same owner and exact raw draw arguments are required; general callers retain
+the ordinary API. Every render pass still reads current native geometry, preserving
+immediate mutations, culling, meshes/UVs/materials/transforms and native lifetimes.
+The paired 120-box/120-pass scene has byte-identical submissions and reduces
+native vector component reads from 273,600 to 129,600 (52.63%). These operation
+counts are not a hardware FPS claim. The frozen candidate passes 313/313 suites, 29/29 focused checks and 884 Lua syntax files, with no source changes during the full gate. See the [finite gate and evidence](validation/STEAM_DECK_20261007_DRAW_SNAPSHOT.md).
+
+After the frozen source gate and verified main publication, the next required
+evidence is the ordinary exact-source three-minute gm_flatgrass capture with
+`lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180 profile`.
+Check floors/stairs/walls, the new Q/M/magic feel and disappearance of the startup
+toolgun warning. Sustain >=40 FPS remains the open target. Preserve population,
+gameplay, graphics settings and idle VR. No Workshop or VPS operation is included.
+
+# Previous intervening correction — Magic costs and map keys
 
 October 7 UTC / October 6 local, 2026: the author requests Q and M for the map,
 cheap Beam/Super Ball, Bolt 4, Cone 9, Melon 11, cheaper remaining Forms and all
