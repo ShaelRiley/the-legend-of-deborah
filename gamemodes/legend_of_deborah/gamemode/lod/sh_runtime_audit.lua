@@ -13,7 +13,7 @@ local function validCount(objects)
     return count
 end
 
-function Audit:Snapshot()
+function Audit:Snapshot(sampleVR)
     local missing = {}
     for _, name in ipairs(expected) do
         if LOD.RuntimeReceipts[name] ~= self.Build then missing[#missing + 1] = name end
@@ -23,6 +23,7 @@ function Audit:Snapshot()
     return {
         damsels = LOD.Damsels and LOD.Damsels.Version or 'missing',
         feedback_audio = LOD.Audio and LOD.Audio.Version or 'missing',
+        vr = sampleVR and (LOD.VR and LOD.VR:WorkState() or {available = false, idle = false}) or nil,
         build = self.Build, realm = SERVER and "server" or "client",
         install = installation, missing = #missing > 0 and table.concat(missing, ",") or "none",
         architecture = jit and jit.arch or "unknown", branch = tostring(BRANCH or "unknown"),
@@ -112,7 +113,7 @@ local function profileState()
     local state=LOD.RunManager and LOD.RunManager.State
     local graph=state and state.Graph
     return {campaign=state and state.CampaignSeed,seed=graph and graph.LevelSeed,
-        resources=Audit:Snapshot()}
+        resources=Audit:Snapshot(true)}
 end
 function Audit:StartCPUProfile()
     if self.CPUProfile then self:StopCPUProfile("restarted") end
@@ -451,7 +452,7 @@ if CLIENT then
         hook.Remove("PreRender","LOD_PerformanceFrames")
         hook.Remove("Think","LOD_PerformanceDeadline")
         local now=SysTime()
-        local out={version="steam-deck-cpu-attribution-20261006",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
+        local out={version="steam-deck-vr-idle-20261007",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
             elapsed_seconds=capture.ready and math.max(0,now-capture.start) or 0,
             total_seconds=math.max(0,now-capture.created),
             renderer_wait_seconds=capture.preparation_wait or math.max(0,now-capture.created),
@@ -459,7 +460,7 @@ if CLIENT then
             renderer_at_sample_start=capture.renderer_start,renderer_at_end=rendererState(),
             population=self.LastPopulationEvidence,population_status=self.PopulationEvidenceStatus,
             start_configuration=capture.config,
-            end_configuration=configuration(),start_resources=capture.resources,end_resources=self:Snapshot(),
+            end_configuration=configuration(),start_resources=capture.resources,end_resources=self:Snapshot(true),
             source=capture.source,all=statistics(capture.all),active=statistics(capture.active),
             other_frames=#capture.all-#capture.active,windows=capture.windows,
             wall_batches=LOD.WallVisualsClient and LOD.WallVisualsClient.batchStats}
@@ -524,7 +525,7 @@ if CLIENT then
         self.PerformanceSerial=(self.PerformanceSerial or 0)%4294967295+1
         local capture={created=created,start=start,duration=seconds,finish=start+seconds,all={},active={},windows=windows,
             token=self.PerformanceSerial,profile_requested=profileRequested==true,
-            config=configuration(),source=sourceIdentity(),resources=self:Snapshot()}
+            config=configuration(),source=sourceIdentity(),resources=self:Snapshot(true)}
         self.PerformanceCapture=capture
         requestPopulation()
         hook.Add("PreRender","LOD_PerformanceFrames",function()
@@ -561,7 +562,10 @@ if CLIENT then
             -- it must not erase which renderer actually produced the sample.
             local index=math.floor((now-capture.start)/5)+1
             local w=capture.windows[index]
-            if not w.renderer then w.renderer=rendererState() end
+            if not w.renderer then
+                w.renderer=rendererState()
+                w.vr=LOD.VR and LOD.VR:WorkState() or {available=false,idle=false}
+            end
             local ply=LocalPlayer()
             local active=IsValid(ply) and ply:Alive() and ply:GetNW2Bool("LOD_Deployed",false)
                 and not (LOD.UI and LOD.UI.ActivePage)

@@ -10,7 +10,9 @@ function SetGlobalBool(_,v) serverReady=v end
 function SetGlobalString() end
 function isfunction(v) return type(v)=='function' end
 local noop=function() end
-hook={Add=function(event,id,fn) hooks[event]=hooks[event] or {};hooks[event][id]=fn end}
+hook={Add=function(event,id,fn) hooks[event]=hooks[event] or {};hooks[event][id]=fn end,
+    Remove=function(event,id) if hooks[event] then hooks[event][id]=nil end end,
+    GetTable=function() return hooks end}
 net={Receive=function(name,fn) receivers[name]=fn end,
     Start=function(name) messages[#messages+1]={name=name} end,
     WriteUInt=function(value,bits) local m=messages[#messages];m.value=value;m.bits=bits end,
@@ -55,11 +57,16 @@ dofile(root.."sh_vr.lua")
 assert(not LOD.VR:IsActive(ply),"desktop works without VRMod installed")
 dofile(root.."cl_tetris.lua");dofile(root.."cl_intermission_tetris.lua");dofile(root.."cl_vr.lua")
 hooks.InitPostEntity.LOD_VRMenu()
-local function vrInput(action,state) hooks.VRMod_Input.LOD_VRInput(action,state) end
+local function vrInput(action,state)
+    local fn=hooks.VRMod_Input and hooks.VRMod_Input.LOD_VRInput
+    if fn then fn(action,state) end
+end
 local function stick(x,y)
     g_VR.input.vector2_walkdirection={x=x,y=y};hooks.Think.LOD_VRTetrisStick()
 end
 vrInput("boolean_menucontext",true);assert(toggles==0)
+assert(not (hooks.Think and hooks.Think.LOD_VRTetrisStick),"no adapter Think dispatch while desktop-only")
+assert(#menus==0,"VR quick menu is registered only on local activation")
 vrmod={IsPlayerInVR=function(p) return p==ply end,
     AddInGameMenuItem=function(name,slot,pos,fn) menus[#menus+1]={name=name,fn=fn} end}
 g_VR={active=true,input={},menuFocus=false}
@@ -114,6 +121,36 @@ assert(#messages==before);LOD.UI.ActivePage=nil
 hooks.VRMod_Exit.LOD_VRExit(ply)
 assert(settings.vrmod_hud.value=="0" and settings.vrmod_hud_engine.value=="0","saved HUD preferences restored")
 g_VR.active=false;before=#messages;vrInput("boolean_use",true);assert(#messages==before)
+assert(not hooks.Think.LOD_VRTetrisStick and not hooks.VRMod_Input.LOD_VRInput
+    and not hooks.VRMod_AllowDefaultAction.LOD_VRDefaultActions,"exit removes all local adapter runtime hooks")
+hooks.VRMod_Start.LOD_VRStart(ply)
+assert(hooks.Think.LOD_VRTetrisStick and #menus==5,"restart restores adapter work without duplicate menus")
+hooks.VRMod_Exit.LOD_VRExit(ply)
+
+-- Mounted-byte proof is finite and cached; no idle polling/hash loop exists.
+local readCount=0
+local proof={'deborah-vr-idle-20261007 139'}
+for i=1,139 do proof[#proof+1]=string.rep('a',64)..'  lua/vrmod/fixture'..i..'.lua' end
+for _,name in ipairs({'sh_vr.lua','cl_vr.lua'}) do
+    proof[#proof+1]='bridge '..string.rep('a',64)..'  '..root..name
+end
+local badByte=false
+file.Read=function(path,realm)
+    readCount=readCount+1
+    if realm=='DATA' then return table.concat(proof,'\n')..'\n' end
+    return badByte and path:find('fixture1.lua',1,true) and 'bad' or 'exact'
+end
+util.SHA256=function(bytes) return string.rep(bytes=='exact' and 'a' or 'b',64) end
+vrmod.LODIdle={version=LOD.VR.IdleRevision,Snapshot=function()
+    return {idle=true,players=0,runtime_hooks=0,recurring_timers=0,pending_once=0,method_overrides=0}
+end}
+local work=LOD.VR:WorkState()
+assert(work.idle and work.source.verified and work.source.checked==139 and work.source.bridge_checked==2)
+assert(readCount==142,'every mounted runtime and bridge byte must be checked exactly once')
+LOD.VR:WorkState();assert(readCount==142,'status repeated source hashing')
+badByte=true;LOD.VR.SourceIdentity=nil
+assert(not LOD.VR:WorkState().source.verified,'mismatched mounted addon cannot certify idle source')
+badByte=false;LOD.VR.SourceIdentity=nil
 
 -- Client start refuses partial/server-missing setups and reports module errors
 -- before making any native session request. A ready setup uses VRMod's real entry.
@@ -144,6 +181,7 @@ settings.vrmod_weapon_swap={SetBool=function(_,v) swap=v end}
 settings.vrmod_allow_teleport={SetBool=function(_,v) tp=v end}
 hooks.Initialize.LOD_VRGameplayPolicy();assert(not swap and not tp)
 vrmod.NetReceiveLimited=noop;vrmod.GetHMDPose=noop;vrmod.GetLeftHandPose=noop;vrmod.GetRightHandPose=noop
+vrmod.LODIdle={version=LOD.VR.IdleRevision}
 swap=true;tp=true -- Late addon/config initialization must not undo the policy.
 hooks.InitPostEntity.LOD_VRServerStartup()
 assert(serverReady and #downloads==11,'server startup proves all channels/APIs/content and distributes every asset')

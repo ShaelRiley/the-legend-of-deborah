@@ -22,7 +22,8 @@ def main():
         return result.returncode
     print(f"PASS syntax: {len(files)} Lua files", flush=True)
     commands = [[sys.executable, "tools/run_lua54.py", f"tools/{name}"] for name in LUA]
-    commands += [[sys.executable, "tools/test_vrmod_install.py"],
+    commands += [[sys.executable, "tools/test_vr_idle.py"],
+                 [sys.executable, "tools/test_vrmod_install.py"],
                  [sys.executable, "tools/test_server_launcher.py"],
                  [sys.executable, "tools/test_manual_document.py"],
                  [sys.executable, "tools/validate_release_wiring.py"]]

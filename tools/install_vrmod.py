@@ -4,6 +4,7 @@ import argparse
 import hashlib
 from io import BytesIO
 import json
+import runpy
 from pathlib import Path, PurePosixPath
 import tempfile
 from zipfile import ZipFile
@@ -12,6 +13,7 @@ REVISION = "2bddbfb96dac7820bcf8e0bcb90a6d27fc3a0dcc"
 SHA256 = "bc6077185fe7fb84aa5be8f853633e5c86210cf12e9a55f05342fb0c32f73367"
 SOURCE = "https://github.com/Abyss-c0re/vrmod-x64"
 BUNDLE = Path(__file__).resolve().parents[1] / "third_party/vrmod-x64/upstream.zip"
+OVERLAY = BUNDLE.parent / "deborah/patch.py"
 
 
 def payload(data: bytes) -> dict[str, bytes]:
@@ -46,8 +48,28 @@ def verify(target: Path, files: dict[str, bytes]) -> None:
         raise ValueError(f"Existing VRMod contains extra Lua files: {target}")
 
 
+def record_sources(garrysmod: Path, files: dict[str, bytes], version: str) -> None:
+    lua = sorted((name, data) for name, data in files.items() if name.startswith("lua/") and name.endswith(".lua"))
+    text = version + " " + str(len(lua)) + "\n"
+    text += "".join(hashlib.sha256(data).hexdigest() + "  " + name + "\n" for name, data in lua)
+    root = Path(__file__).resolve().parents[1]
+    for name in ("sh_vr.lua", "cl_vr.lua"):
+        relative = "gamemodes/legend_of_deborah/gamemode/lod/" + name
+        path = root / relative
+        if path.is_file():
+            text += "bridge " + hashlib.sha256(path.read_bytes()).hexdigest() + "  " + relative + "\n"
+    path = garrysmod / "data/legend_of_deborah/dev_vr_sources.txt"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not path.is_file() or path.read_text() != text:
+        temp = path.with_suffix(".tmp")
+        temp.write_text(text)
+        temp.replace(path)
+
+
 def install(garrysmod: Path, data: bytes, ensure: bool = False) -> Path:
-    files = payload(data)
+    upstream = payload(data)
+    overlay = runpy.run_path(str(OVERLAY))
+    files = overlay["apply"](upstream)
     if not (garrysmod / "gameinfo.txt").is_file():
         raise ValueError("--garrysmod must name the garrysmod directory containing gameinfo.txt")
     addons = garrysmod / "addons"
@@ -65,8 +87,18 @@ def install(garrysmod: Path, data: bytes, ensure: bool = False) -> Path:
             raise FileExistsError(f"Existing addon left intact: {target}. Use --ensure to verify it.")
         if target.is_symlink():
             raise ValueError(f"Existing VRMod addon is a symlink; left intact: {target}")
-        verify(target, files)
-        return target
+        try:
+            verify(target, files)
+            record_sources(garrysmod, files, overlay["VERSION"])
+            return target
+        except ValueError:
+            # Only a byte-for-byte pristine pinned installation can migrate.
+            # Operator edits and extra Lua still fail before anything is changed.
+            verify(target, upstream)
+            extras = {p.relative_to(target).as_posix() for p in target.rglob('*') if p.is_file() or p.is_symlink()}
+            extras -= set(upstream) | {'.lod-vrmod.json'}
+            if extras:
+                raise ValueError("Existing VRMod has additional files; left intact: " + str(target))
     with tempfile.TemporaryDirectory(prefix=".lod-vrmod-", dir=addons) as staging:
         folder = Path(staging) / "vrmod-x64"
         folder.mkdir()
@@ -76,9 +108,20 @@ def install(garrysmod: Path, data: bytes, ensure: bool = False) -> Path:
             output.write_bytes(content)
         (folder / ".lod-vrmod.json").write_text(json.dumps({
             "source": SOURCE, "revision": REVISION, "sha256": SHA256,
+            "overlay": overlay["VERSION"],
         }, indent=2) + "\n")
         verify(folder, files)
-        folder.rename(target)
+        if target.exists():
+            previous = Path(staging) / "previous"
+            target.rename(previous)
+            try:
+                folder.rename(target)
+            except BaseException:
+                previous.rename(target)
+                raise
+        else:
+            folder.rename(target)
+    record_sources(garrysmod, files, overlay["VERSION"])
     return target
 
 

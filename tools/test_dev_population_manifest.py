@@ -18,6 +18,7 @@ with tempfile.TemporaryDirectory() as tmp:
     home = Path(tmp)
     game = home / 'garrysmod'
     game.mkdir()
+    (game / 'gameinfo.txt').touch()
     data = game / 'data/legend_of_deborah'
     env = dict(os.environ, HOME=str(home), GMOD_GARRYSMOD_DIR=str(game))
     groups = []
@@ -39,6 +40,17 @@ with tempfile.TemporaryDirectory() as tmp:
                 digest, relative = row.split(None, 1)
                 assert hashlib.sha256((repo / relative).read_bytes()).hexdigest() == digest, relative
             assert (game / 'addons/the-legend-of-deborah-dev').resolve() == repo
+            vr_rows = (data / 'dev_vr_sources.txt').read_text().splitlines()
+            assert vr_rows[0] == 'deborah-vr-idle-20261007 139'
+            for row in vr_rows[1:]:
+                if row.startswith('bridge '):
+                    _, digest, relative = row.split(None, 2)
+                    path = repo / relative
+                else:
+                    digest, relative = row.split(None, 1)
+                    path = game / 'addons/vrmod-x64' / relative
+                assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
+            assert len(vr_rows) == 142
             assert 'population_latest.txt' in stdout
             assert not (data / 'dev_population_sources.txt.tmp').exists()
     finally:

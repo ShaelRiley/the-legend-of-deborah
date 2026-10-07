@@ -82,3 +82,29 @@ with tempfile.TemporaryDirectory() as work:
     assert duplicate.read_text() == "preserve" and not (game / "addons/vrmod-x64").exists()
 
 print("PASS VRMod installer: verified dependency, license, atomic write and existing-addon preservation")
+
+# The previous pristine pinned installation upgrades offline and atomically;
+# unverified extra files must never disappear during that migration.
+data = installer.BUNDLE.read_bytes()
+upstream = installer.payload(data)
+for extra in (False, True):
+    with tempfile.TemporaryDirectory() as work:
+        game = Path(work); (game / 'gameinfo.txt').touch()
+        target = game / 'addons/vrmod-x64'
+        for name, content in upstream.items():
+            path = target / name; path.parent.mkdir(parents=True, exist_ok=True); path.write_bytes(content)
+        loader = target / 'lua/autorun/vrmod_init.lua'
+        if extra:
+            custom = target / 'operator.cfg'; custom.write_text('preserve me')
+            rejected(lambda: installer.install(game, data, ensure=True), ValueError)
+            assert custom.read_text() == 'preserve me' and loader.read_bytes() == upstream['lua/autorun/vrmod_init.lua']
+        else:
+            installer.install(game, data, ensure=True)
+            assert b'LODIdle:FinishLoad' in loader.read_bytes()
+            assert (target / 'lua/vrmod/lod_idle.lua').is_file()
+            manifest = game / 'data/legend_of_deborah/dev_vr_sources.txt'
+            assert manifest.read_text().splitlines()[0] == 'deborah-vr-idle-20261007 139'
+            before = manifest.stat().st_mtime_ns
+            installer.install(game, data, ensure=True)
+            assert manifest.stat().st_mtime_ns == before, 'identical repeat verification rewrote the receipt'
+print('VRMOD_MIGRATION_PASS pristine old copy migrated; extra operator files preserved; complete 139-source receipt; repeat no writes')

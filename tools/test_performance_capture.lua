@@ -1,6 +1,11 @@
 -- Real audit capture, deterministic rendered-frame clock/native doubles.
 -- Percentile/sample/state/lifecycle checks; never a target-hardware measurement.
 CLIENT=true;SERVER=false;LOD={UI={}}
+local vrSnapshots=0
+LOD.VR={WorkState=function()
+    vrSnapshots=vrSnapshots+1
+    return {idle=true,players=0,runtime_hooks=0,recurring_timers=0,source={verified=true}}
+end}
 local noop=function() end
 local now=0;SysTime=function() return now end;RealTime=SysTime
 local hooks,commands={},{ }
@@ -42,6 +47,7 @@ files['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest
 files['DATA:legend_of_deborah/dev_build.txt']='test-checkout clean'
 dofile(root..'sh_runtime_audit.lua')
 local A=LOD.RuntimeAudit
+A:Snapshot();assert(vrSnapshots==0,'ordinary runtime heartbeat performed unused VR diagnostics')
 local function fire(event)
     local work={};for _,fn in pairs(hooks[event] or {}) do work[#work+1]=fn end
     for _,fn in ipairs(work) do fn() end
@@ -87,6 +93,8 @@ assert(out.windows[1].renderer.overlays.wayfinding.draws==12
     and out.windows[1].renderer.overlays.branding.candidates==80
     and out.windows[1].renderer.overlays.branding.admitted==64)
 assert(out.reason=='complete' and out.source.verified and out.renderer_wait_seconds==20)
+assert(out.start_resources.vr.idle and out.end_resources.vr.idle
+    and out.windows[1].vr.source.verified,'finite capture omitted VR idle/source evidence')
 assert(out.all.frames==#oracle and out.active.frames==active and out.other_frames==#oracle-active)
 assert(math.abs(out.active.median_ms-25)<1e-7 and math.abs(out.active.p99_ms-120)<1e-7)
 assert(out.active.over100>80 and out.active.fps<40 and out.active.seconds>120)

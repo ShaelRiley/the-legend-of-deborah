@@ -13,11 +13,65 @@ VR.ContentFiles = {
     "models/vrmod/tpbeam.mdl", "models/vrmod/tpbeam.vvd"
 }
 
+VR.IdleRevision = "deborah-vr-idle-20261007"
+VR.SourceIdentity = nil -- Lua refresh invalidates the one-time mounted-byte check.
+function VR:WorkState()
+    local runtime = vrmod and vrmod.LODIdle
+    local out = runtime and runtime:Snapshot() or {available = false, idle = false}
+    if CLIENT and hook.GetTable then
+        local think = hook.GetTable().Think or {}
+        out.adapter_think = think.LOD_VRTetrisStick ~= nil
+        if out.adapter_think then out.idle = false end
+    end
+    if not self.SourceIdentity then
+        local identity = {checked = 0, bridge_checked = 0, missing = 0, mismatches = 0}
+        local manifest = file.Read("legend_of_deborah/dev_vr_sources.txt", "DATA") or ""
+        local version, count = manifest:match("^(%S+) (%d+)\n")
+        for line in manifest:gmatch("[^\r\n]+") do
+            local expected, path = line:match("^(%x+)%s+(.+)$")
+            local bridge = false
+            if not expected then
+                expected, path = line:match("^bridge (%x+)%s+(.+)$")
+                bridge = expected ~= nil
+            end
+            if expected and #expected == 64 then
+                local bytes = file.Read(path, "GAME")
+                if not bytes then identity.missing = identity.missing + 1
+                else
+                    local key = bridge and "bridge_checked" or "checked"
+                    identity[key] = identity[key] + 1
+                    if util.SHA256(bytes) ~= expected then identity.mismatches = identity.mismatches + 1 end
+                end
+            end
+        end
+        identity.verified = runtime ~= nil and runtime.version == self.IdleRevision
+            and version == self.IdleRevision and tonumber(count) == 139
+            and identity.checked == 139 and identity.bridge_checked == 2
+            and identity.missing == 0 and identity.mismatches == 0
+        self.SourceIdentity = identity
+    end
+    out.source = self.SourceIdentity
+    return out
+end
+function VR:PrintWorkState()
+    local state = self:WorkState()
+    print("[LOD VR] Work: idle=" .. tostring(state.idle) .. " players=" .. tostring(state.players or 0)
+        .. " hooks=" .. tostring(state.runtime_hooks or "unknown")
+        .. " repeating_timers=" .. tostring(state.recurring_timers or "unknown")
+        .. " pending_once=" .. tostring(state.pending_once or "unknown")
+        .. " method_overrides=" .. tostring(state.method_overrides or "unknown")
+        .. " native_resources=" .. tostring(state.native_resources or "unknown")
+        .. " source_verified=" .. tostring(state.source.verified))
+end
+
 function VR:ServerReady()
     for _, name in ipairs(self.Channels) do
         if util.NetworkStringToID(name) == 0 then return false, "missing network channel " .. name end
     end
     if SERVER then
+        if not vrmod or not vrmod.LODIdle or vrmod.LODIdle.version ~= self.IdleRevision then
+            return false, "missing idle VR runtime " .. self.IdleRevision
+        end
         for _, name in ipairs({"IsPlayerInVR", "NetReceiveLimited", "GetHMDPose", "GetRightHandPose", "GetLeftHandPose"}) do
             if not vrmod or not isfunction(vrmod[name]) then return false, "missing VRMod API " .. name end
         end
@@ -69,5 +123,6 @@ if SERVER then
         if IsValid(ply) and not ply:IsAdmin() then return end
         local ready, reason = VR:ServerReady()
         print("[LOD VR] Server VRMod: " .. (ready and "available " .. VR.AddonRevision or "unavailable — " .. reason))
+        VR:PrintWorkState()
     end)
 end

@@ -18,6 +18,30 @@ operation is included.
 
 # Current author direction — Steam Deck performance
 
+October 7 UTC / October 6 local, 2026: before testing the HUD checkpoint, the
+author requests zero recurring unused VR work and automatic resume on VR presence.
+The current bounded checkpoint scopes the actual pinned VRMod addon's hooks and
+timers, suspends idle runtime registrations and shared desktop method overrides,
+defers native loading to local headset start, and preserves passive presence
+networking. First join/local start resumes support; last exit/disconnect returns
+to idle after finite teardown. Invalid disconnects retire proxy entities; queued
+creation cannot outlive its owner. Both hands drop through the canonical pickup
+authority, preserving world props and remaining VR players' holdings while
+retiring the final native motion controller. The ordinary development installer
+applies the same offline overlay as the dedicated launcher, safely migrating only
+a pristine old dependency. Existing performance files automatically include VR
+counts plus independent mounted hashes for all 139 addon Lua/two bridge files.
+No recurring diagnostic poll is added. The previous HUD/cache, accepted native
+wall renderer and all population/gameplay constraints remain. See
+[VR idle finite gate and limits](validation/STEAM_DECK_20261007_VR_IDLE.md).
+The complete frozen source gate passes **313/313 suites and 884 Lua syntax files**,
+plus all 139 mounted overlay Lua probes and the 14-check VR gate. Canonical
+commands, all 313 individual receipts/626 raw stream hashes and unchanged
+2,529-file source digests are independently verified. Complete raw evidence and
+the two interrupted inspection passes are preserved with that finite gate.
+Native sustained >=40 FPS and headset acceptance remain open; no Workshop/VPS
+operation is part of this pass.
+
 October 5, 2026: optimize the post-music-removal build for sustained >=40 FPS
 on Steam Deck, Proton, windowed, Arch Linux Desktop mode. Reported baseline is
 approximately 15 FPS, not an instrumented measurement. This implementation pass

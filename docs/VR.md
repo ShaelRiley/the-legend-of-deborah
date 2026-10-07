@@ -2,10 +2,23 @@
 
 Deborah supports optional VRMod clients alongside ordinary desktop players.
 The repository includes the complete pinned VRMod Lua/content addon. The
-standard dedicated-server installer and launcher install it automatically;
+standard local development installer and dedicated-server launcher install it automatically;
 every launch verifies the installed files before Source starts. Joining clients
 receive the addon Lua and registered models/materials. Each headset client also
 needs its local native VR module and a connected VR runtime.
+
+With no VR players, the addon has no runtime Think/Tick/render/input/collision
+callbacks or repeating timers, and its shared desktop method bindings are
+restored. Exiting/disconnecting players release both held hands through the
+existing drop path; the final held item retires its native motion controller.
+Owned physics proxies are removed even after the player becomes invalid.
+Presence networking remains available without polling. A first join
+resumes support; the last exit/disconnect suspends it after finite cleanup. Local
+headset start is also an activation event, including death/Tetris while tracking
+continues. A remote headset does not cause a desktop client to load a native VR
+module. `lod_vr_status` reports actual hook/timer/override/native-resource counts and mounted-source
+verification. The normal performance capture records this state automatically;
+there is no idle diagnostic polling added by this change.
 
 A GitHub push still needs to be deployed to the VPS and the server process
 fully restarted. A map change does not run the dependency installer.
@@ -54,7 +67,9 @@ python3 tools/install_vrmod.py --garrysmod "/path/to/GarrysMod/garrysmod" --ensu
 ```
 
 The installer verifies the archive's SHA256, preserves upstream license/source
-information and verifies an existing identical addon without rewriting it.
+information, applies the versioned idle overlay and verifies an existing identical
+runtime without rewriting it. A pristine older pinned copy migrates atomically;
+operator changes and additional files remain intact and block migration.
 It installs Lua and content only; native headset modules remain a separate
 client installation. The archive is bundled, so installation works offline.
 Keep only one VRMod copy, including Workshop copies. Restart the entire
@@ -77,7 +92,7 @@ Open VRMod's quick menu and select **Deborah Player Menu**. The same Character,
 Spellbook, Equipment, Die Log, Manual, Wallet and Options pages are available
 through controller-pointed Derma panels. A controller binding to VRMod's
 `boolean_menucontext` action also toggles the Player Menu. Separate quick-menu
-entries reach the Team Menu, Map, Haste and GPS through their existing ownership
+entries reach the Team Menu, Map and GPS through their existing ownership
 and cost checks.
 
 VRMod's **use** action performs the ordinary contextual F action during death

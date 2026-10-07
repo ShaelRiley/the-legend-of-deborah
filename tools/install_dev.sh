@@ -43,6 +43,10 @@ if [[ -e "$TARGET" && ! -L "$TARGET" ]]; then
   exit 1
 fi
 
+# Install the same idle-gated runtime used by the dedicated launcher. A pristine
+# old pinned copy migrates atomically; modified/duplicate addons are preserved.
+python3 "$REPO_DIR/tools/install_vrmod.py" --garrysmod "$GMOD_DIR" --ensure
+
 ln -sfn "$REPO_DIR" "$TARGET"
 
 # A dev checkout is explicitly marked in DATA so the gamemode can enable its

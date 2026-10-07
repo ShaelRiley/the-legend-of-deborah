@@ -2,6 +2,7 @@ local VR = LOD.VR
 local savedSettings = {}
 local stickDirection
 local menuRegistered = false
+local defaultActions, controllerInput, updateStick
 
 function VR:InputCovered()
     return gui.IsGameUIVisible() or gui.IsConsoleVisible()
@@ -49,6 +50,9 @@ local function start(ply)
     if ply ~= LocalPlayer() then return end
     stickDirection = "blocked"
     registerMenu()
+    hook.Add("VRMod_AllowDefaultAction", "LOD_VRDefaultActions", defaultActions)
+    hook.Add("VRMod_Input", "LOD_VRInput", controllerInput)
+    hook.Add("Think", "LOD_VRTetrisStick", updateStick)
     -- gVRMod's separate vitals plate omits gamemode HUDPaint/PostDrawHUD unless
     -- engine HUD is enabled. These temporary settings also support classic VRMod.
     for _, name in ipairs({"vrmod_hud", "vrmod_hud_engine"}) do
@@ -63,6 +67,9 @@ end
 local function stop(ply)
     if ply ~= LocalPlayer() then return end
     stickDirection = nil
+    hook.Remove("VRMod_AllowDefaultAction", "LOD_VRDefaultActions")
+    hook.Remove("VRMod_Input", "LOD_VRInput")
+    hook.Remove("Think", "LOD_VRTetrisStick")
     for name, value in pairs(savedSettings) do
         local setting = GetConVar(name)
         if setting and setting:GetString() == "1" then setting:SetString(value) end
@@ -73,13 +80,12 @@ hook.Add("VRMod_Start", "LOD_VRStart", start)
 hook.Add("VRMod_Exit", "LOD_VRExit", stop)
 hook.Add("ShutDown", "LOD_VRShutdown", function() stop(LocalPlayer()) end)
 hook.Add("InitPostEntity", "LOD_VRMenu", function()
-    registerMenu()
     if VR:IsActive(LocalPlayer()) then start(LocalPlayer()) end
 end)
 
 -- Intercept only actions with a Deborah replacement. Returning nil for all
 -- others leaves VRMod's fire, reload, use, locomotion and quick menu intact.
-hook.Add("VRMod_AllowDefaultAction", "LOD_VRDefaultActions", function(action)
+defaultActions = function(action)
     if not VR:IsActive(LocalPlayer()) then return end
     if action == "boolean_menucontext" then return false end
     if VR:TetrisClient() and action == "boolean_jump" then return false end
@@ -90,9 +96,9 @@ hook.Add("VRMod_AllowDefaultAction", "LOD_VRDefaultActions", function(action)
             or (LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic()) then return false end
     end
     if action == "boolean_primaryfire" and not LocalPlayer():Alive() then return false end
-end)
+end
 
-hook.Add("VRMod_Input", "LOD_VRInput", function(action, pressed)
+controllerInput = function(action, pressed)
     if not VR:IsActive(LocalPlayer()) then return end
     if action == "boolean_menucontext" and pressed then
         if not gui.IsGameUIVisible() and not gui.IsConsoleVisible() then VR:OpenPlayerMenu() end
@@ -106,12 +112,12 @@ hook.Add("VRMod_Input", "LOD_VRInput", function(action, pressed)
         local client = VR:TetrisClient()
         if client then client:SendInput(5) end
     end
-end)
+end
 
 -- VRMod's analog stick does not generate PlayerBindPress. One token per stick
 -- excursion reproduces keyboard Tetris presses; return to center to repeat.
 -- This stream deliberately never feeds Equipment Special Move recipes.
-hook.Add("Think", "LOD_VRTetrisStick", function()
+updateStick = function()
     if not VR:IsActive(LocalPlayer()) then return end
     local client = VR:TetrisClient()
     local axis = g_VR and g_VR.input and g_VR.input.vector2_walkdirection
@@ -121,7 +127,7 @@ hook.Add("Think", "LOD_VRTetrisStick", function()
     if stickDirection or math.max(math.abs(x), math.abs(y)) < 0.65 then return end
     stickDirection = math.abs(x) > math.abs(y) and (x < 0 and 1 or 2) or (y > 0 and 3 or 4)
     client:SendInput(stickDirection)
-end)
+end
 
 concommand.Add("lod_vr_status", function()
     local server, reason = VR:ServerReady()
@@ -129,6 +135,7 @@ concommand.Add("lod_vr_status", function()
     if server then print("[LOD VR] Server addon revision: " .. GetGlobalString("LOD_VRAddonRevision", "unknown")) end
     print("[LOD VR] Local tracking: " .. (VR:IsActive(LocalPlayer()) and "active" or "inactive"))
     print("[LOD VR] Local native module: v" .. tostring(g_VR and g_VR.moduleVersion or 0))
+    VR:PrintWorkState()
     print("[LOD VR] Server VR registration: " .. (vrmod and vrmod.IsPlayerInVR
         and vrmod.IsPlayerInVR(LocalPlayer()) and "joined" or "not joined"))
     if server and not VR:IsActive(LocalPlayer()) then
