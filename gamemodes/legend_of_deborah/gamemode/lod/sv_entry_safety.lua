@@ -96,9 +96,11 @@ function S:ExactCell(graph,pos)
     local z=math.floor((pz-m.Origin.z+24)/m.LevelHeight)
     local c=graph.Cells[LOD.MazeGenerator.CellKey(x,y,z)]
     if not c then return nil end
-    local p=nav():CellCenter(c)
-    if math.abs(px-p.x)>m.CellSize*.5 or math.abs(py-p.y)>m.CellSize*.5
-        or pz<p.z-24 or pz>=p.z+m.LevelHeight-24 then return nil end
+    local navigator=nav();local cx,cy,cz
+    if navigator.CellCenterCoordinates then cx,cy,cz=navigator:CellCenterCoordinates(c)
+    else local p=navigator:CellCenter(c);cx,cy,cz=p.x,p.y,p.z end
+    if math.abs(px-cx)>m.CellSize*.5 or math.abs(py-cy)>m.CellSize*.5
+        or pz<cz-24 or pz>=cz+m.LevelHeight-24 then return nil end
     return c
 end
 function S:ProtectedPosition(pos,padding)

@@ -40,6 +40,16 @@ function MazeNavigator:CellCenter(cell)
     return LOD.MazeBuilder:CellCenter(cell)
 end
 
+local nativeCellCenter = MazeNavigator.CellCenter
+function MazeNavigator:CellCenterCoordinates(cell)
+    local builder = LOD.MazeBuilder
+    if self.CellCenter == nativeCellCenter and builder.CellCenterCoordinates then
+        return builder:CellCenterCoordinates(cell)
+    end
+    local p = self:CellCenter(cell)
+    return p.x, p.y, p.z
+end
+
 function MazeNavigator:WorldToCell(graph, pos)
     if not graph or not pos then return nil end
 
@@ -231,4 +241,3 @@ function MazeNavigator:PathToWaypoints(graph, path)
 
     return out
 end
-

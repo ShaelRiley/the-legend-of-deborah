@@ -1,6 +1,7 @@
 -- Production sanctuary queries; native vector access, ownership and time are
 -- doubled. Optional parent source enables a paired, unchanged-code comparison.
 local parentPath=arg[1]
+local coordinateParent=arg[2]=='--cell-coordinates' or arg[2]=='--cell-negative-control'
 local savedArg=arg[1];arg[1]='--runtime'
 local H=dofile('tools/test_bestiary_b29.lua');arg[1]=savedArg
 local S,g,N,R=H.S,H.graph,LOD.MazeNavigator,H.X.R
@@ -13,6 +14,7 @@ if parentPath then
     local env=setmetatable({LOD=isolatedLOD},{__index=_G})
     assert(load(source,'@entry-safety-parent','t',env))()
 end
+if arg[2]=='--cell-negative-control' then S=assert(parent,'negative control requires exact parent source') end
 local m=LOD.Config.Maze
 local function key(c) return c and LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
 local checks,reads=0,0
@@ -100,7 +102,7 @@ end
 local candidateReads=nativeReads(S)
 assert(candidateReads==10000,'membership repeats native position-component reads')
 local parentReads=parent and nativeReads(parent)
-if parent then assert(candidateReads<parentReads,'unchanged parent did not fail reduced-work gate') end
+if parent and not coordinateParent then assert(candidateReads<parentReads,'unchanged parent did not fail reduced-work gate') end
 local inside=position(center.x,center.y,center.z+12)
 reads=0;assert(S:ExactCell(g,inside)==g.Cells[key(g.Start)] and reads==3,'exact cell repeats native position reads')
 local function allocation(authority)
@@ -113,7 +115,7 @@ end
 local candidateKB=allocation(S)
 assert(candidateKB<16,'direct combat sources still allocate owner-cycle tables')
 local parentKB=parent and allocation(parent)
-if parent then assert(candidateKB<parentKB*.1,'unchanged parent did not fail allocation gate') end
+if parent and not coordinateParent then assert(candidateKB<parentKB*.1,'unchanged parent did not fail allocation gate') end
 
 -- Empty admission must still perform live service/context calls before return.
 local service,context=S.Service,S.Context
@@ -144,7 +146,111 @@ local function farClaims(authority)
 end
 local farKB=farClaims(S);assert(farKB<16,'far admission still allocates an empty nearby array')
 local parentFarKB=parent and farClaims(parent)
-if parent then assert(farKB<parentFarKB*.1,'unchanged parent passed empty-array work gate') end
+if parent and not coordinateParent then assert(farKB<parentFarKB*.1,'unchanged parent passed empty-array work gate') end
 local finalParentReads=parentReads or -1;local finalParentKB=parentKB or -1
 print(string.format('ENTRY_HOTPATH_PASS boundaries=%d direct_sources=50000 native_reads=%d parent_reads=%d allocation_kb=%.3f parent_kb=%.3f far_claim_kb=%.3f parent_far_kb=%.3f; immediate mutations, four-hop/cycle/invalid ownership, live empty/far admission',
     checks,candidateReads,finalParentReads,candidateKB,finalParentKB,farKB,parentFarKB or -1))
+
+-- Numeric readers borrow the exact native centre; no per-query Vector creation,
+-- no shared mutable return, no actor-position or cell-membership caching.
+local B=LOD.MazeBuilder
+local startCell=g.Cells[key(g.Start)]
+assert(B.CellCenterCoordinates and N.CellCenterCoordinates,'scalar coordinate authority absent')
+local function sameCenter(c)
+    local expected=N:CellCenter(c)
+    local x,y,z=N:CellCenterCoordinates(c)
+    assert(x==expected.x and y==expected.y and z==expected.z,'native centre coordinates changed')
+end
+local sample={x=g.Start.x,y=g.Start.y,z=g.Start.z}
+sameCenter(sample)
+local ordinary=B:CellCenter(sample);ordinary.x=ordinary.x+123
+sameCenter(sample)
+for _,axis in ipairs({'x','y','z'}) do
+    local original=sample[axis];sample[axis]=original+.25;sameCenter(sample);sample[axis]=original;sameCenter(sample)
+end
+for _,field in ipairs({'Width','Height','CellSize','LevelHeight'}) do
+    local original=m[field];m[field]=original+.125;sameCenter(sample);m[field]=original;sameCenter(sample)
+end
+for _,axis in ipairs({'x','y','z'}) do
+    local original=m.Origin[axis];m.Origin[axis]=original+.375;sameCenter(sample);m.Origin[axis]=original;sameCenter(sample)
+end
+local originalOrigin=m.Origin;m.Origin=originalOrigin+Vector(.25,.5,.75)
+sameCenter(sample);m.Origin=originalOrigin;sameCenter(sample)
+
+-- Unknown/custom centre resolvers must be called each time, including when
+-- their hidden input changes without any maze/cell scalar mutation.
+local originalBuilderCenter=B.CellCenter;local offset=Vector(13,17,19);local customCalls=0
+B.CellCenter=function(self,c)customCalls=customCalls+1;return originalBuilderCenter(self,c)+offset end
+sameCenter(sample);offset=Vector(23,29,31);sameCenter(sample)
+assert(customCalls==4,'builder override bypassed');B.CellCenter=originalBuilderCenter;sameCenter(sample)
+local originalNavCenter=N.CellCenter;customCalls=0
+N.CellCenter=function(self,c)customCalls=customCalls+1;return originalNavCenter(self,c)+offset end
+sameCenter(sample);offset=Vector(37,41,43);sameCenter(sample)
+assert(customCalls==4,'navigator override bypassed');N.CellCenter=originalNavCenter;sameCenter(sample)
+local originalCoordinates=B.CellCenterCoordinates;B.CellCenterCoordinates=nil
+sameCenter(sample);B.CellCenterCoordinates=originalCoordinates
+local originalNavCoordinates=N.CellCenterCoordinates;N.CellCenterCoordinates=nil
+assert(S:ExactCell(g,inside)==startCell,'legacy coordinate fallback changed');N.CellCenterCoordinates=originalNavCoordinates
+
+-- Emulate the engine's float32 Vector constructor and addition. Deriving centre
+-- scalars with Lua double arithmetic would disagree for these fractional inputs.
+local originalVector=Vector
+local function f32(n)return string.unpack('f',string.pack('f',n)) end
+local floatMeta={}
+floatMeta.__add=function(a,b)return Vector(a.x+b.x,a.y+b.y,a.z+b.z)end
+Vector=function(x,y,z)return setmetatable({x=f32(x or 0),y=f32(y or 0),z=f32(z or 0)},floatMeta)end
+local oldOrigin,oldSize,oldWidth,oldHeight,oldLevelHeight=m.Origin,m.CellSize,m.Width,m.Height,m.LevelHeight
+m.Origin=Vector(8192.12345,-4096.23456,.34567);m.CellSize=383.98765;m.Width=47.125;m.Height=41.375;m.LevelHeight=255.87654
+local rounded=0
+for i=1,50 do
+    local c={x=i*.731,y=i*.619,z=i*.237}
+    sameCenter(c);sameCenter(c)
+    local exactX=m.Origin.x+(c.x-(m.Width+1)/2)*m.CellSize
+    if select(1,B:CellCenterCoordinates(c))~=exactX then rounded=rounded+1 end
+end
+assert(rounded>0,'float32 oracle did not distinguish double arithmetic')
+local floatBoundaryChecks=0
+if parent then
+    local p=N:CellCenter(startCell);local half=m.CellSize*.5
+    for _,dx in ipairs({-half-.001,-half,-half+.001,0,half-.001,half,half+.001}) do
+        for _,dy in ipairs({-half-.001,-half,-half+.001,0,half-.001,half,half+.001}) do
+            for _,dz in ipairs({-24.001,-24,-23.999,12,m.LevelHeight-24-.001,m.LevelHeight-24,m.LevelHeight-24+.001}) do
+                local at=Vector(p.x+dx,p.y+dy,p.z+dz)
+                assert(S:ExactCell(g,at)==parent:ExactCell(g,at),'float32 exact-cell boundary changed')
+                floatBoundaryChecks=floatBoundaryChecks+1
+            end
+        end
+    end
+end
+m.Origin,m.CellSize,m.Width,m.Height,m.LevelHeight=oldOrigin,oldSize,oldWidth,oldHeight,oldLevelHeight
+Vector=originalVector
+
+local weak=setmetatable({}, {__mode='v'})
+do local retired={x=123,y=45,z=6};weak[1]=retired;sameCenter(retired) end
+collectgarbage('collect');assert(weak[1]==nil,'coordinate cache retained a retired graph cell')
+
+local function queryWork(authority)
+    -- Warm this exact cell before measuring stable reads.
+    assert(authority:ExactCell(g,inside)==startCell)
+    local created=0
+    Vector=function(...)created=created+1;return originalVector(...)end
+    collectgarbage('collect');collectgarbage('stop');local before=collectgarbage('count')
+    for _=1,10000 do assert(authority:ExactCell(g,inside)==startCell) end
+    local kb=collectgarbage('count')-before
+    collectgarbage('restart');collectgarbage('collect');Vector=originalVector
+    return created,kb
+end
+local candidateVectors,candidateQueryKB=queryWork(S)
+assert(candidateVectors==0,'exact cell still constructs repeated centre vectors')
+local parentVectors,parentQueryKB
+if parent then parentVectors,parentQueryKB=queryWork(parent) end
+if coordinateParent then
+    assert(parentVectors>0 and candidateQueryKB<parentQueryKB*.1,'unchanged parent passed coordinate-reuse work gate')
+end
+-- Reload the production builder: navigator must use the new helper/cache, not
+-- retain the previous closure or leak an old native centre through refresh.
+dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua')
+sameCenter(sample)
+local refreshVectors=queryWork(S);assert(refreshVectors==0,'refresh bypassed coordinate cache')
+print(string.format('ENTRY_COORDINATES_PASS queries=10000 vectors=%d parent_vectors=%d allocation_kb=%.3f parent_kb=%.3f float32_differences=%d float32_boundaries=%d; cell/config/origin mutations, custom resolver fallback, mutable vectors, weak lifetime and Lua refresh',
+    candidateVectors,parentVectors or -1,candidateQueryKB,parentQueryKB or -1,rounded,floatBoundaryChecks))

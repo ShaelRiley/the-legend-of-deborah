@@ -27,6 +27,36 @@ function MazeBuilder:CellCenter(cell)
     return MC.Origin + Vector(ox, oy, oz)
 end
 
+-- Read-only coordinates for hot spatial queries. Keep native Vector rounding
+-- from CellCenter, without constructing its two temporary vectors every time.
+-- Weak cell ownership and current scalar inputs prevent stale rebuild/config
+-- results; callers of CellCenter still receive an independent mutable Vector.
+local nativeCellCenter = MazeBuilder.CellCenter
+local centerCoordinates = setmetatable({}, {__mode = "k"})
+function MazeBuilder:CellCenterCoordinates(cell)
+    if self.CellCenter ~= nativeCellCenter then
+        local p = self:CellCenter(cell)
+        return p.x, p.y, p.z
+    end
+    local x, y, z = cell.x, cell.y, cell.z
+    local width, height, size, levelHeight = MC.Width, MC.Height, MC.CellSize, MC.LevelHeight
+    local originX, originY, originZ = MC.Origin.x, MC.Origin.y, MC.Origin.z
+    local cached = centerCoordinates[cell]
+    if not cached or cached.x ~= x or cached.y ~= y or cached.z ~= z
+        or cached.width ~= width or cached.height ~= height or cached.size ~= size
+        or cached.levelHeight ~= levelHeight or cached.originX ~= originX
+        or cached.originY ~= originY or cached.originZ ~= originZ then
+        local p = self:CellCenter(cell)
+        cached = cached or {}
+        cached.x, cached.y, cached.z = x, y, z
+        cached.width, cached.height, cached.size, cached.levelHeight = width, height, size, levelHeight
+        cached.originX, cached.originY, cached.originZ = originX, originY, originZ
+        cached.px, cached.py, cached.pz = p.x, p.y, p.z
+        centerCoordinates[cell] = cached
+    end
+    return cached.px, cached.py, cached.pz
+end
+
 local function spawnBox(pos, ang, mins, maxs, kind)
     local ent = ents.Create("lod_static_box")
     if not IsValid(ent) then return nil end

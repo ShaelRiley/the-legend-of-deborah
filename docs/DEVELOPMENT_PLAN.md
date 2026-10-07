@@ -1,4 +1,25 @@
-# Current Steam Deck checkpoint — static draw snapshot reuse
+# Current Steam Deck checkpoint — exact cell-centre coordinate reuse
+
+October 7, 2026: the new complete native capture verifies clean `00dd5ea`,
+10 client renderer and 44 population fingerprints, idle r2 VR and zero Lua
+errors. The startup toolgun warning is gone. Active rendering averages 18.3706
+FPS with 1,552 walls and 54 living bodies; the previous capture had 1,366 walls
+and 40 living bodies, so these runs do not establish a controlled regression.
+Sustained >=40 FPS remains unmet. Safety queries are a measured server hot path.
+Extend the canonical cell-centre calculation with exact native scalar reuse,
+invalidated on every cell/config/origin mutation, preserving immediate safety,
+targets, AI cadence, population, graphics and the accepted native renderer.
+The paired 10,000-query probe constructs zero centre Vectors instead of 20,000, with exact native-coordinate equivalence; this is not an FPS claim. The complete frozen gate passes 313/313 suites and 884 Lua syntax files.
+See the [finite gate and native evidence](validation/STEAM_DECK_20261007_CELL_COORDINATES.md).
+
+After frozen source validation and verified main publication, collect the usual
+three-minute gm_flatgrass capture with
+`lod_wall_batches 0; lod_reduced_effects 1; lod_perf_start 180 profile`.
+Preserve Proton/windowed/graphics settings, complete both client/server results,
+and return performance_client_latest.txt plus console_latest.txt. Native FPS
+acceptance remains open; no Workshop or VPS operation is included.
+
+# Previous Steam Deck checkpoint — static draw snapshot reuse
 
 October 7 UTC / October 6 local, 2026: recovered the published Magic/Q/M/toolgun
 checkpoint at `8f6667098481dbcd034efe9013b05a95086f386b`; all four Actions workflows

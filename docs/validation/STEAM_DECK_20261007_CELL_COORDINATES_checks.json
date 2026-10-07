@@ -1,0 +1,125 @@
+{
+  "parent_sha": "00dd5ea74c4df55bc013fe4a5d94cc273a151c8d",
+  "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "gdd_revision": "ANLCKQn7d-0muOCBGrHxJZ-shoI_Yvc0LXT2Tt_EkfyBDDkUHTdJFncQC8CWpGDv3yesApEO0O5wBPR-vHKFlvLi0w2D5-CQrk7BKIzGhQ",
+  "full_matrix": {
+    "total": 313,
+    "passed": 313,
+    "source_before": "37fe0a3c28636aa8589a261b64d251e09168817357009750ae7461cd5401b596",
+    "source_after": "37fe0a3c28636aa8589a261b64d251e09168817357009750ae7461cd5401b596",
+    "changed_during_gate": [],
+    "lua_files": 884,
+    "native_gmod_accepted": false
+  },
+  "verified_canonical_commands": 313,
+  "verified_individual_receipts": 313,
+  "verified_raw_stream_hashes": 626,
+  "verified_source_files": 2540,
+  "tested_code_sha256": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua": "6efa3ecbf9fc2a95eebe86864a9acdb5a09fcded126a14a1abb9941dd559c96e",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua": "95db5ef334ce36b39bd7ddb597a6999a54074fc0aa868cf852aac539ca33d0b5",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua": "af06a0ccbf3b00860878ce254518660afac593d2c3323d7f023ea22e1cbca0a2",
+    "tools/test_entry_safety_hotpath.lua": "35033a58d9ebdbdbf69ea972d66d5242e8085fc127d05a6b63b14ee7227873a0"
+  },
+  "paired": [
+    {
+      "label": "candidate",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_entry_safety_hotpath.lua",
+        "/workspace/scratch/01bf015eab4d/cell-coordinates-parent/sv_entry_safety.lua",
+        "--cell-coordinates"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "5462eea158abf6e07e67670a92e774b5aa21dd5f6cdadc1ddb69d754c2afc7e8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "negative-control",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_entry_safety_hotpath.lua",
+        "/workspace/scratch/01bf015eab4d/cell-coordinates-parent/sv_entry_safety.lua",
+        "--cell-negative-control"
+      ],
+      "returncode": 1,
+      "stdout_sha256": "2f033416572287f71ee83fc8129c39826f12302ca21acffd04dfe78cff922ea1",
+      "stderr_sha256": "97b6ff2032bf51cd978fcdcd4256aa8cbe688f24a2035241e96b1f97cfb9802a"
+    }
+  ],
+  "paired_queries": 10000,
+  "candidate_vectors": 0,
+  "parent_vectors": 20000,
+  "existing_boundary_checks": 5145,
+  "paired_float32_boundary_checks": 343,
+  "native_uploads": [
+    {
+      "name": "console_latest(20261007-133541).txt",
+      "bytes": 61238,
+      "sha256": "4750835add29e5e448e6c58092862d5fa594c5c7174a1c0d7c88edf22b55ab71"
+    },
+    {
+      "name": "performance_client_latest(20261007-133541).txt",
+      "bytes": 240436,
+      "sha256": "16868c65a6d725c3f3a5a879f6148c15ade68b5110cafccf59d0f474aeffed33"
+    }
+  ],
+  "native_fps": 18.370599058349207,
+  "native_active": {
+    "max_ms": 230.65,
+    "over100": 138,
+    "median_ms": 45.822,
+    "over50": 1451,
+    "p95_ms": 96.975,
+    "frames": 3148,
+    "p99_ms": 133.512,
+    "over25": 3147,
+    "seconds": 171.36077000000026,
+    "fps": 18.370599058349207
+  },
+  "native_verified_git_modules": 44,
+  "native_idle_vr_snapshots": 42,
+  "baseline_actions": [
+    {
+      "name": "Validate VR compatibility",
+      "sha": "00dd5ea74c4df55bc013fe4a5d94cc273a151c8d",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37573188123"
+    },
+    {
+      "name": "Validate ambient audio and event cues",
+      "sha": "00dd5ea74c4df55bc013fe4a5d94cc273a151c8d",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37573188101"
+    },
+    {
+      "name": "Validate Great Crate assets and rendering",
+      "sha": "00dd5ea74c4df55bc013fe4a5d94cc273a151c8d",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37573188145"
+    },
+    {
+      "name": "Validate low-end performance sources",
+      "sha": "00dd5ea74c4df55bc013fe4a5d94cc273a151c8d",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37573188154"
+    },
+    {
+      "name": "Validate complete frozen source matrix",
+      "sha": "00dd5ea74c4df55bc013fe4a5d94cc273a151c8d",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/37573188141"
+    }
+  ],
+  "native_new_checkpoint_accepted": false,
+  "archive_name": "STEAM_DECK_20261007_CELL_COORDINATES_complete.zip",
+  "archive_bytes": 721605,
+  "archive_sha256": "5ab011c5fa2825ce8ec41c8533fd1ed1432154a121d4d08601c43996ad77df0c"
+}
