@@ -1,4 +1,35 @@
-# Current intervening correction — Hair Trigger
+# Current intervening correction — Magic costs and map keys
+
+October 7 UTC / October 6 local, 2026: the author requests Q and M for the map,
+cheap Beam/Super Ball, Bolt 4, Cone 9, Melon 11, cheaper remaining Forms and all
+Content riders, plus smaller Bomb/Missile explosions. The live GDD normalized
+03/06/07 and HUMAN are amended and exact-readback verified before implementation.
+The canonical catalog updates existing definitions in place on refresh; shared
+casting, selection/snapshot and the regenerated manual carry the same prices.
+Q/M retain ordinary map ownership, cache and focused-UI rules. VR overlay r2
+retains the optional Sandbox pickup-list editor outside the weapon autoloader,
+preventing that folder from registering a toolgun without shared.lua. The
+installer safely upgrades the exact published predecessor as well as pristine
+upstream, preserving operator-modified copies. See
+[author scope and complete cost tables](briefs/MAGIC_MAP_20261007.md) and
+[finite gate and evidence](validation/MAGIC_MAP_20261007.md).
+
+The new exact clean `9f88e54` native capture verifies ten renderer and 44
+population sources and confirms idle VR in 42 resource snapshots, including
+all 36 pacing windows and both realms: no VR players, runtime hooks, recurring
+timers, method overrides, pending work or native resources. The native VR idle
+gate passes. The only reported Lua error is the single startup toolgun warning;
+its r2 source repair needs a new native boot. Active rendering is **23.71 FPS**
+over 129.08 seconds, median 35.969 ms and p95 75.075 ms. Sustained >=40 FPS still
+fails. Preserve native walls, all population/gameplay constraints and previous
+HUD/overlay optimizations. Different generated workloads prevent a controlled
+before/after FPS comparison. After this bounded correction, resume the measured
+rendering/AI optimization pass; the new profile's largest measured client LOD
+callback is generated static geometry (138.41 ms/second, inclusive wall-clock).
+Nested timings overlap and GPU/engine work remains unmeasured. Headset activation
+and the new balancing/input feel remain separate native acceptance gates.
+
+# Previous intervening correction — Hair Trigger
 
 October 5, 2026 author correction: Hair Trigger is one nonrepeatable DEX 13 feat
 at 55% faster firearm firing; Rapid Fire and Lead Storm are removed. Revolver,

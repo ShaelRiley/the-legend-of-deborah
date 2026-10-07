@@ -1,7 +1,7 @@
 """Deterministic, fail-closed idle overlay for the unchanged pinned archive."""
 from pathlib import Path
 
-VERSION = "deborah-vr-idle-20261007"
+VERSION = "deborah-vr-idle-20261007-r2"
 ROOT = Path(__file__).resolve().parent
 
 
@@ -16,19 +16,27 @@ def apply(upstream):
     # Small checksum-error fixtures don't stand in for the real runtime.
     if "lua/vrmod/core/cl_vrmod.lua" not in files:
         return files
+    # Source treats lua/weapons/gmod_tool/ as a weapon even in a base-derived
+    # gamemode, then requests its absent shared.lua. Deborah has no Sandbox
+    # toolgun; retain this optional editor outside the automatic weapon loader.
+    optional_tool = "lua/vrmod/optional_sandbox/vrmod_pickup_list.lua"
+    files[optional_tool] = files.pop("lua/weapons/gmod_tool/stools/vrmod_pickup_list.lua")
     for name, data in tuple(files.items()):
         if not name.startswith("lua/") or not name.endswith(".lua"):
             continue
         text = data.decode().replace("\r\n", "\n")
         if name == "lua/autorun/vrmod_init.lua":
             prefix = ('vrmod = vrmod or {}\n'
-                      'if SERVER then AddCSLuaFile("vrmod/lod_idle.lua") end\n'
+                      'if SERVER then\n'
+                      '    AddCSLuaFile("vrmod/lod_idle.lua")\n'
+                      '    AddCSLuaFile("vrmod/optional_sandbox/vrmod_pickup_list.lua")\n'
+                      'end\n'
                       'include("vrmod/lod_idle.lua")\n')
             text = prefix + 'local hook, timer = vrmod.LODIdle.Hook, vrmod.LODIdle.Timer\n' + text
             text += "\nvrmod.LODIdle:FinishLoad()\n"
         else:
             prefix = ''
-            if name.startswith('lua/weapons/'):
+            if name.startswith('lua/weapons/') or name == optional_tool:
                 # Direct weapon reloads can execute independently of autorun.
                 # Both paths share the same singleton and hook registry.
                 prefix = ('vrmod = vrmod or {}\nif not vrmod.LODIdle then\n'

@@ -129,7 +129,7 @@ hooks.VRMod_Exit.LOD_VRExit(ply)
 
 -- Mounted-byte proof is finite and cached; no idle polling/hash loop exists.
 local readCount=0
-local proof={'deborah-vr-idle-20261007 139'}
+local proof={'deborah-vr-idle-20261007-r2 139'}
 for i=1,139 do proof[#proof+1]=string.rep('a',64)..'  lua/vrmod/fixture'..i..'.lua' end
 for _,name in ipairs({'sh_vr.lua','cl_vr.lua'}) do
     proof[#proof+1]='bridge '..string.rep('a',64)..'  '..root..name

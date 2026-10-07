@@ -12,12 +12,18 @@ ROOT = Path(__file__).resolve().parents[1]
 upstream = installer.payload(installer.BUNDLE.read_bytes())
 files = runpy.run_path(str(installer.OVERLAY))["apply"](upstream)
 scoped = b"local hook, timer = vrmod.LODIdle.Hook, vrmod.LODIdle.Timer\n"
+optional_tool = 'lua/vrmod/optional_sandbox/vrmod_pickup_list.lua'
+assert optional_tool in files
+assert not any(name.startswith('lua/weapons/gmod_tool/') for name in files), 'Sandbox tools must not register an absent toolgun'
+bootstrap = files['lua/autorun/vrmod_init.lua']
+assert b'AddCSLuaFile("vrmod/optional_sandbox/vrmod_pickup_list.lua")' in bootstrap, 'Joining clients must receive the retained Lua source'
+assert b'include("vrmod/optional_sandbox/vrmod_pickup_list.lua")' not in bootstrap, 'Passive distribution must not execute the Sandbox editor'
 lua = [name for name in files if name.startswith('lua/') and name.endswith('.lua')]
 assert len(lua) == 139
 for name in lua:
     if name not in ('lua/autorun/vrmod_init.lua', 'lua/vrmod/lod_idle.lua'):
         assert (files[name].startswith(scoped) or
-                (name.startswith('lua/weapons/') and scoped in files[name][:300])), name
+                ((name.startswith('lua/weapons/') or name == optional_tool) and scoped in files[name][:300])), name
 for name, data in upstream.items():
     if not name.startswith('lua/'):
         assert files[name] == data, name

@@ -10,36 +10,43 @@ local MagicProgression = LOD.MagicProgression
 if not Progression or not RPG then return end
 
 MagicProgression.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
-MagicProgression.SourceRevisionId = "ANLCKQnZT-gY2E1o8eVywRbHM5oeUT9ScZUoFZs5V2oLQzgLW4w8BjAaD1g3FEkxN8ductzcuN9LQ6NoOWHxcYdQu5vbznuuI7oCo86mog"
+MagicProgression.SourceRevisionId = "ANLCKQn7d-0muOCBGrHxJZ-shoI_Yvc0LXT2Tt_EkfyBDDkUHTdJFncQC8CWpGDv3yesApEO0O5wBPR-vHKFlvLi0w2D5-CQrk7BKIzGhQ"
 
-RPG.MagicForms = RPG.MagicForms or {
-    cone = {id = "cone", displayName = "Cone", damageDice = 3, damageSides = 6, magicCost = 22},
-    blast = {id = "blast", displayName = "Blast", damageDice = 2, damageSides = 6, magicCost = 30},
-    beam = {id = "beam", displayName = "Beam", damageDice = 3, damageSides = 6, magicCost = 18},
-    bomb = {id = "bomb", displayName = "Bomb", damageDice = 3, damageSides = 6, magicCost = 20},
-    missile = {id = "missile", displayName = "Missile", damageDice = 3, damageSides = 6, magicCost = 28},
-    bolt = {id = "bolt", displayName = "Bolt", damageDice = 4, damageSides = 6, magicCost = 15},
-    summon = {id = "summon", displayName = "Summon", damageDice = 0, damageSides = 0, magicCost = 12}
-}
+-- Update the shared definitions in place so a Lua refresh replaces old prices
+-- without leaving cached Form/Content references or character selections stale.
+local function refreshCatalog(current, definitions)
+    current = current or {}
+    for id, definition in pairs(definitions) do
+        local entry = current[id] or {}
+        for key, value in pairs(definition) do entry[key] = value end
+        current[id] = entry
+    end
+    return current
+end
 
--- Apply the approved cost on refresh as well as a clean server start.
-RPG.MagicForms.summon.magicCost = 12
-RPG.MagicForms.summon.wizardOnly = true
-RPG.MagicForms.summon.utility = true
+RPG.MagicForms = refreshCatalog(RPG.MagicForms, {
+    cone = {id = "cone", displayName = "Cone", damageDice = 3, damageSides = 6, magicCost = 9},
+    blast = {id = "blast", displayName = "Blast", damageDice = 2, damageSides = 6, magicCost = 16},
+    beam = {id = "beam", displayName = "Beam", damageDice = 3, damageSides = 6, magicCost = 2},
+    bomb = {id = "bomb", displayName = "Bomb", damageDice = 3, damageSides = 6, magicCost = 14},
+    missile = {id = "missile", displayName = "Missile", damageDice = 3, damageSides = 6, magicCost = 18},
+    bolt = {id = "bolt", displayName = "Bolt", damageDice = 4, damageSides = 6, magicCost = 4},
+    summon = {id = "summon", displayName = "Summon", damageDice = 0, damageSides = 0,
+        magicCost = 10, wizardOnly = true, utility = true},
+    watermelon = {id = "watermelon", displayName = "Watermelon", damageDice = 2, damageSides = 6, magicCost = 11},
+    super_ball = {id = "super_ball", displayName = "Super Ball", damageDice = 2, damageSides = 6, magicCost = 1},
+    wall = {id = "wall", displayName = "Wall", wizardOnly = true, utility = true,
+        damageDice = 2, damageSides = 6, magicCost = 16}
+})
 
-RPG.MagicContents = RPG.MagicContents or {
-    earth = {id = "earth", displayName = "Earth", ability = "str", surcharge = 10, element = "earth", rider = "push"},
-    fire = {id = "fire", displayName = "Fire", ability = "dex", surcharge = 15, element = "fire", rider = "immolated"},
-    dark = {id = "dark", displayName = "Dark", ability = "con", surcharge = 15, element = "dark", rider = "poisoned"},
-    ice = {id = "ice", displayName = "Ice", ability = "int", surcharge = 10, element = "ice", rider = "held"},
-    light = {id = "light", displayName = "Light", ability = "wis", surcharge = 5, element = "light", rider = "muted"},
-    electric = {id = "electric", displayName = "Electric", ability = "cha", surcharge = 10, element = "electric", rider = "morale"}
-}
-
--- Explicit author addition; also install it on a Lua refresh of an existing catalog.
-RPG.MagicForms.watermelon = {id="watermelon",displayName="Watermelon",damageDice=2,damageSides=6,magicCost=24}
-RPG.MagicForms.super_ball = {id="super_ball",displayName="Super Ball",damageDice=2,damageSides=6,magicCost=32}
-RPG.MagicForms.wall = {id="wall",displayName="Wall",wizardOnly=true,utility=true,damageDice=2,damageSides=6,magicCost=35}
+RPG.MagicContents = refreshCatalog(RPG.MagicContents, {
+    earth = {id = "earth", displayName = "Earth", ability = "str", surcharge = 2, element = "earth", rider = "push"},
+    fire = {id = "fire", displayName = "Fire", ability = "dex", surcharge = 3, element = "fire", rider = "immolated"},
+    dark = {id = "dark", displayName = "Dark", ability = "con", surcharge = 3, element = "dark", rider = "poisoned"},
+    ice = {id = "ice", displayName = "Ice", ability = "int", surcharge = 2, element = "ice", rider = "held"},
+    light = {id = "light", displayName = "Light", ability = "wis", surcharge = 1, element = "light", rider = "muted"},
+    electric = {id = "electric", displayName = "Electric", ability = "cha", surcharge = 2, element = "electric", rider = "morale"}
+})
 local FORM_ORDER = {"blast", "beam", "bomb", "missile", "bolt", "summon", "cone", "watermelon", "super_ball", "wall"}
 local CONTENT_ORDER = {"earth", "fire", "dark", "ice", "light", "electric"}
 MagicProgression.FormOrder = FORM_ORDER

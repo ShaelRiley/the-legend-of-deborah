@@ -195,20 +195,20 @@ state.selectedMagicFormId='super_ball';deliver(state);owner.nw.LOD_SuperBallRema
 expect('super_ball','form','BALL LIMIT','gold',true)
 -- Snapshot cost multiplier, selected opposite component, exact affordability/ceil.
 resetBody();state=makeState();state.derivedStats.quantumCostMultiplier=.5;deliver(state)
-owner.nw.LOD_Magic=15
+owner.nw.LOD_Magic=4
 expect('bolt','form','READY / SELECTED','blue',true)
 expect('fire','content','READY / SELECTED','blue',true)
-owner.nw.LOD_Magic=14.99
+owner.nw.LOD_Magic=3.99
 expect('bolt','form','NEED MAGIC','red',true)
-owner.nw.LOD_Magic=16.5
+owner.nw.LOD_Magic=2.5
 expect('beam','form','NEED MAGIC','red',false)
-owner.nw.LOD_Magic=17
+owner.nw.LOD_Magic=3
 expect('beam','form','AVAILABLE','blue',false)
-state.selectedMagicContentId=nil;deliver(state);owner.nw.LOD_Magic=8
+state.selectedMagicContentId=nil;deliver(state);owner.nw.LOD_Magic=2
 expect('bolt','form','READY / SELECTED','blue',true)
 expect('raw','content','READY / SELECTED','blue',true)
 expect('fire','content','NEED MAGIC','red',false)
-state.selectedMagicFormId='beam';deliver(state)
+state.selectedMagicFormId='cone';deliver(state)
 expect('raw','content','NEED MAGIC','red',true)
 -- Production class/ownership repair -> UI locks, not invented client permissions.
 resetBody();state=makeState('fighter');state.magicFormIds={'bolt','wall','summon'}

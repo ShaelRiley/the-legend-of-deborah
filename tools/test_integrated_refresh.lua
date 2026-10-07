@@ -128,7 +128,7 @@ d.healthRegenBaseMaxHPPerSecond=.01;d.conRegenMultiplier=1.5
 local P=LOD.MagicProgression
 assert(P:GrantForm(state,'watermelon') and P:SelectForm(state,'watermelon'))
 state.selectedMagicContentId=nil
-assert(LOD.RPG.MagicForms.watermelon.damageDice==2 and LOD.RPG.MagicForms.watermelon.magicCost==24)
+assert(LOD.RPG.MagicForms.watermelon.damageDice==2 and LOD.RPG.MagicForms.watermelon.magicCost==11)
 local projectile
 function V:Angle() return {p=0,y=0,r=0} end
 ents=ents or {}
@@ -143,12 +143,34 @@ LOD.Magic.NextCast={};LOD.Magic.Stats={casts=0}
 LOD.Magic._Sync=function() end
 actor.ps.magic=100;LOD.Magic.NextCast[actor]=nil
 assert(F:CastSelected(actor))
-assert(actor.ps.magic==88,'Resolved 50% cost modifier applies to the new Form')
+assert(actor.ps.magic==94,'11 base cost uses the existing 50% modifier, rounded up to 6')
 assert(projectile.LODFormId=='watermelon' and projectile.LODCaster==actor and projectile.spawned)
 assert(projectile.LODSpeed==580 and projectile.LODMaximumTravel==4000 and projectile.LODBlastRadius>=72)
 assert(not F:CastSelected(actor),'Shared cast cooldown applies')
 LOD.Magic.NextCast[actor]=nil;actor.ps.magic=0
 assert(not F:CastSelected(actor) and actor.ps.magic==0,'Cannot cast without Magic')
+-- Use the same real projectile setup for the smaller Bomb/Missile footprints.
+for id,base in pairs({bomb=72,missile=96}) do
+ assert(P:GrantForm(state,id) and P:SelectForm(state,id))
+ LOD.Magic.NextCast[actor]=nil;actor.ps.magic=100
+ assert(F:CastSelected(actor))
+ local bonus=projectile.LODCastContext.spatialBonusCells*LOD.Config.Maze.CellSize
+ assert(projectile.LODFormId==id and projectile.LODBlastRadius==base+bonus,
+  'Smaller base radius must preserve the shared sealed WIS/Astral bonus')
+ local price=id=='bomb' and 7 or 9
+ assert(actor.ps.magic==100-price,'Existing cost modifier applies to the rebalanced projectile')
+ if id=='bomb' then
+  assert(projectile.LODMaximumTravel==1152 and projectile.LODSpeed==700,'Bomb flight stays fixed')
+ else
+  assert(projectile.LODMaximumTravel==1536+bonus and projectile.LODSpeed==900,'Missile range/speed stay fixed')
+  local previous=projectile
+  LOD.Magic.NextCast[actor]=nil
+  assert(not F:CastSelected(actor) and actor.ps.magic==100-price and projectile==previous,
+   'Cheap Missile retains its one-active limit without another spend/entity')
+  previous.valid=false;F.ActiveMissiles[actor]=nil
+ end
+end
+print('MAGIC_PROJECTILE_REBALANCE_PASS: native projectile fields, radius=base+sealed WIS/Astral bonus, discount rounding, flight and guided cap')
 ents.Create=oldCreate
 -- Finite summon puff is above its origin, bounded, and self-retires even without its summon.
 local now=0;CurTime=function() return now end;Material=function() return {} end;EFFECT={}

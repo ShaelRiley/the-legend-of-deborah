@@ -73,7 +73,7 @@
           "Toggle Equipment open/closed (rebindable in Equipment; console command lod_equipment)"
         ],
         [
-          "M",
+          "Q / M",
           "Toggle the Magic-powered map"
         ],
         [
@@ -420,43 +420,43 @@
       "title": "Ten Forms of Magic",
       "rows": [
         [
-          "CONE · 22",
+          "CONE · 9",
           "3d6; immediate forward force cone, 64° wide. WIS scales reach; Content supplies its element and rider."
         ],
         [
-          "BLAST · 30",
+          "BLAST · 16",
           "2d6; connected visible cells around the caster. Solid walls and floors block damage."
         ],
         [
-          "BEAM · 18",
+          "BEAM · 2",
           "3d6; piercing line, 0.65-second cast recovery. Stops at solid geometry."
         ],
         [
-          "BOMB · 20",
-          "3d6; lobbed area attack. Throw range fixed; radius scales with WIS."
+          "BOMB · 14",
+          "3d6; lobbed area attack. Throw range fixed; radius scales with WIS. Base blast radius: 72 units, plus ordinary WIS radius scaling."
         ],
         [
-          "MISSILE · 28",
-          "3d6; steerable projectile with area impact. WIS affects range and radius."
+          "MISSILE · 18",
+          "3d6; steerable projectile with area impact. WIS affects range and radius. Base blast radius: 96 units, plus ordinary WIS radius scaling."
         ],
         [
-          "BOLT · 15",
+          "BOLT · 4",
           "4d6; fast precision shot. No area or body piercing."
         ],
         [
-          "SUPER BALL · 32",
+          "SUPER BALL · 1",
           "2d6 per contact; a chaotic bouncing ball can strike several enemies or return to the same one. Six-second lifetime, up to six hits, at most two active per caster. Walls and floors redirect it."
         ],
         [
-          "WATERMELON · 24",
-          "Roll 1d6 bounces on throw. Enemy contacts deal 1d6 with a brief per-target cooldown; the last bounce shatters for 2d6 area damage. Lower base blast radius than Bomb, with WIS radius scaling. Expires after eight seconds; clear rind/flesh effects mark the shatter."
+          "WATERMELON · 11",
+          "Roll 1d6 bounces on throw. Enemy contacts deal 1d6 with a brief per-target cooldown; the last bounce shatters for 2d6 area damage. 72-unit base blast radius, with WIS radius scaling. Expires after eight seconds; clear rind/flesh effects mark the shatter."
         ],
         [
-          "SUMMON · 12",
+          "SUMMON · 10",
           "Wizard only: call a gold Seeker for 20 seconds. Default cap: one."
         ],
         [
-          "WALL · 35",
+          "WALL · 16",
           "Wizard only. A barrier up to 288 units wide, 112 high and 12 thick fits nearby clear space; WIS increases its 10-second duration by two seconds per positive modifier, up to 30 seconds. Heroes pass through; enemies are blocked and take 2d6 contact damage. The server preview shows the actual fitted shape and placement reason. Only one active Wall per caster. Hold its bound mouse button to see the aiming guide; release to place. Opening a menu cancels the pending placement."
         ]
       ],
@@ -474,27 +474,27 @@
           "Untyped Magic; no Content rider"
         ],
         [
-          "EARTH · +10",
+          "EARTH · +2",
           "336-unit Push attempt"
         ],
         [
-          "FIRE · +15",
+          "FIRE · +3",
           "Immolated attempt"
         ],
         [
-          "DARK · +15",
+          "DARK · +3",
           "Poisoned attempt"
         ],
         [
-          "ICE · +10",
+          "ICE · +2",
           "Held attempt; Wisdom save"
         ],
         [
-          "LIGHT · +5",
+          "LIGHT · +1",
           "Muted attempt"
         ],
         [
-          "ELECTRIC · +10",
+          "ELECTRIC · +2",
           "Morale / Intimidated attempt"
         ]
       ],

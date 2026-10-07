@@ -14,6 +14,7 @@ SHA256 = "bc6077185fe7fb84aa5be8f853633e5c86210cf12e9a55f05342fb0c32f73367"
 SOURCE = "https://github.com/Abyss-c0re/vrmod-x64"
 BUNDLE = Path(__file__).resolve().parents[1] / "third_party/vrmod-x64/upstream.zip"
 OVERLAY = BUNDLE.parent / "deborah/patch.py"
+PREVIOUS_OVERLAY = BUNDLE.parent / "deborah/previous-20261007.json"
 
 
 def payload(data: bytes) -> dict[str, bytes]:
@@ -46,6 +47,28 @@ def verify(target: Path, files: dict[str, bytes]) -> None:
     actual_lua = {p.relative_to(target).as_posix() for p in (target / "lua").rglob("*") if p.is_file()}
     if actual_lua != expected_lua:
         raise ValueError(f"Existing VRMod contains extra Lua files: {target}")
+
+
+def verify_previous_overlay(target: Path, upstream: dict[str, bytes]) -> set[str]:
+    """Accept only the exact published idle overlay, never an operator-edited copy."""
+    previous = json.loads(PREVIOUS_OVERLAY.read_text())
+    hashes = previous["lua_sha256"]
+    expected_lua = {name for name in upstream if name.startswith("lua/") and name.endswith(".lua")}
+    expected_lua.add("lua/vrmod/lod_idle.lua")
+    if (previous["version"] != "deborah-vr-idle-20261007" or set(hashes) != expected_lua):
+        raise ValueError("Previous VRMod overlay manifest differs from its published layout")
+    for name, content in upstream.items():
+        if name in hashes:
+            continue
+        path = target / name
+        if path.is_symlink() or not path.is_file() or path.read_bytes() != content:
+            raise ValueError(f"Existing VRMod content differs; left intact: {path}")
+    for name, digest in hashes.items():
+        path = target / name
+        if (path.is_symlink() or not path.is_file()
+                or hashlib.sha256(path.read_bytes()).hexdigest() != digest):
+            raise ValueError(f"Existing VRMod Lua differs; left intact: {path}")
+    return set(upstream) | set(hashes)
 
 
 def record_sources(garrysmod: Path, files: dict[str, bytes], version: str) -> None:
@@ -92,11 +115,15 @@ def install(garrysmod: Path, data: bytes, ensure: bool = False) -> Path:
             record_sources(garrysmod, files, overlay["VERSION"])
             return target
         except ValueError:
-            # Only a byte-for-byte pristine pinned installation can migrate.
+            # Only pristine upstream or an exact published overlay can migrate.
             # Operator edits and extra Lua still fail before anything is changed.
-            verify(target, upstream)
+            try:
+                verify(target, upstream)
+                previous_files = set(upstream)
+            except ValueError:
+                previous_files = verify_previous_overlay(target, upstream)
             extras = {p.relative_to(target).as_posix() for p in target.rglob('*') if p.is_file() or p.is_symlink()}
-            extras -= set(upstream) | {'.lod-vrmod.json'}
+            extras -= previous_files | {'.lod-vrmod.json'}
             if extras:
                 raise ValueError("Existing VRMod has additional files; left intact: " + str(target))
     with tempfile.TemporaryDirectory(prefix=".lod-vrmod-", dir=addons) as staging:

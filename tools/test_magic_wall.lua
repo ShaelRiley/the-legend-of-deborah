@@ -96,7 +96,7 @@ F._ApplyDamage=function(_,caster,credit,t,form,content,ctx)
  hits=hits+1;if content and content.rider then riders=riders+1 end
  t.hp=t.hp-1;return true
 end
-owner.ps.magic=100;assert(F:CastSelected(owner));assert(owner.ps.magic==50,'35 base + Fire surcharge')
+owner.ps.magic=100;assert(F:CastSelected(owner));assert(owner.ps.magic==81,'16 base + 3 Fire surcharge')
 local wall=spawned[#spawned]
 local clipped,blocked=F:ConstrainWallMovement(target,Vector(150,0,1),Vector(400,0,1))
 assert(blocked and clipped.x<wall.Pos.x+wall.WallMins.x-16,'Swept movement cannot tunnel through Wall')

@@ -69,19 +69,34 @@ for _,state in ipairs({'closed','dead','no-access'}) do
  M.open=state~='closed';player.alive=state~='dead';player.access=state~='no-access'
  circles={};hooks.HUDPaint.LOD_MinimapHUD();assert(#circles==0,'marker bypassed map/player access')
 end
--- Keyboard M and the VR quick-menu command share the real access/cache authority.
-local covered,down=false,false
+-- Both keyboard keys and the VR command share the real access/cache authority.
+KEY_M,KEY_Q=77,81
+local covered,focused,down=false,false,{}
 gui={IsGameUIVisible=function() return covered end}
-vgui={GetKeyboardFocus=function() return nil end}
-input={IsKeyDown=function() return down end}
+vgui={GetKeyboardFocus=function() return focused and player or nil end}
+input={IsKeyDown=function(key) return down[key]==true end}
 LOD.Audio={Play=noop};notification={AddLegacy=noop};NOTIFY_HINT=1
 player.alive=true;player.access=true;M.open=false
 commands.lod_minimap_toggle();assert(M.open,'controller command opens owned map')
 local reopens=M.stats.mapCacheReopens
 commands.lod_minimap_toggle();assert(not M.open)
-down=true;hooks.Think.LOD_MinimapToggleInput();assert(M.open and M.stats.mapCacheReopens==reopens+1)
+down[KEY_M]=true;hooks.Think.LOD_MinimapToggleInput();assert(M.open and M.stats.mapCacheReopens==reopens+1)
 hooks.Think.LOD_MinimapToggleInput();assert(M.open,'held M must not toggle repeatedly')
+down[KEY_Q]=true;hooks.Think.LOD_MinimapToggleInput();assert(not M.open,'Q works while M is held')
+hooks.Think.LOD_MinimapToggleInput();assert(not M.open,'held Q/M must not repeat')
+down={};hooks.Think.LOD_MinimapToggleInput()
+down[KEY_Q]=true;hooks.Think.LOD_MinimapToggleInput();assert(M.open,'released Q can toggle again')
+down={};hooks.Think.LOD_MinimapToggleInput()
+covered=true;down[KEY_Q]=true;hooks.Think.LOD_MinimapToggleInput();assert(M.open,'Q retains game UI input')
+covered=false;hooks.Think.LOD_MinimapToggleInput();assert(M.open,'held UI key cannot leak after close')
+down={};hooks.Think.LOD_MinimapToggleInput()
+focused=true;down[KEY_M]=true;hooks.Think.LOD_MinimapToggleInput();assert(M.open,'M retains keyboard focus')
+focused=false;hooks.Think.LOD_MinimapToggleInput();assert(M.open,'held focused key cannot leak')
 covered=true;commands.lod_minimap_toggle();assert(M.open,'covered UI retains control')
 covered=false;commands.lod_minimap_toggle();assert(not M.open)
 player.access=false;commands.lod_minimap_toggle();assert(not M.open,'VR cannot bypass map ownership')
-print('MINIMAP_PLAYER_PASS: one blue marker, expanded topology, floors, movement, reload, shared keyboard/VR toggle and access')
+down={};hooks.Think.LOD_MinimapToggleInput()
+down[KEY_Q]=true;hooks.Think.LOD_MinimapToggleInput();assert(not M.open,'Q cannot bypass map ownership')
+down={};hooks.Think.LOD_MinimapToggleInput();player.access=true
+down[KEY_Q],down[KEY_M]=true,true;hooks.Think.LOD_MinimapToggleInput();assert(M.open,'Simultaneous keys toggle once')
+print('MINIMAP_PLAYER_PASS: one blue marker, expanded topology, floors, movement, reload, Q/M/VR shared toggle, independent press edges, focus/access and no repeats')

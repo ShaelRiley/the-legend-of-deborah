@@ -13,7 +13,7 @@ VR.ContentFiles = {
     "models/vrmod/tpbeam.mdl", "models/vrmod/tpbeam.vvd"
 }
 
-VR.IdleRevision = "deborah-vr-idle-20261007"
+VR.IdleRevision = "deborah-vr-idle-20261007-r2"
 VR.SourceIdentity = nil -- Lua refresh invalidates the one-time mounted-byte check.
 function VR:WorkState()
     local runtime = vrmod and vrmod.LODIdle

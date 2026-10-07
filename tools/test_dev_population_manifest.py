@@ -41,7 +41,7 @@ with tempfile.TemporaryDirectory() as tmp:
                 assert hashlib.sha256((repo / relative).read_bytes()).hexdigest() == digest, relative
             assert (game / 'addons/the-legend-of-deborah-dev').resolve() == repo
             vr_rows = (data / 'dev_vr_sources.txt').read_text().splitlines()
-            assert vr_rows[0] == 'deborah-vr-idle-20261007 139'
+            assert vr_rows[0] == 'deborah-vr-idle-20261007-r2 139'
             for row in vr_rows[1:]:
                 if row.startswith('bridge '):
                     _, digest, relative = row.split(None, 2)

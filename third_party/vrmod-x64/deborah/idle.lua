@@ -2,7 +2,7 @@
 -- the existing join/exit messages and explicit local start own activation.
 vrmod = vrmod or {}
 if vrmod.LODIdle then return end
-local Idle = {version = "deborah-vr-idle-20261007", active = false, loading = true,
+local Idle = {version = "deborah-vr-idle-20261007-r2", active = false, loading = true,
     hooks = {}, timers = {}, foreign = {}, bindings = {}, resources = {}, sequence = 0}
 vrmod.LODIdle = Idle
 local engineHook, engineTimer = hook, timer

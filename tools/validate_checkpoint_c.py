@@ -85,17 +85,18 @@ def main() -> int:
     entities = {rel: read(root, rel, errors) for rel in entity_rels}
 
     expected_forms = {
-        "cone": (3, 6, 22), "blast": (2, 6, 30), "beam": (3, 6, 18), "bomb": (3, 6, 20),
-        "missile": (3, 6, 28), "bolt": (4, 6, 15), "summon": (0, 0, 12),
+        "cone": (3, 6, 9), "blast": (2, 6, 16), "beam": (3, 6, 2), "bomb": (3, 6, 14),
+        "missile": (3, 6, 18), "bolt": (4, 6, 4), "summon": (0, 0, 10),
+        "watermelon": (2, 6, 11), "super_ball": (2, 6, 1), "wall": (2, 6, 16),
     }
     for form_id, (dice, sides, cost) in expected_forms.items():
-        pattern = rf'{form_id}\s*=\s*\{{[^\n]*damageDice\s*=\s*{dice}[^\n]*damageSides\s*=\s*{sides}[^\n]*magicCost\s*=\s*{cost}'
+        pattern = rf'{form_id}\s*=\s*\{{[^}}]*damageDice\s*=\s*{dice}\b[^}}]*damageSides\s*=\s*{sides}\b[^}}]*magicCost\s*=\s*{cost}\b'
         if not re.search(pattern, progress):
             fail(errors, f"Form catalog mismatch: {form_id}")
 
     expected_contents = {
-        "earth": (10, "push"), "fire": (15, "immolated"), "dark": (15, "poisoned"),
-        "ice": (10, "held"), "light": (5, "muted"), "electric": (10, "morale"),
+        "earth": (2, "push"), "fire": (3, "immolated"), "dark": (3, "poisoned"),
+        "ice": (2, "held"), "light": (1, "muted"), "electric": (2, "morale"),
     }
     for content_id, (cost, rider) in expected_contents.items():
         pattern = rf'{content_id}\s*=\s*\{{[^\n]*surcharge\s*=\s*{cost}[^\n]*rider\s*=\s*"{rider}"'
@@ -125,8 +126,8 @@ def main() -> int:
         require(errors, progress, needle, label)
 
     tunings = {
-        "BaseBeamRange": 1152, "BaseBombBlastRadius": 96, "BaseBombThrowRange": 1152,
-        "BombProjectileSpeed": 700, "BaseMissileRange": 1536, "BaseMissileBlastRadius": 128,
+        "BaseBeamRange": 1152, "BaseBombBlastRadius": 72, "BaseBombThrowRange": 1152,
+        "BombProjectileSpeed": 700, "BaseMissileRange": 1536, "BaseMissileBlastRadius": 96,
         "MissileProjectileSpeed": 900, "MissileSteeringDegreesPerSecond": 180,
         "MaxActiveGuidedMissilesPerCaster": 1, "BaseBoltRange": 1920, "BoltProjectileSpeed": 2400,
     }
@@ -231,10 +232,9 @@ def main() -> int:
             print(f" - {message}")
         return 1
     print("Checkpoint C static validation PASS")
-    print("forms=7 contents=6 deterministic-progression=true arcane-cap=Hero:0.50/enemy:0.30 summon-proxy=true spellbook=true")
+    print("forms=10 contents=6 deterministic-progression=true arcane-cap=Hero:0.50/enemy:0.30 summon-proxy=true spellbook=true")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

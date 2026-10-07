@@ -32,11 +32,11 @@ P:EnsureState(legacy)
 assert(#legacy.magicFormIds==2 and not has(legacy.magicFormIds,'summon'))
 local replacement=legacy.selectedMagicFormId
 P:EnsureState(legacy);assert(legacy.selectedMagicFormId==replacement and #legacy.magicFormIds==2)
-assert(LOD.RPG.MagicForms.summon.magicCost==12)
+assert(LOD.RPG.MagicForms.summon.magicCost==10)
 local F=assert(LOD.MagicForms)
-assert(F:TotalBaseCost(LOD.RPG.MagicForms.summon,nil)==12)
-assert(F:TotalBaseCost(LOD.RPG.MagicForms.summon,LOD.RPG.MagicContents.fire)==27)
-print('WIZARD_BALANCE_PASS: 300 seeds, class-only acquisition, legacy migration, distinct starting Content and cost 12')
+assert(F:TotalBaseCost(LOD.RPG.MagicForms.summon,nil)==10)
+assert(F:TotalBaseCost(LOD.RPG.MagicForms.summon,LOD.RPG.MagicContents.fire)==13)
+print('WIZARD_BALANCE_PASS: 300 seeds, class-only acquisition, legacy migration, distinct starting Content and cost 10 / Fire 13')
 -- Class may already be selected when restoring/creating a Hero. The old tests
 -- only granted Level 1 before class selection and missed Wizard utility starts.
 local later={summon=0,wall=0}

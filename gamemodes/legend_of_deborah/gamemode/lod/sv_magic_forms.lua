@@ -16,7 +16,7 @@ local Motion = LOD.HostileMotionV2
 if not Magic or not RPG or not Progression or not MagicProgression or not Rules or not Rolls then return end
 
 Forms.SourceDocumentId = "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
-Forms.SourceRevisionId = "ANLCKQmboT5nux5Lm3q62ObxvAeLRflm1f4D_IsXIOK2bLIp8MfCOfAm5qRLQK7SvE1sWB6zV3Gn_CnaE__-w6fMnNlO9w6XqCYtQQcD_g"
+Forms.SourceRevisionId = "ANLCKQn7d-0muOCBGrHxJZ-shoI_Yvc0LXT2Tt_EkfyBDDkUHTdJFncQC8CWpGDv3yesApEO0O5wBPR-vHKFlvLi0w2D5-CQrk7BKIzGhQ"
 Forms.Tuning = {
     Wall = {lifetime=10, durationPerWis=2, maxLifetime=30, baseWidth=288, height=112,
         thickness=12, reach=240, minWidth=48, contact=24, interval=.1, hitDelay=1,
@@ -34,11 +34,11 @@ Forms.Tuning = {
     CastCooldown = 0.85,
     BeamCooldown = 0.65,
     BaseBeamRange = 1152,
-    BaseBombBlastRadius = 96,
+    BaseBombBlastRadius = 72,
     BaseBombThrowRange = 1152,
     BombProjectileSpeed = 700,
     BaseMissileRange = 1536,
-    BaseMissileBlastRadius = 128,
+    BaseMissileBlastRadius = 96,
     MissileProjectileSpeed = 900,
     MissileSteeringDegreesPerSecond = 180,
     MaxActiveGuidedMissilesPerCaster = 1,
@@ -953,27 +953,31 @@ function Forms:Validate()
     local function expect(ok, message) if not ok then errors[#errors + 1] = message end end
     local t = self.Tuning
     expect(t.BaseBeamRange == 1152, "BaseBeamRange")
-    expect(t.BaseBombThrowRange == 1152 and t.BaseBombBlastRadius == 96, "Bomb tuning")
-    expect(t.BaseMissileRange == 1536 and t.BaseMissileBlastRadius == 128, "Missile range/radius")
+    expect(t.BaseBombThrowRange == 1152 and t.BaseBombBlastRadius == 72, "Bomb tuning")
+    expect(t.BaseMissileRange == 1536 and t.BaseMissileBlastRadius == 96, "Missile range/radius")
     expect(t.MissileProjectileSpeed == 900 and t.MissileSteeringDegreesPerSecond == 180,
         "Missile flight tuning")
     expect(t.MaxActiveGuidedMissilesPerCaster == 1, "one active guided Missile")
     expect(t.BaseBoltRange == 1920 and t.BoltProjectileSpeed == 2400, "Bolt tuning")
     local forms = RPG.MagicForms or {}
-    expect(forms.blast and forms.blast.damageDice == 2 and forms.blast.magicCost == 30, "Blast catalog")
-    expect(forms.beam and forms.beam.damageDice == 3 and forms.beam.magicCost == 18, "Beam catalog")
-    expect(forms.bomb and forms.bomb.damageDice == 3 and forms.bomb.magicCost == 20, "Bomb catalog")
-    expect(forms.missile and forms.missile.damageDice == 3 and forms.missile.magicCost == 28, "Missile catalog")
-    expect(forms.bolt and forms.bolt.damageDice == 4 and forms.bolt.magicCost == 15, "Bolt catalog")
-    expect(forms.summon and forms.summon.magicCost == 12, "Summon catalog")
+    expect(forms.blast and forms.blast.damageDice == 2 and forms.blast.magicCost == 16, "Blast catalog")
+    expect(forms.beam and forms.beam.damageDice == 3 and forms.beam.magicCost == 2, "Beam catalog")
+    expect(forms.bomb and forms.bomb.damageDice == 3 and forms.bomb.magicCost == 14, "Bomb catalog")
+    expect(forms.missile and forms.missile.damageDice == 3 and forms.missile.magicCost == 18, "Missile catalog")
+    expect(forms.bolt and forms.bolt.damageDice == 4 and forms.bolt.magicCost == 4, "Bolt catalog")
+    expect(forms.summon and forms.summon.magicCost == 10, "Summon catalog")
+    expect(forms.cone and forms.cone.magicCost == 9, "Cone catalog")
+    expect(forms.watermelon and forms.watermelon.magicCost == 11, "Watermelon catalog")
+    expect(forms.super_ball and forms.super_ball.magicCost == 1, "Super Ball catalog")
+    expect(forms.wall and forms.wall.magicCost == 16, "Wall catalog")
     local contents = RPG.MagicContents or {}
-    expect(contents.earth and contents.earth.surcharge == 10 and contents.earth.rider == "push", "Earth")
-    expect(contents.fire and contents.fire.surcharge == 15 and contents.fire.rider == "immolated", "Fire")
-    expect(contents.dark and contents.dark.surcharge == 15 and contents.dark.rider == "poisoned", "Dark")
-    expect(contents.ice and contents.ice.surcharge == 10 and contents.ice.rider == "held", "Ice")
-    expect(contents.light and contents.light.surcharge == 5 and contents.light.rider == "muted", "Light")
-    expect(contents.electric and contents.electric.surcharge == 10 and contents.electric.rider == "morale", "Electric")
-    expect(self:TotalBaseCost(forms.bolt, contents.light) == 20, "Form + Content cost composition")
+    expect(contents.earth and contents.earth.surcharge == 2 and contents.earth.rider == "push", "Earth")
+    expect(contents.fire and contents.fire.surcharge == 3 and contents.fire.rider == "immolated", "Fire")
+    expect(contents.dark and contents.dark.surcharge == 3 and contents.dark.rider == "poisoned", "Dark")
+    expect(contents.ice and contents.ice.surcharge == 2 and contents.ice.rider == "held", "Ice")
+    expect(contents.light and contents.light.surcharge == 1 and contents.light.rider == "muted", "Light")
+    expect(contents.electric and contents.electric.surcharge == 2 and contents.electric.rider == "morale", "Electric")
+    expect(self:TotalBaseCost(forms.bolt, contents.light) == 5, "Form + Content cost composition")
     return #errors == 0, errors
 end
 

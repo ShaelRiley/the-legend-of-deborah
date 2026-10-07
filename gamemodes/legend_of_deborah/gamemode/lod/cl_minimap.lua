@@ -12,7 +12,7 @@ LOD.Minimap = LOD.Minimap or {
 local Map = LOD.Minimap
 local MC = LOD.Config.Maze
 local GC = LOD.Config.Geometry
-local mapKeyWasDown = false
+local mapMWasDown, mapQWasDown = false, false
 local MAP_REQUEST_RETRY = 0.75
 local MAP_RT_SIZE = 256
 
@@ -363,11 +363,10 @@ function Map:Toggle()
 end
 concommand.Add("lod_minimap_toggle", function() Map:Toggle() end)
 hook.Add("Think", "LOD_MinimapToggleInput", function()
-    local down = input.IsKeyDown(KEY_M)
-    if not down then mapKeyWasDown = false;return end
-    if mapKeyWasDown then return end
-    mapKeyWasDown = true
-    Map:Toggle()
+    local m, q = input.IsKeyDown(KEY_M), input.IsKeyDown(KEY_Q)
+    local pressed = (m and not mapMWasDown) or (q and not mapQWasDown)
+    mapMWasDown, mapQWasDown = m, q
+    if pressed then Map:Toggle() end
 end)
 
 local function gateStateSignature()

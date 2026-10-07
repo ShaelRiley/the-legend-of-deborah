@@ -89,6 +89,49 @@ assert(W.ActiveFullMagicSnapshots[owner]==previous,'Error unwinding restores the
 W.ActiveFullMagicSnapshots[owner]=nil;raiseCast=false
 assert(M:CastForceShout({valid=false},5)==false,'Invalid caster still rejected')
 print('MAGIC_MOUSE_SERVER_DISPATCH_PASS: '..cases..' class/Form/button casts through receiver and installed Wizard wrapper')
+-- Exact-budget requests exercise the new low prices through the installed
+-- receiver, including the one-Magic boundary, all riders and class restrictions.
+local prices={blast=16,beam=2,bomb=14,missile=18,bolt=4,summon=10,cone=9,
+ watermelon=11,super_ball=1,wall=16}
+local surcharges={raw=0,earth=2,fire=3,dark=3,ice=2,light=1,electric=2}
+local budgetCases=0
+for _,class in ipairs({'fighter','rogue','wizard'}) do
+ state.classId=class;state.magicFormIds=table.Copy(allForms)
+ state.contentIds={'earth','fire','dark','ice','light','electric'}
+ state.featIds={};state.derivedStats={intMod=0,wisMod=0}
+ for _,id in ipairs(allForms) do
+  if P:FormAllowed(state,id) then
+   state.selectedMagicFormId=id;state.magicBindings={['2']=id};P:EnsureState(state)
+   for content,surcharge in pairs(surcharges) do
+    state.selectedMagicContentId=content~='raw' and content or nil
+    local budget=prices[id]+surcharge
+    owner.ps.magic=budget;M.NextCast[owner]=0;dispatched=nil;requestButton=2
+    receive(3,owner)
+    assert(dispatched and dispatched.form==id and owner.ps.magic==0,
+     class..' '..id..'/'..content..' must spend the exact Form + one Content price')
+    owner.ps.magic=budget;dispatched=nil;receive(3,owner)
+    assert(not dispatched and owner.ps.magic==budget,'Cheap casts still honor cooldown')
+    owner.ps.magic=budget-1;M.NextCast[owner]=0;receive(3,owner)
+    assert(not dispatched and owner.ps.magic==budget-1,'One below price must fail without spending')
+    budgetCases=budgetCases+1
+   end
+  end
+ end
+end
+-- Cached definitions and restored characters must see the prices after refresh.
+state.classId='wizard';state.selectedMagicContentId='fire'
+local formReference,contentReference=LOD.RPG.MagicForms.beam,LOD.RPG.MagicContents.fire
+formReference.magicCost=18;contentReference.surcharge=15
+local beforeBindings=table.Copy(state.magicBindings)
+dofile(root..'sv_magic_progression.lua')
+assert(formReference==LOD.RPG.MagicForms.beam and formReference.magicCost==2)
+assert(contentReference==LOD.RPG.MagicContents.fire and contentReference.surcharge==3)
+local snapshot=P:Snapshot(state)
+for _,row in ipairs(snapshot.forms) do assert(row.magicCost==prices[row.id]) end
+for _,row in ipairs(snapshot.contents) do assert((row.surcharge or 0)==surcharges[row.id]) end
+assert(snapshot.selectedContentId=='fire' and snapshot.bindings['2']==beforeBindings['2'])
+assert(F:Validate(),'Native validation must accept the rebalance')
+print('MAGIC_COST_TRANSACTION_PASS: '..budgetCases..' exact-budget class/Form/Content casts; insufficient funds, cooldown, one surcharge, in-place refresh and spellbook snapshot')
 -- Real client input path: all four buttons, menu/chat/throwable and release latch.
 MOUSE_LEFT,MOUSE_RIGHT,MOUSE_MIDDLE,MOUSE_4,MOUSE_5=107,108,109,110,111
 IN_ATTACK,IN_ATTACK2=1,2

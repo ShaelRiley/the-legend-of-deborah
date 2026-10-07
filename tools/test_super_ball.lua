@@ -94,7 +94,7 @@ F._ApplyDamage=function(_,caster,credit,target,form,content,context)
  target.hp=target.hp-1;return true
 end
 owner.ps.magic=100;assert(F:CastSelected(owner))
-assert(owner.ps.magic==53,'32 base + 15 Fire uses the common cast transaction')
+assert(owner.ps.magic==96,'1 base + 3 Fire uses the common cast transaction')
 local ball=spawned[#spawned];assert(ball.LODBall and owner.nw.LOD_SuperBallRemaining==1)
 for i=1,300 do
  now=i*.025;local before=traces
