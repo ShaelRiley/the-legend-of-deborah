@@ -106,6 +106,7 @@ local function drawFloorSlab(ent, box, color, getMaterial)
         return
     end
 
+    if LOD.TexturedBox and LOD.TexturedBox.NeutralDrawState then LOD.TexturedBox:NeutralDrawState() end
     render.SetMaterial(material)
     render.DrawBox(box.position, box.angles, box.mins, box.maxs, color)
 end
@@ -127,8 +128,14 @@ local function drawFullMetalBox(ent, box, color, getMaterial)
         return
     end
 
+    if LOD.TexturedBox and LOD.TexturedBox.NeutralDrawState then LOD.TexturedBox:NeutralDrawState() end
     render.SetMaterial(material)
     render.DrawBox(box.position, box.angles, box.mins, box.maxs, color)
+end
+
+local function drawWireframe(...)
+    if LOD.TexturedBox and LOD.TexturedBox.NeutralDrawState then LOD.TexturedBox:NeutralDrawState() end
+    render.DrawWireframeBox(...)
 end
 
 -- These boxes are submitted manually, bypassing the native entity draw culler.
@@ -263,9 +270,7 @@ local function inCamera(box, camera)
     return true
 end
 
-hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", function(drawingDepth, drawingSkybox, drawing3DSkybox)
-    if drawingDepth or drawingSkybox or drawing3DSkybox then return end
-
+local function drawGeneratedGeometry()
     local camera = cameraSnapshot()
     -- Resolve the mounted concrete/fallback once per pass, only if needed.
     -- Pass-local ownership is safe for nested RenderView and retries next frame.
@@ -291,11 +296,11 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
                 if kind == 1 then
                     drawFloorSlab(ent, box, floorColor, getMaterial)
                     if ent:GetNW2String("LOD_EventArchetype", "") == "false_floor" then
-                        render.DrawWireframeBox(box.position, box.angles, box.mins, box.maxs, stairEdgeColor, false)
+                        drawWireframe(box.position, box.angles, box.mins, box.maxs, stairEdgeColor, false)
                     end
                 elseif kind == 2 then
                     drawFullMetalBox(ent, box, stairColor, getMaterial)
-                    render.DrawWireframeBox(
+                    drawWireframe(
                         box.position,
                         box.angles,
                         box.mins,
@@ -314,5 +319,14 @@ hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", functio
                 -- server collision and is intentionally invisible on the client.
             end
         end
+    end
+end
+
+hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", function(drawingDepth, drawingSkybox, drawing3DSkybox)
+    if drawingDepth or drawingSkybox or drawing3DSkybox then return end
+    if LOD.TexturedBox and LOD.TexturedBox.WithDrawState then
+        LOD.TexturedBox:WithDrawState(drawGeneratedGeometry)
+    else
+        drawGeneratedGeometry()
     end
 end)

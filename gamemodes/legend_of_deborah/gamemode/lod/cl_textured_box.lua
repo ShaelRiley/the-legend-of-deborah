@@ -246,13 +246,62 @@ local function cachedDraw(owner, prefix, position, angles, mins, maxs, tile, bui
     return entry.mesh, row.matrix
 end
 
+-- Only the generated-geometry pass borrows state across adjacent mesh draws.
+-- Keep ordinary callers' set/draw/restore behavior and scope ownership local:
+-- nested RenderView, errors and helper replacement cannot leave a stale borrow.
+local drawState
+local scopeDraw, scopeSlab, scopeGrate, scopeNeutral
+local function restoreDrawState(state)
+    render.SetBlend(state and state.blend or 1)
+    render.SetColorModulation(state and state.r or 1,
+        state and state.g or 1, state and state.b or 1)
+    if state and state.material then render.SetMaterial(state.material) end
+end
+function TexturedBox:WithDrawState(paint, ...)
+    local previous = drawState
+    local state = self.Draw == scopeDraw and self.DrawSlab == scopeSlab
+        and self.DrawGrate == scopeGrate and self.NeutralDrawState == scopeNeutral and {} or nil
+    drawState = state
+    local ok, err = pcall(paint, ...)
+    -- A throwing native draw can leave this scope's model matrix pushed.
+    -- Its outer scope's matrix, if any, belongs to the caller and remains intact.
+    if state and state.matrixPushed then cam.PopModelMatrix() end
+    drawState = previous
+    -- Empty/fully culled scopes never acquired native state. A helper fallback
+    -- restores an active outer borrow after its ordinary direct draws.
+    if (state and state.applied) or (not state and previous and previous.applied) then
+        restoreDrawState(previous)
+    end
+    if not ok then error(err, 0) end
+end
+function TexturedBox:NeutralDrawState()
+    if not drawState then return end
+    drawState.applied = true
+    render.SetBlend(1)
+    render.SetColorModulation(1, 1, 1)
+    -- Wireframes/fallbacks may change their material internally. The next mesh
+    -- reapplies every field rather than borrowing that external operation.
+    drawState.material, drawState.r, drawState.g, drawState.b, drawState.blend = nil, nil, nil, nil, nil
+end
+
 local function drawMesh(obj, position, angles, material, color, matrix)
     if not obj or not position or not material then return end
 
-    render.SetMaterial(material)
     local c = color or color_white
-    render.SetColorModulation(c.r / 255, c.g / 255, c.b / 255)
-    render.SetBlend((c.a or 255) / 255)
+    local r, g, b, alpha = c.r / 255, c.g / 255, c.b / 255, (c.a or 255) / 255
+    local state = drawState
+    if state then
+        state.applied = true
+        if state.material ~= material then render.SetMaterial(material); state.material = material end
+        if state.r ~= r or state.g ~= g or state.b ~= b then
+            render.SetColorModulation(r, g, b); state.r, state.g, state.b = r, g, b
+        end
+        if state.blend ~= alpha then render.SetBlend(alpha); state.blend = alpha end
+    else
+        render.SetMaterial(material)
+        render.SetColorModulation(r, g, b)
+        render.SetBlend(alpha)
+    end
 
     if not matrix then
         matrix = Matrix()
@@ -261,11 +310,12 @@ local function drawMesh(obj, position, angles, material, color, matrix)
     end
 
     cam.PushModelMatrix(matrix)
+    if state then state.matrixPushed = true end
     obj:Draw()
     cam.PopModelMatrix()
+    if state then state.matrixPushed = false end
 
-    render.SetBlend(1)
-    render.SetColorModulation(1, 1, 1)
+    if not state then restoreDrawState() end
 end
 
 function TexturedBox:Draw(position, angles, mins, maxs, material, color, tile, owner, snapshot)
@@ -310,3 +360,5 @@ function TexturedBox:DrawGrate(position,angles,mins,maxs,owner,snapshot)
         buildGrateMesh, snapshot)
     drawMesh(obj,position,angles,material,Color(105,110,112),matrix)
 end
+scopeDraw, scopeSlab, scopeGrate = TexturedBox.Draw, TexturedBox.DrawSlab, TexturedBox.DrawGrate
+scopeNeutral = TexturedBox.NeutralDrawState

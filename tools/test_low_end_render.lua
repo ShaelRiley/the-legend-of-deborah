@@ -3,7 +3,8 @@
 -- Optional arguments supply baseline mesh/entity source paths for paired probes.
 local baseline = arg and arg[1] == '--baseline'
 local parity = arg and arg[1] == '--parity'
-local override = baseline or parity or arg and arg[1] == '--source'
+local stateProbe = arg and arg[1] == '--state-probe'
+local override = baseline or parity or stateProbe or arg and arg[1] == '--source'
 local meshPath = override and assert(arg[2]) or 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
 local entityPath = override and assert(arg[3]) or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua'
 local noop = function() end
@@ -61,25 +62,37 @@ local format=string.format
 string.format=function(...) formats=formats+1;return format(...) end
 local currentMatrix,lastDraw,seen=nil,nil,{}
 local lastMaterial,blend,tint
+local stateCalls,wireframes,fallbacks=0,0,0
+local failDraw,interruptDraw=false,nil
+local matrixStack={}
 local submissionSignature = parity and arg[4] and {} or nil
 function Matrix()
  matrices=matrices+1
  return {Translate=function(self,p) self.pos=Vector(p.x,p.y,p.z) end,
   Rotate=function(self,a) self.ang=Angle(a.p,a.y,a.r) end}
 end
-cam={PushModelMatrix=function(m) assert(not currentMatrix);currentMatrix=m end,
- PopModelMatrix=function() assert(currentMatrix);currentMatrix=nil end}
+cam={PushModelMatrix=function(m) matrixStack[#matrixStack+1]=m;currentMatrix=m end,
+ PopModelMatrix=function() assert(currentMatrix);table.remove(matrixStack);currentMatrix=matrixStack[#matrixStack] end}
 local vertices,current,building
 function Mesh()
  allocations=allocations+1;live=live+1;peak=math.max(peak,live)
  return {Destroy=function(self) assert(not self.dead,'double destruction');self.dead=true;live=live-1 end,
   Draw=function(self)
    assert(not self.dead,'evicted mesh drawn');assert(currentMatrix)
-   draws=draws+1;lastDraw={mesh=self,matrix=currentMatrix}
+   if failDraw then error('injected native mesh draw failure',0) end
+   if interruptDraw then
+    local callback=interruptDraw;interruptDraw=nil
+    local m,b,r,g,blue,matrix=lastMaterial,blend,tint[1],tint[2],tint[3],currentMatrix
+    callback()
+    assert(currentMatrix==matrix and lastMaterial==m and blend==b
+     and tint[1]==r and tint[2]==g and tint[3]==blue,'nested draw changed the outer mesh state')
+   end
+   draws=draws+1;lastDraw={mesh=self,matrix=currentMatrix,material=lastMaterial,blend=blend,tint={tint[1],tint[2],tint[3]}}
    seen[format('%g,%g,%g',currentMatrix.pos.x,currentMatrix.pos.y,currentMatrix.pos.z)]=true
    if submissionSignature then
     local p,a=currentMatrix.pos,currentMatrix.ang or angle_zero
     local row={format('%g,%g,%g|%g,%g,%g|%g,%g,%g,%g',p.x,p.y,p.z,a.p,a.y,a.r,tint[1],tint[2],tint[3],blend)}
+    if stateProbe then row[#row+1]=lastMaterial.tag end
     for _,v in ipairs(self.vertices) do
      row[#row+1]=format('%g,%g,%g|%g,%g,%g|%.17g,%.17g',v.pos.x,v.pos.y,v.pos.z,
       v.normal.x,v.normal.y,v.normal.z,v.u,v.v)
@@ -94,10 +107,27 @@ mesh={Begin=function(obj) building=obj;vertices={};current={} end,
  AdvanceVertex=function() vertices[#vertices+1]=current;current={} end,
  End=function() building.vertices=vertices end}
 local material={IsError=function() return false end,GetTexture=function() return {IsError=function() return false end} end}
-Material=function() return material end
+material.tag='industrial'
+local grateMaterial=setmetatable({tag='grate'},{__index=material})
+local wireMaterial={tag='wireframe'}
+Material=function(path) return path=='models/props_c17/FurnitureMetal001a' and grateMaterial or material end
 render={GetViewSetup=function(current) assert(current);return view end,
- SetMaterial=function(m) lastMaterial=m end,SetBlend=function(b) blend=b end,
- SetColorModulation=function(r,g,b) tint={r,g,b} end,DrawWireframeBox=noop}
+ SetMaterial=function(m) stateCalls=stateCalls+1;lastMaterial=m end,
+ SetBlend=function(b) stateCalls=stateCalls+1;blend=b end,
+ SetColorModulation=function(r,g,b) stateCalls=stateCalls+1;tint={r,g,b} end,
+ DrawWireframeBox=function(pos,ang,mins,maxs,color,depth)
+  assert(blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'mesh tint leaked into a wireframe')
+  wireframes=wireframes+1
+  if submissionSignature and stateProbe then
+   submissionSignature[#submissionSignature+1]=format('wire|%g,%g,%g|%g,%g,%g|%g,%g,%g|%g,%g,%g|%g,%g,%g,%g|%s',
+    pos.x,pos.y,pos.z,ang.p,ang.y,ang.r,mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z,color.r,color.g,color.b,color.a,tostring(depth))
+  end
+  lastMaterial=wireMaterial -- model the helper's independent material ownership
+ end,
+ DrawBox=function(pos,ang,mins,maxs,color)
+  assert(not currentMatrix and blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'fallback inherited mesh state')
+  fallbacks=fallbacks+1
+ end}
 LOD={Config={Geometry={FloorTextureTile=512}},CrateVisuals={GrateInset=8,GratePitch=24,GrateBarWidth=3}}
 MATERIAL_QUADS=7
 dofile(meshPath);ENT={};dofile(entityPath)
@@ -141,14 +171,113 @@ if not baseline then assert(formats==0 and matrices==0,'static drawing repeats c
 print(format('LOW_END_NATIVE_GETTERS entities=120 frames=120 reads=%d native_fps_measured=false',geometryReads))
 if not baseline then assert(geometryReads==4*120*120,'drawable boxes repeat native geometry reads within a pass') end
 print(format('LOW_END_DRAW_SNAPSHOT entities=120 passes=120 native_vector_components=%d native_fps_measured=false',nativeVectorReads))
-if not baseline and not parity then assert(nativeVectorReads==9*120*120,'mesh cache repeats the renderer native scalar reads') end
+if not baseline and not parity and not stateProbe then assert(nativeVectorReads==9*120*120,'mesh cache repeats the renderer native scalar reads') end
 print(format('LOW_END_PLANE_WORK entities=120 passes=120 absolute_values=%d basis_component_reads=%d native_fps_measured=false',absoluteValues,axisReads))
 if not baseline then
  assert(absoluteValues<=20*120,'identity-axis support repeats plane arithmetic per box')
  assert(axisReads<=9*120,'unchanged box support repeats native basis component reads')
 end
+resetScene()
+-- A warmed continuous floor pass must preserve each mesh's state while avoiding
+-- native set/reset calls for every adjacent draw. Both exact-source paired runs
+-- execute this same production scene; the parent fails the bounded-work gate.
+for i=1,120 do box(Vector(1000+i*2,(i%5)*16,0),1) end
+assert(frame()==120)
+if stateProbe and arg[4] then submissionSignature={};assert(frame()==120) end
+local signatureRows=submissionSignature
+submissionSignature=nil
+stateCalls=0
+for _=1,120 do
+ assert(frame()==120)
+ assert(not currentMatrix and blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'pass left native state applied')
+end
+local floorStateCalls=stateCalls
+print(format('LOW_END_STATE_WORK entities=120 passes=120 submissions=14400 native_state_calls=%d native_fps_measured=false',floorStateCalls))
+if not baseline and not parity and not stateProbe then assert(floorStateCalls<=600,'floor pass repeats native material/tint/blend writes') end
+resetScene()
+for i,kind in ipairs({1,2,5,1,1,2,5}) do
+ local e=box(Vector(1000+i*2,0,0),kind)
+ if i==4 then e.nw.LOD_CrateGrate=true end
+ if i==5 then e.nw.LOD_EventArchetype='false_floor' end
+end
+assert(frame()==7)
+if signatureRows then
+ submissionSignature=signatureRows;assert(frame()==7);submissionSignature=nil
+ table.sort(signatureRows)
+ local f=assert(io.open(arg[4],'wb'));f:write(table.concat(signatureRows,'\n'));f:close()
+ print(format('LOW_END_STATE_PARITY submissions=%d mesh_wireframe_bytes_recorded=true',#signatureRows))
+end
+if stateProbe then resetScene();return end
+if not parity and not baseline then
+ -- Unknown/replaced draw helpers retain direct-call behavior. Their callers
+ -- may depend on neutral state immediately after each mesh, including wrappers.
+ local original=B.DrawSlab
+ local wrappedCalls=0
+ B.DrawSlab=function(self,...)
+  original(self,...);wrappedCalls=wrappedCalls+1
+  assert(blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'wrapped helper was silently batched')
+  lastMaterial=wireMaterial
+ end
+ assert(frame()==7 and wrappedCalls>0);B.DrawSlab=original
+ local neutral=B.NeutralDrawState;B.NeutralDrawState=nil;assert(frame()==7);B.NeutralDrawState=neutral
+ local scope=B.WithDrawState;B.WithDrawState=nil;assert(frame()==7);B.WithDrawState=scope
+ resetScene();box(Vector(1000,0,0),1)
+ local before=fallbacks;B.DrawSlab=nil;frame();assert(fallbacks==before+1);B.DrawSlab=original
+ -- Real generated mesh errors must balance the model stack and restore native
+ -- color/blend before another ordinary API call or the following render pass.
+ failDraw=true;local ok,err=pcall(frame);failDraw=false
+ assert(not ok and tostring(err):find('injected native mesh draw failure',1,true))
+ assert(not currentMatrix and #matrixStack==0 and blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'throwing pass leaked owned native state')
+ assert(frame()==1)
+ local p,a,mn,mx=Vector(2000,0,0),Angle(),Vector(-8,-8,-4),Vector(8,8,4)
+ local outerColor,innerColor=Color(80,100,120,192),Color(120,80,40,96)
+ B:WithDrawState(function()
+  B:Draw(p,a,mn,mx,material,outerColor)
+  local emptyCalls=stateCalls
+  B:WithDrawState(noop)
+  assert(stateCalls==emptyCalls and lastMaterial==material and blend==outerColor.a/255
+   and tint[1]==outerColor.r/255 and tint[2]==outerColor.g/255 and tint[3]==outerColor.b/255,'empty child altered outer borrowed state')
+  interruptDraw=function()
+   B:WithDrawState(function() B:Draw(p,a,mn,mx,grateMaterial,innerColor) end)
+  end
+  B:Draw(p,a,mn,mx,material,outerColor)
+  local outerMaterial,outerBlend,r,g,b=lastMaterial,blend,tint[1],tint[2],tint[3]
+  failDraw=true;local childOk=pcall(function()
+   B:WithDrawState(function() B:Draw(p,a,mn,mx,grateMaterial,innerColor) end)
+  end);failDraw=false
+  assert(not childOk and not currentMatrix and #matrixStack==0)
+  assert(lastMaterial==outerMaterial and blend==outerBlend and tint[1]==r and tint[2]==g and tint[3]==b,'throwing child lost outer render state')
+  B:Draw(p,a,mn,mx,grateMaterial,innerColor)
+  assert(lastDraw.material==grateMaterial and lastDraw.blend==innerColor.a/255
+   and lastDraw.tint[1]==innerColor.r/255 and lastDraw.tint[2]==innerColor.g/255 and lastDraw.tint[3]==innerColor.b/255,'live material/tint/alpha transition lost')
+ end)
+ assert(not currentMatrix and blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1)
+ stateCalls=0;B:Draw(p,a,mn,mx,material,outerColor)
+ assert(stateCalls==5 and blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'direct draw inherited a completed scope')
+ local callbackOk=pcall(function() B:WithDrawState(function() error('injected callback failure') end) end)
+ assert(not callbackOk and not currentMatrix and blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1)
+ -- An empty, fully culled or failing-before-draw scope owns no native state.
+ -- Preserve arbitrary incoming addon state without even redundant resets.
+ resetScene()
+ lastMaterial,blend,tint=wireMaterial,0.37,{0.2,0.3,0.4}
+ stateCalls=0
+ local function untouched()
+  assert(stateCalls==0 and lastMaterial==wireMaterial and blend==0.37
+   and tint[1]==0.2 and tint[2]==0.3 and tint[3]==0.4,'empty scope altered unowned native state')
+ end
+ assert(frame()==0);untouched()
+ box(Vector(-1000,0,0),1);assert(frame()==0);untouched()
+ B:WithDrawState(function() B:WithDrawState(noop) end);untouched()
+ local emptyOk=pcall(function() B:WithDrawState(function() error('before first draw') end) end)
+ assert(not emptyOk);untouched()
+ lastMaterial,blend,tint=material,1,{1,1,1}
+ print('LOW_END_STATE_LIFETIME_PASS: mixed floor/stair/grate/false-floor; neutral wireframes; replacement/missing helpers; nested material/alpha; owned error unwind; untouched empty/culled scopes; ordinary API')
+end
+resetScene()
 -- Simulate Source honoring SetNextClientThink/true, including the existing
 -- one-second deadline. The parent invokes each callback every rendered frame.
+for i=1,120 do box(Vector(1000+i*2,(i%5)*16,(i%3)*16),i%2+1) end
+assert(frame()==120)
 local callbacks=0
 for i=1,600 do
  now=100+(i-1)/60

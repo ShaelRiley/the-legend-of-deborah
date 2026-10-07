@@ -1,4 +1,33 @@
-# Current checkpoint — saved camera/map Options and Steam Deck performance
+# Current checkpoint — generated-geometry render state reuse
+
+October 7, 2026: the complete exact-source `d582729` capture averages 26.3639
+active FPS, with 1,486 native walls, 36 living wanderers, idle VR and no Lua
+errors. Camera/map preferences change during recording and the generated
+workload differs from the preceding capture, so the FPS difference is not an
+isolated source benefit. All four parent Actions workflows pass. Sustained
+>=40 FPS and native camera/map visual acceptance remain open.
+
+Generated static geometry remains the largest measured custom rendering
+callback. Extend its existing TexturedBox authority with pass-local reuse of
+identical material/tint/alpha state. Preserve all mesh/UV/matrix submissions,
+visibility, draw order, wireframe boundaries, native resource lifetimes and
+ordinary direct APIs. Unknown helpers use the ordinary path; nested/throwing
+scopes unwind their own state. No server rules, population, graphics settings,
+camera/map behavior, tuning or experimental wall-batch defaults change.
+
+The paired warmed 120-floor/120-pass scene keeps 14,400 draws while reducing
+native state writes from 72,000 to 600. Exact mixed mesh/wireframe submissions
+match, and the parent fails the new work gate. The completed frozen gate passes
+313/313 suites and 884 Lua syntax files, with all 2,548 source files unchanged.
+After interruption, 62 canonical passing receipts were independently verified
+and reused, then all 251 remaining suites ran; all 313 commands/receipts and
+626 raw stream hashes are independently verified. These are headless operation
+counts, not FPS. Publish the coherent source checkpoint, then collect the usual
+fixed-preference native capture. See
+[finite gate and native evidence](validation/STEAM_DECK_20261007_DRAW_STATE.md).
+No Workshop or VPS operation is included.
+
+# Previous checkpoint — saved camera/map Options and Steam Deck performance
 
 October 7, 2026: the author requests a third-person checkbox and separate map
 size (0.5–1.5×) and opacity sliders while optimization continues. Live GDD
