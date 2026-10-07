@@ -1,3 +1,29 @@
+# Current checkpoint — saved camera/map Options and Steam Deck performance
+
+October 7, 2026: the author requests a third-person checkbox and separate map
+size (0.5–1.5×) and opacity sliders while optimization continues. Live GDD
+normalized 01/06/07 and the bounded HUMAN Options paragraphs are amended and
+exact-readback verified before implementation. Extend the canonical saved
+preference, native base camera, Options UI and minimap presentation authorities.
+The menu scrolls on small windows; all map layers share one cached transform
+and opacity scope without rebuilding topology. Preserve first-person/current
+map defaults, native weapon/cinematic/VR views, Magic and all server rules.
+The accompanying bounded performance change removes per-frame quadrant
+rectangle records; paired default drawing submissions remain identical. The frozen gate passes
+313/313 suites and 884 Lua syntax files; the paired 10,000-frame probe
+allocates 1.503 KiB versus 10,859.472 KiB. These are headless operation
+counts, not native FPS.
+See [author scope](briefs/PLAYER_OPTIONS_20261007.md) and
+[finite gate/evidence](validation/PLAYER_OPTIONS_20261007.md).
+
+The new complete exact-source `00dd5ea` native capture averages 17.0759 active
+FPS with 1,684 walls and 64 living wanderers, idle VR and zero Lua errors.
+It does not test the subsequent safety-coordinate cache on parent `bed0d456`;
+all four parent Actions workflows pass. Sustained >=40 FPS and these options'
+native visual/camera acceptance remain open. Freeze/validate the coherent
+checkpoint, publish verified main immediately, then perform the single native
+gate in the validation document. No Workshop/VPS operation is included.
+
 # Current Steam Deck checkpoint — exact cell-centre coordinate reuse
 
 October 7, 2026: the new complete native capture verifies clean `00dd5ea`,

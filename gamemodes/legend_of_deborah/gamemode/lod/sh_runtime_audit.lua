@@ -338,7 +338,8 @@ if CLIENT then
     end
     local settingsNames={"fps_max","mat_vsync","mat_dxlevel","mat_queue_mode",
         "mat_antialias","mat_aaquality","mat_hdr_level","mat_picmip","mat_viewportscale",
-        "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects","lod_wall_batches"}
+        "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects","lod_wall_batches",
+        "lod_third_person","lod_map_scale","lod_map_opacity"}
     local renderSources={
         "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
@@ -349,6 +350,10 @@ if CLIENT then
         "gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_player_options.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_magic_quadrants.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua"}
     local populationChannel="LOD_PopulationSnapshot"
     if net and net.Receive and net.ReadUInt and net.ReadData and util.JSONToTable then

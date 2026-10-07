@@ -9,18 +9,22 @@ function GetConVar(k) return {GetBool=function() return settings[k]~=0 end} end
 function CreateClientConVar() error('Options created another preference') end
 function RunConsoleCommand() error('Opening Options overwrote a setting') end
 LOD={PlayerOptions={},UI={Colors={ink={}}}}
+GM={}
 local UI=LOD.UI
 function UI:IsMinigameLocked() return locked end
 function UI:SelectPage() end;function UI:Paper() end;function UI:CloseButton() end;function UI:PageLinks() end
 vgui={Create=function(class,parent)
- local p={class=class,parent=parent,w=100,h=20,Label={SetTextColor=function() end}}
+ local p={class=class,parent=parent,w=100,h=20,Label={SetTextColor=function() end},TextArea={SetTextColor=function() end}}
  function p:SetSize(w,h) self.w=w;self.h=h end
  function p:GetWide() return self.w end;function p:GetTall() return self.h end
  function p:SetPos(x,y) self.x=x;self.y=y end
+ function p:SetTall(h) self.h=h end
  function p:SetText(t) self.text=t end;function p:SetConVar(c) self.convar=c end
  function p:SetChecked(on) self.checked=on end;function p:GetChecked() return self.checked end
  function p:Remove() self.removed=true;if self.OnRemove then self.OnRemove() end end
- for _,k in ipairs({'Center','SetTitle','MakePopup','SetFont','SetTextColor','SizeToContents','SetMinMax','SetDecimals'}) do p[k]=function() end end
+ function p:SetMinMax(lo,hi) self.min=lo;self.max=hi end
+ function p:SetDecimals(n) self.decimals=n end
+ for _,k in ipairs({'Center','SetTitle','MakePopup','SetFont','SetTextColor','SizeToContents','SetWrap'}) do p[k]=function() end end
  panels[#panels+1]=p;return p
 end}
 dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_player_options.lua')
@@ -28,17 +32,25 @@ local O=LOD.PlayerOptions
 for _,size in ipairs({{1280,800},{640,480}}) do
  width,height=size[1],size[2];panels={};O:Open();local frame=O.Frame
  assert(UI.ActivePage=='options' and frame.w<=width-32 and frame.h<=height-32)
- local counts={};local eventControls=0
+ local counts={};local eventControls=0;local scroll,content
+ for _,p in ipairs(panels) do if p.class=='DScrollPanel' then scroll=p end end
+ for _,p in ipairs(panels) do if p.parent==scroll then content=p end end
+ assert(scroll and content and scroll.y==112 and scroll.y+scroll.h<=frame.h,'missing/bad scroll viewport')
+ assert(content.h>=480 and content.parent==scroll,'options not scrollable')
  for _,p in ipairs(panels) do
   if p.convar then counts[p.convar]=(counts[p.convar] or 0)+1 end
   if p.parent==frame and p.y then assert(p.y+p.h<=frame.h,'control clipped below frame') end
+  if p.parent==content and p.y then assert(p.y+p.h<=content.h and p.x+p.w<=content.w,'control outside scroll canvas') end
   assert(p.text~='Music' and p.convar~='lod_music_volume','retired music option remains')
   if p.text=='Event cue volume' then eventControls=eventControls+1 end
+  if p.convar=='lod_map_scale' then assert(p.class=='DNumSlider' and p.min==.5 and p.max==1.5 and p.decimals==2) end
+  if p.convar=='lod_map_opacity' then assert(p.class=='DNumSlider' and p.min==0 and p.max==1 and p.decimals==2) end
+  if p.convar=='lod_third_person' then assert(p.class=='DCheckBoxLabel') end
  end
  assert(eventControls==1,'missing/duplicate event cue volume')
- for _,k in ipairs({'lod_adventure_volume','lod_always_run','lod_reduced_effects'}) do assert(counts[k]==1,'missing/duplicate option '..k) end
+ for _,k in ipairs({'lod_adventure_volume','lod_always_run','lod_reduced_effects','lod_third_person','lod_map_scale','lod_map_opacity'}) do assert(counts[k]==1,'missing/duplicate option '..k) end
  assert(settings.lod_reduced_effects==1,'saved reduced-effects preference changed')
  O:Close();assert(O.Frame==nil and UI.ActivePage==nil)
 end
 locked=true;panels={};O:Open();assert(#panels==0,'minigame UI lock bypassed')
-print('LOW_END_OPTIONS_PASS: existing saved Reduced Effects binding; event cues/run intact; 1280x800 and 640x480 bounds; no new settings or writes; minigame lock')
+print('LOW_END_OPTIONS_PASS: six unique saved bindings; map ranges; scrollable 1280x800 and 640x480 bounds; no preference writes on open; minigame lock')

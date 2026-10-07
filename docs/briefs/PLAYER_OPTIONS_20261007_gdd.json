@@ -1,0 +1,40 @@
+{
+  "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "revisionBefore": "ANLCKQn7d-0muOCBGrHxJZ-shoI_Yvc0LXT2Tt_EkfyBDDkUHTdJFncQC8CWpGDv3yesApEO0O5wBPR-vHKFlvLi0w2D5-CQrk7BKIzGhQ",
+  "revisionAfter": "ANLCKQnrYkXEQkWhbY2lFbkh3C5XrRI-q4oBgGMtvVIvs78hQeS96NzZ3OIRtG4TjIZ4DGBr3d0o_ye6s_-butEXqxYjMR0xgyBfcEiqPQ",
+  "amendments": [
+    {
+      "tab": "t.5ffvxbn7lbs",
+      "old": "Options is the extensible home for saved player preferences, initially Music On/Off, music volume and Always Run. Music defaults On but server Off wins under LOD-MUSIC-006.",
+      "next": "Options is the extensible home for saved player preferences: Event cue volume, Always Run, Reduced effects, Third-person camera, Map size and Map opacity. The retired streamed Music controls remain removed. Third-person camera is a saved desktop checkbox, default Off; use the existing behind-player placement with collision protection and preserve aiming/FOV, VR, vehicles, spectating and authored cinematic views. Map size is a saved continuous slider from 0.5 to 1.5 times the current map, default 1.0. Map opacity is a separate saved continuous slider from 0 (transparent) to 1 (the current opacity), default 1.0. Size and opacity affect the entire map together, including text, markers and quadrant overlays; keep the panel within the window without changing the saved requested scale. These presentation preferences apply immediately, survive reconnects and Hero changes, and never change map access, Magic costs, map data, combat or server rules. First-person view and the existing map appearance remain the defaults. Reuse the existing camera placement constants rather than introducing new camera tuning."
+    },
+    {
+      "tab": "t.0",
+      "old": "Options is the extensible saved-preference home, initially Music On/Off and volume under Audio, Always Run under Controls. Player Music defaults On, but server lod_music_enabled defaults Off (0); effective permission requires both On. Show Disabled by server without erasing personal preference/volume. Either Off stops score playback and new score downloads/prefetch/retries, including special/default/universal tracks and purely musical stings, while retaining gameplay effects, ambience, dialogue and essential cues. Zero-volume listeners likewise issue no new media/prefetch/music plan-state demand. An already-started native transfer may finish only within current bounded rules; discard stale callbacks. Re-enable by fading into the current state without reshuffling plans or replaying missed fanfares; toggling alone neither announces a block nor erases Die Log history.\n",
+      "next": "Options is the extensible saved-preference home. Audio exposes Event cue volume; Controls and performance retain Always Run and Reduced effects. The retired streamed Music controls remain removed. Add a saved Third-person camera checkbox, default Off, for desktop play using the existing behind-player placement and a collision trace. Keep native weapon FOV/aim, VR, vehicles, spectator/death and authored victory/finale/timeout cameras authoritative. Add separate saved Map size and Map opacity sliders. Map size ranges from 0.5 to 1.5 times its current size, default 1.0; scale the panel, text, topology, markers and quadrant overlays together and fit the resulting panel inside the window. Map opacity ranges from 0 (transparent) to 1 (current opacity), default 1.0; multiply the existing alpha of every map layer. Apply changes immediately and persist them across sessions, reconnects and Hero replacements. These are presentation preferences: preserve map access, server-authoritative Magic expenditure and forced closing, topology/route caches, movement and combat rules. Opening Options must not overwrite a saved preference. Native visual/camera acceptance remains pending.\n"
+    },
+    {
+      "tab": "t.0",
+      "old": "Always Run defaults Off: ordinary movement walks, sprint modifier runs. On reverses only that legal walk/run input; the rebound modifier now walks and its actual label is shown. It never moves automatically, changes legal speed/caps, bypasses controls/status/Soldier restrictions or grants Dodge by itself. Other physical modifier shortcuts, including modified Use, remain unchanged. Preferences persist across sessions, reconnects and Hero replacements; server configuration persists independently. Music/Options/Always Run source implementations exist; native audio/input/UI acceptance remains open.\n",
+      "next": "Always Run defaults Off: ordinary movement walks, sprint modifier runs. On reverses only that legal walk/run input; the rebound modifier now walks and its actual label is shown. It never moves automatically, changes legal speed/caps, bypasses controls/status/Soldier restrictions or grants Dodge by itself. Other physical modifier shortcuts, including modified Use, remain unchanged. Preferences persist across sessions, reconnects and Hero replacements; server configuration persists independently. Options/Always Run source implementations exist; native input/UI acceptance remains open.\n"
+    },
+    {
+      "tab": "t.bff19dm33vvw",
+      "old": "Do not create hidden tuning constants elsewhere without a registry entry.",
+      "next": "Player Options | Third-person camera placement | Retain the existing celebration camera's 118 Source units behind, 34 units up and 6-unit trace half-extents | EXISTING PRESENTATION REUSE under author-requested Third-person camera | Reuse established placement with collision protection; preserve authored/VR/native view ownership | Production camera/Options regression gate; native visual acceptance pending.\nPlayer Options | Map size and opacity | Size 0.5–1.5×, default 1.0; opacity multiplier 0–1, default 1.0 | AUTHOR-REQUESTED PRESENTATION | Separate saved sliders; retain current appearance at defaults and shared layer geometry | Production map/UI regression gate; native visual acceptance pending.\nDo not create hidden tuning constants elsewhere without a registry entry."
+    },
+    {
+      "tab": "t.l29tf4evc12u",
+      "old": "Options tab / Music On-Off / Always Run (Shift to walk) / future preferences",
+      "next": "Options tab / Event cue volume / Always Run (Shift to walk) / Reduced effects / Third-person camera / Map size (0.5–1.5×) / Map opacity"
+    }
+  ],
+  "occurrencesChanged": [
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "readbackVerified": true
+}

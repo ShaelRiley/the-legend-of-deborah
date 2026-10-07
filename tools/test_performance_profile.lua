@@ -25,13 +25,14 @@ timer={Create=noop,Simple=function(_,fn) local t=deferred[side()];t[#t+1]=fn end
 concommand={Add=noop};game={GetMap=function() return 'gm_flatgrass' end,SinglePlayer=function() return true end}
 ScrW=function() return 1280 end;ScrH=function() return 800 end
 GetConVar=function(name) return {GetBool=function() return name=='lod_reduced_effects' end,
-    GetString=function() return name=='lod_reduced_effects' and '1' or '0' end} end
+    GetString=function() return (name=='lod_reduced_effects' or name=='lod_map_scale' or name=='lod_map_opacity') and '1' or '0' end} end
 ents={GetCount=function() return #entities[side()] end,GetAll=function() scans=scans+1;return entities[side()] end}
 local paths={'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
     root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',
     root..'cl_container_branding.lua',root..'cl_ui_theme.lua',
-    root..'cl_combat_roll_feed_semantics.lua',root..'sh_runtime_audit.lua'}
+    root..'cl_combat_roll_feed_semantics.lua',root..'sh_player_options.lua',root..'cl_player_options.lua',
+    root..'cl_minimap.lua',root..'cl_minimap_magic_quadrants.lua',root..'sh_runtime_audit.lua'}
 local manifest={};for _,path in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..path end
 for _,f in pairs(files) do
     f.dev_build='profile-test clean';f['legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')

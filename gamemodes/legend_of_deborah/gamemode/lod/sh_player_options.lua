@@ -1,7 +1,19 @@
 LOD.PlayerOptions=LOD.PlayerOptions or {}
 local O=LOD.PlayerOptions
 local function alwaysRun(p) return p.GetInfoNum and p:GetInfoNum("lod_always_run",0)~=0 end
-if CLIENT then O.AlwaysRun=CreateClientConVar("lod_always_run","0",true,true,"Run normally; hold your sprint key to walk",0,1) end
+if CLIENT then
+    O.AlwaysRun=CreateClientConVar("lod_always_run","0",true,true,"Run normally; hold your sprint key to walk",0,1)
+    O.ThirdPerson=CreateClientConVar("lod_third_person","0",true,false,"Use the desktop third-person camera",0,1)
+    O.MapScale=CreateClientConVar("lod_map_scale","1",true,false,"Map size relative to its usual size",0.5,1.5)
+    O.MapOpacity=CreateClientConVar("lod_map_opacity","1",true,false,"Map opacity relative to its usual opacity",0,1)
+    local function preference(cv,low,high)
+        local n=tonumber(cv:GetFloat())
+        if not n or n~=n then return 1 end
+        return math.Clamp(n,low,high)
+    end
+    function O:MapScaleValue() return preference(self.MapScale,0.5,1.5) end
+    function O:MapOpacityValue() return preference(self.MapOpacity,0,1) end
+end
 function O:WantsSprint(p)
     local held=p:KeyDown(IN_SPEED)
     if LOD.SoldierMovement and LOD.SoldierMovement:Active(p) then return false end

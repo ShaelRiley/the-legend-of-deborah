@@ -689,29 +689,55 @@ hook.Add("PostRender", "LOD_MinimapTopologyCache", function()
     renderStaticTopology(gz)
 end)
 
-hook.Add("HUDPaint", "LOD_MinimapHUD", function()
-    if not Map.open then return end
-    local ply = LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() or not hasAccess(ply) then
-        Map.open = false
-        return
+-- One presentation geometry for the map and every later HUD overlay. Keep the
+-- render target, graph and route caches independent of these saved preferences.
+function Map:PresentationLayout()
+    local w,h=ScrW(),ScrH()
+    local options=LOD.PlayerOptions
+    local requested=options and options:MapScaleValue() or 1
+    local layout=self.presentationLayout
+    if layout and layout.screenW==w and layout.screenH==h and layout.requested==requested then return layout end
+    local baseScale=math.Clamp(h/1080,1,2)
+    local gridSize=284*baseScale
+    local panelW,panelH=gridSize+52,gridSize+124
+    local scale=math.min(requested,math.max(0,w-40)/panelW,math.max(0,h-40)/panelH)
+    local panelX,panelY=w-panelW-20,96
+    local x,y=w-panelW*scale-20,math.min(96,h-panelH*scale-20)
+    layout={screenW=w,screenH=h,requested=requested,scale=scale,
+        panelX=panelX,panelY=panelY,panelW=panelW,panelH=panelH,
+        gridX=panelX+26,gridY=panelY+68,gridSize=gridSize,
+        x=x,y=y,width=panelW*scale,height=panelH*scale}
+    if scale~=1 or y~=panelY then
+        local matrix=Matrix()
+        matrix:SetScale(Vector(scale,scale,1))
+        matrix:SetTranslation(Vector(x-panelX*scale,y-panelY*scale,0))
+        layout.matrix=matrix
     end
+    self.presentationLayout=layout
+    return layout
+end
 
-    local state = LOD.ClientState or {}
-    local level = tonumber(state.level) or 0
-    if not mapReadyForLevel(level) then
-        requestMap(false)
-    end
+function Map:WithPresentation(paint,...)
+    local options=LOD.PlayerOptions
+    local opacity=options and options:MapOpacityValue() or 1
+    if opacity<=0 then return end
+    local layout=self:PresentationLayout()
+    local alpha=opacity~=1 and surface.GetAlphaMultiplier() or nil
+    if opacity~=1 then surface.SetAlphaMultiplier(alpha*opacity) end
+    if layout.matrix then cam.PushModelMatrix(layout.matrix,true) end
+    local ok,err=pcall(paint,layout,...)
+    if layout.matrix then cam.PopModelMatrix() end
+    if opacity~=1 then surface.SetAlphaMultiplier(alpha) end
+    if not ok then error(err,0) end
+end
 
-    local scale = math.Clamp(ScrH()/1080, 1, 2)
-    local panelW, panelH = 284*scale+52, 284*scale+124
-    local panelX = ScrW() - panelW - 20
-    local panelY = 96
-    local gridX, gridY = panelX + 26, panelY + 68
-    local gridSize = 284*scale
-    local cellSize = gridSize / math.max(Map.gridWidth or MC.Width, MC.Height)
-    local gx, gy, gz = currentGridPosition(ply)
-    gz = math.Clamp(gz, 0, math.max(0, (Map.layers or 1) - 1))
+local function paintMap(layout,ply,state,level)
+    local panelW,panelH=layout.panelW,layout.panelH
+    local panelX,panelY=layout.panelX,layout.panelY
+    local gridX,gridY,gridSize=layout.gridX,layout.gridY,layout.gridSize
+    local cellSize=gridSize/math.max(Map.gridWidth or MC.Width,MC.Height)
+    local gx,gy,gz=currentGridPosition(ply)
+    gz=math.Clamp(gz,0,math.max(0,(Map.layers or 1)-1))
 
     draw.RoundedBox(4, panelX, panelY, panelW, panelH, COLORS.panel)
     surface.SetDrawColor(COLORS.accent)
@@ -748,7 +774,6 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     surface.SetDrawColor(255, 255, 255, 255)
     surface.SetMaterial(topologyMaterial)
     surface.DrawTexturedRect(gridX, gridY, gridSize, gridSize)
-
     -- Gates are the only dynamic wall-colored overlays and there are at most a
     -- handful per generated floor. Each canonical gate edge is stored once.
     for _, gate in ipairs(Map.cache.floorGates[gz] or {}) do
@@ -855,6 +880,16 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
 
     draw.SimpleText("FOLLOW GOLD LINE • FOLLOW STAIR ARROW • GREEN = OPEN", "LOD_Map_Small",
         panelX + 18, panelY + panelH - 18, COLORS.footer, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+end
+
+hook.Add("HUDPaint", "LOD_MinimapHUD", function()
+    if not Map.open then return end
+    local ply=LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() or not hasAccess(ply) then Map.open=false;return end
+    local state=LOD.ClientState or {}
+    local level=tonumber(state.level) or 0
+    if not mapReadyForLevel(level) then requestMap(false) end
+    Map:WithPresentation(paintMap,ply,state,level)
 end)
 
 concommand.Add("lod_minimap_cache_status", function()

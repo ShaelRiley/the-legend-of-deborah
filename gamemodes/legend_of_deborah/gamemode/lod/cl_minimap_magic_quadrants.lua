@@ -8,14 +8,9 @@ local Wall = LOD.WallVisualsClient
 if not Map or not MC then return end
 
 local HEARTBEAT_SECONDS = 0.45
-local PANEL_W = 336
-local PANEL_X_MARGIN = 20
-local PANEL_Y = 96
-local GRID_OFFSET_X = 26
-local GRID_OFFSET_Y = 68
-local GRID_SIZE = 284
 local QUADRANT_ALPHA = 22
 local QUADRANT_LETTERS = {"A", "B", "C", "D"}
+local FALLBACK_COLOR = Color(185, 188, 190)
 
 Client.lastOpen = Client.lastOpen == true
 Client.nextHeartbeat = Client.nextHeartbeat or 0
@@ -107,49 +102,47 @@ hook.Add("Think", "LOD_MinimapMagicHeartbeat", function()
     end
 end)
 
-hook.Add("PostDrawHUD", "LOD_MinimapQuadrantPresentation", function()
-    if not Map.open then return end
-    local ply = LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() then return end
-
+local function paintQuadrants(layout,ply)
     refreshPalette(false)
-
     local gx, gy, gz = currentGridPosition(ply)
     local quadrant = quadrantForCell(gx, gy)
-    local panelX = ScrW() - PANEL_W - PANEL_X_MARGIN
-    local gridX = panelX + GRID_OFFSET_X
-    local gridY = PANEL_Y + GRID_OFFSET_Y
+    local gridX,gridY=layout.gridX,layout.gridY
 
     -- Match the odd 21x21 tie rule used by container quadrant labeling: the
     -- centerline belongs to left/up. This makes A/B/C/D map regions correspond to
     -- the same physical section vocabulary printed on the maze walls.
     local leftCells = math.ceil(MC.Width * 0.5)
     local upperCells = math.ceil(MC.Height * 0.5)
-    local leftW = GRID_SIZE * leftCells / MC.Width
-    local rightW = GRID_SIZE - leftW
-    local topH = GRID_SIZE * upperCells / MC.Height
-    local bottomH = GRID_SIZE - topH
-
-    local floorPalette = Client.palette[gz] or {}
-    local rects = {
-        {x = gridX, y = gridY, w = leftW, h = topH, q = 1},
-        {x = gridX + leftW, y = gridY, w = rightW, h = topH, q = 2},
-        {x = gridX, y = gridY + topH, w = leftW, h = bottomH, q = 3},
-        {x = gridX + leftW, y = gridY + topH, w = rightW, h = bottomH, q = 4}
-    }
-
-    for _, rect in ipairs(rects) do
-        local c = floorPalette[rect.q]
+    local denominator=math.max(Map.gridWidth or MC.Width,MC.Height)
+    local leftW=layout.gridSize*leftCells/denominator
+    local rightW=layout.gridSize*MC.Width/denominator-leftW
+    local topH=layout.gridSize*upperCells/denominator
+    local bottomH=layout.gridSize*MC.Height/denominator-topH
+    local floorPalette = Client.palette[gz]
+    -- Four direct submissions replace the outer rectangle list and its four
+    -- transient records. Keep the same color, order and odd-grid tie rule.
+    for q=1,4 do
+        local c = floorPalette and floorPalette[q]
         if c then
+            local right=q==2 or q==4
+            local bottom=q>=3
             surface.SetDrawColor(c.r, c.g, c.b, QUADRANT_ALPHA)
-            surface.DrawRect(rect.x, rect.y, rect.w, rect.h)
+            surface.DrawRect(gridX+(right and leftW or 0),gridY+(bottom and topH or 0),
+                right and rightW or leftW,bottom and bottomH or topH)
         end
     end
 
-    local qColor = floorPalette[quadrant] or Color(185, 188, 190)
+    local qColor = floorPalette and floorPalette[quadrant] or FALLBACK_COLOR
     draw.SimpleText("QUADRANT " .. (QUADRANT_LETTERS[quadrant] or "?"),
-        "LOD_Map_Small", panelX + PANEL_W - 16, PANEL_Y + 31,
+        "LOD_Map_Small", layout.panelX + layout.panelW - 16, layout.panelY + 31,
         qColor, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+end
+
+hook.Add("PostDrawHUD", "LOD_MinimapQuadrantPresentation", function()
+    if not Map.open then return end
+    local ply=LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() then return end
+    Map:WithPresentation(paintQuadrants,ply)
 end)
 
 concommand.Add("lod_minimap_quadrant_status", function()

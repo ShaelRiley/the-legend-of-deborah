@@ -1,0 +1,132 @@
+{
+  "parent_sha": "bed0d45645a082583a5b42d92617742355fb3fce",
+  "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "gdd_revision": "ANLCKQnrYkXEQkWhbY2lFbkh3C5XrRI-q4oBgGMtvVIvs78hQeS96NzZ3OIRtG4TjIZ4DGBr3d0o_ye6s_-butEXqxYjMR0xgyBfcEiqPQ",
+  "full_matrix": {
+    "total": 313,
+    "passed": 313,
+    "source_before": "42654d55253e2e30f8f87e4ad33d2bad753f5872f98d165201951f85e8bfe7dc",
+    "source_after": "42654d55253e2e30f8f87e4ad33d2bad753f5872f98d165201951f85e8bfe7dc",
+    "changed_during_gate": [],
+    "lua_files": 884,
+    "native_gmod_accepted": false
+  },
+  "verified_canonical_commands": 313,
+  "verified_individual_receipts": 313,
+  "verified_raw_stream_hashes": 626,
+  "verified_source_files": 2545,
+  "tested_code_sha256": {
+    "docs/manual/book.json": "ba764227fb967ab9d802476968d8567254a0287f0280fe65d9a8902911d14821",
+    "docs/manual/manual.html": "28aea47e3167fdca95c8aa5078606609b8c367c0fa51222d03971468fbece052",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua": "f882bc03e079615f3f0f58846d8b3f966b3046a1c2fa73fc32a96adbd7334e46",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_magic_quadrants.lua": "d2d60c7489bccedcf11bec82b916774984c2905b88f5965a7c47aa385a688110",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_player_options.lua": "115ebc1053a4d6c585da9ff97abf92bf1b7511d38c387c13bd0565144efe1579",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_28.lua": "34616d7d14c4468e1fec9410b863639a748eda1d744d6956df8228abfd3126d9",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua": "250473c1f705ad45f46282ba257745468022df5567bf51359f4c0ea86165d230",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua": "f33e968ef4daffdfc22135bbbada6abcc0a843da3a3f7dce012eed79c9097e51",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua": "5fdba5a53338fdacec0d599e0f46de98b4b1b929691ddc74fe9e07024a7fcb37",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua": "19aedce298e8a36dfb9b6ce92bd78f227fab31abde11b28b3ab34704fc0e0ea9",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua": "439771dcff87f10c45915ad90aee8e0337ebcfdd6b31ebd19792941b4c2ca69d",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua": "fd91429f4ec6341d8520b7ce9e5aabca9cd28265bb76f3c92a65042146c9ef95",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua": "19583d2bba1bc5380ed1bde41b185123c2440e62fd087cd805667c08dcab8a92",
+    "tools/install_dev.sh": "33254e3b6acc479bbaa99edb03a70b9e113f2f8f7b9b3668c7ce3f0bd18e7ba0",
+    "tools/test_dev_population_manifest.py": "2362766339d1dce3d3eace3b67feb7d11cf98a0d669af4782e007500bf9a3b5f",
+    "tools/test_low_end_options.lua": "f294fb6b0f752d4976078a7b8ccefb8eb8b40523334962f3ed7bc7931dfd08a2",
+    "tools/test_minimap_player_marker.lua": "4c68458997884258899e203beb3aa1d377fa05fd7fcaa3a16645598eb5bbc65f",
+    "tools/test_performance_capture.lua": "ff7572e847acce4f12903b6e3333b718eeec42cf2426d211b6fae4c28ef583b9",
+    "tools/test_performance_profile.lua": "ae738d3e9c9bbedcf27e61e13fd87f4983679199b4966ac7e3744c5641edb72e",
+    "tools/test_player_options.lua": "134a97dfbc628e086bf2e256d16a2f672d642e2e9a7d6a120041f8cf66ad9009"
+  },
+  "paired": [
+    {
+      "label": "candidate",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "/workspace/scratch/01bf015eab4d/options-map-probe.lua",
+        "/workspace/scratch/01bf015eab4d/options-map-parent/cl_minimap_magic_quadrants.lua"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "64adf0c7781d1c2dd8b870c64ca22491c58692c0e541d408c14afe917eaa2dca",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "negative-control",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_minimap_player_marker.lua",
+        "--quadrant-source",
+        "/workspace/scratch/01bf015eab4d/options-map-parent/cl_minimap_magic_quadrants.lua"
+      ],
+      "returncode": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "b5c2f73ebebc021be69b29d685ffdb48c01588817bef71a472d716ef022b196d"
+    }
+  ],
+  "paired_frames": 10000,
+  "paired_default_submissions": 90000,
+  "parent_lua_kib": 10859.47168,
+  "candidate_lua_kib": 1.50293,
+  "native_uploads": [
+    {
+      "name": "performance_client_latest(20261007-172716).txt",
+      "bytes": 248869,
+      "sha256": "a163d378c654dd936caaac8f02f9f6496baa625f9d0a14501e6642b3b4aefd68"
+    },
+    {
+      "name": "console_latest(20261007-172716).txt",
+      "bytes": 37507,
+      "sha256": "62343f6f316dbe1fde95fa45ca0f603fa43c3101344d4ad3306d1cec79707af2"
+    }
+  ],
+  "native_source": "00dd5ea74c4df55bc013fe4a5d94cc273a151c8d",
+  "native_active": {
+    "max_ms": 487.797,
+    "over100": 210,
+    "median_ms": 48.249,
+    "over50": 1377,
+    "p95_ms": 108.677,
+    "frames": 2799,
+    "p99_ms": 153.849,
+    "over25": 2798,
+    "seconds": 163.91565700000044,
+    "fps": 17.075855053919543
+  },
+  "native_verified_git_modules": 44,
+  "native_idle_vr_snapshots": 42,
+  "baseline_actions": [
+    {
+      "name": "Validate VR compatibility",
+      "id": 37634977004,
+      "sha": "bed0d45645a082583a5b42d92617742355fb3fce",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate ambient audio and event cues",
+      "id": 37634977018,
+      "sha": "bed0d45645a082583a5b42d92617742355fb3fce",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate low-end performance sources",
+      "id": 37634977040,
+      "sha": "bed0d45645a082583a5b42d92617742355fb3fce",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate complete frozen source matrix",
+      "id": 37634977033,
+      "sha": "bed0d45645a082583a5b42d92617742355fb3fce",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "native_new_checkpoint_accepted": false,
+  "archive_name": "PLAYER_OPTIONS_20261007_complete.zip",
+  "archive_bytes": 2040412,
+  "archive_sha256": "3942fd038e71806d83bd3b049b91de9a891b19407c2f00fc6230fb574639af1e"
+}

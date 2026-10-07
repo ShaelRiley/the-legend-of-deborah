@@ -22,7 +22,7 @@ function math.Clamp(n,a,b) return math.max(a,math.min(b,n)) end
 ents={GetCount=function() return 3000 end}
 function ScrW() return 1280 end;function ScrH() return 800 end
 game={GetMap=function() return 'gm_flatgrass' end,SinglePlayer=function() return true end}
-local settings={lod_reduced_effects='1',lod_wall_batches='0',fps_max='300',mat_vsync='0'}
+local settings={lod_reduced_effects='1',lod_wall_batches='0',fps_max='300',mat_vsync='0',lod_third_person='0',lod_map_scale='1',lod_map_opacity='1'}
 GetConVar=function(name)
     if not settings[name] then return end
     return {GetString=function() return settings[name] end,GetBool=function() return settings[name]=='1' end}
@@ -40,7 +40,8 @@ local paths={'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_in
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
     root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',
     root..'cl_container_branding.lua',root..'cl_ui_theme.lua',
-    root..'cl_combat_roll_feed_semantics.lua',root..'sh_runtime_audit.lua'}
+    root..'cl_combat_roll_feed_semantics.lua',root..'sh_player_options.lua',root..'cl_player_options.lua',
+    root..'cl_minimap.lua',root..'cl_minimap_magic_quadrants.lua',root..'sh_runtime_audit.lua'}
 local manifest={}
 for _,p in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;files['GAME:'..p]='exact' end
 files['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
@@ -55,7 +56,7 @@ end
 assert(not hooks.PreRender,'idle frame sampler installed')
 assert(commands.lod_perf_start and commands.lod_perf_stop)
 commands.lod_perf_start(nil,nil,{'180'})
-assert(A.PerformanceCapture.source.verified and A.PerformanceCapture.source.checked==10)
+assert(A.PerformanceCapture.source.verified and A.PerformanceCapture.source.checked==#paths)
 local startReads=reads
 -- Preparing batches is separated from sustained gameplay; no empty warmup data.
 now=20;fire('PreRender');fire('Think');assert(#A.PerformanceCapture.all==0)
@@ -105,6 +106,8 @@ assert(windowFrames==out.active.frames,'window aggregation dropped gameplay')
 assert(out.start_configuration.width==1280 and out.start_configuration.height==800 and #out.configuration_changes==0)
 assert(out.start_configuration.lod_wall_batches=='0' and out.windows[1].renderer.status=='ready',
     'renderer preference/live windows missing from frame evidence')
+assert(out.start_configuration.lod_third_person=='0' and out.start_configuration.lod_map_scale=='1'
+    and out.start_configuration.lod_map_opacity=='1','saved camera/map preferences absent from FPS comparison')
 assert(files['DATA:legend_of_deborah/performance_client_latest.txt']:find('p99_ms=120.000',1,true))
 assert(not next(hooks.PreRender) and not next(hooks.Think),'sampler left recurring hooks')
 local afterReads=reads;assert(afterReads-startReads==2,'per-frame hashing/I/O occurred')
@@ -113,10 +116,12 @@ local written=writes;fire('PreRender');fire('Think');commands.lod_perf_stop();as
 -- explicit; the installed SHA label does not certify the loaded client bytes.
 files['GAME:'..paths[1]]='tampered';A:StartPerformanceCapture(30)
 assert(not A.PerformanceCapture.source.verified and A.PerformanceCapture.source.mismatches==1)
-settings.mat_vsync='1';out=A:StopPerformanceCapture('manual')
-assert(out.all.frames==0 and out.active.frames==0 and out.configuration_changes[1]=='mat_vsync')
+settings.mat_vsync='1';settings.lod_third_person='1';settings.lod_map_scale='1.25';settings.lod_map_opacity='.3'
+out=A:StopPerformanceCapture('manual')
+assert(out.all.frames==0 and out.active.frames==0 and table.concat(out.configuration_changes,',')=='lod_map_opacity,lod_map_scale,lod_third_person,mat_vsync')
+settings.lod_third_person='0';settings.lod_map_scale='1';settings.lod_map_opacity='1'
 files['GAME:'..paths[1]]='exact';files['DATA:legend_of_deborah/dev_population_sources.txt']=''
-A:StartPerformanceCapture('invalid');assert(A.PerformanceCapture.duration==180 and A.PerformanceCapture.source.missing==10)
+A:StartPerformanceCapture('invalid');assert(A.PerformanceCapture.duration==180 and A.PerformanceCapture.source.missing==#paths)
 A:StopPerformanceCapture('manual')
 -- Lifecycle cleanup and bounded collection, even at absurd synthetic FPS.
 ply.deployed=true;ply.alive=true;LOD.UI.ActivePage=nil

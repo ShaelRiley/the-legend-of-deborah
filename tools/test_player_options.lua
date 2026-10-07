@@ -1,5 +1,11 @@
 local e=dofile('tools/movement_test_fixture.lua');local check=e.check
 CLIENT=true;LOD.SoldierMovement={Active=function(_,p) return p.soldier==true end}
+local declarations={}
+local create=CreateClientConVar
+CreateClientConVar=function(name,value,save,userinfo,help,low,high)
+ declarations[name]={value=value,save=save,userinfo=userinfo,low=low,high=high}
+ return create(name,value)
+end
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua')
 local p={setting=0,held=false,mode=MOVETYPE_WALK}
 function p:GetInfoNum() return self.setting end
@@ -95,4 +101,80 @@ check(soldier.max==100 and soldier.forward==30 and soldier.side==-40,'Soldier lo
 p.soldier=false;p.setting=0
 local off=move(100,0,30,-40);LOD.PlayerOptions:ApplyMove(p,off)
 check(off.client==0 and off.forward==30 and off.side==-40,'toggling Off restores native movement')
+
+-- New presentation preferences have one saved client authority. Reload and
+-- reconnect use existing values; no userinfo/server locomotion setting leaks.
+local O=LOD.PlayerOptions
+for _,name in ipairs({'lod_third_person','lod_map_scale','lod_map_opacity'}) do
+ local d=assert(declarations[name]);check(d.save and not d.userinfo,'presentation preference must be local and archived')
+end
+check(not O.ThirdPerson:GetBool() and O:MapScaleValue()==1 and O:MapOpacityValue()==1,'existing appearance defaults')
+e.set('lod_map_scale',1.25);e.set('lod_map_opacity',.35);e.set('lod_third_person',1)
+dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua')
+check(O.ThirdPerson:GetBool() and O:MapScaleValue()==1.25 and O:MapOpacityValue()==.35,'reload overwrote saved preferences')
+for _,v in ipairs({-.1,0,.5,1,1.5,2}) do
+ e.set('lod_map_scale',v);e.set('lod_map_opacity',v)
+ check(O:MapScaleValue()==math.Clamp(v,.5,1.5) and O:MapOpacityValue()==math.Clamp(v,0,1),'finite presentation bounds')
+end
+local scaleFloat,opacityFloat=O.MapScale.GetFloat,O.MapOpacity.GetFloat
+for _,v in ipairs({math.huge,-math.huge,0/0}) do
+ O.MapScale.GetFloat=function() return v end;O.MapOpacity.GetFloat=function() return v end
+ check(O:MapScaleValue()==(v~=v and 1 or math.Clamp(v,.5,1.5)) and O:MapOpacityValue()==(v~=v and 1 or math.Clamp(v,0,1)),'nonfinite native preference')
+end
+O.MapScale.GetFloat=scaleFloat;O.MapOpacity.GetFloat=opacityFloat
+e.set('lod_map_scale','nan');e.set('lod_map_opacity','garbage')
+check(O:MapScaleValue()==1 and O:MapOpacityValue()==1,'invalid preference must restore usable defaults')
+
+-- Exercise the real gamemode camera entry point through its native base view.
+-- Native geometry/traces are boundaries; the camera policy is production code.
+LOD.UI={};OBS_MODE_NONE=0;MASK_SOLID=1
+local baseCalls,traces,vectors=0,0,0
+local nativeVector=Vector
+Vector=function(...) vectors=vectors+1;return nativeVector(...) end
+local origin=Vector(100,200,300)
+local angles={Forward=function() return Vector(1,0,0) end}
+local nativeOrigin,nativeFov=origin,65
+GM.BaseClass={CalcView=function(self,who,pos,ang,fov,znear,zfar)
+ baseCalls=baseCalls+1
+ check(self==GM and who==p and pos==origin and ang==angles and fov==70,'native view arguments changed')
+ return {origin=nativeOrigin,angles=ang,fov=nativeFov,znear=znear,zfar=zfar}
+end}
+local obstruction,startSolid,allSolid
+util={TraceHull=function(t)
+ traces=traces+1
+ check(t.start==nativeOrigin and t.filter==p and t.mask==MASK_SOLID,'trace ownership/origin changed')
+ check(t.mins.x==-6 and t.maxs.z==6 and t.endpos.x==nativeOrigin.x-118 and t.endpos.z==nativeOrigin.z+34,'existing placement changed')
+ return {HitPos=obstruction or t.endpos,StartSolid=startSolid,AllSolid=allSolid}
+end}
+p.alive=true;p.vehicle=false;p.observer=0;p.viewEntity=p
+function p:Alive() return self.alive end
+function p:InVehicle() return self.vehicle end
+function p:GetObserverMode() return self.observer end
+function p:GetViewEntity() return self.viewEntity end
+local vr,cinematic=false,false
+LOD.VR={IsActive=function() return vr end}
+LOD.CampaignTimeout={IsCinematic=function() return cinematic end}
+dofile('gamemodes/legend_of_deborah/gamemode/lod/cl_player_options.lua')
+local function view() return GM:CalcView(p,origin,angles,70,4,9000) end
+e.set('lod_third_person',0);local n=vectors
+for _=1,1000 do local v=view();check(v.origin==nativeOrigin and v.fov==65 and not v.drawviewer,'Off changed native view') end
+check(traces==0 and vectors==n and baseCalls==1000,'disabled camera creates recurring geometry work')
+e.set('lod_third_person',1)
+nativeOrigin=Vector(101,202,303);nativeFov=45 -- native weapon zoom and view offset
+local v=view()
+check(v.origin.x==-17 and v.origin.z==337 and v.angles==angles and v.fov==45 and v.znear==4 and v.zfar==9000 and v.drawviewer,'third-person lost native weapon/clipping data')
+obstruction=Vector(90,202,310);v=view();check(v.origin==obstruction and v.drawviewer,'camera ignored obstruction')
+startSolid=true;v=view();check(v.origin==nativeOrigin and not v.drawviewer,'inside-solid camera must retain native view')
+startSolid=false;allSolid=true;v=view();check(v.origin==nativeOrigin and not v.drawviewer,'all-solid camera must retain native view')
+allSolid=false;obstruction=nil
+for _,reason in ipairs({'dead','invalid','vehicle','spectator','remote-view','vr','timeout','victory','finale'}) do
+ p.alive=reason~='dead';p.valid=reason~='invalid';p.vehicle=reason=='vehicle';p.observer=reason=='spectator' and 1 or 0
+ p.viewEntity=reason=='remote-view' and {} or p;vr=reason=='vr';cinematic=reason=='timeout'
+ LOD.VictoryCelebrationClient=reason=='finale' and {finale={}} or reason=='victory' and {endsAt=CurTime()+1} or {}
+ local before=traces;v=view();check(traces==before and v.origin==nativeOrigin and not v.drawviewer,reason..' view ownership lost')
+end
+p.alive=true;p.valid=true;p.vehicle=false;p.observer=0;p.viewEntity=p;vr=false;cinematic=false
+LOD.VictoryCelebrationClient={endsAt=CurTime()-1}
+check(view().drawviewer,'camera failed to resume after cinematic')
+e.set('lod_third_person',0);check(not view().drawviewer,'camera toggle failed to restore first person')
 print('PLAYER_OPTIONS PASS '..e.checks)
