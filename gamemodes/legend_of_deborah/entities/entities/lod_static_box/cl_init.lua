@@ -30,6 +30,40 @@ local function networkReady(ent)
     return ent.GetBoxMins and ent.GetBoxMaxs and ent.GetBoxKind
 end
 
+local function visibleKind(kind)
+    return kind==1 or kind==2 or kind==5
+end
+
+local function registerVisualBox(ent)
+    local record = ent._LODVisualKindRecord
+    visualBoxes[ent] = record or true
+    return record
+end
+local function resetKind(record)
+    if type(record)=="table" then record.kind = nil; record.pending = nil end
+end
+local function currentKind(ent, record)
+    local data = type(record)=="table" and record.lua and record.lua[1]
+    -- Native entity indexing itself crosses the engine boundary. Resolve the
+    -- declared pair in its actual Lua table so invisible boxes stay in Lua.
+    local observed = data and data._LODVisualKindRecord==record
+        and data._LODVisualKindGetter and data._LODVisualKindSetter
+        and data.GetBoxKind==data._LODVisualKindGetter and data.SetBoxKind==data._LODVisualKindSetter
+    local cached = observed and record.kind
+    if type(record)=="table" and not observed then record.kind = nil end
+    if cached and not visibleKind(cached) then return cached end
+    if not IsValid(ent) or not networkReady(ent) then return nil end
+    if cached then return cached end
+    local kind = ent:GetBoxKind()
+    -- Zero is the unreceived datatable default. Native spawn-time proxies can
+    -- be absent, so keep polling it until the initial nonzero kind arrives.
+    if observed and kind~=0 and (record.pending==nil or record.pending==kind) then
+        record.kind = kind
+        record.pending = nil
+    end
+    return kind
+end
+
 local function refreshRenderBounds(ent)
     if not networkReady(ent) then return false end
     local mins = ent:GetBoxMins()
@@ -44,13 +78,13 @@ local function refreshRenderBounds(ent)
 end
 
 function ENT:Initialize()
-    visualBoxes[self] = true
+    resetKind(registerVisualBox(self))
     refreshRenderBounds(self)
     self._LODNextBoundsRefresh = 0
 end
 
 function ENT:Think()
-    visualBoxes[self] = true
+    registerVisualBox(self)
     local now = CurTime()
     if now >= (self._LODNextBoundsRefresh or 0) and refreshRenderBounds(self) then
         self._LODNextBoundsRefresh = now + 1
@@ -66,6 +100,7 @@ end
 
 function ENT:OnRemove(fullUpdate)
     -- Source may retain this entity across cl_fullupdate without Initialize.
+    resetKind(visualBoxes[self])
     if not fullUpdate then visualBoxes[self] = nil end
     self._LODBoundsSnapshot = nil
     self._LODVisualBox = nil
@@ -73,7 +108,7 @@ end
 
 hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_static_box", function(ent, transmitting)
     if transmitting and IsValid(ent) and ent:GetClass() == "lod_static_box" then
-        visualBoxes[ent] = true
+        resetKind(registerVisualBox(ent))
         -- Defer bounds until Think; accessors may not exist in this hook.
         ent._LODNextBoundsRefresh = 0
         ent._LODBoundsSnapshot = nil
@@ -279,12 +314,12 @@ local function drawGeneratedGeometry()
         if not material then material = floorMaterial() end
         return material
     end
-    for ent in pairs(visualBoxes) do
-        local kind = IsValid(ent) and networkReady(ent) and ent:GetBoxKind()
+    for ent, record in pairs(visualBoxes) do
+        local kind = currentKind(ent, record)
         -- Most generated boxes are invisible collision walls. Resolve their
-        -- cheap kind before native visibility/bounds/transform work; the kind is
-        -- still read every pass so late datatables and mutations recover.
-        if (kind==1 or kind==2 or kind==5) and not ent:GetNW2Bool("LOD_GeometryHidden", false) then
+        -- cheap kind before native visibility/bounds/transform work. Native
+        -- changes invalidate known kinds; unready/custom accessors still poll.
+        if visibleKind(kind) and not ent:GetNW2Bool("LOD_GeometryHidden", false) then
             local box = visualSnapshot(ent)
             if inCamera(box, camera) then
 

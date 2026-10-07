@@ -151,6 +151,7 @@ local memory,reads,writes={},0,0
 local watched={
  'gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua',
  'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
+ 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua',
@@ -208,7 +209,7 @@ hook.Add=function(event,id,fn) if event=='ShutDown' then shutdown=fn end end
 local before=H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(plan)})
 dofile('lua/autorun/server/lod_population_observability.lua')
 local A=LOD.PopulationObservability
-local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==44 and not snap.developerMode)
+local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==45 and not snap.developerMode)
 assert(snap.nativeProbes.supportBound and snap.nativeProbes.visibilityBound and snap.revision=='b28')
 local lastReads=reads;A:Snapshot('repeat');assert(reads==lastReads,'source files rehashed on every heartbeat')
 T.setTime(2000);T.quiet(function() timers.LOD_PopulationEvidence() end)
@@ -221,7 +222,7 @@ assert(H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(pla
 A.Source=nil;memory['GAME:'..watched[3]]='stale workshop bytes'
 assert(not A:SourceIdentity().verified and A.Source.mismatches==1,'mixed mount certified by install label')
 A.Source=nil;memory['DATA:legend_of_deborah/dev_population_sources.txt']=''
-assert(not A:SourceIdentity().verified and A.Source.missing==44,'absent manifest claimed verified')
+assert(not A:SourceIdentity().verified and A.Source.missing==45,'absent manifest claimed verified')
 T.quiet(function() shutdown() end);assert(#A.Records==64 and A.Records[64]:find('shutdown'),'shutdown evidence missing')
 print('B28_OBSERVER_PASS developer-off capture; exact installer mount fingerprints; absent/mixed source disclosure; cached hashing; gate/shutdown receipts; bounded64 records; no gameplay mutation')
 

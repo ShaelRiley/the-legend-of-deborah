@@ -1,0 +1,303 @@
+{
+  "parent_sha": "d02c9e4b5954f80bc7f8b549dc68328fbc5031ce",
+  "source_files": 2551,
+  "full_matrix": {
+    "total": 313,
+    "passed": 313,
+    "source_before": "0c8160c11197357ed6ac04ed5d59905940078160e19245d18afa6f47ab6fbc0d",
+    "source_after": "0c8160c11197357ed6ac04ed5d59905940078160e19245d18afa6f47ab6fbc0d",
+    "changed_during_gate": [],
+    "lua_files": 884,
+    "native_gmod_accepted": false,
+    "recovery": {
+      "reused_verified_suites": 120,
+      "fresh_suites": 193,
+      "manifest": "recovery.json"
+    }
+  },
+  "canonical_commands_verified": 313,
+  "individual_receipts_verified": 313,
+  "raw_stream_hashes_verified": 626,
+  "full_gate_command": [
+    "python3",
+    "tools/test_checkpoint_g_integration.py",
+    "--workers",
+    "2",
+    "--suite-timeout",
+    "1800",
+    "--output",
+    "/workspace/scratch/c5c8aa2df0b3/resumed-matrix"
+  ],
+  "focused": {
+    "source_before": "0c8160c11197357ed6ac04ed5d59905940078160e19245d18afa6f47ab6fbc0d",
+    "source_after": "0c8160c11197357ed6ac04ed5d59905940078160e19245d18afa6f47ab6fbc0d",
+    "changed_during_gate": [],
+    "sampling": "B29 --runtime: recorded native layout/lifecycle, not the extra 20-seed exposure sweep",
+    "scope": "Static renderer/cache plus affected geometry, camera, hazard and startup regressions; native performance pending",
+    "suite_timeout_seconds": 120,
+    "workers": 1,
+    "passed": 29,
+    "total": 29,
+    "lua_files": 884,
+    "native_gmod_accepted": false
+  },
+  "paired": {
+    "parent_sha": "d02c9e4b5954f80bc7f8b549dc68328fbc5031ce",
+    "sources": {
+      "parent": {
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua": "39921d23ae8fee38238b91f073963b21b441251ccb0802c89acbb7d123852f36",
+        "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua": "305af1298e898780bacf8e2ffafb3f71ad502db1b8abb71977bdf0fefcbd3d16",
+        "gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua": "81d0a7c36894a87298576c372b15d3cd04048a880f9cae587d1bc6bb1f946193"
+      },
+      "candidate": {
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua": "39921d23ae8fee38238b91f073963b21b441251ccb0802c89acbb7d123852f36",
+        "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua": "079d77cf0fc7b4aeb338e613004c3960f7cb1bc6bc9f360f2924e80ac5c8e04d",
+        "gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua": "b863ad763cf775a45bffd059329b40e8e4d47755990427550ff4e0ff2e12fac4"
+      }
+    },
+    "results": {
+      "parent": {
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_low_end_render.lua",
+          "--kind-probe",
+          "/workspace/scratch/b6463ad6280a/kind-parent/cl_textured_box.lua",
+          "/workspace/scratch/b6463ad6280a/kind-parent/cl_init.lua",
+          "/workspace/scratch/c5c8aa2df0b3/isolated-paired/parent.signature",
+          "/workspace/scratch/b6463ad6280a/kind-parent/shared.lua"
+        ],
+        "returncode": 0,
+        "stdout_sha256": "35ea442e14ef4a176810bab85ba7e9c50b879aab9c19c705c1f04524623d2c66",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native_kind_reads": 144000,
+        "native_validity_calls": 144000,
+        "signature_sha256": "f2ec0cd283b57450ee7b88f7094acda235b93368a4e0ec0390c140ffe06bb021",
+        "signature_rows": 726
+      },
+      "candidate": {
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_low_end_render.lua",
+          "--kind-probe",
+          "/workspace/scratch/c5c8aa2df0b3/the-legend-of-deborah/gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
+          "/workspace/scratch/c5c8aa2df0b3/the-legend-of-deborah/gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+          "/workspace/scratch/c5c8aa2df0b3/isolated-paired/candidate.signature",
+          "/workspace/scratch/c5c8aa2df0b3/the-legend-of-deborah/gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua"
+        ],
+        "returncode": 0,
+        "stdout_sha256": "6937f9a063e99031043e7b51b80e837cd9af27942bd53252f4bf2d756d5dd688",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native_kind_reads": 0,
+        "native_validity_calls": 14400,
+        "signature_sha256": "f2ec0cd283b57450ee7b88f7094acda235b93368a4e0ec0390c140ffe06bb021",
+        "signature_rows": 726
+      },
+      "negative_control": {
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_low_end_render.lua",
+          "--source",
+          "/workspace/scratch/b6463ad6280a/kind-parent/cl_textured_box.lua",
+          "/workspace/scratch/b6463ad6280a/kind-parent/cl_init.lua",
+          "/workspace/scratch/c5c8aa2df0b3/isolated-paired/negative_control.signature",
+          "/workspace/scratch/b6463ad6280a/kind-parent/shared.lua"
+        ],
+        "returncode": 1,
+        "stdout_sha256": "7dfc973da16f5ba3be318f66e9573a3a4408edbcb784f4730deb0283d21f15e5",
+        "stderr_sha256": "8bc1876ac1b2477a74a3358d6493452352c47b7660a9c1791965f87bbbce1edc"
+      }
+    },
+    "submissions_equal": true,
+    "native_fps_measured": false
+  },
+  "native": {
+    "source_commit": "d02c9e4b5954f80bc7f8b549dc68328fbc5031ce",
+    "active": {
+      "max_ms": 251.999,
+      "over100": 43,
+      "median_ms": 32.779,
+      "over50": 491,
+      "p95_ms": 61.674,
+      "frames": 4886,
+      "p99_ms": 95.382,
+      "over25": 4636,
+      "seconds": 179.9680580000005,
+      "fps": 27.149262231856646
+    },
+    "configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": true,
+      "fps_max": "60",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-2",
+      "r_shadows": "1",
+      "r_waterforceexpensive": "1",
+      "lod_map_scale": "1",
+      "window_mode": "user-recorded",
+      "lod_third_person": "0",
+      "mat_picmip": "0",
+      "mat_antialias": "0",
+      "architecture": "x64",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "lod_map_opacity": "1",
+      "lod_wall_batches": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "configuration_changes": [],
+    "source": {
+      "verified": true,
+      "checked": 14,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "verified_git_modules": 44,
+    "vr_idle_snapshots": 42,
+    "zero_error_snapshots": 6,
+    "profile_client_complete": true,
+    "profile_server_complete": true,
+    "uploads": [
+      {
+        "name": "console_latest(20261007-202429).txt",
+        "bytes": 87248,
+        "sha256": "e3950066e856a7cd5d9853696ab556d7e6fb9e678d21e42b34a523496b0835ad"
+      },
+      {
+        "name": "performance_client_latest(20261007-202429).txt",
+        "bytes": 238985,
+        "sha256": "547bad5e0dfb54b6060bb0c158671d8de8d953871aa3134aa7b5295c79601e98"
+      }
+    ],
+    "renderer": {
+      "visits": 0,
+      "status": "native",
+      "hooks": {
+        "materials": true,
+        "wayfinding": true,
+        "batches": true
+      },
+      "chunks": 0,
+      "reason": "wall-batches-disabled",
+      "section": {
+        "next_model": 1457,
+        "retries": 0,
+        "stable_passes": 2,
+        "applied": 1456,
+        "instances": 1456,
+        "complete": true,
+        "cursor": 1,
+        "calls": 6198,
+        "ready": true
+      },
+      "overlays": {
+        "branding": {
+          "milliseconds": 0.6146000000057938,
+          "draws": 8,
+          "culled": 28,
+          "candidates": 36,
+          "admitted": 36
+        },
+        "wayfinding": {
+          "culled": 0,
+          "milliseconds": 0,
+          "visits": 0,
+          "draws": 0
+        }
+      },
+      "vertices": 0,
+      "think_calls": 6198,
+      "hidden": 0,
+      "draws": 0
+    },
+    "new_checkpoint_native_accepted": false,
+    "recovered_summary_correction": "Server completion verified from received client-stop profile, not literal reason complete."
+  },
+  "governing_gdd": {
+    "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "tabId": "t.bff19dm33vvw",
+    "revisionId": "AHj4eMRd4acJKKEDgqukO9zGvoMQvxlbUMdF6nZCAXYFhQm-CNvzGIub5PLIO_oXk6fEWbrk_V-_2bJc4m1wqQvkXjzdDNhY5wQfHSd7Pg",
+    "read_from_live_document": true,
+    "anchors": [
+      "LOD-IMPL-001",
+      "LOD-IMPL-002",
+      "LOD-IMPL-003",
+      "LOD-IMPL-004",
+      "LOD-IMPL-005"
+    ],
+    "paragraphs": [
+      {
+        "text": "LOD-IMPL-001 \u2014 EXTEND EXISTING AUTHORITIES [CANONICAL]",
+        "startIndex": 340015,
+        "endIndex": 340069,
+        "tabId": "t.bff19dm33vvw",
+        "namedStyleType": "NORMAL_TEXT",
+        "isListItem": false
+      },
+      {
+        "text": "LOD-IMPL-002 \u2014 SERVER AUTHORITY [CANONICAL]",
+        "startIndex": 340719,
+        "endIndex": 340762,
+        "tabId": "t.bff19dm33vvw",
+        "namedStyleType": "NORMAL_TEXT",
+        "isListItem": false
+      },
+      {
+        "text": "LOD-IMPL-003 \u2014 DETERMINISM [CANONICAL]",
+        "startIndex": 341274,
+        "endIndex": 341312,
+        "tabId": "t.bff19dm33vvw",
+        "namedStyleType": "NORMAL_TEXT",
+        "isListItem": false
+      },
+      {
+        "text": "LOD-IMPL-004 \u2014 LOW-END / STEAM DECK [CANONICAL]",
+        "startIndex": 341788,
+        "endIndex": 341835,
+        "tabId": "t.bff19dm33vvw",
+        "namedStyleType": "NORMAL_TEXT",
+        "isListItem": false
+      },
+      {
+        "text": "LOD-IMPL-005 \u2014 VALIDATION / COMMITS [PROCESS]",
+        "startIndex": 348599,
+        "endIndex": 348644,
+        "tabId": "t.bff19dm33vvw",
+        "namedStyleType": "NORMAL_TEXT",
+        "isListItem": false
+      }
+    ]
+  },
+  "changed_code_sha256": {
+    "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua": "079d77cf0fc7b4aeb338e613004c3960f7cb1bc6bc9f360f2924e80ac5c8e04d",
+    "gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua": "b863ad763cf775a45bffd059329b40e8e4d47755990427550ff4e0ff2e12fac4",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua": "4f242df39f880718baec7a6fa7be8b86ddce05d6327bf7e4c8beaabbf88c1ddc",
+    "lua/autorun/server/lod_population_observability.lua": "b799802d9fa35296cf11db7fe0988d3422370e50cf6478d99a521f6178163ffb",
+    "tools/install_dev.sh": "64b78356239c1b043212e45f77ed083d33ae340706db29c2f4777dd2d6afd804",
+    "tools/test_bestiary_b28.lua": "d1a029589baf5e382edd2833d5915916a5c98c9d03255928deed56771e2f2f7d",
+    "tools/test_dev_population_manifest.py": "58bc3ff662f812f9b9fbc1c660d374d75dc1da04b085be161ae77d4c158e205c",
+    "tools/test_low_end_render.lua": "dd8d2f030aef43bcd37d09fb2ddd0c8510cd78acde19b519d8d64a4e79b8646a",
+    "tools/test_performance_capture.lua": "64e23e54aa0b79b80b6de157f57a8b44ad98bd8ea4ec64cdfb2e2d349a852594",
+    "tools/test_performance_profile.lua": "76168336d76561fb6b9756cff886ae6d05ce00cb0176e49eb7fff58910a20f1f",
+    "tools/test_population_transport.lua": "e61b539bf8e6265366c83e6c40c19a0d68e11effe79b5c9bb299b7f15bb135a4"
+  },
+  "previous_attempts_preserved": true,
+  "cross_source_receipts_reused": false,
+  "verified_receipts_reused": 120,
+  "native_new_checkpoint_accepted": false,
+  "archive_name": "STEAM_DECK_20261007_KIND_NOTIFICATIONS_complete.zip",
+  "archive_bytes": 2488564,
+  "archive_sha256": "3bc0c498e71a0031ae4195f21da780f19f723279989d234f8cfe0d41ae73fc92",
+  "archive_entries": 2896
+}

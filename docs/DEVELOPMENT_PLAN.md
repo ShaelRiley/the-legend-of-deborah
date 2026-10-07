@@ -1,4 +1,42 @@
-# Current checkpoint — generated-geometry render state reuse
+# Current checkpoint — notification-backed static-box classification
+
+October 7, 2026: the complete fixed-preference native capture verifies clean
+published `d02c9e4`, all 44 exact population hashes, 14 client presentation
+fingerprints, complete CPU profiles, idle VR and zero Lua errors. It averages
+27.1493 active FPS, median 32.779 ms, p95 61.674 ms, p99 95.382 ms, with 1,456
+native walls and initially 36 living wanderers. All 36 pacing windows remain
+below 40 FPS. Different generated workloads prohibit source-only FPS attribution.
+
+The generated-geometry callback is still the largest measured custom client
+renderer. Extend the existing entity/weak-registry seam with notification-backed
+nonzero BoxKind classification. Native pre-write deltas invalidate the cache;
+unreceived zero values and unknown accessors retain live polling. Keep immediate
+geometry/pose/hidden-state checks, full-update/transmission/refresh recovery,
+exact draw submissions/order, native resources, population, AI, graphics and
+Options. No timer, tuning or preference is added. Include the shared datatable
+source in installer/client/server source verification.
+
+The paired 1,200-box/120-pass production scene preserves 14,400 draws while
+reducing native kind reads 144,000→0 and validity calls 144,000→14,400.
+All 726 recorded mesh/wireframe rows match; the exact parent fails the work gate.
+Cached collision boxes also use zero native entity-field reads through weak Lua
+table borrowing, with guarded fallback for missing/copied tables or accessors.
+The final isolated source passes 29/29 focused checks, 313/313 canonical suites
+and 884 Lua syntax files with all 2,551 source files unchanged. After interruption,
+120 hash-verified passing receipts were reused under that exact manifest and all
+193 remaining suites ran fresh. All commands, receipts and 626 raw stream hashes
+are verified; cross-source attempts are preserved and not reused. These are
+headless operation counts, not hardware FPS. Publish verified main, then obtain
+native acceptance; only evidence/documentation packaging follows the source gate.
+See [the finite gate and native evidence](validation/STEAM_DECK_20261007_KIND_NOTIFICATIONS.md).
+
+Then collect the usual exact-source three-minute fixed-preference gm_flatgrass
+capture with `lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Return performance_client_latest.txt plus console_latest.txt after the final
+server result. Sustained >=40 FPS and native visual acceptance remain open.
+No Workshop or VPS operation is included.
+
+# Previous checkpoint — generated-geometry render state reuse
 
 October 7, 2026: the complete exact-source `d582729` capture averages 26.3639
 active FPS, with 1,486 native walls, 36 living wanderers, idle VR and no Lua

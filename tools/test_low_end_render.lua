@@ -4,16 +4,22 @@
 local baseline = arg and arg[1] == '--baseline'
 local parity = arg and arg[1] == '--parity'
 local stateProbe = arg and arg[1] == '--state-probe'
-local override = baseline or parity or stateProbe or arg and arg[1] == '--source'
+local kindProbe = arg and arg[1] == '--kind-probe'
+local override = baseline or parity or stateProbe or kindProbe or arg and arg[1] == '--source'
 local meshPath = override and assert(arg[2]) or 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
 local entityPath = override and assert(arg[3]) or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua'
+local sharedPath = override and arg[5] or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua'
 local noop = function() end
 local hooks = {}
 hook = {Add=function(event,id,fn) hooks[event]=hooks[event] or {};hooks[event][id]=fn end}
 local function fire(event,...) for _,fn in pairs(hooks[event] or {}) do fn(...) end end
 local now=100
+CLIENT=true;SERVER=false
 include=noop;CurTime=function() return now end
-function IsValid(e) return type(e)=='table' and e.valid~=false end
+local validityCalls=0
+local entityTables=setmetatable({}, {__mode='k'})
+local collisionFieldReads=0
+function IsValid(e) validityCalls=validityCalls+1;return type(e)=='table' and (entityTables[e] or e).valid~=false end
 function Color(r,g,b,a) return {r=r,g=g,b=b,a=a or 255} end
 color_white=Color(255,255,255)
 local V={};V.__index=V
@@ -47,7 +53,7 @@ end
 angle_zero=Angle();vector_origin=Vector()
 local view={origin=Vector(),angles=Angle(),fov=90,aspect=1.6,znear=1}
 EyePos=function() return view.origin end;EyeVector=function() return view.angles:Forward() end
-local formats,matrices,allocations,live,peak,draws,geometryReads=0,0,0,0,0,0,0
+local formats,matrices,allocations,live,peak,draws,geometryReads,kindReads=0,0,0,0,0,0,0,0
 local nativeVectorReads=0
 local function nativeVector(v)
  return setmetatable({value=v},{__index=function(o,k)
@@ -92,7 +98,7 @@ function Mesh()
    if submissionSignature then
     local p,a=currentMatrix.pos,currentMatrix.ang or angle_zero
     local row={format('%g,%g,%g|%g,%g,%g|%g,%g,%g,%g',p.x,p.y,p.z,a.p,a.y,a.r,tint[1],tint[2],tint[3],blend)}
-    if stateProbe then row[#row+1]=lastMaterial.tag end
+    if stateProbe or kindProbe then row[#row+1]=lastMaterial.tag end
     for _,v in ipairs(self.vertices) do
      row[#row+1]=format('%g,%g,%g|%g,%g,%g|%.17g,%.17g',v.pos.x,v.pos.y,v.pos.z,
       v.normal.x,v.normal.y,v.normal.z,v.u,v.v)
@@ -118,7 +124,7 @@ render={GetViewSetup=function(current) assert(current);return view end,
  DrawWireframeBox=function(pos,ang,mins,maxs,color,depth)
   assert(blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'mesh tint leaked into a wireframe')
   wireframes=wireframes+1
-  if submissionSignature and stateProbe then
+  if submissionSignature and (stateProbe or kindProbe) then
    submissionSignature[#submissionSignature+1]=format('wire|%g,%g,%g|%g,%g,%g|%g,%g,%g|%g,%g,%g|%g,%g,%g,%g|%s',
     pos.x,pos.y,pos.z,ang.p,ang.y,ang.r,mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z,color.r,color.g,color.b,color.a,tostring(depth))
   end
@@ -130,20 +136,52 @@ render={GetViewSetup=function(current) assert(current);return view end,
  end}
 LOD={Config={Geometry={FloorTextureTile=512}},CrateVisuals={GrateInset=8,GratePitch=24,GrateBarWidth=3}}
 MATERIAL_QUADS=7
-dofile(meshPath);ENT={};dofile(entityPath)
+dofile(meshPath);ENT={};dofile(sharedPath);dofile(entityPath)
 local B=LOD.TexturedBox
 local entities={}
-local function box(pos,kind)
+local function box(pos,kind,observed)
  local e=setmetatable({pos=pos,ang=Angle(),mins=Vector(-8,-8,-4),maxs=Vector(8,8,4),kind=kind or 1,nw={}},{__index=ENT})
  function e:GetPos() geometryReads=geometryReads+1;return self.pos end
  function e:GetAngles() geometryReads=geometryReads+1;return self.ang end
  function e:GetBoxMins() geometryReads=geometryReads+1;return self.mins end
  function e:GetBoxMaxs() geometryReads=geometryReads+1;return self.maxs end
- function e:GetBoxKind() return self.kind end;function e:SetRenderBounds() end
+ function e:GetBoxKind() kindReads=kindReads+1;return self.kind end;function e:SetRenderBounds() end
  function e:SetNextClientThink(t) self.thinkAt=t end
  function e:GetNW2Bool(k,d) if self.nw[k]==nil then return d end;return self.nw[k] end
  e.GetNW2String=e.GetNW2Bool
  function e:GetClass() return 'lod_static_box' end
+ if observed then
+  -- Model a native userdata's Lua-field facade separately from GetTable's
+  -- actual backing table. All facade lookups cross a counted engine boundary.
+  local data=e;local class=ENT
+  e=setmetatable({}, {__index=function(_,k)
+   assert(data.valid~=false,'invalid native entity field lookup: '..k)
+   if data.kind==3 or data.kind==7 then collisionFieldReads=collisionFieldReads+1 end
+   return data[k] or class[k]
+  end,__newindex=function(_,k,v) data[k]=v end})
+  entityTables[e]=data
+  function e:GetTable() return data end
+  -- Facepunch's declared DT accessors and receive proxies invoke all observers
+  -- BEFORE changing the native value. Initial replication can omit a proxy.
+  e.notifies={};e.declared={}
+  function e:NetworkVar(_,_,name)
+   local field=assert(({BoxMins='mins',BoxMaxs='maxs',BoxKind='kind'})[name])
+   self.declared[name]=true
+   self.notifies[name]={}
+   local get=self['Get'..name]
+   self['Get'..name]=function() return get(self) end
+   self['Set'..name]=function(_,value)
+    for _,fn in ipairs(self.notifies[name] or {}) do fn(self,name,self[field],value) end
+    self[field]=value
+   end
+  end
+  function e:NetworkVarNotify(name,fn)
+   assert(self.declared[name],'observer preceded datatable declaration')
+   self.notifies[name]=self.notifies[name] or {}
+   table.insert(self.notifies[name],fn)
+  end
+  e:SetupDataTables()
+ end
  e:Initialize();entities[#entities+1]=e;return e
 end
 local function resetScene()
@@ -208,6 +246,7 @@ if signatureRows then
  print(format('LOW_END_STATE_PARITY submissions=%d mesh_wireframe_bytes_recorded=true',#signatureRows))
 end
 if stateProbe then resetScene();return end
+
 if not parity and not baseline then
  -- Unknown/replaced draw helpers retain direct-call behavior. Their callers
  -- may depend on neutral state immediately after each mesh, including wrappers.
@@ -274,6 +313,117 @@ if not parity and not baseline then
  print('LOW_END_STATE_LIFETIME_PASS: mixed floor/stair/grate/false-floor; neutral wireframes; replacement/missing helpers; nested material/alpha; owned error unwind; untouched empty/culled scopes; ordinary API')
 end
 resetScene()
+-- Generated mazes have far more collision-only boxes than drawn floors. Keep
+-- the same weak registry/order and all submissions; observe declared kind
+-- deltas instead of querying every native BoxKind on every render pass.
+resetScene()
+for i=1,1200 do box(Vector(1000+i*2,0,0),i<=120 and 1 or (i%2==0 and 3 or 7),true) end
+assert(frame()==120)
+local kindSignatures=kindProbe and arg[4] and {} or nil
+submissionSignature=kindSignatures;assert(frame()==120);submissionSignature=nil
+kindReads,validityCalls,collisionFieldReads=0,0,0
+for _=1,120 do assert(frame()==120) end
+local steadyKindReads=kindReads
+local steadyValidityCalls=validityCalls
+local steadyCollisionFieldReads=collisionFieldReads
+print(format('LOW_END_KIND_WORK entities=1200 drawable=120 passes=120 submissions=14400 native_kind_reads=%d native_validity_calls=%d collision_entity_field_reads=%d native_fps_measured=false',steadyKindReads,steadyValidityCalls,steadyCollisionFieldReads))
+if not kindProbe and not parity and not baseline then
+ assert(steadyKindReads==0,'declared static kinds still poll native datatables per pass')
+ assert(steadyValidityCalls==14400,'collision-only boxes still poll native validity per pass')
+ assert(steadyCollisionFieldReads==0,'cached invisible boxes still index native entity fields per pass')
+end
+local changing=entities[121]
+local function kindFrame(expected,label)
+ submissionSignature=kindSignatures
+ assert(frame()==expected,label)
+ submissionSignature=nil
+end
+changing:SetBoxKind(1);kindFrame(121,'notified wall-to-floor change delayed')
+changing:SetBoxKind(3);kindFrame(120,'notified floor-to-wall change delayed')
+changing:SetBoxKind(2);kindFrame(121,'notified stair kind lost')
+changing:SetBoxKind(5);kindFrame(121,'notified underdeck kind lost')
+-- A proxy invalidates even when its old/new values agree, or when the native
+-- value has not yet changed. Reentrant callbacks must not freeze that old kind.
+changing:SetBoxKind(3);assert(frame()==120)
+table.insert(changing.notifies.BoxKind,function() assert(frame()==120,'proxy drew an uncommitted kind') end)
+changing:SetBoxKind(1);assert(frame()==121,'reentrant proxy retained the old native kind')
+changing.notifies.BoxKind[#changing.notifies.BoxKind]=nil
+changing:SetBoxKind(1);assert(frame()==121)
+for _,fn in ipairs(changing.notifies.BoxKind) do fn(changing,'BoxKind',1,5) end
+assert(frame()==121,'receive-only diagnostic proxy changed native geometry')
+changing:SetBoxKind(1);assert(frame()==121)
+-- A missed spawn proxy from zero to a received kind must recover next pass.
+local lateKind=box(Vector(1100,0,0),0,true)
+assert(frame()==121);lateKind.kind=1;assert(frame()==122,'initial replication missed by proxy delayed drawing')
+-- Unknown getters/setters and unobserved legacy boxes always poll live state.
+local originalGet,originalSet=changing.GetBoxKind,changing.SetBoxKind
+changing.GetBoxKind=function() kindReads=kindReads+1;return changing.kind end
+changing.kind=3;assert(frame()==121);changing.kind=1;assert(frame()==122)
+changing.GetBoxKind=originalGet;assert(frame()==122)
+changing.SetBoxKind=function(_,k) changing.kind=k end
+changing:SetBoxKind(3);assert(frame()==121);changing:SetBoxKind(1);assert(frame()==122)
+changing.SetBoxKind=originalSet;assert(frame()==122)
+local legacy=box(Vector(1120,0,0),3);assert(frame()==122)
+legacy.kind=1;assert(frame()==123);legacy.kind=3;assert(frame()==122)
+-- Full updates/transmission can miss a proxy and retain an entity. Reset cached
+-- classification immediately; missing bounds still fail open to future retries.
+changing:OnRemove(true);changing.kind=3;assert(frame()==121)
+changing.kind=1;fire('NotifyShouldTransmit',changing,true);assert(frame()==122)
+local savedMins=changing.GetBoxMins;changing.GetBoxMins=nil;assert(frame()==121)
+changing.GetBoxMins=savedMins;assert(frame()==122)
+changing:OnRemove(false);assert(frame()==121)
+fire('NotifyShouldTransmit',changing,true);assert(frame()==122)
+-- Reinstalling datatables (Lua refresh) creates a new declared accessor pair.
+changing:SetupDataTables();changing:SetBoxKind(3);assert(frame()==121)
+changing:SetBoxKind(1);assert(frame()==122)
+CLIENT=false;SERVER=true
+local serverOnly=box(Vector(1130,0,0),3,true)
+assert(not serverOnly._LODVisualKindGetter and #serverOnly.notifies.BoxKind==0,'client observer installed on server')
+CLIENT=true;SERVER=false
+serverOnly.kind=1;assert(frame()==123);serverOnly.kind=3;assert(frame()==122)
+serverOnly:OnRemove(false)
+local record=changing._LODVisualKindRecord
+if record then
+ assert(getmetatable(record.lua).__mode=='v','registry retains bound entity closures through its value')
+ local data=changing:GetTable();record.lua[1]=nil
+ changing.kind=3;assert(frame()==121,'expired Lua-table borrow lost live polling')
+ changing.kind=1;assert(frame()==122);record.lua[1]=data;assert(frame()==122)
+ -- A custom GetTable returning a copy cannot stand in for the real storage.
+ local tableGetter=changing.GetTable
+ changing.GetTable=function()
+  local copy={};for k,v in pairs(data) do copy[k]=v end;return copy
+ end
+ changing:SetupDataTables();fire('NotifyShouldTransmit',changing,true)
+ changing:SetBoxKind(3);assert(frame()==121);changing:SetBoxKind(1);assert(frame()==122)
+ changing.GetTable=tableGetter;changing:SetupDataTables();fire('NotifyShouldTransmit',changing,true)
+ assert(frame()==122)
+ changing:SetBoxKind(3);assert(frame()==121)
+ changing.valid=false;assert(frame()==121,'invalid cached collision box called native geometry')
+ changing.valid=true;changing:SetBoxKind(1);assert(frame()==122)
+ local kindGetter=changing.GetBoxKind
+ changing.GetBoxKind=function() error('invalid native kind getter') end
+ changing.valid=false;assert(frame()==121,'invalid drawable called a native getter')
+ changing.valid=true;changing.GetBoxKind=kindGetter;assert(frame()==122)
+end
+submissionSignature=kindSignatures;assert(frame()==122);submissionSignature=nil
+if kindSignatures then
+ table.sort(kindSignatures)
+ local f=assert(io.open(arg[4],'wb'));f:write(table.concat(kindSignatures,'\n'));f:close()
+ print(format('LOW_END_KIND_PARITY submissions=%d exact_mesh_bytes_recorded=true',#kindSignatures))
+end
+print('LOW_END_KIND_LIFETIME_PASS: declared native proxies; same-pass transitions; pre-write reentrancy; missed initial replication; legacy/replaced accessors; weak/copy Lua-table fallback; invalid native guards; full update/transmission; missing datatables; removal')
+resetScene()
+if not kindProbe and not parity and not baseline then
+ local weak=setmetatable({}, {__mode='v'})
+ do
+  local e=box(Vector(1100,0,0),3,true);weak[1]=e;assert(frame()==0)
+  -- Lose the fixture's strong scene list; the registry must not retain it.
+  entities={}
+ end
+ collectgarbage('collect');collectgarbage('collect')
+ assert(not weak[1] and next(B.StaticVisualBoxes)==nil,'weak kind registry retained a native owner')
+end
+if kindProbe then return end
 -- Simulate Source honoring SetNextClientThink/true, including the existing
 -- one-second deadline. The parent invokes each callback every rendered frame.
 for i=1,120 do box(Vector(1000+i*2,(i%5)*16,(i%3)*16),i%2+1) end

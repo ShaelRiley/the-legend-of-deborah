@@ -72,6 +72,7 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
   sha256sum \
     gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua \
     gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua \
+    gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua \

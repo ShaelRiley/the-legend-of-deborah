@@ -342,6 +342,7 @@ if CLIENT then
         "lod_third_person","lod_map_scale","lod_map_opacity"}
     local renderSources={
         "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua",
