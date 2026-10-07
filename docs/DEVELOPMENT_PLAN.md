@@ -1,4 +1,20 @@
-# Current checkpoint — notification-backed static-box classification
+# Current checkpoint — F3 team-menu hint below the campaign clock
+
+October 7, 2026: recovered renderer progress is banked on verified main
+`7364a7df49e4eb86266245387080947959fba376`, tree
+`65156b6235a07962201662c499d3283c45149c15`. Its frozen 313-suite evidence,
+source hashes and archive were reverified during recovery.
+
+The author's subsequent QOL request moves the existing Soldier, waiting-Soldier
+and spectator F3 hint to the upper-left HUD at (22, 104), directly beneath the
+campaign clock at (22, 72). The existing small outlined font and role/menu
+lifecycle remain in use. The production team-menu validator passes 229
+assertions; campaign-timeout and HUD-text regressions, the production drawing
+position probe, changed-file Lua syntax and diff checks pass. Native placement
+and the recovered renderer's hardware performance await the usual local
+playtest/capture below. Publish this bounded QOL checkpoint immediately.
+
+# Previous checkpoint — notification-backed static-box classification
 
 October 7, 2026: the complete fixed-preference native capture verifies clean
 published `d02c9e4`, all 44 exact population hashes, 14 client presentation

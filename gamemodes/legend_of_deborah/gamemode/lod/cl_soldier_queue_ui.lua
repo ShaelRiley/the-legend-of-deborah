@@ -146,8 +146,9 @@ hook.Add("HUDPaint", "LOD_SoldierQueueHint", function()
     local text = mode == "spectator" and "SPECTATING ONLY | F3: HERO QUEUE"
         or ply:GetNW2Bool("LOD_SoldierWaiting", false) and "SOLDIER RESPAWN WAIT | F3: TEAM MENU"
         or "F3: TEAM MENU"
-    draw.SimpleTextOutlined(text, "LOD_HUD_Small", ScrW()/2, ScrH()*0.60,
-        Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(0,0,0,220))
+    -- Keep the role hint in the upper-left HUD, just below the campaign clock.
+    draw.SimpleTextOutlined(text, "LOD_HUD_Small", 22, 104,
+        Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 1, Color(0,0,0,220))
 end)
 concommand.Add("lod_hero_choices", function() UI:Open() end)
 concommand.Add("lod_ui_return_to_hero_queue", function()
