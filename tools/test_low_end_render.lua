@@ -5,7 +5,9 @@ local baseline = arg and arg[1] == '--baseline'
 local parity = arg and arg[1] == '--parity'
 local stateProbe = arg and arg[1] == '--state-probe'
 local kindProbe = arg and arg[1] == '--kind-probe'
-local override = baseline or parity or stateProbe or kindProbe or arg and arg[1] == '--source'
+local supportProbe = arg and arg[1] == '--support-probe'
+local supportGate = arg and arg[1] == '--support-gate'
+local override = baseline or parity or stateProbe or kindProbe or supportProbe or supportGate or arg and arg[1] == '--source'
 local meshPath = override and assert(arg[2]) or 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
 local entityPath = override and assert(arg[3]) or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua'
 local sharedPath = override and arg[5] or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua'
@@ -72,6 +74,7 @@ local stateCalls,wireframes,fallbacks=0,0,0
 local failDraw,interruptDraw=false,nil
 local matrixStack={}
 local submissionSignature = parity and arg[4] and {} or nil
+local supportCapture=false
 function Matrix()
  matrices=matrices+1
  return {Translate=function(self,p) self.pos=Vector(p.x,p.y,p.z) end,
@@ -97,10 +100,12 @@ function Mesh()
    seen[format('%g,%g,%g',currentMatrix.pos.x,currentMatrix.pos.y,currentMatrix.pos.z)]=true
    if submissionSignature then
     local p,a=currentMatrix.pos,currentMatrix.ang or angle_zero
-    local row={format('%g,%g,%g|%g,%g,%g|%g,%g,%g,%g',p.x,p.y,p.z,a.p,a.y,a.r,tint[1],tint[2],tint[3],blend)}
-    if stateProbe or kindProbe then row[#row+1]=lastMaterial.tag end
+    local row={format(supportCapture and '%.17g,%.17g,%.17g|%.17g,%.17g,%.17g|%.17g,%.17g,%.17g,%.17g'
+     or '%g,%g,%g|%g,%g,%g|%g,%g,%g,%g',p.x,p.y,p.z,a.p,a.y,a.r,tint[1],tint[2],tint[3],blend)}
+    if stateProbe or kindProbe or supportCapture then row[#row+1]=lastMaterial.tag end
     for _,v in ipairs(self.vertices) do
-     row[#row+1]=format('%g,%g,%g|%g,%g,%g|%.17g,%.17g',v.pos.x,v.pos.y,v.pos.z,
+     row[#row+1]=format(supportCapture and '%.17g,%.17g,%.17g|%.17g,%.17g,%.17g|%.17g,%.17g'
+      or '%g,%g,%g|%g,%g,%g|%.17g,%.17g',v.pos.x,v.pos.y,v.pos.z,
       v.normal.x,v.normal.y,v.normal.z,v.u,v.v)
     end
     submissionSignature[#submissionSignature+1]=table.concat(row,';')
@@ -124,8 +129,10 @@ render={GetViewSetup=function(current) assert(current);return view end,
  DrawWireframeBox=function(pos,ang,mins,maxs,color,depth)
   assert(blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'mesh tint leaked into a wireframe')
   wireframes=wireframes+1
-  if submissionSignature and (stateProbe or kindProbe) then
-   submissionSignature[#submissionSignature+1]=format('wire|%g,%g,%g|%g,%g,%g|%g,%g,%g|%g,%g,%g|%g,%g,%g,%g|%s',
+  if submissionSignature and (stateProbe or kindProbe or supportCapture) then
+   submissionSignature[#submissionSignature+1]=format(supportCapture
+    and 'wire|%.17g,%.17g,%.17g|%.17g,%.17g,%.17g|%.17g,%.17g,%.17g|%.17g,%.17g,%.17g|%.17g,%.17g,%.17g,%.17g|%s'
+    or 'wire|%g,%g,%g|%g,%g,%g|%g,%g,%g|%g,%g,%g|%g,%g,%g,%g|%s',
     pos.x,pos.y,pos.z,ang.p,ang.y,ang.r,mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z,color.r,color.g,color.b,color.a,tostring(depth))
   end
   lastMaterial=wireMaterial -- model the helper's independent material ownership
@@ -133,6 +140,11 @@ render={GetViewSetup=function(current) assert(current);return view end,
  DrawBox=function(pos,ang,mins,maxs,color)
   assert(not currentMatrix and blend==1 and tint[1]==1 and tint[2]==1 and tint[3]==1,'fallback inherited mesh state')
   fallbacks=fallbacks+1
+  if submissionSignature and supportCapture then
+   submissionSignature[#submissionSignature+1]=format('fallback|%.17g,%.17g,%.17g|%.17g,%.17g,%.17g|%.17g,%.17g,%.17g|%.17g,%.17g,%.17g|%.17g,%.17g,%.17g,%.17g|%s',
+    pos.x,pos.y,pos.z,ang.p,ang.y,ang.r,mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z,
+    color.r,color.g,color.b,color.a,lastMaterial.tag)
+  end
  end}
 LOD={Config={Geometry={FloorTextureTile=512}},CrateVisuals={GrateInset=8,GratePitch=24,GrateBarWidth=3}}
 MATERIAL_QUADS=7
@@ -192,6 +204,121 @@ end
 local function frame()
  seen={};draws=0;fire('PostDrawOpaqueRenderables',false,false,false);return draws
 end
+local function supportCases(requireWork,tracePath)
+ resetScene()
+ -- Earlier refresh regressions deliberately replace ENT without shared data.
+ -- Start this integrated observed-entity scene from the actual current class.
+ dofile(sharedPath)
+ view={origin=Vector(),angles=Angle(),fov=90,aspect=1.6,znear=1}
+ local scene={}
+ for i=1,120 do
+  local e=box(Vector(1500+i*2,(i%5)*16,(i%3)*16),(i-1)%3==0 and 1 or (i-1)%3==1 and 2 or 5,true)
+  if i%4==0 then e.ang=Angle(13,17+i,7) end
+  e.pos,e.mins,e.maxs=nativeVector(e.pos),nativeVector(e.mins),nativeVector(e.maxs)
+  scene[i]=e
+ end
+ assert(frame()==120)
+ local traces,passes={},0
+ supportCapture=true
+ local function sample(label)
+  local rows=tracePath and {} or nil
+  local parentMatrix,parentDepth=currentMatrix,#matrixStack
+  local parentMaterial,parentBlend=lastMaterial,blend
+  local parentTint={tint[1],tint[2],tint[3]}
+  local previous=submissionSignature;submissionSignature=rows
+  local n=frame();submissionSignature=previous;passes=passes+1
+  if rows then
+   table.sort(rows);traces[#traces+1]=label..'|'..n..'\n'..table.concat(rows,'\n')
+  end
+  if parentMatrix then
+   assert(currentMatrix==parentMatrix and #matrixStack==parentDepth
+    and lastMaterial==parentMaterial and blend==parentBlend
+    and tint[1]==parentTint[1] and tint[2]==parentTint[2] and tint[3]==parentTint[3],
+    'nested support pass lost outer native state: '..label)
+  else
+   assert(not currentMatrix and #matrixStack==0 and blend==1
+    and tint[1]==1 and tint[2]==1 and tint[3]==1,'support pass leaked native state: '..label)
+  end
+  return n
+ end
+ absoluteValues,axisReads,geometryReads=0,0,0
+ local beforeWires=wireframes
+ -- Camera translation changes every frame; orientation and geometry do not.
+ -- Both submissions still query the actual camera and every native box value.
+ for i=1,120 do
+  view.origin.x=i*.25;view.origin.y=(i%5)*.25;view.origin.z=(i%3)*.25
+  assert(sample('walk-'..i..'-a')==120)
+  assert(sample('walk-'..i..'-b')==120)
+ end
+ local work={absolute_values=absoluteValues,geometry_getters=geometryReads,
+  camera_basis_reads=axisReads,native_draws=120*240,wireframes=wireframes-beforeWires}
+ print(format('LOW_END_SUPPORT_WORK entities=120 rotated=30 frames=120 passes=240 absolute_values=%d native_geometry_getters=%d camera_basis_reads=%d native_draws=%d wireframes=%d native_fps_measured=false',
+  work.absolute_values,work.geometry_getters,work.camera_basis_reads,work.native_draws,work.wireframes))
+ assert(work.geometry_getters==115200 and work.camera_basis_reads==2160
+  and work.wireframes==9600,'support reuse skipped live geometry/camera reads or glyph submissions')
+ if requireWork then assert(work.absolute_values==0,'unchanged view axes repeat plane-support arithmetic') end
+ -- Visibility itself stays live as the eye crosses the same support planes.
+ for _,x in ipairs({0,1490,1600,1800,5000,-1000}) do
+  view.origin.x=x;view.origin.y=0;view.origin.z=0
+  local n=sample('eye-x-'..x)
+  if x==5000 then assert(n==0,'translation borrowed a visibility result') end
+ end
+ for _,y in ipairs({0,900,3000,-3000}) do view.origin=Vector(0,y,0);sample('eye-y-'..y) end
+ for _,z in ipairs({0,900,3000,-3000}) do view.origin=Vector(0,0,z);sample('eye-z-'..z) end
+ view.origin=Vector()
+ for _,fov in ipairs({30,70,90,110,179.9}) do view.fov=fov;sample('fov-'..fov) end
+ view.fov=90
+ for _,aspect in ipairs({.5,1,1.6,2,3}) do view.aspect=aspect;sample('aspect-'..aspect) end
+ view.aspect=1.6
+ for _,a in ipairs({{0,0,0},{0,90,0},{20,45,30},{-35,10,-50},{0,0,90},{0,0,0}}) do
+  view.angles.p,view.angles.y,view.angles.r=table.unpack(a);sample('angle-'..table.concat(a,','))
+ end
+ local e=scene[1]
+ e.maxs.x=200;sample('mutable-bounds')
+ e.pos.x=-500;sample('mutable-position')
+ e.ang.p,e.ang.y,e.ang.r=45,90,27;sample('mutable-pose')
+ e.mins=Vector(-300,-20,-10);e.maxs=Vector(300,20,10);e.pos=Vector(1400,0,0);e.ang=Angle()
+ sample('replacement-geometry')
+ local getter=e.GetBoxMins
+ e.GetBoxMins=function() return Vector(-320,-21,-11) end;sample('accessor-override');e.GetBoxMins=getter
+ e.nw.LOD_GeometryHidden=true;sample('hidden')
+ view.angles.y=90;sample('turn-hidden');e.nw.LOD_GeometryHidden=false;sample('reveal-after-turn')
+ view.angles.y=0;e:SetBoxKind(3);sample('collision-kind');e:SetBoxKind(1);sample('visible-kind')
+ e.nw.LOD_EventArchetype='false_floor';sample('false-floor');e.nw.LOD_EventArchetype=nil
+ e.nw.LOD_CrateGrate=true;sample('grate');e.nw.LOD_CrateGrate=false
+ e:OnRemove(true);sample('full-update');fire('NotifyShouldTransmit',e,true);sample('transmission')
+ e.valid=false;sample('invalid-owner');e.valid=true;sample('valid-owner')
+ local complete=view
+ local originalEyePos,originalEyeVector=EyePos,EyeVector
+ -- Incomplete render metadata does not remove the engine's eye APIs.
+ EyePos=function() return view.origin or complete.origin end
+ EyeVector=function() return (view.angles or complete.angles):Forward() end
+ for i,v in ipairs({{ortho={},fov=90,znear=1},{offcenter={},fov=90,znear=1},
+  {fov=180,znear=1},{fov=90,znear=-1},{fov=90,znear=1},{}}) do
+  view=v;sample('incomplete-view-'..i)
+ end
+ view=complete;sample('complete-view');EyePos,EyeVector=originalEyePos,originalEyeVector
+ local slab=B.DrawSlab;B.DrawSlab=nil;sample('native-fallback');B.DrawSlab=slab
+ -- A child view replaces the most recent plane set while the parent keeps its
+ -- own immutable coefficients. Return to the outer pass without a stale cache.
+ interruptDraw=function()
+  local parent=view;view={origin=Vector(-100,200,0),angles=Angle(25,60,35),fov=60,aspect=.8,znear=1}
+  sample('nested-child');view=parent
+ end
+ sample('nested-parent');sample('after-nested')
+ dofile(entityPath);sample('renderer-refresh');sample('after-refresh')
+ for _,flags in ipairs({{true,false,false},{false,true,false},{false,false,true}}) do
+  local before=geometryReads;fire('PostDrawOpaqueRenderables',table.unpack(flags))
+  assert(geometryReads==before,'excluded pass queried geometry')
+ end
+ resetScene();sample('removed-scene');supportCapture=false
+ if tracePath then
+  local f=assert(io.open(tracePath,'wb'));f:write(table.concat(traces,'\n'));f:close()
+ end
+ print(format('LOW_END_SUPPORT_PARITY passes=%d exact_native_mesh_wireframe_fallback_values=true; eye translation, axes/projection, mutable bounds/pose, live getters, hazards/grates, life/kind, full update, incomplete/nested views, refresh/removal',passes))
+ return work
+end
+if supportProbe or supportGate then supportCases(supportGate,arg[4]);return end
 -- Same 120 visible static entities; alternating floors/stairs share few meshes.
 for i=1,120 do
  local e=box(Vector(1000+i*2,(i%5)*16,(i%3)*16),i%2+1)
@@ -674,3 +801,4 @@ local weak=setmetatable({owner},{__mode='v'});owner=nil;collectgarbage('collect'
 B:DrawSlab(pos,ang,mins,maxs,material,color_white,512);assert(lastDraw.mesh and currentMatrix==nil)
 fire('ShutDown');assert(live==0 and peak<=256)
 print(format('LOW_END_RENDER_PASS: %d visible-corner and %d conservative plane cases (%d without an inside corner); native getter reuse and scheduled bounds; FOV/aspect/roll/pitch/yaw/nested views; mutations/kind/UV/material/eviction/cleanup/refresh/weak owners; ceiling=256',checked,conservative,crossing))
+if not override then supportCases(true) end

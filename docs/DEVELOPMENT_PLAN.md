@@ -1,4 +1,57 @@
-# Current Steam Deck checkpoint — aligned HUD text work reuse
+# Current Steam Deck checkpoint — exact plane-support reuse
+
+The October 8 UTC / local native capture verifies clean main `30d180f`, all
+15 client and 46 population source hashes, complete 180-second profiles,
+fully idle VR, fixed preferences and zero Lua errors. Active play averages
+26.7192 FPS, median 32.779 ms, p95 63.844 ms and p99 108.667 ms. The new scene
+has 1,338 native walls and initially 40 bodies / 36 living wanderers, versus
+1,284 walls / 36 bodies in the preceding capture; FPS changes do not isolate
+the aligned-HUD source change. Portrait paint averages 0.8287 ms versus 0.9406
+previously, also without isolated attribution. Sustained >=40 FPS remains unmet.
+Console entry evidence now records admission denials and a deployed Hero;
+it still does not establish every sanctuary branch's native acceptance.
+Generated static geometry averages 1.8892 ms per recorded hook invocation
+(100.3602 CPU ms per recorded second); timings are inclusive, overlapping,
+include profiler overhead and do not measure GPU time or flag-specific work.
+
+Reuse only direction-dependent frustum planes and box support scalars in the
+existing generated-geometry snapshot. Read the actual view axes/projection,
+eye position and every box's native bounds/pose on every pass. Exact basis,
+projection or box snapshot changes invalidate the relevant arithmetic; never
+cache visibility, round view keys, impose a lease, skip submissions, change
+culling planes/tolerance, hide native walls or promote experimental batching.
+Immutable coefficient sets preserve nested-camera ownership. Retain all
+meshes, UVs, colors, wireframes, fallback, collision, models, graphics preferences,
+population and gameplay. Fresh live GDD 00 → 01 → 05/07 governs this
+implementation-only checkpoint; no authored tuning/design change.
+
+Finite gate: published-parent/candidate native mesh/wireframe/fallback traces
+must match over 300 render passes covering translating cameras, all view axes,
+FOV/aspect, mutable/replaced bounds and pose, live accessor overrides, hazards,
+grates, kind/life, full update/transmission, incomplete/nested views, refresh
+and removal. In 240 warmed passes with 120 boxes (30 rotated), repeated
+support/plane absolute-value operations fall 111,600→0. All 115,200 native
+geometry getters, 2,160 camera-basis component reads, 28,800 mesh draws and
+9,600 wireframes remain. The exact parent must fail the new work bound.
+These are headless operation counts, not native elapsed-time/FPS savings.
+Preserve the existing 173 visible-corner / 73 conservative-plane oracle cases
+and accepted renderer/cache/resource regressions. The frozen source passes
+29/29 focused checks, 314/314 canonical suites and 885 Lua parses. All 2,566
+source files remain unchanged during both gates; every command/receipt, 628
+matrix stream hashes and 29 focused log hashes are independently checked.
+Earlier fixture failures remain preserved and unused. Only documentation/
+evidence packaging follows; both changed code/test hashes are rechecked before
+non-force main publication. See [finite gate and native evidence](validation/STEAM_DECK_20261008_PLANE_SUPPORT.md).
+
+After validated publication, fully quit GMod, pull/install, restart gm_flatgrass
+and use the usual fixed-preference three-minute capture:
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Leave GMod open through the final server reply; return performance_client_latest.txt
+and console_latest.txt. Require exact final source, complete profiles, idle VR,
+no new Lua errors, unchanged floors/stairs/grates/hazards, walls and overlays,
+intact gameplay and sustained >=40 FPS. No Workshop or VPS action.
+
+# Previous checkpoint — aligned HUD text work reuse
 
 The October 8 UTC / local three-minute native capture labels clean main
 `0a10367`, verifies all 15 client and 46 population source hashes, complete CPU

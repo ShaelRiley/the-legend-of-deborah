@@ -209,9 +209,10 @@ local function currentPerspective()
         tanX, tanY, math.sqrt(1 + tanX*tanX), math.sqrt(1 + tanY*tanY)
 end
 
-local function plane(x,y,z)
-    return {x,y,z,math.abs(x),math.abs(y),math.abs(z)}
+local function plane(x,y,z,identityKey,valueKey)
+    return {x,y,z,math.abs(x),math.abs(y),math.abs(z),identityKey,valueKey}
 end
+local lastPlanes
 local function cameraSnapshot()
     local eye, f, r, u, tanX, tanY, normX, normY = currentPerspective()
     if not eye or not f then return nil end
@@ -219,18 +220,36 @@ local function cameraSnapshot()
     -- not to every generated box. Keep ownership local to the render pass so
     -- nested RenderView and immediate camera changes use their own planes.
     local fx,fy,fz=f.x,f.y,f.z
-    local camera={ex=eye.x,ey=eye.y,ez=eye.z,fx=fx,fy=fy,fz=fz,
-        front=plane(fx,fy,fz)}
+    local camera={ex=eye.x,ey=eye.y,ez=eye.z,fx=fx,fy=fy,fz=fz}
+    local rx,ry,rz,ux,uy,uz
     if r and u then
-        local rx,ry,rz,ux,uy,uz=r.x,r.y,r.z,u.x,u.y,u.z
+        rx,ry,rz,ux,uy,uz=r.x,r.y,r.z,u.x,u.y,u.z
         camera.rx,camera.ry,camera.rz=rx,ry,rz
         camera.ux,camera.uy,camera.uz=ux,uy,uz
         camera.tanX,camera.tanY,camera.normX,camera.normY=tanX,tanY,normX,normY
-        camera.left=plane(fx*tanX-rx,fy*tanX-ry,fz*tanX-rz)
-        camera.right=plane(fx*tanX+rx,fy*tanX+ry,fz*tanX+rz)
-        camera.bottom=plane(fx*tanY-ux,fy*tanY-uy,fz*tanY-uz)
-        camera.top=plane(fx*tanY+ux,fy*tanY+uy,fz*tanY+uz)
     end
+    -- Only direction-dependent coefficients are shared. Eye position and box
+    -- geometry stay live on every pass; moving the camera never borrows a
+    -- visibility decision. Immutable plane sets also survive nested views.
+    local planes=lastPlanes
+    if not planes or planes.fx~=fx or planes.fy~=fy or planes.fz~=fz
+        or planes.rx~=rx or planes.ry~=ry or planes.rz~=rz
+        or planes.ux~=ux or planes.uy~=uy or planes.uz~=uz
+        or planes.tanX~=tanX or planes.tanY~=tanY
+        or planes.normX~=normX or planes.normY~=normY then
+        planes={fx=fx,fy=fy,fz=fz,rx=rx,ry=ry,rz=rz,ux=ux,uy=uy,uz=uz,
+            tanX=tanX,tanY=tanY,normX=normX,normY=normY,
+            front=plane(fx,fy,fz,"frontPlane","frontSupport")}
+        if r and u then
+            planes.left=plane(fx*tanX-rx,fy*tanX-ry,fz*tanX-rz,"leftPlane","leftSupport")
+            planes.right=plane(fx*tanX+rx,fy*tanX+ry,fz*tanX+rz,"rightPlane","rightSupport")
+            planes.bottom=plane(fx*tanY-ux,fy*tanY-uy,fz*tanY-uz,"bottomPlane","bottomSupport")
+            planes.top=plane(fx*tanY+ux,fy*tanY+uy,fz*tanY+uz,"topPlane","topSupport")
+        end
+        lastPlanes=planes
+    end
+    camera.front,camera.left,camera.right=planes.front,planes.left,planes.right
+    camera.bottom,camera.top=planes.bottom,planes.top
     return camera
 end
 
@@ -287,11 +306,20 @@ local function support(box, p)
     -- The generated unrotated floors/stairs have exact identity axes. Their
     -- support uses the absolute plane coefficients already resolved once for
     -- this view. Arbitrarily rotated boxes retain the same oriented formula.
-    if box.axisAligned then return box.hx*p[4]+box.hy*p[5]+box.hz*p[6] end
-    local x,y,z=p[1],p[2],p[3]
-    return box.hx*math.abs(box.fx*x+box.fy*y+box.fz*z)
-        + box.hy*math.abs(box.rx*x+box.ry*y+box.rz*z)
-        + box.hz*math.abs(box.ux*x+box.uy*y+box.uz*z)
+    -- At most five plane/value pairs in the existing geometry snapshot. A
+    -- bounds/pose/refresh change replaces that snapshot; changed view axes or
+    -- projection replace these immutable plane identities. No rounded key/TTL.
+    if box[p[7]]==p then return box[p[8]] end
+    local value
+    if box.axisAligned then value=box.hx*p[4]+box.hy*p[5]+box.hz*p[6]
+    else
+        local x,y,z=p[1],p[2],p[3]
+        value=box.hx*math.abs(box.fx*x+box.fy*y+box.fz*z)
+            + box.hy*math.abs(box.rx*x+box.ry*y+box.rz*z)
+            + box.hz*math.abs(box.ux*x+box.uy*y+box.uz*z)
+    end
+    box[p[7]],box[p[8]]=p,value
+    return value
 end
 local function inCamera(box, camera)
     if not camera then return true end
