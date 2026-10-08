@@ -18,7 +18,7 @@ CLIENT=true;SERVER=false
 include=noop;CurTime=function() return now end
 local validityCalls=0
 local entityTables=setmetatable({}, {__mode='k'})
-local collisionFieldReads=0
+local collisionFieldReads,drawableFieldReads=0,0
 function IsValid(e) validityCalls=validityCalls+1;return type(e)=='table' and (entityTables[e] or e).valid~=false end
 function Color(r,g,b,a) return {r=r,g=g,b=b,a=a or 255} end
 color_white=Color(255,255,255)
@@ -156,7 +156,8 @@ local function box(pos,kind,observed)
   local data=e;local class=ENT
   e=setmetatable({}, {__index=function(_,k)
    assert(data.valid~=false,'invalid native entity field lookup: '..k)
-   if data.kind==3 or data.kind==7 then collisionFieldReads=collisionFieldReads+1 end
+   if data.kind==3 or data.kind==7 then collisionFieldReads=collisionFieldReads+1
+   else drawableFieldReads=drawableFieldReads+1 end
    return data[k] or class[k]
   end,__newindex=function(_,k,v) data[k]=v end})
   entityTables[e]=data
@@ -321,16 +322,19 @@ for i=1,1200 do box(Vector(1000+i*2,0,0),i<=120 and 1 or (i%2==0 and 3 or 7),tru
 assert(frame()==120)
 local kindSignatures=kindProbe and arg[4] and {} or nil
 submissionSignature=kindSignatures;assert(frame()==120);submissionSignature=nil
-kindReads,validityCalls,collisionFieldReads=0,0,0
+kindReads,validityCalls,collisionFieldReads,drawableFieldReads=0,0,0,0
 for _=1,120 do assert(frame()==120) end
 local steadyKindReads=kindReads
 local steadyValidityCalls=validityCalls
 local steadyCollisionFieldReads=collisionFieldReads
+local steadyDrawableFieldReads=drawableFieldReads
 print(format('LOW_END_KIND_WORK entities=1200 drawable=120 passes=120 submissions=14400 native_kind_reads=%d native_validity_calls=%d collision_entity_field_reads=%d native_fps_measured=false',steadyKindReads,steadyValidityCalls,steadyCollisionFieldReads))
+print(format('LOW_END_DRAWABLE_TABLE_WORK drawable=120 passes=120 submissions=14400 native_entity_field_reads=%d native_fps_measured=false',steadyDrawableFieldReads))
 if not kindProbe and not parity and not baseline then
  assert(steadyKindReads==0,'declared static kinds still poll native datatables per pass')
  assert(steadyValidityCalls==14400,'collision-only boxes still poll native validity per pass')
  assert(steadyCollisionFieldReads==0,'cached invisible boxes still index native entity fields per pass')
+ assert(steadyDrawableFieldReads<=12*14400,'drawable boxes repeat verified Lua-table field lookups through native entity indexing')
 end
 local changing=entities[121]
 local function kindFrame(expected,label)
@@ -405,6 +409,35 @@ if record then
  changing.valid=false;assert(frame()==121,'invalid drawable called a native getter')
  changing.valid=true;changing.GetBoxKind=kindGetter;assert(frame()==122)
 end
+-- The table borrow removes field lookup work, never the native geometry read.
+-- Exercise the observed path with in-place bounds/pose and accessor replacement.
+local savedMin,savedMax,savedPos,savedAng=changing.mins,changing.maxs,changing.pos,changing.ang
+changing.mins=nativeVector(Vector(-8,-8,-4));changing.maxs=nativeVector(Vector(8,8,4))
+changing.pos=nativeVector(Vector(1125,0,0))
+assert(frame()==122)
+local slab,snapshotReads=B.DrawSlab,nil
+B.DrawSlab=function(self,pos,ang,mins,maxs,mat,color,tile,owner,...)
+ if owner==changing then snapshotReads=nativeVectorReads end
+ return slab(self,pos,ang,mins,maxs,mat,color,tile,owner,...)
+end
+nativeVectorReads=0;changing.mins.x=-12;assert(frame()==122);B.DrawSlab=slab
+assert(changing._LODVisualBox.x0==-12,'borrowed Lua table retained stale mutable bounds')
+-- Every observed box rechecks its native values on this pass. The changed
+-- box consumes each position/bounds component only once before snapshot rebuild.
+if not kindProbe then assert(snapshotReads==9,'snapshot rebuild repeated native vector components') end
+changing.pos.x=1135;changing.ang=Angle(0,5,0);assert(frame()==122)
+assert(changing._LODVisualBox.px==1135 and changing._LODVisualBox.yaw==5,'borrowed table retained stale pose')
+local currentMins=changing.GetBoxMins
+changing.GetBoxMins=function() return Vector(-17,-19,-23) end
+assert(frame()==122 and changing._LODVisualBox.x0==-17,'table borrow bypassed a live geometry accessor override')
+changing.GetBoxMins=currentMins
+local inheritedMins=ENT.GetBoxMins
+ENT.GetBoxMins=currentMins;changing.GetBoxMins=nil
+assert(frame()==122,'missing instance accessor did not recover through the live class')
+changing.GetBoxMins=currentMins;ENT.GetBoxMins=inheritedMins
+changing.nw.LOD_GeometryHidden=true;assert(frame()==121)
+changing.nw.LOD_GeometryHidden=false
+changing.mins,changing.maxs,changing.pos,changing.ang=savedMin,savedMax,savedPos,savedAng;assert(frame()==122)
 submissionSignature=kindSignatures;assert(frame()==122);submissionSignature=nil
 if kindSignatures then
  table.sort(kindSignatures)

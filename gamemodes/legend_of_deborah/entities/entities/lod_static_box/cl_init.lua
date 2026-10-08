@@ -26,8 +26,9 @@ local visualBoxes = LOD.TexturedBox.StaticVisualBoxes
 
 -- Transmission can resume before SetupDataTables installs the accessors.
 -- Keep registry membership while waiting so the next ready frame recovers.
-local function networkReady(ent)
-    return ent.GetBoxMins and ent.GetBoxMaxs and ent.GetBoxKind
+local function networkReady(ent, data)
+    local fields = data or ent
+    return fields.GetBoxMins and fields.GetBoxMaxs and fields.GetBoxKind
 end
 
 local function visibleKind(kind)
@@ -52,8 +53,15 @@ local function currentKind(ent, record)
     local cached = observed and record.kind
     if type(record)=="table" and not observed then record.kind = nil end
     if cached and not visibleKind(cached) then return cached end
-    if not IsValid(ent) or not networkReady(ent) then return nil end
-    if cached then return cached end
+    -- Only the verified live table may replace native entity indexing. Keep
+    -- validity and current accessors live; copied/expired tables fail over.
+    data = observed and data or nil
+    if not IsValid(ent) then return nil end
+    -- A missing instance accessor may now be inherited from a replaced class.
+    -- Use the ordinary entity lookup for that legacy/custom readiness path.
+    if data and not networkReady(ent, data) then data = nil end
+    if not data and not networkReady(ent) then return nil end
+    if cached then return cached, data end
     local kind = ent:GetBoxKind()
     -- Zero is the unreceived datatable default. Native spawn-time proxies can
     -- be absent, so keep polling it until the initial nonzero kind arrives.
@@ -61,7 +69,7 @@ local function currentKind(ent, record)
         record.kind = kind
         record.pending = nil
     end
-    return kind
+    return kind, data
 end
 
 local function refreshRenderBounds(ent)
@@ -229,24 +237,27 @@ end
 -- A refresh can retain entities and snapshots from the previous implementation.
 -- Resolve their basis again before borrowing fields owned by this file instance.
 local snapshotOwner = {}
-local function visualSnapshot(ent)
-    local mins, maxs = ent:GetBoxMins(), ent:GetBoxMaxs()
+local function visualSnapshot(ent, data)
+    local fields = data or ent
+    local mins, maxs = fields.GetBoxMins(ent), fields.GetBoxMaxs(ent)
     local pos, angles = ent:GetPos(), ent:GetAngles()
+    local x0,y0,z0,x1,y1,z1 = mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z
+    local px,py,pz = pos.x,pos.y,pos.z
     local pitch, yaw, roll = angles and angles.p, angles and angles.y, angles and angles.r
-    local cached = ent._LODVisualBox
+    local cached = fields._LODVisualBox
     -- Snapshot once per pass; reuse identical geometry/pose across passes.
     -- Scalars observe in-place native vector/angle mutations immediately.
     if not cached or cached.owner ~= snapshotOwner
-        or cached.x0 ~= mins.x or cached.y0 ~= mins.y or cached.z0 ~= mins.z
-        or cached.x1 ~= maxs.x or cached.y1 ~= maxs.y or cached.z1 ~= maxs.z
-        or cached.px ~= pos.x or cached.py ~= pos.y or cached.pz ~= pos.z
+        or cached.x0 ~= x0 or cached.y0 ~= y0 or cached.z0 ~= z0
+        or cached.x1 ~= x1 or cached.y1 ~= y1 or cached.z1 ~= z1
+        or cached.px ~= px or cached.py ~= py or cached.pz ~= pz
         or cached.pitch ~= pitch or cached.yaw ~= yaw or cached.roll ~= roll then
-        cached = {owner=snapshotOwner,x0=mins.x,y0=mins.y,z0=mins.z,x1=maxs.x,y1=maxs.y,z1=maxs.z,
-            px=pos.x,py=pos.y,pz=pos.z,pitch=pitch,yaw=yaw,roll=roll,
+        cached = {owner=snapshotOwner,x0=x0,y0=y0,z0=z0,x1=x1,y1=y1,z1=z1,
+            px=px,py=py,pz=pz,pitch=pitch,yaw=yaw,roll=roll,
             position=pos,angles=angles,mins=mins,maxs=maxs}
         if angles and angles.Forward and angles.Right and angles.Up then
             local f, r, u = angles:Forward(), angles:Right(), angles:Up()
-            local x, y, z = (mins.x+maxs.x)*0.5,(mins.y+maxs.y)*0.5,(mins.z+maxs.z)*0.5
+            local x, y, z = (x0+x1)*0.5,(y0+y1)*0.5,(z0+z1)*0.5
             cached.f, cached.r, cached.u = f, r, u
             cached.fx,cached.fy,cached.fz=f.x,f.y,f.z
             cached.rx,cached.ry,cached.rz=r.x,r.y,r.z
@@ -254,20 +265,20 @@ local function visualSnapshot(ent)
             cached.axisAligned=cached.fx==1 and cached.fy==0 and cached.fz==0
                 and cached.rx==0 and cached.ry==-1 and cached.rz==0
                 and cached.ux==0 and cached.uy==0 and cached.uz==1
-            cached.cx=pos.x+f.x*x-r.x*y+u.x*z
-            cached.cy=pos.y+f.y*x-r.y*y+u.y*z
-            cached.cz=pos.z+f.z*x-r.z*y+u.z*z
-            cached.hx, cached.hy, cached.hz = (maxs.x-mins.x)*0.5,(maxs.y-mins.y)*0.5,(maxs.z-mins.z)*0.5
+            cached.cx=px+cached.fx*x-cached.rx*y+cached.ux*z
+            cached.cy=py+cached.fy*x-cached.ry*y+cached.uy*z
+            cached.cz=pz+cached.fz*x-cached.rz*y+cached.uz*z
+            cached.hx, cached.hy, cached.hz = (x1-x0)*0.5,(y1-y0)*0.5,(z1-z0)*0.5
         else
             -- An incomplete angle accessor cannot supply oriented support.
             -- Retain the previous rotation-independent origin sphere for the
             -- conservative rear-plane fallback until native axes are ready.
-            local x = math.max(math.abs(mins.x), math.abs(maxs.x))
-            local y = math.max(math.abs(mins.y), math.abs(maxs.y))
-            local z = math.max(math.abs(mins.z), math.abs(maxs.z))
+            local x = math.max(math.abs(x0), math.abs(x1))
+            local y = math.max(math.abs(y0), math.abs(y1))
+            local z = math.max(math.abs(z0), math.abs(z1))
             cached.radius = math.sqrt(x*x+y*y+z*z) + 1
         end
-        ent._LODVisualBox = cached
+        fields._LODVisualBox = cached
     end
     return cached
 end
@@ -315,12 +326,12 @@ local function drawGeneratedGeometry()
         return material
     end
     for ent, record in pairs(visualBoxes) do
-        local kind = currentKind(ent, record)
+        local kind, data = currentKind(ent, record)
         -- Most generated boxes are invisible collision walls. Resolve their
         -- cheap kind before native visibility/bounds/transform work. Native
         -- changes invalidate known kinds; unready/custom accessors still poll.
         if visibleKind(kind) and not ent:GetNW2Bool("LOD_GeometryHidden", false) then
-            local box = visualSnapshot(ent)
+            local box = visualSnapshot(ent, data)
             if inCamera(box, camera) then
 
                 -- Ordinary floor runs render only their top and underside. Their

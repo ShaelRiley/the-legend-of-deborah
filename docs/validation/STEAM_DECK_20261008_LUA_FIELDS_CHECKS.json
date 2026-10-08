@@ -1,0 +1,3657 @@
+{
+  "parent_sha": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e",
+  "parent_tree": "ffa53dac758e9973fd28c7c0b1af99ff7614bca1",
+  "total": 313,
+  "passed": 313,
+  "focused_total": 29,
+  "focused_passed": 29,
+  "lua_files": 884,
+  "source_files": 2553,
+  "source_before": "69aef2edf50659234ea2b916488877a472d2774ed697973afe283f926b364436",
+  "source_after": "69aef2edf50659234ea2b916488877a472d2774ed697973afe283f926b364436",
+  "changed_during_gate": [],
+  "verified_receipts": 313,
+  "verified_raw_streams": 626,
+  "matrix_receipt_sha256": "0c5566d1aa9604b7c0050ef630024a7daa80dd99a888734bdb07420f1ffb16af",
+  "paired": {
+    "parent-paired": {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_render.lua",
+        "--kind-probe",
+        "/workspace/scratch/6473023bfe43/perf-20261008/parent/cl_textured_box.lua",
+        "/workspace/scratch/6473023bfe43/perf-20261008/parent/cl_init.lua",
+        "/workspace/scratch/6473023bfe43/perf-20261008/parent-paired.txt",
+        "/workspace/scratch/6473023bfe43/perf-20261008/parent/shared.lua"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "ca38f7fcf26286686c4f1b7e9287cd43cefdffdffbd1b00bb9c040e6787b6659",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "candidate-paired": {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_render.lua",
+        "--kind-probe",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+        "/workspace/scratch/6473023bfe43/perf-20261008/candidate-paired.txt",
+        "gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "cc3e233dee9166ec955cab1db551d34c72cbabdf5d4bd18a6fde2544ff92047c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "parent-negative": {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_render.lua",
+        "--source",
+        "/workspace/scratch/6473023bfe43/perf-20261008/parent/cl_textured_box.lua",
+        "/workspace/scratch/6473023bfe43/perf-20261008/parent/cl_init.lua",
+        "unused",
+        "/workspace/scratch/6473023bfe43/perf-20261008/parent/shared.lua"
+      ],
+      "returncode": 1,
+      "stdout_sha256": "a3ba2393a5976e01d59fe973edbb017eca4d3da0f8a65006cbfdddb2263ab3c2",
+      "stderr_sha256": "5e2c04bd31436becc411d2fa0030dbf2c84543a5fad4b80be85fc6f8eaa326ad"
+    },
+    "parity": {
+      "identical": true,
+      "rows": 726,
+      "sha256": "f2ec0cd283b57450ee7b88f7094acda235b93368a4e0ec0390c140ffe06bb021"
+    },
+    "native_field_reads": {
+      "parent": 273600,
+      "candidate": 172800,
+      "reduction_percent": 36.84210526315789,
+      "draws_each": 14400
+    }
+  },
+  "native_capture": {
+    "tested_install": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean",
+    "upload_hashes": {
+      "performance_client_latest(20261008-001640).txt": "302e20ee7b0f8f927767c47a143d169ef13d93b847e039e7ec7b132b74ab4d08",
+      "console_latest(20261008-001643).txt": "f8a2e5cd8daa177d46040846a781040762fc0406e62b418043ee3c361af25c11"
+    },
+    "active": {
+      "max_ms": 359.494,
+      "over100": 98,
+      "median_ms": 38.689,
+      "over50": 1062,
+      "p95_ms": 81.794,
+      "frames": 3662,
+      "p99_ms": 141.747,
+      "over25": 3267,
+      "seconds": 167.07377900000037,
+      "fps": 21.918460346790813
+    },
+    "all": {
+      "max_ms": 359.494,
+      "over100": 104,
+      "median_ms": 39.233,
+      "over50": 1224,
+      "p95_ms": 82.222,
+      "frames": 3865,
+      "p99_ms": 141.747,
+      "over25": 3470,
+      "seconds": 179.96598100000026,
+      "fps": 21.476281120041207
+    },
+    "requested_seconds": 180,
+    "elapsed_seconds": 180.00201260000006,
+    "configuration_unchanged": true,
+    "configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": true,
+      "fps_max": "60",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-2",
+      "r_shadows": "1",
+      "r_waterforceexpensive": "1",
+      "lod_map_scale": "1",
+      "window_mode": "user-recorded",
+      "lod_third_person": "0",
+      "mat_picmip": "0",
+      "mat_antialias": "0",
+      "architecture": "x64",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "lod_map_opacity": "1",
+      "lod_wall_batches": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "renderer": {
+      "reason": "wall-batches-disabled",
+      "vertices": 0,
+      "draws": 0,
+      "status": "native",
+      "visits": 0,
+      "hidden": 0,
+      "chunks": 0
+    },
+    "start_wall_models": 1732,
+    "end_wall_models": 1732,
+    "start_entities": 3065,
+    "end_entities": 3061,
+    "lua_errors": [
+      0,
+      0
+    ],
+    "vr_start": {
+      "method_overrides": 0,
+      "active": false,
+      "version": "deborah-vr-idle-20261007-r2",
+      "recurring_timers": 0,
+      "local_tracking": false,
+      "runtime_hooks": 0,
+      "pending_once": 0,
+      "native_resources": 0,
+      "resource_counts": [],
+      "source": {
+        "bridge_checked": 2,
+        "verified": true,
+        "checked": 139,
+        "mismatches": 0,
+        "missing": 0
+      },
+      "idle": true,
+      "adapter_think": false,
+      "players": 0
+    },
+    "vr_end": {
+      "method_overrides": 0,
+      "active": false,
+      "version": "deborah-vr-idle-20261007-r2",
+      "recurring_timers": 0,
+      "local_tracking": false,
+      "runtime_hooks": 0,
+      "pending_once": 0,
+      "native_resources": 0,
+      "resource_counts": [],
+      "source": {
+        "bridge_checked": 2,
+        "verified": true,
+        "checked": 139,
+        "mismatches": 0,
+        "missing": 0
+      },
+      "idle": true,
+      "adapter_think": false,
+      "players": 0
+    },
+    "source": {
+      "verified": true,
+      "checked": 15,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "profile_server_status": "received",
+    "profile_top_rows": {
+      "client": [
+        {
+          "calls": 3865,
+          "milliseconds": 66175.8909999994,
+          "completed": 3865,
+          "ms_per_second": 367.6285974157131,
+          "mean_ms": 17.121834670116275,
+          "name": "phase/PreRender-to-PostRender",
+          "maximum_ms": 54.7354999999925
+        },
+        {
+          "calls": 7732,
+          "milliseconds": 19864.13140000445,
+          "completed": 7732,
+          "ms_per_second": 110.35171049627616,
+          "mean_ms": 2.5690806259705705,
+          "name": "hook/PostDrawOpaqueRenderables/LOD.DrawGeneratedStaticGeometry",
+          "maximum_ms": 24.994900000024245
+        },
+        {
+          "calls": 43653,
+          "milliseconds": 3839.552899990622,
+          "completed": 43653,
+          "ms_per_second": 21.329965127738117,
+          "mean_ms": 0.08795622064899598,
+          "name": "entity/lod_hostile.Draw",
+          "maximum_ms": 19.345700000030774
+        },
+        {
+          "calls": 7732,
+          "milliseconds": 3035.51749999815,
+          "completed": 7732,
+          "ms_per_second": 16.863286977959717,
+          "mean_ms": 0.3925915028450789,
+          "name": "hook/PostDrawOpaqueRenderables/LOD_DrawContainerBranding",
+          "maximum_ms": 18.672600000058992
+        },
+        {
+          "calls": 3466,
+          "milliseconds": 2889.4565999964925,
+          "completed": 3466,
+          "ms_per_second": 16.051871173903727,
+          "mean_ms": 0.8336574148864664,
+          "name": "hook/HUDPaint/LOD_CombatRollFeed",
+          "maximum_ms": 4.9435999999332125
+        },
+        {
+          "calls": 3466,
+          "milliseconds": 2793.4379000015497,
+          "completed": 3466,
+          "ms_per_second": 15.518456066507271,
+          "mean_ms": 0.8059543854591892,
+          "name": "hook/HUDPaint/LOD_StatusPortrait",
+          "maximum_ms": 17.698900000027606
+        },
+        {
+          "calls": 3466,
+          "milliseconds": 1427.341800004001,
+          "completed": 3466,
+          "ms_per_second": 7.929347924734325,
+          "mean_ms": 0.41181240623312204,
+          "name": "hook/HUDPaint/LOD_PersistentHUD",
+          "maximum_ms": 1.9270999999889682
+        },
+        {
+          "calls": 10817,
+          "milliseconds": 1312.2234999997318,
+          "completed": 10817,
+          "ms_per_second": 7.289828327371424,
+          "mean_ms": 0.12131122307476488,
+          "name": "hook/PreDrawViewModel/LOD_ProceduralWeaponSurface",
+          "maximum_ms": 18.854199999964294
+        },
+        {
+          "calls": 7732,
+          "milliseconds": 1096.8882000007625,
+          "completed": 7732,
+          "ms_per_second": 6.093570700666956,
+          "mean_ms": 0.14186345059502878,
+          "name": "hook/PostDrawTranslucentRenderables/LOD_DrawContainerWayfinding",
+          "maximum_ms": 3.7170999999034393
+        },
+        {
+          "calls": 195048,
+          "milliseconds": 953.0912999981638,
+          "completed": 195048,
+          "ms_per_second": 5.294732152944442,
+          "mean_ms": 0.004886444875098252,
+          "name": "entity/lod_static_box.Think",
+          "maximum_ms": 0.1809000000321248
+        },
+        {
+          "calls": 12469,
+          "milliseconds": 951.3125000004266,
+          "completed": 12469,
+          "ms_per_second": 5.284850340423758,
+          "mean_ms": 0.07629420963994119,
+          "name": "entity/lod_hostile.DrawTranslucent",
+          "maximum_ms": 18.55670000009013
+        },
+        {
+          "calls": 3466,
+          "milliseconds": 844.1014999975778,
+          "completed": 3466,
+          "ms_per_second": 4.689258366322742,
+          "mean_ms": 0.24353765147073797,
+          "name": "hook/HUDPaint/LOD_TimeoutHUD",
+          "maximum_ms": 0.7779000000027736
+        }
+      ],
+      "server": [
+        {
+          "calls": 281494,
+          "milliseconds": 8252.758500008553,
+          "completed": 281494,
+          "ms_per_second": 45.85242531390895,
+          "mean_ms": 0.029317706594131857,
+          "name": "service/EnemyRoster.TickCloseDefense",
+          "maximum_ms": 12.45470000003479
+        },
+        {
+          "calls": 560683,
+          "milliseconds": 8239.873399976887,
+          "completed": 560683,
+          "ms_per_second": 45.78083554342631,
+          "mean_ms": 0.014696135605996412,
+          "name": "service/EntrySafety.BeforeAI",
+          "maximum_ms": 13.26670000003105
+        },
+        {
+          "calls": 45828,
+          "milliseconds": 4052.4017000021786,
+          "completed": 45828,
+          "ms_per_second": 22.515192500921355,
+          "mean_ms": 0.08842632669988171,
+          "name": "entity/lod_hostile/deadcrab._BehaviourTick",
+          "maximum_ms": 13.006499999960395
+        },
+        {
+          "calls": 40172,
+          "milliseconds": 3478.378400001247,
+          "completed": 40172,
+          "ms_per_second": 19.325912154027773,
+          "mean_ms": 0.08658713531816309,
+          "name": "entity/lod_hostile/bioblaster._BehaviourTick",
+          "maximum_ms": 12.890900000002148
+        },
+        {
+          "calls": 24708,
+          "milliseconds": 3092.438100007257,
+          "completed": 24708,
+          "ms_per_second": 17.18162321341674,
+          "mean_ms": 0.12515938562438308,
+          "name": "entity/lod_hostile/runner._BehaviourTick",
+          "maximum_ms": 73.16130000003795
+        },
+        {
+          "calls": 11543,
+          "milliseconds": 3044.5642999944766,
+          "completed": 11543,
+          "ms_per_second": 16.915635805742472,
+          "mean_ms": 0.2637584943250868,
+          "name": "hook/Think/LOD_EnemyVariancePhysicalFootsteps",
+          "maximum_ms": 19.228400000088183
+        },
+        {
+          "calls": 33591,
+          "milliseconds": 2824.47050000178,
+          "completed": 33591,
+          "ms_per_second": 15.692792010397069,
+          "mean_ms": 0.08408414456258463,
+          "name": "entity/lod_hostile/shambler._BehaviourTick",
+          "maximum_ms": 28.78880000002937
+        },
+        {
+          "calls": 30852,
+          "milliseconds": 2344.6551999971916,
+          "completed": 30852,
+          "ms_per_second": 13.02693244260426,
+          "mean_ms": 0.07599686243994527,
+          "name": "entity/lod_hostile/soldier._BehaviourTick",
+          "maximum_ms": 11.931699999990997
+        },
+        {
+          "calls": 11997,
+          "milliseconds": 1810.025899997413,
+          "completed": 11997,
+          "ms_per_second": 10.05652563270647,
+          "mean_ms": 0.15087320996894332,
+          "name": "hook/SetupMove/LOD_RPG_GateD_Movement",
+          "maximum_ms": 1.2066000000459098
+        },
+        {
+          "calls": 19160,
+          "milliseconds": 1526.5756000046622,
+          "completed": 19160,
+          "ms_per_second": 8.481672362662373,
+          "mean_ms": 0.07967513569961703,
+          "name": "entity/lod_hostile/seeker._BehaviourTick",
+          "maximum_ms": 12.410199999976612
+        },
+        {
+          "calls": 14347,
+          "milliseconds": 1201.8204000037258,
+          "completed": 14347,
+          "ms_per_second": 6.677328572239925,
+          "mean_ms": 0.08376806300994813,
+          "name": "entity/lod_hostile/flamer._BehaviourTick",
+          "maximum_ms": 13.433600000098522
+        },
+        {
+          "calls": 13258,
+          "milliseconds": 1189.716100008127,
+          "completed": 13258,
+          "ms_per_second": 6.6100769361324625,
+          "mean_ms": 0.08973571428632726,
+          "name": "entity/lod_hostile/afterburst._BehaviourTick",
+          "maximum_ms": 1.3981000000740096
+        }
+      ]
+    },
+    "windows": [
+      {
+        "active_seconds": 4.993860599999948,
+        "fps": 58.672042227210554,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 3,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 913,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.654400000030364,
+              "draws": 13,
+              "culled": 24,
+              "candidates": 37,
+              "admitted": 37
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 913,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 1,
+        "active_frames": 293,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.99213050000003,
+        "fps": 35.65611916595508,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 73,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 913,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.8771000000251661,
+              "draws": 13,
+              "culled": 24,
+              "candidates": 37,
+              "admitted": 37
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 913,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 16,
+        "active_frames": 178,
+        "over100": 2
+      },
+      {
+        "active_seconds": 4.99949909999998,
+        "fps": 18.401843496681572,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 92,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 985,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7554000000027372,
+              "draws": 14,
+              "culled": 19,
+              "candidates": 33,
+              "admitted": 33
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 985,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 36,
+        "active_frames": 92,
+        "over100": 6
+      },
+      {
+        "active_seconds": 3.3065586000000167,
+        "fps": 26.916202241206175,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 89,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1077,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7244999999329593,
+              "draws": 9,
+              "culled": 24,
+              "candidates": 33,
+              "admitted": 33
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 1077,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 7,
+        "active_frames": 89,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.639099000000101,
+        "fps": 26.08265096304204,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 121,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1205,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6055999999716732,
+              "draws": 1,
+              "culled": 32,
+              "candidates": 33,
+              "admitted": 33
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 1205,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 6,
+        "active_frames": 121,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.9217870999999604,
+        "fps": 23.5686748823412,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 116,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1336,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6863999999495718,
+              "draws": 11,
+              "culled": 22,
+              "candidates": 33,
+              "admitted": 33
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 1336,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 15,
+        "active_frames": 116,
+        "over100": 6
+      },
+      {
+        "active_seconds": 5.081508799999938,
+        "fps": 16.924107265149487,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 86,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1452,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7233000000042011,
+              "draws": 14,
+              "culled": 16,
+              "candidates": 30,
+              "admitted": 30
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 1452,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 42,
+        "active_frames": 86,
+        "over100": 10
+      },
+      {
+        "active_seconds": 4.989453600000047,
+        "fps": 19.04016103085899,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 95,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1538,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7060000000365108,
+              "draws": 2,
+              "culled": 28,
+              "candidates": 30,
+              "admitted": 30
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 1538,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 36,
+        "active_frames": 95,
+        "over100": 3
+      },
+      {
+        "active_seconds": 4.997794900000031,
+        "fps": 19.008383077104547,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 95,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1633,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6804000000784072,
+              "draws": 16,
+              "culled": 16,
+              "candidates": 32,
+              "admitted": 32
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 1633,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 42,
+        "active_frames": 95,
+        "over100": 2
+      },
+      {
+        "active_seconds": 5.020048999999972,
+        "fps": 22.111337957059906,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 111,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1728,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7206000000223867,
+              "draws": 11,
+              "culled": 21,
+              "candidates": 32,
+              "admitted": 32
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 1728,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 30,
+        "active_frames": 111,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.966445499999963,
+        "fps": 23.155393530443625,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 115,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1839,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6475000000136788,
+              "draws": 10,
+              "culled": 23,
+              "candidates": 33,
+              "admitted": 33
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 1839,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 26,
+        "active_frames": 115,
+        "over100": 2
+      },
+      {
+        "active_seconds": 5.013570400000049,
+        "fps": 23.13720377797006,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 116,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 1954,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7689999999911379,
+              "draws": 15,
+              "culled": 23,
+              "candidates": 38,
+              "admitted": 38
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 1954,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 26,
+        "active_frames": 116,
+        "over100": 1
+      },
+      {
+        "active_seconds": 5.0345674000000145,
+        "fps": 26.218737284160625,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 132,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2070,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 1.0479000000032102,
+              "draws": 14,
+              "culled": 19,
+              "candidates": 33,
+              "admitted": 33
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2070,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 3,
+        "active_frames": 132,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.980369300000007,
+        "fps": 18.271737399071966,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 91,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2202,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7194999999455831,
+              "draws": 12,
+              "culled": 22,
+              "candidates": 34,
+              "admitted": 34
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2202,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 52,
+        "active_frames": 91,
+        "over100": 0
+      },
+      {
+        "active_seconds": 5.018665599999963,
+        "fps": 18.730078369836136,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 94,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2293,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6871000000501226,
+              "draws": 11,
+              "culled": 32,
+              "candidates": 43,
+              "admitted": 43
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2293,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 58,
+        "active_frames": 94,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.934573999999998,
+        "fps": 17.02274603643598,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 84,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2387,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7931999999755135,
+              "draws": 15,
+              "culled": 27,
+              "candidates": 42,
+              "admitted": 42
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2387,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 62,
+        "active_frames": 84,
+        "over100": 1
+      },
+      {
+        "active_seconds": 5.037575400000037,
+        "fps": 24.416507989140786,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 123,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2471,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 1.1209000000462765,
+              "draws": 15,
+              "culled": 28,
+              "candidates": 43,
+              "admitted": 43
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2471,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 26,
+        "active_frames": 123,
+        "over100": 0
+      },
+      {
+        "active_seconds": 5.008939199999986,
+        "fps": 21.162165434150268,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 106,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2594,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7888999999750013,
+              "draws": 16,
+              "culled": 29,
+              "candidates": 45,
+              "admitted": 45
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2594,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 16,
+        "active_frames": 106,
+        "over100": 8
+      },
+      {
+        "active_seconds": 2.9256105999999136,
+        "fps": 19.824921334370924,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 58,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2700,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7496000000628555,
+              "draws": 13,
+              "culled": 22,
+              "candidates": 35,
+              "admitted": 35
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2700,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 18,
+        "active_frames": 58,
+        "over100": 0
+      },
+      {
+        "active_seconds": 0.5426132999999709,
+        "fps": 14.743464636787246,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 8,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2785,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.8227000000715634,
+              "draws": 19,
+              "culled": 14,
+              "candidates": 33,
+              "admitted": 33
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2785,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 8,
+        "active_frames": 8,
+        "over100": 0
+      },
+      {
+        "active_seconds": 5.054488500000048,
+        "fps": 20.77361537176294,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 105,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2854,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 1.1728000000630345,
+              "draws": 19,
+              "culled": 14,
+              "candidates": 33,
+              "admitted": 33
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2854,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 37,
+        "active_frames": 105,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.985891199999969,
+        "fps": 25.471875519465964,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 127,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 2959,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6982000001016786,
+              "draws": 16,
+              "culled": 22,
+              "candidates": 38,
+              "admitted": 38
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 2959,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 15,
+        "active_frames": 127,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.994785099999945,
+        "fps": 14.415034592779737,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 72,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3086,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.841199999968012,
+              "draws": 12,
+              "culled": 27,
+              "candidates": 39,
+              "admitted": 39
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3086,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 58,
+        "active_frames": 72,
+        "over100": 7
+      },
+      {
+        "active_seconds": 4.993701299999998,
+        "fps": 6.608324771047082,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 33,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3158,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 1.2174999999388092,
+              "draws": 17,
+              "culled": 28,
+              "candidates": 45,
+              "admitted": 45
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3158,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 33,
+        "active_frames": 33,
+        "over100": 23
+      },
+      {
+        "active_seconds": 5.0085421,
+        "fps": 12.57851062088507,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 63,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3191,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7722999999941749,
+              "draws": 18,
+              "culled": 26,
+              "candidates": 44,
+              "admitted": 44
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3191,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 63,
+        "active_frames": 63,
+        "over100": 8
+      },
+      {
+        "active_seconds": 5.007997700000033,
+        "fps": 21.36582450906463,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 107,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3254,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.9577000000717817,
+              "draws": 18,
+              "culled": 33,
+              "candidates": 51,
+              "admitted": 51
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3254,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 32,
+        "active_frames": 107,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.939833399999998,
+        "fps": 23.48257331917308,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 116,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3361,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6327000000965199,
+              "draws": 18,
+              "culled": 34,
+              "candidates": 52,
+              "admitted": 52
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3361,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 20,
+        "active_frames": 116,
+        "over100": 0
+      },
+      {
+        "active_seconds": 5.0027026000000205,
+        "fps": 13.192868990453226,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 66,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3477,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6549999999378997,
+              "draws": 13,
+              "culled": 27,
+              "candidates": 40,
+              "admitted": 40
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3477,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 66,
+        "active_frames": 66,
+        "over100": 8
+      },
+      {
+        "active_seconds": 5.06130619999999,
+        "fps": 17.386816075265347,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 88,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3543,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 1.5470000000732398,
+              "draws": 13,
+              "culled": 23,
+              "candidates": 36,
+              "admitted": 36
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3543,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 42,
+        "active_frames": 88,
+        "over100": 4
+      },
+      {
+        "active_seconds": 0.6461103999999978,
+        "fps": 17.024954249304823,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 11,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3631,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7597000000032494,
+              "draws": 17,
+              "culled": 20,
+              "candidates": 37,
+              "admitted": 37
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3631,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 9,
+        "active_frames": 11,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.956979100000012,
+        "fps": 21.9891990264796,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 109,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3708,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.743100000022423,
+              "draws": 17,
+              "culled": 20,
+              "candidates": 37,
+              "admitted": 37
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3708,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 20,
+        "active_frames": 109,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.997966999999903,
+        "fps": 25.41033184092701,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 127,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3817,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 1.1680000000069413,
+              "draws": 11,
+              "culled": 25,
+              "candidates": 36,
+              "admitted": 36
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3817,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 18,
+        "active_frames": 127,
+        "over100": 4
+      },
+      {
+        "active_seconds": 5.008361000000036,
+        "fps": 19.766945713377947,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 99,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 3944,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7435999999643172,
+              "draws": 18,
+              "culled": 27,
+              "candidates": 45,
+              "admitted": 45
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 3944,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 48,
+        "active_frames": 99,
+        "over100": 0
+      },
+      {
+        "active_seconds": 5.033895900000061,
+        "fps": 24.235701814969698,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 122,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 4043,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.7694000000810775,
+              "draws": 13,
+              "culled": 26,
+              "candidates": 39,
+              "admitted": 39
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 4043,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 10,
+        "active_frames": 122,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.986828399999922,
+        "fps": 21.055466837399425,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 105,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 4165,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6011999998918327,
+              "draws": 11,
+              "culled": 25,
+              "candidates": 36,
+              "admitted": 36
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 4165,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 35,
+        "active_frames": 105,
+        "over100": 0
+      },
+      {
+        "active_seconds": 4.989720000000034,
+        "fps": 21.84491314141861,
+        "vr": {
+          "method_overrides": 0,
+          "active": false,
+          "version": "deborah-vr-idle-20261007-r2",
+          "recurring_timers": 0,
+          "local_tracking": false,
+          "runtime_hooks": 0,
+          "pending_once": 0,
+          "native_resources": 0,
+          "resource_counts": [],
+          "source": {
+            "bridge_checked": 2,
+            "verified": true,
+            "checked": 139,
+            "mismatches": 0,
+            "missing": 0
+          },
+          "idle": true,
+          "adapter_think": false,
+          "players": 0
+        },
+        "over25": 109,
+        "renderer": {
+          "visits": 0,
+          "status": "native",
+          "hooks": {
+            "materials": true,
+            "wayfinding": true,
+            "batches": true
+          },
+          "chunks": 0,
+          "reason": "wall-batches-disabled",
+          "section": {
+            "next_model": 1733,
+            "retries": 0,
+            "stable_passes": 2,
+            "applied": 1732,
+            "instances": 1732,
+            "complete": true,
+            "cursor": 1,
+            "calls": 4270,
+            "ready": true
+          },
+          "overlays": {
+            "branding": {
+              "milliseconds": 0.6444000000556116,
+              "draws": 2,
+              "culled": 40,
+              "candidates": 42,
+              "admitted": 42
+            },
+            "wayfinding": {
+              "culled": 0,
+              "milliseconds": 0,
+              "visits": 0,
+              "draws": 0
+            }
+          },
+          "vertices": 0,
+          "think_calls": 4270,
+          "hidden": 0,
+          "draws": 0
+        },
+        "over50": 30,
+        "active_frames": 109,
+        "over100": 3
+      }
+    ],
+    "population_reports": [
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 0,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 0,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 59,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 59,
+        "reason": "built",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 11.009999753907323,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 2,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 0,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 59,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 59,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 41.00999908335507,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 2,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 0,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 59,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 59,
+        "reason": "performance_requested",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 58.574998690746725,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 4,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 0,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 59,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 59,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 71.00999841280282,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 5,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 294,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 58,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 58,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 91.01999796554446,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 7,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 415,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 57,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 57,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 111.01499751862139,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 8,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 925,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 58,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 58,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 131.0099970716983,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 8,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 1703,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 59,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 60,
+        "reason": "heartbeat",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 171.01499617751688,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 9,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 1782,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 58,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 58,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 201.01499550696462,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 11,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 1782,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 58,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 58,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 231.01499483641237,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 12,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 1977,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 58,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 58,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 241.0199946127832,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 13,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 3255,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 58,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 58,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 271.01999394223094,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 16,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 3901,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 58,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 61,
+        "reason": "gate_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 281.00999371893704,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 19,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 5488,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 58,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 67,
+        "reason": "entry_progress",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 301.0199932716787,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      },
+      {
+        "seed": 1160621484,
+        "gates": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "developerDense": true,
+        "revision": "b28",
+        "entry": {
+          "ready": true,
+          "eventSerial": 19,
+          "version": "b29-entry-safety",
+          "stats": {
+            "admissionDenied": 5488,
+            "movementDenied": 0,
+            "statusDenied": 0,
+            "damageDenied": 0,
+            "correctedIngress": 0
+          }
+        },
+        "mazeAttempt": 4,
+        "source": {
+          "installLabel": "4af3b40a4f9d3c87139dfbe3149d1e8f2c7e413e clean ",
+          "verified": true,
+          "checked": 45,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "layoutAttempt": 3,
+        "theme": "corruption",
+        "plannedBodies": 52,
+        "aliveWanderers": 58,
+        "level": 1,
+        "developerMode": true,
+        "campaign": 416871237,
+        "layoutSeed": 1333878879,
+        "aliveBodies": 67,
+        "reason": "shutdown",
+        "console_detail_omitted": true,
+        "ready": true,
+        "frozen": false,
+        "seconds": 303.43499321769923,
+        "ceiling": 96,
+        "observer": "b29-entry-safety"
+      }
+    ],
+    "native_runtime_accepted": false,
+    "target_sustained_fps": 40
+  },
+  "native_gmod_accepted": false
+}

@@ -1,4 +1,35 @@
-# Current checkpoint — F3 team-menu hint below the campaign clock
+# Current Steam Deck checkpoint — drawable static-box Lua-field reuse
+
+October 8 UTC / October 7 local capture verifies clean `4af3b40`: 21.9185 active
+FPS, 38.689 ms median, 81.794 ms p95, 141.747 ms p99; 1,732 native walls,
+complete profiles, fixed preferences, fully idle VR and zero Lua errors.
+The generated workload differs from earlier captures, so this is not an
+isolated source regression. Sustained >=40 FPS remains unmet.
+
+Extend the existing verified weak static-box Lua-table borrow through drawable
+readiness/accessors and snapshot ownership, retaining live native validity,
+hidden state, bounds, pose, inherited/custom accessor fallback and every draw.
+Snapshot rebuilds read current native scalars once. No timer, cadence, tuning,
+population, gameplay, renderer, graphics or saved Options change is introduced.
+The paired scene retains 14,400 draws while counted native entity-field reads
+fall 273,600→172,800 (36.8421%); all 726 recorded mesh/wireframe rows match.
+The exact parent fails the new work bound. These are headless counts, not FPS.
+
+The frozen candidate passes 29/29 focused checks, 313/313 canonical suites and
+884 Lua syntax files; all source files stay unchanged during the gate, and
+all 313 receipts/commands plus 626 raw stream hashes are independently checked.
+Documentation/evidence packaging alone follows; code/test hashes are rechecked
+before the non-force main publication. See [finite gate and native evidence](validation/STEAM_DECK_20261008_LUA_FIELDS.md).
+
+Next: fully quit GMod, pull/install verified main and obtain the usual exact-
+source three-minute fixed-preference gm_flatgrass capture with:
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Leave GMod open through the final server reply, then return
+performance_client_latest.txt and console_latest.txt. Floors/stairs/grates/
+underdeck and sustained >=40 FPS remain native acceptance gates. No Workshop
+publication or VPS operation is included.
+
+# Previous checkpoint — F3 team-menu hint below the campaign clock
 
 October 7, 2026: recovered renderer progress is banked on verified main
 `7364a7df49e4eb86266245387080947959fba376`, tree

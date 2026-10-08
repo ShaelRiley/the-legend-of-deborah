@@ -194,6 +194,14 @@ local function resolveDrawMesh(prefix, position, angles, mins, maxs, tile, build
     if prefix == "slab" then return TexturedBox:GetSlabMesh(mins, maxs, tile, position, angles) end
     return getMesh(prefix, mins, maxs, tile, build)
 end
+local function ownerSnapshot(owner)
+    -- The static renderer already verifies this weak borrow against the live
+    -- entity record. Preserve the ordinary owner API for every other caller.
+    local record = TexturedBox.StaticVisualBoxes and TexturedBox.StaticVisualBoxes[owner]
+    local data = type(record) == "table" and record.lua and record.lua[1]
+    if data and data._LODVisualKindRecord == record then return data._LODVisualBox end
+    return owner._LODVisualBox
+end
 local function cachedDraw(owner, prefix, position, angles, mins, maxs, tile, build, snapshot)
     if not owner then
         local obj = resolveDrawMesh(prefix, position, angles, mins, maxs, tile, build)
@@ -204,7 +212,7 @@ local function cachedDraw(owner, prefix, position, angles, mins, maxs, tile, bui
     -- The generated renderer has already read and compared every scalar in this
     -- pass. Borrow that exact owner/argument snapshot rather than crossing the
     -- native vector/angle boundary again. Other callers keep the ordinary API.
-    local state = type(snapshot) == "table" and snapshot == owner._LODVisualBox
+    local state = type(snapshot) == "table" and snapshot == ownerSnapshot(owner)
         and rawequal(snapshot.position, position) and rawequal(snapshot.angles, angles)
         and rawequal(snapshot.mins, mins) and rawequal(snapshot.maxs, maxs) and snapshot or nil
     local x0,y0,z0,x1,y1,z1,px,py,pz,pitch,yaw,roll
