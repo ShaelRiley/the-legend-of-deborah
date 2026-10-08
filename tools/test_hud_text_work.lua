@@ -105,7 +105,7 @@ local function run(uiPath,feedPath,candidate)
             end
         end
     end
-    -- Every alignment keeps the same native trace; non-left/top remains stock.
+    -- Every stock alignment keeps the same native glyph trace.
     for _,ax in ipairs({TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER,TEXT_ALIGN_RIGHT}) do
         for _,ay in ipairs({TEXT_ALIGN_TOP,TEXT_ALIGN_CENTER,TEXT_ALIGN_BOTTOM}) do
             reset();UI:HUDText('AV café →','ChatFont',-0.4,17.8,Color(120,180,255,127.5),ax,ay)
@@ -117,6 +117,40 @@ local function run(uiPath,feedPath,candidate)
     for _,position in ipairs({0,1e-17,-1e-17,0.9999999999999999,1.0000000000000002,
         -1.0000000000000002,9007199254740992,-9007199254740992}) do
         reset();UI:HUDText(1234,'ChatFont',position,position,Color(10,20,30,0))
+        results[#results+1]={trace=copy(trace)}
+    end
+    -- Stock adds each outline offset before subtracting alignment dimensions.
+    -- Reordering those operations changes pixels at IEEE rounding boundaries.
+    -- Dimensions remain live even when a caller owns the coordinate cache.
+    local alignedCache={}
+    for _,ax in ipairs({TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER,TEXT_ALIGN_RIGHT}) do
+        for _,ay in ipairs({TEXT_ALIGN_TOP,TEXT_ALIGN_CENTER,TEXT_ALIGN_BOTTOM}) do
+            for _,position in ipairs({0,1e-17,-1e-17,0.9999999999999999,1.0000000000000002,
+                -1.0000000000000002,9007199254740992,-9007199254740992}) do
+                for _,scale in ipairs({0,1,1.25}) do
+                    metricScale=scale
+                    for _,owned in ipairs({false,alignedCache}) do
+                        reset();surface.SetFont('unrelated')
+                        UI:HUDText('AV café →','LOD_HUD_Small',position,position,
+                            Color(120,180,255,127.5),ax,ay,owned or nil)
+                        results[#results+1]={trace=copy(trace)}
+                    end
+                end
+            end
+        end
+    end
+    metricScale=1
+    -- Non-string conversions may have callbacks. Keep their stock per-glyph
+    -- conversion order instead of borrowing a value across those callbacks.
+    local custom=setmetatable({count=0},{__tostring=function(self)
+        self.count=self.count+1;return 'conversion '..self.count end})
+    reset();assert(UI:HUDText(custom,'ChatFont',3.4,5.6,Color(10,20,30,80),
+        TEXT_ALIGN_CENTER,TEXT_ALIGN_BOTTOM)==nil)
+    assert(custom.count==10,'aligned custom conversion no longer uses stock helper')
+    results[#results+1]={trace=copy(trace)}
+    for _,alpha in ipairs({-12,0,500}) do
+        reset();UI:HUDText('alpha',nil,3.4,5.6,{r=10,g=20,b=30,a=alpha},
+            TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER)
         results[#results+1]={trace=copy(trace)}
     end
     -- The owned path rounds the original floating-point sums, even after moves
@@ -168,6 +202,19 @@ local function run(uiPath,feedPath,candidate)
             results[#results+1]={trace=copy(trace),expired=Feed.diceExplosion==nil}
         end
     end
+    -- Caption and right/bottom HUD labels retain every native glyph while
+    -- eliminating duplicate selection/measurement and outline Color creation.
+    local alignedColor=Color(120,180,255,107.75)
+    reset()
+    for _=1,600 do
+        assert(UI:HUDText('Jane "Steel" Doe','LOD_HUD_Small',500.5,400.25,alignedColor,
+            TEXT_ALIGN_CENTER,TEXT_ALIGN_TOP)==nil)
+        assert(UI:HUDText('10 / 20','DermaDefault',800.75,600.5,alignedColor,
+            TEXT_ALIGN_RIGHT,TEXT_ALIGN_BOTTOM)==nil)
+    end
+    local alignedWork={measurements=measurements,font_selections=fontSelections,colors=colors,
+        ceilings=ceilings,draws=#trace}
+    results[#results+1]={trace=copy(trace)}
     -- Warm the actual layout, then count work over 600 identical rendered tails.
     local lines=Feed:Layout(record(cases[1]),600,true)
     Feed:DrawLines(lines,400,400,255,1,#lines,true);reset()
@@ -180,6 +227,9 @@ local function run(uiPath,feedPath,candidate)
         assert(work.measurements==0 and work.font_selections==600,'steady native font work retained')
         assert(work.colors==0 and work.ceilings==0,'steady allocation/position work retained')
         assert(work.draws==spanCount*600*10,'outline/foreground submissions changed')
+        assert(alignedWork.measurements==1200 and alignedWork.font_selections==1200
+            and alignedWork.colors==0,'aligned HUD repeats native font/metric/allocation work')
+        assert(alignedWork.draws==12000 and alignedWork.ceilings==24000,'aligned glyph submissions or exact rounding changed')
         local entry=record(cases[1]);local first=Feed:Layout(entry,600,true)
         assert(Feed:Layout(entry,600,true)==first,'steady layout must be reused')
         metricScale=1.25;invalidate('OnScreenSizeChanged')
@@ -205,6 +255,12 @@ local function run(uiPath,feedPath,candidate)
         draw.SimpleTextOutlined=function() fallbackCalls=fallbackCalls+1 end
         UI:HUDText('fallback','ChatFont',1,1,nil);assert(fallbackCalls==1,'partial native API lost stock fallback')
         draw.SimpleTextOutlined=helper;surface.DrawText=original
+        local metric=surface.GetTextSize;surface.GetTextSize=nil
+        fallbackCalls=0;draw.SimpleTextOutlined=function() fallbackCalls=fallbackCalls+1 end
+        UI:HUDText('fallback','ChatFont',1,1,nil,TEXT_ALIGN_CENTER)
+        UI:HUDText('unknown','ChatFont',1,1,nil,99,98)
+        assert(fallbackCalls==2,'partial metric API/unknown alignment lost stock fallback')
+        draw.SimpleTextOutlined=helper;surface.GetTextSize=metric
         local released=setmetatable({},{__mode='k'})
         for i=1,1200 do
             local e=record(cases[1]);local l=Feed:Layout(e,600,true);Feed:DrawLines(l,0,0,255,1,1,true)
@@ -217,12 +273,12 @@ local function run(uiPath,feedPath,candidate)
         assert(work.measurements==spanCount*600*11,'parent baseline no longer matches stock drawing contract')
     end
     math.ceil=nativeCeil
-    return results,work
+    return results,work,alignedWork
 end
-local before,beforeWork=run('tools/fixtures/hud_text_parent_ui.lua','tools/fixtures/hud_text_parent_semantics.lua',false)
+local before,beforeWork,beforeAligned=run('tools/fixtures/hud_text_parent_ui.lua','tools/fixtures/hud_text_parent_semantics.lua',false)
 local probe=arg and arg[1]=='--probe'
 local external=probe or arg and arg[1]=='--gate'
-local after,afterWork=run(external and arg[2] or root..'cl_ui_theme.lua',
+local after,afterWork,afterAligned=run(external and arg[2] or root..'cl_ui_theme.lua',
     external and arg[3] or root..'cl_combat_roll_feed_semantics.lua',probe and 'probe' or true)
 equal(before,after,'parent/candidate raster trace')
 assert(beforeWork.draws==afterWork.draws and beforeWork.font_selections>afterWork.font_selections)
@@ -239,3 +295,6 @@ end
 print(string.format('HUD_TEXT_WORK_PASS traces=%d steady_frames=600 measurements=%d->%d font_selections=%d->%d colors=%d->%d ceilings=%d->%d native_draws=%d->%d; exact parent calls; refresh/screen/text/font/position/palette invalidation; bounded layout ownership; not native FPS',
     #before,beforeWork.measurements,afterWork.measurements,beforeWork.font_selections,afterWork.font_selections,
     beforeWork.colors,afterWork.colors,beforeWork.ceilings,afterWork.ceilings,beforeWork.draws,afterWork.draws))
+print(string.format('HUD_ALIGNED_WORK_PASS labels=1200 measurements=%d->%d font_selections=%d->%d colors=%d->%d ceilings=%d->%d native_draws=%d->%d; live metrics, exact aligned rounding, custom conversion/partial API fallback; not native FPS',
+    beforeAligned.measurements,afterAligned.measurements,beforeAligned.font_selections,afterAligned.font_selections,
+    beforeAligned.colors,afterAligned.colors,beforeAligned.ceilings,afterAligned.ceilings,beforeAligned.draws,afterAligned.draws))

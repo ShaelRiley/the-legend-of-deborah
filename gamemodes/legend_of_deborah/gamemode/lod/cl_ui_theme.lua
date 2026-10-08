@@ -142,43 +142,65 @@ UI.HUDRoles = {
 }
 function UI:HUDText(text, font, x, y, color, alignX, alignY, cache, selectedFont)
     color = color or self.HUDColor
-    if (alignX == nil or alignX == TEXT_ALIGN_LEFT)
+    local leftTop = (alignX == nil or alignX == TEXT_ALIGN_LEFT)
         and (alignY == nil or alignY == TEXT_ALIGN_TOP)
+    local aligned = not leftTop
+        and (alignX == nil or alignX == TEXT_ALIGN_LEFT
+            or alignX ~= nil and (alignX == TEXT_ALIGN_CENTER or alignX == TEXT_ALIGN_RIGHT))
+        and (alignY == nil or alignY == TEXT_ALIGN_TOP
+            or alignY ~= nil and (alignY == TEXT_ALIGN_CENTER or alignY == TEXT_ALIGN_BOTTOM))
+        and (text == nil or type(text) == "string" or type(text) == "number" or type(text) == "boolean")
+        and surface.GetTextSize
+    if (leftTop or aligned)
         and surface.SetTextPos and surface.SetTextColor and surface.DrawText then
-        -- Left/top placement does not use text dimensions. Keep the stock
-        -- one-pixel outline's nine offsets, then foreground, without ten
-        -- identical font selections and native text measurements.
+        -- Keep the stock outline's nine offsets, then foreground. Alignment
+        -- measures the live font once per call; left/top needs no dimensions.
         text = tostring(text)
         font = font or "DermaDefault"
         -- A caller can borrow the selected font only across its immediate
         -- native text sequence. Never remember surface state between paints.
         if selectedFont ~= font then surface.SetFont(font) end
+        local offsetX, offsetY = 0, 0
+        if not leftTop then
+            local w, h = surface.GetTextSize(text)
+            if alignX ~= nil and alignX == TEXT_ALIGN_CENTER then offsetX = w / 2
+            elseif alignX ~= nil and alignX == TEXT_ALIGN_RIGHT then offsetX = w end
+            if alignY ~= nil and alignY == TEXT_ALIGN_CENTER then offsetY = h / 2
+            elseif alignY ~= nil and alignY == TEXT_ALIGN_BOTTOM then offsetY = h end
+        end
         local px, py, xs, ys
         if cache then
-            if cache.hudX ~= x or cache.hudY ~= y or not cache.hudXs or not cache.hudYs then
+            if cache.hudX ~= x or cache.hudY ~= y
+                or cache.hudOffsetX ~= offsetX or cache.hudOffsetY ~= offsetY
+                or not cache.hudXs or not cache.hudYs then
                 -- Round each original sum: ceil(x)+offset is not equivalent
-                -- near floating-point boundaries. Ownership is one layout span.
+                -- near floating-point boundaries. Stock alignment subtracts
+                -- dimensions after adding each outline offset. Keep that order.
                 cache.hudX, cache.hudY = x, y
-                cache.hudXs = {math.ceil(x-1), math.ceil(x), math.ceil(x+1)}
-                cache.hudYs = {math.ceil(y-1), math.ceil(y), math.ceil(y+1)}
+                cache.hudOffsetX, cache.hudOffsetY = offsetX, offsetY
+                cache.hudXs = {math.ceil((x-1)-offsetX), math.ceil(x-offsetX), math.ceil((x+1)-offsetX)}
+                cache.hudYs = {math.ceil((y-1)-offsetY), math.ceil(y-offsetY), math.ceil((y+1)-offsetY)}
             end
             xs, ys = cache.hudXs, cache.hudYs
             px, py = xs[2], ys[2]
         else
-            px, py = math.ceil(x), math.ceil(y)
+            px, py = math.ceil(x-offsetX), math.ceil(y-offsetY)
         end
-        surface.SetTextColor(0, 0, 0, math.floor((color.a or 255)*0.8))
+        local outlineAlpha = math.floor((color.a or 255)*0.8)
+        if not leftTop then outlineAlpha = math.min(outlineAlpha, 255) end
+        surface.SetTextColor(0, 0, 0, outlineAlpha)
         for dx = -1, 1 do
             for dy = -1, 1 do
                 if xs then surface.SetTextPos(xs[dx+2], ys[dy+2])
-                else surface.SetTextPos(math.ceil(x+dx), math.ceil(y+dy)) end
+                else surface.SetTextPos(math.ceil((x+dx)-offsetX), math.ceil((y+dy)-offsetY)) end
                 surface.DrawText(text)
             end
         end
         surface.SetTextColor(color.r, color.g, color.b, color.a)
         surface.SetTextPos(px, py)
         surface.DrawText(text)
-        return font
+        if leftTop then return font end
+        return -- Preserve the aligned helper's existing nil return contract.
     end
     draw.SimpleTextOutlined(text, font, x, y, color, alignX or TEXT_ALIGN_LEFT,
         alignY or TEXT_ALIGN_TOP, 1, Color(0, 0, 0, math.floor((color.a or 255)*0.8)))

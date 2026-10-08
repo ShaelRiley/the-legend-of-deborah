@@ -3,7 +3,7 @@ local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local now,created,removed,draws=10,0,0,0
 local reduced=false
 RealTime=function() return now end
-Color=function(...) return {...} end
+Color=function(r,g,b,a) return {r=r,g=g,b=b,a=a or 255} end
 Angle=function(p,y,r) return {p=p,y=y,r=r} end
 local V={};V.__index=V
 function Vector(x,y,z) return setmetatable({x=x or 0,y=y or 0,z=z or 0},V) end
@@ -11,16 +11,39 @@ V.__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 math.Clamp=function(v,a,b) return math.min(b,math.max(a,v)) end
 IsValid=function(x) return type(x)=='table' and not x.removed end
 GetConVar=function() return {GetBool=function() return reduced end} end
-OBS_MODE_NONE=0;BOX_FRONT=1;BOX_TOP=2;PLAYERANIMEVENT_ATTACK_PRIMARY=1;PLAYERANIMEVENT_ATTACK_SECONDARY=2;TEXT_ALIGN_CENTER=1
+OBS_MODE_NONE=0;BOX_FRONT=1;BOX_TOP=2;PLAYERANIMEVENT_ATTACK_PRIMARY=1;PLAYERANIMEVENT_ATTACK_SECONDARY=2
+TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER,TEXT_ALIGN_RIGHT=0,1,2
+TEXT_ALIGN_TOP,TEXT_ALIGN_BOTTOM=3,4
 local width,height=640,480
 ScrW=function() return width end;ScrH=function() return height end
 local menu=false;gui={IsGameUIVisible=function() return menu end}
 local events={};hook={Add=function(_,id,fn) events[id]=fn end}
-local labels,positions={},{};LOD={UI={HUDColor={},HUDText=function(_,s,_,x,y)
-    labels[#labels+1]=s;positions[#positions+1]={text=s,x=x,y=y}
-end}}
-surface={SetFont=function() end,GetTextSize=function(s) return #s*7,14 end}
+local labels,positions={},{};LOD={UI={}}
+local textDraws=0
+surface={CreateFont=function() end,SetFont=function() end,GetTextSize=function(s) return #s*7,14 end,
+    SetTextPos=function() end,SetTextColor=function() end,DrawText=function() textDraws=textDraws+1 end}
 draw={RoundedBox=function() end}
+-- Stock draw boundary; captions now exercise the real shared HUD authority.
+draw.SimpleText=function(text,font,x,y,color,ax,ay)
+    text=tostring(text);surface.SetFont(font or 'DermaDefault')
+    local w,h=surface.GetTextSize(text)
+    if ax==TEXT_ALIGN_CENTER then x=x-w/2 elseif ax==TEXT_ALIGN_RIGHT then x=x-w end
+    if ay==TEXT_ALIGN_CENTER then y=y-h/2 elseif ay==TEXT_ALIGN_BOTTOM then y=y-h end
+    surface.SetTextPos(math.ceil(x),math.ceil(y));surface.SetTextColor(color.r,color.g,color.b,color.a)
+    surface.DrawText(text);return w,h
+end
+draw.SimpleTextOutlined=function(text,font,x,y,color,ax,ay,outline,oc)
+    for dx=-outline,outline do for dy=-outline,outline do
+        draw.SimpleText(text,font,x+dx,y+dy,oc,ax,ay)
+    end end
+    return draw.SimpleText(text,font,x,y,color,ax,ay)
+end
+dofile(root..'cl_ui_theme.lua')
+local nativeHUDText=LOD.UI.HUDText
+LOD.UI.HUDText=function(self,s,font,x,y,...)
+    labels[#labels+1]=s;positions[#positions+1]={text=s,x=x,y=y}
+    return nativeHUDText(self,s,font,x,y,...)
+end
 local flexNames={'smile','right_lowerer','blink','jaw_drop','left_inner_raiser','right_cheek_raiser'}
 local panel={};panel.__index=panel
 function panel:SetModel(model)
@@ -147,3 +170,5 @@ ply.bools.LOD_Statue=true;tick()
 assert(H.Caption=='STATUE' and H.Affected and not H.Harmful,'Statue is a beneficial canonical HUD state')
 ply.bools.LOD_Statue=false;tick();assert(not H.Caption:find('STATUE',1,true))
 print('STATUE_PORTRAIT_PASS: replicated beneficial state and cleanup')
+assert(textDraws>draws*10,'portrait captions bypassed actual shared native text drawing')
+print('PORTRAIT_NATIVE_TEXT_PASS: real UI HUDText captions across wrapping, all conditions, role changes and lifecycle')

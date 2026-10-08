@@ -1,4 +1,52 @@
-# Current Steam Deck checkpoint — shared enemy AI field and cell work
+# Current Steam Deck checkpoint — aligned HUD text work reuse
+
+The October 8 UTC / local three-minute native capture labels clean main
+`0a10367`, verifies all 15 client and 46 population source hashes, complete CPU
+profiles, fully idle VR, fixed preferences and zero Lua errors. Active play
+averages 29.6510 FPS, median 30.672 ms, p95 53.305 ms and p99 92.372 ms, with
+1,284 native walls and 36 recorded living wanderers. The preceding capture had
+1,614 walls and a different population/layout; this does not isolate the prior
+optimization's FPS effect. Sustained >=40 FPS remains unmet. Entry evidence has
+no recorded admission decisions, so it does not accept every sanctuary branch.
+The shared portrait callback averages 0.9406 ms per paint; aligned captions use
+the stock ten-selection/ten-measurement outlined text path.
+
+Extend the existing shared HUDText native path to known horizontal/vertical
+alignments. Measure live font dimensions once per label, retain stock offset →
+alignment → ceil order, all nine outline glyphs plus foreground, exact colors
+and original return behavior. Owned coordinate caches invalidate on current
+alignment dimensions; no font metrics persist across paints. Custom text
+conversion, unknown alignments and partial APIs keep stock fallback. The already
+optimized left/top feed retains zero measurements and its existing span reuse.
+No portrait model, pose/sample cadence, label/wrapping, lifecycle, gameplay,
+population, geometry, graphics preference or authored tuning changes. Live GDD
+00 → 01 → 06/07 governs this implementation-only checkpoint.
+
+Finite gate: actual published-parent/candidate traces match across 750 drawing
+scenarios, including all nine alignments, floating-point boundaries, live font
+changes, coordinate ownership, custom conversion and fallback. Trace SHA256:
+`0660a9b9d7ba938fb66785f5852227ae218a8ee9b9f7570c634672219a5ddcf6`.
+Across 1,200 labels, font selections and measurements each fall 12,000→1,200,
+outline Color allocations 1,200→0; all 12,000 draws and 24,000 ceil operations
+remain. The exact parent fails the new aligned-work bound. Existing 42,000-draw
+feed work stays unchanged. Portrait regressions now exercise actual shared
+HUDText. These are headless work counts, not FPS savings. The frozen source
+passes 20/20 focused checks, 314/314 canonical suites and 885 Lua parses. All
+2,563 source files remain unchanged during both gates; every command/receipt,
+628 matrix stream hashes and 20 focused log hashes are independently checked.
+Only documentation/evidence packaging follows; all three changed code/test
+hashes are rechecked before non-force main publication. See [finite gate and native evidence](validation/STEAM_DECK_20261008_ALIGNED_TEXT.md).
+
+After validated publication, fully quit GMod, pull/install, restart gm_flatgrass
+and use the usual fixed-preference three-minute capture:
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Leave GMod open through the final server reply; return performance_client_latest.txt
+and console_latest.txt. Require exact final source, complete profiles, idle VR,
+no new Lua errors, unchanged portrait/weapon/status/readout appearance, world
+visuals and gameplay. Sustained >=40 FPS remains the native acceptance gate.
+No Workshop or VPS action.
+
+# Previous checkpoint — shared enemy AI field and cell work
 
 The October 8 UTC / October 7 local three-minute capture verifies clean main
 `0388d03`, complete CPU profiles, fixed preferences, fully idle VR and zero
