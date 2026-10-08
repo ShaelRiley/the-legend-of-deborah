@@ -1,4 +1,48 @@
-# Current Steam Deck checkpoint — combat-feed span work reuse
+# Current Steam Deck checkpoint — shared enemy AI field and cell work
+
+The October 8 UTC / October 7 local three-minute capture verifies clean main
+`0388d03`, complete CPU profiles, fixed preferences, fully idle VR and zero
+Lua errors. Active play averages 21.8151 FPS, median 37.870 ms, p95 77.751 ms
+and p99 129.473 ms, with 1,614 native walls. The generated workload differs
+from earlier captures; sustained >=40 FPS remains unmet. Server close-defense
+and sanctuary BeforeAI average 44.756 and 41.560 CPU ms per recorded second.
+Timings are inclusive; their sum is not a frame budget.
+
+Borrow repeated plain entity fields only across adjacent callback-free
+comparisons in shared close-defense. Sanctuary BeforeAI queries current cell
+depth only when it can still affect the decision after admission. Preserve
+status/life cleanup and query order, callback mutations, primary commitments,
+claim/service/cancel order and fresh positions where cell depth is needed.
+No status cache, AI cadence, cooldown, attack, quota, population, geometry,
+graphics preference or authored tuning changes. Live GDD 00 → 01 → 07 governs
+this implementation-only checkpoint; the live revision remains unchanged.
+
+Finite gate: exact published-parent/candidate traces must match. Across 3,600
+production close-defense calls, modeled native Lua-field reads fall
+161,400→134,400 while all 12,000 status queries remain. Across 5,001 admission
+calls, exact-cell queries fall 5,001→2,001 and position queries 15,003→12,003.
+All 20,608 semantic trace rows match, including callback/expiry/primary and
+claim-time movement cases. The exact parent fails the work bound. These are
+headless work counts, not hardware FPS. The frozen source passes 21/21 focused
+checks, 314/314 canonical suites and 885 Lua parses. All 2,560 source files
+remain unchanged during both gates; every command/receipt and all 628 matrix
+stream hashes are independently checked. The installer/runtime manifest now
+covers close-defense (50 installer / 46 runtime sources); absent/mixed sources,
+transport and cached hashing pass. Earlier fixture failures and interrupted
+attempts are preserved and not reused. Only documentation/evidence packaging
+follows; all nine authority/test hashes are rechecked before publication.
+See [finite gate and native evidence](validation/STEAM_DECK_20261008_ENEMY_AI.md).
+
+After validated publication, fully quit GMod, pull/install, restart gm_flatgrass
+and run the usual fixed-preference three-minute capture:
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Leave GMod open through the final server reply, then return
+performance_client_latest.txt and console_latest.txt. Require exact source,
+complete profiles, idle VR, no new Lua errors, intact AI/status/entry behavior
+and world visuals. Sustained >=40 FPS remains the native acceptance gate.
+No Workshop or VPS action.
+
+# Previous checkpoint — combat-feed span work reuse
 
 The October 8 UTC / October 7 local three-minute capture verifies clean main
 `8bac44a`, complete CPU profiles, fixed preferences, fully idle VR and zero

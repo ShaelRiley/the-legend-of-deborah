@@ -471,12 +471,17 @@ local function beforeAI(self,e)
     e.LODEntryLastOutside=e:GetPos()
     if e.LODBossEncounter or e.LODHector or e.LODWarden or e.LODNeilBrute then return false end
     local target,limited=self:Claim(e)
-    local c=self:ExactCell(g,e:GetPos());local depth=c and g.EntrySafety.depth[key(c)]
     if target then
         e.LODEntrySuppressed=nil;e.LODEntryTarget=target;e.LODEntryPermitUntil=CurTime()+self.Config.ServiceSeconds*2
         -- Admission is necessary, not sufficient: the native archetype still
         -- owns perception, target selection, telegraphs and attack formulas.
         return false
+    end
+    -- Admission already decides these branches. Query current cell membership
+    -- only when its apron depth can still change the suppression decision.
+    local depth
+    if not limited then
+        local c=self:ExactCell(g,e:GetPos());depth=c and g.EntrySafety.depth[key(c)]
     end
     e.LODEntryPermitUntil=nil;e.LODEntryTarget=nil
     -- No safe/staged Hero can attract a patrol. Inhabited areas beyond the local

@@ -15,17 +15,19 @@ function E:CanCloseDefend(e)
     if not IsValid(e) or not e.LODHostile or e.LODDead or e:Health()<=0 or not e.LODActivated
         or not s or not s.Graph or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen
         or not status:CanInitiateAttack(e) or status:Has(e,"morale_flee") then return false end
-    if e.LODRosterContext and not self:Live(e.LODRosterContext,s) then return false end
+    local context=e.LODRosterContext
+    if context and not self:Live(context,s) then return false end
     if e.LODSkeletonHero and (not LOD.SkeletonHero or not LOD.SkeletonHero:Live(e)) then return false end
     if e.LODWardenTurret and (not LOD.WardenTurrets or not LOD.WardenTurrets:Ready(e)) then return false end
-    if e.LODArchetypeId=="warden" then
+    local archetype=e.LODArchetypeId
+    if archetype=="warden" then
         local root=e.LODWardenOwner
         local w=root and (root.cloneStates and root.cloneStates[e] or root)
         if not w or not LOD.Warden or not LOD.Warden:ActorOwner(w,e) or w.phase==1 and
             (not w.phaseOne or w.phaseOne.stage~="attack") then return false end
-    elseif e.LODArchetypeId=="hector" then
+    elseif archetype=="hector" then
         if not LOD.Hector or not LOD.Hector:Live(e) then return false end
-    elseif e.LODArchetypeId=="neil" or e.LODArchetypeId=="brute" then
+    elseif archetype=="neil" or archetype=="brute" then
         local h=s.NeilHunt
         if not h or h.seed~=s.LevelSeed or e~=h.neil and e~=h.brute then return false end
     end
@@ -117,11 +119,16 @@ function E:TickCloseDefense(e)
     if now<(e.LODNextCloseDefense or 0) or now<(e.LODHitStunUntil or 0) or not self:CanCloseDefend(e) then return false end
     -- Never preempt an advertised primary attack, attached bite or leap.
     if a or e.LODSoldierBurst or e.LODSniperShot or e.LODBioBlast or e.LODBruteCharge or e.LODBruteAttack
-        or e.LODWatcherScan or e.LODSeekerState
-        or e.LODClimberVictim or e.LODDeadcrabState=="latched" or e.LODDeadcrabState=="leaping"
-        or e.LODFallenHero and (e.LODFallenHero.attack or e.LODFallenHero.burst) then return false end
-    if e.LODWardenOwner then
-        local root=e.LODWardenOwner;local w=root.cloneStates and root.cloneStates[e] or root
+        or e.LODWatcherScan or e.LODSeekerState or e.LODClimberVictim then return false end
+    -- Borrow plain Lua fields only across adjacent, callback-free comparisons.
+    -- Status, ownership and preparation callbacks still precede fresh reads.
+    local deadcrabState=e.LODDeadcrabState
+    if deadcrabState=="latched" or deadcrabState=="leaping" then return false end
+    local fallen=e.LODFallenHero
+    if fallen and (fallen.attack or fallen.burst) then return false end
+    local root=e.LODWardenOwner
+    if root then
+        local w=root.cloneStates and root.cloneStates[e] or root
         if w.swing or w.volley or w.phaseOne and w.phaseOne.stage=="taunt" then return false end
     end
     local h=e.LODHectorEncounter
@@ -129,7 +136,8 @@ function E:TickCloseDefense(e)
     if self.Definitions[e.LODArchetypeId] then self:Prepare(e) end
     -- These two already possess a reliable close attack. The shared flinch
     -- recovery and native animation repair restore their opportunity to use it.
-    if e.LODArchetypeId=="shambler" or e.LODArchetypeId=="runner" then return false end
+    local archetype=e.LODArchetypeId
+    if archetype=="shambler" or archetype=="runner" then return false end
     e:_RefreshTarget(LOD.RunManager.State.Graph)
     return self:BeginCloseDefense(e,e.LODTarget,now)
 end

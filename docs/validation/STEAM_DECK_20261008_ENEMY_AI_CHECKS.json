@@ -1,0 +1,330 @@
+{
+  "version": "steam-deck-shared-enemy-ai-20261008",
+  "parent_head": "0388d032b48a3b310d0429b44ca44791842aea52",
+  "parent_tree": "9ee10e078ae993700d699cbb86411faf8230c5dc",
+  "gdd_document": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "gdd_revision": "AHj4eMRd4acJKKEDgqukO9zGvoMQvxlbUMdF6nZCAXYFhQm-CNvzGIub5PLIO_oXk6fEWbrk_V-_2bJc4m1wqQvkXjzdDNhY5wQfHSd7Pg",
+  "verification": {
+    "passed": true,
+    "canonical_suites": 314,
+    "canonical_commands_checked": 314,
+    "matrix_raw_stream_hashes_checked": 628,
+    "matrix_individual_receipts_checked": 314,
+    "frozen_files": 2560,
+    "source_digest": "72ba918b12b131de41c4c7f37a61045d93805b38864d460ea9471a01a5344fad",
+    "focused_checks": 21,
+    "focused_commands_checked": 21,
+    "focused_log_hashes_checked": 21,
+    "lua_syntax_files": 885,
+    "code_files_checked": 9,
+    "trace_rows": 20608,
+    "trace_sha256": "2c2b5a292c7de8bee5f481bbef27afd2942ee33edf56439ea5884921e983e36b",
+    "parent_source_files_checked": 2,
+    "native_parent_population_hashes_checked": 45,
+    "native_fps_certified": false
+  },
+  "code_sha256": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua": "58f0e39f7b7a5f0c818bf0ad15b7577a5aae295abcbe641cf352a08f3a6ac812",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua": "f64fe4762a55362c5708b933f675a266956e53b82a336710b44d5aae6dc2b443",
+    "lua/autorun/server/lod_population_observability.lua": "68edc011e421c1b4424bb64df730147a3ff3ce73b9d8db2f0ede8400ff0b3da6",
+    "tools/install_dev.sh": "e1e75cd3de688d62a6cec01a285683a60b6761cdd3b2ad6aa33411238ef32675",
+    "tools/test_dev_population_manifest.py": "82bacd05fb0c2654885d9465e9018842ffabc13d66acc1e4b51638aa535a77c1",
+    "tools/test_enemy_ai_work.lua": "5532daec6bd66c8f7ce918e9d9e52f857fd67412ee6083cdcc84a70bd923e9d0",
+    "tools/test_checkpoint_g_integration.py": "66e9dc6b6be949bff83ef6f07013852429652578267e0af0cd030ad2573edbd8",
+    "tools/test_bestiary_b28.lua": "37a7e9682308ccadc56ded6dd9b4963fbd4d0bdcbfebd9e40534f0884c18148f",
+    "tools/test_population_transport.lua": "49cc1b90d1303619f2e229f8fff5ce505bf59acb8c421dce760ad5c8d3a8dbb7"
+  },
+  "paired": {
+    "trace_rows": 20608,
+    "trace_sha256": "2c2b5a292c7de8bee5f481bbef27afd2942ee33edf56439ea5884921e983e36b",
+    "close_defense_calls": 3600,
+    "entity_lua_field_reads": [
+      161400,
+      134400
+    ],
+    "status_queries": [
+      12000,
+      12000
+    ],
+    "admission_calls": 5001,
+    "exact_cell_queries": [
+      5001,
+      2001
+    ],
+    "position_queries": [
+      15003,
+      12003
+    ],
+    "parent_work_gate_passed": false,
+    "native_fps_certified": false
+  },
+  "native_capture": {
+    "installed": "0388d032b48a3b310d0429b44ca44791842aea52 clean",
+    "reason": "complete",
+    "total_seconds": 183.1950016,
+    "active": {
+      "max_ms": 1253.975,
+      "over100": 54,
+      "median_ms": 37.87,
+      "over50": 808,
+      "p95_ms": 77.751,
+      "frames": 2807,
+      "p99_ms": 129.473,
+      "over25": 2801,
+      "seconds": 128.67259000000024,
+      "fps": 21.815057892283
+    },
+    "all": {
+      "max_ms": 1253.975,
+      "over100": 62,
+      "median_ms": 36.292,
+      "over50": 963,
+      "p95_ms": 72.862,
+      "frames": 4177,
+      "p99_ms": 115.261,
+      "over25": 4147,
+      "seconds": 179.91781300000048,
+      "fps": 23.21615592337146
+    },
+    "client_source": {
+      "verified": true,
+      "checked": 15,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "population_source": {
+      "installLabel": "0388d032b48a3b310d0429b44ca44791842aea52 clean ",
+      "missing": 0,
+      "mismatches": 0,
+      "checked": 45,
+      "verified": true
+    },
+    "native_walls": {
+      "start": 1614,
+      "end": 1614
+    },
+    "configuration_changes": [],
+    "preparation_timed_out": false,
+    "server_status": "received",
+    "profiles": {
+      "client": {
+        "seconds": 179.99569099999997,
+        "reason": "complete",
+        "coverage": "existing LOD hooks, native LOD entity callbacks and selected AI services; excludes timers, gamemode methods and unwrapped engine work"
+      },
+      "server": {
+        "seconds": 180.0060684,
+        "reason": "client-stop",
+        "coverage": "existing LOD hooks, native LOD entity callbacks and selected AI services; excludes timers, gamemode methods and unwrapped engine work"
+      }
+    },
+    "measured_callbacks": {
+      "client": [
+        {
+          "calls": 4177,
+          "milliseconds": 64893.745199999954,
+          "completed": 4176,
+          "ms_per_second": 360.52943734080816,
+          "mean_ms": 15.539689942528724,
+          "name": "phase/PreRender-to-PostRender",
+          "maximum_ms": 53.12190000000783
+        },
+        {
+          "calls": 8331,
+          "milliseconds": 16176.412299999072,
+          "completed": 8331,
+          "ms_per_second": 89.87110863670107,
+          "mean_ms": 1.9417131556834801,
+          "name": "hook/PostDrawOpaqueRenderables/LOD.DrawGeneratedStaticGeometry",
+          "maximum_ms": 21.638499999994565
+        }
+      ],
+      "server": [
+        {
+          "calls": 273398,
+          "milliseconds": 8056.4014000022435,
+          "completed": 273398,
+          "ms_per_second": 44.75627667229381,
+          "mean_ms": 0.02946766764936921,
+          "name": "service/EnemyRoster.TickCloseDefense",
+          "maximum_ms": 11.86739999997144
+        },
+        {
+          "calls": 536164,
+          "milliseconds": 7481.089599997972,
+          "completed": 536164,
+          "ms_per_second": 41.56020775574015,
+          "mean_ms": 0.013952987518740485,
+          "name": "service/EntrySafety.BeforeAI",
+          "maximum_ms": 12.402000000008684
+        }
+      ]
+    },
+    "lua_errors": {
+      "start": 0,
+      "end": 0
+    },
+    "vr": {
+      "start": {
+        "method_overrides": 0,
+        "active": false,
+        "version": "deborah-vr-idle-20261007-r2",
+        "recurring_timers": 0,
+        "local_tracking": false,
+        "runtime_hooks": 0,
+        "pending_once": 0,
+        "native_resources": 0,
+        "resource_counts": [],
+        "source": {
+          "bridge_checked": 2,
+          "verified": true,
+          "checked": 139,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "idle": true,
+        "adapter_think": false,
+        "players": 0
+      },
+      "end": {
+        "method_overrides": 0,
+        "active": false,
+        "version": "deborah-vr-idle-20261007-r2",
+        "recurring_timers": 0,
+        "local_tracking": false,
+        "runtime_hooks": 0,
+        "pending_once": 0,
+        "native_resources": 0,
+        "resource_counts": [],
+        "source": {
+          "bridge_checked": 2,
+          "verified": true,
+          "checked": 139,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "idle": true,
+        "adapter_think": false,
+        "players": 0
+      }
+    },
+    "start_configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": true,
+      "fps_max": "60",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-2",
+      "r_shadows": "1",
+      "r_waterforceexpensive": "1",
+      "lod_map_scale": "1",
+      "window_mode": "user-recorded",
+      "lod_third_person": "0",
+      "mat_picmip": "0",
+      "mat_antialias": "0",
+      "architecture": "x64",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "lod_map_opacity": "1",
+      "lod_wall_batches": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "end_configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": true,
+      "fps_max": "60",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-2",
+      "r_shadows": "1",
+      "r_waterforceexpensive": "1",
+      "lod_map_scale": "1",
+      "window_mode": "user-recorded",
+      "lod_third_person": "0",
+      "mat_picmip": "0",
+      "mat_antialias": "0",
+      "architecture": "x64",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "lod_map_opacity": "1",
+      "lod_wall_batches": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "population": {
+      "campaign": 421166237,
+      "layoutSeed": 1239195776,
+      "layoutAttempt": 10,
+      "mazeAttempt": 2,
+      "planned": {
+        "runner": 6,
+        "bioblaster": 2,
+        "siphoner": 1,
+        "silencer": 1,
+        "arccaster": 1,
+        "deadcrab": 6,
+        "shambler": 16,
+        "nodule": 1,
+        "flamer": 2,
+        "soldier": 6,
+        "gaoler": 2,
+        "accumulator": 2,
+        "bigcrab": 1
+      },
+      "alive": {
+        "gaoler": 2,
+        "bioblaster": 10,
+        "shy": 2,
+        "arccaster": 2,
+        "deadcrab": 11,
+        "afterburst": 1,
+        "caromer": 1,
+        "pincer": 1,
+        "soldier": 4,
+        "seeker": 2,
+        "runner": 4,
+        "flamer": 2,
+        "watcher": 3,
+        "reaper": 2,
+        "drubber": 1,
+        "shambler": 5,
+        "accumulator": 1
+      },
+      "aliveWanderers": 54,
+      "aliveBodies": 54,
+      "ceiling": 96,
+      "theme": "corruption"
+    },
+    "hardware_target_met": false,
+    "candidate_native_accepted": false,
+    "raw_files": {
+      "console_latest(20261008-012700).txt": "59ded4a79337ef2e2adb3d67ed61c9074263b0c089e2295f5a483920cfbbd729",
+      "performance_client_latest(20261008-012700).txt": "f34a3b56fc8c1a96e487151080571478c7ea8c32cc587f3cb619b2182de1b59f"
+    }
+  },
+  "manifest_coverage": {
+    "installer_sources": 50,
+    "runtime_population_sources": 46
+  },
+  "archive": {
+    "filename": "STEAM_DECK_20261008_ENEMY_AI.zip",
+    "bytes": 1514417,
+    "sha256": "1e1c50e9f5603d195917271a2463675e2b2c9ef9c0ee0a8b074a3d177f6ebc4c",
+    "members": 1530
+  }
+}
