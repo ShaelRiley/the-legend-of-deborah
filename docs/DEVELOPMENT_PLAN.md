@@ -1,4 +1,40 @@
-# Current Steam Deck checkpoint — drawable static-box Lua-field reuse
+# Current Steam Deck checkpoint — combat-feed span work reuse
+
+The October 8 UTC / October 7 local three-minute capture verifies clean main
+`8bac44a`, complete CPU profiles, fixed preferences, fully idle VR and zero
+Lua errors. Active play averages 22.3049 FPS, median 38.212 ms, p95 82.537 ms
+and p99 120.064 ms, with 1,556 native walls. The generated workload differs
+from earlier captures; sustained >=40 FPS remains unmet. CombatRollFeed is the
+largest measured HUD callback, averaging 1.2393 ms over 3,944 rendered frames.
+
+Reuse colors and exact rounded outline coordinates within the existing layout
+span. Borrow the selected native font only inside one immediate DrawLines call;
+other paints always establish their own font. Preserve all ten native text
+submissions per span, position/order/font/color/alpha, live palette changes,
+layout invalidation, HUD/history parity, expiry, ACKs and dice explosions. No
+renderer, preference, graphics, timer, cadence, authored tuning or gameplay
+change is included. Live GDD 00 → 01 → 06/07 governs the checkpoint.
+
+Finite static gate: actual published-parent/candidate raster traces match;
+warmed 600-frame feed keeps 42,000 draws while font selections fall 4,200→600,
+Color allocations 4,200→0 and coordinate rounding 84,000→0. The exact parent
+fails the new work bound; all 313 drawing scenarios match. Position/palette/metric
+mutation and release of retired layouts are verified. The frozen source passes
+20/20 focused checks, 313/313 canonical suites and 884 Lua parses. All 2,556
+source files remain unchanged during the gates; all commands, receipts and 626
+matrix stream hashes are independently checked. Documentation/evidence alone
+follows, with production/test hashes rechecked before publication. Headless
+work counts do not establish FPS savings. See [finite gate and native evidence](validation/STEAM_DECK_20261008_HUD_SPANS.md).
+
+After validated non-force main publication, fully quit GMod, pull/install,
+restart gm_flatgrass and use the fixed-preference three-minute capture:
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Leave GMod open through the final server reply, then return
+performance_client_latest.txt and console_latest.txt. Require exact source,
+complete profiles, idle VR, no new Lua errors, intact feed and world visuals.
+Sustained >=40 FPS remains a native acceptance gate. No Workshop or VPS action.
+
+# Previous checkpoint — drawable static-box Lua-field reuse
 
 October 8 UTC / October 7 local capture verifies clean `4af3b40`: 21.9185 active
 FPS, 38.689 ms median, 81.794 ms p95, 141.747 ms p99; 1,732 native walls,

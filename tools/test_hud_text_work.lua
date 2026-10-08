@@ -1,4 +1,4 @@
--- Actual unchanged parent/candidate UI and feed, with stock native-call doubles.
+-- Actual frozen original/production UI and feed, with stock native-call doubles.
 -- Raster submissions and bounded work counts, never native FPS certification.
 local root = 'gamemodes/legend_of_deborah/gamemode/lod/'
 local cases = {
@@ -30,12 +30,17 @@ end
 local function run(uiPath,feedPath,candidate)
     local clock,screenWidth,screenHeight=100,1280,800
     local font,x,y,r,g,b,a,metricScale='?',0,0,0,0,0,255,1
-    local trace,acks,measurements,fontSelections,colors={}, {},0,0,0
+    local trace,acks,measurements,fontSelections,colors,ceilings={}, {},0,0,0,0
+    local nativeCeil=math.ceil
+    math.ceil=function(value) ceilings=ceilings+1;return nativeCeil(value) end
     local hooks={}
     LOD={CombatRollFeed={entries={}}}
     TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER,TEXT_ALIGN_RIGHT=0,1,2
     TEXT_ALIGN_TOP,TEXT_ALIGN_BOTTOM=3,4
-    function Color(cr,cg,cb,ca) colors=colors+1;return {r=cr,g=cg,b=cb,a=ca or 255} end
+    function Color(cr,cg,cb,ca)
+        colors=colors+1;return {r=math.min(tonumber(cr),255),g=math.min(tonumber(cg),255),
+            b=math.min(tonumber(cb),255),a=math.min(tonumber(ca or 255),255)}
+    end
     function CurTime() return clock end
     function ScrW() return screenWidth end;function ScrH() return screenHeight end
     function math.Clamp(n,lo,hi) return math.max(lo,math.min(hi,n)) end
@@ -78,7 +83,7 @@ local function run(uiPath,feedPath,candidate)
     dofile(root..'sh_die_logger.lua');dofile(uiPath);dofile(feedPath)
     local UI,Feed=LOD.UI,LOD.CombatRollFeed
     Feed.AckFeedback=function(_,entry,stage,retained) acks[#acks+1]={entry.serial,stage,retained} end
-    local function reset() trace,acks,measurements,fontSelections,colors={}, {},0,0,0 end
+    local function reset() trace,acks,measurements,fontSelections,colors,ceilings={}, {},0,0,0,0 end
     local function invalidate(event)
         for _,fn in pairs(hooks[event] or {}) do fn() end
     end
@@ -91,7 +96,7 @@ local function run(uiPath,feedPath,candidate)
                 for i,line in ipairs(lines) do
                     formatted[i]={};for j,span in ipairs(line) do formatted[i][j]={span.text,span.role} end
                 end
-                for _,alpha in ipairs({0,0.5,107.75,255}) do
+                for _,alpha in ipairs({-12,0,0.5,107.75,255,300,'127.5'}) do
                     reset();Feed:DrawLines(lines,-3.4,14.2,alpha,1,#lines,hud)
                     results[#results+1]={formatted=copy(formatted),widths=copy(widths),trace=copy(trace)}
                 end
@@ -110,9 +115,40 @@ local function run(uiPath,feedPath,candidate)
     reset();UI:HUDText('default',nil,0,0,nil)
     results[#results+1]={trace=copy(trace)}
     for _,position in ipairs({0,1e-17,-1e-17,0.9999999999999999,1.0000000000000002,
-        -1.0000000000000002,9007199254740992}) do
+        -1.0000000000000002,9007199254740992,-9007199254740992}) do
         reset();UI:HUDText(1234,'ChatFont',position,position,Color(10,20,30,0))
         results[#results+1]={trace=copy(trace)}
+    end
+    -- The owned path rounds the original floating-point sums, even after moves
+    -- and font changes. An unrelated paint may change the selected surface font.
+    local owned={}
+    for _,position in ipairs({1e-17,0.9999999999999999,-1.0000000000000002,
+        9007199254740992,400.25,400.25}) do
+        for _,f in ipairs({'ChatFont','LOD_CombatRoll'}) do
+            reset();surface.SetFont('unrelated');UI:HUDText('AV café →',f,position,position,
+                Color(120,180,255,107.75),nil,nil,owned)
+            results[#results+1]={trace=copy(trace)}
+        end
+    end
+    local moving=Feed:Layout(record(cases[1]),600,true)
+    for _,p in ipairs({{400.25,400.75,1},{400.25,400.75,1},{-1e-17,0.9999999999999999,1},
+        {9007199254740992,9007199254740992,1},{12.75,-9.5,math.min(2,#moving)}}) do
+        reset();surface.SetFont('unrelated')
+        Feed:DrawLines(moving,p[1],p[2],107.75,p[3],#moving,true)
+        results[#results+1]={trace=copy(trace)}
+    end
+    -- Reused colors follow live roles/palettes and alpha without tinting them.
+    local paletteEntry=record(cases[1]);local paletteLines=Feed:Layout(paletteEntry,600,true)
+    for change=1,4 do
+        local first=paletteLines[1][1]
+        if change==2 then first.role='damage';first.text='AV'
+        elseif change==3 then UI.HUDRoles.damage=Color(91,92,93,94)
+        elseif change==4 then
+            UI.HUDRoles.damage.r=300;UI.HUDRoles.damage.g='98.5';UI.HUDRoles.damage.b=-12
+        end
+        reset();Feed:DrawLines(paletteLines,1.5,2.5,change==1 and 0 or 107.75,1,#paletteLines,true)
+        results[#results+1]={trace=copy(trace)}
+        assert(UI.HUDRoles.damage.a==(change>=3 and 94 or 255),'drawing mutated palette alpha')
     end
     -- Actual HUD tail: ordering, truncation hint, ACK attempts, expiry and fade.
     for _,t in ipairs({100,108.99,109,109.4,110.4,110.4001,112}) do
@@ -136,11 +172,13 @@ local function run(uiPath,feedPath,candidate)
     local lines=Feed:Layout(record(cases[1]),600,true)
     Feed:DrawLines(lines,400,400,255,1,#lines,true);reset()
     for _=1,600 do Feed:DrawLines(lines,400,400,255,1,#lines,true) end
-    local work={measurements=measurements,font_selections=fontSelections,colors=colors,draws=#trace}
+    local work={measurements=measurements,font_selections=fontSelections,colors=colors,
+        ceilings=ceilings,draws=#trace}
     results[#results+1]={trace=copy(trace)}
     local spanCount=0;for _,line in ipairs(lines) do spanCount=spanCount+#line end
-    if candidate then
-        assert(work.measurements==0 and work.font_selections==spanCount*600,'steady native work retained')
+    if candidate==true then
+        assert(work.measurements==0 and work.font_selections==600,'steady native font work retained')
+        assert(work.colors==0 and work.ceilings==0,'steady allocation/position work retained')
         assert(work.draws==spanCount*600*10,'outline/foreground submissions changed')
         local entry=record(cases[1]);local first=Feed:Layout(entry,600,true)
         assert(Feed:Layout(entry,600,true)==first,'steady layout must be reused')
@@ -167,20 +205,37 @@ local function run(uiPath,feedPath,candidate)
         draw.SimpleTextOutlined=function() fallbackCalls=fallbackCalls+1 end
         UI:HUDText('fallback','ChatFont',1,1,nil);assert(fallbackCalls==1,'partial native API lost stock fallback')
         draw.SimpleTextOutlined=helper;surface.DrawText=original
+        local released=setmetatable({},{__mode='k'})
         for i=1,1200 do
             local e=record(cases[1]);local l=Feed:Layout(e,600,true);Feed:DrawLines(l,0,0,255,1,1,true)
+            released[l]=true;released[l[1][1]]=true
         end
+        collectgarbage('collect');assert(next(released)==nil,'retired layout/span caches remain owned')
         assert(Feed.entries[1]==nil,'drawing created retained gameplay entries')
         assert(not Feed.textWidths and not Feed.metricCache,'unbounded global string cache introduced')
-    else
+    elseif candidate==false then
         assert(work.measurements==spanCount*600*11,'parent baseline no longer matches stock drawing contract')
     end
+    math.ceil=nativeCeil
     return results,work
 end
 local before,beforeWork=run('tools/fixtures/hud_text_parent_ui.lua','tools/fixtures/hud_text_parent_semantics.lua',false)
-local after,afterWork=run(root..'cl_ui_theme.lua',root..'cl_combat_roll_feed_semantics.lua',true)
+local probe=arg and arg[1]=='--probe'
+local external=probe or arg and arg[1]=='--gate'
+local after,afterWork=run(external and arg[2] or root..'cl_ui_theme.lua',
+    external and arg[3] or root..'cl_combat_roll_feed_semantics.lua',probe and 'probe' or true)
 equal(before,after,'parent/candidate raster trace')
 assert(beforeWork.draws==afterWork.draws and beforeWork.font_selections>afterWork.font_selections)
-print(string.format('HUD_TEXT_WORK_PASS traces=%d steady_frames=600 measurements=%d->%d font_selections=%d->%d colors=%d->%d native_draws=%d->%d; exact parent calls; refresh/screen/text/font invalidation; bounded layout ownership; not native FPS',
+if probe and arg[4] then
+    local function canonical(v)
+        if type(v)~='table' then return type(v)..':'..string.format('%q',tostring(v)) end
+        local keys={};for k in pairs(v) do keys[#keys+1]=k end
+        table.sort(keys,function(a,b) return tostring(a)<tostring(b) end)
+        local values={};for _,k in ipairs(keys) do values[#values+1]=canonical(k)..'='..canonical(v[k]) end
+        return '{'..table.concat(values,',')..'}'
+    end
+    local out=assert(io.open(arg[4],'w'));out:write(canonical(after));out:close()
+end
+print(string.format('HUD_TEXT_WORK_PASS traces=%d steady_frames=600 measurements=%d->%d font_selections=%d->%d colors=%d->%d ceilings=%d->%d native_draws=%d->%d; exact parent calls; refresh/screen/text/font/position/palette invalidation; bounded layout ownership; not native FPS',
     #before,beforeWork.measurements,afterWork.measurements,beforeWork.font_selections,afterWork.font_selections,
-    beforeWork.colors,afterWork.colors,beforeWork.draws,afterWork.draws))
+    beforeWork.colors,afterWork.colors,beforeWork.ceilings,afterWork.ceilings,beforeWork.draws,afterWork.draws))

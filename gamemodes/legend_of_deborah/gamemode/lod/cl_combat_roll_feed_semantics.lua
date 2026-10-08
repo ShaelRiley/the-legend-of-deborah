@@ -60,12 +60,31 @@ function Feed:DrawLines(lines, x, y, alpha, first, last, hud)
     local font = hud and "ChatFont" or FONT
     local palette = hud and UI.HUDRoles or UI.Roles
     first, last = first or 1, last or #lines
+    local selectedFont
     for i = first, last do
         local cursor = x
         for _, span in ipairs(lines[i]) do
             local base = palette[span.role] or palette.prose
-            local color = Color(base.r,base.g,base.b,alpha or 255)
-            if hud then UI:HUDText(span.text,font,cursor,y+(i-first)*ROW_HEIGHT,color)
+            local color = span.drawColor
+            local opacity = alpha or 255
+            if not color or span.drawR ~= base.r or span.drawG ~= base.g
+                or span.drawB ~= base.b or span.drawAlpha ~= opacity then
+                if not color then
+                    color = Color(base.r,base.g,base.b,opacity)
+                    span.drawColor = color
+                else
+                    -- Match Color's numeric conversion and upper bound when
+                    -- a live palette/fade changes, without a new table.
+                    color.r = math.min(tonumber(base.r),255)
+                    color.g = math.min(tonumber(base.g),255)
+                    color.b = math.min(tonumber(base.b),255)
+                    color.a = math.min(tonumber(opacity),255)
+                end
+                span.drawR, span.drawG, span.drawB, span.drawAlpha = base.r, base.g, base.b, opacity
+            end
+            if hud then
+                selectedFont = UI:HUDText(span.text,font,cursor,y+(i-first)*ROW_HEIGHT,
+                    color,nil,nil,span,selectedFont)
             else draw.SimpleText(span.text,font,cursor,y+(i-first)*ROW_HEIGHT,color) end
             -- Measure the coalesced string, not the sum of token widths: native
             -- kerning can change its exact advance. Ownership stays within the

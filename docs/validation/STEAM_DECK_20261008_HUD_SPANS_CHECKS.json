@@ -1,0 +1,68 @@
+{
+  "version": "steam-deck-hud-spans-20261008",
+  "parent_head": "8bac44ab36922d3d169f613cd3b6d1fd739be4de",
+  "gdd_document": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "gdd_revision": "AHj4eMRd4acJKKEDgqukO9zGvoMQvxlbUMdF6nZCAXYFhQm-CNvzGIub5PLIO_oXk6fEWbrk_V-_2bJc4m1wqQvkXjzdDNhY5wQfHSd7Pg",
+  "verification": {
+    "passed": true,
+    "canonical_suites": 313,
+    "canonical_commands_checked": 313,
+    "matrix_raw_stream_hashes_checked": 626,
+    "matrix_individual_receipts_checked": 313,
+    "frozen_files": 2556,
+    "source_digest": "131e588f003b1d9f5c053262cd10610c10c65978f4a6073665e22c950da2511c",
+    "focused_checks": 20,
+    "focused_log_hashes_checked": 20,
+    "lua_syntax_files": 884,
+    "code_files_checked": 3,
+    "trace_sha256": "e49cbde19dd8a0c94156050978e1aad86c3f82132e704569f186a689b835691e",
+    "native_fps_certified": false
+  },
+  "code_sha256": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua": "3fadca1e83a6e2ec973240c5f81ad0eec421892291d0a72f75241823184d7e5c",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2",
+    "tools/test_hud_text_work.lua": "b8c6900db4d0f4f5f67e16febf3461eae6c3f82bbab9acb3523cc68cc8b94f0e"
+  },
+  "paired": {
+    "scenarios": 313,
+    "trace_sha256": "e49cbde19dd8a0c94156050978e1aad86c3f82132e704569f186a689b835691e",
+    "steady_frames": 600,
+    "native_draws": [
+      42000,
+      42000
+    ],
+    "native_measurements": [
+      0,
+      0
+    ],
+    "font_selections": [
+      4200,
+      600
+    ],
+    "colors": [
+      4200,
+      0
+    ],
+    "ceilings": [
+      84000,
+      0
+    ],
+    "parent_work_gate_passed": false
+  },
+  "native_capture": {
+    "installed": "8bac44ab36922d3d169f613cd3b6d1fd739be4de",
+    "active_fps": 22.30492911801739,
+    "median_ms": 38.212,
+    "p95_ms": 82.537,
+    "p99_ms": 120.064,
+    "native_walls": 1556,
+    "new_build_native_accepted": false,
+    "sustained_40_fps_accepted": false
+  },
+  "archive": {
+    "filename": "STEAM_DECK_20261008_HUD_SPANS.zip",
+    "bytes": 1133130,
+    "sha256": "80eaf87bbe2ffcaea42c1edaad22eea6fc8aba7daf1c91ec958ae6cff83159f2",
+    "members": 1008
+  }
+}
