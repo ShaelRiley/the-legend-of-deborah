@@ -1,4 +1,49 @@
-# Current Steam Deck checkpoint — exact plane-support reuse
+# Current Steam Deck checkpoint — exact repeated-view frustum reuse
+
+Recovery verified clean remote main `8868d20629ddd89e4503b2fafc036e5766402d1e`
+and the newest exact-source three-minute capture: 30.3866 active FPS, median
+30.271 ms, p95 50.162 ms and p99 84.058 ms. The scene has 1,270 native wall
+models and 36 initial living wanderers. Complete client/server profiles, fixed
+preferences, idle VR and zero Lua errors are recorded. Different generated
+workloads prevent isolated attribution; sustained >=40 FPS remains unmet.
+
+Extend the existing generated-box snapshot to reuse the pure frustum result
+only for the exact same current eye scalars and immutable view coefficient
+identity. Every pass still reads current native bounds/pose, camera axes and
+projection. Changed geometry replaces the snapshot; any camera/projection
+change invalidates reuse. Preserve every native draw, overlay, hazard/grate,
+fallback, resource/lifecycle, model, collision and gameplay. No frame lease,
+rounded key, population/timing/tuning/preference change or experimental batching.
+This new checkpoint supersedes the preceding checkpoint's narrower prohibition
+on visibility caching only for exact repeated inputs. Fresh live GDD navigation
+00 → 01 → 05/07 governs implementation; no authored design change is needed.
+
+Finite gate passed: exact published-parent/candidate native mesh/wireframe/fallback
+traces match across 330 scenarios, including exact boundary/projection and
+live basis-override cases. In 120 moving-camera frames with two identical-view
+submissions, actual production frustum evaluations fall 28,800→14,400 while
+all 115,200 native geometry getters, 2,160 camera-basis component reads,
+28,800 mesh draws and 9,600 wireframes remain. The published parent must fail
+the new work bound. Preserve all existing renderer/culling/lifecycle assertions;
+29 focused checks and 885 Lua syntax files pass. All 315 canonical suites have
+passing coverage on the same frozen 2,569-file source. The initial full run
+passed 312/315; three existing campaign tests exceeded its shorter 120-second
+timeout. Their unchanged commands pass with the canonical 600-second limit;
+both attempts are retained, with 636 raw streams, all commands/receipts and
+29 focused logs independently checked. Only documentation/evidence packaging
+follows; production/test hashes are rechecked before non-force publication.
+Counts are headless work evidence, not native FPS certification. See
+[finite gate and native evidence](validation/STEAM_DECK_20261008_EXACT_VIEW.md).
+
+Next native gate: fully quit GMod, pull/install verified main, restart
+gm_flatgrass and use
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Leave GMod open through the final server reply; return performance_client_latest.txt
+and console_latest.txt. Require exact source, unchanged world appearance/gameplay,
+complete profiles, idle VR, no new Lua errors and sustained >=40 FPS. No Workshop
+or VPS operation.
+
+# Previous checkpoint — exact plane-support reuse
 
 The October 8 UTC / local native capture verifies clean main `30d180f`, all
 15 client and 46 population source hashes, complete 180-second profiles,

@@ -7,7 +7,9 @@ local stateProbe = arg and arg[1] == '--state-probe'
 local kindProbe = arg and arg[1] == '--kind-probe'
 local supportProbe = arg and arg[1] == '--support-probe'
 local supportGate = arg and arg[1] == '--support-gate'
-local override = baseline or parity or stateProbe or kindProbe or supportProbe or supportGate or arg and arg[1] == '--source'
+local viewProbe = arg and arg[1] == '--view-probe'
+local viewGate = arg and arg[1] == '--view-gate'
+local override = baseline or parity or stateProbe or kindProbe or supportProbe or supportGate or viewProbe or viewGate or arg and arg[1] == '--source'
 local meshPath = override and assert(arg[2]) or 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
 local entityPath = override and assert(arg[3]) or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua'
 local sharedPath = override and arg[5] or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua'
@@ -204,6 +206,31 @@ end
 local function frame()
  seen={};draws=0;fire('PostDrawOpaqueRenderables',false,false,false);return draws
 end
+local function countVisibilityWork()
+ -- Count calls to the actual production frustum evaluator. The published
+ -- parent has only inCamera; the candidate keeps that solver unchanged behind
+ -- its exact-input guard. No copied visibility formula or wall-clock claim.
+ local function upvalue(fn,name)
+  for i=1,100 do
+   local n,v=debug.getupvalue(fn,i)
+   if n==name then return v,i end
+   if not n then break end
+  end
+  error('missing production renderer upvalue: '..name)
+ end
+ local paint=hooks.PostDrawOpaqueRenderables['LOD.DrawGeneratedStaticGeometry']
+ local drawing=upvalue(paint,'drawGeneratedGeometry')
+ local checking,index=upvalue(drawing,'inCamera')
+ local owner,slot,solver=drawing,index,checking
+ for i=1,100 do
+  local name,value=debug.getupvalue(checking,i)
+  if not name then break end
+  if name=='evaluateCamera' then owner,slot,solver=checking,i,value;break end
+ end
+ local calls=0
+ debug.setupvalue(owner,slot,function(...) calls=calls+1;return solver(...) end)
+ return function() return calls end
+end
 local function supportCases(requireWork,tracePath)
  resetScene()
  -- Earlier refresh regressions deliberately replace ENT without shared data.
@@ -218,6 +245,7 @@ local function supportCases(requireWork,tracePath)
   scene[i]=e
  end
  assert(frame()==120)
+ local visibilityCalls=(viewProbe or viewGate) and countVisibilityWork()
  local traces,passes={},0
  supportCapture=true
  local function sample(label)
@@ -252,6 +280,12 @@ local function supportCases(requireWork,tracePath)
  end
  local work={absolute_values=absoluteValues,geometry_getters=geometryReads,
   camera_basis_reads=axisReads,native_draws=120*240,wireframes=wireframes-beforeWires}
+ if visibilityCalls then
+  work.visibility_evaluations=visibilityCalls()
+  print(format('LOW_END_EXACT_VIEW_WORK entities=120 frames=120 passes=240 visibility_evaluations=%d native_geometry_getters=%d camera_basis_reads=%d native_draws=%d wireframes=%d native_fps_measured=false',
+   work.visibility_evaluations,work.geometry_getters,work.camera_basis_reads,work.native_draws,work.wireframes))
+  if viewGate then assert(work.visibility_evaluations==14400,'duplicate exact views repeat box visibility arithmetic') end
+ end
  print(format('LOW_END_SUPPORT_WORK entities=120 rotated=30 frames=120 passes=240 absolute_values=%d native_geometry_getters=%d camera_basis_reads=%d native_draws=%d wireframes=%d native_fps_measured=false',
   work.absolute_values,work.geometry_getters,work.camera_basis_reads,work.native_draws,work.wireframes))
  assert(work.geometry_getters==115200 and work.camera_basis_reads==2160
@@ -307,6 +341,32 @@ local function supportCases(requireWork,tracePath)
  end
  sample('nested-parent');sample('after-nested')
  dofile(entityPath);sample('renderer-refresh');sample('after-refresh')
+ if viewProbe or viewGate then
+  -- Keys are exact, even immediately beside the one-unit rear-plane boundary.
+  -- Equal angle scalars do not permit stale native basis getters either.
+  view={origin=Vector(),angles=Angle(),fov=90,aspect=1.6,znear=1}
+  e.pos=Vector(1400,0,0);e.ang=Angle();e.mins=Vector(-300,-20,-10);e.maxs=Vector(300,20,10)
+  local marker=format('%g,%g,%g',e.pos.x,e.pos.y,e.pos.z)
+  for i,x in ipairs({1701-1e-10,1701,1701+1e-10,1701,1701-1e-10}) do
+   view.origin.x=x
+   for pass=1,2 do
+    sample('exact-edge-'..i..'-'..pass)
+    assert((seen[marker]==true)==(x<=1701),'exact eye change borrowed an opposite visibility decision')
+   end
+  end
+  view.origin=Vector()
+  for i,v in ipairs({90,90+1e-10,90,90-1e-10}) do
+   view.fov=v;sample('exact-fov-'..i..'-a');sample('exact-fov-'..i..'-b')
+  end
+  view.fov=90
+  for i,v in ipairs({1.6,1.6+1e-10,1.6,1.6-1e-10}) do
+   view.aspect=v;sample('exact-aspect-'..i..'-a');sample('exact-aspect-'..i..'-b')
+  end
+  view.aspect=1.6
+  view.angles.Forward=function() return Angle(0,90,0):Forward() end
+  sample('native-basis-override-a');sample('native-basis-override-b')
+  view.angles.Forward=nil;sample('native-basis-restored-a');sample('native-basis-restored-b')
+ end
  for _,flags in ipairs({{true,false,false},{false,true,false},{false,false,true}}) do
   local before=geometryReads;fire('PostDrawOpaqueRenderables',table.unpack(flags))
   assert(geometryReads==before,'excluded pass queried geometry')
@@ -318,7 +378,7 @@ local function supportCases(requireWork,tracePath)
  print(format('LOW_END_SUPPORT_PARITY passes=%d exact_native_mesh_wireframe_fallback_values=true; eye translation, axes/projection, mutable bounds/pose, live getters, hazards/grates, life/kind, full update, incomplete/nested views, refresh/removal',passes))
  return work
 end
-if supportProbe or supportGate then supportCases(supportGate,arg[4]);return end
+if supportProbe or supportGate or viewProbe or viewGate then supportCases(supportGate or viewGate,arg[4]);return end
 -- Same 120 visible static entities; alternating floors/stairs share few meshes.
 for i=1,120 do
  local e=box(Vector(1000+i*2,(i%5)*16,(i%3)*16),i%2+1)

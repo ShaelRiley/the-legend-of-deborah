@@ -321,7 +321,7 @@ local function support(box, p)
     box[p[7]],box[p[8]]=p,value
     return value
 end
-local function inCamera(box, camera)
+local function evaluateCamera(box, camera)
     if not camera then return true end
     if not box.f then
         local dx, dy, dz = box.px-camera.ex, box.py-camera.ey, box.pz-camera.ez
@@ -342,6 +342,23 @@ local function inCamera(box, camera)
             or depth*camera.tanY+height+support(box,camera.top) < -camera.normY then return false end
     end
     return true
+end
+
+local function inCamera(box, camera)
+    if not camera then return true end
+    -- The same native view can submit this geometry more than once. A box
+    -- snapshot is replaced on any live bounds/pose change; the immutable front
+    -- plane identity changes with any view axis or projection coefficient.
+    -- Only an exact match, including all three current eye scalars, may borrow
+    -- the pure frustum result. There is no frame lease, rounded key or draw skip.
+    if box.viewPlane == camera.front and box.viewX == camera.ex
+        and box.viewY == camera.ey and box.viewZ == camera.ez then
+        return box.viewVisible
+    end
+    local visible = evaluateCamera(box, camera)
+    box.viewPlane, box.viewX, box.viewY, box.viewZ, box.viewVisible =
+        camera.front, camera.ex, camera.ey, camera.ez, visible
+    return visible
 end
 
 local function drawGeneratedGeometry()
