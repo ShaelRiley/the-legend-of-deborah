@@ -31,6 +31,11 @@ function M:DrawBody(ent)
     render.SetColorModulation(r,g,b)
     if not ok then ErrorNoHalt(tostring(err)..'\n') end
 end
+-- Reduced effects has a stationary two-point orbit. Borrow only its pure
+-- trigonometric offsets; all live state/position reads and native submissions
+-- remain below. Weak ownership retires with the actor; refresh starts anew.
+local reducedOrbits=setmetatable({},{__mode='k'})
+local orbitCos,orbitSin,orbitPi=math.cos,math.sin,math.pi
 function M:DrawAura(ent,size)
     if not active(ent) then return end
     local c=LOD.MagicArea.Colors[ent:GetNW2String('LOD_MonsterElement','')]
@@ -49,7 +54,19 @@ function M:DrawAura(ent,size)
     local color=Color(c.r,c.g,c.b,70)
     for i=1,count do
         local a=phase+i*math.pi*2/count
-        local point=center+Vector(math.cos(a)*radius,math.sin(a)*radius,low and 0 or math.sin(a*2)*radius*.35)
+        local x,y
+        -- Check helpers for each submission: a nested draw or DrawSprite
+        -- callback can replace them between the two original orbit points.
+        if low and math.cos==orbitCos and math.sin==orbitSin and math.pi==orbitPi and radius==radius then
+            local row=reducedOrbits[ent]
+            if not row or row.radius~=radius then row={radius=radius};reducedOrbits[ent]=row end
+            local offset=row[i]
+            if not offset then
+                offset={math.cos(a)*radius,math.sin(a)*radius};row[i]=offset
+            end
+            x,y=offset[1],offset[2]
+        else x,y=math.cos(a)*radius,math.sin(a)*radius end
+        local point=center+Vector(x,y,low and 0 or math.sin(a*2)*radius*.35)
         render.DrawSprite(point,20*size,28*size,color)
     end
 end

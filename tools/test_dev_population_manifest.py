@@ -35,7 +35,7 @@ with tempfile.TemporaryDirectory() as tmp:
                 stdout, stderr = process.communicate()
                 assert process.returncode == 0, stdout + stderr
             rows = (data / 'dev_population_sources.txt').read_text().splitlines()
-            assert len(rows) == 52
+            assert len(rows) == 53
             assert any(row.endswith(' gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.lua') for row in rows)
             assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua') for row in rows)
             assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua') for row in rows)
@@ -73,4 +73,4 @@ with tempfile.TemporaryDirectory() as tmp:
             if remaining:
                 assert time.monotonic() < deadline, 'owned installer children failed to retire'
                 time.sleep(0.01)
-print('DEV_POPULATION_MANIFEST_PASS exact 52-source hashes including hostile client presentation, physical-footstep variance, shared enemy close-defense, static-box datatable notifications and saved camera/map Options; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup')
+print('DEV_POPULATION_MANIFEST_PASS exact 53-source hashes including monster aura and hostile client presentation, physical-footstep variance, shared enemy close-defense, static-box datatable notifications and saved camera/map Options; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup')

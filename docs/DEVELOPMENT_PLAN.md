@@ -1,4 +1,46 @@
-# Current Steam Deck checkpoint — hostile visual scale key reuse
+# Current Steam Deck checkpoint — reduced-effects hostile aura orbit
+
+Verified published parent main `7853634ae455a213b84cbe04e10b2435d3130b89` and
+clean checkout. The fresh October 9 18:11:37 UTC native capture verifies that
+exact install and all 48 recorded mounted source hashes: 28.0046 active FPS,
+median 31.784 ms, p95 58.836 ms, 1,434 native walls and 36 initial living
+wanderers. All 36 five-second windows fall below 40 FPS. Complete profiles,
+fixed preferences, fully idle VR and zero client/server Lua errors pass.
+Different generated scenes prevent isolated FPS attribution; >=40 FPS remains
+unmet. Inclusive hostile Draw averages 0.113480 ms over 47,059 calls; timings
+overlap, include diagnostic overhead and do not measure GPU cost.
+
+Extend the existing monster aura presentation with exact reduced-effects orbit
+offset reuse per actor/radius. Preserve every native input read, color/vector
+allocation and sprite, full-effects animation, current preferences, statuses,
+helper replacement/between-sprite callbacks, nested draws, NaN/retry, refresh
+and weak retirement. No appearance, model, gameplay, population or tuning
+change. Fresh live GDD 00 -> 01 -> 05/07 governs this implementation-only seam.
+Existing source verification expands to 53 installed hashes, 49 population
+modules and 17 client capture modules at its unchanged cadence.
+
+Finite gate passes: published-parent/candidate 255,405-row native traces match
+across 218 branch/boundary/callback/lifecycle cases and 13,920 moving-actor aura
+draws. Trigonometric calls fall 55,680 -> 232; all 167,040 native input reads,
+97,440 vectors, 13,920 colors and 27,840 sprites remain. The unchanged parent
+fails only the new work bound. 11/11 selected checks pass on identical frozen
+source; seven changed/new Lua files parse. Every successful raw stream/receipt
+is independently hash-verified; failed fixture/setup attempts remain archived.
+Do not rerun the preceding completed 317-check gate without new contrary
+source/evidence. These are work counts, not native FPS certification. Only
+documentation/evidence packaging follows, with production/tool hashes rechecked
+before non-force publication. See
+[finite gate and raw evidence](validation/STEAM_DECK_20261009_AURA_ORBIT.md).
+
+Next native gate: fully quit GMod, pull/install verified main, restart gm_flatgrass
+and use
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Leave GMod open through the final server reply; return performance_client_latest.txt
+and console_latest.txt. Require exact source, unchanged appearance/gameplay,
+complete profiles, idle VR, no new Lua errors and sustained >=40 FPS. Native FPS
+for this candidate remains unmeasured. No Workshop or VPS operation.
+
+# Previous checkpoint — hostile visual scale key reuse
 
 Recovery verifies published main `b8b9cfd6c4efb711fa2d8fe18f15e1fc75681505`,
 including the physical-footstep checkpoint. The latest available native capture

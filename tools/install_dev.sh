@@ -81,6 +81,7 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/cl_monster_identity.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_player_options.lua \

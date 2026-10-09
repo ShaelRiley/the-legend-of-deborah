@@ -1,0 +1,161 @@
+{
+  "selected_checks": 11,
+  "passed": 11,
+  "source_digest": "2794e5de2216c220b9f0053fec393ce7c6a94036fc3bafa3932ec32c299161c2",
+  "unchanged_source": true,
+  "syntax_files": 7,
+  "results": [
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_monster_aura_orbit_work.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.509,
+      "log_prefix": "01",
+      "stdout_sha256": "70e25d68de1bef2adea9d610008a645d4dcc80e463deb4bd45749dd7281599f5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_monster_identity.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.508,
+      "log_prefix": "02",
+      "stdout_sha256": "2333f9bfb220022efe92860e932ec9f9b529e77424836d09efdebefd8ab7048d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_status_portrait.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.042,
+      "log_prefix": "04",
+      "stdout_sha256": "ca1eaab7e019f9ed0dff1c9674cc8b83a8a72c0f60099117b37013c9c24ac335",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_performance_capture.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.143,
+      "log_prefix": "05",
+      "stdout_sha256": "c619d0b3e5693d05bd00ac6c67dbf70086dc315997c2b4f510ddc06f2c2a6285",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_performance_profile.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.048,
+      "log_prefix": "06",
+      "stdout_sha256": "43fd094fbba6aa5d17df85609a8bfb8bef030d67695582128bd44cb7ef9ada90",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.053,
+      "log_prefix": "07",
+      "stdout_sha256": "bc4763bd0b8abee54f45dbc7d149d05a02745a4e078857f9b41f72fa3cc30212",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.308,
+      "log_prefix": "08",
+      "stdout_sha256": "4d273aa814cd5005f650d4454a3aef3cbf30097e36673455238c140ef5ca213a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_native_resource_lifecycle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.111,
+      "log_prefix": "09",
+      "stdout_sha256": "c38ab4cde4923bb6b71aa228e5b6de35d8fbf033a6dfea572b569743c8d55d0c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_options.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.038,
+      "log_prefix": "10",
+      "stdout_sha256": "e8a5630fd712aa164a2e437dcc921b9beacd1eb5ea23e128f5a463226a2ceff4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_monster_identity.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "lua/autorun/server/lod_population_observability.lua",
+        "tools/test_monster_aura_orbit_work.lua",
+        "tools/test_performance_capture.lua",
+        "tools/test_performance_profile.lua",
+        "tools/test_population_transport.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.04,
+      "log_prefix": "11",
+      "stdout_sha256": "e5d38346a2d34a76e014acaf7c925ed91634e3c5b0d526278e667ae54f06229a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_checks"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_status_elements.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.045,
+      "log_prefix": "status",
+      "stdout_sha256": "8f88bdc238cfed50ba07a28ddbbbe402c691e8684216d8a13c8538badc7e7ab5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "directory": "aura_frozen_continuation"
+    }
+  ],
+  "full_matrix_rerun": false,
+  "native_fps_accepted": false,
+  "fixture_failures_preserved": "aura_frozen_checks/03.* (incorrect nonexistent test path; corrected command passes)"
+}
