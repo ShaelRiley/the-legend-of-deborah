@@ -59,6 +59,40 @@ local function updateSeekerRoll(ent)
     return ent.LODSeekerVisualRoll or 0
 end
 
+-- Extend the existing scale-key cache without caching native inputs. Weak
+-- ownership releases retired entities, and Lua refresh starts a fresh cache.
+local visualScaleKeys = setmetatable({}, {__mode = "k"})
+local function sameScaleNumber(a, b)
+    -- Formatting distinguishes signed zero; NaN deliberately never matches.
+    return a == b and (a ~= 0 or 1 / a == 1 / b)
+end
+local function visualScaleSignature(ent, model, size, motionV2, archetype, deviceLift, roll, recoil)
+    local formatter, converter = string.format, tostring
+    local cacheable = type(model) == "string" and type(motionV2) == "boolean"
+        and type(archetype) == "string" and type(roll) == "number" and type(recoil) == "number"
+    local key = visualScaleKeys[ent]
+    if cacheable and key and key.formatter == formatter and key.converter == converter
+        and key.model == model and key.size == size and key.motionV2 == motionV2
+        and key.archetype == archetype and key.deviceLift == deviceLift
+        and sameScaleNumber(key.roll, roll) and sameScaleNumber(key.recoil, recoil) then
+        return key.signature
+    end
+    -- Retain the original precision and rounding, including changed inputs
+    -- that format to the same key. Custom conversions keep the ordinary path.
+    local signature = formatter("%s:%.4f:%s:%s:%.2f:%.2f:%.2f",
+        model, size, converter(motionV2), archetype, deviceLift, roll, recoil)
+    if cacheable then
+        key = key or {}
+        key.model, key.size, key.motionV2, key.archetype = model, size, motionV2, archetype
+        key.deviceLift, key.roll, key.recoil, key.signature = deviceLift, roll, recoil, signature
+        key.formatter, key.converter = formatter, converter
+        visualScaleKeys[ent] = key
+    else
+        visualScaleKeys[ent] = nil
+    end
+    return signature
+end
+
 local function applyVisualScale(ent, seekerRoll)
     local size = math.Clamp(ent:GetNW2Float("LOD_SizeScale", 1), 0.33, 1.33)
     local motionV2 = ent:GetNW2Bool("LOD_MotionV2", false)
@@ -73,8 +107,7 @@ local function applyVisualScale(ent, seekerRoll)
         or archetype=="nodule" or archetype=="lurker"
     local recoil=device and LOD.EnemyRosterVisual and LOD.EnemyRosterVisual.CloseRecoil
         and LOD.EnemyRosterVisual:CloseRecoil(ent) or 0
-    local signature = string.format("%s:%.4f:%s:%s:%.2f:%.2f:%.2f",
-        model, size, tostring(motionV2), archetype, deviceLift, roll, recoil)
+    local signature = visualScaleSignature(ent, model, size, motionV2, archetype, deviceLift, roll, recoil)
     if ent.LODLastClientVisualScale == signature then
         return size, ent.LODVisualVerticalCompensation or 0
     end

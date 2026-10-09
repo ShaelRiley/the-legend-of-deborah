@@ -150,6 +150,7 @@ print(string.format('B28_COMPILED_REPLAY_PASS campaign=1515962883 master=1631970
 local memory,reads,writes={},0,0
 local watched={
  'gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua',
+ 'gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.lua',
  'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
  'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua',
@@ -211,7 +212,7 @@ hook.Add=function(event,id,fn) if event=='ShutDown' then shutdown=fn end end
 local before=H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(plan)})
 dofile('lua/autorun/server/lod_population_observability.lua')
 local A=LOD.PopulationObservability
-local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==47 and not snap.developerMode)
+local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==48 and not snap.developerMode)
 assert(snap.nativeProbes.supportBound and snap.nativeProbes.visibilityBound and snap.revision=='b28')
 local lastReads=reads;A:Snapshot('repeat');assert(reads==lastReads,'source files rehashed on every heartbeat')
 T.setTime(2000);T.quiet(function() timers.LOD_PopulationEvidence() end)
@@ -221,10 +222,10 @@ R.State.GatesOpen[1]=true;T.quiet(function() A:Poll() end);assert(writes==2,'gat
 for i=1,70 do T.setTime(2100+i*30);T.quiet(function() A:Poll() end) end
 assert(#A.Records==64,'evidence ring not bounded')
 assert(H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(plan)})==before,'observer mutated gameplay')
-A.Source=nil;memory['GAME:'..watched[3]]='stale workshop bytes'
+A.Source=nil;memory['GAME:'..watched[2]]='stale workshop bytes'
 assert(not A:SourceIdentity().verified and A.Source.mismatches==1,'mixed mount certified by install label')
 A.Source=nil;memory['DATA:legend_of_deborah/dev_population_sources.txt']=''
-assert(not A:SourceIdentity().verified and A.Source.missing==47,'absent manifest claimed verified')
+assert(not A:SourceIdentity().verified and A.Source.missing==48,'absent manifest claimed verified')
 T.quiet(function() shutdown() end);assert(#A.Records==64 and A.Records[64]:find('shutdown'),'shutdown evidence missing')
 print('B28_OBSERVER_PASS developer-off capture; exact installer mount fingerprints; absent/mixed source disclosure; cached hashing; gate/shutdown receipts; bounded64 records; no gameplay mutation')
 

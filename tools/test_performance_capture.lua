@@ -36,7 +36,8 @@ LOD.WallVisualsClient={world={{}},models={},batchStats={status='building'}}
 LOD.WallVisualsClient.wayfindingStats={visits=300,draws=150,culled=150,renderMilliseconds=0.5}
 LOD.CrateBranding={lastDrawCount=32,lastCulledCount=32,lastRenderMilliseconds=0.25,lastCandidateCount=300,lastAdmittedCount=64}
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
-local paths={'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
+local paths={'gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.lua',
+    'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua',
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
     root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',

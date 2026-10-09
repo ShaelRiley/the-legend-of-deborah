@@ -1,4 +1,46 @@
-# Current Steam Deck checkpoint — physical-footstep native field access
+# Current Steam Deck checkpoint — hostile visual scale key reuse
+
+Recovery verifies published main `b8b9cfd6c4efb711fa2d8fe18f15e1fc75681505`,
+including the physical-footstep checkpoint. The latest available native capture
+still precedes it: clean `0fe2df6`, 21.3329 active FPS, median 40.331 ms,
+p95 75.604 ms, 1,604 native walls and 58 initial living wanderers. Complete
+profiles, fixed preferences, idle VR and zero Lua errors are recorded. Hostile
+Draw averages 0.097224 ms over 51,372 calls; inclusive timings overlap and do
+not measure GPU cost. Different generated scenes prevent isolated FPS
+attribution. Sustained >=40 FPS remains unmet.
+
+Extend the existing hostile visual-scale key cache to reuse formatting when
+all resolved inputs match exactly. Preserve current native getter and pose/recoil
+callback work, original rounding and matrix decisions, signed zero, NaN/custom
+fallbacks, formatter/converter replacement, full update, refresh and weak entity
+retirement. No drawing, bounds, model, movement, gameplay, population, preference
+or authored tuning change. Fresh live GDD 00 → 01 → 05/07 governs this
+implementation-only checkpoint. The existing installer/source verification now
+covers hostile cl_init.lua: 52 installed hashes, 48 population modules and 16
+client capture modules, with the existing once-per-session hashing cadence.
+
+Finite gate passed: published-parent/candidate native traces match across 942
+branch/boundary/callback/lifecycle cases and 13,920 stable-body draws. Formatting
+calls fall 13,920→58 while all 125,338 native input getters, 13,920 model
+submissions and 58 matrix/bounds updates remain. The unchanged parent passes
+behavior comparison and fails the new work bound. These are headless work
+counts; no FPS gain is yet measured. All 317 canonical checks pass on the same
+frozen 2,575-file source (66 corrected-run receipts plus 251 continuation
+receipts); all commands and 634 raw streams are independently verified. All
+887 Lua files parse. Failed partial and interrupted evidence is preserved.
+Documentation/evidence packaging alone follows, with all frozen source/test
+hashes rechecked before non-force main publication. See
+[finite gate and evidence](validation/STEAM_DECK_20261009_HOSTILE_SCALE.md).
+
+Next native gate: fully quit GMod, pull/install verified main, restart gm_flatgrass
+and use
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Leave GMod open through the final server reply; return performance_client_latest.txt
+and console_latest.txt. Require exact source, unchanged appearance/gameplay,
+complete profiles, idle VR, no new Lua errors and sustained >=40 FPS. No Workshop
+or VPS operation.
+
+# Previous checkpoint — physical-footstep native field access
 
 Recovery verifies clean remote main `0fe2df6ac8fcbecaf9fea712d6d43fdf83ad4508`;
 all four CI workflows succeeded. The complete October 9 UTC native capture

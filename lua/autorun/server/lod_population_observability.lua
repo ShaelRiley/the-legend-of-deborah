@@ -6,6 +6,7 @@ A.Version="b29-entry-safety"
 A.Records=A.Records or {}
 local watched={
     "gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua",
+    "gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.lua",
     "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
     "gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",

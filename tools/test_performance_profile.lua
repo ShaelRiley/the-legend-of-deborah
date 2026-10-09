@@ -27,7 +27,8 @@ ScrW=function() return 1280 end;ScrH=function() return 800 end
 GetConVar=function(name) return {GetBool=function() return name=='lod_reduced_effects' end,
     GetString=function() return (name=='lod_reduced_effects' or name=='lod_map_scale' or name=='lod_map_opacity') and '1' or '0' end} end
 ents={GetCount=function() return #entities[side()] end,GetAll=function() scans=scans+1;return entities[side()] end}
-local paths={'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
+local paths={'gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.lua',
+    'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua',
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
     root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',

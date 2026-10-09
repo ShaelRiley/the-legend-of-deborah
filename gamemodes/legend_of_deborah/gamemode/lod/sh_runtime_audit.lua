@@ -341,6 +341,7 @@ if CLIENT then
         "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects","lod_wall_batches",
         "lod_third_person","lod_map_scale","lod_map_opacity"}
     local renderSources={
+        "gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
