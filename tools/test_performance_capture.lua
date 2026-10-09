@@ -56,7 +56,7 @@ local function fire(event)
     for _,fn in ipairs(work) do fn() end
 end
 assert(not hooks.PreRender,'idle frame sampler installed')
-assert(commands.lod_perf_start and commands.lod_perf_stop)
+assert(commands.lod_perf_start and commands.lod_perf_stop and commands.lod_perf_compare)
 commands.lod_perf_start(nil,nil,{'180'})
 assert(A.PerformanceCapture.source.verified and A.PerformanceCapture.source.checked==#paths)
 local startReads=reads

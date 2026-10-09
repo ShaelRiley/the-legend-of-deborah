@@ -1,0 +1,173 @@
+{
+  "passed": 7,
+  "failed": 0,
+  "frozen_files": 2582,
+  "source_snapshot_sha256": "a788d305842e290c1d5e57f19b7cd446b84b0c59475569899152aba8951cd893",
+  "source_unchanged": true,
+  "streams_independently_verified": 14,
+  "receipts": [
+    {
+      "name": "performance_capture",
+      "argv": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_performance_capture.lua"
+      ],
+      "cwd": "/workspace/scratch/93d77892b9d2/the-legend-of-deborah",
+      "exit_code": 0,
+      "seconds": 0.19586718000027759,
+      "streams": {
+        "stdout": {
+          "file": "performance_capture.stdout.txt",
+          "bytes": 5682,
+          "sha256": "d3717da6650d0e820cad0d3f6a5be610020ef263c37a2af0280a17b14aa1d7fb"
+        },
+        "stderr": {
+          "file": "performance_capture.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "name": "performance_profile_and_pair",
+      "argv": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_performance_profile.lua"
+      ],
+      "cwd": "/workspace/scratch/93d77892b9d2/the-legend-of-deborah",
+      "exit_code": 0,
+      "seconds": 0.09921651200056658,
+      "streams": {
+        "stdout": {
+          "file": "performance_profile_and_pair.stdout.txt",
+          "bytes": 40806,
+          "sha256": "3944817adaf9724c394bfda18bf49b8d6eaf16381652c0090ba78f8d400cb2c9"
+        },
+        "stderr": {
+          "file": "performance_profile_and_pair.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "name": "population_transport",
+      "argv": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "cwd": "/workspace/scratch/93d77892b9d2/the-legend-of-deborah",
+      "exit_code": 0,
+      "seconds": 0.050812881001547794,
+      "streams": {
+        "stdout": {
+          "file": "population_transport.stdout.txt",
+          "bytes": 274,
+          "sha256": "bc4763bd0b8abee54f45dbc7d149d05a02745a4e078857f9b41f72fa3cc30212"
+        },
+        "stderr": {
+          "file": "population_transport.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "name": "installer_manifest",
+      "argv": [
+        "python3",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "cwd": "/workspace/scratch/93d77892b9d2/the-legend-of-deborah",
+      "exit_code": 0,
+      "seconds": 0.3750824589988042,
+      "streams": {
+        "stdout": {
+          "file": "installer_manifest.stdout.txt",
+          "bytes": 326,
+          "sha256": "4d273aa814cd5005f650d4454a3aef3cbf30097e36673455238c140ef5ca213a"
+        },
+        "stderr": {
+          "file": "installer_manifest.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "name": "resource_lifecycle",
+      "argv": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_native_resource_lifecycle.lua"
+      ],
+      "cwd": "/workspace/scratch/93d77892b9d2/the-legend-of-deborah",
+      "exit_code": 0,
+      "seconds": 0.17459361200053536,
+      "streams": {
+        "stdout": {
+          "file": "resource_lifecycle.stdout.txt",
+          "bytes": 177,
+          "sha256": "c38ab4cde4923bb6b71aa228e5b6de35d8fbf033a6dfea572b569743c8d55d0c"
+        },
+        "stderr": {
+          "file": "resource_lifecycle.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "name": "saved_options",
+      "argv": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_options.lua"
+      ],
+      "cwd": "/workspace/scratch/93d77892b9d2/the-legend-of-deborah",
+      "exit_code": 0,
+      "seconds": 0.04190723200008506,
+      "streams": {
+        "stdout": {
+          "file": "saved_options.stdout.txt",
+          "bytes": 145,
+          "sha256": "e8a5630fd712aa164a2e437dcc921b9beacd1eb5ea23e128f5a463226a2ceff4"
+        },
+        "stderr": {
+          "file": "saved_options.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "name": "changed_lua_syntax",
+      "argv": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "tools/test_performance_profile.lua",
+        "tools/test_performance_capture.lua"
+      ],
+      "cwd": "/workspace/scratch/93d77892b9d2/the-legend-of-deborah",
+      "exit_code": 0,
+      "seconds": 0.04022237199933443,
+      "streams": {
+        "stdout": {
+          "file": "changed_lua_syntax.stdout.txt",
+          "bytes": 309,
+          "sha256": "8bd83c589070b109e917f25688f6cffc75e7ffaa9bb2717cbcf1f6799063d412"
+        },
+        "stderr": {
+          "file": "changed_lua_syntax.stderr.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ]
+}

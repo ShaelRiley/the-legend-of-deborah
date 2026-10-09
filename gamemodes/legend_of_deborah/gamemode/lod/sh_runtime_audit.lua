@@ -453,6 +453,12 @@ if CLIENT then
         out.max_ms=samples[#samples]
         return out
     end
+    local function comparisonView()
+        if not EyePos or not EyeAngles then return end
+        local p,a=EyePos(),EyeAngles()
+        if not p or not a then return end
+        return {x=p.x,y=p.y,z=p.z,pitch=a.p,yaw=a.y,roll=a.r}
+    end
     function Audit:StopPerformanceCapture(reason)
         local capture=self.PerformanceCapture
         if not capture then return end
@@ -488,8 +494,33 @@ if CLIENT then
         -- menus and their pauses remain visible in ALL rather than masquerading
         -- as a representative loaded gameplay sample.
         out.active_definition="deployed, alive, no LOD menu or cinematic"
+        local comparison=capture.comparison
+        if comparison then
+            out.comparison_view={first_sample=capture.comparison_view,last_sample=comparisonView()}
+            out.comparison={version="same-scene-profile-pair-20261009",
+                order={"unprofiled","profiled"},phase=comparison.baseline and "profiled" or "unprofiled",
+                reason=reason=="complete" and (comparison.baseline and "complete" or "awaiting-profile") or "interrupted",
+                baseline=comparison.baseline,
+                limitation="Fixed-order stationary diagnostic; live actors and clocks continue. Compare source, settings, view and workload before attributing a difference. Not a gameplay FPS acceptance test."}
+        end
         self.LastPerformanceCapture=out
         self:SavePerformanceCapture(out)
+        if comparison and not out.saved then out.comparison.reason="save-failed" end
+        -- Use the same bounded sampler and transport twice. Keep the first
+        -- complete raw report inside the second, rather than asking the tester
+        -- to copy/rename files. A failed save or any interruption ends the pair.
+        if comparison and not comparison.baseline and reason=="complete" and out.saved then
+            -- Freeze the same serializable evidence saved to DATA. Renderer
+            -- counters may still mutate their original tables during leg two.
+            local ok,baseline=pcall(function() return util.JSONToTable(util.TableToJSON(out)) end)
+            if ok and type(baseline)=="table" and type(baseline.active)=="table"
+                and type(baseline.source)=="table" then
+                self:StartPerformanceCapture(capture.duration,true,{baseline=baseline})
+            else
+                out.comparison.reason="snapshot-failed";self:SavePerformanceCapture(out)
+                print("[LOD:PERF] Same-scene diagnostic ended: baseline snapshot could not be frozen.")
+            end
+        end
         return out
     end
     function Audit:SavePerformanceCapture(out)
@@ -518,10 +549,18 @@ if CLIENT then
                 out.cpu_profile.client and #out.cpu_profile.client.rows or 0,out.cpu_profile.server_status,
                 out.cpu_profile.server and out.cpu_profile.server.rows and #out.cpu_profile.server.rows or 0))
         end
+        if out.comparison then
+            local baseline=out.comparison.baseline
+            print(string.format("[LOD:PERF] Same-scene diagnostic: phase=%s state=%s unprofiled_fps=%s profiled_fps=%s; stationary sample, not gameplay acceptance",
+                out.comparison.phase,out.comparison.reason,
+                baseline and baseline.active.fps and string.format("%.2f",baseline.active.fps)
+                    or not baseline and a.fps and string.format("%.2f",a.fps) or "unmeasured",
+                baseline and a.fps and string.format("%.2f",a.fps) or "unmeasured"))
+        end
         if ok then print("[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt")
         else print("[LOD:PERF] Save failed: "..tostring(err)) end
     end
-    function Audit:StartPerformanceCapture(seconds,profileRequested)
+    function Audit:StartPerformanceCapture(seconds,profileRequested,comparison)
         if self.PerformanceCapture then self:StopPerformanceCapture("restarted") end
         seconds=tonumber(seconds) or 180
         if seconds~=seconds or seconds==math.huge or seconds==-math.huge then seconds=180 end
@@ -533,10 +572,12 @@ if CLIENT then
         self.PerformanceSerial=(self.PerformanceSerial or 0)%4294967295+1
         local capture={created=created,start=start,duration=seconds,finish=start+seconds,all={},active={},windows=windows,
             token=self.PerformanceSerial,profile_requested=profileRequested==true,
+            comparison=comparison,
             config=configuration(),source=sourceIdentity(),resources=self:Snapshot(true)}
         self.PerformanceCapture=capture
         requestPopulation()
         hook.Add("PreRender","LOD_PerformanceFrames",function()
+            if self.PerformanceCapture~=capture then return end
             local now=SysTime()
             if not capture.ready then
                 local wall=LOD.WallVisualsClient
@@ -559,6 +600,7 @@ if CLIENT then
                 capture.profile_started=true;self:StartCPUProfile()
                 capture.profile_sent=requestProfile(capture,true)
             end
+            if comparison and not capture.comparison_view then capture.comparison_view=comparisonView() end
             local previous=capture.last;capture.last=now
             if not previous then return end
             local dt=now-previous
@@ -573,6 +615,7 @@ if CLIENT then
             if not w.renderer then
                 w.renderer=rendererState()
                 w.vr=LOD.VR and LOD.VR:WorkState() or {available=false,idle=false}
+                if comparison then w.comparison_view=comparisonView() end
             end
             local ply=LocalPlayer()
             local active=IsValid(ply) and ply:Alive() and ply:GetNW2Bool("LOD_Deployed",false)
@@ -588,14 +631,25 @@ if CLIENT then
             if #capture.all>=65536 then self:StopPerformanceCapture("sample-limit") end
         end)
         hook.Add("Think","LOD_PerformanceDeadline",function()
+            if self.PerformanceCapture~=capture then return end
             local now=SysTime()
             if capture.ready and now>=capture.finish then self:StopPerformanceCapture("complete")
             elseif not capture.ready and now>=capture.created+120 then self:StopPerformanceCapture("renderer-timeout") end
         end)
-        print(string.format("[LOD:PERF] Recording %.0fs after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.",seconds))
+        print(string.format("[LOD:PERF] Recording %.0fs after up to 30s wall preparation and 3s warmup; %s Population evidence is requested automatically.",seconds,
+            comparison and "Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases."
+                or "play normally through combat, gates and a boss."))
         if capture.profile_requested then print("[LOD:PERF] Optional client/server CPU attribution will begin after warmup.") end
     end
+    function Audit:StartPerformanceComparison(seconds)
+        seconds=tonumber(seconds) or 60
+        if seconds~=seconds or seconds==math.huge or seconds==-math.huge then seconds=60 end
+        if not self.PerformanceCapture and self.CPUProfile then self:StopCPUProfile("comparison-baseline") end
+        self:StartPerformanceCapture(seconds,false,{})
+        print("[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.")
+    end
     concommand.Add("lod_perf_start",function(_,_,args) Audit:StartPerformanceCapture(args[1],args[2]=="profile") end)
+    concommand.Add("lod_perf_compare",function(_,_,args) Audit:StartPerformanceComparison(args[1]) end)
     concommand.Add("lod_perf_stop",function() Audit:StopPerformanceCapture("manual") end)
     hook.Add("ShutDown","LOD_PerformanceShutdown",function() Audit:StopPerformanceCapture("shutdown") end)
     hook.Add("PostCleanupMap","LOD_PerformanceCleanup",function() Audit:StopPerformanceCapture("map-cleanup") end)

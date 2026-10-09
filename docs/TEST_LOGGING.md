@@ -1,4 +1,30 @@
-# Current Steam Deck native cost attribution
+# Current Steam Deck paired profile diagnostic
+
+The complete exact-source 3d3c05ce capture measures 19.5371 active FPS, with
+1,792 native walls and 60 initial living wanderers. All 49 recorded source hashes
+match published main; profiles are complete, preferences fixed, VR idle and Lua
+errors zero. The different generated scene prevents isolated FPS attribution.
+>=40 FPS remains unmet, and instrumentation overhead is unresolved.
+
+Fully quit/update/install verified main, restart gm_flatgrass and remain in the
+arrival sanctuary facing into the maze. Run
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_compare 60`.
+Close the console; keep the same view, stay still and leave menus closed through
+both 60-second phases. The first is unprofiled; the second has complete optional
+client/server attribution after its own warmup. Both use the existing sampler
+and source/settings/population/resource evidence. The final profile file embeds
+the frozen unprofiled report at `comparison.baseline` and retains scalar camera
+samples for both phases. No intermediate file copy is required.
+
+Leave GMod open through the second completion and matching final server reply
+(`server_status=received`). Return performance_client_latest.txt + console_latest.txt.
+Inspect both sources, configurations, view samples, workload, idle VR and errors
+before timing attribution. Live actors/clocks and fixed-order warmup remain
+limits; this stationary diagnostic is not the representative >=40 FPS gameplay
+acceptance gate. Regular `lod_perf_start 180 profile` remains available unchanged.
+See [native result, finite gate and evidence](validation/STEAM_DECK_20261009_PROFILE_PAIR.md).
+
+# Historical Steam Deck native cost attribution
 
 The exact clean 7f93cb1 capture spans nearly 180 measured seconds and fails the
 40 FPS target at 17.31 active FPS. Wall appearance writes remain idle and sampled

@@ -288,4 +288,131 @@ realm('client',function() A:StartPerformanceCapture(30,true) end);fire('client',
 realm('client',function() dofile(auditPath) end)
 assert(not A.CPUProfile and not A.PerformanceCapture and A.LastPerformanceCapture.reason=='lua-refresh')
 assert(A.LastPerformanceCapture.cpu_profile.client.reason=='lua-refresh','reload lost final client evidence')
+-- The paired diagnostic uses actual samplers, bindings and final transport.
+-- Both raw samples survive in ONE existing DATA file, without a world reset,
+-- preference mutation, per-frame I/O or instrumentation in the baseline leg.
+assert(A.StartPerformanceComparison,'same-scene diagnostic absent')
+realm('server',function() B:StopServerCPUProfile('pair-fixture') end)
+queue.client={};queue.server={};deferred.client={};deferred.server={}
+local eye,angle={x=10,y=20,z=30},{p=0,y=15,r=0}
+EyePos=function() return eye end;EyeAngles=function() return angle end
+local function runLeg(capture,dt)
+    fire('client','PreRender');now=capture.start;fire('client','PreRender');deliver('server')
+    local firstWrites=writes
+    for _=1,3000 do
+        if now+dt+.014>=capture.finish then break end
+        now=now+dt
+        realm('client',function() box:Draw() end)
+        realm('server',function() soldier:_BehaviourTick('a',nil,'c') end)
+        fire('client','PreRender');fire('server','Think');deliver('client')
+    end
+    local liveWrites=writes-firstWrites
+    now=capture.finish;fire('client','Think')
+    return A.LastPerformanceCapture,liveWrites
+end
+local beforeScans=scans
+realm('client',function() A:StartPerformanceComparison(30) end)
+local baselineCapture=A.PerformanceCapture
+local staleFrame=hooks.client.PreRender.LOD_PerformanceFrames
+local staleDeadline=hooks.client.Think.LOD_PerformanceDeadline
+assert(not baselineCapture.profile_requested and not A.CPUProfile and not B.CPUProfile)
+local baseline,baselineWrites=runLeg(baselineCapture,.025)
+assert(baselineWrites==0 and scans==beforeScans,'baseline installed profiler or per-frame I/O')
+assert(baseline.reason=='complete' and baseline.all.frames>700 and not baseline.cpu_profile)
+assert(baseline.comparison.reason=='awaiting-profile' and baseline.comparison.phase=='unprofiled')
+local secondCapture=assert(A.PerformanceCapture)
+local frozenBaseline=secondCapture.comparison.baseline
+assert(frozenBaseline~=baseline and frozenBaseline.active.frames==baseline.active.frames
+    and secondCapture.profile_requested and not A.CPUProfile,
+    'pair did not retain raw baseline with a separate profile warmup')
+baseline.wall_batches.status='mutated-after-baseline'
+baseline.population={source={verified=false}}
+assert(frozenBaseline.wall_batches.status=='native' and frozenBaseline.population==nil,
+    'live report mutation rewrote the frozen baseline')
+realms.client.WallVisualsClient.batchStats.status='native'
+realm('client',function() staleFrame();staleDeadline() end)
+assert(A.PerformanceCapture==secondCapture,'retired baseline callback stopped the new leg')
+-- Mutate the SAME native view objects between legs. Evidence must expose the
+-- changed view, not silently present the pair as a controlled FPS comparison.
+eye.x=11;angle.y=16
+local paired=runLeg(secondCapture,.05)
+assert(paired.reason=='complete' and paired.comparison.reason=='complete' and not A.PerformanceCapture)
+assert(paired.comparison.baseline==frozenBaseline and paired.active.fps<baseline.active.fps)
+assert(baseline.source.verified and paired.source.verified and baseline.start_resources.install==paired.start_resources.install)
+assert(baseline.comparison_view.first_sample.x==10 and baseline.comparison_view.last_sample.yaw==15
+    and paired.comparison_view.first_sample.x==11 and paired.windows[1].comparison_view.yaw==16,
+    'view samples aliased native objects or omitted an immediate change')
+assert(not A.CPUProfile and paired.cpu_profile.server_status=='partial','final transport fixture incomplete')
+deliver('server');deliver('client')
+assert(paired.cpu_profile.server_status=='received' and not B.CPUProfile)
+assert(row(paired.cpu_profile.server,'entity/lod_hostile/soldier._BehaviourTick').completed>0)
+assert(row(paired.cpu_profile.client,'entity/lod_static_box.Draw').completed>0)
+local persisted=files.client['legend_of_deborah/performance_client_latest.txt']
+local encoded=assert(persisted:match('({"test_payload":%d+})'))
+local decoded=assert(codec[encoded])
+assert(decoded.comparison.baseline.active.frames==baseline.active.frames
+    and decoded.cpu_profile.server_status=='received' and decoded.active.frames==paired.active.frames,
+    'matching final server reply lost either raw sample in the existing file')
+local kept=paired;reply(util.TableToJSON({realm='server',token=baselineCapture.token,reason='client-stop'}))
+assert(A.LastPerformanceCapture==kept and files.client['legend_of_deborah/performance_client_latest.txt']==persisted,
+    'stale baseline-token reply overwrote the completed pair')
+local idleScans,idleWrites=scans,writes
+fire('client','PreRender');fire('client','Think');fire('server','Think')
+assert(scans==idleScans and writes==idleWrites and not hooks.client.PreRender.LOD_PerformanceFrames
+    and not hooks.client.Think.LOD_PerformanceDeadline,'completed pair leaked idle work')
+for _,event in ipairs({'ShutDown','PostCleanupMap','lua-refresh'}) do
+    realm('client',function() A:StartPerformanceComparison(30);A:StopPerformanceCapture('complete') end)
+    local live=A.PerformanceCapture
+    fire('client','PreRender');now=live.start;fire('client','PreRender');deliver('server')
+    assert(A.CPUProfile and B.CPUProfile)
+    if event=='lua-refresh' then realm('client',function() dofile(auditPath) end)
+    else fire('client',event) end
+    local interrupted=A.LastPerformanceCapture
+    assert(not A.PerformanceCapture and not A.CPUProfile and interrupted.comparison.baseline
+        and interrupted.comparison.reason=='interrupted','native lifecycle lost pair or restarted it')
+    deliver('server');deliver('client')
+    assert(not B.CPUProfile and interrupted.cpu_profile.server_status=='received')
+end
+-- Every interruption ends the pair, preserving the first leg when available.
+-- A regular capture restart must never be replaced by an old automatic leg.
+for _,phase in ipairs({'baseline','profiled'}) do
+    for _,reason in ipairs({'manual','shutdown','map-cleanup','lua-refresh','restarted','sample-limit'}) do
+        realm('client',function() A:StartPerformanceComparison(30) end)
+        if phase=='profiled' then realm('client',function() A:StopPerformanceCapture('complete') end) end
+        local stopped=realm('client',function() return A:StopPerformanceCapture(reason) end)
+        assert(not A.PerformanceCapture and stopped.comparison.reason=='interrupted')
+        assert((stopped.comparison.baseline~=nil)==(phase=='profiled'),'interruption lost baseline ownership')
+    end
+end
+realm('client',function() A:StartPerformanceComparison(30);A:StartPerformanceCapture(30) end)
+assert(not A.PerformanceCapture.comparison and not A.PerformanceCapture.profile_requested)
+realm('client',function() A:StopPerformanceCapture('manual') end)
+local originalWrite=file.Write
+file.Write=function() error('pair disk failure') end
+realm('client',function() A:StartPerformanceComparison(30) end)
+local failed=realm('client',function() return A:StopPerformanceCapture('complete') end)
+assert(not failed.saved and failed.comparison.reason=='save-failed' and not A.PerformanceCapture,
+    'failed baseline save started an invisible second leg')
+file.Write=originalWrite
+local originalDecode=util.JSONToTable
+for _,failure in ipairs({'throw','nil','malformed'}) do
+    util.JSONToTable=function()
+        if failure=='throw' then error('pair codec failure') end
+        return failure=='malformed' and {} or nil
+    end
+    realm('client',function() A:StartPerformanceComparison(30) end)
+    local bad=realm('client',function() return A:StopPerformanceCapture('complete') end)
+    assert(not A.PerformanceCapture and bad.comparison.reason=='snapshot-failed' and bad.saved,
+        'bad baseline codec started an incomplete second leg')
+end
+util.JSONToTable=originalDecode
+realm('client',function() A:StartCPUProfile();A:StartPerformanceComparison(30) end)
+assert(not A.CPUProfile and not A.PerformanceCapture.profile_requested,'standalone profiler contaminated baseline')
+realm('client',function() A:StopPerformanceCapture('manual') end)
+for _,seconds in ipairs({'invalid',math.huge,0,10000}) do
+    realm('client',function() A:StartPerformanceComparison(seconds) end)
+    assert(A.PerformanceCapture.duration==(seconds==0 and 30 or seconds==10000 and 300 or 60))
+    realm('client',function() A:StopPerformanceCapture('manual') end)
+end
+print(string.format('PERFORMANCE_PAIR_PASS baseline_frames=%d profiled_frames=%d; complete same-file native transport; no baseline instrumentation or per-frame I/O; scalar view evidence; stale callbacks/replies; 12 interruption cases and 3 active-profile native lifecycle events; restart/save/default/duration/idle bounds; synthetic clocks, not native FPS',baseline.active.frames,paired.active.frames))
 print('PERFORMANCE_PROFILE_PASS: opt-in/post-warmup; client/server real observer; exact inclusive timings; vararg/nil/self/error preservation; existing/new native instances; Watcher direct service; weak ownership and guarded restores; partial/final same-file transport; complete compressed reports and bounded malformed/oversized codecs; stale/admin/lease bounds; finite deadline; cleanup/reload/shutdown; no native FPS/GPU measurement')

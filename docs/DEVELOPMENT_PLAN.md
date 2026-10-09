@@ -1,4 +1,50 @@
-# Current Steam Deck checkpoint — reduced-effects hostile aura orbit
+# Current Steam Deck checkpoint — same-scene profile diagnostic
+
+Verified clean published main `3d3c05ce8c4aedf498ecfbb698548a087bbfe16a`.
+The October 9 18:40:50 capture independently matches all 49 recorded source
+hashes and reports 17 verified client sources, complete 273-row client/376-row
+server profiles, fixed preferences, fully idle VR and zero Lua errors.
+Active FPS is 19.5371, median 42.486 ms, p95 86.115 ms; all 36 windows fail 40 FPS.
+The scene has 1,792 native walls and 60 initial living wanderers, versus 1,434/36
+previously. Different generated scenes prevent attributing FPS to the aura cache.
+Native performance remains below target; no isolated regression is established.
+
+Profiled geometry and shared admission/close-defense checks remain costly.
+Inclusive rows overlap, include instrumentation overhead and do not measure GPU
+cost. No unprofiled capture of this build is available. Before a broader source
+optimization, add a bounded paired diagnostic through the existing observer:
+`lod_perf_compare 60` runs unprofiled then profiled in the same live scene with
+separate warmups, and retains both complete raw reports in the existing file.
+The baseline is frozen before phase two; camera scalars are copied at the first,
+last and five-second samples. Existing source/settings/population/resource
+checks and final server transport remain. No gameplay, appearance, population,
+preference or tuning changes. Fresh live GDD 00 -> 01 -> 05/07 governs this seam.
+Source coverage remains 53 installed / 49 population / 17 client capture modules.
+
+7/7 selected checks pass on the final unchanged 2,582-file snapshot; three
+changed Lua files parse. All 14 raw streams and receipts are independently
+verified. The actual paired fixture retains both samples through final transport
+and covers frozen data, views, interruptions, active-profile shutdown/cleanup/
+refresh, stale callbacks/replies, restart, codec/save failures and idle bounds.
+The unchanged parent is rejected by the new diagnostic-presence gate. Preserve
+all earlier completed work/full-matrix evidence without another rerun. Only
+documentation/evidence packaging follows, with production/tool hashes rechecked
+before immediate non-force publication. See
+[finite diagnostic gate and raw evidence](validation/STEAM_DECK_20261009_PROFILE_PAIR.md).
+
+Next native action: fully quit/update/install main, restart gm_flatgrass, remain
+in the arrival sanctuary facing into the maze, and run
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_compare 60`.
+Close the console and stay still with the same view through both phases. Leave
+GMod open through the second completion/final server reply; return
+performance_client_latest.txt + console_latest.txt. Inspect both exact source,
+configuration, view, workload, profiles, idle VR and error evidence before timing
+attribution. This fixed-order stationary diagnostic does not certify sustained
+combat/traversal FPS; actors and clocks continue. New command execution remains
+native-unverified. The final acceptance gate still requires unchanged
+appearance/gameplay and sustained >=40 FPS. No Workshop or VPS operation.
+
+# Previous checkpoint — reduced-effects hostile aura orbit
 
 Verified published parent main `7853634ae455a213b84cbe04e10b2435d3130b89` and
 clean checkout. The fresh October 9 18:11:37 UTC native capture verifies that
