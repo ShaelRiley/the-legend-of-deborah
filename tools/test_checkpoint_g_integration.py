@@ -26,6 +26,7 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Physical Footstep Native Fields & Exact RNG Parity", ["python3", "tools/run_lua54.py", "tools/test_enemy_stride_work.lua", "--gate"]),
     ("Low-end Exact View Visibility Work & Drawing Parity", ["python3", "tools/run_lua54.py", "tools/test_low_end_render.lua", "--view-gate", "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua", "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua"]),
     ("Shared Enemy AI Native Work & Callback Parity", ["python3", "tools/run_lua54.py", "tools/test_enemy_ai_work.lua"]),
     ("HUD Feed Native Text Parity & Bounded Work", ["python3", "tools/run_lua54.py", "tools/test_hud_text_work.lua"]),

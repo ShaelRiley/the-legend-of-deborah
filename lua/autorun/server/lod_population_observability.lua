@@ -30,6 +30,7 @@ local watched={
     "gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_spawn_variance.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua",

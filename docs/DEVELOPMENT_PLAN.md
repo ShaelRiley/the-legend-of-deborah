@@ -1,4 +1,54 @@
-# Current Steam Deck checkpoint — exact repeated-view frustum reuse
+# Current Steam Deck checkpoint — physical-footstep native field access
+
+Recovery verifies clean remote main `0fe2df6ac8fcbecaf9fea712d6d43fdf83ad4508`;
+all four CI workflows succeeded. The complete October 9 UTC native capture
+verifies that exact install, 15 client sources, fixed preferences, fully idle VR
+and zero Lua errors. Active play averages 21.3329 FPS, median 40.331 ms,
+p95 75.604 ms and p99 121.233 ms. Its different generated scene contains 1,604
+native wall models and 58 initial living wanderers; the preceding scene had
+1,270 walls and 36 wanderers. This does not isolate the repeated-view change's
+FPS effect. Sustained >=40 FPS remains unmet. The physical-footstep Think hook
+averages 0.2561 ms over 11,940 calls; profiles include overhead and overlapping
+inclusive timings, and do not measure GPU cost.
+
+Extend EnemyVariance's existing physical-footstep hook to read owned values
+from the native entity's current Lua table during adjacent comparisons. Keep
+ordinary lookup for inherited/missing/legacy fields, native writes, validity,
+every position/velocity poll and the exact distance arithmetic. Reacquire after
+position/velocity/distance callbacks; retain no cross-tick table, scalar or
+visibility cache. Preserve physical footfall timing, the 80-unit travel cap,
+one independent stride RNG draw per completed step, all actor state/lifecycle,
+population, graphics preferences, gameplay and approved Crate presentation.
+Extend the existing installer/mounted-source manifest to include this module:
+51 installed source hashes, 47 watched runtime modules. Keep source hashing at
+the existing once-per-session cadence, outside the physical-footstep hook.
+Fresh live GDD 00 → 01 → 05/07 governs this implementation-only checkpoint;
+no authored tuning or design change is needed.
+
+Finite gate passed: actual published-parent/candidate state, native-write,
+movement and RNG traces match exactly across 159 boundary/fallback/callback/lifecycle
+scenarios and 13,920 representative hostile ticks. Entity lookups, native table
+queries and native type queries fall 143,376→100,572, counting every added query. All 32,016
+native writes, 13,920 position/velocity polls and 1,044 RNG draws remain. The
+unchanged parent fails the new work bound. The final frozen gate passes 316/316
+canonical suites and 886 Lua parses on an unchanged 2,572-file snapshot; all
+commands, individual receipts and 632 raw streams are independently checked.
+Earlier interrupted evidence and two incomplete source-count fixtures' seven
+dependent failures are retained; the repaired fixtures pass those seven checks
+before the final complete pass. Documentation/evidence packaging alone follows;
+all eight changed source/test hashes are rechecked before non-force publication.
+See [finite gate and native evidence](validation/STEAM_DECK_20261009_PHYSICAL_STRIDE.md).
+These are headless work counts; the new build's Steam Deck FPS remains unmeasured.
+
+Next native gate: fully quit GMod, pull/install verified main, restart gm_flatgrass
+and use
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_start 180 profile`.
+Leave GMod open through the final server reply; return performance_client_latest.txt
+and console_latest.txt. Require exact source, unchanged world appearance/gameplay,
+complete profiles, idle VR, no new Lua errors and sustained >=40 FPS. No Workshop
+or VPS operation.
+
+# Previous checkpoint — exact repeated-view frustum reuse
 
 Recovery verified clean remote main `8868d20629ddd89e4503b2fafc036e5766402d1e`
 and the newest exact-source three-minute capture: 30.3866 active FPS, median

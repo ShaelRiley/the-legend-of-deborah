@@ -264,25 +264,50 @@ hook.Add("OnEntityCreated", "LOD_EnemyVarianceInstallBeforeSpawn", function(ent)
     end
 end)
 
+-- Borrow only the actual native Lua table, never an instance's custom GetTable
+-- or a copied snapshot. Missing/inherited values retain ordinary entity lookup.
+local entityMeta = FindMetaTable and FindMetaTable("Entity")
+local nativeGetTable = entityMeta and entityMeta.GetTable
+local function strideField(hostile, fields, name)
+    local value = fields and rawget(fields, name)
+    if value ~= nil then return value end
+    return hostile[name]
+end
+local function strideFields(getTable, hostile, first, second, third)
+    local fields = getTable and getTable(hostile)
+    -- Every later borrowed value must be owned. An inherited/custom lookup may
+    -- replace the table, so that whole comparison span keeps ordinary lookup.
+    if type(fields) == "table" and rawget(fields, first) ~= nil
+        and rawget(fields, second) ~= nil and (not third or rawget(fields, third) ~= nil) then
+        return fields
+    end
+end
+
 hook.Add("Think", "LOD_EnemyVariancePhysicalFootsteps", function()
     for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
         if IsValid(hostile) and hostile.LODStrideRNG then
             local pos = hostile:GetPos()
-            local last = hostile.LODStrideLastPos
+            local getTable = nativeGetTable and isentity and isentity(hostile) and nativeGetTable
+            local fields = strideFields(getTable, hostile, "LODStrideLastPos", "LODDead", "LODActivated")
+            local last = strideField(hostile, fields, "LODStrideLastPos")
             hostile.LODStrideLastPos = pos
 
-            local moving = not hostile.LODDead
-                and hostile.LODActivated ~= false
-                and hostile.LODDeadcrabState ~= "latched"
+            local moving = not strideField(hostile, fields, "LODDead")
+                and strideField(hostile, fields, "LODActivated") ~= false
+                and strideField(hostile, fields, "LODDeadcrabState") ~= "latched"
                 and hostile:GetVelocity():Length2D() > 8
 
             if moving and last then
                 local travelled = math.min(80, pos:Distance(last))
-                hostile.LODStrideAccumDistance = (hostile.LODStrideAccumDistance or 0) + travelled
-                local target = hostile.LODStrideTargetDistance or hostile.LODStrideBaseDistance or 52
+                -- GetPos/velocity/distance overrides can replace the entity Lua
+                -- table. Reacquire after those callbacks; retain no cross-tick data.
+                fields = strideFields(getTable, hostile, "LODStrideAccumDistance", "LODStrideTargetDistance")
+                hostile.LODStrideAccumDistance = (strideField(hostile, fields, "LODStrideAccumDistance") or 0) + travelled
+                local target = strideField(hostile, fields, "LODStrideTargetDistance")
+                    or strideField(hostile, fields, "LODStrideBaseDistance") or 52
 
-                if hostile.LODStrideAccumDistance >= target then
-                    hostile.LODStrideAccumDistance = math.max(0, hostile.LODStrideAccumDistance - target)
+                if strideField(hostile, fields, "LODStrideAccumDistance") >= target then
+                    hostile.LODStrideAccumDistance = math.max(0, strideField(hostile, fields, "LODStrideAccumDistance") - target)
                     rollNextFootstep(hostile)
                 end
             end
