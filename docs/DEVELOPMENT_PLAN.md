@@ -1,4 +1,42 @@
-# Current checkpoint — recurring Favored Enemy identity pool
+# Current checkpoint — verified moving-view Steam Deck capture
+
+The October 10 18:20:52 upload verifies clean published build
+`db51ecc024472b6b273af7f55cece5bc7b843c63`: all 54 recorded module hashes agree
+with mounted/installed/published/local source; 19 client sources report verified.
+Both 60-second phases finish, with complete 270-row client/369-row server profiles
+and final server transport, fixed preferences, idle VR and zero Lua errors.
+Active FPS is 24.7637 unprofiled / 34.4209 profiled; sustained ≥40 FPS remains
+unmet. This is a native below-target observation, not optimization attribution.
+
+The pair was played while moving/fighting: endpoint displacements 2,567/2,968
+Source units and changed yaw/pitch, living-body mirrors 36→29, two cleared
+contacts and menu/nonactive gaps. Same generated campaign/layout, 1,476 native
+walls, 36 initial wanderers. Its FPS difference cannot measure profiler overhead.
+The diagnostic command and final report transport are runtime observed; a
+controlled stationary comparison is still missing. Existing rendering and AI
+caches were inspected; do not add speculative broader caches or change accepted
+graphics/population to compensate for this uncontrolled comparison.
+
+This checkpoint banks the raw native evidence, reproducible verifier and current
+sequencing only. Live GDD 00 → 01 → 05/07 was read without edits. All 2,010 tracked
+game/Lua/tool files remain byte-identical; archive integrity, verifier parsing,
+fresh capture verification and whitespace pass. Preserve prior completed static
+gates without rerunning them. See
+[native pair evidence and replay](validation/STEAM_DECK_20261010_PROFILE_PAIR_NATIVE.md).
+
+Next native action: reuse the exact verified installed build; no game update is
+needed for this documentation-only checkpoint. On gm_flatgrass, deploy once,
+then remain inside the arrival sanctuary facing the maze. Run
+`lod_wall_batches 0; lod_reduced_effects 1; lod_third_person 0; lod_map_scale 1; lod_map_opacity 1; lod_perf_compare 60`.
+Close the console and do not move, aim, attack or open menus through both phases
+(about two minutes plus warmups). Keep GMod open through the final server reply;
+return performance_client_latest.txt + console_latest.txt. Verify source,
+identical view/settings, workload, complete profiles, idle VR and errors before
+timing attribution. Native controls and unchanged appearance/gameplay still need
+observations; sustained traversal/combat ≥40 FPS remains the final gate. No
+Workshop or VPS operation.
+
+# Previous checkpoint — recurring Favored Enemy identity pool
 
 User-authorized balance interjection before the pending Steam Deck test; published parent main `b1e604b5d380492ff55de1c2c12eb22df911fa4c`. Fresh live GDD 00 → 01 → 04/05/07 governs the seam; 04 LOD-ID-002 records the requested future-pool restriction and exact readback is preserved.
 
