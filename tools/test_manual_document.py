@@ -25,6 +25,8 @@ for i in range(1,count+1):
     chunks.append(content.split('return [====[',1)[1].rsplit(']====]',1)[0])
 assert ''.join(chunks)==html, 'Server transport source must equal the canonical document'
 assert (builder.SOURCE/'manual.html').read_text()==html
+for term in ['Double-click an item', 'Each button casts its own Form with its own Content or RAW', 'Selecting Content for one button leaves the others unchanged']:
+    assert term in html_entities.unescape(html), 'Item/Content controls missing: '+term
 entries=[e for c in book['chapters'] for e in c.get('entries',[])]
 assert len(entries)==127 and len({e['id'] for e in entries})==127
 assert len(json.loads((builder.SOURCE/'catalog.json').read_text())['EquipmentProperties'])==60

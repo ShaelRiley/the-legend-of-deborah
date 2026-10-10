@@ -1,4 +1,14 @@
-# Current Steam Deck checkpoint — same-scene profile diagnostic
+# Current checkpoint — equipment and Magic selector controls
+
+User-authorized QoL interjection before the pending Steam Deck test; published parent main `e1e634e04e82a06bf1873195607a06f47a825e9c`. Live GDD 00 → 01 → 03/06/07/90 was read; 03 selection and 06 LOD-UI-008 now record the requested controls and were read back.
+
+Double-click item tiles to equip in the ordinary compatible slot or stow/unequip through existing server requests. Explicit hand placement, inspection and drag/drop remain. Content now uses Form selector gestures: LMB/RMB for RMB; M3/M4/M5 for that button. Each casts its own Form plus independently owned Content/RAW. Legacy characters migrate their former shared Content to all four buttons. Normal ownership, progression, spend, cooldown, status, rider, equipment, ammunition and lifecycle authorities remain. Spellbook costs/labels and the canonical manual agree. Source verification expands to 57 installed / 53 population / 19 client capture modules at existing cadence.
+
+17/17 bounded checks pass on unchanged source `8adaba9efc66c523446952ff5e4c18373cb338a149929be9b35efd25c645f068` (2586 files): 14 selected canonical suites, all 17 changed Lua parses, shell syntax and whitespace. Production/tool hashes are rechecked after documentation packaging. Preserve previous completed full performance gates. Evidence and replay receipts: [controls checkpoint](validation/INVENTORY_CONTROLS_20261010.md).
+
+Next native action: fully quit/update/install main, restart gm_flatgrass and briefly confirm double-click equipment plus two different button-specific Form/Content casts (including RAW independence). Then run the unchanged same-scene `lod_perf_compare 60` command below from the arrival sanctuary, staying still through both phases/final server reply. Return performance_client_latest.txt + console_latest.txt and any control/appearance observations. Native controls and ≥40 FPS acceptance remain open. No Workshop or VPS operation.
+
+# Previous Steam Deck checkpoint — same-scene profile diagnostic
 
 Verified clean published main `3d3c05ce8c4aedf498ecfbb698548a087bbfe16a`.
 The October 9 18:40:50 capture independently matches all 49 recorded source

@@ -24,6 +24,7 @@ local _,none=F:SelectedCastState(owner,5);assert(not none,'Unbound auxiliary but
 -- and Forms dispatcher. Exercise that complete chain, including non-Wizards.
 local serverReceivers={}
 net.Receive=function(name,fn) serverReceivers[name]=fn end
+dofile(root..'sv_magic_progression.lua')
 dofile(root..'sv_magic.lua')
 dofile(root..'sv_magic_forms.lua')
 dofile(root..'sv_rpg_wizard_feedback.lua')
@@ -39,7 +40,7 @@ local endpoints={_CastWall='wall',_CastCone='cone',_CastBlast='blast',_CastBeam=
 for method,kind in pairs(endpoints) do
  F[method]=function(_,ply,form,content,context)
   if raiseCast then error('mouse binding cast error') end
-  dispatched={form=form.id,kind=kind,context=context,bonus=W:AttackSnapshotBonus(ply)}
+  dispatched={form=form.id,content=content and content.id or 'raw',kind=kind,context=context,bonus=W:AttackSnapshotBonus(ply)}
   return true
  end
 end
@@ -89,6 +90,52 @@ assert(W.ActiveFullMagicSnapshots[owner]==previous,'Error unwinding restores the
 W.ActiveFullMagicSnapshots[owner]=nil;raiseCast=false
 assert(M:CastForceShout({valid=false},5)==false,'Invalid caster still rejected')
 print('MAGIC_MOUSE_SERVER_DISPATCH_PASS: '..cases..' class/Form/button casts through receiver and installed Wizard wrapper')
+-- Migration preserves the former shared Content. Selections thereafter are
+-- independent, including RAW, unbound slots and repeating a Content.
+state.classId='wizard';state.magicFormIds={'bolt','beam','bomb','wall'}
+state.selectedMagicFormId='bolt';state.magicBindings=nil
+state.contentIds={'fire','ice','light'};state.selectedMagicContentId='fire';state.magicContentBindings=nil
+P:EnsureState(state)
+for button=2,5 do assert(state.magicContentBindings[tostring(button)]=='fire') end
+assert(P:BindForm(state,'beam',3) and P:BindForm(state,'bomb',4) and P:BindForm(state,'wall',5))
+assert(P:BindContent(state,'ice',3) and P:BindContent(state,'raw',4) and P:BindContent(state,'light',5))
+assert(state.selectedMagicContentId=='fire' and state.magicContentBindings['2']=='fire')
+assert(not P:BindContent(state,'dark',3) and not P:BindContent(state,'missing',4) and not P:BindContent(state,'ice',1))
+local copy=table.Copy(state);P:EnsureState(copy)
+local snap=P:Snapshot(copy)
+for key,id in pairs({['2']='fire',['3']='ice',['4']='raw',['5']='light'}) do
+ assert(snap.contentBindings[key]==id)
+ owner.ps.magic=100;M.NextCast[owner]=0;requestButton=tonumber(key);dispatched=nil
+ receive(3,owner)
+ assert(dispatched and dispatched.content==id,'Cast receiver must seal its button Content: '..key)
+end
+snap.contentBindings['3']='dark';assert(copy.magicContentBindings['3']=='ice','Snapshot cannot mutate saved bindings')
+state.contentIds={'fire','light'};P:EnsureState(state);assert(state.magicContentBindings['3']=='raw','Lost Content cannot be cast')
+assert(P:SelectContent(state,'raw') and state.magicContentBindings['5']=='light','Legacy selection changes only RMB')
+assert(P:BindContent(state,'fire',4) and state.magicContentBindings['2']=='raw','Auxiliary selection cannot alter RMB')
+-- Real binding receivers reject foreign roles, invalid buttons/ownership and
+-- floods, then return the new authoritative snapshot on valid requests.
+local oldTime,oldSend=CurTime,P.SendSnapshot
+local bindTime,bindId,bindButton,lastSnapshot=1000
+CurTime=function() return bindTime end
+P.SendSnapshot=function(_,ply) lastSnapshot=P:Snapshot(ply.ps.progressionState) end
+net.ReadString=function() return bindId end
+net.ReadUInt=function(bits) assert(bits==3);return bindButton end
+local function bind(channel,id,button,bits)
+ bindTime=bindTime+1;bindId=id;bindButton=button;serverReceivers[channel](bits or 48,owner)
+end
+bind('LOD_MagicBindContent','fire',3);assert(lastSnapshot.contentBindings['3']=='fire')
+bindId='raw';serverReceivers.LOD_MagicBindContent(48,owner);assert(state.magicContentBindings['3']=='fire','Rate guard shared with forms')
+bind('LOD_MagicBindContent','dark',3);assert(state.magicContentBindings['3']=='fire')
+bind('LOD_MagicBindContent','raw',1);assert(state.magicContentBindings['3']=='fire')
+bind('LOD_MagicBindContent','raw',3,301);assert(state.magicContentBindings['3']=='fire')
+owner.soldier=true;bind('LOD_MagicBindContent','raw',3);assert(state.magicContentBindings['3']=='fire');owner.soldier=false
+state.actorType='soldier';bind('LOD_MagicBindContent','raw',3);assert(state.magicContentBindings['3']=='fire');state.actorType='hero'
+bind('LOD_MagicBindForm','wall',3);assert(state.magicBindings['3']=='wall','Both installed callbacks retain their own method')
+bind('LOD_MagicBindContent','raw',3);assert(state.magicContentBindings['3']=='raw' and state.magicBindings['3']=='wall')
+CurTime=oldTime;P.SendSnapshot=oldSend
+net.ReadUInt=function(bits) assert(bits==3);return requestButton end
+print('MAGIC_CONTENT_BINDINGS_PASS: legacy migration, four sealed casts, independent RAW/repeat selections, saved snapshots, ownership repair and real receiver authorization/rate gates')
 -- Exact-budget requests exercise the new low prices through the installed
 -- receiver, including the one-Magic boundary, all riders and class restrictions.
 local prices={blast=16,beam=2,bomb=14,missile=18,bolt=4,summon=10,cone=9,
@@ -206,4 +253,9 @@ LOD.Spellbook:Open();local button=nodes[#nodes]
 button.DoClick();assert(sent[#sent].button==2)
 button.DoRightClick();assert(sent[#sent].button==2)
 for n,key in ipairs({MOUSE_MIDDLE,MOUSE_4,MOUSE_5}) do button:OnMousePressed(key);assert(sent[#sent].button==n+2 and sent[#sent].id=='bolt') end
+LOD.Spellbook.Snapshot={forms={{id='bolt',owned=true}},contents={{id='fire',owned=true}},bindings={['2']='bolt'}}
+LOD.Spellbook:Open();button=nodes[#nodes]
+button.DoClick();assert(sent[#sent].channel=='LOD_MagicBindContent' and sent[#sent].button==2)
+button.DoRightClick();assert(sent[#sent].button==2)
+for n,key in ipairs({MOUSE_MIDDLE,MOUSE_4,MOUSE_5}) do button:OnMousePressed(key);assert(sent[#sent].button==n+2 and sent[#sent].id=='fire') end
 print('MAGIC_MOUSE_BINDINGS_PASS: four authorities, rebind/swap/migration, ownership/class/one-form, snapshot roundtrip, button-specific cast state, actual selector and input suppression/release')

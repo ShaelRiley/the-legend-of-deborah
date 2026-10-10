@@ -62,7 +62,7 @@ local function addSchemaField(name)
     fields[#fields + 1] = name
 end
 for _, field in ipairs({
-    "magicFormIds", "selectedMagicFormId", "selectedMagicContentId", "magicBindings",
+    "magicFormIds", "selectedMagicFormId", "selectedMagicContentId", "magicBindings", "magicContentBindings",
     "magicGrantMilestones", "classMilestoneAbilityDelta",
     "favoredEnemyStacks", "favoredWeaponStacks"
 }) do addSchemaField(field) end
@@ -141,6 +141,28 @@ function MagicProgression:NormalizeBindings(state)
         end
     end
     state.magicBindings=bindings
+    -- Migrate the former shared Content once, retaining every existing cast.
+    -- RMB keeps its legacy field; auxiliary selections are independent and RAW
+    -- is explicit, so an empty binding cannot inherit a later RMB selection.
+    local contents=state.magicContentBindings
+    if type(contents)~='table' then
+        contents={}
+        for button=2,5 do contents[tostring(button)]=state.selectedMagicContentId or 'raw' end
+    end
+    for button=2,5 do
+        local key=tostring(button)
+        local id=button==2 and (state.selectedMagicContentId or 'raw') or contents[key]
+        contents[key]=id and RPG.MagicContents[id] and contains(state.contentIds,id) and id or 'raw'
+    end
+    state.magicContentBindings=contents
+end
+function MagicProgression:BindContent(state,id,button)
+    if not state or not ({[2]=true,[3]=true,[4]=true,[5]=true})[button] then return false end
+    self:EnsureState(state)
+    if id~='raw' and (not RPG.MagicContents[id] or not contains(state.contentIds,id)) then return false end
+    state.magicContentBindings[tostring(button)]=id
+    if button==2 then state.selectedMagicContentId=id~='raw' and id or nil end
+    return true
 end
 function MagicProgression:BindForm(state,id,button)
     self:EnsureState(state)
@@ -222,16 +244,8 @@ function MagicProgression:SelectForm(state, formId)
 end
 
 function MagicProgression:SelectContent(state, contentId)
-    self:EnsureState(state)
     contentId = string.lower(tostring(contentId or ""))
-    if contentId == "raw" then
-        state.selectedMagicContentId = nil
-        return true
-    elseif RPG.MagicContents[contentId] and contains(state.contentIds, contentId) then
-        state.selectedMagicContentId = contentId
-        return true
-    end
-    return false
+    return self:BindContent(state,contentId,2)
 end
 
 
@@ -464,6 +478,7 @@ function MagicProgression:Snapshot(state)
         forms = forms,
         contents = contents,
         bindings = table.Copy(state and state.magicBindings or {}),
+        contentBindings = table.Copy(state and state.magicContentBindings or {}),
         selectedFormId = state and state.selectedMagicFormId or nil,
         selectedContentId = state and state.selectedMagicContentId or nil,
         magicFormIds = copyArray(state and state.magicFormIds),
@@ -513,28 +528,27 @@ net.Receive("LOD_MagicSpellbookSelect", function(_, ply)
             MagicProgression:SelectForm(state,id)
         end
     else
-        if id == "raw" then
-            state.selectedMagicContentId = nil
-        elseif RPG.MagicContents[id] and contains(state.contentIds, id) then
-            state.selectedMagicContentId = id
-        end
+        MagicProgression:SelectContent(state,id)
     end
     MagicProgression:SendSnapshot(ply)
 end)
 
 util.AddNetworkString("LOD_MagicBindForm")
+util.AddNetworkString("LOD_MagicBindContent")
 local bindingTimes=setmetatable({}, {__mode='k'})
-net.Receive("LOD_MagicBindForm",function(bits,ply)
-    if bits>300 or not IsValid(ply) or CurTime()<(bindingTimes[ply] or 0) then return end
-    bindingTimes[ply]=CurTime()+.1
-    local id,button=net.ReadString(),net.ReadUInt(3)
-    local run=LOD.RunManager
-    if not run or run:IsSoldierControl(ply) then return end
-    local ps=run:GetPlayerState(ply);local state=ps and ps.progressionState
-    if not state or state.actorType~='hero' then return end
-    MagicProgression:BindForm(state,id,button)
-    MagicProgression:SendSnapshot(ply)
-end)
+for channel,method in pairs({LOD_MagicBindForm='BindForm',LOD_MagicBindContent='BindContent'}) do
+    net.Receive(channel,function(bits,ply)
+        if bits>300 or not IsValid(ply) or not ply:IsPlayer() or CurTime()<(bindingTimes[ply] or 0) then return end
+        bindingTimes[ply]=CurTime()+.1
+        local id,button=net.ReadString(),net.ReadUInt(3)
+        local run=LOD.RunManager
+        if not run or run:IsSoldierControl(ply) then return end
+        local ps=run:GetPlayerState(ply);local state=ps and ps.progressionState
+        if not state or state.actorType~='hero' then return end
+        MagicProgression[method](MagicProgression,state,id,button)
+        MagicProgression:SendSnapshot(ply)
+    end)
+end
 
 function MagicProgression:Validate()
     local errors = {}

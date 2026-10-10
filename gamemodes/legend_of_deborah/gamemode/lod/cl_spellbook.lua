@@ -37,6 +37,21 @@ function Book:Close()
     if IsValid(self.Frame) then self.Frame:Remove() end
     self.Frame = nil
 end
+local function formForButton(snapshot,button)
+    return snapshot.bindings and snapshot.bindings[tostring(button)] or button==2 and snapshot.selectedFormId
+end
+local function contentForButton(snapshot,button)
+    return snapshot.contentBindings and snapshot.contentBindings[tostring(button)] or snapshot.selectedContentId or 'raw'
+end
+local function selected(entry,kind)
+    if kind=='content' then
+        local snapshot=Book.Snapshot or {}
+        for button=2,5 do
+            if formForButton(snapshot,button) and contentForButton(snapshot,button)==entry.id then return true end
+        end
+    end
+    return entry.selected==true
+end
 
 function Book:Availability(entry,kind)
     if not entry.owned then return entry.wizardOnly and "WIZARD / LOCKED" or "LOCKED",C.muted end
@@ -51,9 +66,20 @@ function Book:Availability(entry,kind)
     for _,f in ipairs(snap.forms or {}) do if f.selected then base=f.magicCost or 0 end end
     for _,c in ipairs(snap.contents or {}) do if c.selected then surcharge=c.surcharge or 0 end end
     if kind=="form" then base=entry.magicCost or 0 else surcharge=entry.surcharge or 0 end
-    local cost=math.ceil((base+surcharge)*(snap.costMultiplier or 1))
+    local boundCost
+    for button=2,5 do
+        local formId,contentId=formForButton(snap,button),contentForButton(snap,button)
+        if formId and (kind=='form' and formId==entry.id or kind=='content' and contentId==entry.id) then
+            local formCost,contentCost=0,0
+            for _,f in ipairs(snap.forms or {}) do if f.id==formId then formCost=f.magicCost or 0;break end end
+            for _,c in ipairs(snap.contents or {}) do if c.id==contentId then contentCost=c.surcharge or 0;break end end
+            local price=formCost+contentCost
+            boundCost=math.min(boundCost or price,price)
+        end
+    end
+    local cost=math.ceil((boundCost or base+surcharge)*(snap.costMultiplier or 1))
     if ply:GetNW2Float("LOD_Magic",0)<cost then return "NEED MAGIC",C.red end
-    return entry.selected and "READY / SELECTED" or "AVAILABLE",C.blue
+    return selected(entry,kind) and "READY / SELECTED" or "AVAILABLE",C.blue
 end
 
 local function selectionButton(parent, entry, kind, x, y, w, h)
@@ -63,23 +89,25 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
     button:SetText("")
     button:SetEnabled(entry.owned == true)
     button.Paint = function(self, width, height)
-        local selected = entry.selected == true
+        local isSelected = selected(entry,kind)
         local label,accent = Book:Availability(entry,kind)
         local treatment = cardTreatment(accent)
         draw.RoundedBox(1,0,0,width,height,treatment.backdrop)
         surface.SetDrawColor(accent)
         surface.DrawOutlinedRect(0,0,width,height,1)
-        if selected then
+        if isSelected then
             surface.SetDrawColor(C.ink)
             surface.DrawOutlinedRect(3,3,width-6,height-6,2)
         end
         local color = treatment.ink
         local title=string.upper(entry.displayName or entry.id)
-        if kind=='form' then
-            for key,id in pairs(Book.Snapshot.bindings or {}) do
-                if id==entry.id then title=title..' ['..(key=='2' and 'RMB' or 'M'..key)..']' end
-            end
+        local snap=Book.Snapshot or {};local buttons=''
+        for button=2,5 do
+            local formId=formForButton(snap,button)
+            local id=kind=='form' and formId or formId and contentForButton(snap,button)
+            if id==entry.id then buttons=buttons..(buttons=='' and '' or '/')..(button==2 and 'RMB' or 'M'..button) end
         end
+        if kind=='form' and buttons~='' then title=title..' ['..buttons..']' end
         local titleFont="LOD_SheetSubheading";surface.SetFont(titleFont)
         if surface.GetTextSize(title)>width-8 then titleFont="LOD_SheetSmall" end
         draw.SimpleText(title,titleFont,
@@ -97,6 +125,9 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
         surface.SetFont(descriptionFont)
         if surface.GetTextSize(description)>width-8 then descriptionFont="DermaDefault" end
         draw.SimpleText(description,descriptionFont,width*0.5,height<120 and 66 or 100,C.ink,TEXT_ALIGN_CENTER)
+        if kind=='content' and buttons~='' then
+            draw.SimpleText(buttons,'DermaDefault',width*0.5,height-22,C.ink,TEXT_ALIGN_CENTER)
+        end
         if self:IsHovered() and entry.owned then
             surface.SetDrawColor(accent);surface.DrawRect(8,height-6,width-16,2)
         end
@@ -104,12 +135,9 @@ local function selectionButton(parent, entry, kind, x, y, w, h)
     local function select(buttonCode)
         if not entry.owned then return end
         LOD.Audio:Play('confirm')
-        if kind=='form' then
-            local button=({[MOUSE_MIDDLE]=3,[MOUSE_4]=4,[MOUSE_5]=5})[buttonCode] or 2
-            net.Start("LOD_MagicBindForm");net.WriteString(entry.id);net.WriteUInt(button,3)
-        else
-            net.Start("LOD_MagicSpellbookSelect");net.WriteUInt(1,1);net.WriteString(entry.id)
-        end
+        local button=({[MOUSE_MIDDLE]=3,[MOUSE_4]=4,[MOUSE_5]=5})[buttonCode] or 2
+        net.Start(kind=='form' and "LOD_MagicBindForm" or "LOD_MagicBindContent")
+        net.WriteString(entry.id);net.WriteUInt(button,3)
         net.SendToServer()
     end
     button.DoClick=function() select(MOUSE_LEFT) end
@@ -152,7 +180,7 @@ function Book:Open()
         end
         draw.SimpleText("FORM / DELIVERY","LOD_SheetSubheading",24,78,C.red)
         draw.SimpleText("CONTENT / ELEMENT & RIDER","LOD_SheetSubheading",24,303,C.red)
-        draw.SimpleText("Click a Form with LMB/RMB to bind RMB; click with M3/M4/M5 to bind that button.",
+        draw.SimpleText("Click a Form or Content with LMB/RMB for RMB; use M3/M4/M5 for that button.",
             "LOD_SheetBody",24,h-64,C.ink)
         draw.SimpleText("Locked entries unlock through progression. Gameplay continues while this book is open.",
             "LOD_SheetSmall",24,h-38,C.muted)

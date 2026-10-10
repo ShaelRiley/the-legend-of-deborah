@@ -80,9 +80,16 @@ function E:InventoryReceive(target,panels,dropped)
     if dropped then return self:InventoryMove(tile.LODItemId,target,tile.LODOriginSlot) end
     return target=='inventory' or target=='trash' and not self:InventorySlot(tile.LODItemId) or self:InventoryCompatible(tile.LODItemId,target)
 end
+function E:InventoryToggle(id)
+    local item=self.Snapshot.items[id];local def=self:Definition(item)
+    if not def or def.inventoryConsumable then return false end
+    local slot=self:InventorySlot(id)
+    return self:InventoryMove(id,slot and 'inventory' or def.weapon and 'weapon'
+        or self:Placement(self.Snapshot,item),slot)
+end
 local function tile(parent,id,slot,title,size)
     local p=vgui.Create('DButton',parent);p:SetSize(size,size);p:SetText('')
-    if p.SetDoubleClickingEnabled then p:SetDoubleClickingEnabled(false) end
+    if p.SetDoubleClickingEnabled then p:SetDoubleClickingEnabled(true) end
     p.LODItemId=id;p.LODOriginSlot=slot;p.LODInventoryView=E.InventoryView
     if id then
         p:Droppable(DRAG)
@@ -115,9 +122,18 @@ local function tile(parent,id,slot,title,size)
         if press then return press(self,key) end
     end
     p.DoClick=function(self)
+        self.LODClickMoved=false
         if slot and E.InventorySelectedId and E.InventorySelectedId~=self.LODItemId then
-            E:InventoryMove(E.InventorySelectedId,slot)
+            self.LODClickMoved=E:InventoryMove(E.InventorySelectedId,slot)
         elseif self.LODItemId then E.InventorySelectedId=self.LODItemId;E:InventoryDetails() end
+    end
+    p.DoDoubleClick=function(self)
+        if not IsValid(self) or self.LODInventoryView~=E.InventoryView or self.LODClickMoved
+            or dragndrop and dragndrop.IsDragging() then return end
+        if self.LODItemId then
+            E.InventorySelectedId=self.LODItemId;E:InventoryDetails()
+            E:InventoryToggle(self.LODItemId)
+        end
     end
     p.DoRightClick=function(self)
         if slot and self.LODItemId then E:InventoryMove(self.LODItemId,'inventory',slot) end
@@ -134,7 +150,7 @@ function E:InventoryDetails()
         local p=label(view.Details,s,0,y,width,height,font);y=y+height+4;return p
     end
     local id=self.InventorySelectedId;local item=self.Snapshot.items[id]
-    if not item then text('Select an item to inspect its properties. Drag it onto a body slot to equip.');return end
+    if not item then text('Select an item to inspect. Double-click to equip or stow; drag to choose a body slot.');return end
     local def=self:Definition(item);local slot=self:InventorySlot(id)
     text(self:ItemName(item),'LOD_SheetSubheading')
     text(self:Description(item))
@@ -275,7 +291,7 @@ function E:BuildPanel(frame)
         view.Bindings:SetSize(view.LeftWidth-18,self:BuildMoveBindings(view.Bindings,0,view.LeftWidth-18))
     end
     local rx=view.LeftWidth+18
-    view.Message=label(view,'Drag to equip or stow. Drop junk into TRASH.',rx,0,view.RightWidth-88,36)
+    view.Message=label(view,'Double-click or drag to equip/stow. Drop junk into TRASH.',rx,0,view.RightWidth-88,36)
     view.Capacity=label(view,'',rx,36,view.RightWidth,36,'DermaDefault')
     local trash=vgui.Create('DButton',view);trash:SetPos(rx+view.RightWidth-82,0);trash:SetSize(80,34)
     trash:SetText('    TRASH');

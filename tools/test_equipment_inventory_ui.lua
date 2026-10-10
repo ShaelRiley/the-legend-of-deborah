@@ -1,6 +1,7 @@
 -- Actual inventory/equipment authorities with only VGUI/net/input boundaries doubled.
 local fixture=dofile('tools/test_equipment_economy_runtime.lua')
 local E=LOD.Equipment;local root='gamemodes/legend_of_deborah/gamemode/lod/'
+dofile(root..'sh_weapon_appearance.lua')
 KEY_O=25;CreateClientConVar=function() return {GetInt=function() return KEY_O end} end
 local now=10;RealTime=function() return now end
 unpack=table.unpack
@@ -43,6 +44,9 @@ local ply=fixture.actor('ui-owner');LocalPlayer=function() return ply end
 local closed=0;LOD.Spellbook={Close=function() error("Equipment must not close the Spellbook") end}
 input={SelectWeapon=function(w) ply.selected=w end}
 dofile(root..'cl_equipment.lua');dofile(root..'cl_equipment_icons.lua');dofile(root..'cl_equipment_inventory.lua')
+Color=function(r,g,b,a) return {r=r,g=g,b=b,a=a or 255} end
+Material=function() return {} end
+dofile(root..'cl_weapon_appearance.lua')
 local realClose=E.Close;E.Close=function() closed=closed+1 end
 local state={items={},slots={},activeWeaponClass='weapon_pistol'}
 for i,family in ipairs({'headwear','vest','trousers','boots','ring','ring','gloves','shield','weapon_pistol','weapon_smg1'}) do
@@ -83,7 +87,7 @@ assert(slot('head')==oldTile and E.Snapshot.slots.right_hand=='i7')
 drawing=false;view.Think();assert(slot('right_hand').LODItemId=='i7' and slot('left_hand').LODItemId=='i7')
 assert(view.BagScroll:GetVBar():GetScroll()==80 and view.DetailScroll:GetVBar():GetScroll()==40)
 -- Native DLabel arms a drag-watch before crossing the 20-pixel threshold.
-local pressed=slot('head');assert(pressed.doubleClick==false)
+local pressed=slot('head');assert(pressed.doubleClick==true)
 pressed:OnMousePressed(1)
 local previous=E.Snapshot;E.Snapshot=table.Copy(previous)
 E:RefreshInventory();assert(IsValid(pressed) and slot('head')==pressed,'Mouse-down tile survives incoming snapshot')
@@ -113,12 +117,46 @@ assert(not E:InventoryReceive('left_arm',{stale},true))
 -- Select then click an occupied destination sends requested hand, keeps record IDs.
 E.InventorySelectedId='i6';now=now+1;slot('left_hand').DoClick(slot('left_hand'))
 assert(requests[#requests][2]=='i6' and requests[#requests][3]=='left_hand')
+local clickCount=#requests;slot('left_hand'):DoDoubleClick()
+assert(#requests==clickCount,'A destination click that already moves gear cannot also toggle its previous occupant')
+-- DLabel calls DoClick on the first release and DoDoubleClick on the second
+-- press, without a second DoClick. Only server snapshots mutate the position.
+local function double(p)
+    assert(IsValid(p) and p.doubleClick)
+    now=now+1;p:DoClick();local before=#requests;p:DoDoubleClick()
+    assert(#requests==before+1,'Exactly one double-click request')
+    p:DoDoubleClick();assert(#requests==before+1,'Duplicate event is debounced')
+    return requests[#requests]
+end
+E.InventorySelectedId=nil
+local msg=double(bag('i2'));assert(msg[1]=='equip' and msg[2]=='i2' and msg[3]=='body')
+assert(not E.Snapshot.slots.body,'Double-click must await the server')
+assert(E:Equip(state,'i2','body'));receivers.LOD_EquipmentSnapshot()
+msg=double(slot('body'));assert(msg[1]=='unequip' and msg[2]=='i2' and msg[3]=='body')
+assert(E.Snapshot.slots.body=='i2','Unequip also awaits confirmation')
+assert(E:Unequip(state,'body'));receivers.LOD_EquipmentSnapshot()
+assert(E:Equip(state,'i7','right_hand'));receivers.LOD_EquipmentSnapshot()
+E.InventorySelectedId=nil;msg=double(slot('left_hand'))
+assert(msg[1]=='unequip' and msg[2]=='i7','Paired gloves use canonical removal from either hand')
+E.InventorySelectedId=nil;msg=double(bag('i10'));assert(msg[1]=='select_weapon' and msg[2]=='i10')
+E.InventorySelectedId=nil;msg=double(slot('weapon'));assert(msg[1]=='stow_weapon' and msg[2]=='i9')
+assert(E:Unequip(state,'throwable'));receivers.LOD_EquipmentSnapshot()
+E.InventorySelectedId=nil;msg=double(bag('stink_bomb'));assert(msg[1]=='equip' and msg[3]=='throwable')
+E:AddConsumable(state,'chest_key',1);receivers.LOD_EquipmentSnapshot()
+local before=#requests;now=now+1
+bag('chest_key'):DoClick();bag('chest_key'):DoDoubleClick()
+assert(#requests==before,'Bag-only event items cannot equip')
+now=now+1;stale:DoDoubleClick();assert(#requests==before,'Retired panels cannot send requests')
+drawing=true;bag('i2'):DoDoubleClick();drawing=false
+assert(#requests==before,'A drag cannot become a double-click toggle')
+print('EQUIPMENT_DOUBLE_CLICK_PASS: default clothing, paired gloves, active/stored weapons, throwables, bag-only and stale/drag/duplicate/destination rejection; no optimistic mutation')
 -- Large viewport and all family icons are covered without 3D icon entities.
 frame:SetSize(1120,740);view:Remove();E:BuildPanel(frame)
 assert(E.InventoryView.RightWidth>E.InventoryView.LeftWidth)
 local drawCalls=0
 surface.SetDrawColor=function() end;surface.DrawPoly=function(points) assert(#points>=3);drawCalls=drawCalls+1 end
 surface.DrawCircle=function() end;surface.DrawRect=function() end
+surface.DrawLine=function() drawCalls=drawCalls+1 end
 draw={NoTexture=function() end,SimpleText=function() end}
 for _,item in pairs(state.items) do E:DrawItemIcon(item,0,0,56,{r=0,g=0,b=0,a=255}) end
 assert(drawCalls>=11)

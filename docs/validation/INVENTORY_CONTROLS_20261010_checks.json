@@ -1,0 +1,248 @@
+{
+  "parent": "e1e634e04e82a06bf1873195607a06f47a825e9c",
+  "source_before": "8adaba9efc66c523446952ff5e4c18373cb338a149929be9b35efd25c645f068",
+  "source_after": "8adaba9efc66c523446952ff5e4c18373cb338a149929be9b35efd25c645f068",
+  "changed_during_gate": [],
+  "source_files": 2586,
+  "changed_lua": 17,
+  "total": 17,
+  "passed": 17,
+  "results": [
+    {
+      "name": "Opt-in Rendered Frame Evidence & Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_performance_capture.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.141,
+      "stdout_sha256": "e34c306ce3567e8671f6fe754c2aac7625d63df378759dcc9f3c4e47062b2009",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "01"
+    },
+    {
+      "name": "Bounded Server Population Evidence Client Mirror",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.05,
+      "stdout_sha256": "bc4763bd0b8abee54f45dbc7d149d05a02745a4e078857f9b41f72fa3cc30212",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "02"
+    },
+    {
+      "name": "Canonical Manual & Portable Menu",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_instruction_manual.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.033,
+      "stdout_sha256": "2db0bd463f8621c7f4d3a574245b24085f67b31dcb722ef1c4453ffa3cde1685",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "03"
+    },
+    {
+      "name": "Canonical Manual Server Transport",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_manual_transport.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.035,
+      "stdout_sha256": "63f51a97b5cb50473a5327000e6a501de2fb926c9d46d5b5ca1036110a20145a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "04"
+    },
+    {
+      "name": "Manual Source & Reader Navigation",
+      "command": [
+        "python3",
+        "tools/test_manual_document.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.308,
+      "stdout_sha256": "2b5ca05bcedbc1d4b7074202d1606a6144251fca970ebf518fa99b5c879ce6e1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "05"
+    },
+    {
+      "name": "Equipment Body Map & Drag Inventory",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_equipment_inventory_ui.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.251,
+      "stdout_sha256": "72d5de88c2788131f3a64911d38f8589b50872163f60758cdcbe025bcdf487a3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "06"
+    },
+    {
+      "name": "Equipment Network Delta & Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_equipment_delivery.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.079,
+      "stdout_sha256": "9f0c3b4ac03b4e727dcb31367152dafb2751a26e30884c8d34b6084dd6fc4f7c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "07"
+    },
+    {
+      "name": "Magic Forms & Contents Schema",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_c_headless.lua",
+        "."
+      ],
+      "returncode": 0,
+      "seconds": 0.038,
+      "stdout_sha256": "14494e10138fe28fd8f3e4575b1a42537e0d7b1bed5dedb0662af6379975feba",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "08"
+    },
+    {
+      "name": "Feat: magic_grant_feats",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_d_magic_grant_feats.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07,
+      "stdout_sha256": "570fca611fb23763ebb06b118f0d1f96256ee17afdea5376b9808c0085191fed",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "09"
+    },
+    {
+      "name": "Snapshot Burst & Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_snapshot_delivery.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.093,
+      "stdout_sha256": "b91b8f0bd42756b19c565db993d02c2da783c95dc158d8a6c155f179025ddf1b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "10"
+    },
+    {
+      "name": "Multiple Mouse Magic Bindings",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_magic_mouse_bindings.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.258,
+      "stdout_sha256": "3af3cee1a1c165f11c0e3911adad511db8943f5af4cee3721967068ba4dde331",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "11"
+    },
+    {
+      "name": "Wall Form and Magic Testkit",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_magic_wall.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.237,
+      "stdout_sha256": "0655f7c5c69a136a49c3e022546f1af52259e3e078773dd28157ed1e29ffb2e9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "12"
+    },
+    {
+      "name": "test_spot12_spellbook",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_spot12_spellbook.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.085,
+      "stdout_sha256": "339e0cecf53d9785de05fa2f2989ed1a84846b321f3e7b4a89d3987d96fa8ed9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "13"
+    },
+    {
+      "name": "test_spot13_unread",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_spot13_unread.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.261,
+      "stdout_sha256": "52550b463a7d838ebed0c11f5e37ff4836287802e6dd9373022ca1a06c486f00",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "14"
+    },
+    {
+      "name": "Changed Lua parse",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_equipment_inventory.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_spellbook.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_28.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_magic_forms.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_magic_progression.lua",
+        "lua/autorun/server/lod_population_observability.lua",
+        "tools/test_equipment_inventory_ui.lua",
+        "tools/test_magic_mouse_bindings.lua",
+        "tools/test_performance_capture.lua",
+        "tools/test_population_transport.lua",
+        "tools/test_spot12_spellbook.lua"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "6812e00611d7c7f572dc034e2f3a747acebbafafd0b9ada88f14ec3c5a1936de",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "15"
+    },
+    {
+      "name": "Installer shell syntax",
+      "command": [
+        "bash",
+        "-n",
+        "tools/install_dev.sh"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "16"
+    },
+    {
+      "name": "Patch whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "17"
+    }
+  ],
+  "native_accepted": false
+}

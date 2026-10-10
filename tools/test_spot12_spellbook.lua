@@ -194,7 +194,7 @@ expect('wall','form','WALL LIMIT','gold',true)
 state.selectedMagicFormId='super_ball';deliver(state);owner.nw.LOD_SuperBallRemaining=0
 expect('super_ball','form','BALL LIMIT','gold',true)
 -- Snapshot cost multiplier, selected opposite component, exact affordability/ceil.
-resetBody();state=makeState();state.derivedStats.quantumCostMultiplier=.5;deliver(state)
+resetBody();state=makeState();state.magicBindings={['2']='bolt'};state.derivedStats.quantumCostMultiplier=.5;deliver(state)
 owner.nw.LOD_Magic=4
 expect('bolt','form','READY / SELECTED','blue',true)
 expect('fire','content','READY / SELECTED','blue',true)
@@ -204,7 +204,7 @@ owner.nw.LOD_Magic=2.5
 expect('beam','form','NEED MAGIC','red',false)
 owner.nw.LOD_Magic=3
 expect('beam','form','AVAILABLE','blue',false)
-state.selectedMagicContentId=nil;deliver(state);owner.nw.LOD_Magic=2
+state.selectedMagicContentId=nil;state.magicContentBindings=nil;deliver(state);owner.nw.LOD_Magic=2
 expect('bolt','form','READY / SELECTED','blue',true)
 expect('raw','content','READY / SELECTED','blue',true)
 expect('fire','content','NEED MAGIC','red',false)
@@ -228,8 +228,26 @@ for i,button in ipairs({2,2,3,4,5}) do
     check(msg.name=='LOD_MagicBindForm' and msg.strings[1]=='beam' and msg.uints[1][1]==button and msg.uints[1][2]==3,'form configuration packet unchanged')
 end
 check(B.Snapshot.selectedFormId=='bolt','client click cannot change authoritative selection locally')
-p=findCard('earth','content');p:DoClick()
-check(sent[#sent].name=='LOD_MagicSpellbookSelect' and sent[#sent].uints[1][1]==1 and sent[#sent].strings[1]=='earth','content configuration packet unchanged')
+p=findCard('earth','content');before=#sent
+p:DoClick();p:DoRightClick();p:OnMousePressed(MOUSE_MIDDLE);p:OnMousePressed(MOUSE_4);p:OnMousePressed(MOUSE_5)
+for i,button in ipairs({2,2,3,4,5}) do
+    local msg=sent[before+i]
+    check(msg.name=='LOD_MagicBindContent' and msg.strings[1]=='earth' and msg.uints[1][1]==button and msg.uints[1][2]==3,'button-specific content configuration packet')
+end
+-- Bound Forms use their own Content price; Content availability uses the
+-- cheapest actual matching binding, and every active Content has its label.
+resetBody();state=makeState();state.selectedMagicFormId='beam';state.selectedMagicContentId='fire'
+state.magicBindings={['2']='beam',['3']='bolt',['4']='wall',['5']='super_ball'}
+state.magicContentBindings={['2']='fire',['3']='ice',['4']='raw',['5']='fire'}
+deliver(state);owner.nw.LOD_Magic=4
+expect('beam','form','NEED MAGIC','red',true)
+expect('super_ball','form','AVAILABLE','blue',false)
+expect('fire','content','READY / SELECTED','blue',true)
+expect('ice','content','NEED MAGIC','red',true)
+expect('raw','content','NEED MAGIC','red',true)
+local fire=findCard('fire','content');local out=render(fire)
+check(out.texts[5].text=='RMB/M5','multiple matching Content labels are stable and separate')
+owner.nw.LOD_Magic=6;expect('ice','content','READY / SELECTED','blue',true)
 state.contentIds={'fire'};deliver(state);p=findCard('earth','content');before=#sent
 p:DoClick();p:DoRightClick();p:OnMousePressed(MOUSE_5)
 check(#sent==before,'locked callbacks send nothing even when invoked directly')

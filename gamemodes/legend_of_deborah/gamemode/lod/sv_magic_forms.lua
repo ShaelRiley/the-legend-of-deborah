@@ -168,11 +168,7 @@ function Forms:SelectedCastState(ply,button)
     if button and not state.magicBindings[tostring(button)] then return nil end
     if not MagicProgression:FormAllowed(state,formId) then return nil end
     if not formId or not RPG.MagicForms[formId] or not contains(state.magicFormIds, formId) then return nil end
-    local contentId = state.selectedMagicContentId
-    if contentId and (not RPG.MagicContents[contentId] or not contains(state.contentIds, contentId)) then
-        contentId = nil
-        state.selectedMagicContentId = nil
-    end
+    local contentId = state.magicContentBindings[tostring(button or 2)]
     return state, RPG.MagicForms[formId], contentId and RPG.MagicContents[contentId] or nil
 end
 
