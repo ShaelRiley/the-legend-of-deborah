@@ -91,17 +91,25 @@ sudo systemctl is-active --quiet "$SERVICE"
 sudo journalctl -u "$SERVICE" --since "$STARTED" --no-pager -o cat > "$BACKUP/startup-private.log"
 # Never emit raw journal/process command lines: they can contain the Steam token.
 python3 - "$BACKUP/startup-private.log" <<'PY'
-import re, sys
+import os, re, sys
 text = open(sys.argv[1], errors='replace').read()
 bad = re.findall(r'Lua Error|stack traceback|Segmentation fault|Segmentation violation|core dumped|Host_Error', text, re.I)
 if bad:
     print('Startup error categories:', ', '.join(sorted(set(bad))))
     raise SystemExit(1)
 print('Startup log: no matched fatal/Lua error signatures; native gameplay remains pending.')
-if '[LOD VR] Server runtime ready:' not in text:
-    print('VR startup gate failed: server did not confirm loaded VR networking and content.')
-    raise SystemExit(1)
-print('VR startup gate: server networking and content ready.')
+# An optional VR subsystem must not reject a healthy public non-VR server.
+# VR-qualified releases may explicitly require the complete startup marker.
+if '[LOD VR] Server runtime ready:' in text:
+    print('VR startup: networking and content ready.')
+else:
+    if '[LOD VR] Server runtime unavailable:' in text:
+        print('VR startup: runtime explicitly unavailable; VR gameplay unverified.')
+    else:
+        print('VR startup: ready marker absent; VR gameplay unverified.')
+    if os.environ.get('LOD_REQUIRE_VR_READY') == '1':
+        print('Strict VR readiness required; rejecting deployment.')
+        raise SystemExit(1)
 print('Steam connectivity marker:', bool(re.search(r'Connection to Steam servers successful|VAC secure mode is activated', text, re.I)))
 PY
 STOPPED=0

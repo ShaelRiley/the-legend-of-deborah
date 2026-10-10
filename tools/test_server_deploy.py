@@ -115,11 +115,18 @@ esac
     result=subprocess.run(['bash',str(script),target],env=dict(env,LOD_TEST_BAD_LOG='1'),capture_output=True,text=True)
     assert result.returncode!=0 and run('git','-C',str(repo),'rev-parse','HEAD')==before
     assert state.read_text().strip()=='active' and data.read_text()=='preserve'
-    # A healthy-looking desktop-only server must fail the VR release gate.
+    # Optional VR startup cannot veto a healthy non-VR server. Core source,
+    # A2S, stability and fatal-error gates remain mandatory.
     run('git','-C',str(repo),'switch','--detach',before)
     result=subprocess.run(['bash',str(script),target],env=dict(env,LOD_TEST_NO_VR='1'),capture_output=True,text=True)
+    assert result.returncode==0 and run('git','-C',str(repo),'rev-parse','HEAD')==target, result.stdout+result.stderr
+    assert 'VR startup: ready marker absent' in result.stdout and data.read_text()=='preserve'
+    assert state.read_text().strip()=='active'
+    # VR-qualified releases can opt into the old fail-closed behavior.
+    run('git','-C',str(repo),'switch','--detach',before)
+    result=subprocess.run(['bash',str(script),target],env=dict(env,LOD_TEST_NO_VR='1',LOD_REQUIRE_VR_READY='1'),capture_output=True,text=True)
     assert result.returncode!=0 and run('git','-C',str(repo),'rev-parse','HEAD')==before
-    assert 'VR startup gate failed' in result.stdout and data.read_text()=='preserve'
+    assert 'Strict VR readiness required' in result.stdout and data.read_text()=='preserve'
     # Uncommitted operator work is rejected before service interruption.
     (repo/'operator-work').write_text('keep')
     result=subprocess.run(['bash',str(script),target],env=env,capture_output=True,text=True)
