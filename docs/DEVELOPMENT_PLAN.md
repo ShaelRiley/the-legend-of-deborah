@@ -1,4 +1,14 @@
-# Current checkpoint — equipment and Magic selector controls
+# Current checkpoint — recurring Favored Enemy identity pool
+
+User-authorized balance interjection before the pending Steam Deck test; published parent main `b1e604b5d380492ff55de1c2c12eb22df911fa4c`. Fresh live GDD 00 → 01 → 04/05/07 governs the seam; 04 LOD-ID-002 records the requested future-pool restriction and exact readback is preserved.
+
+Future Favored Enemy identity rolls use only model families enrolled by ordinary nonobjective dungeon encounters or the existing autonomous wandering roster. The Nodule/Barnacle family is excluded entirely, including its Lurker alias. Boss-only, boss-companion-only and other unique models no longer enter through registration. The resulting pool has 14 recurring families; saved v2 and legacy v1 perks retain their exact mechanics without rerolling. Combat, populations, appearance and graphics preferences are preserved. The canonical manual agrees. Existing source verification adds the selector: 58 installed / 54 population / 19 client capture modules.
+
+11/11 bounded checks pass on unchanged snapshot `fa24b5472b931339bf77edc42dea1df956c383f1e84c79f0791c87f74f8154ff` (2,590 files): seven selected canonical suites, published-parent rejection, all 10 changed/new Lua parses, installer shell syntax and whitespace. Evidence, raw receipts, preserved fixture failure and replay: [Favored Enemy checkpoint](validation/FAVORED_ENEMY_20261010.md). Do not repeat prior completed full gates absent new changes or contradictory evidence.
+
+Next native action remains fully quit/update/install main, restart gm_flatgrass, briefly confirm the equipment/per-button Magic controls below, then the same-scene `lod_perf_compare 60` procedure. New characters draw from the filtered pool; existing characters retain saved perks. Return performance_client_latest.txt + console_latest.txt and any control/appearance observations. Native controls and sustained ≥40 FPS acceptance remain open. No Workshop or VPS operation.
+
+# Previous checkpoint — equipment and Magic selector controls
 
 User-authorized QoL interjection before the pending Steam Deck test; published parent main `e1e634e04e82a06bf1873195607a06f47a825e9c`. Live GDD 00 → 01 → 03/06/07/90 was read; 03 selection and 06 LOD-UI-008 now record the requested controls and were read back.
 

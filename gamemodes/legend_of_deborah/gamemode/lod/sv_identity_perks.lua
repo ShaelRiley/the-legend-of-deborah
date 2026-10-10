@@ -61,9 +61,28 @@ function Director:TargetRegistries()
         if profile.weaponFamilyId then weapons[profile.weaponFamilyId] = WEAPON_NAMES[profile.weaponFamilyId] or profile.label end
     end
     weapons.crowbar = "Crowbar"
-    for _, config in pairs(LOD.Config.Encounter.Archetypes) do
-        local family = self:ModelFamily(config)
-        if family then enemies[family] = ENEMY_NAMES[family] or friendlyName(family) end
+    -- Draw from the ordinary population owners, not the full registry (which
+    -- also contains bosses, unique hunts, companions and event-only actors).
+    local encounter, recurring = LOD.Config.Encounter, {}
+    for _, template in pairs(encounter.Templates) do
+        if not template.objective then
+            for id, count in pairs(template.composition or {}) do
+                if count > 0 then recurring[id] = true end
+            end
+        end
+    end
+    local wandering = LOD.WanderingDirector and LOD.WanderingDirector.Config
+    for id in pairs(wandering and (wandering.AutonomousTypes or wandering.ArchetypeWeights) or {}) do
+        recurring[id] = true
+    end
+    -- Lurker shares Nodule's model; excluding just the archetype would put the
+    -- removed Barnacle perk back in the pool through that other actor.
+    local noduleFamily = self:ModelFamily(encounter.Archetypes.nodule or {model = "models/barnacle.mdl"})
+    for id in pairs(recurring) do
+        local family = self:ModelFamily(encounter.Archetypes[id])
+        if family and family ~= noduleFamily then
+            enemies[family] = ENEMY_NAMES[family] or friendlyName(family)
+        end
     end
     assert(next(enemies), "identity target registry requires enabled enemy models")
     self.FavoredWeaponTargetRegistry, self.EnemyModelFamilyRegistry = weapons, enemies

@@ -281,6 +281,7 @@ for path in sorted(Path(REPO_ROOT, "tools").glob("test_checkpoint_d_*.lua")):
                        ["python3", "tools/run_lua54.py", str(path.relative_to(REPO_ROOT))]))
 SUITES.append(("Feat Descriptions & Stabilization", ["python3", "tools/run_lua54.py", "tools/test_feat_stabilization.lua"]))
 SUITES.append(("Hero Weakness & Identity Perks", ["python3", "tools/run_lua54.py", "tools/test_identity_perks_weakness.lua"]))
+SUITES.append(("Recurring Favored Enemy Pool", ["python3", "tools/run_lua54.py", "tools/test_identity_enemy_pool.lua"]))
 SUITES.append(("Snapshot Burst & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_snapshot_delivery.lua"]))
 SUITES.append(("Watcher Scan Dispatch", ["python3", "tools/run_lua54.py", "tools/test_watcher_dispatch.lua"]))
 SUITES.append(("Watermelon Bounce and Shatter Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_watermelon_bounces.lua"]))

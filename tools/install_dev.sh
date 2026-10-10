@@ -85,6 +85,7 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/gamemode/lod/cl_spellbook.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_magic_progression.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_magic_forms.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_identity_perks.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_monster_identity.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua \

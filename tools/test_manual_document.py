@@ -27,6 +27,8 @@ assert ''.join(chunks)==html, 'Server transport source must equal the canonical 
 assert (builder.SOURCE/'manual.html').read_text()==html
 for term in ['Double-click an item', 'Each button casts its own Form with its own Content or RAW', 'Selecting Content for one button leaves the others unchanged']:
     assert term in html_entities.unescape(html), 'Item/Content controls missing: '+term
+for term in ['New favored enemy perks target model families from recurring dungeon encounters and wandering enemies', 'Nodule/Barnacle family', 'Existing Heroes keep their saved perks']:
+    assert term in html_entities.unescape(html), 'Favored Enemy pool guidance missing: '+term
 entries=[e for c in book['chapters'] for e in c.get('entries',[])]
 assert len(entries)==127 and len({e['id'] for e in entries})==127
 assert len(json.loads((builder.SOURCE/'catalog.json').read_text())['EquipmentProperties'])==60

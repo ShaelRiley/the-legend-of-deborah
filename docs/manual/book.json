@@ -188,7 +188,7 @@
       "title": "Who are you this time?",
       "art": "deborah:0",
       "text": [
-        "Your Hero has a generated name, appearance, Origin, Background, and Motive. Those three traits each grant a permanent perk: a favored weapon, a favored enemy, or ability points. Each chooses independently; matching perks can stack.",
+        "Your Hero has a generated name, appearance, Origin, Background, and Motive. Those three traits each grant a permanent perk: a favored weapon, a favored enemy, or ability points. Each chooses independently; matching perks can stack. New favored enemy perks target model families from recurring dungeon encounters and wandering enemies. Boss-only and other unique models are excluded, as is the Nodule/Barnacle family. Existing Heroes keep their saved perks.",
         "An ability perk gives either +2 to one ability or +1 to each of two different abilities. Read the actual trait on your Character Sheet to see what your Hero received.",
         "Your starting scores use six rolls of four six-sided dice, dropping each lowest die. The initial array must total at least 74. A stored weakness pass then reduces the weakest score by 2d2 and the next two by 1d3 each. There is no second reroll after these reductions.",
         "Death, reconnection, and dungeon transitions preserve your identity, class, growth, XP, and feats. A true campaign restart creates a fresh roster.",

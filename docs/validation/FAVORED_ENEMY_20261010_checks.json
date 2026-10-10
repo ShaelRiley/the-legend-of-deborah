@@ -1,0 +1,191 @@
+{
+  "parent": "b1e604b5d380492ff55de1c2c12eb22df911fa4c",
+  "source_before": "fa24b5472b931339bf77edc42dea1df956c383f1e84c79f0791c87f74f8154ff",
+  "source_after": "fa24b5472b931339bf77edc42dea1df956c383f1e84c79f0791c87f74f8154ff",
+  "changed_during_gate": [],
+  "source_files": 2590,
+  "changed_lua": 10,
+  "installed_sources": 58,
+  "population_sources": 54,
+  "total": 11,
+  "passed": 11,
+  "results": [
+    {
+      "name": "Published-parent rejection",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_identity_enemy_pool.lua",
+        "/workspace/scratch/93d77892b9d2/favored_enemy_gate/published_parent_identity.lua"
+      ],
+      "returncode": 1,
+      "expected_returncode": 1,
+      "passed": true,
+      "seconds": 0.089,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "948ac1e3ba84854f10d3076128e628940212008b2482be0b19105e03dd7e6aaf",
+      "log_prefix": "01"
+    },
+    {
+      "name": "Bounded Server Population Evidence Client Mirror",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.046,
+      "stdout_sha256": "bc4763bd0b8abee54f45dbc7d149d05a02745a4e078857f9b41f72fa3cc30212",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "02"
+    },
+    {
+      "name": "Canonical Manual & Portable Menu",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_instruction_manual.lua"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.038,
+      "stdout_sha256": "2db0bd463f8621c7f4d3a574245b24085f67b31dcb722ef1c4453ffa3cde1685",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "03"
+    },
+    {
+      "name": "Canonical Manual Server Transport",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_manual_transport.lua"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.039,
+      "stdout_sha256": "63f51a97b5cb50473a5327000e6a501de2fb926c9d46d5b5ca1036110a20145a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "04"
+    },
+    {
+      "name": "Manual Source & Reader Navigation",
+      "command": [
+        "python3",
+        "tools/test_manual_document.py"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.3,
+      "stdout_sha256": "2b5ca05bcedbc1d4b7074202d1606a6144251fca970ebf518fa99b5c879ce6e1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "05"
+    },
+    {
+      "name": "Magic Forms & Contents Schema",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_c_headless.lua",
+        "."
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.043,
+      "stdout_sha256": "14494e10138fe28fd8f3e4575b1a42537e0d7b1bed5dedb0662af6379975feba",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "06"
+    },
+    {
+      "name": "Hero Weakness & Identity Perks",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_identity_perks_weakness.lua"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.139,
+      "stdout_sha256": "e1168da4a1bce9495420ed777eb6dd77c5ea6efabcb98b200855a5c6d10c2e00",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "07"
+    },
+    {
+      "name": "Recurring Favored Enemy Pool",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_identity_enemy_pool.lua"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.183,
+      "stdout_sha256": "7c57701ab6c1414d3725e6542f3d0af4ece3dbe18033fc1d3be148c12cdd77fd",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "08"
+    },
+    {
+      "name": "Changed Lua parse",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_28.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_identity_perks.lua",
+        "lua/autorun/server/lod_population_observability.lua",
+        "tools/test_identity_enemy_pool.lua",
+        "tools/test_population_transport.lua"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.043,
+      "stdout_sha256": "ff3b1abf662b5a1806c2942f44f1d0bba3a36c159f21ec0c3bb5f52f09041737",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "09"
+    },
+    {
+      "name": "Installer shell syntax",
+      "command": [
+        "bash",
+        "-n",
+        "tools/install_dev.sh"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.002,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "10"
+    },
+    {
+      "name": "Patch whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "expected_returncode": 0,
+      "passed": true,
+      "seconds": 0.025,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log_prefix": "11"
+    }
+  ],
+  "native_accepted": false
+}
