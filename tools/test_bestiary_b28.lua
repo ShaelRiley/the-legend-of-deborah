@@ -160,6 +160,12 @@ local watched={
  'gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/cl_equipment_inventory.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/cl_spellbook.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_magic_progression.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_magic_forms.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/sv_identity_perks.lua',
+ 'gamemodes/legend_of_deborah/gamemode/lod/cl_monster_identity.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua',
  'gamemodes/legend_of_deborah/gamemode/cl_init.lua',
@@ -197,6 +203,10 @@ local watched={
  'gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua',
  'gamemodes/legend_of_deborah/gamemode/lod/sv_watcher_instance_dispatch.lua',
  'lua/autorun/server/lod_population_observability.lua'}
+assert(#watched==54,'review population fixture coverage when production changes')
+local uniqueWatched={};for _,path in ipairs(watched) do
+    assert(not uniqueWatched[path],'duplicate population fixture: '..path);uniqueWatched[path]=true
+end
 local manifest={};for _,p in ipairs(watched) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;memory['GAME:'..p]='exact' end
 memory['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
 memory['DATA:legend_of_deborah/dev_build.txt']='test-checkout clean'
@@ -212,7 +222,7 @@ hook.Add=function(event,id,fn) if event=='ShutDown' then shutdown=fn end end
 local before=H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(plan)})
 dofile('lua/autorun/server/lod_population_observability.lua')
 local A=LOD.PopulationObservability
-local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==48 and not snap.developerMode)
+local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==54 and not snap.developerMode)
 assert(snap.nativeProbes.supportBound and snap.nativeProbes.visibilityBound and snap.revision=='b28')
 local lastReads=reads;A:Snapshot('repeat');assert(reads==lastReads,'source files rehashed on every heartbeat')
 T.setTime(2000);T.quiet(function() timers.LOD_PopulationEvidence() end)
@@ -222,11 +232,35 @@ R.State.GatesOpen[1]=true;T.quiet(function() A:Poll() end);assert(writes==2,'gat
 for i=1,70 do T.setTime(2100+i*30);T.quiet(function() A:Poll() end) end
 assert(#A.Records==64,'evidence ring not bounded')
 assert(H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(plan)})==before,'observer mutated gameplay')
+-- Every independent fixture member must be present and hash-matched. Reset
+-- only the observer's explicit source cache between fixtures, never gameplay.
+local completeManifest=memory['DATA:legend_of_deborah/dev_population_sources.txt']
+for index,path in ipairs(watched) do
+    for _,mode in ipairs({'missing-manifest','missing-mounted','wrong-mounted'}) do
+        local altered={}
+        for i,line in ipairs(manifest) do
+            if i~=index or mode~='missing-manifest' then altered[#altered+1]=line end
+        end
+        memory['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(altered,'\n')
+        if mode=='missing-mounted' then memory['GAME:'..path]=nil
+        elseif mode=='wrong-mounted' then memory['GAME:'..path]='stale workshop bytes' end
+        A.Source=nil
+        local rejected=A:SourceIdentity()
+        assert(not rejected.verified,path..' accepted '..mode)
+        assert(rejected.checked==(mode=='wrong-mounted' and #watched or #watched-1))
+        assert(rejected.missing==(mode=='wrong-mounted' and 0 or 1))
+        assert(rejected.mismatches==(mode=='wrong-mounted' and 1 or 0))
+        memory['GAME:'..path]='exact'
+    end
+end
+memory['DATA:legend_of_deborah/dev_population_sources.txt']=completeManifest
+A.Source=nil;assert(A:SourceIdentity().verified,'complete source fixture did not recover')
+assert(H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(plan)})==before,'source negatives mutated gameplay')
 A.Source=nil;memory['GAME:'..watched[2]]='stale workshop bytes'
 assert(not A:SourceIdentity().verified and A.Source.mismatches==1,'mixed mount certified by install label')
 A.Source=nil;memory['DATA:legend_of_deborah/dev_population_sources.txt']=''
-assert(not A:SourceIdentity().verified and A.Source.missing==48,'absent manifest claimed verified')
+assert(not A:SourceIdentity().verified and A.Source.missing==54,'absent manifest claimed verified')
 T.quiet(function() shutdown() end);assert(#A.Records==64 and A.Records[64]:find('shutdown'),'shutdown evidence missing')
-print('B28_OBSERVER_PASS developer-off capture; exact installer mount fingerprints; absent/mixed source disclosure; cached hashing; gate/shutdown receipts; bounded64 records; no gameplay mutation')
+print('B28_OBSERVER_PASS developer-off capture; 54 distinct installer mount fingerprints; 162 per-source rejection cases; absent/mixed source disclosure; cached hashing; gate/shutdown receipts; bounded64 records; no gameplay mutation')
 
 return {T=T,H=H,W=W,D=D,R=R,graph=g,compile=compile,trace=boxTrace,oldCreate=oldCreate}
