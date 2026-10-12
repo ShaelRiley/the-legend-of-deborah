@@ -1,0 +1,38 @@
+Ada Branch — adventure consultant / clue clarity veto
+Kit Glitch — meta satire / complicity pass
+Original editorial roles; no imitation of living writers.
+
+Verified implementation anchors
+- docs/manual/book.json controls, quick-start, staging: WASD/mouse movement; Space/Ctrl/Shift jump/crouch/sprint; LMB attack, R reload; RMB selected Magic (or drink held potion); E use; P Character Sheet; I Spellbook; O Equipment; Q/M map. Current Spellbook supports button-specific Form AND Content on RMB/M3/M4/M5. Map costs Magic. Menus do not pause the clock.
+- Starter: class + Level-1 feat on P, then collect actual pedestal weapon; portal denies deployment until both requirements complete. Timer starts with first Hero deployment, base 30:00, with Time Management allowance; staging pause is real, waiting behind does not stop teammates' clock.
+- Cards Red/Blue/Yellow/Black; Neil carries Black. Gordon defeat is not rescue: Jail Key, chamber, touch/use target. Level20 additionally requires Hector's Director's Heart before Deborah rescue. This reveal occurs in sv_hector.lua Begin encounter (HectorRevealed=true); do not identify Hermit as Hector earlier.
+- Levels1–19 unique women; Level20 Deborah; 21+ Stolen Cash case, never a person named Cash. Gordon's existing letter explicitly continues 'for the love of the game.' Deborah replaces Hermit, pedestal gifts remain separate; Abundance one daily DFT under existing ranked/Steam/cooldown rules.
+- Death consumes finite reserve lives; fallen-Hero service makes detached hostile copies of dead Hero/Soldier profiles, not connected players. Ordinary Hero can return while hostile copy exists; do not call copy the returned Hero's soul. Soldiers and blockade skeletons have separate origins.
+
+Proposed Hermit beat script (one paragraph per staging Dungeon Level)
+1. 'Welcome to the refuge. The women of the Debbie Fund used to keep this place supplied; Gordon has imprisoned them. Nessa is first. Move with WASD, aim with the mouse, attack with left mouse and reload with R; right mouse casts your selected Magic. E uses what you face. P chooses your class and first feat; O opens Equipment, I the Spellbook, Q or M the Magic-powered map. Take your pedestal weapon before the blue portal. First deployment starts thirty minutes, before any time allowance. Follow Red, Blue, Yellow, then Black; Neil carries Black. Defeat Gordon, collect the Jail Key, open the chamber and reach Nessa. One rescue starts the next.'
+2. 'Nessa is home; Bessa is next. Neither owes you a performance of gratitude. Before Gordon seized the network, their ammunition went where it was needed. There are worse names for that than a fund.'
+3. 'Tessa kept the emergency stores. She called preparation optimism with pockets. Gordon calls it contraband whenever the wrong people can defend themselves.'
+4. 'Odessa demanded that everyone learn which end of a weapon offers the argument. The Warden prefers a helpless captive. It photographs better.'
+5. 'Nell knows the difference between an order and an excuse. Neil carries the Black Keycard; he is not Nell. Gordon has found employment for every confusion he can manufacture.'
+6. 'Belle treats wounds without asking who deserved them. That offended Gordon: he considers suffering an excellent admissions test.'
+7. 'Estelle removes the labyrinth's ailments. Gordon wishes every injury to become a permanent character trait. She is professionally opposed.'
+8. 'Mirabelle taught us that Magic is a resource, not a moral rank. Even your map spends it. Knowledge is useful; keeping it open forever is expensive.'
+9. 'May supplied the working hands. Look around this refuge: the rescued do not simply disappear when their chapter is finished. They are rebuilding the place while you advance.'
+10. 'Faye kept the circle together. A ring is a fine symbol, but she prefers something that actually helps. Gordon loves symbols; they cost less than helping.'
+11. 'Kay prepared routes out. The containers rearrange, but a prison remains a prison however impressive its architecture. Do not mistake another corridor for another destiny.'
+12. 'Desiree recorded what each person could do. Not what they were worth. The Director's paperwork is less careful about that distinction.'
+13. 'Jean wanted everyone clothed against the consequences. The stock survived the seizure. So did this refuge. Someone clearly wanted rescuers to keep arriving.'
+14. 'Colleen hated uniforms that make individuals vanish. The guards have their parts; you need not accept yours. A hero is allowed to want something besides applause.'
+15. 'Maureen kept the shields ready. I called her cautious. She asked why my plans always required somebody else's bruises. An unfairly memorable question.'
+16. 'Josephine saved the emergencies for the medicine, rather than the medicine for emergencies worth watching. I may have encouraged the opposite. A little tension sharpens a story.'
+17. 'Dora says healing is not payment for being interesting. I used to disagree. Do not let the labyrinth convince you that pain is the only proof you have done something.'
+18. 'Cora kept the rescue fund's accounts. The women meant it to support people, not to purchase their obedience. The Warden stole the resources. Someone else stole the narrative.'
+19. 'Eleonora believes another chance is a responsibility, not a prize. The labyrinth can make a hostile skeleton from a fallen body; that copy is not the friend who returns to you. I have been rather fond of copies. Easier to direct.'
+20. 'Deborah founded a refuge, not a casting office. She wants people free to leave, to stay, to choose. I thought a legend required someone arranging the danger. Reach her after Gordon falls. You may find the arrangement has one last objection.'
+
+Deborah, post20
+'Hector used our refuge as his stage. He wore the Hermit's face and fed you enough truth to keep you moving. Gordon's letter is quite candid: now he steals cash for the love of the game. Those bags are stolen resources; recovering them keeps taking something out of his hands. Nobody else is waiting to be rescued in a bag. Stay if you want to challenge him; the rescue is won. Our support does not require another performance. The pedestal keeps its usual gifts, and Abundance remains one token each day under the existing claim rules.'
+
+Vetoes
+Do not claim all services are unlimited/unconditional in frequency, all characters return forever, all skeletons are dead teammates, wallet money is necessarily identical to the cash-case tally, or defeat of Hector permanently removes Gordon. No forced conversational prerequisites, money-for-dialogue, dialogue timer extension, new named Cash, or story-driven conversion of aid into wages. Any rescue-network fiction belongs in GDD before code. Current services have distinct visit/campaign/eligibility limits; retain those while expressing unconditional dignity rather than unlimited grants. Story should never imply safe menus during active deployment.

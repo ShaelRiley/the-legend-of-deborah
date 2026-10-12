@@ -1,0 +1,63 @@
+ENSEMBLE OPINION-MIXER NOTES — BEA BUNCH / MIRA ASIDE
+
+Bea Bunch (ensemble discipline): Every service is a choice the rescued woman makes. Rescue restores an existing competence; it does not manufacture gratitude or obligate romance. Rhyme groups are working teams, not interchangeable relatives. Give each team one disagreement and one affection.
+
+Mira Aside (outsider satire): The antagonists mistake administration, spectatorship, and ownership for care. Satirize their vanity through mundane particulars: Neil's access policy, Gordon's insistence on an encore, the Hermit's tendency to describe others as supporting parts. Keep the network's generosity sincere. No political lecture, investment promise, or claim that game currencies have real monetary worth.
+
+Shared pitch: These women built the Debbie Fund, a mutual rescue network. Their pooled skills kept people alive when nobody could afford to be useful alone. Gordon imprisoned the network; Neil manages access with the Brute as his escort. Someone has converted the rescue into an endless production. The Hermit's advice is useful but gradually betrays an appetite for authorship. Only the finale identifies him as Hector. Deborah's liberation restores the staging refuge to the network. Gordon then steals its cash to keep the chase going. Cash remains an object, never a newly introduced person.
+
+CHARACTER BIBLE AND EXISTING-SERVICE VOICES
+Each row gives goal; desire/predilection; voice; sample service line. Preserve every existing reward and cadence.
+
+Nessa: provision the first return trip; wants dependable people, likes inventories; practical. "Pistol ammunition. The fund budgets for you coming back."
+Bessa: make courage less lonely; wants company, likes noisy celebrations; expansive. "SMG ammunition. A little enthusiasm, properly contained."
+Tessa: keep exits usable; wants direct answers, likes decisive solutions; terse. "Shotgun shells. For objections at conversational distance."
+Odessa: spend resources deliberately; wants composure, likes precision; formal. "Revolver rounds. Six opportunities to choose your words."
+Nell: redirect the jailer's supplies; wants competence acknowledged, likes requisition forms; dry. "AR2 ammunition. I have revised its intended recipient."
+Belle: mend returning rescuers; wants permission to rest, likes ordinary comforts; warm. "Hold still. Your bravery has sprung another leak."
+Estelle: remove lingering harm; wants prevention taken seriously, likes exact diagnoses; crisp. "Leave the affliction. You may keep the lesson."
+Mirabelle: restore clear thinking; wants room to experiment, likes impossible questions; playful. "A little magic back. Try a better idea with it."
+May: put tools into capable hands; wants her work used, likes repairs; industrious. "Gloves. Good hands deserve decent equipment."
+Faye: make small commitments durable; wants promises kept, likes beautiful useful things; measured. "A ring. Small enough to forget; useful enough not to."
+Kay: keep the group moving; wants open roads, likes brisk departures; buoyant. "Boots. Retreat is a direction, not a character flaw."
+Desiree: protect judgment; wants people to listen, likes sharp presentation; elegant. "Headwear. Protect the source of your questionable ideas."
+Jean: survive through preparation; wants reliability, likes layered plans; plainspoken. "A vest. Confidence is better with a lining."
+Colleen: preserve dignity amid disaster; wants practical beauty, likes tailoring; wry. "Trousers. Let us face catastrophe properly dressed."
+Maureen: take responsibility without martyrdom; wants shared burdens, likes solid workmanship; grounded. "A shield. You need not personally absorb everything."
+Josephine: prepare for emergencies; wants foresight respected, likes labelled bottles; matter-of-fact. "A healing potion. Future you asked me to insist."
+Dora: restore people fully; wants peace, likes unhurried breaths; gentle. "There. All healed. You are allowed one comfortable moment."
+Cora: keep help circulating; wants accountability without cruelty, likes balanced books; economical. "Some $DEB from the rescue fund. Spend it getting home."
+Eleonora: defend second chances; wants persistence without self-punishment, likes fresh starts; earnest. "One more life. A mistake need not become an ending."
+Deborah: make the refuge belong to its people; wants abundance without compulsory performance, likes blunt truth; calm. "Abundance: one DFT each day. A gift need not be an audition."
+Heroes: rescue and return together; individually authored by players; no imposed romance or biography.
+Neil: maintain access control; wants indispensable status, likes procedures; bureaucratic menace.
+Brute: protect Neil; wants clear commands, prefers direct physical responses; nonverbal loyalty, not a new speaking monster.
+Gordon: keep the contest going; wants an appreciative audience, likes showmanship; theatrical vanity.
+Hermit/Hector: keep directing everybody's role; wants exclusive authorship, likes telling people what their choices mean; genial counsel with possessive slips.
+
+DIRECTED RELATIONSHIP MAP
+Defaults: unacquainted characters have curiosity or indifference, never invented intimacy. Network members share earned solidarity; distinct pairs below override it. Rescued members appreciate Heroes while retaining agency. All reject imprisonment; feelings toward the Hermit progress from provisional trust to suspicion, then disillusionment after the reveal. Heroes' personal feelings remain player-authored.
+
+Nessa -> Bessa: fond concern about waste; Bessa -> Nessa: affection, impatience with counting.
+Tessa -> Odessa: respects accuracy, dislikes deliberation; Odessa -> Tessa: admires resolve, worries about haste.
+Nell -> Belle: protective esteem; Belle -> Nell: gratitude, concern about overwork.
+Estelle -> Mirabelle: skeptical affection; Mirabelle -> Estelle: admires rigor, enjoys provoking curiosity.
+May -> Faye: trusts her standards; Faye -> May: admires care made tangible.
+Kay -> Desiree: likes her poise, teases her caution; Desiree -> Kay: fond exasperation, envies her ease.
+Jean -> Colleen: trusts her practical artistry; Colleen -> Jean: affection, wishes she would enjoy her work.
+Maureen -> Josephine: respects preparedness; Josephine -> Maureen: concern that protection becomes self-neglect.
+Dora -> Cora: trusts her stewardship; Cora -> Dora: admires care, worries about depleted supplies.
+Cora -> Eleonora: values her resolve, dislikes reckless spending; Eleonora -> Cora: respects restraint, defends second chances.
+Eleonora -> Dora: gratitude; Dora -> Eleonora: protective hope without pity.
+Deborah -> network: confidence and accountability; network -> Deborah: chosen trust, freedom to disagree.
+Neil -> Brute: dependence disguised as command; Brute -> Neil: guarding attachment.
+Neil -> Gordon: deferential resentment; Gordon -> Neil: impatience, instrumental appreciation.
+Gordon -> Heroes: competitive admiration; Gordon -> Deborah/network: treats their refusal as an affront to his production.
+Hector -> Gordon: values his spectacle, resents improvisation; Gordon -> Hector: enjoys direction until it limits applause.
+Hector -> network/Heroes: possessive interest, confuses usefulness with consent.
+Deborah -> Hector: lucid refusal of his authority; Hector -> Deborah: fixation on the person who rejects his casting.
+
+Reveal discipline: the map is author-facing. In Levels 1–19, use only the name Hermit in player-visible dialogue. His slips suggest control without confirming identity. Level 20 rescue earns the revelation; Deborah replaces him only through the existing legitimate transition. Her continuation explains recovery of stolen cash and ongoing generosity, without creating another captivity plot or changing mechanics.
+
+APPROVED STAGING-DIALOGUE EXTENSION
+Exact importable authored text is in /workspace/scratch/7f3f2b8ff28d/damsel_lines.json: three variants per Nessa through Eleonora, two Deborah epilogues. Ordinary variants pair a relationship observation with an existing service hint; each names at least one other cast member. They are 26 words maximum, preserving quick conversations. Deborah's 99/104-word epilogues disclose Hector only after the finale, explain stolen-cash continuation, and distinguish daily Abundance from the shared ongoing services. No new reward cadence, financial redemption, romance, or mechanics is implied. Display authored relationship text even when a gift cooldown blocks another grant; existing server reward authority must determine actual service delivery.

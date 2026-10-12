@@ -1,0 +1,53 @@
+ORIGINAL FICTIONAL WRITERS' ROOM PASSES
+Source audit: AGENTS.md, sh_boss_registry.lua, every server boss module, sh_config Encounter.Archetypes, sv_enemy_roster Definitions, unique-enemy modules, event services/quiz. Authored characterization proposals only: preserve mechanics, identities, roles and encounter order.
+
+ROXY BELLOWS — CLUB COMIC
+The prison runs on ordinary occupations made monstrous by insecurity. Hector's useful warnings become incriminating employment reviews. First he is eccentric; later we realize he is management. Cruelty remains consequential, however silly its uniform.
+
+PERRY QUIBBLE — SOCIAL FRICTION
+Below: goal / desire / predilection; directed feelings. Gordon occupies 1 and 20; eighteen other primaries occupy 2–19. Jane remains Chuck's subordinate encounter actor.
+Gordon: maintain incarceration / indispensability / public discipline; resents Hector, fears Deborah, devalues heroes.
+Chonker: own routes / notice / skating and bombs; envies Flightmeister, admires Daryl, resents heroes' defusing.
+Felon: escape blame / relief from shame / bounces and ricochets; blames Gordon, envies Ollie, performs for heroes.
+Melf: interchange identities / borrowed credit / imitation; covets heroes, admires Hector's disguise, distrusts Deborah's agency.
+Ollie: acquire stock / security / shopping and hoarding; depends on Crystal, commodifies Felon, distrusts Deborah's sharing.
+Crystal: enforce refreshment / gratitude / vending rituals; flatters Gordon, resents Ollie, envies Deborah's appreciation.
+Daryl: preserve hazardous stores / recognition / chain reactions; loves Chonker's enthusiasm, envies Jane, resents Moshi's cleaning.
+Sofa: keep everyone stationary / being needed / reclining and territorial furniture; disdains Marion, covets Deborah's company, resents departing heroes.
+Marion: dominate circulation / precedence / hammer blows and traffic; hates Conan's closures, mocks Sofa, admires Brute.
+Button: enforce participation / voluntary compliance / courses and decoys; admires Hector, depends on Gordon, resents careful heroes.
+Ray: sustain pressure / acknowledgment / heat and valves; feels exploited by Hector, envies Jane's relief, resents Moshi's demands.
+Cornette: complete extraction / permission to stop / drills and strained retreats; fears Gordon, resents Hector, trusts Moshi's care.
+Moshi: erase cycle evidence / clean start / drains and spinning; pities Cornette, resents Daryl, mistrusts Rank's records.
+Chuck: supply the set / worth beyond output / timber displays; relies on Jane yet takes billing, resents Rank, believes Hector's last-rebuild promise.
+Jane: control pressure / skilled-worker credit / cylinders and venting; protects Chuck while resenting subordinate billing, distrusts Daryl, understands Ray.
+Rank: classify everyone / unquestioned record / drawers and queues; serves Gordon, reveres Hector, hates Deborah's self-definition, discounts Neil.
+Flightmeister: control apparent sky / superiority / patrols and strafing; scorns Chonker, rivals Mooky, fears heroes' beacon use.
+Conan: dictate direction / obedience / detours and closures; hates Marion, admires Button, resents heroes' mutual assistance.
+Joilette: monopolize relief / privacy / occupation and Cleaner gatekeeping; discounts Neil, rivals Moshi, resents heroes' persistence.
+Mooky: equate scale with authority / dignity / cannons and patrols; fears Hector's belittling name, envies Flightmeister, dismisses Brute.
+Hector: prolong authorship / indispensable intimacy / helpful selective omissions; possessive toward heroes, jealous of Deborah, dependent/contemptuous toward Gordon.
+Deborah: restore mutual aid / autonomy / concrete names; grateful to heroes, angry with Gordon, refuses Hector's ownership.
+Neil: survive assignments / notice / evasive work routines; fears Joilette/Rank, envies heroes' mobility.
+Brute: exercise useful strength / respect / charges; admires resolve while serving hierarchy.
+Heroes: rescues and survival; motives and relationships remain player-authored.
+
+ORDINARY ROSTER — 63 IDENTITIES
+54 Definitions + Shambler/Runner/Soldier + Neil/Brute + Sniper/Watcher/Seeker/Bioblaster. Use the following affiliation inheritance to give every archetype a goal/desire, with its own predilection. These are roles, not newly named people or new allegiance mechanics.
+Custodians: goal contain prisoners; desire Gordon's approval. Shambler persists, Runner rushes, Soldier drills, Sniper waits, Watcher observes, Seeker commits, Gaoler freezes, Silencer suppresses, Repulsor repels, Sentry holds ground. Edge: fear Gordon; resent mobile heroes.
+Information office: goal make confinement legible; desire Hector's recognition. Relay links, Lacemaker crosslinks, Censor restricts, Surveyor measures, Listener overhears, Screenwright screens. Edge: admire Rank; mistrust Deborah's independent testimony.
+Discipline office: goal punish deviation; desire unquestioned order. Halter interrupts, Pacer checks movement, Exactor exploits conditions, Pavise reacts defensively, Repriser retaliates, Redliner overcommits. Edge: admire Button; despise Marion's exceptions.
+Personnel office: goal preserve useful staff; desire belonging. Interposer guards, Mourner mourns, Stitcher repairs, Bulwark protects, Cantor rallies, Absolver cleanses, Siphoner drains, Accumulator replenishes. Edge: depend on Rank, pity Cornette, resent heroes breaking formations.
+Routing office: goal channel traffic; desire predictable space. Outrider isolates, Conductor links, Towline pulls, Trailmaker retreats, Censer carries hazards, Wirewright wires, Snarer traps, Cordon encloses, Pincer pursues, Harrier harasses, Waylayer ambushes. Edge: admire Conan, resent Marion.
+Weapons office: goal maintain damaging spectacle; desire technical distinction. Fusilier crossfires, Bombardier saturates, Caromer banks, Reeler returns, Forker splits, Flamer burns, Big Crab burns, Arc Caster arcs, Beam Sweeper sweeps, Razor dives. Edge: envy Flightmeister; admire Daryl.
+Discarded bodies: goal persist despite disposal; desire acknowledgment. Afterburst leaves consequences, Carrion feeds, Reaper sweeps, Drubber doubles, Fencer feints, Shy avoids sight, Climber climbs, Bioblaster contaminates, Nodule occupies, Lurker waits. Edge: resent Rank's DECEASED drawer, distrust Moshi's erasure. This language does not canonize resurrection.
+Neil/Brute retain individual rows above. Multiple instances share archetypal tendencies, not one physical identity.
+Event identity: Game Master, vendors, Wounded Scavenger and Life Underwriter retain existing role names. A Hermit likeness is a service representation, not proof Hector teleports or personally operates every event. Do not invent extra actors to explain props.
+
+LATE HECTOR LINES
+12: 'Her drills hurt. Give her retreat room. I said pain gives a performance depth. She misunderstood the compliment.'
+15: 'Destroy PENDING work before it becomes another body. Rank files complaints. Everyone is heard; nobody interrupts.'
+19: 'Use hard cover. Watch the knees. Mooky hates Little. I gave him a smaller name so he would work harder to fill it.'
+20: 'Watch Gordon's warnings and openings. You have learned everything I taught you. Why does that sound like goodbye?'
+Reveal: 'Hector the Director. Hermit was a quieter credit. I built somewhere you would always be needed. Deborah says that is not freedom.'
+Deborah: 'Cash means the stolen money in that briefcase. Recover it so the rescue collective can prepare. Hector calls that another season. I call it getting our resources back.'

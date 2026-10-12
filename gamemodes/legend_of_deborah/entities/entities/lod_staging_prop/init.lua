@@ -43,6 +43,7 @@ function ENT:Initialize()
         self:SetCollisionGroup(COLLISION_GROUP_NONE)
         self:SetRenderMode(RENDERMODE_TRANSCOLOR)
         self:SetColor(Color(196, 60, 60, 255))
+        self:SetUseType(SIMPLE_USE)
         self:DrawShadow(true)
         return
     end
@@ -146,6 +147,11 @@ end
 
 function ENT:Use(activator)
     local kind = self:GetStageKind()
+    if kind == self.KIND_GUIDE then
+        local staging = LOD and LOD.StagingDeployment
+        if staging and staging.TalkGuide then staging:TalkGuide(activator, self) end
+        return
+    end
     if kind == self.KIND_WEAPON then
         self:_TryStarterClaim(activator)
         return

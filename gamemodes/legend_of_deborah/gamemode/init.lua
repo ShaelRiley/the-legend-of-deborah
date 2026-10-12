@@ -337,6 +337,7 @@ AddCSLuaFile("lod/cl_teammate_identity.lua")
 
 AddCSLuaFile("lod/cl_damsels.lua")
 include("lod/sv_damsels.lua")
+include("lod/sv_staging_lore.lua")
 include("lod/sv_damsel_revenge.lua")
 AddCSLuaFile("lod/cl_damsel_revenge.lua")
 include("lod/sv_audio_lifecycle.lua")

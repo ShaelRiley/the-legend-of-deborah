@@ -1,4 +1,30 @@
-# Current checkpoint — verified moving-view Steam Deck capture
+# Current checkpoint — twenty-chapter staging story
+
+Author-requested lore interjection, based on published main
+`f7353f2fd4fdb85794a39845c518446e1473c5e3`. The live GDD was updated and verified
+before game edits: 00/01 route 05 LOD-LORE-001 (eight-role writers' room, full
+character/relationship bible, exact script), 06 LOD-LORE-UI-001 and 07
+LOD-LORE-GATE-001. All previous GDD text was preserved; HUMAN mirrors the story
+packet and05 includes the relationship diagram.
+
+Source now implements optional E dialogue at the existing guide, a distinct
+chapter for each Dungeon1–20, the authoritative revealed-Hector override, all
+nineteen ordinary damsels' three-variant conversations, and Deborah's two Cash
+epilogues. Actual reward parameters/cadences and settlement remain unchanged.
+Long text and the separate service receipt scroll; campaign epoch, death,
+deployment, dungeon and guide replacement retire the window. Manual content
+agrees. Eighteen selected checks pass, including sixteen Lua parses and relevant
+progression/succession/finale/timer regressions. Evidence and limits:
+[staging story checkpoint](validation/STAGING_LORE_20261012.md).
+
+Next native action: fully quit GMod, pull/install main, restart gm_flatgrass and
+approach the Hermit with E. Check the Level1 instructions and scrolling, then the
+new Level2 conversation on the next staging visit. Later native gates cover
+all women, already-claimed services, independent players and the existing
+Hector→Deborah finale. The previous stationary Steam Deck comparison and final
+sustained≥40FPS target remain pending. No Workshop/VPS operation.
+
+# Previous checkpoint — verified moving-view Steam Deck capture
 
 The October 10 18:20:52 upload verifies clean published build
 `db51ecc024472b6b273af7f55cece5bc7b843c63`: all 54 recorded module hashes agree

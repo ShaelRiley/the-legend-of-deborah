@@ -1,0 +1,127 @@
+[
+  {
+    "path": "docs/lore/THE_REFUGE_AND_THE_DIRECTOR.md",
+    "bytes": 43612,
+    "sha256": "12357a1320d7bd144d29f7186ee4c137a4418ec1b0d3d82b7bffab7d52b72117"
+  },
+  {
+    "path": "docs/lore/relationships.png",
+    "bytes": 90864,
+    "sha256": "1afdaa8e0d0e1ffeba75f927e2a7aa33b32b0a00d57e1c854549403fd4084cbb"
+  },
+  {
+    "path": "docs/lore/room/20261012_adventure.txt",
+    "bytes": 6970,
+    "sha256": "1abe3abeefb1469e273a086ca872d9e6e7238c6825144622fb841d31ecf00dc3"
+  },
+  {
+    "path": "docs/lore/room/20261012_comic.txt",
+    "bytes": 7543,
+    "sha256": "67419c88db1df4744002c36133eea9b7f792006622be6ba301f5f65697e122cf"
+  },
+  {
+    "path": "docs/lore/room/20261012_ensemble.txt",
+    "bytes": 8545,
+    "sha256": "abdc584e597343ca52bce5c3fd9471365ae2e41bcc6b7358204ee0602e57f471"
+  },
+  {
+    "path": "docs/lore/script.json",
+    "bytes": 25867,
+    "sha256": "a1caa157d322c00526ad0e1973e45c08bfcceb2e56550eff0e8f88ceed1b526a"
+  },
+  {
+    "path": "docs/manual/book.json",
+    "bytes": 164470,
+    "sha256": "8b224c353e1299fbe36497ab633d8c813d0db35fbf12238ef867a3611313167c"
+  },
+  {
+    "path": "docs/manual/manual.html",
+    "bytes": 1533681,
+    "sha256": "5e56a0b21c94bcceba555620ee24faceebf227e64b2301d563ca33b2a41883b0"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/entities/entities/lod_staging_prop/cl_init.lua",
+    "bytes": 11129,
+    "sha256": "be7037045fd5964dd72558ce39781d2b3bf5075fe2c8b0da7a575707343ea5d3"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/entities/entities/lod_staging_prop/init.lua",
+    "bytes": 8110,
+    "sha256": "fa5ab8c56420626196748a53460a407eee20e840d568d17cb4641e3802a79d07"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/init.lua",
+    "bytes": 15252,
+    "sha256": "f1c2dc22513c9bb297ac95f0b19afbe38b43db12d83e94b54e364755a36ae19e"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_damsels.lua",
+    "bytes": 7635,
+    "sha256": "8d64c15de411d716e0e95687a0c55ca2a648b133291fb2872e9bff8e3eb5b173"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_28.lua",
+    "bytes": 48267,
+    "sha256": "522c8a7c76b1c07750012aaeba34c6d59c486c4fad63131aaecc0e685582be3a"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua",
+    "bytes": 48250,
+    "sha256": "4cd4ee1874c8d04203c409920064500d18233a5c43dca7511feac43674622876"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua",
+    "bytes": 48228,
+    "sha256": "299460d90408b5f678a8ba1c314347c1b50156cda3c6286a696e6bb650640bc0"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua",
+    "bytes": 48183,
+    "sha256": "d95bc67c60dcbe4a82db7ca9a89391d3272e4cfa9b681b68f1de99c030d93891"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua",
+    "bytes": 44977,
+    "sha256": "52c1772543a2e9cdc5c89b03cbd4f43e56a05487c04c882a106ff48ce7f0b151"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua",
+    "bytes": 116,
+    "sha256": "0c9d37291993aa927252fe3d7b499cc86b18a7afd39f46d891ce0d8b1105bee9"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_damsels.lua",
+    "bytes": 11953,
+    "sha256": "087de67ae08132cd570249361bed3768ef45cc05f045886541eec4102262a6e7"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_damsels.lua",
+    "bytes": 16072,
+    "sha256": "9ebde603c1a96312e92fc7a9fd79be40685e00593024bc936af1fff526a514af"
+  },
+  {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_staging_lore.lua",
+    "bytes": 16952,
+    "sha256": "542e9728c1f2b0242fd582c1cff1110f2fd8df3b2a2b6a87b36963d66afcccfa"
+  },
+  {
+    "path": "tools/test_damsel_staging.lua",
+    "bytes": 7711,
+    "sha256": "4442ebf3d0a0616d39bcea2f40aeca1fe2531104276a36ead8c1c2da33ec06f1"
+  },
+  {
+    "path": "tools/test_lore_canon.py",
+    "bytes": 2531,
+    "sha256": "82f2900b61f8e7997ec7b87808021b4f3b7e0e3887e69df671068750e15178a9"
+  },
+  {
+    "path": "tools/test_staging_lore.lua",
+    "bytes": 7312,
+    "sha256": "02d868fecd4f6c4711986de842cd915341bb4dfb2a81f847edbeb1423c04b5a9"
+  },
+  {
+    "path": "tools/test_staging_lore_ui.lua",
+    "bytes": 5154,
+    "sha256": "3ed5f1ebcc5d43d6d83fe7fb98a3d5aa5035da13dfd250d7324693eb0449940c"
+  }
+]

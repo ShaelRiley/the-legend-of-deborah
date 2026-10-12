@@ -12,6 +12,7 @@ function D:Sync(ply)
     net.WriteDouble(s.HighestLevel or s.Level or 1)
     for i=1,20 do net.WriteBool(s.RescuedDamsels and s.RescuedDamsels[i]==true) end
     net.WriteDouble(s.CashRecovered or 0)
+    net.WriteUInt(s.CampaignEpoch or 0,32)
     net.Send(ply)
     local ps=Run:GetPlayerState(ply)
     if ps and s.Abundance and s.Level>=21 and not ps.wardenLetterSeen then

@@ -1,0 +1,7 @@
+[LOD] Level 1 cleared by Hero; advancing in 15 seconds
+[LOD] Campaign failed at Level 2. seed=823414237 reason=TIME OVER
+[LOD] Campaign restarted in-place after failure. previousLevel=2 previousSeed=823414237 newSeed=823414238 epoch=2
+[LOD] Campaign failed at Level 1. seed=823414238 reason=TIME OVER
+[LOD] Campaign restarted in-place after failure. previousLevel=1 previousSeed=823414238 newSeed=823414239 epoch=3
+[LOD] Campaign failed at Level 1. seed=823414239 reason=TIME OVER
+PASS campaign timer layout, expiry race, empty-server reconnect, bounded collapse, idempotent canonical restart, cleanup, client transport and HUD restoration

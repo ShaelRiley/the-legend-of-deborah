@@ -1,0 +1,20 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 112
+[AUDIT] Implementation Feats Count: 112
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+[LOD:BOOTSTRAP] campaign initialization start reason=module-load existing-player attempt=1
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 1 ready. campaign=31676 levelSeed=1939356277 layoutAttempt=14 cells=642 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:BOOTSTRAP] recovery complete seed=31676 buildReady=true recoveries=1
+STAGING_SPAWN_PASS campaign=31676 layout=14 cell=16:16:1
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 1 ready. campaign=31676 levelSeed=1939356277 layoutAttempt=14 cells=642 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 1 ready. campaign=31676 levelSeed=1939356277 layoutAttempt=14 cells=642 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+PASS staging native spawn: three-class Skeleton synthesis/Initialize, arrival rejection, delayed deletion, hour-long staging, no watchdog reset, same-level replacement, primary/secondary partial creation, late resource loss and full-build rollback

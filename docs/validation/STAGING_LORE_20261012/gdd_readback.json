@@ -1,0 +1,45 @@
+{
+  "document": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "authority": "LOD-LORE-001 / LOD-LORE-UI-001 / LOD-LORE-GATE-001",
+  "verification": [
+    {
+      "tab": "00",
+      "exactAddition": true,
+      "priorBodyPreserved": true,
+      "images": null
+    },
+    {
+      "tab": "01",
+      "exactAddition": true,
+      "priorBodyPreserved": true,
+      "images": null
+    },
+    {
+      "tab": "05",
+      "exactAddition": true,
+      "priorBodyPreserved": true,
+      "images": [
+        "kix.imwyhmwqclal"
+      ]
+    },
+    {
+      "tab": "06",
+      "exactAddition": true,
+      "priorBodyPreserved": true,
+      "images": null
+    },
+    {
+      "tab": "07",
+      "exactAddition": true,
+      "priorBodyPreserved": true,
+      "images": null
+    },
+    {
+      "tab": "HUMAN",
+      "exactAddition": true,
+      "priorBodyPreserved": true,
+      "images": null
+    }
+  ],
+  "gdd_url": "https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
+}

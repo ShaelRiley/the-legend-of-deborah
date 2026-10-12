@@ -111,21 +111,23 @@ LOD.RNG=LOD.RNG or {New=function() return {Int=function(_,a) return a end} end}
 LOD.Seeds=LOD.Seeds or {Derive=function() return 1 end}
 vgui={Create=function(kind,parent)
  local panel={kind=kind,parent=parent,Entity={GetModel=function() return 'portrait' end,GetMaterials=function() return {} end}}
- for _,method in ipairs({'SetTitle','SetDraggable','MakePopup','SetFOV','SetCamPos','SetLookAt','SetFont','SetTextColor','SetWrap'}) do panel[method]=noop end
+ for _,method in ipairs({'SetTitle','SetDraggable','MakePopup','SetFOV','SetCamPos','SetLookAt','SetFont','SetTextColor','SetWrap','SetVisible','SetAutoStretchVertical','Dock','DockMargin'}) do panel[method]=noop end
  panel.SetPos=function(self,x,y) self.x=x;self.y=y end
  panel.SetSize=function(self,w,h) self.w=w;self.h=h end
  panel.SetModel=function(self,m) self.model=m end
  panel.SetText=function(self,text) self.text=text end
- panel.Remove=function(self) self.valid=false end;panel.Close=panel.Remove
+ panel.Remove=function(self) self.valid=false;if self.OnRemove then self.OnRemove() end end;panel.Close=panel.Remove
  panels[#panels+1]=panel;return panel
 end}
 LOD.Config.Models=LOD.Config.Models or {Deborah='models/Humans/Group01/Female_01.mdl'}
 dofile(root..'cl_damsels.lua')
 D:ShowDialogue(1,'Rescued.','Ammo replenished.')
 assert(panels[2].kind=='DModelPanel' and panels[2].x<panels[3].x and panels[2].y<panels[4].y)
-assert(panels[3].text=='Nessa' and panels[4].text=='Rescued.' and panels[5].text=='Ammo replenished.')
+assert(panels[3].text=='Nessa' and panels[4].kind=='DScrollPanel')
+assert(panels[5].text=='Rescued.' and panels[6].text=='Ammo replenished.' and panels[5].parent==panels[4])
 local firstFrame=D.DialogueFrame
 D:ShowDialogue(20,'At last.','ABUNDANCE')
-assert(not firstFrame.valid and panels[8].model==LOD.Config.Models.Deborah)
-KEY_E=18;D.DialogueFrame.OnKeyCodePressed(nil,KEY_E);assert(not D.DialogueFrame.valid)
+assert(not firstFrame.valid and panels[9].model==LOD.Config.Models.Deborah)
+local finalFrame=D.DialogueFrame
+KEY_E=18;finalFrame.OnKeyCodePressed(nil,KEY_E);assert(not finalFrame.valid and D.DialogueFrame==nil)
 print('DAMSEL_DIALOGUE_PASS: native panel hierarchy, upper-left portrait, name/text/receipt and E dismissal')

@@ -105,6 +105,11 @@ local function drawLabel(ent)
         draw.SimpleTextOutlined(label ~= "" and label or "THE LEGEND OF DEBORAH",
             "LOD_StagingLabel", 0, 0, labelColor(kind), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER,
             2, Color(0, 0, 0, 230))
+        if kind == KIND_GUIDE then
+            local binding = string.upper(input.LookupBinding("+use") or "E")
+            draw.SimpleTextOutlined("[" .. binding .. "] TALK", "LOD_StagingLabel", 0, 42,
+                color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, Color(0,0,0,230))
+        end
     cam.End3D2D()
 end
 

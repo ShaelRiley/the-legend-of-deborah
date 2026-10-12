@@ -1,0 +1,89 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 112
+[AUDIT] Implementation Feats Count: 112
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+[LOD] Level 1 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 2 ready. campaign=73 levelSeed=685876482 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 2 ready. campaign=73 levelSeed=685876482 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+DUNGEON_TRANSITION_PASS: actual rescue/build/respawn, full-bag native restore, exact weapons/ammo/active selection, stacks/slots/rolls, Soldier isolation, stale spawn guard, failed-Give cleanup
+[LOD] Level 1 ready. campaign=73 levelSeed=685876481 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 1 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 2 ready. campaign=73 levelSeed=685876482 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 2 ready. campaign=73 levelSeed=685876482 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 2 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 3 ready. campaign=73 levelSeed=685876483 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 3 ready. campaign=73 levelSeed=685876483 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 3 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 4 ready. campaign=73 levelSeed=685876484 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 4 ready. campaign=73 levelSeed=685876484 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 4 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 5 ready. campaign=73 levelSeed=685876485 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 5 ready. campaign=73 levelSeed=685876485 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 5 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 6 ready. campaign=73 levelSeed=685876486 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 6 ready. campaign=73 levelSeed=685876486 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 6 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 7 ready. campaign=73 levelSeed=685876487 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 7 ready. campaign=73 levelSeed=685876487 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 7 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 8 ready. campaign=73 levelSeed=685876488 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 8 ready. campaign=73 levelSeed=685876488 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 8 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 9 ready. campaign=73 levelSeed=685876489 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 9 ready. campaign=73 levelSeed=685876489 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 9 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 10 ready. campaign=73 levelSeed=1802989532 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 10 ready. campaign=73 levelSeed=1802989532 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 10 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 11 ready. campaign=73 levelSeed=1802989533 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 11 ready. campaign=73 levelSeed=1802989533 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 11 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 12 ready. campaign=73 levelSeed=1802989534 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 12 ready. campaign=73 levelSeed=1802989534 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 12 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 13 ready. campaign=73 levelSeed=1802989535 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 13 ready. campaign=73 levelSeed=1802989535 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 13 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 14 ready. campaign=73 levelSeed=1802989536 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 14 ready. campaign=73 levelSeed=1802989536 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 14 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 15 ready. campaign=73 levelSeed=1802989537 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 15 ready. campaign=73 levelSeed=1802989537 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 15 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 16 ready. campaign=73 levelSeed=1802989538 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 16 ready. campaign=73 levelSeed=1802989538 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 16 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 17 ready. campaign=73 levelSeed=1802989539 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 17 ready. campaign=73 levelSeed=1802989539 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 17 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 18 ready. campaign=73 levelSeed=1802989540 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 18 ready. campaign=73 levelSeed=1802989540 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 18 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 19 ready. campaign=73 levelSeed=1802989541 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 19 ready. campaign=73 levelSeed=1802989541 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 19 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 20 ready. campaign=73 levelSeed=1802989663 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 20 ready. campaign=73 levelSeed=1802989663 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 20 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 21 ready. campaign=73 levelSeed=1802989664 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 21 ready. campaign=73 levelSeed=1802989664 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 21 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 22 ready. campaign=73 levelSeed=1802989665 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 22 ready. campaign=73 levelSeed=1802989665 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 22 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 23 ready. campaign=73 levelSeed=1802989666 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 23 ready. campaign=73 levelSeed=1802989666 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 23 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 24 ready. campaign=73 levelSeed=1802989667 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 24 ready. campaign=73 levelSeed=1802989667 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 24 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 25 ready. campaign=73 levelSeed=1802989668 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 25 ready. campaign=73 levelSeed=1802989668 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 25 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 26 ready. campaign=73 levelSeed=1802989669 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 26 ready. campaign=73 levelSeed=1802989669 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 26 cleared by transition-hero; advancing in 15 seconds
+[LOD] Level 27 ready. campaign=73 levelSeed=1802989670 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 1 ready. campaign=17 levelSeed=160969381 layoutAttempt=1 cells=1 entities=1 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+DAMSEL_PROGRESSION_PASS: 20 unique names, five families, canonical model, complementary palette, real levels 1–26, all 18 modular rescue permission gates, no duplicate victory, endless pressure and campaign reset

@@ -1,0 +1,2 @@
+PASS: one reader, both entry points, portable access, bookmark, navigation, stale callback isolation
+MANUAL_EQUIPMENT_KEY_PASS: embedded keyboard bridge/default and rebound O route through shared navigation

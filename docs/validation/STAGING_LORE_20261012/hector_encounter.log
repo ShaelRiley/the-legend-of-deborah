@@ -1,0 +1,44 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 1 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 19 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 21 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 42 cleared by hero-a; advancing in 20 seconds
+[LOD] Campaign failed at Level 20. seed=41 reason=Hector encounter unavailable: arena or rescue entity lost
+[LOD] Campaign failed at Level 20. seed=41 reason=Hector encounter unavailable: arena or rescue entity lost
+[LOD] Campaign failed at Level 20. seed=41 reason=Hector encounter unavailable: arena or rescue entity lost
+[LOD] Campaign failed at Level 20. seed=41 reason=Hector encounter unavailable: gamemodes/legend_of_deborah/gamemode/lod/sv_hector.lua:139: core creation failed
+[LOD] Campaign failed at Level 20. seed=41 reason=Hector encounter unavailable: ...scratch/7f3f2b8ff28d/lod/tools/test_hector_encounter.lua:67: injected native Spawn failure
+[LOD] Campaign failed at Level 20. seed=41 reason=Hector encounter unavailable: owned core lost
+[LOD] Campaign failed at Level 20. seed=41 reason=test failure
+HECTOR_ENCOUNTER_PASS: legitimate Gordon/native death handoff, L20-only rescue lock, canonical contributor rewards, exactly-once receipt, reveal/telegraphs/12 hazards/phases, life/deployment/disconnect/absence, late joins, exact state/graph/campaign ownership, same-seed reset, partial creation/failure/timeout cleanup, Level21 cash continuation
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Campaign failed at Level 20. seed=41 reason=finale interrupted
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+[LOD] Level 20 cleared by hero-a; advancing in 20 seconds
+DEBORAH_FINALE_SERVER_PASS: real accepted rescue and Tetris window; once-only XP/activation; exact campaign/graph/transition; canonical damsels/Hero snapshot; life/role/disconnect/late join; removed actor safety; timed controls; same-seed reset/failure; Level21 and ordinary rescues

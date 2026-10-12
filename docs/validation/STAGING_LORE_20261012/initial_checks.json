@@ -1,0 +1,170 @@
+[
+  {
+    "name": "lore_canon",
+    "command": [
+      "python",
+      "tools/test_lore_canon.py"
+    ],
+    "exit_code": 0,
+    "sha256": "b84afb33eeac35d33c4f903091781520702e378e20c03f048d456c3ea84ae4fd"
+  },
+  {
+    "name": "lore_server",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_staging_lore.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "a30af0c38a9e67f4309def652d7a6e874133e9f7f59979680f932b0cf22902f8"
+  },
+  {
+    "name": "lore_ui",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_staging_lore_ui.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "a1096d77c1a6235c40facd92417ae1d6a49bf44aca209500de097fe00e27db4c"
+  },
+  {
+    "name": "damsel_progression",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_damsel_progression.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "2297dcd7d4ba07b82200db9d5e490277a1bc25e875539b5de43b99cba352f4ef"
+  },
+  {
+    "name": "damsel_staging",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_damsel_staging.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "dda36e58f3c5c179e91b437d6570a5641141dd145f8db740f748afeb90e6c1e0"
+  },
+  {
+    "name": "hermit_return",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_hermit_return.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "88f4430e9aa4e6bc1617c689187d7cb77b353227ed66f868b288a3e3e3e5d8c5"
+  },
+  {
+    "name": "deborah_succession",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_deborah_succession.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "e9b2728a9c6c77db6ed8c04542d50a776451ab2051472ea963e9966b0364c395"
+  },
+  {
+    "name": "hector_encounter",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_hector_encounter.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "d62083d6ea922a8893bf59deba607903d60503aeda9c3406284ede9656a27fa2"
+  },
+  {
+    "name": "deborah_finale_presentation",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_deborah_finale_presentation.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "dce073763d9f5131041ae5d4f72f7c2cad3b778cf3a6c8c979bd5f5d47828c69"
+  },
+  {
+    "name": "campaign_timeout",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_campaign_timeout.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "ea763f94e807b2ffeedd1210bd00c5603f2690f0faa62c0a7a40dbbf34fbfad2"
+  },
+  {
+    "name": "instruction_manual",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_instruction_manual.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "2db0bd463f8621c7f4d3a574245b24085f67b31dcb722ef1c4453ffa3cde1685"
+  },
+  {
+    "name": "manual_transport",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_manual_transport.lua"
+    ],
+    "exit_code": 0,
+    "sha256": "63f51a97b5cb50473a5327000e6a501de2fb926c9d46d5b5ca1036110a20145a"
+  },
+  {
+    "name": "staging_event_spawn",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_staging_event_spawn.lua"
+    ],
+    "exit_code": 1,
+    "sha256": "bfee644379e7914c8be13b79eae571cc84e1413c1783487abbe3ca1e9b32ea4b"
+  },
+  {
+    "name": "manual_document",
+    "command": [
+      "python",
+      "tools/test_manual_document.py"
+    ],
+    "exit_code": 0,
+    "sha256": "2b5ca05bcedbc1d4b7074202d1606a6144251fca970ebf518fa99b5c879ce6e1"
+  },
+  {
+    "name": "manual_generated",
+    "command": [
+      "python",
+      "tools/build_manual.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "sha256": "ada6fe0041679b18f51c3c5a852ffbed02c2b21600fef092f459de984b18d4f0"
+  },
+  {
+    "name": "installer_syntax",
+    "command": [
+      "bash",
+      "-n",
+      "tools/install_dev.sh"
+    ],
+    "exit_code": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "whitespace",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]
