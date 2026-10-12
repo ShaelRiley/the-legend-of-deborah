@@ -104,8 +104,12 @@ local function hasAccess(ply)
     if not ply:GetNW2Bool("LOD_MapUnlocked", false) then return false end
     local unlockedLevel = ply:GetNW2Int("LOD_MapUnlockedLevel", 0)
     local level = currentClientLevel()
-    return level > 0 and unlockedLevel == level
+    local floor=math.max(0,math.floor((ply:GetPos().z-MC.Origin.z)/MC.LevelHeight+0.5))
+    return level > 0 and unlockedLevel == level and floor<7
+        and bit.band(ply:GetNW2Int("LOD_MapFloorMask",0),bit.lshift(1,floor))~=0
 end
+
+function Map:HasAccess(ply) return hasAccess(ply) end
 
 local function mapReadyForLevel(level)
     return level and level > 0
@@ -114,7 +118,11 @@ local function mapReadyForLevel(level)
         and (Map.receivedChunks or 0) >= (Map.expectedChunks or 0)
         and #Map.cells > 0
         and Map.cache.indexedRevision == Map.cache.revision
+        and Map.floorMask == LocalPlayer():GetNW2Int("LOD_MapFloorMask",0)
+        and Map.buildSerial == LocalPlayer():GetNW2Int("LOD_MapBuildSerial",0)
 end
+
+function Map:IsReady() return mapReadyForLevel(currentClientLevel()) end
 
 local function resetCacheStats()
     Map.stats.paintFrames = 0
@@ -299,6 +307,8 @@ net.Receive("LOD_MapBegin", function()
         Map.jailAKey = cellKey(Map.jailA.x, Map.jailA.y, Map.jailA.z)
         Map.jailBKey = cellKey(Map.jailB.x, Map.jailB.y, Map.jailB.z)
     end
+    Map.floorMask=net.ReadUInt(7)
+    Map.buildSerial=net.ReadUInt(32)
 
     Map.receivedChunks = 0
     Map.cells = {}
@@ -308,9 +318,11 @@ end)
 
 net.Receive("LOD_MapChunk", function()
     local level = net.ReadDouble()
+    local mask=net.ReadUInt(7)
+    local serial=net.ReadUInt(32)
     local chunkIndex = net.ReadUInt(8)
     local count = net.ReadUInt(8)
-    if Map.level ~= level then return end
+    if Map.level ~= level or Map.floorMask~=mask or Map.buildSerial~=serial then return end
 
     for _ = 1, count do
         local cell = {
@@ -346,7 +358,7 @@ function Map:Toggle()
     if not IsValid(ply) then return end
     if not hasAccess(ply) then
         LOD.Audio:Play('deny')
-        notification.AddLegacy("NO MAP — FIND ONE", NOTIFY_HINT, 2.5)
+        notification.AddLegacy("NO MAP FOR THIS FLOOR — FIND IT NEAR THE ENTRANCE", NOTIFY_HINT, 3)
         return
     end
 
@@ -682,7 +694,8 @@ end
 hook.Add("PostRender", "LOD_MinimapTopologyCache", function()
     if not Map.open or Map.cache.indexedRevision ~= Map.cache.revision then return end
     local ply = LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() then return end
+    if not IsValid(ply) or not ply:Alive() or not hasAccess(ply)
+        or not mapReadyForLevel(currentClientLevel()) then return end
     local _, _, gz = currentGridPosition(ply)
     gz = math.Clamp(gz, 0, math.max(0, (Map.layers or 1) - 1))
     if Map.cache.topologyRevision == Map.cache.revision and Map.cache.topologyFloor == gz then return end
@@ -745,7 +758,7 @@ local function paintMap(layout,ply,state,level)
 
     draw.SimpleText("LABYRINTH MAP", "LOD_Map_Title", panelX + 18, panelY + 12,
         COLORS.title, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-    draw.SimpleText(string.format("FLOOR %d / %d    M — CLOSE", gz + 1, math.max(1, Map.layers or 1)),
+    draw.SimpleText(string.format("FLOOR %d / %d    Q / M — CLOSE", gz + 1, math.max(1, Map.layers or 1)),
         "LOD_Map_Small", panelX + panelW - 16, panelY + 17,
         COLORS.muted, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
     local goalFloor = state.objectiveA and (state.objectiveA.z + 1) or nil

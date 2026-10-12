@@ -1,0 +1,245 @@
+{
+  "source_sha256": "250ed0cc5549e9ec142262b09fbe567f169dfdfc8be41c1425ad3dfc5dacb941",
+  "source_files": 2030,
+  "changed_lua_files": 30,
+  "checks": [
+    {
+      "name": "floor_maps",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 4.37
+    },
+    {
+      "name": "floor_maps_ui",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.037
+    },
+    {
+      "name": "minimap_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.038
+    },
+    {
+      "name": "minimap_player_marker",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_player_marker.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.048
+    },
+    {
+      "name": "map_movement",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_map_movement.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.039
+    },
+    {
+      "name": "quantum",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_quantum.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.046
+    },
+    {
+      "name": "staging_lore",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_lore.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.04
+    },
+    {
+      "name": "staging_lore_ui",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_lore_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.033
+    },
+    {
+      "name": "wizard_reaction_fx",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_wizard_reaction_fx.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.042
+    },
+    {
+      "name": "neil_brute",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_neil_brute.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 1.338
+    },
+    {
+      "name": "big_loot_ecology",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_big_loot_ecology.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.578
+    },
+    {
+      "name": "performance_capture",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_performance_capture.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.141
+    },
+    {
+      "name": "performance_profile",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_performance_profile.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.068
+    },
+    {
+      "name": "population_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.052
+    },
+    {
+      "name": "floor_maps_integration",
+      "command": [
+        "python",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_floor_maps_integration.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 4.939
+    },
+    {
+      "name": "event_ecology",
+      "command": [
+        "python",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_ecology.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 1.281
+    },
+    {
+      "name": "dev_manifest",
+      "command": [
+        "python",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.286
+    },
+    {
+      "name": "manual_document",
+      "command": [
+        "python",
+        "tools/test_manual_document.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.28
+    },
+    {
+      "name": "changed_lua_syntax",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua",
+        "gamemodes/legend_of_deborah/gamemode/init.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_magic_quadrants.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_reliability.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_major_fx.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_28.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_event_director.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_loot_director.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_contracts.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_staging_lore.lua",
+        "lua/autorun/server/lod_population_observability.lua",
+        "tools/test_floor_maps.lua",
+        "tools/test_floor_maps_integration.lua",
+        "tools/test_floor_maps_ui.lua",
+        "tools/test_minimap_player_marker.lua",
+        "tools/test_minimap_transport.lua",
+        "tools/test_performance_capture.lua",
+        "tools/test_performance_profile.lua",
+        "tools/test_population_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.042
+    },
+    {
+      "name": "installer_syntax",
+      "command": [
+        "bash",
+        "-n",
+        "tools/install_dev.sh"
+      ],
+      "exit_code": 0,
+      "seconds": 0.002
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.025
+    }
+  ]
+}

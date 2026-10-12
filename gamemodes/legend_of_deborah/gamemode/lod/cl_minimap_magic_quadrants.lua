@@ -86,6 +86,8 @@ hook.Add("Think", "LOD_MinimapMagicHeartbeat", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
 
+    if Map.open and not Map:HasAccess(ply) then Map.open=false end
+
     if Map.open and ply:GetNW2Float("LOD_Magic", 0) <= 0.001 then
         closeForNoMagic()
     end
@@ -141,7 +143,7 @@ end
 hook.Add("PostDrawHUD", "LOD_MinimapQuadrantPresentation", function()
     if not Map.open then return end
     local ply=LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() then return end
+    if not IsValid(ply) or not ply:Alive() or not Map:HasAccess(ply) or not Map:IsReady() then return end
     Map:WithPresentation(paintQuadrants,ply)
 end)
 

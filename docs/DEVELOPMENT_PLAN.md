@@ -1,4 +1,25 @@
-# Current checkpoint — living unarmed friendly NPCs
+# Current checkpoint — shared collectible floor maps
+
+Author-requested map correction on main `297ed8c3bae1771b9eb2310e77a101d5f4daf0db`.
+Exactly one party-owned pickup per physical floor replaces automatic access;
+no inventory item. Placement is within six closed-door graph steps of the first
+arrival, with an event-protected path. Q/M/VR show only found floors; transport,
+both decoders, build caches, personal Magic and lifecycle enforce that rule.
+Pickup uses the keycard ditty and a large four-second three-line notice; Hermit
+and generated Manual explain finding/sharing/Magic. Cash floors are included.
+
+21 selected checks pass, including 48 layouts / 146 floor paths and 12 full
+28-event/SQLite builds / 35 paths. Source coverage: 76 installed / 72 server /
+27 client. Live GDD 00/01 records the amendment and readback; Google rejected
+05/06/07/HUMAN edits, so those mirrors remain incomplete. Evidence, failure
+receipts and exact limits: [floor maps](validation/FLOOR_MAPS_20261012.md).
+Next native action: fully quit/update/install main, restart gm_flatgrass, hear
+the tutorial, deploy, verify Q denial before pickup, then touch the entrance-area
+map and observe the ditty/notice, shared floor access and personal Magic drain.
+Native map/co-op appearance and the previous Steam Deck >=40 FPS gate remain
+pending. No Workshop/VPS operation.
+
+# Previous checkpoint — living unarmed friendly NPCs
 
 Author-requested animation interjection, based on published main
 `b839ee68e37850ab05764358e0fb903c8260e4dd`. The eight-role writers' room supplied

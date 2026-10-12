@@ -17,13 +17,13 @@ for _,name in ipairs({'WriteUInt','WriteDouble','WriteBool','WriteFloat','WriteS
 end
 GetConVar=function() return {GetBool=function() return false end} end
 local function key(x,y,z) return x..':'..y..':'..z end
-LOD={Config={Maze={Origin={x=0,y=0,z=0}}},MazeGenerator={CellKey=key},
+LOD={Config={Maze={Origin={x=0,y=0,z=0},LevelHeight=384}},MazeGenerator={CellKey=key},
  RunManager={State={CampaignEpoch=1,Level=1,LevelSeed=42,BuildReady=true}},
  TopologySyncSafety={BuildSerial=1}}
 local function player()
  return {valid=true,IsPlayer=function() return true end,Alive=function() return true end,
  GetNW2Bool=function() return true end,GetNW2Int=function() return 1 end,
- SetNW2Bool=noop,SetNW2Int=noop}
+ SetNW2Bool=noop,SetNW2Int=noop,GetPos=function(self) return self.pos or {z=0} end}
 end
 local p,q=player(),player()
 local function graph(second)
@@ -38,12 +38,16 @@ local function flush()
 end
 dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua')
 local M,run=LOD.MinimapServer,LOD.RunManager.State
-run.Graph=graph(false)
+local function setGraph(g)
+ run.Graph=g
+ run.FloorMaps={graph=g,level=run.Level,epoch=run.CampaignEpoch,seed=run.LevelSeed,mask=1,owned={[0]=true},serial=LOD.TopologySyncSafety.BuildSerial}
+end
+setGraph(graph(false))
 if not arg[1] or arg[1]=='cache' then
  assert(M:Send(p));assert(packets[1].values[3]==1)
  assert(M:Send(q));assert(M.EncodeBuilds==1 and M.EncodeCacheHits==1)
  local old=setmetatable({run.Graph},{__mode='v'})
- run.Graph=graph(true);packets={}
+ setGraph(graph(true));packets={}
  assert(M:Send(p))
  assert(packets[1].values[3]==2,'same-seed replacement graph reused retired topology')
  assert(M.EncodeBuilds==2,'replacement topology must encode exactly once')
@@ -60,11 +64,23 @@ if not arg[1] or arg[1]=='requests' then
  assert(#timers==1,'burst recovery must queue at most one callback')
  receivers.LOD_MapRequest(0,q);assert(#packets==4,'one player throttled another')
  -- Coalescing must deliver the current graph, not lose a rebuild recovery.
- run.Graph=graph(true);flush()
+ setGraph(graph(true));flush()
  assert(#packets==6 and packets[5].values[3]==2,'queued resync lost newest topology')
  local n=#packets;receivers.LOD_MapRequest(100000,p)
  assert(#packets==n and #timers==0,'oversized empty request was admitted')
  receivers.LOD_MapRequest(0,p);assert(#timers==1)
  p.valid=false;flush();assert(#packets==n,'disconnected callback sent a map')
 end
+-- Server transport cannot reveal an uncollected floor, even to an owned-map
+-- viewer. Unlocking a new floor reuses canonical encoding but sends a new subset.
+p.valid=true
+local g=graph(false);g.Layers=2;g.Cells['1:1:1']={x=1,y=1,z=1}
+LOD.TopologySyncSafety.BuildSerial=3;setGraph(g);packets={}
+assert(M:Send(p) and packets[1].values[3]==1,'undiscovered topology escaped server')
+local chunk=packets[2];assert(chunk.values[5]==1 and chunk.values[8]==0)
+local encoded=M.EncodeBuilds
+p.pos={z=384};packets={};assert(not M:Send(p) and #packets==1 and packets[1].name=='LOD_MapDenied')
+run.FloorMaps.owned[1]=true;run.FloorMaps.mask=3;packets={}
+assert(M:Send(p) and packets[1].values[3]==2 and M.EncodeBuilds==encoded,'new floor reencoded entire graph')
+run.FloorMaps.epoch=0;packets={};assert(not M:Send(p),'stale party epoch sent topology')
 print('MINIMAP_TRANSPORT_PASS: exact graph/build cache, collection, bounded requests, latest recovery, player isolation')

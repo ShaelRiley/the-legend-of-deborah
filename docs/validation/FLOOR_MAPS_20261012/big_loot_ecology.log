@@ -1,0 +1,7 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 112
+[AUDIT] Implementation Feats Count: 112
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+BIG_LOOT_ECOLOGY_PASS: real PrepareReward receipts; history/class/reconnect replay; owner isolation; capacity retry; consumed/trash finality; all archetype slots/finite values; bounded ledger; campaign succession/reset; full-inventory sustain
+BIG_LOOT_CONTEXT_PASS: immutable DFT templates; explicit grants; seven actual damsel slot gifts; expanded deterministic fusion within the retained value window

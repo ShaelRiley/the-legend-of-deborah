@@ -45,28 +45,39 @@ local function developerMode()
     return cv and cv:GetBool() or false
 end
 
-local function currentLevel()
+function Minimap:PartyMaps()
     local state = LOD.RunManager and LOD.RunManager.State
-    return state and tonumber(state.Level) or 0
+    local maps = state and state.FloorMaps
+    if not maps or maps.graph ~= state.Graph or maps.level ~= state.Level
+        or maps.epoch ~= state.CampaignEpoch or maps.seed ~= state.LevelSeed then return nil end
+    return maps
+end
+
+function Minimap:FloorForPlayer(ply)
+    local state = LOD.RunManager and LOD.RunManager.State
+    local graph = state and state.Graph
+    if not IsValid(ply) or not graph then return nil end
+    local z = math.floor((ply:GetPos().z - MC.Origin.z) / MC.LevelHeight + 0.5)
+    return math.Clamp(z, 0, math.max(0, (graph.Layers or 1) - 1))
+end
+
+function Minimap:HasFloor(ply)
+    local maps, floor = self:PartyMaps(), self:FloorForPlayer(ply)
+    return maps ~= nil and floor ~= nil and maps.owned[floor] == true
 end
 
 function Minimap:CanUse(ply)
     if not IsValid(ply) or not ply:Alive() then return false end
     if developerMode() then return true end
-    if not ply:GetNW2Bool("LOD_MapUnlocked", false) then return false end
-    local level = currentLevel()
-    return level > 0 and ply:GetNW2Int("LOD_MapUnlockedLevel", 0) == level
+    return self:HasFloor(ply)
 end
 
--- Map entitlement is current-level-only without a per-tick reset hook. The level
--- stamp makes an old Map automatically invalid as soon as RunManager advances.
+-- Legacy Grant cannot invent a discovery. Party ownership is awarded only by
+-- the current build's registered physical pickup in CollectFloorMap.
 function Minimap:Grant(ply)
     if not IsValid(ply) then return false end
-    local level = currentLevel()
-    if level <= 0 then return false end
-    ply:SetNW2Bool("LOD_MapUnlocked", true)
-    ply:SetNW2Int("LOD_MapUnlockedLevel", level)
-    return true
+    if LOD.MultiplayerContracts then LOD.MultiplayerContracts:SyncMapCompatibility(ply) end
+    return self:CanUse(ply)
 end
 
 function Minimap:Revoke(ply)
@@ -171,14 +182,33 @@ local function cachedCanonicalCells(state, graph)
     Minimap.EncodedLevelSeed = levelSeed
     Minimap.EncodedCells = cells
     Minimap.EncodedChunks = chunks
+    Minimap.FloorEncodings = {}
     Minimap.EncodeBuilds = (Minimap.EncodeBuilds or 0) + 1
     return cells, chunks
+end
+
+local function discoveredCells(state, graph)
+    local canonical = cachedCanonicalCells(state, graph)
+    if developerMode() then return canonical, math.max(1, math.ceil(#canonical / CHUNK_SIZE)), 127 end
+    local maps = Minimap:PartyMaps()
+    local mask = maps and maps.mask or 0
+    local cached = Minimap.FloorEncodings[mask]
+    if cached then return cached.cells, cached.chunks, mask end
+    local cells = {}
+    for _, cell in ipairs(canonical) do
+        if maps and maps.owned[cell.z] then cells[#cells + 1] = cell end
+    end
+    local chunks = math.max(1, math.ceil(#cells / CHUNK_SIZE))
+    -- A dungeon has at most seven floors: only the monotonic discovery masks
+    -- can enter this cache, so it retains at most seven subsets per build.
+    Minimap.FloorEncodings[mask] = {cells=cells, chunks=chunks}
+    return cells, chunks, mask
 end
 
 function Minimap:Send(ply)
     if not self:CanUse(ply) then
         net.Start("LOD_MapDenied")
-        net.WriteString("NO MAP — FIND ONE")
+        net.WriteString("NO MAP FOR THIS FLOOR — FIND IT NEAR THE ENTRANCE")
         net.Send(ply)
         return false
     end
@@ -192,7 +222,9 @@ function Minimap:Send(ply)
         return false
     end
 
-    local cells, chunks = cachedCanonicalCells(state, graph)
+    local cells, chunks, mask = discoveredCells(state, graph)
+    local maps = self:PartyMaps()
+    local serial = maps and maps.serial or 0
 
     net.Start("LOD_MapBegin")
     net.WriteDouble(state.Level or 1)
@@ -208,11 +240,15 @@ function Minimap:Send(ply)
     net.WriteFloat(MC.Origin.z)
 
     local jail = graph.Progression and graph.Progression.JailEdge
+    if jail and not developerMode() and not (maps and maps.owned[jail.beforeCell.z]
+        and maps.owned[jail.afterCell.z]) then jail = nil end
     net.WriteBool(jail ~= nil)
     if jail then
         writeCell(jail.beforeCell)
         writeCell(jail.afterCell)
     end
+    net.WriteUInt(mask, 7)
+    net.WriteUInt(serial, 32)
     net.Send(ply)
 
     for chunkIndex = 1, chunks do
@@ -222,6 +258,8 @@ function Minimap:Send(ply)
 
         net.Start("LOD_MapChunk")
         net.WriteDouble(state.Level or 1)
+        net.WriteUInt(mask, 7)
+        net.WriteUInt(serial, 32)
         net.WriteUInt(chunkIndex, 8)
         net.WriteUInt(count, 8)
         for i = first, last do

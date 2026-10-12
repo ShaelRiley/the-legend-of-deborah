@@ -1,0 +1,46 @@
+[
+  {
+    "tabId": "t.dkjl8amu37zv",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "paragraphs": [
+      {
+        "text": "LOD-FLOOR-MAP-001 \u2014 AUTHOR-REQUESTED PARTY MAPS (2026-10-12)",
+        "startIndex": 1,
+        "endIndex": 61,
+        "tabId": "t.dkjl8amu37zv",
+        "namedStyleType": "HEADING_1",
+        "isListItem": false
+      },
+      {
+        "text": "Find one shared map per physical floor; automatic access is superseded. The author\u2019s current request governs; subsystem mirrors await repair after rejected Doc writes. Preserve current story/class design, Magic drain and pending performance/release gates. Maps are party progression state, never inventory.",
+        "startIndex": 62,
+        "endIndex": 368,
+        "tabId": "t.dkjl8amu37zv",
+        "namedStyleType": "NORMAL_TEXT",
+        "isListItem": false
+      }
+    ]
+  },
+  {
+    "tabId": "t.l29tf4evc12u",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "paragraphs": [
+      {
+        "text": "LOD-FLOOR-MAP-001 routing",
+        "startIndex": 1,
+        "endIndex": 26,
+        "tabId": "t.l29tf4evc12u",
+        "namedStyleType": "HEADING_1",
+        "isListItem": false
+      },
+      {
+        "text": "The author\u2019s current per-floor party-map request governs. Read the saved pointer in 00. Google rejected subsystem/HUMAN edits; those mirrors remain incomplete. Source implementation and finite evidence: docs/validation/FLOOR_MAPS_20261012.md. Preserve all other design and release gates.",
+        "startIndex": 27,
+        "endIndex": 314,
+        "tabId": "t.l29tf4evc12u",
+        "namedStyleType": "NORMAL_TEXT",
+        "isListItem": false
+      }
+    ]
+  }
+]

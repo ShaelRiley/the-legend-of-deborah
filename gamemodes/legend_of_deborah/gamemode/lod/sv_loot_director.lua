@@ -603,7 +603,7 @@ function Loot:_RewardCells(graph, sector)
         local cell = graph.Cells[key]
         local tag = graph.CellTags and graph.CellTags[key]
         if cell and tag and tag.sector == sector and not tag.objective and tag.role ~= "boss"
-            and not occupied[key]
+            and not occupied[key] and not (graph.FloorMapPlan and graph.FloorMapPlan.protectedCells[key])
         then
             if tag.role == "reward" then reward[#reward + 1] = cell end
             if tag.role == "reward" or tag.role == "resupply" or tag.safe or tag.role == "travel" then
@@ -622,7 +622,7 @@ function Loot:_SectorCandidates(graph, sector)
         local cell = graph.Cells[key]
         local tag = graph.CellTags and graph.CellTags[key]
         if cell and tag and tag.sector == sector and not tag.objective and tag.role ~= "boss"
-            and not occupied[key]
+            and not occupied[key] and not (graph.FloorMapPlan and graph.FloorMapPlan.protectedCells[key])
         then
             if tag.safe or tag.role == "resupply" or tag.role == "reward" then
                 preferred[#preferred + 1] = cell

@@ -32,6 +32,7 @@ draw={RoundedBox=function(_,x,y,w,h,c)
  SimpleText=function(text,font,x,y,c) x,y=point(x,y);texts[#texts+1]={text=text,x=x,y=y,alpha=alpha} end}
 GetRenderTarget=function() return {GetName=function() return 'map' end} end
 CreateMaterial=function() return {} end
+bit={band=function(a,b) return a&b end,lshift=function(a,b) return a<<b end}
 Color=function(r,g,b,a) return {r=r,g=g,b=b,a=a} end
 math.Clamp=function(x,a,b) return math.max(a,math.min(b,x)) end
 local commands={}
@@ -41,8 +42,13 @@ EyeAngles=function() return {y=0} end
 local player={pos={x=0,y=0,z=0},alive=true,access=true}
 function player:Alive() return self.alive end
 function player:GetPos() return self.pos end
-function player:GetNW2Bool(key) if key=='LOD_IsSoldier' then return false end;return self.access end
-function player:GetNW2Int(_,default) return default end
+function player:GetNW2Bool(key) if key=='LOD_IsSoldier' or key=='LOD_DeveloperMode' then return false end;return self.access end
+function player:GetNW2Int(key,default)
+ if key=='LOD_MapFloorMask' then return self.mask or 127 end
+ if key=='LOD_MapUnlockedLevel' then return 1 end
+ if key=='LOD_MapBuildSerial' then return self.serial or 1 end
+ return default
+end
 LocalPlayer=function() return player end
 IsValid=function(p) return p==player end
 LOD={Config={Maze={Width=21,Height=21,CellSize=384,LevelHeight=384,Origin={x=0,y=0,z=0}},Geometry={}},ClientState={level=1,gates={}}}
@@ -59,7 +65,7 @@ hook.Add('PostDrawHUD','LOD_MinimapComplementaryPlayerMarker',function() error('
 dofile(root..'cl_minimap_player_contrast.lua')
 assert(not hooks.PostDrawHUD.LOD_MinimapComplementaryPlayerMarker)
 local M=LOD.Minimap
-M.level=1;M.layers=4;M.expectedChunks=1;M.receivedChunks=1
+M.level=1;M.floorMask=127;M.buildSerial=1;M.layers=4;M.expectedChunks=1;M.receivedChunks=1
 M.cache.revision=1;M.cache.indexedRevision=1;M.cache.topologyRevision=1
 for _,width in ipairs({21,29,37}) do
  M.gridWidth=width
@@ -193,5 +199,15 @@ M.open=false;local reads,builds=alphaReads,matrixBuilds;quadrant();hooks.HUDPain
 assert(alphaReads==reads and matrixBuilds==builds,'closed map performs presentation work')
 M.open=true;player.magic=0;preferences.lod_map_opacity.value=0
 hooks.Think.LOD_MinimapMagicHeartbeat();assert(not M.open,'transparent map bypassed forced zero-Magic close')
+-- Party discovery gates the current physical floor, even if an old cache
+-- happened to contain that floor. Switching to it must close before rendering.
+player.mask=1;M.floorMask=1;M.buildSerial=1;player.pos={x=0,y=0,z=384};M.open=true
+hooks.HUDPaint.LOD_MinimapHUD();assert(not M.open,'cached unowned floor remained visible')
+commands.lod_minimap_toggle();assert(not M.open,'Q/M/controller bypassed current-floor ownership')
+player.pos.z=0;M.open=true;player.serial=2
+local requests=M.stats.mapRequests;M.nextRequestAt=0;circles={}
+hooks.HUDPaint.LOD_MinimapHUD()
+assert(M.stats.mapRequests==requests+1 and #circles==0,'same-level stale build cache rendered')
+player.serial=1;player.mask=nil;M.floorMask=127
 print('MINIMAP_PLAYER_PASS: blue marker; expanded topology; Q/M/VR access/focus; shared panel/text/quadrant transforms and alpha; 81 size/opacity/grid/window cases; cached Matrix; no topology rebuild; draw-state cleanup; Magic expiry')
 return {hooks=hooks,Map=M,preferences=preferences,player=player,wall=wall}

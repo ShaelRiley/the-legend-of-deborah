@@ -362,6 +362,10 @@ if CLIENT then
         "gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_player_options.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_major_fx.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_reliability.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_magic_quadrants.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua"}
     local populationChannel="LOD_PopulationSnapshot"

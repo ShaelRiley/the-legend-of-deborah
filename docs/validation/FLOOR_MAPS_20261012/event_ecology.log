@@ -1,0 +1,5 @@
+[LOD] Level 1 ready. campaign=41 levelSeed=19 layoutAttempt=2 cells=659 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 1 ready. campaign=41 levelSeed=19 layoutAttempt=2 cells=659 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 2 ready. campaign=41 levelSeed=47 layoutAttempt=1 cells=610 entities=1 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Level 2 ready. campaign=41 levelSeed=47 layoutAttempt=1 cells=610 entities=1 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+EVENT_ECOLOGY_PASS: exact d4/rare fourth slot, weighted deterministic registration-order isolation, successful-build history, no regen/preview/failed-creation feedback, bounded history and placement diagnostics, graph-preserving topology preferences

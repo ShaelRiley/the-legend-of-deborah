@@ -26,12 +26,7 @@ local function currentLevel()
     return state and math.max(0, math.floor(tonumber(state.Level) or 0)) or 0
 end
 
-local function productionMapLevelAvailable()
-    local level = currentLevel()
-    return level >= 1 and level <= 20
-end
-
-local function shouldHaveMapAccess(ply)
+local function mapViewerEligible(ply)
     local state = RunManager.State
     return IsValid(ply)
         and ply:IsPlayer()
@@ -41,18 +36,24 @@ local function shouldHaveMapAccess(ply)
         and state.BuildReady == true
         and state.Failed ~= true
         and state.LevelCleared ~= true
-        and (productionMapLevelAvailable() or developerMode())
+        and Minimap ~= nil
 end
 
--- The old Map pickup entitlement is retained only as a client-compatibility mirror.
--- It is no longer an authority. Dungeons 1-20 derive map availability from the
--- campaign level and active/living player state; Dungeon 21+ has no production map.
--- Developer mode may temporarily override tier availability for explicit testing.
+local function shouldHaveMapAccess(ply)
+    return mapViewerEligible(ply) and (developerMode() or Minimap:HasFloor(ply))
+end
+
+-- Mirrors are derived from the party's current-build discovered floors. Neither
+-- player lifecycle synchronization nor a legacy Grant may award a floor map.
 function Contracts:SyncMapCompatibility(ply)
     if not IsValid(ply) then return end
     local allowed = shouldHaveMapAccess(ply)
-    ply:SetNW2Bool("LOD_MapUnlocked", allowed)
-    ply:SetNW2Int("LOD_MapUnlockedLevel", allowed and currentLevel() or 0)
+    local maps = Minimap and Minimap:PartyMaps()
+    ply:SetNW2Bool("LOD_MapUnlocked", mapViewerEligible(ply)
+        and (developerMode() or maps~=nil and maps.mask>0))
+    ply:SetNW2Int("LOD_MapUnlockedLevel", (maps or allowed) and currentLevel() or 0)
+    ply:SetNW2Int("LOD_MapFloorMask", developerMode() and 127 or maps and maps.mask or 0)
+    ply:SetNW2Int("LOD_MapBuildSerial", maps and maps.serial or 0)
     self.Stats.mapPolicySyncs = (self.Stats.mapPolicySyncs or 0) + 1
 end
 
@@ -61,8 +62,7 @@ if Minimap then
         return shouldHaveMapAccess(ply)
     end
 
-    -- These legacy methods now update only the compatibility mirror. Calling
-    -- Grant can never create permission that the campaign rules do not allow.
+    -- Compatibility only; physical party discoveries are the authority.
     function Minimap:Grant(ply)
         Contracts:SyncMapCompatibility(ply)
         return shouldHaveMapAccess(ply)
@@ -72,6 +72,8 @@ if Minimap then
         if not IsValid(ply) then return end
         ply:SetNW2Bool("LOD_MapUnlocked", false)
         ply:SetNW2Int("LOD_MapUnlockedLevel", 0)
+        ply:SetNW2Int("LOD_MapFloorMask", 0)
+        ply:SetNW2Int("LOD_MapBuildSerial", 0)
     end
 end
 
@@ -217,8 +219,10 @@ concommand.Add("lod_multiplayer_contract_status", function(ply)
     for _, candidate in ipairs(player.GetAll()) do
         if IsValid(candidate) then
             local expected = shouldHaveMapAccess(candidate)
-            local mirrored = candidate:GetNW2Bool("LOD_MapUnlocked", false)
+            local mirrored = candidate:GetNW2Bool("LOD_MapUnlocked",false)
                 and candidate:GetNW2Int("LOD_MapUnlockedLevel", 0) == currentLevel()
+                and bit.band(candidate:GetNW2Int("LOD_MapFloorMask", 0),
+                    bit.lshift(1, Minimap:FloorForPlayer(candidate) or 0)) ~= 0
             if expected then mapAllowed = mapAllowed + 1 end
             if expected ~= mirrored then mapMismatch = mapMismatch + 1 end
         end
@@ -237,15 +241,12 @@ concommand.Add("lod_multiplayer_contract_status", function(ply)
     local passed = ffArmed and gateArmed and mapArmed and scaleArmed and mapMismatch == 0
 
     local line = string.format(
-        "level=%d livingActive=%d plannedParty=%d mapAllowed=%d mapMismatch=%d mapD1to20=%s friendlyFire=%s gateContract=%s partyScale=%s ffBlocked=%d gateBlocked=%d result=%s",
-        currentLevel(), living, plannedParty, mapAllowed, mapMismatch, tostring(productionMapLevelAvailable()),
+        "level=%d livingActive=%d plannedParty=%d mapAllowed=%d mapMismatch=%d foundFloorMask=%d friendlyFire=%s gateContract=%s partyScale=%s ffBlocked=%d gateBlocked=%d result=%s",
+        currentLevel(), living, plannedParty, mapAllowed, mapMismatch, Minimap:PartyMaps() and Minimap:PartyMaps().mask or 0,
         ffArmed and "SAME-FACTION-OFF/RECKLESS-EXCEPTION" or "UNSAFE", gateArmed and "ARMED" or "MISSING",
         scaleArmed and "ARMED" or "MISSING", Contracts.Stats.friendlyFireBlocked or 0,
         Contracts.Stats.invalidGateUsesBlocked or 0, passed and "PASS" or "FAIL")
     print("[LOD:MULTIPLAYER-CONTRACT] " .. line)
     if IsValid(ply) then ply:ChatPrint(line) end
 
-    if state.Level and state.Level >= 21 and not developerMode() and mapAllowed > 0 then
-        print("[LOD:MULTIPLAYER-CONTRACT] FAIL Dungeon 21+ exposed production map access")
-    end
 end)

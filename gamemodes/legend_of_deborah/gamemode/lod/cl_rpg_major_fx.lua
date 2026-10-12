@@ -9,9 +9,10 @@ local ACK_NAME = "LOD_RPGMajorFXAck"
 local FX_FEEDBACK = 1
 local FX_LEVEL_UP = 2
 local FX_FEAT_CONFIRM = 3
+local FX_MAP_FOUND = 5
 local LEVEL_UP_FX_SECONDS = 1.80
 
-FX.ClientVersion = 4
+FX.ClientVersion = 5
 FX.active = FX.active or nil
 
 surface.CreateFont("LOD_RPGMajorFXPrimary", {
@@ -54,7 +55,11 @@ function FX:Trigger(kind, primary, secondary, serial, origin, target)
         created = CurTime()
     }
 
-    playLevelSound()
+    if kind==FX_MAP_FOUND then
+        if LOD.AdventurePresentation then LOD.AdventurePresentation:Play(1,false) end
+    else
+        playLevelSound()
+    end
     return true
 end
 
@@ -85,6 +90,27 @@ end
 -- This is the presentation that passed the current Wizard playtest unchanged.
 local function drawLevelUpBurst(fx, now)
     local age = now - (fx.created or 0)
+    if fx.kind==FX_MAP_FOUND then
+        if age>=4 then FX.active=nil;return end
+        local alpha=math.floor(255*alphaEnvelope(age,4))
+        local x,y=ScrW()*0.5,ScrH()*0.39
+        local bright,dark=Color(255,248,205,alpha),Color(32,20,3,alpha)
+        surface.SetFont("LOD_RPGMajorFXPrimary")
+        local textW=surface.GetTextSize("Use map with Q")
+        local scale=math.min(1,math.max(0.25,(ScrW()-32)/math.max(1,textW+40)))
+        local matrix
+        if scale~=1 then
+            matrix=Matrix();matrix:SetScale(Vector(scale,scale,1))
+            matrix:SetTranslation(Vector(x*(1-scale),y*(1-scale),0))
+            cam.PushModelMatrix(matrix,true)
+        end
+        draw.RoundedBox(8,x-(textW+40)*0.5,y-44,textW+40,144,Color(12,15,17,math.floor(alpha*0.92)))
+        draw.SimpleTextOutlined("Use map with Q","LOD_RPGMajorFXPrimary",x,y-10,bright,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,4,dark)
+        draw.SimpleTextOutlined("M works too","LOD_RPGMajorFXSecondary",x,y+40,bright,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,2,dark)
+        draw.SimpleTextOutlined("Map consumes magic","LOD_RPGMajorFXSecondary",x,y+72,bright,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER,2,dark)
+        if matrix then cam.PopModelMatrix() end
+        return
+    end
     if age >= LEVEL_UP_FX_SECONDS then
         FX.active = nil
         return
@@ -148,7 +174,15 @@ end
 -- The rare level-up layer is independent of the Wizard reaction layer.
 hook.Add("PostDrawHUD", "LOD_RPGMajorFX", function()
     if not FX.active then return end
+    if FX.active.kind==FX_MAP_FOUND then
+        local ply=LocalPlayer()
+        if not IsValid(ply) or not ply:Alive() then FX.active=nil;return end
+    end
     drawLevelUpBurst(FX.active, CurTime())
+end)
+
+hook.Add("PreCleanupMap", "LOD_FloorMapPickupFXReset", function()
+    if FX.active and FX.active.kind==FX_MAP_FOUND then FX.active=nil end
 end)
 
 -- Local presentation-only diagnostic. It does not alter progression or combat.

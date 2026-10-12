@@ -175,6 +175,8 @@ end
 -- message after it replaces that callback with this exact-count receiver.
 net.Receive("LOD_MapChunk", function()
     local level = net.ReadDouble()
+    local mask=net.ReadUInt(7)
+    local serial=net.ReadUInt(32)
     local chunkIndex = net.ReadUInt(8)
     local count = net.ReadUInt(8)
     local payload = {}
@@ -194,7 +196,7 @@ net.Receive("LOD_MapChunk", function()
         payload[i] = cell
     end
 
-    if Map.level ~= level or not Map.cache then return end
+    if Map.level ~= level or Map.floorMask~=mask or Map.buildSerial~=serial or not Map.cache then return end
     if transferRevision ~= Map.cache.revision then resetTransferState() end
     if seenChunks[chunkIndex] then return end
 

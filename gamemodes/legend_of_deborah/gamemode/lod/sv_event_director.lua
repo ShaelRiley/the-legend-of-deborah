@@ -77,6 +77,7 @@ function D:ProtectedCells(g)
     for _, encounter in ipairs(g.EncounterPlan and g.EncounterPlan.encounters or {}) do
         out[encounter.cellKey or key(encounter.cell)] = true
     end
+    for k in pairs(g.FloorMapPlan and g.FloorMapPlan.protectedCells or {}) do out[k] = true end
     return out
 end
 
