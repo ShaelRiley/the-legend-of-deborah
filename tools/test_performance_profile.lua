@@ -32,9 +32,14 @@ local paths={'gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.
     'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua',
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
     root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',
-    root..'cl_container_branding.lua',root..'cl_ui_theme.lua',root..'cl_monster_identity.lua',
+    root..'cl_container_branding.lua',root..'cl_ui_theme.lua',
+    root..'cl_equipment_inventory.lua',root..'cl_spellbook.lua',root..'cl_monster_identity.lua',
     root..'cl_combat_roll_feed_semantics.lua',root..'sh_player_options.lua',root..'cl_player_options.lua',
     root..'cl_minimap.lua',root..'cl_minimap_magic_quadrants.lua',root..'sh_runtime_audit.lua'}
+assert(#paths==19,'review client source coverage when the production manifest changes')
+local uniquePaths={};for _,path in ipairs(paths) do
+    assert(not uniquePaths[path],'duplicate client source fixture: '..path);uniquePaths[path]=true
+end
 local manifest={};for _,path in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..path end
 for _,f in pairs(files) do
     f.dev_build='profile-test clean';f['legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
@@ -416,3 +421,43 @@ for _,seconds in ipairs({'invalid',math.huge,0,10000}) do
 end
 print(string.format('PERFORMANCE_PAIR_PASS baseline_frames=%d profiled_frames=%d; complete same-file native transport; no baseline instrumentation or per-frame I/O; scalar view evidence; stale callbacks/replies; 12 interruption cases and 3 active-profile native lifecycle events; restart/save/default/duration/idle bounds; synthetic clocks, not native FPS',baseline.active.frames,paired.active.frames))
 print('PERFORMANCE_PROFILE_PASS: opt-in/post-warmup; client/server real observer; exact inclusive timings; vararg/nil/self/error preservation; existing/new native instances; Watcher direct service; weak ownership and guarded restores; partial/final same-file transport; complete compressed reports and bounded malformed/oversized codecs; stale/admin/lease bounds; finite deadline; cleanup/reload/shutdown; no native FPS/GPU measurement')
+
+-- Exercise source verification through the real capture entrypoint. Every
+-- independently listed client source must matter: neither omissions nor hash
+-- substitutions may be hidden by a count-only fixture update.
+local sourceManifest='legend_of_deborah/dev_population_sources.txt'
+local completeManifest=files.client[sourceManifest]
+local originalRead=file.Read
+local function sourceCapture()
+    return realm('client',function()
+        A:StartPerformanceCapture(30)
+        return A:StopPerformanceCapture('manual').source
+    end)
+end
+local verified=sourceCapture()
+assert(verified.verified and verified.checked==#paths and verified.missing==0 and verified.mismatches==0)
+for index,path in ipairs(paths) do
+    for _,mode in ipairs({'missing-manifest','wrong-hash','missing-mounted'}) do
+        local altered={}
+        for i,line in ipairs(manifest) do
+            if i~=index or mode~='missing-manifest' then
+                altered[#altered+1]=i==index and mode=='wrong-hash'
+                    and string.rep('b',64)..'  '..path or line
+            end
+        end
+        files.client[sourceManifest]=table.concat(altered,'\n')
+        file.Read=function(name,where)
+            if mode=='missing-mounted' and where=='GAME' and name==path then return nil end
+            return originalRead(name,where)
+        end
+        local rejected=sourceCapture()
+        assert(not rejected.verified,path..' accepted '..mode)
+        assert(rejected.checked==(mode=='wrong-hash' and #paths or #paths-1))
+        assert(rejected.missing==(mode=='wrong-hash' and 0 or 1))
+        assert(rejected.mismatches==(mode=='wrong-hash' and 1 or 0))
+    end
+end
+file.Read=originalRead;files.client[sourceManifest]=completeManifest
+assert(sourceCapture().verified,'source verification did not recover')
+assert(not A.CPUProfile and not A.PerformanceCapture,'source fixture retained active observation')
+print('PERFORMANCE_SOURCE_PARITY_PASS: 19 distinct sources; all 57 per-source missing-manifest, wrong-hash and missing-mounted cases rejected; complete manifest restored; no native FPS claim')
