@@ -1,5 +1,6 @@
 include("lod/sh_runtime_audit.lua")
 include("shared.lua")
+include("lod/cl_friendly_idle.lua")
 include("lod/cl_player_options.lua")
 include("lod/cl_loop_audio.lua")
 include("lod/cl_instruction_manual.lua")

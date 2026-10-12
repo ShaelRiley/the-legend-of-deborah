@@ -38,6 +38,10 @@ LOD={Config={Models={Deborah='deborah-model'}}}
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
 dofile(root..'sh_damsels.lua');dofile(root..'cl_damsels.lua')
 local D=LOD.Damsels;D.ApplyAppearance=noop
+local idleCalls=0
+LOD.FriendlyIdle={Apply=function(_,ent,role,portrait)
+ assert(ent and role=='hermit' and portrait==true);idleCalls=idleCalls+1
+end}
 for _,tail in ipairs({false,true}) do
  local queue={73,1,21};for _=1,20 do queue[#queue+1]=false end
  queue[#queue+1]=0;if tail then queue[#queue+1]=42 end
@@ -63,12 +67,14 @@ local function show(level)
  assert(scroll.children[2].text=='separate actual receipt' and scroll.children[2].autoStretch)
  assert(scroll.children[1].height==nil,'long chapter forced into fixed label height')
  frame.Think();assert(not frame.removed)
+ local before=idleCalls;portrait.LayoutEntity(portrait,portrait.Entity)
+ assert(idleCalls==before+((level==nil or level==31 or level==30) and 1 or 0),'portrait idle admission changed')
  return frame,portrait,name
 end
 for _,screen in ipairs({{1280,800},{640,360},{480,320},{320,240}}) do
  sw,sh=screen[1],screen[2]
  local frame,portrait,name=show()
- assert(portrait.model=='models/monk.mdl' and name.text=='Dungeon Hermit')
+ assert(portrait.model=='models/player/monk.mdl' and name.text=='Dungeon Hermit')
  assert(portrait.visible==(sw-32>=560 and math.min(400,sh-32)>=270))
  frame.OnKeyCodePressed(frame,KEY_ESCAPE);assert(frame.removed and D.DialogueFrame==nil)
 end

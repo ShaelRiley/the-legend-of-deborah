@@ -70,9 +70,12 @@ function D:ShowDialogue(level,line,result)
         surface.SetDrawColor(210,170,82,255);surface.DrawOutlinedRect(0,0,w,h,2)
     end
     local portrait=vgui.Create('DModelPanel',frame);portrait:SetPos(14,36);portrait:SetSize(124,160)
-    portrait:SetModel(guideTalk and 'models/monk.mdl' or (def and self:Model(def) or 'models/Humans/Group01/male_04.mdl'))
+    portrait:SetModel(guideTalk and 'models/player/monk.mdl' or (def and self:Model(def) or 'models/Humans/Group01/male_04.mdl'))
     portrait:SetFOV(26);portrait:SetCamPos(Vector(46,0,64));portrait:SetLookAt(Vector(0,0,65))
-    portrait.LayoutEntity=function(_,ent) ent:SetAngles(Angle(0,0,0)) end
+    portrait.LayoutEntity=function(_,ent)
+        ent:SetAngles(Angle(0,0,0))
+        if guideTalk and LOD.FriendlyIdle then LOD.FriendlyIdle:Apply(ent,'hermit',true) end
+    end
     if def then self:ApplyAppearance(portrait.Entity,level,self.Campaign and self.Campaign.seed or 1) end
     if guideTalk and IsValid(portrait.Entity) then portrait.Entity:SetColor(Color(196,60,60)) end
     local showPortrait=width>=560 and height>=270

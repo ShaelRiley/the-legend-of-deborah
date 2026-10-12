@@ -1,0 +1,36 @@
+{
+  "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "routes": {
+    "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revisionId": "AHj4eMSdR_1UlQcA3rJ0hEoQJD4rtEQo1TrO5-KkbMeYABLtBOU0YNn3XOMZq3bGcroaA96Jeqro9CEswC3HXws_ay9e7OXh-SjarvCQHw",
+    "resolvedRange": {
+      "startIndex": 1,
+      "endIndex": 75,
+      "tabId": "t.dkjl8amu37zv",
+      "matchedText": "LOD-NPC-IDLE-001 — AUTHOR-REQUESTED FRIENDLY ANIMATION UPDATE (2026-10-12)"
+    },
+    "document_url": "https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
+  },
+  "index": {
+    "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revisionId": "AHj4eMSdR_1UlQcA3rJ0hEoQJD4rtEQo1TrO5-KkbMeYABLtBOU0YNn3XOMZq3bGcroaA96Jeqro9CEswC3HXws_ay9e7OXh-SjarvCQHw",
+    "resolvedRange": {
+      "startIndex": 1,
+      "endIndex": 25,
+      "tabId": "t.l29tf4evc12u",
+      "matchedText": "LOD-NPC-IDLE-001 routing"
+    },
+    "document_url": "https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
+  },
+  "human": {
+    "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revisionId": "AHj4eMSdR_1UlQcA3rJ0hEoQJD4rtEQo1TrO5-KkbMeYABLtBOU0YNn3XOMZq3bGcroaA96Jeqro9CEswC3HXws_ay9e7OXh-SjarvCQHw",
+    "resolvedRange": {
+      "startIndex": 62,
+      "endIndex": 922,
+      "tabId": "t.0",
+      "matchedText": "Author-requested presentation correction: animate the Hermit, Game Master, Wounded Scavenger and Prison Surveyor using stock player-model counterparts and explicitly unarmed idles, with distinct restrained gestures, breathing and blinks. Never use Grigory’s invisible-gun default idle. The eight-role room retains the Hermit’s rehearsed welcome, the Game Master’s expectant invitation, the Scavenger’s guarded dignity and the Surveyor’s thoughtful glances. Keep services, lore, interaction geometry, rescued women, the granite statue and giant Hector projection unchanged. Full current contract: 05 — CORE LOOP & WORLD, LOD-NPC-IDLE-001. Cosmetic tuning and source/native gates: 07 — IMPLEMENTATION & TUNING, LOD-NPC-IDLE-TUNING-001. This supersedes only the friendly guide’s frozen pose; native visual acceptance and the existing release order remain pending."
+    },
+    "document_url": "https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY"
+  }
+}

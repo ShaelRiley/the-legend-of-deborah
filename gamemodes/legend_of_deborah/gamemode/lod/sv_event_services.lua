@@ -209,7 +209,7 @@ register({id='ammo_transmuter',name='Ammo Transmuter',family='services',role='re
     end})
 
 register({id='prisoner_barter',name='Wounded Scavenger',family='prisoners',role='sink',topology='dead_end',cost='1 Healing Potion',reward='displayed wearable',
-    themeAffinities={quarantine=2,hunting=1.5},presentation={model='models/Humans/Group03/male_07.mdl',color={180,155,145}},
+    themeAffinities={quarantine=2,hunting=1.5},presentation={model='models/player/Group03/male_07.mdl',color={180,155,145}},
     Quote=function(i,p,id)
         local item=generated(i,id,'barter');if not item then return nil,'The scavenger has nothing to exchange.' end
         return quote(item.id,'Give 1 Healing Potion to the scavenger for '..E:ItemName(item)..'.','1 Healing Potion',{item=item})

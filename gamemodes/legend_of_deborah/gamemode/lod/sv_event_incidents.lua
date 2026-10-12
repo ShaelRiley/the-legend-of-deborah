@@ -323,7 +323,7 @@ register({id='watchful_eye',name='WATCHFUL EYE',contract='HAZARD',family='traps'
 
 register({id='prison_surveyor',name='PRISON SURVEYOR',family='inhabitants',scope='personal',
     interactionMode='interacted',risk='low',role='information',themeAffinities={retinue=2,crossfire=1.5},
-    presentation={model='models/Humans/Group03/male_07.mdl',color={185,180,160}},
+    presentation={model='models/player/Group03/male_07.mdl',color={185,180,160}},
     offer='A prisoner charts your current objective through passages that are open now.',
     action='USE — ask for current route and physical floor.',
     Interact=function(director,instance,ply,identity)

@@ -271,6 +271,7 @@ end
 include("lod/sv_boss_arena.lua")
 AddCSLuaFile("lod/cl_boss_encounter.lua")
 AddCSLuaFile("lod/cl_hector.lua")
+AddCSLuaFile("lod/cl_friendly_idle.lua")
 AddCSLuaFile("lod/cl_warden.lua")
 AddCSLuaFile("lod/cl_warden_dancefloor.lua")
 AddCSLuaFile("lod/cl_neil_brute.lua")

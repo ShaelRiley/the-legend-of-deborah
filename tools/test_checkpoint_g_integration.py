@@ -119,6 +119,7 @@ SUITES = [
     ("Hector Encounter, Native Death & Level-20 Rescue Gate", ["python3", "tools/run_lua54.py", "tools/test_hector_encounter.lua"]),
     ("Hector Canonical Actor Health & Defenses", ["python3", "tools/run_lua54.py", "tools/test_hector_health.lua"]),
     ("Hector Horizon & Telegraph Presentation", ["python3", "tools/run_lua54.py", "tools/test_hector_presentation.lua"]),
+    ("Friendly NPC Unarmed Idle & Native Draw Admission", ["python3", "tools/run_lua54.py", "tools/test_friendly_idle.lua"]),
     ("Equipment Quiz Lifecycle & Atomic Settlement", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_equipment_quiz.lua"]),
     ("Active Event Catalog, Bribe Removal & Quiz Placement", ["python3", "tools/test_crypto_sqlite.py", "tools/test_event_quiz_generation.lua"]),
     ("Minigame Shell & Equipment UI Restrictions", ["python3", "tools/run_lua54.py", "tools/test_minigame_ui.lua"]),

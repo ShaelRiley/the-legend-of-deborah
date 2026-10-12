@@ -1,0 +1,166 @@
+[
+  {
+    "name": "friendly_idle",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_friendly_idle.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "1da9dcc308bd21438674e970d051c20cc83a0abd1a5c444094d7dcd2086e47c8",
+    "tail": "FRIENDLY_IDLE_PASS: named unarmed cycles/looping, four roles, blink reopen, native overwrite, unique phase, cached discovery, duplicate/cadence/distance/portrait gates, model/role/reload invalidation, missing APIs, spent quiz suppression and props\n"
+  },
+  {
+    "name": "guide_lore",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_staging_lore.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "a30af0c38a9e67f4309def652d7a6e874133e9f7f59979680f932b0cf22902f8",
+    "tail": "STAGING_LORE_PASS: 20 distinct chapters; native Use; independent/replay talks; reveal/succession; 19 admission boundaries; unchanged20 service parameters/cadences; claimed-gift and unavailable-Abundance dialogue\n"
+  },
+  {
+    "name": "dialogue_ui",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_staging_lore_ui.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "a1096d77c1a6235c40facd92417ae1d6a49bf44aca209500de097fe00e27db4c",
+    "tail": "STAGING_LORE_UI_PASS: complete long text and distinct receipt on native scroll canvas; four screen bounds; speaker/model correctness; Escape; death/deployment/campaign/dungeon/reveal/succession/replacement retirement\n"
+  },
+  {
+    "name": "event_services",
+    "command": [
+      "python",
+      "tools/test_crypto_sqlite.py",
+      "tools/test_event_services.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "e72e0f6fa1d5d036a73aaabd579ab076974a3f1048f69c862dd2756a3011a312",
+    "tail": "[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download\n[AUDIT] Expected Implemented Feats Count: 112\n[AUDIT] Implementation Feats Count: 112\n[CHECKPOINT_D_CLOSURE] PASS \u2014 Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.\nPROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution\nEVENT_SERVICES_PASS: ten real services; informed exact review; canonical health/ammo/status/equipment; SQL/native rollback; shared/personal durable claims; regeneration, life replacement, full bags, reentrancy and cleanup\n"
+  },
+  {
+    "name": "event_incidents",
+    "command": [
+      "python",
+      "tools/test_crypto_sqlite.py",
+      "tools/test_event_incidents.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "021035ff9478b264671563cacd88b4a8457d1cdbbb366369040e6ba8ae775579",
+    "tail": "[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download\n[AUDIT] Expected Implemented Feats Count: 112\n[AUDIT] Implementation Feats Count: 112\n[CHECKPOINT_D_CLOSURE] PASS \u2014 Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.\nPROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution\nEVENT_INCIDENTS_PASS: ten distinct real events; automatic saves/stance/gaze/LOS; NPC route information; solo/co-op plates; ordered relay; secret memory; timed/stat attempts; Magic channel; actual SQLite rollback/retry/persistence; exact body/life/parts/clock/cleanup/partial-creation gates\n"
+  },
+  {
+    "name": "event_quiz",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_event_equipment_quiz.lua"
+    ],
+    "returncode": 1,
+    "output_sha256": "b7a4338171727cd2714a4e11d7acf4f4b119238ce294ff170dded706d78cdac3",
+    "tail": "[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download\n[AUDIT] Expected Implemented Feats Count: 112\n[AUDIT] Implementation Feats Count: 112\n[CHECKPOINT_D_CLOSURE] PASS \u2014 Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.\nPROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution\n/workspace/scratch/4be39353b5bf/the-legend-of-deborah/tools/test_event_equipment_quiz.lua: tools/dungeon_event_fixture.lua:3: Run through python3 tools/test_crypto_sqlite.py tools/test_dungeon_events.lua\n"
+  },
+  {
+    "name": "event_ui",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_event_expansion_ui.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "eb58d9475ce94d610e1d68986cae6486930ec1bb075b823bbab1f3e40bddb528",
+    "tail": "EVENT_EXPANSION_UI_PASS: endpoint prompts, actual cost/consequence, narrow display, spent/unavailable/resolved, stale snapshots, native metadata\n"
+  },
+  {
+    "name": "damsel_staging",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_damsel_staging.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "dda36e58f3c5c179e91b437d6570a5641141dd145f8db740f748afeb90e6c1e0",
+    "tail": "[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.\n[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.\n[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.\nenemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle\nDAMSEL_STAGING_PASS: all20 fit clear perimeter, stable positions, no transition duplication, late join/one letter, E use and campaign removal\nDAMSEL_DIALOGUE_PASS: native panel hierarchy, upper-left portrait, name/text/receipt and E dismissal\n"
+  },
+  {
+    "name": "guide_succession",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_deborah_succession.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "e9b2728a9c6c77db6ed8c04542d50a776451ab2051472ea963e9966b0364c395",
+    "tail": "[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.\n[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.\n[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.\nenemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle\n[LOD] Level 20 cleared by Hero; advancing in 15 seconds\nDEBORAH_SUCCESSION_PASS: accepted settlement, exact sole actor/anchor, revelation secrecy, replay, endless/rebuild/reconnect/death, Abundance authority, partial failure/retry and fresh-campaign reversal\n"
+  },
+  {
+    "name": "hermit_returns",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_hermit_return.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "88f4430e9aa4e6bc1617c689187d7cb77b353227ed66f868b288a3e3e3e5d8c5",
+    "tail": "hermit_return PASS: production advance, preserved lives/starter, per-visit sealing, reconnect, owner/replay isolation, no second firearm, full-ammo fallback\nhermit_board PASS: mirror-size panel and non-overlapping placement\nhermit_admission PASS: production staged collection without enabling combat, source/owner checks, idempotent grant\n"
+  },
+  {
+    "name": "hector_projection",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_hector_presentation.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "569a31f8af5349fdb98dc58a60bafc0d5a1eaf8cdd72dd59ee2c364456da0701",
+    "tail": "HECTOR_PRESENTATION_PASS: native receiver/render paths; bounded models/marks/hazards; readable phases; reduced effects; clip fault unwind; inactive/stale/entity/map/shutdown/hot reload cleanup\n"
+  },
+  {
+    "name": "performance_capture",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_performance_capture.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "24f066c07f9080598d9505d831381b245b2a4a9b1382d267947e24eed134d4c0",
+    "tail": "ormance_capture.lua:176: injected disk failure\n[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.\n[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=ready preparation_timed_out=false\n[LOD:PERF] Save failed: ...odes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua:549: DATA write did not persist\nPERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows with live renderer history; native/default route without batch-preparation delay; build/settings/resource evidence including experimental preference; preparation excluded or explicitly timed out; stalled renderer still measured; true no-render wait; 65536 limit; reset/refresh/shutdown/throwing and silent I/O cleanup\n"
+  },
+  {
+    "name": "performance_profile",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_performance_profile.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "e0ba682a6e99b3fbd0bbe18aedee153846c2104962190fd9b57ac687ce41dd2f",
+    "tail": "\n[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance\n[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt\nPERFORMANCE_PAIR_PASS baseline_frames=769 profiled_frames=468; complete same-file native transport; no baseline instrumentation or per-frame I/O; scalar view evidence; stale callbacks/replies; 12 interruption cases and 3 active-profile native lifecycle events; restart/save/default/duration/idle bounds; synthetic clocks, not native FPS\nPERFORMANCE_PROFILE_PASS: opt-in/post-warmup; client/server real observer; exact inclusive timings; vararg/nil/self/error preservation; existing/new native instances; Watcher direct service; weak ownership and guarded restores; partial/final same-file transport; complete compressed reports and bounded malformed/oversized codecs; stale/admin/lease bounds; finite deadline; cleanup/reload/shutdown; no native FPS/GPU measurement\n"
+  },
+  {
+    "name": "population_transport",
+    "command": [
+      "python",
+      "tools/run_lua54.py",
+      "tools/test_population_transport.lua"
+    ],
+    "returncode": 0,
+    "output_sha256": "bc4763bd0b8abee54f45dbc7d149d05a02745a4e078857f9b41f72fa3cc30212",
+    "tail": "POPULATION_TRANSPORT_PASS: one automatic opt-in request; existing census/source cache; admin/rate/map/payload bounds; complete client mirror and performance embedding; valid bounded console; native DATA silent/throwing failures; malformed packets; no second census or timer\n"
+  },
+  {
+    "name": "installer_manifest",
+    "command": [
+      "python",
+      "tools/test_dev_population_manifest.py"
+    ],
+    "returncode": 0,
+    "output_sha256": "754435d300d96fd6f79d16f7b698063d4f0ff20e652a6a2167adeb64c5fdaa05",
+    "tail": "DEV_POPULATION_MANIFEST_PASS exact 66-source hashes including friendly NPC idle/models and prior rendering/combat authorities; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup\n"
+  }
+]

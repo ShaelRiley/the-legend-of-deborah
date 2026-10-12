@@ -1,4 +1,30 @@
-# Current checkpoint — twenty-chapter staging story
+# Current checkpoint — living unarmed friendly NPCs
+
+Author-requested animation interjection, based on published main
+`b839ee68e37850ab05764358e0fb903c8260e4dd`. The eight-role writers' room supplied
+three paired advisory passes; Quinn/Ned assembly keeps restrained, distinct
+mannerisms. Live GDD 00/01 now routes 05 LOD-NPC-IDLE-001 and 07
+LOD-NPC-IDLE-TUNING-001, with a compact HUMAN mirror; design/readback preceded
+game changes and preserved existing text.
+
+Hermit, Game Master, Wounded Scavenger and Prison Surveyor now use same-faced
+stock animated player-model variants with explicitly unarmed, draw-driven idles.
+Client-only cached bones/flexes add role-specific gestures, nods, smiles and
+independent blinks; the Hermit portrait matches. No added actors, server animation
+loop, RNG stream or service change. Rescued women, sole Deborah succession,
+statue and giant Hector projection remain. Source verification covers the eight
+NPC authorities at existing cadence: 66 installed / 62 observed / 23 client.
+
+Fifteen relevant regressions and four syntax/shell/whitespace checks pass;
+17 changed/new Lua files parse. Fixture failures remain archived. Evidence and
+limits: [friendly idle checkpoint](validation/FRIENDLY_NPC_IDLE_20261012.md).
+Next native action: fully quit/update/install main, restart gm_flatgrass and
+approach the Hermit, then press E. Observe living idle/empty hands and matching
+portrait; later service-event observations cover all three roles and spent-quiz
+hiding. Native appearance and the previous stationary Steam Deck comparison /
+sustained ≥40FPS remain pending. No Workshop/VPS operation.
+
+# Previous checkpoint — twenty-chapter staging story
 
 Author-requested lore interjection, based on published main
 `f7353f2fd4fdb85794a39845c518446e1473c5e3`. The live GDD was updated and verified

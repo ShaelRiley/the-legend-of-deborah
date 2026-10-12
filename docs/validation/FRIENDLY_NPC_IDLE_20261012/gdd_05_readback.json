@@ -1,0 +1,31 @@
+{
+  "label": "05",
+  "revision": "AHj4eMSdR_1UlQcA3rJ0hEoQJD4rtEQo1TrO5-KkbMeYABLtBOU0YNn3XOMZq3bGcroaA96Jeqro9CEswC3HXws_ay9e7OXh-SjarvCQHw",
+  "inserted": [
+    {
+      "text": "LOD-NPC-IDLE-001 — LIVING, UNARMED SERVICE NPCS [AUTHOR-REQUESTED; 2026-10-12]",
+      "startIndex": 1,
+      "endIndex": 79,
+      "tabId": "t.8p7v8fnmr641",
+      "namedStyleType": "HEADING_1",
+      "isListItem": false
+    },
+    {
+      "text": "Replace frozen friendly NPC presentation at the staging Hermit and the equipment_quiz Game Master, prisoner_barter Wounded Scavenger and prison_surveyor with stock animated model variants retaining their established faces and silhouettes. Grigory’s weapon-holding NPC default idle is prohibited; never show an invisible-gun grip. Use the stock player monk/citizen variants and explicitly named unarmed idle sequences, with restrained custom bones and facial flexes. The Hermit keeps his red appearance, a genial smile, breathing, occasional nods and blinks, and an empty offered hand; his hospitality may feel faintly rehearsed without disclosing Hector before the existing reveal. The Game Master shares the likeness with an expectant head tilt and palm-up invitation, never implying an accepted wager or earned reward. The Wounded Scavenger breathes quietly with a guarded torso/arm and small weight shifts, preserving dignity and never promising treatment. The Prison Surveyor uses measured glances and a thoughtful tilt; do not point toward an unverified corridor. This is the eight-role room’s paired Roxy/Perry, Bea/Mira and Ada/Kit pass, assembled by Quinn Keyes and restrained by Ned Still.",
+      "startIndex": 80,
+      "endIndex": 1278,
+      "tabId": "t.8p7v8fnmr641",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    },
+    {
+      "text": "Keep feet, entity origin, native interaction/collision bounds, labels, event claims, costs, state, service results and dialogue unchanged. The Hermit’s dialogue portrait uses the same living unarmed presentation. Current rescued women already have native idles; Deborah’s sole staging succession remains authoritative. Preserve the authored giant Hector projection/crowbar and intentionally frozen granite Debbie statue. Machines and other props remain props. Cosmetic model/sequence/bone/flex choices and cadence are IMPLEMENTATION-TUNABLE within this contract; no new AI, actors, voice assets, global NPC scans, gameplay RNG use, recurring server animation service or networked facial/bone update is authorized. 07 owns current cosmetic values and finite/source/native gates. This supersedes the friendly guide’s frozen wide-thumbs-up pose only.",
+      "startIndex": 1279,
+      "endIndex": 2126,
+      "tabId": "t.8p7v8fnmr641",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    }
+  ],
+  "untouched": true
+}

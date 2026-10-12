@@ -1,0 +1,34 @@
+[LOD:PERF] Recording 180s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=4881 active_seconds=131.43 fps=37.14 median_ms=25.000 p95_ms=25.000 p99_ms=120.000 max_ms=120.000 over25=99 over50=99 over100=99 source_verified=true reason=complete renderer=ready preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=ready preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 180s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=ready preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 180s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=65536 active_seconds=6.55 fps=10000.00 median_ms=0.100 p95_ms=0.100 p99_ms=0.100 max_ms=0.100 over25=0 over50=0 over100=0 source_verified=false reason=sample-limit renderer=ready preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 300s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=shutdown renderer=ready preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=lua-refresh renderer=ready preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=100 active_seconds=5.00 fps=20.00 median_ms=50.000 p95_ms=50.000 p99_ms=50.000 max_ms=50.000 over25=100 over50=0 over100=0 source_verified=false reason=complete renderer=waiting-appearance preparation_timed_out=true
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=1 active_seconds=0.05 fps=20.00 median_ms=50.000 p95_ms=50.000 p99_ms=50.000 max_ms=50.000 over25=1 over50=0 over100=0 source_verified=false reason=shutdown renderer=off preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=renderer-timeout renderer=building preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=ready preparation_timed_out=false
+[LOD:PERF] Save failed: ...the-legend-of-deborah/tools/test_performance_capture.lua:176: injected disk failure
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=ready preparation_timed_out=false
+[LOD:PERF] Save failed: ...odes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua:549: DATA write did not persist
+PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows with live renderer history; native/default route without batch-preparation delay; build/settings/resource evidence including experimental preference; preparation excluded or explicitly timed out; stalled renderer still measured; true no-render wait; 65536 limit; reset/refresh/shutdown/throwing and silent I/O cleanup

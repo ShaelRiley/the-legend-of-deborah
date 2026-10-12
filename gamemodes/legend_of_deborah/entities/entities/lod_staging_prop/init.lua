@@ -4,7 +4,7 @@ include("shared.lua")
 
 util.AddNetworkString("LOD_StagingStarterCelebration")
 
-local GUIDE_MODEL = "models/monk.mdl"
+local GUIDE_MODEL = "models/player/monk.mdl"
 local PORTAL_MODEL = "models/props_lab/teleplatform.mdl"
 local TORCH_MODEL = "models/props_c17/light_cagelight02_on.mdl"
 local FALLBACK_MODEL = "models/props_lab/teleplatform.mdl"
@@ -183,7 +183,7 @@ concommand.Add("lod_staging_presentation_status", function(ply)
         and IsValid(staging.StarterPedestalEntity)
 
     local line = string.format(
-        "guide=%s pose=wide-thumbs-up-grin sign=%s torches=%d manual=%s mirror=%s starterPedestal=%s doll=%s celebrationNet=ARMED result=%s",
+        "guide=%s pose=unarmed-living-welcome sign=%s torches=%d manual=%s mirror=%s starterPedestal=%s doll=%s celebrationNet=ARMED result=%s",
         tostring(IsValid(guide)), tostring(staging and IsValid(staging.SignEntity)), torches,
         tostring(staging and IsValid(staging.ManualEntity)),
         tostring(staging and IsValid(staging.MirrorEntity)),

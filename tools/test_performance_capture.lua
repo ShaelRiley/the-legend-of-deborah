@@ -42,6 +42,10 @@ local paths={'gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.
     root..'cl_textured_box.lua',root..'cl_wall_visuals.lua',root..'cl_wall_batch.lua',
     root..'cl_container_section_recolor.lua',root..'cl_container_wayfinding_projection.lua',
     root..'cl_container_branding.lua',root..'cl_ui_theme.lua',root..'cl_monster_identity.lua',
+    'gamemodes/legend_of_deborah/gamemode/lod/cl_friendly_idle.lua',
+    'gamemodes/legend_of_deborah/entities/entities/lod_staging_prop/cl_init.lua',
+    'gamemodes/legend_of_deborah/entities/entities/lod_dungeon_event/cl_init.lua',
+    'gamemodes/legend_of_deborah/gamemode/lod/cl_damsels.lua',
     root..'cl_equipment_inventory.lua',root..'cl_spellbook.lua',
     root..'cl_combat_roll_feed_semantics.lua',root..'sh_player_options.lua',root..'cl_player_options.lua',
     root..'cl_minimap.lua',root..'cl_minimap_magic_quadrants.lua',root..'sh_runtime_audit.lua'}

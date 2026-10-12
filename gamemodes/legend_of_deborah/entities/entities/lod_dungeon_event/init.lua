@@ -8,7 +8,7 @@ function ENT:Initialize()
     if presentation then self:SetNW2String('LOD_EventName',definition.name or definition.displayName or archetype) end
     local chest=archetype=='locked_chest' or archetype=='treasure_chest'
         or (archetype=='bribe_blockade' and self:GetNW2String('LOD_BribeRole','')=='cache')
-    self:SetModel(presentation and presentation.model or archetype=='equipment_quiz' and 'models/monk.mdl'
+    self:SetModel(presentation and presentation.model or archetype=='equipment_quiz' and 'models/player/monk.mdl'
         or archetype=='warp_hole' and 'models/props_combine/combine_mine01.mdl'
         or archetype=='vending_machine' and 'models/props_interiors/VendingMachineSoda01a.mdl'
         or chest and 'models/Items/item_item_crate.mdl' or 'models/props_lab/reciever01b.mdl')

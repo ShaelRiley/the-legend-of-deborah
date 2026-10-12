@@ -1,0 +1,31 @@
+{
+  "label": "07",
+  "revision": "AHj4eMSdR_1UlQcA3rJ0hEoQJD4rtEQo1TrO5-KkbMeYABLtBOU0YNn3XOMZq3bGcroaA96Jeqro9CEswC3HXws_ay9e7OXh-SjarvCQHw",
+  "inserted": [
+    {
+      "text": "LOD-NPC-IDLE-TUNING-001 — FRIENDLY IDLE PRESENTATION AND FINITE GATE [IMPLEMENTATION-TUNABLE; 2026-10-12]",
+      "startIndex": 1,
+      "endIndex": 106,
+      "tabId": "t.bff19dm33vvw",
+      "namedStyleType": "HEADING_1",
+      "isListItem": false
+    },
+    {
+      "text": "Current cosmetic choices: Hermit and Game Master use models/player/monk.mdl; the two citizen events use models/player/Group03/male_07.mdl. Resolve only idle_all_01, idle_all_02 or menu_combine on the actual model; never guess sequence zero or fall back to a generic weapon idle. Base-cycle rates by role are Hermit 0.85, Game Master 0.92, Scavenger 0.65 and Surveyor 0.78, with entity-derived phase offsets. Presentation is driven only when drawn, once per rendered frame, from elapsed client time; there is no per-NPC Think hook or server work. Cache native bone/flex discovery per entity model/role/version. Small custom upper-body/face changes update at most every 0.05 seconds (0.10 with Reduced Effects), only within 1024 units or for the visible dialogue portrait. Base idle continues when rendered farther away; no queued catch-up on return. Blinks last 0.22 seconds and are independently spaced approximately 3–5.4 seconds, without consuming random streams. Smile weights are restrained (Hermit 0.55, Game Master 0.4, Surveyor 0.12; Scavenger none); cheek/jaw flexes are optional and model-supported. Motion uses small planted-foot head/spine/arm offsets and empty hands; exact angular amplitudes may be tuned for native visual correctness.",
+      "startIndex": 107,
+      "endIndex": 1355,
+      "tabId": "t.bff19dm33vvw",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    },
+    {
+      "text": "Finite source gate: verify four role integrations, exact stock models, positive-duration named unarmed sequence resolution, advancing/looping cycles, distinct gestures/blinks, independent phases, cached lookup, duplicate render and Reduced Effects cadence, distance admission, model-change/reload invalidation and unsupported-bone/flex safety. Verify spent quiz suppression, unchanged machine rendering and services, guide Use/lore, all damsel staging/succession, giant Hector resources and current installer/source verification. Parse changed Lua and check whitespace. Static engine doubles do not establish visible Source animation, blink/hand orientation or FPS. Native finite gate: approach the Hermit and the three service-event roles in gm_flatgrass; observe living idle/empty hands, planted feet and readable prompts; open/close the Hermit portrait; confirm existing service offers and spent-quiz hiding; verify Reduced Effects and reset/rebuild. Preserve the pending Steam Deck performance capture and local acceptance → Workshop parity → matching VPS release order. This amendment does not authorize deployment.",
+      "startIndex": 1356,
+      "endIndex": 2476,
+      "tabId": "t.bff19dm33vvw",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    }
+  ],
+  "untouched": true
+}

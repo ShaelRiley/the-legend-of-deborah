@@ -86,7 +86,8 @@ local function applyGuidePose(ent)
     end
 end
 
--- Shared with the optional Game Master; identical smile and silhouette.
+-- Retain the authored giant Hector projection's pose. Friendly service actors
+-- use the living unarmed player counterpart through FriendlyIdle instead.
 LOD.ApplyHermitPose = applyGuidePose
 
 local function labelColor(kind)
@@ -236,7 +237,7 @@ function ENT:Draw()
         return
     end
 
-    if kind == KIND_GUIDE then applyGuidePose(self) end
+    if kind == KIND_GUIDE and LOD.FriendlyIdle then LOD.FriendlyIdle:Apply(self, 'hermit') end
 
     self:DrawModel()
     if kind == KIND_TORCH then
