@@ -25,7 +25,7 @@ for i in range(1,count+1):
     chunks.append(content.split('return [====[',1)[1].rsplit(']====]',1)[0])
 assert ''.join(chunks)==html, 'Server transport source must equal the canonical document'
 assert (builder.SOURCE/'manual.html').read_text()==html
-for term in ['Find one map on each physical floor', 'Touching it unlocks only that floor for the whole party', 'Maps never enter an inventory', 'Press Q to open or close a found floor map; M works too']:
+for term in ['Find one map on each physical floor', 'Touching it unlocks only that floor for the whole party', 'Maps never enter an inventory', 'Press Q to open or close the map panel; M works too', 'Every open panel consumes Magic', 'even on an unfound floor']:
     assert term in html_entities.unescape(html), 'Floor map guidance missing: '+term
 for term in ['Double-click an item', 'Each button casts its own Form with its own Content or RAW', 'Selecting Content for one button leaves the others unchanged']:
     assert term in html_entities.unescape(html), 'Item/Content controls missing: '+term

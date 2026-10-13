@@ -278,7 +278,11 @@ hook.Add("PreDrawHUD", "LOD_MinimapNearestRealCell", function()
     end
 
     local ply = LocalPlayer()
-    if not IsValid(ply) then return end
+    if not IsValid(ply) or not Map:HasAccess(ply) or not Map:IsReady() then
+        clearPlayerAlias()
+        lastProbeKey=nil
+        return
+    end
 
     if lastProbeRevision ~= Map.cache.revision then
         clearPlayerAlias()

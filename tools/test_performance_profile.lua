@@ -42,6 +42,7 @@ local paths={'gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.
     root..'cl_minimap.lua',root..'cl_minimap_magic_quadrants.lua',root..'sh_runtime_audit.lua'}
 for _,path in ipairs({'gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_major_fx.lua','gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_reliability.lua','gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua','gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua'}) do paths[#paths+1]=path end
 paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/cl_init.lua'
+paths[#paths+1]=root..'cl_minimap_logical_cell.lua'
 local manifest={};for _,path in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..path end
 for _,f in pairs(files) do
     f.dev_build='profile-test clean';f['legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')

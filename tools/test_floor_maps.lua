@@ -13,6 +13,7 @@ GetConVar=function(name) return {GetBool=function() return name=='lod_developer_
 CreateConVar=GetConVar
 bit={band=function(a,b) return a&b end,bor=function(a,b) return a|b end,lshift=function(a,b) return a<<b end}
 net={Receive=function(n,f) receivers[n]=f end,Start=noop,Send=noop,WriteString=noop}
+net.WriteUInt,net.WriteBool,net.WriteFloat,net.WriteDouble=noop,noop,noop,noop
 dofile(root..'sh_rng.lua');dofile(root..'sv_maze_generator.lua');dofile(root..'sv_progression_director.lua')
 dofile(root..'sv_neil_brute.lua');dofile(root..'sv_warden_arena.lua')
 local Run,Builder=LOD.RunManager,LOD.MazeBuilder
@@ -112,7 +113,7 @@ local maps=build(g)
 for _,mode in ipairs({false,true}) do
  developer=mode;Run:_SyncPlayerVars(p)
  assert(maps.mask==0 and not Map:CanUse(p) and not Map:Grant(p),'developer mode bypassed undiscovered floor')
- assert(p.nw.LOD_MapFloorMask==0 and not p.nw.LOD_MapUnlocked,'developer mirror revealed all floors')
+ assert(p.nw.LOD_MapFloorMask==0 and p.nw.LOD_MapUnlocked and Map:CanOpen(p),'blank panel/discovery policies were conflated')
 end
 developer=true -- installed development checkout throughout the remaining lifecycle gate
 local row=maps.plan.maps[0]
@@ -133,8 +134,7 @@ q.alive=false;Run:_SyncPlayerVars(q);assert(not Map:CanUse(q) and maps.owned[0])
 q.alive=true;Run:_SyncPlayerVars(q);assert(Map:CanUse(q),'respawn did not inherit party discovery')
 q:SetPos(Vector(q:GetPos().x,q:GetPos().y,LOD.Config.Maze.Origin.z+LOD.Config.Maze.LevelHeight))
 assert(not Map:CanUse(q),'one floor map revealed another floor')
--- Real Magic admission must obey discovery even in the installed developer mode.
--- Reject forged open heartbeats and retire a lease as soon as its floor changes.
+-- A blank panel has the same Magic session as a discovered layout, in all modes.
 local drains,pools={},{}
 timer.Create=function(id,_,__,fn) drains[id]=fn end
 local requestedOpen=true;net.ReadBool=function() return requestedOpen end
@@ -145,18 +145,18 @@ dofile(root..'sv_minimap_magic.lua')
 local magic=LOD.MinimapMagic
 env.setTime(100)
 receivers.LOD_MapMagicState(0,q)
-assert(not magic.Active[q] and not magic:IsOpen(q),'unfound floor admitted a forged Magic open')
+assert(magic.Active[q] and magic:IsOpen(q),'unfound floor could not open the Magic panel')
 q:SetPos(p:GetPos());receivers.LOD_MapMagicState(0,q)
 assert(magic:IsOpen(q),'found floor could not open its Magic lease')
 local budget=pools[q].magic
 q:SetPos(Vector(q:GetPos().x,q:GetPos().y,LOD.Config.Maze.Origin.z+LOD.Config.Maze.LevelHeight))
-assert(not magic:IsOpen(q),'floor transition kept map movement admission')
+assert(magic:IsOpen(q),'unfound-floor transition lost map-up admission')
 env.setTime(100.1);drains.LOD_MinimapMagicDrain()
-assert(not magic.Active[q] and pools[q].magic==budget,'unfound floor retained/drained old lease')
-receivers.LOD_MapMagicState(0,q);assert(not magic.Active[q],'new heartbeat bypassed floor discovery')
+assert(magic.Active[q] and pools[q].magic<budget,'blank panel lost normal Magic drain')
+receivers.LOD_MapMagicState(0,q);assert(magic.Active[q] and not Map:CanUse(q),'heartbeat revealed an unfound floor')
 receivers.LOD_MapMagicState(0,p);assert(magic:IsOpen(p))
 env.setTime(100.2);drains.LOD_MinimapMagicDrain();assert(pools[p].magic<100,'found map lost normal Magic cost')
-requestedOpen=false;receivers.LOD_MapMagicState(0,p)
+requestedOpen=false;receivers.LOD_MapMagicState(0,p);receivers.LOD_MapMagicState(0,q)
 local oldEnt=maps.plan.maps[1].entity
 local serial=maps.serial
 maps=build(g,21)

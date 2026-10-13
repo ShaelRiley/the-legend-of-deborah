@@ -45,7 +45,7 @@ local function canDrain(ply)
     if not IsValid(ply) or not ply:IsPlayer() or not ply:Alive() then return false end
     local mapless = GetConVar("lod_mapless")
     if mapless and mapless:GetBool() then return false end
-    if not Minimap or not Minimap.CanUse or not Minimap:CanUse(ply) then return false end
+    if not Minimap or not Minimap.CanOpen or not Minimap:CanOpen(ply) then return false end
     if not RunManager or not RunManager.State or RunManager.State.Failed
         or RunManager.State.LevelCleared or RunManager.State.SimulationFrozen
     then

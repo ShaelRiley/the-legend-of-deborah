@@ -49,8 +49,7 @@ function Contracts:SyncMapCompatibility(ply)
     if not IsValid(ply) then return end
     local allowed = shouldHaveMapAccess(ply)
     local maps = Minimap and Minimap:PartyMaps()
-    ply:SetNW2Bool("LOD_MapUnlocked", mapViewerEligible(ply)
-        and maps~=nil and maps.mask>0)
+    ply:SetNW2Bool("LOD_MapUnlocked", mapViewerEligible(ply) and maps~=nil)
     ply:SetNW2Int("LOD_MapUnlockedLevel", (maps or allowed) and currentLevel() or 0)
     ply:SetNW2Int("LOD_MapFloorMask", maps and maps.mask or 0)
     ply:SetNW2Int("LOD_MapBuildSerial", maps and maps.serial or 0)
@@ -58,6 +57,10 @@ function Contracts:SyncMapCompatibility(ply)
 end
 
 if Minimap then
+    function Minimap:CanOpen(ply)
+        return mapViewerEligible(ply) and self:PartyMaps()~=nil
+    end
+
     function Minimap:CanUse(ply)
         return shouldHaveMapAccess(ply)
     end

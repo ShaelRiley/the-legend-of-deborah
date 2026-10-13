@@ -79,8 +79,11 @@ LOD.TopologySyncSafety.BuildSerial=3;setGraph(g);packets={}
 assert(M:Send(p) and packets[1].values[3]==1,'undiscovered topology escaped server')
 local chunk=packets[2];assert(chunk.values[5]==1 and chunk.values[8]==0)
 local encoded=M.EncodeBuilds
-p.pos={z=384};packets={};assert(not M:Send(p) and #packets==1 and packets[1].name=='LOD_MapDenied')
-assert(packets[1].values[1]=="Map not found — find this floor's map",'server denial text drifted')
+p.pos={z=384};packets={};assert(M:Send(p) and #packets==2 and packets[1].values[3]==1,'unfound floor could not sync discovered subset')
+assert(not M:CanUse(p) and packets[2].values[8]==0,'unfound current-floor topology escaped server')
+run.FloorMaps.owned={};run.FloorMaps.mask=0;packets={}
+assert(M:Send(p) and packets[1].values[3]==0 and packets[2].values[5]==0,'blank panel could not sync empty metadata')
+run.FloorMaps.owned[0]=true
 run.FloorMaps.owned[1]=true;run.FloorMaps.mask=3;packets={}
 assert(M:Send(p) and packets[1].values[3]==2 and M.EncodeBuilds==encoded,'new floor reencoded entire graph')
 run.FloorMaps.epoch=0;packets={};assert(not M:Send(p),'stale party epoch sent topology')

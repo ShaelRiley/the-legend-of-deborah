@@ -22,7 +22,7 @@ hook = {Add = function(n,id,f) hooks[id]=f end}
 timer = {Create = function(n,_,__,f) timers[n]=f end, Simple = noop}
 GM = {}
 LOD = {RunManager = {State = {Failed=false}},
-    MinimapServer = {CanUse = function() return permitted end},
+    MinimapServer = {CanOpen = function() return permitted end},
     Magic = {_EnsureState = function() return magicState end, _Sync = noop},
     RPGValidation = {Run = function() return true, {} end},
     RPGAbilityRules = {}}

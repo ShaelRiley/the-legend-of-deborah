@@ -257,7 +257,7 @@ hook.Add("Think", "LOD_MinimapLogicalCellGuard", function()
     if not rebuildCanonicalSnapshot() then return end
 
     local ply = LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() then
+    if not IsValid(ply) or not ply:Alive() or not Map:HasAccess(ply) or not Map:IsReady() then
         resetTracking()
         return
     end

@@ -61,6 +61,13 @@ function Minimap:HasFloor(ply)
     return maps ~= nil and floor ~= nil and maps.owned[floor] == true
 end
 
+-- Opening the Magic-powered panel is independent of owning its floor layout.
+function Minimap:CanOpen(ply)
+    local state=LOD.RunManager and LOD.RunManager.State
+    return IsValid(ply) and ply:Alive() and state~=nil and state.BuildReady==true
+        and not state.Failed and not state.LevelCleared and self:PartyMaps()~=nil
+end
+
 function Minimap:CanUse(ply)
     if not IsValid(ply) or not ply:Alive() then return false end
     return self:HasFloor(ply)
@@ -199,9 +206,9 @@ local function discoveredCells(state, graph)
 end
 
 function Minimap:Send(ply)
-    if not self:CanUse(ply) then
+    if not self:CanOpen(ply) then
         net.Start("LOD_MapDenied")
-        net.WriteString("Map not found — find this floor's map")
+        net.WriteString("MAP UNAVAILABLE")
         net.Send(ply)
         return false
     end

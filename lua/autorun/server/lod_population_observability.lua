@@ -6,12 +6,14 @@ A.Version="b29-entry-safety"
 A.Records=A.Records or {}
 local watched={
     "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap_magic.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_contracts.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_event_director.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_loot_director.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_major_fx.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_reliability.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_logical_cell.lua",
     "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua",
     "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua",
     "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",

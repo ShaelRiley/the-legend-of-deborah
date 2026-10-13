@@ -86,7 +86,7 @@ hook.Add("Think", "LOD_MinimapMagicHeartbeat", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
 
-    if Map.open and not Map:HasAccess(ply) then Map.open=false end
+    if Map.open and not Map:CanOpen(ply) then Map.open=false end
 
     if Map.open and ply:GetNW2Float("LOD_Magic", 0) <= 0.001 then
         closeForNoMagic()

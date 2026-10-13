@@ -1,4 +1,27 @@
-# Current checkpoint — floor-map access/visibility repair and Hermit prompt
+# Current checkpoint — blank Magic map panel and collected-floor bootstrap
+
+Author's clarification/native report, based on published main
+`df567c8dd970296314771d268a337196c5552c43`. Q/M/VR now open the existing panel
+on an unfound floor and show the reminder inside it while personal Magic drain
+and map-up effects continue. Layout discovery remains shared per physical floor.
+Panel metadata no longer depends on knowing the resolved origin first; pickups
+push the new discovered subset, so collecting a map reveals an already-open panel.
+Hermit and generated Manual explain the clarified rule. All prior globe, prompt,
+party ownership, placement and pickup presentation remain.
+
+31 finite checks pass, including real pickup→party mirrors→two-realm transport→
+HUD→Magic/movement, both origin signs and packet-before-NW2 ordering. Two parent
+failures are retained. Evidence and limits:
+[map-panel correction](validation/FLOOR_MAP_PANEL_20261013.md). Source coverage
+is 78 installed / 74 server / 29 client. Google rejected the narrow live GDD
+correction; the author's explicit instruction governs, with the failure recorded.
+Next native action: fully quit/update/install and restart gm_flatgrass; open Q
+before discovery, see the reminder and Magic drain/effects, touch the globe while
+open and observe its layout, then enter an unfound floor and close with M.
+Native/co-op acceptance and Steam Deck >=40 FPS remain pending. No Workshop/VPS
+operation.
+
+# Previous checkpoint — floor-map access/visibility repair and Hermit prompt
 
 Author's native report and prompt request, based on published main
 `47f4e74e4790155b149de323d956ca155585b622`. Removed the developer-mode exceptions

@@ -1,0 +1,346 @@
+{
+  "parent_main": "df567c8dd970296314771d268a337196c5552c43",
+  "source_sha256": "f9037cffba92c6b540f532beb5d81a0062832588aa8fbd5258a06058cf75e8b9",
+  "source_files": 34,
+  "checks": [
+    {
+      "name": "floor_map_panel",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.04
+    },
+    {
+      "name": "floor_maps",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 4.463
+    },
+    {
+      "name": "floor_map_visual",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_visual.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.05
+    },
+    {
+      "name": "staging_interaction_prompt",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_interaction_prompt.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.034
+    },
+    {
+      "name": "floor_maps_ui",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.042
+    },
+    {
+      "name": "minimap_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.035
+    },
+    {
+      "name": "minimap_player_marker",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_player_marker.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.037
+    },
+    {
+      "name": "map_movement",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_map_movement.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.041
+    },
+    {
+      "name": "quantum",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_quantum.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.044
+    },
+    {
+      "name": "backpedal",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_backpedal.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.037
+    },
+    {
+      "name": "strafe",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_strafe.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.042
+    },
+    {
+      "name": "staging_lore",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_lore.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.034
+    },
+    {
+      "name": "staging_lore_ui",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_lore_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.035
+    },
+    {
+      "name": "friendly_idle",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_friendly_idle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.038
+    },
+    {
+      "name": "hermit_return",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_hermit_return.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.036
+    },
+    {
+      "name": "neil_brute",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_neil_brute.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 1.48
+    },
+    {
+      "name": "faction_roles",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_faction_roles.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.242
+    },
+    {
+      "name": "faction_damage",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_faction_damage.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.038
+    },
+    {
+      "name": "cleanup_contracts",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_cleanup_contracts.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.254
+    },
+    {
+      "name": "performance_capture",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_performance_capture.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.128
+    },
+    {
+      "name": "performance_profile",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_performance_profile.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.063
+    },
+    {
+      "name": "population_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.044
+    },
+    {
+      "name": "pickup_bootstrap_positive",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--pickup-only"
+      ],
+      "exit_code": 0,
+      "seconds": 0.049
+    },
+    {
+      "name": "pickup_bootstrap_negative",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--pickup-only-negative"
+      ],
+      "exit_code": 0,
+      "seconds": 0.044
+    },
+    {
+      "name": "magic_resource_lifecycle",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/validate_spot10_approved.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.083
+    },
+    {
+      "name": "floor_maps_integration",
+      "command": [
+        "python",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_floor_maps_integration.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 5.39
+    },
+    {
+      "name": "dev_manifest",
+      "command": [
+        "python",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.337
+    },
+    {
+      "name": "manual_document",
+      "command": [
+        "python",
+        "tools/test_manual_document.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.373
+    },
+    {
+      "name": "changed_lua_syntax",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_logical_cell.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_magic_quadrants.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_reliability.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_28.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap_magic.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_contracts.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_staging_lore.lua",
+        "lua/autorun/server/lod_population_observability.lua",
+        "tools/test_backpedal.lua",
+        "tools/test_floor_map_panel.lua",
+        "tools/test_floor_maps.lua",
+        "tools/test_map_movement.lua",
+        "tools/test_minimap_player_marker.lua",
+        "tools/test_minimap_transport.lua",
+        "tools/test_performance_capture.lua",
+        "tools/test_performance_profile.lua",
+        "tools/test_population_transport.lua",
+        "tools/test_quantum.lua",
+        "tools/test_strafe.lua",
+        "tools/validate_spot10_approved.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.048
+    },
+    {
+      "name": "installer_syntax",
+      "command": [
+        "bash",
+        "-n",
+        "tools/install_dev.sh"
+      ],
+      "exit_code": 0,
+      "seconds": 0.003
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.032
+    }
+  ]
+}

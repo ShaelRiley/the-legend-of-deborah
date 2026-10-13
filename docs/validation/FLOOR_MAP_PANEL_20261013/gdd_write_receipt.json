@@ -1,0 +1,16 @@
+{
+  "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "navigation": [
+    "00",
+    "01",
+    "06",
+    "05",
+    "07"
+  ],
+  "proposed_correction": "LOD-FLOOR-MAP-PANEL-002 — AUTHOR CLARIFICATION (2026-10-13)\nQ/M and the VR map action open the existing minimap panel for an eligible Hero even without this physical floor’s shared map. With no discovered map, show “Map not found — find this floor’s map” inside the panel instead of all maze/layout/route/quadrant overlays. The panel remains up, spends personal Magic and enacts the existing map-up effects. Collecting a registered floor map reveals only its floor for the entire party and refreshes an already-open panel. Preserve zero-Magic forced close, player lifecycle/role rules, topology secrecy, entrance-accessible placement, globe/eye and pickup notice/ditty.\n\n",
+  "result": {
+    "error": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})",
+    "error_code": "INVALID_ARGUMENT"
+  },
+  "outcome": "Google rejected the narrow UI rule insert with FAILED_PRECONDITION. The explicit 2026-10-13 author instruction supersedes the earlier close/deny policy. No current live-Doc update completion claim."
+}

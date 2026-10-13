@@ -109,6 +109,9 @@ function Map:CollectFloorMap(ply, ent)
     for _, recipient in ipairs(player.GetAll()) do
         if IsValid(recipient) then
             if LOD.MultiplayerContracts then LOD.MultiplayerContracts:SyncMapCompatibility(recipient) end
+            -- Push the new subset and resolved origin even before the first Q/M
+            -- press. Never require client-side floor knowledge to bootstrap it.
+            if self:CanOpen(recipient) then self:Send(recipient) end
             local fx=LOD.RPGPresentation
             if recipient:Alive() and Run:IsActivePlayer(recipient) and fx and fx.SendFX then
                 fx:SendFX(recipient,5,"Use map with Q","M works too")

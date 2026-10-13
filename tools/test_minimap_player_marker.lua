@@ -202,23 +202,28 @@ M.open=false;local reads,builds=alphaReads,matrixBuilds;quadrant();hooks.HUDPain
 assert(alphaReads==reads and matrixBuilds==builds,'closed map performs presentation work')
 M.open=true;player.magic=0;preferences.lod_map_opacity.value=0
 hooks.Think.LOD_MinimapMagicHeartbeat();assert(not M.open,'transparent map bypassed forced zero-Magic close')
--- Party discovery gates the current physical floor, even if an old cache
--- happened to contain that floor. Switching to it must close before rendering.
-player.developer=true;player.mask=1;M.floorMask=1;M.buildSerial=1;player.pos={x=0,y=0,z=384};M.open=true
-hooks.HUDPaint.LOD_MinimapHUD();assert(not M.open,'cached unowned floor remained visible')
-commands.lod_minimap_toggle();assert(not M.open,'Q/M/controller bypassed current-floor ownership')
+-- Unfound floors keep the panel up while hiding every cached maze overlay.
+player.magic=100;preferences.lod_map_opacity.value=1
+player.developer=true;player.mask=1;M.floorMask=1;M.buildSerial=1;M.layers=2;player.pos={x=0,y=0,z=384};M.open=true
+circles={};texts={};rects={};hooks.HUDPaint.LOD_MinimapHUD();quadrant()
+assert(M.open and #circles==0 and #rects==1,'cached unowned floor leaked topology/quadrants or closed panel')
+local foundMessage=false
+for _,row in ipairs(texts) do if row.text=='Map not found' then foundMessage=true end end
+assert(foundMessage and texts[#texts].text=="Find this floor's map",'missing in-panel guidance')
+commands.lod_minimap_toggle();assert(not M.open,'VR cannot close the blank panel')
 for _,key in ipairs({KEY_Q,KEY_M}) do
  down={};hooks.Think.LOD_MinimapToggleInput()
- M.open=true -- an already-open map must close on the unfound floor as well
+ M.open=false
  local count=#notices
  down[key]=true;hooks.Think.LOD_MinimapToggleInput()
- assert(not M.open and #notices==count+1,'unfound-floor key did not close/notify once')
- hooks.Think.LOD_MinimapToggleInput();assert(#notices==count+1,'held denial spammed')
+ assert(M.open and #notices==count,'unfound-floor key did not open silently')
+ hooks.Think.LOD_MinimapToggleInput();assert(M.open and #notices==count,'held key repeated')
 end
-assert(notices[#notices].text=="Map not found — find this floor's map" and notices[#notices].seconds==3)
-local count=#notices
-commands.lod_minimap_toggle();assert(not M.open and #notices==count+1,'VR denial did not notify')
-assert(notices[#notices].text=="Map not found — find this floor's map")
+hooks.Think.LOD_MinimapMagicHeartbeat();assert(M.open,'blank panel lost client Magic heartbeat')
+commands.lod_minimap_toggle();assert(not M.open,'VR failed to close')
+commands.lod_minimap_toggle();assert(M.open,'VR failed to open blank panel')
+player.mask=2;player.pos.z=3*384;assert(M:HasAccess(player),'top-floor clamp diverged from server')
+player.mask=1
 player.pos.z=0;M.open=true;player.serial=2
 local requests=M.stats.mapRequests;M.nextRequestAt=0;circles={}
 hooks.HUDPaint.LOD_MinimapHUD()

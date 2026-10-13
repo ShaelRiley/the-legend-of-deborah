@@ -98,16 +98,21 @@ local function currentClientLevel()
     return tonumber(state.level) or 0
 end
 
-local function hasAccess(ply)
-    if not IsValid(ply) then return false end
+local function canOpen(ply)
+    if not IsValid(ply) or not ply:Alive() or ply:GetNW2Bool("LOD_IsSoldier",false) then return false end
     if not ply:GetNW2Bool("LOD_MapUnlocked", false) then return false end
     local unlockedLevel = ply:GetNW2Int("LOD_MapUnlockedLevel", 0)
     local level = currentClientLevel()
-    local floor=math.max(0,math.floor((ply:GetPos().z-MC.Origin.z)/MC.LevelHeight+0.5))
-    return level > 0 and unlockedLevel == level and floor<7
-        and bit.band(ply:GetNW2Int("LOD_MapFloorMask",0),bit.lshift(1,floor))~=0
+    return level > 0 and unlockedLevel == level
 end
 
+local function hasAccess(ply)
+    if not canOpen(ply) then return false end
+    local floor=math.Clamp(math.floor((ply:GetPos().z-MC.Origin.z)/MC.LevelHeight+0.5),0,math.max(0,(Map.layers or 1)-1))
+    return bit.band(ply:GetNW2Int("LOD_MapFloorMask",0),bit.lshift(1,floor))~=0
+end
+
+function Map:CanOpen(ply) return canOpen(ply) end
 function Map:HasAccess(ply) return hasAccess(ply) end
 
 local function mapReadyForLevel(level)
@@ -115,7 +120,6 @@ local function mapReadyForLevel(level)
         and Map.level == level
         and (Map.expectedChunks or 0) > 0
         and (Map.receivedChunks or 0) >= (Map.expectedChunks or 0)
-        and #Map.cells > 0
         and Map.cache.indexedRevision == Map.cache.revision
         and Map.floorMask == LocalPlayer():GetNW2Int("LOD_MapFloorMask",0)
         and Map.buildSerial == LocalPlayer():GetNW2Int("LOD_MapBuildSerial",0)
@@ -355,10 +359,8 @@ function Map:Toggle()
 
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
-    if not hasAccess(ply) then
+    if not canOpen(ply) then
         Map.open = false
-        LOD.Audio:Play('deny')
-        notification.AddLegacy("Map not found — find this floor's map", NOTIFY_HINT, 3)
         return
     end
 
@@ -767,6 +769,14 @@ local function paintMap(layout,ply,state,level)
     draw.SimpleText(objectiveLine, "LOD_Map_Small", panelX + 18, panelY + 42,
         COLORS.objective, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
+    if not hasAccess(ply) then
+        draw.SimpleText("Map not found", "LOD_Map_Title", panelX + panelW * 0.5, panelY + panelH * 0.5 - 12,
+            COLORS.loading, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText("Find this floor's map", "LOD_Map_Small", panelX + panelW * 0.5, panelY + panelH * 0.5 + 14,
+            COLORS.muted, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        return
+    end
+
     if not mapReadyForLevel(level) then
         draw.SimpleText("LOADING MAP...", "LOD_Map_Title", panelX + panelW * 0.5, panelY + panelH * 0.5,
             COLORS.loading, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
@@ -898,7 +908,7 @@ end
 hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     if not Map.open then return end
     local ply=LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() or not hasAccess(ply) then Map.open=false;return end
+    if not canOpen(ply) then Map.open=false;return end
     local state=LOD.ClientState or {}
     local level=tonumber(state.level) or 0
     if not mapReadyForLevel(level) then requestMap(false) end

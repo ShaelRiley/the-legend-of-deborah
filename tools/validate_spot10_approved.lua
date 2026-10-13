@@ -74,7 +74,7 @@ net.Start=function() end;net.WriteString=function() end;net.Send=function() end
 local receivers, mapOpen = {}, false
 net.Receive=function(name,fn) receivers[name]=fn end
 net.ReadBool=function() return mapOpen end
-LOD.MinimapServer={CanUse=function(_,a) return a.active end}
+LOD.MinimapServer={CanOpen=function(_,a) return a.active end}
 GetConVar=function(name) return {GetBool=function() return name~='lod_mapless' end} end
 hook.Run=function(event,a,ps)
  if event=='LODMagicRegenerationSuppressed' then
