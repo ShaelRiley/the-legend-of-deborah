@@ -1,41 +1,22 @@
 include("shared.lua")
 local MC=LOD.Config.Maze
-local SEA,LAND=Color(60,132,222),Color(110,210,145)
 local INK,WHITE,IRIS=Color(18,35,48),Color(252,247,224),Color(74,178,226)
-local material=CreateMaterial("lod_floor_map_globe","UnlitGeneric",{
-    ["$basetexture"]="color/white",["$vertexcolor"]="1",["$vertexalpha"]="1",["$ignorez"]="0"})
 LOD.FloorMapVisual=LOD.FloorMapVisual or {}
 local Visual=LOD.FloorMapVisual
 Visual.pickups=Visual.pickups or setmetatable({}, {__mode="k"})
+Visual.stock=Visual.stock or setmetatable({}, {__mode="k"})
+-- Retire the superseded globe on Lua refresh.
 if Visual.mesh then Visual.mesh:Destroy();Visual.mesh=nil end
 
--- One immutable toy globe mesh for every pickup; no per-frame vertex/RNG work.
-local function globeMesh()
-    if Visual.mesh then return Visual.mesh end
-    local vertices={}
-    local function point(ring,segment)
-        local lat=-math.pi*.5+ring*math.pi/8
-        local lon=segment*math.pi*2/16
-        local normal=Vector(math.cos(lat)*math.cos(lon),math.cos(lat)*math.sin(lon),math.sin(lat))
-        return {pos=normal*18,normal=normal,u=segment/16,v=ring/8}
-    end
-    local function tri(a,b,c,color)
-        for _,v in ipairs({a,b,c}) do
-            vertices[#vertices+1]={pos=v.pos,normal=v.normal,u=v.u,v=v.v,color=color}
-        end
-    end
-    for ring=0,7 do for segment=0,15 do
-        local lat=-math.pi*.5+(ring+.5)*math.pi/8
-        local lon=(segment+.5)*math.pi*2/16
-        local land=math.sin(lon*2+lat)+.7*math.cos(lon*3-lat*2)>.65 and math.abs(lat)<1.3
-        local color=land and LAND or SEA
-        local a,b,c,d=point(ring,segment),point(ring,segment+1),point(ring+1,segment+1),point(ring+1,segment)
-        if ring>0 then tri(a,b,c,color) end
-        if ring<7 then tri(a,c,d,color) end
-    end end
-    Visual.mesh=Mesh();Visual.mesh:BuildFromTriangles(vertices)
-    return Visual.mesh
+local function retire(ent)
+    local row=Visual.stock[ent]
+    for _,model in pairs(row or {}) do if IsValid(model) then model:Remove() end end
+    Visual.stock[ent]=nil
 end
+local function cleanup()
+    for ent in pairs(Visual.stock) do retire(ent) end
+end
+cleanup()
 
 local function circle(radius,dx,dy)
     local out={}
@@ -63,21 +44,25 @@ local function facing(pos)
 end
 
 function ENT:Initialize()
-    self:SetRenderBounds(Vector(-36,-36,-24),Vector(36,36,84))
+    self:SetRenderBounds(self.MapRenderMins,self.MapRenderMaxs)
     Visual.pickups[self]=true
 end
 
-local function drawPickup(self,finder)
-    if not self.GetFloorIndex or (not finder and self:GetPos():DistToSqr(EyePos())>(MC.CellSize*6)^2) then return end
-    local reduced=LOD.AdventurePresentation and LOD.AdventurePresentation:Reduced()
-    local pos=self:GetPos()+Vector(0,0,reduced and 0 or math.sin(CurTime()*1.8+self:EntIndex())*3)
-    self.LODGlobeTransform=self.LODGlobeTransform or Matrix()
-    self.LODGlobeTransform:SetTranslation(pos)
-    self.LODGlobeTransform:SetAngles(Angle(0,reduced and 0 or CurTime()*20%360,0))
-    render.SetMaterial(material)
-    cam.PushModelMatrix(self.LODGlobeTransform)
-        globeMesh():Draw()
-    cam.PopModelMatrix()
+function ENT:OnRemove()
+    retire(self);Visual.pickups[self]=nil
+end
+
+function ENT:Draw()
+    -- The pickup itself is the server's stock book prop, with ordinary 3D geometry.
+    render.SuppressEngineLighting(true)
+    local ok,err=pcall(self.DrawModel,self)
+    render.SuppressEngineLighting(false)
+    if not ok then ErrorNoHalt(tostring(err).."\n") end
+end
+
+local function drawInfo(self,finder)
+    local pos=self:GetPickupPosition()
+    if not finder and pos:DistToSqr(EyePos())>(MC.CellSize*2)^2 then return end
     local eye=pos+Vector(0,0,33)
     cam.Start3D2D(eye,facing(eye),1)
         draw.NoTexture()
@@ -85,16 +70,29 @@ local function drawPickup(self,finder)
             surface.SetDrawColor(layer[2]);surface.DrawPoly(layer[1])
         end
     cam.End3D2D()
-    if not finder and self:GetPos():DistToSqr(EyePos())>(MC.CellSize*2)^2 then return end
     local label=pos+Vector(0,0,60)
-    local scale=0.12*(finder and math.max(1,math.sqrt(self:GetPos():DistToSqr(EyePos()))/600) or 1)
+    local scale=.12*(finder and math.max(1,math.sqrt(pos:DistToSqr(EyePos()))/600) or 1)
     cam.Start3D2D(label,facing(label),scale)
         draw.RoundedBox(4,-145,-25,290,50,Color(16,18,20,230))
         draw.SimpleText("FLOOR "..(self:GetFloorIndex()+1).." MAP","DermaLarge",0,0,WHITE,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
     cam.End3D2D()
 end
 
-function ENT:Draw() drawPickup(self,false) end
+function ENT:DrawTranslucent() drawInfo(self,false) end
+
+local function drawStock(source,row,name)
+    if not IsValid(source) then return end
+    local model=row[name]
+    if IsValid(model) and model:GetModel()~=source:GetModel() then model:Remove();model=nil end
+    if not IsValid(model) then
+        model=ClientsideModel(source:GetModel(),RENDERGROUP_OPAQUE)
+        if not IsValid(model) then return end
+        model:SetNoDraw(true);row[name]=model
+    end
+    model:SetPos(source:GetPos());model:SetAngles(source:GetAngles())
+    model:SetColor(source:GetColor());model:SetMaterial(source:GetMaterial())
+    model:SetupBones();model:DrawModel()
+end
 
 hook.Add("PostDrawTranslucentRenderables","LOD_MapFinderPickups",function(depth,sky)
     if depth or sky then return end
@@ -103,16 +101,20 @@ hook.Add("PostDrawTranslucentRenderables","LOD_MapFinderPickups",function(depth,
         or ply:GetNW2Bool("LOD_Eliminated",false)
         or not ply:GetNW2Bool("LOD_RPGMapFinder",false) then return end
     if ply.GetObserverMode and ply:GetObserverMode()~=(OBS_MODE_NONE or 0) then return end
-    cam.IgnoreZ(true)
+    cam.IgnoreZ(true);render.SuppressEngineLighting(true)
     local ok,err=pcall(function()
         for ent in pairs(Visual.pickups) do
-            if IsValid(ent) then drawPickup(ent,true) else Visual.pickups[ent]=nil end
+            if IsValid(ent) then
+                local row=Visual.stock[ent] or {};Visual.stock[ent]=row
+                -- Native helper models avoid recursive DrawModel calls on a scripted entity.
+                drawStock(ent,row,"book");drawStock(ent:GetNW2Entity("LOD_MapPedestal"),row,"pedestal")
+                drawInfo(ent,true)
+            else retire(ent);Visual.pickups[ent]=nil end
         end
     end)
-    cam.IgnoreZ(false)
+    render.SuppressEngineLighting(false);cam.IgnoreZ(false)
     if not ok then ErrorNoHalt(tostring(err).."\n") end
 end)
 
-hook.Add("ShutDown","LOD_FloorMapGlobeCleanup",function()
-    if Visual.mesh then Visual.mesh:Destroy();Visual.mesh=nil end
-end)
+hook.Add("OnReloaded","LOD_FloorMapStockCleanup",cleanup)
+hook.Add("ShutDown","LOD_FloorMapGlobeCleanup",cleanup)

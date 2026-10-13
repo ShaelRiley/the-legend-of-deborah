@@ -1,0 +1,45 @@
+{
+  "parent": {
+    "sha": "a2ab35a46a976dc6b198b2c55b06f34dbca1cd95",
+    "tree": "666c5562e9f48764814c8a2f139e4e0690323372"
+  },
+  "syntax": {
+    "parser": "fstirlitz/luaparse",
+    "luaVersion": "5.3",
+    "parsed": [
+      "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua",
+      "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua",
+      "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/shared.lua",
+      "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua",
+      "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/cl_init.lua",
+      "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua",
+      "lua/autorun/server/lod_population_observability.lua",
+      "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+      "tools/test_population_transport.lua",
+      "tools/test_performance_capture.lua",
+      "tools/test_performance_profile.lua",
+      "tools/test_floor_map_props.lua",
+      "tools/test_floor_map_visual.lua"
+    ]
+  },
+  "sourceChecks": "All changed Lua parsed with luaparse in this tool session; no local executor available.",
+  "gdd": {
+    "proposal": "LOD-FLOOR-MAP-STOCK-PROPS-001 — AUTHOR VISIBILITY CORRECTION (2026-10-13)\nUse real stock props for each shared floor-map pickup and its pedestal. Replace the custom globe body with an upright models/props_lab/binderblue.mdl book (stock clipboard fallback), atop a stationary solid models/hunter/blocks/cube05x05x05.mdl block. Use native dimensions without scaling and complete orientation-safe render bounds. Keep the low solid pedestal off the cell's arrival/walking center: x/y offset min(72, CellSize*0.2), within the same reserved, door-free entrance-accessible map cell. Both models use ordinary native geometry; retain the viewer-facing eye/floor label and brighten stock rendering for legibility. Preserve party touch ownership, existing range/cadence, found-floor mask, sound/notice, personal map Magic, Internal Compass and Map Finder. Map Finder shows both models through walls/ceilings on all floors; both transmit and retire with the same map owner. At most two real entities per physical floor and two cached native finder helpers per map, with no new gameplay timer or world scan. This overrides the superseded custom globe appearance only. Native visual/collision/co-op acceptance remains separate.\n\n",
+    "receipt": {
+      "content": [
+        {
+          "type": "text",
+          "text": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})"
+        }
+      ],
+      "structuredContent": {
+        "error": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})",
+        "error_code": "INVALID_ARGUMENT"
+      },
+      "isError": true
+    }
+  },
+  "nativeAccepted": false,
+  "ciStatus": "Pending candidate PR."
+}

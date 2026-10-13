@@ -42,6 +42,7 @@ local paths={'gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.
     root..'cl_minimap.lua',root..'cl_minimap_magic_quadrants.lua',root..'sh_runtime_audit.lua'}
 for _,path in ipairs({'gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_major_fx.lua','gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_reliability.lua','gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua','gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua'}) do paths[#paths+1]=path end
 for _,leaf in ipairs({'shared.lua','cl_init.lua'}) do paths[#paths+1]='gamemodes/legend_of_deborah/entities/entities/lod_jail_key/'..leaf end
+for _,leaf in ipairs({'shared.lua','cl_init.lua'}) do paths[#paths+1]='gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/'..leaf end
 paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/cl_init.lua'
 paths[#paths+1]=root..'cl_minimap_logical_cell.lua'
 paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua'

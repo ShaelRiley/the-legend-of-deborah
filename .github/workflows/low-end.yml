@@ -11,6 +11,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
       - run: python3 tools/run_lua54.py tools/test_hostile_route_cache.lua
       - run: python3 tools/run_lua54.py tools/test_wall_batch.lua
@@ -23,3 +25,9 @@ jobs:
       - run: python3 tools/run_lua54.py tools/test_low_end_options.lua
       - run: python3 tools/run_lua54.py tools/test_great_crate_render.lua
       - run: python3 tools/test_dev_population_manifest.py
+      - run: python3 tools/run_lua54.py tools/test_floor_map_props.lua
+      - run: python3 tools/run_lua54.py tools/test_floor_map_visual.lua
+      - run: python3 tools/run_lua54.py tools/test_floor_map_panel.lua
+      - run: python3 tools/run_lua54.py tools/test_floor_map_panel.lua --compass
+      - run: python3 tools/test_crypto_sqlite.py tools/test_floor_maps_integration.lua
+      - run: python3 tools/run_lua54.py --syntax gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/shared.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/cl_init.lua gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua

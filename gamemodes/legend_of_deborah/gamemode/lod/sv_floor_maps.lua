@@ -101,7 +101,8 @@ function Map:CollectFloorMap(ply, ent)
     local row=maps.plan.maps[floor]
     if not row or row.entity~=ent or maps.owned[floor] then return false end
     local radius=LOD.Config.Progression.KeycardTriggerRadius
-    if ply:NearestPoint(ent:GetPos()):DistToSqr(ent:GetPos())>radius*radius then return false end
+    local pickupPos=ent.GetPickupPosition and ent:GetPickupPosition() or ent:GetPos()
+    if ply:NearestPoint(pickupPos):DistToSqr(pickupPos)>radius*radius then return false end
     -- Claim before any transport/announcement callback: simultaneous contacts
     -- cannot replay the award, and death cannot delete a shared discovery.
     maps.owned[floor]=true
@@ -147,7 +148,10 @@ function Builder:Build(graph)
         row.entity=ent
         ent:SetFloorIndex(floor)
         ent:SetPos(self:CellCenter(row.cell)+Vector(0,0,LOD.Config.Progression.KeycardHeight))
-        ent:Spawn();ent:Activate();self:_Register(ent)
+        ent:Spawn()
+        if not IsValid(ent) then self:Cleanup();return false,"required floor map prop creation failed: "..floor end
+        ent:Activate();self:_Register(ent)
+        if IsValid(ent.LODFloorMapPedestal) then self:_Register(ent.LODFloorMapPedestal) end
     end
     report.floorMaps=graph.Layers or 1
     report.entityCount=#self.Entities

@@ -373,6 +373,8 @@ if CLIENT then
         "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_logical_cell.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/shared.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/cl_init.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/shared.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/cl_init.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_magic_quadrants.lua",

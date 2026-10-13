@@ -162,6 +162,8 @@ SUITES = [
     ("Exact Native-Crash Reward Replay", ["python3", "tools/run_lua54.py", "tools/test_equipment_crash_replay.lua"]),
     ("Equipment LuaJIT Compatibility Boundary", ["python3", "tools/run_lua54.py", "tools/test_equipment_jit_guard.lua"]),
     ("Force-close Evidence Export", ["python3", "tools/test_crash_evidence_export.py"]),
+    ("Physical Stock Floor Map Props", ["python3", "tools/run_lua54.py", "tools/test_floor_map_props.lua"]),
+    ("Stock Map Native Rendering & Finder", ["python3", "tools/run_lua54.py", "tools/test_floor_map_visual.lua"]),
     ("Canonical Blue Minimap Marker", ["python3", "tools/run_lua54.py", "tools/test_minimap_player_marker.lua"]),
     ("Shared Native DamageInfo Lifetime", ["python3", "tools/run_lua54.py", "tools/test_shared_damage_lifetime.lua"]),
     ("Durable Stability Diagnostics", ["python3", "tools/run_lua54.py", "tools/test_stability_diagnostics.lua"]),
