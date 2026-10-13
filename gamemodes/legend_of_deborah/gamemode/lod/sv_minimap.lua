@@ -74,15 +74,16 @@ function Minimap:CanUse(ply)
     return self:HasFloor(ply)
 end
 
--- Only the bounded route is sent for an unfound floor, never its topology.
+-- Send a bounded legal route from the complete server graph. Found-floor
+-- topology alone cannot route to an objective on an unfound physical floor.
 -- Reuse Navigator's legal, cached objective route; no second pathfinder/timer.
 local compassSent=setmetatable({}, {__mode="k"})
 local writeCell
 function Minimap:SendCompass(ply, force)
     local rules,magic=LOD.RPGAbilityRules,LOD.MinimapMagic
     local derived=rules and rules.Derived and rules:Derived(ply)
-    if not derived or not derived.internalCompassEnabled or not magic or not magic:IsOpen(ply)
-        or self:HasFloor(ply) then return false end
+    if not magic or not magic:IsOpen(ply) or not self:CanOpen(ply)
+        or (not self:HasFloor(ply) and not (derived and derived.internalCompassEnabled)) then return false end
     local maps=self:PartyMaps()
     local run=LOD.RunManager.State
     local nav,dir=LOD.MazeNavigator,LOD.ProgressionDirector
@@ -93,7 +94,7 @@ function Minimap:SendCompass(ply, force)
     local floor=self:FloorForPlayer(ply)
     local cell=nav:WorldToCell(run.Graph,ply:GetPos())
     local objective=dir:GetObjectiveGraphTarget()
-    local range=rules:BreadcrumbCells(ply)
+    local range=math.Clamp(rules and rules:BreadcrumbCells(ply) or 6,2,24)
     local path=cell and cell.z==floor and objective and objective.a
         and nav:FindPath(run.Graph,cell,objective.a) or nil
     local points={}
@@ -102,7 +103,12 @@ function Minimap:SendCompass(ply, force)
         if c.z~=floor then break end
     end
     -- Constant heartbeats reuse Navigator's tree and transmit only on change.
-    local stamp={maps.serial,run.Level,run.ObjectiveStage or 0,range,floor}
+    local gates=0
+    for i=1,4 do if run.GatesOpen and run.GatesOpen[i] then gates=gates+2^(i-1) end end
+    if run.JailDoorOpen then gates=gates+16 end
+    local length=path and math.max(0,#path-1) or 0
+    local stamp={maps.serial,run.Level,run.ObjectiveStage or 0,range,floor,gates,length,
+        cell and key(cell.x,cell.y,cell.z) or "none"}
     for _,c in ipairs(points) do stamp[#stamp+1]=key(c.x,c.y,c.z) end
     local signature=table.concat(stamp,"|")
     compassSent[ply]={nextAt=now+REQUEST_INTERVAL,signature=signature}
@@ -111,6 +117,9 @@ function Minimap:SendCompass(ply, force)
     net.WriteDouble(run.Level or 1);net.WriteUInt(maps.serial,32)
     net.WriteUInt(math.Clamp(floor,0,6),3)
     net.WriteUInt(math.Clamp(run.ObjectiveStage or 0,0,15),4)
+    net.WriteUInt(gates,5)
+    net.WriteUInt(math.min(length,65535),16)
+    writeCell(cell or {x=0,y=0,z=0})
     net.WriteUInt(#points,5)
     for _,c in ipairs(points) do writeCell(c) end
     net.Send(ply)
@@ -349,3 +358,4 @@ end)
 hook.Add("PlayerInitialSpawn", "LOD_MinimapInitialEntitlement", function(ply)
     Minimap:Revoke(ply)
 end)
+

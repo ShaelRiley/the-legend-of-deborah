@@ -44,20 +44,22 @@ local function facing(pos)
 end
 
 function ENT:Initialize()
-    self:SetRenderBounds(self.MapRenderMins,self.MapRenderMaxs)
+    LOD.ProgressionProps:RefreshBounds(self)
     Visual.pickups[self]=true
 end
 
-function ENT:OnRemove()
+function ENT:OnRemove(fullUpdate)
+    if fullUpdate then return end
     retire(self);Visual.pickups[self]=nil
 end
+hook.Add("NotifyShouldTransmit","LOD_Recover_lod_floor_map",function(ent,transmitting)
+    if transmitting and IsValid(ent) and ent:GetClass()=="lod_floor_map" then
+        Visual.pickups[ent]=true;LOD.ProgressionProps:RefreshBounds(ent)
+    end
+end)
 
 function ENT:Draw()
-    -- The pickup itself is the server's stock book prop, with ordinary 3D geometry.
-    render.SuppressEngineLighting(true)
-    local ok,err=pcall(self.DrawModel,self)
-    render.SuppressEngineLighting(false)
-    if not ok then ErrorNoHalt(tostring(err).."\n") end
+    LOD.ProgressionProps:Draw(self)
 end
 
 local function drawInfo(self,finder)
@@ -118,3 +120,4 @@ end)
 
 hook.Add("OnReloaded","LOD_FloorMapStockCleanup",cleanup)
 hook.Add("ShutDown","LOD_FloorMapGlobeCleanup",cleanup)
+

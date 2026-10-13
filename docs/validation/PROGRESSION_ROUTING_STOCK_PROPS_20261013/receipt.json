@@ -1,0 +1,373 @@
+{
+  "parent": "3893adc3d3f262d9c10548823d24edabd19119f9",
+  "passed": 23,
+  "total": 23,
+  "source_before": {
+    "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua": "7237f586f34399cf12a47c172304fea8d9395b760d00d3317cf0dd92341506db",
+    "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua": "4764319773c7fc7e5b979c1475852e5a9486bba35f7a4028b320f30ffa4b7851",
+    "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua": "11fb380424b5b8a8a059e361915611763a685a85c4d847a81cc1f742a19c8221",
+    "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/cl_init.lua": "8271758a3b854961b7f35fd6e0b40163fe8bc15b6fac4789bf0dccba041923b2",
+    "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/init.lua": "59ce9353281a3cb0750afac2854c8022a27a35e45d7d2d399c2cab2a307782ed",
+    "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/shared.lua": "f6a2f35bacd66e2344503411b2264bd7692a869c8e4eaa5acd896c0b56c6e1ab",
+    "gamemodes/legend_of_deborah/entities/entities/lod_keycard/cl_init.lua": "cdbdc45a416ffd293bd9210cdbfb70a08492da14e25b82eb0b822a54a68a3d9c",
+    "gamemodes/legend_of_deborah/entities/entities/lod_keycard/init.lua": "0bbdb22264fac170408688cfdf5a6445da500587ea18096b2e1dab22abefc411",
+    "gamemodes/legend_of_deborah/entities/entities/lod_keycard/shared.lua": "05b7d45361d1b73b9d6845be32b80f772ce79f8e21aaee843e3f6bdb343bd363",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua": "271a7ba606605fbce52cb056032206bfb3c7b2b846ea5512b04b7599666d2065",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua": "dbe6a76171c97fc414515bba26bf3d2135abdb4bfa15ef5f807b0e6847f860b1",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua": "ddfa43e6ce99d75c564f2ee30ac4071bbd9918df6cb19d44cf72278fc3fb525c",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua": "e8d23d9fe9d857b5b710d3a95f40cb2a0cebe0fb7b9fe55b24ea948f258902f2",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_progression_builder.lua": "14c062f4daf9f66a4d8622f2f535e58b43423c4e885d33f891d355bc4c0e6f97",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_progression_director.lua": "f16b1e2931303926aa59163ce4d34f8ae9728f28feb077207f0a45e37cb56c15",
+    "gamemodes/legend_of_deborah/gamemode/shared.lua": "5949a80f50beb92f852d9989fb6f1589f54ab5537d339760f16506c8d9fc87e2",
+    "lua/autorun/server/lod_population_observability.lua": "245797e706a3edc951abc7154590e1e696b9b9509143fc738cd1aa142f933414",
+    "tools/install_dev.sh": "63ca49211434c4ef08dc6c72f06d80362d94166c615028db4cd350c4e9ddc649",
+    "tools/test_checkpoint_g_integration.py": "231173c671eea79144d74f594d9d807f8e5650a12b38fd6752902c435d09cc05",
+    "tools/test_dev_population_manifest.py": "e280be0f8472f29c0fc865acb1b2731ab7e7ebdfb11e8606f3585ea557f15da6",
+    "tools/test_floor_map_panel.lua": "f306dd2ccd35abf3d92d4afbd156c60f9b8355c5b0cd5ca0752589578abb66a6",
+    "tools/test_floor_map_props.lua": "f106535f9cbb30bdb08c7cbb9c2f156041d57df204d5a249743041be2bd2876d",
+    "tools/test_floor_maps.lua": "cb66be21feb445106c8d1adf088c282967cc949a73ad3eb7dc9b0f8942eaf267",
+    "tools/test_jail_key_visibility.lua": "87da08d465eb964144742b9dc3181e37f489d5db771ece3edd68c4742d793523",
+    "tools/test_population_transport.lua": "fdd916c78ce11db53746883e6974dbfa45789b193b2fb42bd9a8ceeade07ec54",
+    "tools/test_progression_stock_props.lua": "27cfe905a07ab289991cd9230320bcf235e5015fb26854c44a328233682225f4",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua": "8bf53301ccca5e31a78772ac89c83609413c8bca4f4780da95d3797e1d04f432"
+  },
+  "source_after": {
+    "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua": "7237f586f34399cf12a47c172304fea8d9395b760d00d3317cf0dd92341506db",
+    "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua": "4764319773c7fc7e5b979c1475852e5a9486bba35f7a4028b320f30ffa4b7851",
+    "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua": "11fb380424b5b8a8a059e361915611763a685a85c4d847a81cc1f742a19c8221",
+    "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/cl_init.lua": "8271758a3b854961b7f35fd6e0b40163fe8bc15b6fac4789bf0dccba041923b2",
+    "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/init.lua": "59ce9353281a3cb0750afac2854c8022a27a35e45d7d2d399c2cab2a307782ed",
+    "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/shared.lua": "f6a2f35bacd66e2344503411b2264bd7692a869c8e4eaa5acd896c0b56c6e1ab",
+    "gamemodes/legend_of_deborah/entities/entities/lod_keycard/cl_init.lua": "cdbdc45a416ffd293bd9210cdbfb70a08492da14e25b82eb0b822a54a68a3d9c",
+    "gamemodes/legend_of_deborah/entities/entities/lod_keycard/init.lua": "0bbdb22264fac170408688cfdf5a6445da500587ea18096b2e1dab22abefc411",
+    "gamemodes/legend_of_deborah/entities/entities/lod_keycard/shared.lua": "05b7d45361d1b73b9d6845be32b80f772ce79f8e21aaee843e3f6bdb343bd363",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua": "271a7ba606605fbce52cb056032206bfb3c7b2b846ea5512b04b7599666d2065",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua": "dbe6a76171c97fc414515bba26bf3d2135abdb4bfa15ef5f807b0e6847f860b1",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua": "ddfa43e6ce99d75c564f2ee30ac4071bbd9918df6cb19d44cf72278fc3fb525c",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua": "e8d23d9fe9d857b5b710d3a95f40cb2a0cebe0fb7b9fe55b24ea948f258902f2",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_progression_builder.lua": "14c062f4daf9f66a4d8622f2f535e58b43423c4e885d33f891d355bc4c0e6f97",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_progression_director.lua": "f16b1e2931303926aa59163ce4d34f8ae9728f28feb077207f0a45e37cb56c15",
+    "gamemodes/legend_of_deborah/gamemode/shared.lua": "5949a80f50beb92f852d9989fb6f1589f54ab5537d339760f16506c8d9fc87e2",
+    "lua/autorun/server/lod_population_observability.lua": "245797e706a3edc951abc7154590e1e696b9b9509143fc738cd1aa142f933414",
+    "tools/install_dev.sh": "63ca49211434c4ef08dc6c72f06d80362d94166c615028db4cd350c4e9ddc649",
+    "tools/test_checkpoint_g_integration.py": "231173c671eea79144d74f594d9d807f8e5650a12b38fd6752902c435d09cc05",
+    "tools/test_dev_population_manifest.py": "e280be0f8472f29c0fc865acb1b2731ab7e7ebdfb11e8606f3585ea557f15da6",
+    "tools/test_floor_map_panel.lua": "f306dd2ccd35abf3d92d4afbd156c60f9b8355c5b0cd5ca0752589578abb66a6",
+    "tools/test_floor_map_props.lua": "f106535f9cbb30bdb08c7cbb9c2f156041d57df204d5a249743041be2bd2876d",
+    "tools/test_floor_maps.lua": "cb66be21feb445106c8d1adf088c282967cc949a73ad3eb7dc9b0f8942eaf267",
+    "tools/test_jail_key_visibility.lua": "87da08d465eb964144742b9dc3181e37f489d5db771ece3edd68c4742d793523",
+    "tools/test_population_transport.lua": "fdd916c78ce11db53746883e6974dbfa45789b193b2fb42bd9a8ceeade07ec54",
+    "tools/test_progression_stock_props.lua": "27cfe905a07ab289991cd9230320bcf235e5015fb26854c44a328233682225f4",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua": "8bf53301ccca5e31a78772ac89c83609413c8bca4f4780da95d3797e1d04f432"
+  },
+  "changed_during_gate": false,
+  "results": [
+    {
+      "name": "cross_floor_route",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--cross-floor-route"
+      ],
+      "returncode": 0,
+      "seconds": 0.234,
+      "stdout_sha256": "1ba1e127e743b0726ffc133f0fa8c1f46c777dec1f49d82fa5bc2e48ecd73d93",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "internal_compass",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--compass"
+      ],
+      "returncode": 0,
+      "seconds": 0.237,
+      "stdout_sha256": "80b94d96472377b76fbf779c3ad1451e05c6f929c097842e5e2f46ad8f636d4a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "map_panel",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.207,
+      "stdout_sha256": "30c5272650f2404cb013ca22d54014684baf372d4610e982d0674a204a2c7020",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "positive_origin_bootstrap",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--pickup-only"
+      ],
+      "returncode": 0,
+      "seconds": 0.131,
+      "stdout_sha256": "0998cca5a270edf94fbab71fbb35152e8f5b5b00925628c1a1509df3b86491b4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "negative_origin_bootstrap",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--pickup-only-negative"
+      ],
+      "returncode": 0,
+      "seconds": 0.125,
+      "stdout_sha256": "0998cca5a270edf94fbab71fbb35152e8f5b5b00925628c1a1509df3b86491b4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "progression_stock_props",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_progression_stock_props.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.147,
+      "stdout_sha256": "a1448099f9663dd8d1cba7904e6d3e90e8843a9c815466acb43bca3cfbd91f53",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "jail_key_gate",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_jail_key_visibility.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.134,
+      "stdout_sha256": "a1448099f9663dd8d1cba7904e6d3e90e8843a9c815466acb43bca3cfbd91f53",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "map_native_props",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_props.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.107,
+      "stdout_sha256": "2a20fb576f02e95b49a43d8a1642541f3648834cecf1573674857891ebfec577",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "map_native_rendering",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_visual.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.161,
+      "stdout_sha256": "4050b64521a4dbdb0ee15fd584210504951903fe90d90c1fd3d8e3ea1030c256",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "generated_progression_routes",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps.lua"
+      ],
+      "returncode": 0,
+      "seconds": 22.592,
+      "stdout_sha256": "5091fde42bfb9c01163c1b90ac6e9804a8ee3e1db0392766f85086f6c487e8db",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "sqlite_full_builds",
+      "command": [
+        "python",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_floor_maps_integration.lua"
+      ],
+      "returncode": 0,
+      "seconds": 20.541,
+      "stdout_sha256": "c72ab4f83cd63940d1c2bd927c60e9a3e99d525913abf36860d6df08bc883cc1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "navigation_doors",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_navigation_door_cache.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.257,
+      "stdout_sha256": "47a6d7c100f7906d38360f80d3db72855eff7919d998135c2fe74cb27dbab794",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "quantized_routes",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_quantized_routes.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.157,
+      "stdout_sha256": "e58d753ab20ec9546dc8e1d475eab6869f99e2629b334b2b3b912dbecdf5f220",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "stair_navigation",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_navigation_recovery.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.16,
+      "stdout_sha256": "207245e9f49b7d30cf48ab222af4da84d477c5e3214e62ce2864b15876548655",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "map_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_transport.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.171,
+      "stdout_sha256": "0b025c233194cf19b0e7d329264e860048322c384c9499a8ef701849f6f08e2a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "map_marker",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_player_marker.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.127,
+      "stdout_sha256": "fc52f2fc7cffa3f771b442da963c0868779c9ad3b0443a070751cefba6415452",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "black_card_receipts",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_neil_brute.lua"
+      ],
+      "returncode": 0,
+      "seconds": 3.453,
+      "stdout_sha256": "546a40fcee05fed3a35fc984fd5cf3fd32d8eda69879ea027f755bff5d3ad54e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "jail_key_receipts",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_warden.lua"
+      ],
+      "returncode": 0,
+      "seconds": 7.09,
+      "stdout_sha256": "93f12962bdda6ad3a26f1f80cfa02954c0f8ece44d00d84febadb231f8ea2249",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "gps",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_gps_cadence.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.194,
+      "stdout_sha256": "13a9ec815cc0602e9a20de5d788a87f86a84cc9df72a8e1e284e1f3ee9ad8282",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "source_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.155,
+      "stdout_sha256": "bc4763bd0b8abee54f45dbc7d149d05a02745a4e078857f9b41f72fa3cc30212",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "changed_lua_syntax",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/cl_init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_jail_key/shared.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_keycard/cl_init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_keycard/init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_keycard/shared.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_progression_builder.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_progression_director.lua",
+        "gamemodes/legend_of_deborah/gamemode/shared.lua",
+        "lua/autorun/server/lod_population_observability.lua",
+        "tools/test_floor_map_panel.lua",
+        "tools/test_floor_map_props.lua",
+        "tools/test_floor_maps.lua",
+        "tools/test_jail_key_visibility.lua",
+        "tools/test_population_transport.lua",
+        "tools/test_progression_stock_props.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.202,
+      "stdout_sha256": "a26588ebd86b79b5934cf4411d7c3261bbd7321e0f52488f4f837c0e838ac482",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "installer_shell_syntax",
+      "command": [
+        "bash",
+        "-n",
+        "tools/install_dev.sh"
+      ],
+      "returncode": 0,
+      "seconds": 0.006,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "python_syntax",
+      "command": [
+        "python",
+        "-m",
+        "py_compile",
+        "tools/test_dev_population_manifest.py",
+        "tools/test_checkpoint_g_integration.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.085,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "native_gmod_accepted": false
+}

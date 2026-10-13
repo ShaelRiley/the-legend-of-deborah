@@ -61,7 +61,7 @@ LOD.ProgressionDirector.Announce=function(_,text,fields)
 end
 local function key(c) return LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
 local function edge(a,b) return a<b and a..'|'..b or b..'|'..a end
-local graphs,floors={},0
+local graphs,floors,routes={},0,0
 for seed=1,48 do
  local graph
  for attempt=1,64 do
@@ -70,6 +70,28 @@ for seed=1,48 do
  end
  assert(graph,'bounded production progression planning failed')
  graph.MasterLevelSeed=seed*7919
+ -- Prove real runtime objective reachability independently of discovery.
+ local prior=Run.State
+ local state={Graph=graph,Level=1,GatesOpen={},JailDoorOpen=false,WardenStarted=false}
+ Run.State=state
+ local entry=graph.Start
+ local function route(stage,from)
+  state.ObjectiveStage=stage
+  local target=assert(LOD.ProgressionDirector:GetObjectiveGraphTarget())
+  assert(LOD.MazeNavigator:FindPath(graph,from,target.a),'generated objective has no legal route')
+  routes=routes+1
+ end
+ for i=1,3 do
+  route(i*2-1,entry);route(i*2,graph.Progression.Keycards[i].cell)
+  state.GatesOpen[i]=true;entry=graph.Progression.Gates[i].afterCell
+ end
+ local stages=LOD.ProgressionDirector.Stages
+ route(stages.FIND_NEIL,entry);route(stages.OPEN_BLACK_GATE,graph.Progression.Hunt.neilCell)
+ state.GatesOpen[4]=true;entry=graph.Progression.Gates[4].afterCell
+ route(stages.ENTER_WARDEN,entry);route(stages.TAKE_JAIL_KEY,entry)
+ route(stages.UNLOCK_DEBORAH_CELL,graph.Progression.CoreCell)
+ state.JailDoorOpen=true;route(stages.RESCUE_DEBORAH,graph.Progression.JailEdge.beforeCell)
+ Run.State=prior
  local ok,plan=Map:PlanFloorMaps(graph);assert(ok,plan)
  local first={}
  for _,c in ipairs(graph.CriticalPath) do first[c.z]=first[c.z] or key(c) end
@@ -171,4 +193,5 @@ failAt=#created+2
 Run.State={Graph=graphs[2],Level=1,CampaignEpoch=11,LevelSeed=233,BuildReady=false}
 local ok,err=Builder:Build(graphs[2]);assert(not ok and err:find('required floor map creation failed',1,true))
 assert(#Builder.Entities==0 and not Map:CanUse(p))
-print('FLOOR_MAPS_PASS: '..#graphs..' production layouts / '..floors..' floor paths; all doors closed; event reservations; required spawning/failure cleanup; party touch, duplicate/remote/stale rejection; joins, death/respawn, Cash and reset isolation; developer on/off; real Magic admission/revocation/drain')
+print('FLOOR_MAPS_PASS: '..#graphs..' production layouts / '..floors..' floor paths / '..routes..' canonical objective routes; ordered closed/open doors; event reservations; required spawning/failure cleanup; party touch, duplicate/remote/stale rejection; joins, death/respawn, Cash and reset isolation; developer on/off; real Magic admission/revocation/drain')
+

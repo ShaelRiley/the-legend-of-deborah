@@ -446,7 +446,8 @@ function H:CollectBlackCard(ply,ent)
     if not h or not h.dead or not IsValid(ent) or ent~=h.card or ent.LODNeilDeathSeed~=s.LevelSeed
         or h.seed~=s.LevelSeed or s.Failed or s.LevelCleared or s.Cards[4]
         or s.ObjectiveStage~=S.TAKE_BLACK_KEYCARD or not activeHero(ply) then return false end
-    if ply:NearestPoint(ent:GetPos()):DistToSqr(ent:GetPos())>PC.KeycardTriggerRadius^2 then return false end
+    local pickupPos=ent.GetPickupPosition and ent:GetPickupPosition() or ent:GetPos()
+    if ply:NearestPoint(pickupPos):DistToSqr(pickupPos)>PC.KeycardTriggerRadius^2 then return false end
     s.Cards[4]=true;s.ObjectiveStage=S.OPEN_BLACK_GATE
     P:Announce("BLACK KEYCARD ACQUIRED — K / KEY");P:SyncAll();return true
 end
@@ -491,3 +492,4 @@ concommand.Add("lod_neil_brute_testkit",function(ply)
     end
     ply:ChatPrint("Neil/Brute hunt opened. Follow the minimap objective; kill Neil and collect his Black Keycard. Hostile reserves remain enforced.")
 end)
+

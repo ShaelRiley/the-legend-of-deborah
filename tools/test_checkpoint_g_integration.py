@@ -26,6 +26,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Progression Stock Models & Stable Pickup Anchors", ["python3", "tools/run_lua54.py", "tools/test_progression_stock_props.lua"]),
+    ("Ordinary Cross-Floor Route Without Discovery Leaks", ["python3", "tools/run_lua54.py", "tools/test_floor_map_panel.lua", "--cross-floor-route"]),
     ("Jail Key All-Angle Display & Solid Jumpable Pedestal", ["python3", "tools/run_lua54.py", "tools/test_jail_key_visibility.lua"]),
     ("Hermit Dialogue Native Client Model Idle API", ["python3", "tools/run_lua54.py", "tools/test_staging_lore_ui.lua"]),
     ("Reduced Monster Aura Orbit Work & Exact Sprite Parity", ["python3", "tools/run_lua54.py", "tools/test_monster_aura_orbit_work.lua", "--gate"]),
@@ -409,3 +411,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

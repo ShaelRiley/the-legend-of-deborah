@@ -1,4 +1,30 @@
-# Current checkpoint — stock physical floor-map props
+# Current checkpoint — legal cross-floor routes and stock progression pickups
+
+Author's Dungeon-1 NO LEGAL ROUTE screenshot and all-angle stock-prop correction,
+based on main `3893adc3d3f262d9c10548823d24edabd19119f9`. The client searched only
+collected floors for an objective on an unfound floor. Existing bounded Compass
+transport now supplies an ordinary found-floor map from the complete canonical
+server graph, with native stair guidance and stale-state guards. Unfound topology
+stays private; live locks, party discovery and personal Magic remain.
+
+All four keycards and Jail Key now have native stock bodies on owned low stock
+pedestals. The map shares their seating/render authority. Model pivots cannot
+move touch anchors; Black-card and boss receipt checks agree. Custom body drawing
+and distance culls retire. Required-prop failure is rejected before activation.
+
+23 checks pass with unchanged source: 576 objective routes / 48 layouts, 12 real
+full SQLite builds / 35 protected map paths, signed-floor prop seating / 2160
+native DrawModel calls and retained map/navigation/key-receipt regressions.
+Identity coverage: 101 installer / 97 server / 42 client. Parent cross-floor
+failure is reproduced and preserved. See [evidence and limits](validation/PROGRESSION_ROUTING_STOCK_PROPS_20261013.md).
+
+Next native action: fully quit/update/install main and restart gm_flatgrass;
+follow the ordinary map to the red gate on another floor, then orbit and collect
+map/cards/key near/far and above/below. Native rendering/contact/jumping/co-op and
+Steam Deck ≥40 FPS remain open. No Workshop/VPS operation or routine GDD edit.
+This finite source gate is not complete-matrix or native acceptance.
+
+# Previous checkpoint — stock physical floor-map props
 
 Author's continued native invisibility report and physical-prop request, based on
 main `a2ab35a46a976dc6b198b2c55b06f34dbca1cd95`.

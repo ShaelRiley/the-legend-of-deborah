@@ -613,6 +613,7 @@ function ProgressionDirector:SpawnJailKey(pos, source)
     ent:SetPos(pos)
     ent:SetKeySource(source or "production")
     ent:Spawn()
+    if not IsValid(ent) then return nil end
     ent:Activate()
     state.JailKeyEntity = ent
     if LOD.MazeBuilder and LOD.MazeBuilder._Register then LOD.MazeBuilder:_Register(ent) end
@@ -639,9 +640,10 @@ function ProgressionDirector:CollectJailKey(ply, keyEnt)
 
     if state.Graph and state.Graph.Progression.Warden then
         local w = state.Boss or state.Warden
+        local pickupPos=IsValid(keyEnt) and (keyEnt.GetPickupPosition and keyEnt:GetPickupPosition() or keyEnt:GetPos())
         if state.Boss and (not state.Boss.receipt or keyEnt.LODBossKeyReceipt~=state.Boss.receipt) then return false end
         if not w or not w.dead or keyEnt ~= state.JailKeyEntity or not IsValid(keyEnt)
-            or ply:NearestPoint(keyEnt:GetPos()):DistToSqr(keyEnt:GetPos()) > PC.KeycardTriggerRadius^2 then return false end
+            or ply:NearestPoint(pickupPos):DistToSqr(pickupPos) > PC.KeycardTriggerRadius^2 then return false end
     end
     state.JailKey = true
     state.JailKeyEntity = nil
@@ -712,3 +714,4 @@ ProgressionDirector.CanRescueDeborah = ProgressionDirector.CanRescueTarget
 function ProgressionDirector:OnDeborahTouched(ply)
     return self:OnRescueTargetTouched(ply, LOD.RunManager.State.RescueEntity)
 end
+

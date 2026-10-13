@@ -110,6 +110,13 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_gps.lua \
     gamemodes/legend_of_deborah/content/sound/lod/gps_praise_bank.mp3 \
     gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua \
+    gamemodes/legend_of_deborah/gamemode/shared.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_progression_director.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_progression_builder.lua \
+    gamemodes/legend_of_deborah/entities/entities/lod_keycard/shared.lua \
+    gamemodes/legend_of_deborah/entities/entities/lod_keycard/init.lua \
+    gamemodes/legend_of_deborah/entities/entities/lod_keycard/cl_init.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_minimap_magic.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_contracts.lua \
@@ -277,3 +284,4 @@ echo
 echo "Launch Garry's Mod with gm_flatgrass and gamemode legend_of_deborah."
 echo "For the legacy M1 audit you can still run:"
 echo "  lod_m1_audit"
+

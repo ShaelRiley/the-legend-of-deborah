@@ -16,6 +16,13 @@ local watched={
     "gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_gps.lua",
     "gamemodes/legend_of_deborah/content/sound/lod/gps_praise_bank.mp3",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua",
+    "gamemodes/legend_of_deborah/gamemode/shared.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_progression_director.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_progression_builder.lua",
+    "gamemodes/legend_of_deborah/entities/entities/lod_keycard/shared.lua",
+    "gamemodes/legend_of_deborah/entities/entities/lod_keycard/init.lua",
+    "gamemodes/legend_of_deborah/entities/entities/lod_keycard/cl_init.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap_magic.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_contracts.lua",
@@ -253,3 +260,4 @@ if util.AddNetworkString and net and net.Receive and net.Start and net.WriteUInt
         net.Start(channel);net.WriteUInt(#encoded,16);net.WriteData(encoded,#encoded);net.Send(ply)
     end)
 end
+

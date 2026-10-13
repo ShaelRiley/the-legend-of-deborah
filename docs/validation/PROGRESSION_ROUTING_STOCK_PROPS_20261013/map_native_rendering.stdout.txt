@@ -1,0 +1,2 @@
+FLOOR_MAP_PROPS_PASS: actual book/pedestal entities; upright native models; solid stationary bounds; unscaled low block; clear arrival center; canonical touch anchor/cadence; fallback; both-floor transmission; owned teardown
+FLOOR_MAP_VISUAL_PASS: native book and pedestal DrawModel; 24 hint viewpoints; complete all-orientation bounds; no body distance cull; distant other-floor Finder; cached helpers; death/role/depth guards; collection/shutdown; native rendering errors restore lighting/depth

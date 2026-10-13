@@ -35,6 +35,7 @@ IsValid=function(e) return type(e)=='table' and not e.removed end
 local now,players,checkCount=0,{},0
 CurTime=function() return now end;player={GetAll=function() return players end}
 LOD={Config={Maze={CellSize=384},Progression={KeycardHeight=40}},MinimapServer={CollectFloorMap=function() checkCount=checkCount+1;return false end}}
+dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua')
 local fallback=false
 util={IsValidModel=function() return not fallback end}
 AddCSLuaFile=noop
@@ -101,14 +102,15 @@ local start=Vector(1000,-800,424)
 local map=pickup(start);local pedestal=map.LODFloorMapPedestal
 assert(map:GetModel()=='models/props_lab/binderblue.mdl' and IsValid(pedestal),'map must be a stock book on a real pedestal')
 assert(pedestal:GetModel()=='models/hunter/blocks/cube05x05x05.mdl')
-assert(map.solid==SOLID_BBOX and pedestal.solid==SOLID_BBOX and map.move==MOVETYPE_NONE and pedestal.move==MOVETYPE_NONE)
+assert(map.solid==SOLID_NONE and pedestal.solid==SOLID_BBOX and map.move==MOVETYPE_NONE and pedestal.move==MOVETYPE_NONE)
 assert(map:UpdateTransmitState()==TRANSMIT_ALWAYS and pedestal:UpdateTransmitState()==TRANSMIT_ALWAYS)
 local anchor=map:GetPickupPosition()
 assert(anchor.x==1072 and anchor.y==-728 and anchor.z==424,'touch anchor/pedestal side placement')
 assert(pedestal:GetPos().z+pedestal.lo.z==384,'pedestal floats or sinks into the floor')
 assert(pedestal.hi.z-pedestal.lo.z<32,'stock pedestal is not low')
-assert(math.abs(map.lo.z+map:GetPos().z-(pedestal:GetPos().z+pedestal.hi.z+2))<.001,'book is not atop its pedestal')
-assert(map.hi.z-map.lo.z>map.hi.x-map.lo.x,'book is edge-on flat instead of upright')
+local lo,hi=LOD.ProgressionProps:RotatedBounds(map:GetModelBounds(),select(2,map:GetModelBounds()),map:GetAngles())
+assert(math.abs(lo.z+map:GetPos().z-(pedestal:GetPos().z+pedestal.hi.z+2))<.001,'book is not atop its pedestal')
+assert(hi.z-lo.z>hi.x-lo.x,'book is edge-on flat instead of upright')
 assert(math.abs(pedestal:GetPos().x-start.x)-pedestal.hi.x>32,'pedestal occupies the arrival center')
 assert(map:GetNW2Entity('LOD_MapPedestal')==pedestal)
 players={{},{}};map:Think();assert(checkCount==2);map:Think();assert(checkCount==2,'pickup polling duplicated')
@@ -117,4 +119,5 @@ fallback=true;local alternate=pickup(start);assert(alternate:GetModel()=='models
 map:Remove();assert(pedestal.removed,'collection/reset leaves an orphan pedestal')
 fail.value=true;local broken=make('lod_floor_map');broken:SetPos(start);broken:Spawn();assert(broken.removed,'failed prop creation left an invisible map');fail.value=false
 print('FLOOR_MAP_PROPS_PASS: actual book/pedestal entities; upright native models; solid stationary bounds; unscaled low block; clear arrival center; canonical touch anchor/cadence; fallback; both-floor transmission; owned teardown')
-return {classes=classes,native=native,pickup=pickup,start=start,created=created,initializers=initializers}
+return {classes=classes,native=native,pickup=pickup,start=start,created=created,initializers=initializers,make=make}
+

@@ -356,6 +356,9 @@ end)
 
 net.Receive("LOD_MapCompass",function()
     local trail={level=net.ReadDouble(),serial=net.ReadUInt(32),floor=net.ReadUInt(3),stage=net.ReadUInt(4),points={}}
+    trail.gates=net.ReadUInt(5)
+    trail.length=net.ReadUInt(16)
+    trail.origin={x=net.ReadUInt(7),y=net.ReadUInt(7),z=net.ReadUInt(3)}
     local count=net.ReadUInt(5)
     for i=1,count do trail.points[i]={x=net.ReadUInt(7),y=net.ReadUInt(7),z=net.ReadUInt(3)} end
     if count>25 then return end
@@ -454,8 +457,9 @@ local function buildRouteDisplay(route, gz, breadcrumbCells)
     if route and #route > 0 then
         local last = math.min(#route, 1 + math.max(2, math.floor(tonumber(breadcrumbCells) or 6)))
         for i = 2, last do
-            local a = Map.byKey[route[i - 1]]
-            local b = Map.byKey[route[i]]
+            local a,b=route[i-1],route[i]
+            a=type(a)=="table" and (Map.byKey[cellKey(a.x,a.y,a.z)] or a) or Map.byKey[a]
+            b=type(b)=="table" and (Map.byKey[cellKey(b.x,b.y,b.z)] or b) or Map.byKey[b]
             if not a or not b or a.z ~= gz then break end
             if b.z ~= gz then
                 transitionCell = a
@@ -488,6 +492,11 @@ local function cachedRouteData(gx, gy, gz)
     local breadcrumbCells = IsValid(localPlayer)
         and localPlayer:GetNW2Int("LOD_RPGBreadcrumbCells", 6) or 6
     local cached = Map.cache.reach
+    local trail=Map.compass
+    local validTrail=trail and trail.level==currentClientLevel()
+        and trail.serial==Map.buildSerial and trail.floor==gz and trail.stage==stage
+        and trail.gates==gateSignature+(jailOpen and 16 or 0)
+        and trail.origin and trail.origin.x==gx and trail.origin.y==gy and trail.origin.z==gz
 
     if cached and cached.revision == Map.cache.revision
         and cached.startKey == startKey
@@ -497,6 +506,7 @@ local function cachedRouteData(gx, gy, gz)
         and cached.ax == ax and cached.ay == ay and cached.az == az
         and cached.bx == bx and cached.by == by and cached.bz == bz
         and cached.breadcrumbCells == breadcrumbCells
+        and cached.trail == trail and cached.validTrail == validTrail
     then
         Map.stats.bfsHits = (Map.stats.bfsHits or 0) + 1
         return cached
@@ -505,7 +515,9 @@ local function cachedRouteData(gx, gy, gz)
     local reached, previous = graphReachability(startKey)
     local target = state.objectiveA
     local targetKey = target and cellKey(target.x, target.y, target.z) or nil
-    local route = targetKey and reached[targetKey] and routeTo(previous, startKey, targetKey) or nil
+    -- Never infer disconnection from a discovery-filtered graph, nor paint a
+    -- locally guessed route through a live event/arena lock.
+    local route = validTrail and #trail.points>0 and trail.points or nil
     local segments, transitionCell, transitionNextCell, transitionDirection =
         buildRouteDisplay(route, gz, breadcrumbCells)
     cached = {
@@ -518,13 +530,15 @@ local function cachedRouteData(gx, gy, gz)
         ax = ax, ay = ay, az = az,
         bx = bx, by = by, bz = bz,
         breadcrumbCells = breadcrumbCells,
+        trail = trail,
+        validTrail = validTrail,
         reached = reached,
         previous = previous,
         targetKey = targetKey,
         route = route,
         routeStatus = route and string.format("BREADCRUMB — %d OF %d CELLS",
-            math.min(breadcrumbCells, math.max(0, #route - 1)), math.max(0, #route - 1))
-            or "NO LEGAL ROUTE",
+            math.min(breadcrumbCells, math.max(0, #route - 1)), trail.length)
+            or (validTrail and "ROUTE BLOCKED — CHECK NEARBY EVENT" or "FINDING TRAIL..."),
         segments = segments,
         transitionCell = transitionCell,
         transitionNextCell = transitionNextCell,
@@ -784,11 +798,13 @@ local function paintMap(layout,ply,state,level)
         local current=mapReadyForLevel(level) and trail and trail.level==level
             and trail.serial==Map.buildSerial and trail.floor==gz
             and trail.stage==(state.objectiveStage or 0)
+            and trail.gates==gateStateSignature()+(state.jailDoorOpen and 16 or 0)
+            and trail.origin and trail.origin.x==gx and trail.origin.y==gy and trail.origin.z==gz
         local valid=current and first and first.x==gx and first.y==gy and first.z==gz
         draw.SimpleText("INTERNAL COMPASS — WALLS HIDDEN", "LOD_Map_Small",panelX+18,panelY+panelH-18,
             COLORS.footer,TEXT_ALIGN_LEFT,TEXT_ALIGN_BOTTOM)
         if not valid then
-            draw.SimpleText(current and #points==0 and "NO LEGAL ROUTE" or "FINDING TRAIL...", "LOD_Map_Title",panelX+panelW*.5,panelY+panelH*.5,
+            draw.SimpleText(current and #points==0 and "ROUTE BLOCKED — CHECK NEARBY EVENT" or "FINDING TRAIL...", "LOD_Map_Title",panelX+panelW*.5,panelY+panelH*.5,
                 COLORS.loading,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
             return
         end
@@ -974,3 +990,4 @@ concommand.Add("lod_minimap_cache_status", function()
         frames, builds, hits, indexed, topology, requests, reopens, tostring(ready), passed and "PASS" or "FAIL"
     ))
 end)
+

@@ -1,101 +1,32 @@
 include("shared.lua")
-
-local PC = LOD.Config.Progression
-local MC = LOD.Config.Maze
-local KEYCARD_BODY_DISTANCE_SQR = (MC and MC.CellSize or 384) ^ 2 * 36
-local PROGRESSION_LABEL_DISTANCE_SQR = (MC and MC.CellSize or 384) ^ 2 * 16
-
-LOD.ProgressionRenderStats = LOD.ProgressionRenderStats or {}
-local RenderStats = LOD.ProgressionRenderStats
-local cardMaterial = CreateMaterial("lod_keycard_opaque_v1", "UnlitGeneric", {
-    ["$basetexture"] = "color/white",
-    ["$vertexcolor"] = "1",
-    ["$vertexalpha"] = "1"
-})
-
-LOD.ClientKeycards = LOD.ClientKeycards or setmetatable({}, {__mode = "k"})
-
--- Transmission can resume before SetupDataTables installs the accessors.
--- Keep registry membership while waiting so the next ready frame recovers.
-local function networkReady(ent)
-    return ent.GetCardIndex
-end
-
+local PC,MC=LOD.Config.Progression,LOD.Config.Maze
+LOD.ClientKeycards=LOD.ClientKeycards or setmetatable({}, {__mode="k"})
+LOD.ProgressionRenderStats=LOD.ProgressionRenderStats or {}
+-- Remove the old hook-based body renderer on Lua refresh.
+hook.Remove("PostDrawOpaqueRenderables","LOD_DrawKeycards")
+hook.Remove("PostDrawTranslucentRenderables","LOD_DrawKeycardLabels")
 function ENT:Initialize()
-    LOD.ClientKeycards[self] = true
+    LOD.ClientKeycards[self]=true
+    LOD.ProgressionProps:RefreshBounds(self)
 end
-
 function ENT:OnRemove(fullUpdate)
-    -- Source may retain this entity across cl_fullupdate without Initialize.
-    if not fullUpdate then LOD.ClientKeycards[self] = nil end
+    if not fullUpdate then LOD.ClientKeycards[self]=nil end
 end
-
-hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_keycard", function(ent, transmitting)
-    if transmitting and IsValid(ent) and ent:GetClass() == "lod_keycard" then
-        LOD.ClientKeycards[ent] = true
+hook.Add("NotifyShouldTransmit","LOD_Recover_lod_keycard",function(ent,transmitting)
+    if transmitting and IsValid(ent) and ent:GetClass()=="lod_keycard" then
+        LOD.ClientKeycards[ent]=true;LOD.ProgressionProps:RefreshBounds(ent)
     end
 end)
-
-function ENT:Draw()
+function ENT:Draw() LOD.ProgressionProps:Draw(self) end
+function ENT:DrawTranslucent()
+    if not self.GetCardIndex then return end
+    local anchor=self:GetPickupPosition()
+    if anchor:DistToSqr(EyePos())>(MC.CellSize*4)^2 then return end
+    local card=PC.Cards[math.Clamp(self:GetCardIndex(),1,4)]
+    local pos=anchor+Vector(0,0,44)
+    cam.Start3D2D(pos,LOD.ProgressionProps:LabelFacing(pos),.12)
+        draw.RoundedBox(4,-130,-30,260,60,Color(16,18,20,230))
+        draw.SimpleText(card.name.." KEYCARD","DermaLarge",0,-8,card.color,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+        draw.SimpleText(card.letter.." / "..card.symbol,"DermaDefaultBold",0,18,Color(245,245,245),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+    cam.End3D2D()
 end
-
-hook.Add("PostDrawOpaqueRenderables", "LOD_DrawKeycards", function(depth, skybox)
-    if depth or skybox then return end
-    local eyePos = EyePos()
-    local registered, drawn, culled = 0, 0, 0
-    render.SetMaterial(cardMaterial)
-    render.CullMode(MATERIAL_CULLMODE_NONE)
-    for ent in pairs(LOD.ClientKeycards) do
-        if IsValid(ent) and networkReady(ent) then
-            registered = registered + 1
-            if ent:GetPos():DistToSqr(eyePos) <= KEYCARD_BODY_DISTANCE_SQR then
-                drawn = drawn + 1
-                local card = PC.Cards[math.Clamp(ent:GetCardIndex(), 1, 4)]
-                local adventure = LOD.AdventurePresentation
-                local still = adventure and adventure:Reduced()
-                local pos = ent:GetPos() + Vector(0, 0, still and 0 or math.sin(CurTime()*1.8+ent:EntIndex())*3)
-                local ang = Angle(0, still and 0 or CurTime()*28%360, 0)
-                render.SetMaterial(cardMaterial)
-                render.DrawBox(pos, ang, Vector(-18,-28,-3), Vector(18,28,3), card.color)
-                -- Physical access pass: magnetic stripe, contacts, printed letter.
-                cam.Start3D2D(pos+Vector(0,0,3.2),ang,1)
-                    surface.SetDrawColor(28,32,36,255);surface.DrawRect(-18,-20,36,7)
-                    surface.SetDrawColor(245,211,129,255);surface.DrawRect(-13,1,9,8)
-                    draw.SimpleText(card.letter,"DermaDefaultBold",7,4,Color(255,250,231),TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
-                cam.End3D2D()
-                if adventure then adventure:Glint(pos+Vector(0,0,8),ent:EntIndex(),card.color) end
-            else
-                culled = culled + 1
-            end
-        end
-    end
-    render.CullMode(MATERIAL_CULLMODE_CCW)
-    RenderStats.keycards = registered
-    RenderStats.keycardBodiesDrawn = drawn
-    RenderStats.keycardBodiesCulled = culled
-end)
-
-hook.Add("PostDrawTranslucentRenderables", "LOD_DrawKeycardLabels", function(depth, skybox)
-    if depth or skybox then return end
-    local eyePos = EyePos()
-    local drawn, culled = 0, 0
-    for ent in pairs(LOD.ClientKeycards) do
-        if IsValid(ent) and networkReady(ent) then
-            if ent:GetPos():DistToSqr(eyePos) <= PROGRESSION_LABEL_DISTANCE_SQR then
-                drawn = drawn + 1
-                local card = PC.Cards[math.Clamp(ent:GetCardIndex(), 1, 4)]
-                local ang = Angle(0, EyeAngles().y - 90, 90)
-                cam.Start3D2D(ent:GetPos() + Vector(0, 0, 38), ang, 0.12)
-                    draw.RoundedBox(4, -130, -30, 260, 60, Color(16, 18, 20, 230))
-                    draw.SimpleText(card.name .. " KEYCARD", "DermaLarge", 0, -8, card.color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-                    draw.SimpleText(card.letter .. " / " .. card.symbol, "DermaDefaultBold", 0, 18, Color(245, 245, 245), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-                cam.End3D2D()
-            else
-                culled = culled + 1
-            end
-        end
-    end
-    RenderStats.keycardLabelsDrawn = drawn
-    RenderStats.keycardLabelsCulled = culled
-end)
-

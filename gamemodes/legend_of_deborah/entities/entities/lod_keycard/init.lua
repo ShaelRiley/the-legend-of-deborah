@@ -4,12 +4,14 @@ include("shared.lua")
 
 local PC = LOD.Config.Progression
 local PICKUP_PITCH = {96, 108, 120}
+function ENT:UpdateTransmitState() return TRANSMIT_ALWAYS end
 
 function ENT:Initialize()
-    self:SetModel("models/hunter/blocks/cube025x025x025.mdl")
-    self:SetMoveType(MOVETYPE_NONE)
-    self:SetSolid(SOLID_NONE)
-    self:DrawShadow(false)
+    local anchor=self:GetPos()
+    self:SetPickupPosition(anchor)
+    local card=PC.Cards[math.Clamp(self:GetCardIndex(),1,4)]
+    if not LOD.ProgressionProps:Place(self,anchor,"models/props_c17/BriefCase001a.mdl",
+        "models/props_lab/binderblue.mdl",card.color) then return end
     self.NextPickupCheck = 0
 end
 
@@ -24,8 +26,9 @@ function ENT:Think()
             -- player hull. Using GetPos() measured from the player's feet while
             -- the card floats above the deck, consuming most of the nominal
             -- trigger radius vertically and making obvious body contact fail.
-            local nearest = ply:NearestPoint(self:GetPos())
-            if nearest:DistToSqr(self:GetPos()) <= radiusSqr then
+            local anchor=self:GetPickupPosition()
+            local nearest = ply:NearestPoint(anchor)
+            if nearest:DistToSqr(anchor) <= radiusSqr then
                 if LOD.ProgressionDirector:CollectCard(self:GetCardIndex(), ply, self) then
                     -- Same recognizable pickup timbre, ascending pitch by progression
                     -- color: Red < Blue < Yellow. The card is therefore legible by ear
@@ -41,4 +44,5 @@ function ENT:Think()
     self:NextThink(CurTime() + 0.08)
     return true
 end
+
 

@@ -35,7 +35,13 @@ with tempfile.TemporaryDirectory() as tmp:
                 stdout, stderr = process.communicate()
                 assert process.returncode == 0, stdout + stderr
             rows = (data / 'dev_population_sources.txt').read_text().splitlines()
-            assert len(rows) == 94
+            assert len(rows) == 101
+            assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua') for row in rows)
+            assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/shared.lua') for row in rows)
+            assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sv_progression_director.lua') for row in rows)
+            assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sv_progression_builder.lua') for row in rows)
+            for leaf in ('init.lua', 'shared.lua', 'cl_init.lua'):
+                assert any(row.endswith(' gamemodes/legend_of_deborah/entities/entities/lod_keycard/' + leaf) for row in rows)
             for leaf in ('init.lua', 'shared.lua', 'cl_init.lua'):
                 assert any(row.endswith(' gamemodes/legend_of_deborah/entities/entities/lod_jail_key/' + leaf) for row in rows)
             assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sv_minimap_magic.lua') for row in rows)
@@ -82,3 +88,4 @@ with tempfile.TemporaryDirectory() as tmp:
                 assert time.monotonic() < deadline, 'owned installer children failed to retire'
                 time.sleep(0.01)
 print('DEV_POPULATION_MANIFEST_PASS exact 94-source hashes including key pedestal/display/collision and friendly idle; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup')
+

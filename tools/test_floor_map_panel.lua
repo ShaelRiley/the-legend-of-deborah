@@ -3,6 +3,8 @@
 local env=dofile('tools/test_enemy_update.lua')
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local noop=function() end
+math.AngleDifference=function(a,b) return (a-b+180)%360-180 end
+math.atan2=math.atan
 local server=LOD
 local realm='server'
 local hooks,receivers,commands,timers={server={},client={}},{server={},client={}},{server={},client={}},{server={},client={}}
@@ -84,7 +86,7 @@ server.RPGAbilityRules={MovementMultiplier=function() return 1 end,
 dofile(root..'sv_rpg_gate_e_map_movement.lua')
 local function replicate(who) who.clientNW=table.Copy(who.nw);who.clientNW.LOD_Magic=(pools[who] or {}).magic or 100 end
 for _,who in ipairs(online) do who:SetPos(MC.Origin+Vector(MC.CellSize,0,MC.LevelHeight));R:_SyncPlayerVars(who);replicate(who) end
-local client={Config={Maze=table.Copy(MC),Geometry={}},ClientState={level=1,gates={}},Audio={Play=noop}}
+local client={Config={Maze=table.Copy(MC),Geometry=table.Copy(server.Config.Geometry)},ClientState={level=1,gates={}},Audio={Play=noop}}
 client.Config.Maze.Origin=Vector(0,0,0)
 local function switch(side) realm=side;LOD=side=='server' and server or client end
 local localPlayer=p
@@ -143,9 +145,9 @@ if arg[1]=='--compass' then
  switch('server');g.Progression.Gates={{edgeKey=key(a)..'|'..key(b)}};R.State.GatesOpen={}
  assert(S:SendCompass(p,true));pump()
  texts={};lines=0;hooks.client.LOD_MinimapHUD()
- local noRoute=false;for _,text in ipairs(texts) do if text=='NO LEGAL ROUTE' then noRoute=true end end
+ local noRoute=false;for _,text in ipairs(texts) do if text=='ROUTE BLOCKED — CHECK NEARBY EVENT' then noRoute=true end end
  assert(noRoute and lines==0 and #M.compass.points==0,'compass crossed a closed progression door')
- switch('server');R.State.GatesOpen[1]=true;assert(S:SendCompass(p,true));pump();paint('compass')
+ switch('server');R.State.GatesOpen[1]=true;client.ClientState.gates[1]=true;assert(S:SendCompass(p,true));pump();paint('compass')
  switch('server');p.ownsCompass=false;p:SetNW2Bool('LOD_RPGInternalCompass',false);replicate(p)
  assert(not S:SendCompass(p,true));switch('client');paint(true)
  assert(maps.mask==0 and q.nw.LOD_MapFloorMask==0,'private compass became party ownership')
@@ -158,6 +160,45 @@ if arg[1]=='--pickup-only' or arg[1]=='--pickup-only-negative' then
  assert(M.open,'collected map cannot bootstrap an offset-origin client')
  pump();paint(false);assert(M:HasAccess(p) and client.Config.Maze.Origin.z==originZ)
  print('FLOOR_MAP_PICKUP_BOOTSTRAP_PASS: actual collection, mirrors, offset origin, transfer and maze rendering')
+ return
+end
+if arg[1]=='--cross-floor-route' then
+ switch('server')
+ p:SetPos(maps.plan.maps[0].entity:GetPos()-Vector(0,0,36))
+ assert(S:CollectFloorMap(p,maps.plan.maps[0].entity));replicate(p)
+ p:SetPos(B:CellCenter(a))
+ server.ProgressionDirector.GetObjectiveGraphTarget=function() return {a=d} end
+ R.State.ObjectiveStage=1;client.ClientState.objectiveStage=1;client.ClientState.objectiveA=d
+ switch('client');commands.client.lod_minimap_toggle();pump()
+ hooks.client.LOD_MinimapMagicHeartbeat();pump();paint(false)
+ local reach=assert(M.cache.reach)
+ assert(maps.mask==1 and #M.cells==2 and not M.byKey[key(c)] and not M.byKey[key(d)],'unfound upper-floor topology leaked')
+ assert(reach.route and #reach.segments==1 and reach.transitionNextCell.z==1,'found floor could not route to unfound-floor objective')
+ assert(reach.routeStatus=='BREADCRUMB — 2 OF 3 CELLS','full graph distance or bounded staircase trail lost')
+ -- An ordinary owner receives guidance without Internal Compass; an unfound
+ -- floor still has no ordinary trail privilege.
+ assert(not p.ownsCompass)
+ switch('server');p:SetPos(B:CellCenter(b));now=now+.5;assert(S:SendCompass(p));pump();paint(false)
+ assert(M.cache.reach.transitionNextCell.z==1 and #M.cache.reach.segments==0)
+ switch('server');g.Progression.Gates={{edgeKey=key(b)..'|'..key(c)}};R.State.GatesOpen={}
+ assert(S:SendCompass(p,true));pump();paint(false)
+ assert(not M.cache.reach.route and M.cache.reach.routeStatus:find('ROUTE BLOCKED',1,true),'closed server gate was bypassed by client BFS')
+ switch('server');R.State.GatesOpen[1]=true;client.ClientState.gates[1]=true
+ assert(S:SendCompass(p,true));pump();paint(false);assert(M.cache.reach.route)
+ switch('server');p:SetPos(B:CellCenter(c));assert(not S:SendCompass(p,true));switch('client');paint(true)
+ -- Descending to an unfound lower floor also uses the complete graph.
+ switch('server');p:SetPos(maps.plan.maps[1].entity:GetPos()-Vector(0,0,36));assert(S:CollectFloorMap(p,maps.plan.maps[1].entity))
+ maps.owned[0]=nil;maps.mask=2;R:_SyncPlayerVars(p);replicate(p);p:SetPos(B:CellCenter(c))
+ server.ProgressionDirector.GetObjectiveGraphTarget=function() return {a=a} end
+ client.ClientState.objectiveA=a;assert(S:Send(p));pump();paint(false)
+ assert(#M.cells==2 and not M.byKey[key(a)] and M.cache.reach.transitionDirection=='↓','descending route revealed unknown floor or lost its arrow')
+ -- A delayed route is never reused after movement, gate change or rebuild.
+ p:SetPos(B:CellCenter(d));switch('client');paint(false)
+ assert(not M.cache.reach.route and M.cache.reach.routeStatus=='FINDING TRAIL...')
+ switch('server');now=now+.5;assert(S:SendCompass(p));pump();paint(false);assert(M.cache.reach.route)
+ client.ClientState.gates[1]=false;paint(false);assert(not M.cache.reach.route)
+ client.ClientState.gates[1]=true;M.compass.serial=M.compass.serial-1;paint(false);assert(not M.cache.reach.route)
+ print('CROSS_FLOOR_ROUTE_PASS: full server graph; ascending/descending to unfound floors; no topology leak or feat grant; bounded breadcrumbs; distance; exact stair guidance; closed/open gate; movement, gate and build stale-route rejection')
  return
 end
 down[KEY_Q]=true;hooks.client.LOD_MinimapToggleInput()
@@ -197,3 +238,4 @@ assert(#M.cells==0 and M.floorMask==0 and M.buildSerial>maps.serial,'rebuild ret
 switch('server');p.alive=false;R:_SyncPlayerVars(p);replicate(p)
 switch('client');hooks.client.LOD_MinimapHUD();assert(not M.open,'death kept the panel up')
 print('FLOOR_MAP_PANEL_PASS: two realms/offset origins; Q/M/VR panel; blank metadata/no topology leaks or polling; actual party touch/maze transition; unchanged personal Magic lease/drain/movement; exhaustion, late Hero and rebuild/death')
+

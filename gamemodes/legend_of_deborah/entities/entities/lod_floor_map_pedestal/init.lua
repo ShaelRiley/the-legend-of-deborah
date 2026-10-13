@@ -15,6 +15,7 @@ function ENT:Initialize()
     self:SetCollisionBounds(mins,maxs)
     self:SetCollisionGroup(COLLISION_GROUP_NONE)
     self:SetMaterial("models/debug/debugwhite")
-    self:SetColor(Color(255,222,104))
+    self:SetColor(self.LODPropColor or Color(255,222,104))
     self:DrawShadow(false)
 end
+

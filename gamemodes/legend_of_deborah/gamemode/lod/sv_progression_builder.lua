@@ -42,6 +42,7 @@ function MazeBuilder:_SpawnKeycard(meta)
     ent:SetCardIndex(meta.index)
     ent:SetPos(self:CellCenter(meta.cell) + Vector(0, 0, PC.KeycardHeight))
     ent:Spawn()
+    if not IsValid(ent) then return nil end
     ent:Activate()
     meta.entity = ent
     return ent
@@ -146,4 +147,5 @@ function MazeBuilder:Build(graph)
     }
     return true, report
 end
+
 

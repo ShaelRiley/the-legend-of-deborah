@@ -368,6 +368,10 @@ if CLIENT then
         "gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_player_options.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua",
+        "gamemodes/legend_of_deborah/gamemode/shared.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_keycard/shared.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_keycard/cl_init.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_major_fx.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_reliability.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_logical_cell.lua",
@@ -675,3 +679,4 @@ if CLIENT then
     hook.Add("ShutDown","LOD_PerformanceShutdown",function() Audit:StopPerformanceCapture("shutdown") end)
     hook.Add("PostCleanupMap","LOD_PerformanceCleanup",function() Audit:StopPerformanceCapture("map-cleanup") end)
 end
+

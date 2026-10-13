@@ -13,6 +13,8 @@ LOD = LOD or {}
 LOD.Version = "0.2.0-dev"
 
 include("lod/sh_config.lua")
+if SERVER then AddCSLuaFile("lod/sh_progression_props.lua") end
+include("lod/sh_progression_props.lua")
 if SERVER then AddCSLuaFile("lod/sh_soldier_movement.lua") end
 include("lod/sh_soldier_movement.lua")
 if SERVER then
@@ -258,3 +260,4 @@ end
 function GM:PlayerDeathThink()
     return true
 end
+
