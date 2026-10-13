@@ -1,0 +1,17 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 114
+[AUDIT] Implementation Feats Count: 114
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+[LOD] Level 2 ready. campaign=73 levelSeed=685876482 layoutAttempt=1 cells=1 entities=0 vertical=0 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD] Campaign failed at Level 1. seed=73 reason=TIME OVER
+SPOT15_SERVER_PASS 196 actual-production assertions
+[LOD:RPG-E] custom AR2 rate-of-fire transaction bridge armed; revision=gate_e_ar2_one_ammo_per_burst_v2
+[LOD:RPG-E] custom AR2 BeginAR2Burst wrapped with one-ammo burst authority
+[LOD:RPG-E] custom AR2 FireAR2Round wrapped with committed-ammo preservation
+[LOD] Campaign failed at Level 1. seed=73 reason=TIME OVER
+[LOD] Campaign failed at Level 1. seed=73 reason=TIME OVER
+SPOT16_SERVER_PASS 988 actual-production assertions; native engine acceptance pending
+[LOD:RPG-E] custom AR2 BeginAR2Burst wrapped with one-ammo burst authority
+[LOD:RPG-E] custom AR2 FireAR2Round wrapped with committed-ammo preservation
+HAIR_TRIGGER_PASS 113 focused assertions; native engine acceptance pending

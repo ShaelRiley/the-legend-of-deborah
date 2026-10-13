@@ -1,0 +1,87 @@
+{
+  "passed": 19,
+  "total": 19,
+  "results": [
+    {
+      "name": "test_feat_repeat_guard",
+      "returncode": 0
+    },
+    {
+      "name": "validate_spot11_drafts",
+      "returncode": 0
+    },
+    {
+      "name": "test_actor_progression",
+      "returncode": 0
+    },
+    {
+      "name": "test_human_soldier_progression",
+      "returncode": 0
+    },
+    {
+      "name": "test_hair_trigger",
+      "returncode": 0
+    },
+    {
+      "name": "test_feat_stabilization",
+      "returncode": 0
+    },
+    {
+      "name": "test_spot11_draft_ui",
+      "returncode": 0
+    },
+    {
+      "name": "test_character_sheet_layout",
+      "returncode": 0
+    },
+    {
+      "name": "test_neil_release_prop",
+      "returncode": 0
+    },
+    {
+      "name": "test_staging_interaction_prompt",
+      "returncode": 0
+    },
+    {
+      "name": "test_neil_brute",
+      "returncode": 0
+    },
+    {
+      "name": "test_snapshot_delivery",
+      "returncode": 0
+    },
+    {
+      "name": "test_cleanup_contracts",
+      "returncode": 0
+    },
+    {
+      "name": "test_population_transport",
+      "returncode": 0
+    },
+    {
+      "name": "test_progression_stock_props",
+      "returncode": 0
+    },
+    {
+      "name": "test_floor_maps_integration",
+      "returncode": 0
+    },
+    {
+      "name": "installer",
+      "returncode": 0
+    },
+    {
+      "name": "wiring",
+      "returncode": 0
+    },
+    {
+      "name": "syntax",
+      "returncode": 0
+    }
+  ],
+  "source_before": "5fc73513b8649add11c76a1e302b0e80838c2835eaf0e125c2f8098741fc2f9d",
+  "source_after": "5fc73513b8649add11c76a1e302b0e80838c2835eaf0e125c2f8098741fc2f9d",
+  "changed_during_gate": false,
+  "lua_files": 920,
+  "native_gmod_accepted": false
+}

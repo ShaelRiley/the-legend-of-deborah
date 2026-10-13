@@ -1,4 +1,20 @@
-# Current checkpoint — Neil release button and quieter logger
+# Current checkpoint — ordinary feat repeat guard and stock Neil console
+
+On main d8ca361, human/automatic commits now enforce current eligibility and
+highest replacement ranks. Invalid next-hand cards repair deterministically;
+saved duplicate nonrepeatable selections restore later unresolved choices, with
+legitimate fallback repeats retained. Neil's release uses a floor-seated stock
+HL2 console and red angled stock button, plus the portal's existing large aimed,
+rebound-key-aware prompt. Existing release/protection/quiet-feed rules remain.
+
+19 selected checks and full Lua syntax pass on unchanged source. Initial legacy
+fixture failure is retained; native appearance/Use/co-op and saved-state repair
+remain pending. See [evidence](validation/FEAT_REPEAT_NEIL_CONSOLE_20261013.md).
+Next: fully quit/update/install main, restart gm_flatgrass, verify recovery
+choices, then aim at the post-Yellow console and press E to release Neil. No
+Workshop/VPS operation or routine GDD edit.
+
+# Previous checkpoint — Neil release button and quieter logger
 
 Author's three corrections on main `4d14c2b140b9845a0d46c53957dc0695830e3744`.
 Yellow now directs the party to a reachable stock-prop E release button before

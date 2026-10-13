@@ -1,0 +1,1 @@
+SPOT11_DRAFT_UI_PASS: 329 production layout/callback assertions; native visual acceptance remains open.

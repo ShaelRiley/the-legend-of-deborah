@@ -167,12 +167,19 @@ hook.Add("HUDPaint", "LOD_StagingInteractionPrompt", function()
         or (LOD.Damsels and IsValid(LOD.Damsels.DialogueFrame)) then return end
 
     local ply = LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() or ply:GetNW2Bool("LOD_Deployed", false) then return end
+    if not IsValid(ply) or not ply:Alive() then return end
 
     local text
     local key = useBindingLabel()
     local target=ply:GetEyeTrace().Entity
-    if IsValid(target) and target:GetClass()=='lod_debbie_statue' and ply:GetPos():DistToSqr(target:GetPos())<=128^2 then
+    if ply:GetNW2Bool("LOD_Deployed",false) then
+        if not IsValid(target) or target:GetClass()~="lod_neil_release_button"
+            or not target.GetReleased or target:GetReleased()
+            or ply:GetNW2Bool("LOD_IsSoldier",false) or ply:GetNW2Bool("LOD_Eliminated",false)
+            or not target.GetPickupPosition
+            or ply:GetPos():DistToSqr(target:GetPickupPosition())>96^2 then return end
+        text=string.format('Press "%s" to Release Neil',key)
+    elseif IsValid(target) and target:GetClass()=='lod_debbie_statue' and ply:GetPos():DistToSqr(target:GetPos())<=128^2 then
         text=string.format('Press "%s" to Open the Wallet',key)
     elseif IsValid(target) and target:GetClass()=='lod_staging_prop'
         and target.GetStageKind and target:GetStageKind()==target.KIND_GUIDE

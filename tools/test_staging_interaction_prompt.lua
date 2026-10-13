@@ -78,4 +78,20 @@ local portal=entity('lod_staging_prop');portal.KIND_PORTAL=2
 portal.GetStageKind=function() return 2 end
 portal.PortalAimFraction=function(_,p,d) assert(p==ply and d==340);return .3 end
 nearby.lod_staging_prop={portal};expect('Press "F" to Enter the Labyrinth')
+-- Dungeon release uses the same large aimed prompt and actual bound Use key.
+nearby.lod_staging_prop={};ply.nw.LOD_Staged=false;ply.nw.LOD_Deployed=true
+local console=entity('lod_neil_release_button',80)
+console.released=false
+function console:GetReleased() return self.released end
+function console:GetPickupPosition() return self:GetPos() end
+target=console;binding='e';expect('Press "E" to Release Neil')
+binding='mouse4';expect('Press "MOUSE 4" to Release Neil')
+console.pos.x=96;expect('Press "MOUSE 4" to Release Neil')
+console.pos.x=96.01;expect(nil);console.pos.x=80
+console.released=true;expect(nil);console.released=false
+ply.nw.LOD_IsSoldier=true;expect(nil);ply.nw.LOD_IsSoldier=false
+ply.nw.LOD_Eliminated=true;expect(nil);ply.nw.LOD_Eliminated=false
+LOD.UI.ActivePage={};expect(nil);LOD.UI.ActivePage=nil
+ply.alive=false;expect(nil);ply.alive=true
+target=nil;expect(nil)
 print('STAGING_PROMPT_PASS: one large Hermit prompt; rebound/fallback Use; reveal; exact reach; role/life/staging/menu/dialogue guards; portal/statue/manual regressions')

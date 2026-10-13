@@ -1,0 +1,1 @@
+/workspace/scratch/64dfa109c475/the-legend-of-deborah/tools/test_hair_trigger.lua: ...09c475/the-legend-of-deborah/tools/test_hair_trigger.lua:10: HAIR_TRIGGER: canonical repair fills only retired gaps in the same stored hand

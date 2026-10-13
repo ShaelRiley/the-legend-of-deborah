@@ -1,0 +1,2 @@
+FLOOR_MAP_PROPS_PASS: actual book/pedestal entities; upright native models; solid stationary bounds; unscaled low block; clear arrival center; canonical touch anchor/cadence; fallback; both-floor transmission; owned teardown
+PROGRESSION_STOCK_PROPS_PASS: 18 bodies on negative/zero/positive floors; all four cards, Jail Key and map; native models; 2160 angle/distance/height DrawModel calls; complete bounds; fixed touch anchors; jumpable block-only collision; always-transmitted bodies; owned collection cleanup

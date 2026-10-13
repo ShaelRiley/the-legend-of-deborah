@@ -113,10 +113,16 @@ check(#pending.offerFeatIds==2 and pending.offerFeatIds[1]=='WIS_HERO_OF_LEGEND'
     and pending.needsCanonicalRepair,'unchosen retired offer uses existing deterministic repair')
 check(not CPS:ReconcileFeatOwnership(migrated),'migration is idempotent')
 near(Effects:RateOfFireProfile(migrated).rateOfFireMultiplier,1.55,'migrated profile never stacks ranks')
-CPS:RepairCanonicalDrafts({identity='hair-trigger-legacy',starterWeaponClass='weapon_pistol'},migrated)
+-- Keep the unrelated candidate genuinely eligible. The already-owned Second
+-- Wind card is now an illegal duplicate and must be replaced as well.
+migrated.baseAbilities.wis=30;CPS:_RecomputeProgressionState(migrated)
+local legacyPS={identity='hair-trigger-legacy',starterWeaponClass='weapon_pistol'}
+check(CPS:_FeatEligible(legacyPS,migrated,CPS:_FindFeat('WIS_HERO_OF_LEGEND')),'unrelated legacy card is eligible')
+CPS:RepairCanonicalDrafts(legacyPS,migrated)
 check(#pending.offerFeatIds==4 and pending.offerFeatIds[1]=='WIS_HERO_OF_LEGEND'
-    and pending.offerFeatIds[2]=='CON_REGEN_11' and pending.rngSeed==83 and pending.offerLimit==4
-    and not pending.needsCanonicalRepair,'canonical repair fills only retired gaps in the same stored hand')
+    and pending.rngSeed==83 and pending.offerLimit==4
+    and not pending.needsCanonicalRepair,'repair preserves legal card/seed and replaces retired/owned gaps')
+for _,offered in ipairs(pending.offerFeatIds) do check(offered~='CON_REGEN_11','owned legacy duplicate excluded') end
 for _, offered in ipairs(pending.offerFeatIds) do
     check(offered~='DEX_RATE_OF_FIRE_2' and offered~='DEX_RATE_OF_FIRE_3','no retired compatibility offers')
 end

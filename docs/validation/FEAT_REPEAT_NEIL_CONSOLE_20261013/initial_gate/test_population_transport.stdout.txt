@@ -1,0 +1,1 @@
+POPULATION_TRANSPORT_PASS: one automatic opt-in request; existing census/source cache; admin/rate/map/payload bounds; complete client mirror and performance embedding; valid bounded console; native DATA silent/throwing failures; malformed packets; no second census or timer

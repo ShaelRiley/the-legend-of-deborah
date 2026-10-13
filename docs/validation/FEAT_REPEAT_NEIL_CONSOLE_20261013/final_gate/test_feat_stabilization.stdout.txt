@@ -1,0 +1,5 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 114
+[AUDIT] Implementation Feats Count: 114
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+[FEAT_STABILIZATION] PASS: 114 ordinary + 6 fallback + 9 capstones, zero blank descriptions; shared regression checks passed. This does not certify feat completeness.

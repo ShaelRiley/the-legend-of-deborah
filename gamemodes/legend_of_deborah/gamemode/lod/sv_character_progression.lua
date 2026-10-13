@@ -600,6 +600,9 @@ function CharacterProgressionSystem:_FeatEligible(ps, state, definition)
     end
     for _, ownedId in ipairs(state.featIds or {}) do
         if ownedId == definition.featId then return false end
+        local owned = self:_FindFeat(ownedId)
+        if owned and owned.replacesLowerRank and owned.featFamilyId == definition.featFamilyId
+            and (owned.rankIndex or 1) >= (definition.rankIndex or 1) then return false end
     end
     return true
 end
@@ -769,8 +772,39 @@ end
 
 -- One versioned ingress for historical ownership. Valid locked offers keep their
 -- order and seed; only removed IDs are replaced. No valid player choice is rerolled.
+function CharacterProgressionSystem:RepairDuplicateFeatSelections(state)
+    if not state or state.featSelectionRevision=="ordinary-unique-20261013-v1" then return false end
+    local seen,changed={},false
+    -- Historical slots are the receipts, even when a higher rank has replaced
+    -- the lower rank in active ownership. Preserve the first actual selection.
+    for _,draft in ipairs(state.pendingFeatSlots or {}) do
+        local id=draft.resolved and draft.selectedFeatId
+        local definition=id and self:_FindFeat(id)
+        if definition and not definition.repeatableFallback then
+            if seen[id] then
+                draft.selectedFeatId=nil;draft.resolved=false;draft.exhausted=nil
+                draft.needsCanonicalRepair=true
+                local offers={}
+                for _,offer in ipairs(draft.offerFeatIds or {}) do
+                    if offer~=id then offers[#offers+1]=offer end
+                end
+                draft.offerFeatIds=offers;changed=true
+            else seen[id]=true end
+        end
+    end
+    for id,count in pairs(state.featStackCounts or {}) do
+        local definition=self:_FindFeat(id)
+        if definition and not definition.repeatableFallback and count>1 then
+            state.featStackCounts[id]=1;changed=true
+        end
+    end
+    state.featSelectionRevision="ordinary-unique-20261013-v1"
+    return changed
+end
+
 function CharacterProgressionSystem:ReconcileFeatOwnership(state)
-    if not state or state.featCatalogRevision == "feat-hair-trigger-20261005-v1" then return false end
+    local repaired=self:RepairDuplicateFeatSelections(state)
+    if not state or state.featCatalogRevision == "feat-hair-trigger-20261005-v1" then return repaired end
     -- Finite migration only: retired survival bookkeeping has no runtime effect.
     state.notYetConsumedDungeonLevel,state.notYetConsumedDungeonNumber=nil,nil
     local function canonical(id, preserveRateOwnership)
@@ -828,6 +862,24 @@ function CharacterProgressionSystem:RepairCanonicalDrafts(ps, state)
             draft.needsCanonicalRepair = nil
         end
     end
+    -- A locked hand may predate an earlier pending choice, rank replacement,
+    -- or compatibility repair. Replace only now-illegal cards in the next hand;
+    -- valid IDs, order, seed, historical offer limit and resolved hands survive.
+    local draft=self:_NextPendingOrdinaryDraft(state)
+    if not draft then return end
+    local kept,changed={},false
+    for _,id in ipairs(draft.offerFeatIds or {}) do
+        if self:_FeatEligible(ps,state,self:_FindFeat(id)) then kept[#kept+1]=id
+        else changed=true end
+    end
+    if not changed then return end
+    local limit=math.Clamp(math.floor(tonumber(draft.offerLimit) or 3),1,RPG.OrdinaryFeatOfferCount)
+    local rng=LOD.RNG.New(derive(draft.rngSeed or 1,"ordinary-eligibility-repair-v1"))
+    for _,definition in ipairs(self:_DrawOrdinaryOffers(ps,state,rng,math.max(0,limit-#kept),kept)) do
+        kept[#kept+1]=definition.featId
+    end
+    draft.offerFeatIds=kept
+    draft.exhausted=#kept==0;draft.resolved=#kept==0
 end
 
 function CharacterProgressionSystem:CommitFeat(ply, featId, expectedEarnedAtLevel)
@@ -837,6 +889,11 @@ function CharacterProgressionSystem:CommitFeat(ply, featId, expectedEarnedAtLeve
     end
     local ps = runManager and runManager:GetPlayerState(ply)
     local state = ps and ps.progressionState
+    local pending=state and self:_NextPendingOrdinaryDraft(state)
+    if pending and expectedEarnedAtLevel~=nil
+        and tonumber(expectedEarnedAtLevel)~=tonumber(pending.earnedAtLevel) then
+        return false,"That choice belongs to a stale ordinary feat draft."
+    end
     if state and self:ReconcileFeatOwnership(state) then self:_RecomputeProgressionState(state) end
     self:RepairCanonicalDrafts(ps, state)
     local draft = state and self:_NextPendingOrdinaryDraft(state) or nil
@@ -854,6 +911,9 @@ function CharacterProgressionSystem:CommitFeat(ply, featId, expectedEarnedAtLeve
     local definition = offered and self:_FindFeat(featId) or nil
     if not definition then
         return false, "That feat is not a legal offer in the locked draft."
+    end
+    if not self:_FeatEligible(ps,state,definition) then
+        return false,"That feat is already owned or no longer eligible."
     end
 
     draft.selectedFeatId = featId
@@ -1134,7 +1194,7 @@ function CharacterProgressionSystem:_CommitAutomaticFeat(ps, state, draft, actor
     local candidates = {}
     for _, featId in ipairs(draft.offerFeatIds or {}) do
         local definition = self:_FindFeat(featId)
-        if definition then
+        if definition and self:_FeatEligible(ps,state,definition) then
             candidates[#candidates + 1] = {
                 definition = definition,
                 weight = self:_FeatWeight(ps, state, definition)

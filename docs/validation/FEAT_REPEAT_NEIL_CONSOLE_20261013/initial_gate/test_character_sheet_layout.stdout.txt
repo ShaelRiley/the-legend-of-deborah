@@ -1,0 +1,8 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 114
+[AUDIT] Implementation Feats Count: 114
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+[LOD:RPG-ABILITIES] Starting abilities: raw total 78 >= 74; STR 4d6[2+1+3+1] drop lowest = 6; DEX 4d6[4+4+6+6] drop lowest = 16; CON 4d6[4+5+5+2] drop lowest = 14; INT 4d6[5+6+1+6] drop lowest = 17; WIS 4d6[2+6+2+5] drop lowest = 13; CHA 4d6[3+4+5+2] drop lowest = 12; STR 6 - 2d2[1+1] = 4; CHA 12 - 1d3[1] = 11; WIS 13 - 1d3[2] = 11; final total 73. No post-weakness reroll.
+SHEET_SNAPSHOT_TEXT_PASS
+CHARACTER_SHEET_LAYOUT_PASS: canonical snapshot text; 129 descriptions at six resolutions; bounded nonoverlapping cards/sections; exact choices; read-only/resolved states; refresh/resize/identity scroll lifecycle
