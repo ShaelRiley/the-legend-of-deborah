@@ -1,0 +1,96 @@
+{
+  "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "document_url": "https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "reads": [
+    "00 — AI ENTRYPOINT",
+    "01 — AI RULE INDEX",
+    "05 — CORE LOOP & WORLD",
+    "06 — MULTIPLAYER, LIFECYCLE & UI",
+    "07 — IMPLEMENTATION & TUNING"
+  ],
+  "governing_author_request": "Per-floor party discovery without developer-mode bypass; globe/eye visible from all angles; unfound-floor Q/M denial; large Hermit Use prompt.",
+  "attempts": [
+    {
+      "scope": "05/06/07 narrow correction inserts",
+      "result": {
+        "error": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})",
+        "error_code": "INVALID_ARGUMENT"
+      }
+    },
+    {
+      "scope": "00/01 correction inserts/styles with revision guard",
+      "result": {
+        "error": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})",
+        "error_code": "INVALID_ARGUMENT"
+      }
+    },
+    {
+      "scope": "00 exact paragraph replacement without revision guard",
+      "result": {
+        "error": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})",
+        "error_code": "INVALID_ARGUMENT"
+      }
+    }
+  ],
+  "readback": [
+    {
+      "tabId": "t.dkjl8amu37zv",
+      "revisionId": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+      "paragraphs": [
+        {
+          "text": "LOD-FLOOR-MAP-001 — AUTHOR-REQUESTED PARTY MAPS (2026-10-12)",
+          "startIndex": 1,
+          "endIndex": 61,
+          "tabId": "t.dkjl8amu37zv",
+          "namedStyleType": "HEADING_1",
+          "isListItem": false
+        },
+        {
+          "text": "Find one shared map per physical floor; automatic access is superseded. The author’s current request governs; subsystem mirrors await repair after rejected Doc writes. Preserve current story/class design, Magic drain and pending performance/release gates. Maps are party progression state, never inventory.",
+          "startIndex": 62,
+          "endIndex": 368,
+          "tabId": "t.dkjl8amu37zv",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        }
+      ]
+    },
+    {
+      "tabId": "t.l29tf4evc12u",
+      "revisionId": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+      "paragraphs": [
+        {
+          "text": "LOD-FLOOR-MAP-001 routing",
+          "startIndex": 1,
+          "endIndex": 26,
+          "tabId": "t.l29tf4evc12u",
+          "namedStyleType": "HEADING_1",
+          "isListItem": false
+        },
+        {
+          "text": "The author’s current per-floor party-map request governs. Read the saved pointer in 00. Google rejected subsystem/HUMAN edits; those mirrors remain incomplete. Source implementation and finite evidence: docs/validation/FLOOR_MAPS_20261012.md. Preserve all other design and release gates.",
+          "startIndex": 27,
+          "endIndex": 314,
+          "tabId": "t.l29tf4evc12u",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        }
+      ]
+    }
+  ],
+  "outcome": "No current-turn correction writes succeeded. Prior 00/01 party-map amendment remains; subsystem/HUMAN mirrors remain incomplete. Current explicit author instructions govern this repair; no GDD update completion claim.",
+  "proposed_blocks": [
+    [
+      "t.8p7v8fnmr641",
+      "LOD-FLOOR-MAP-REPAIR-001 — AUTHOR NATIVE CORRECTION (2026-10-12)\nRequire the party’s discovered current-floor map in all modes, including installed developer mode. Ordinary Q/M/VR never grants or reveals other floors. Replace the edge-on paper pickup with a floating globe and an eye facing the viewer from any angle; preserve placement, shared touch ownership and Magic drain. Globe colors/mesh and eye dimensions are IMPLEMENTATION-TUNABLE within existing resource/depth bounds.\n\n"
+    ],
+    [
+      "t.5ffvxbn7lbs",
+      "LOD-FLOOR-MAP-REPAIR-UI-001 — AUTHOR NATIVE CORRECTION\nQ/M/VR on an unfound floor keeps the minimap closed and says “Map not found — find this floor’s map”. Developer mode does not bypass party discovery, filtering or personal Magic admission. Add “Press E to Talk to the Hermit” to the existing central staging interaction prompt, honoring the rebound Use key, talk reach, player role/life/staging state, menus and existing speaker reveal.\n\n"
+    ],
+    [
+      "t.bff19dm33vvw",
+      "LOD-FLOOR-MAP-REPAIR-GATE-001 — PRESENTATION AND FINITE REGRESSION\nUse one lazily cached colored sphere mesh (18-unit radius, 16 segments, 8 rings) with a viewer-facing 48×20-unit eye above it. Depth-test it normally; expand render bounds, retain six-cell body cull/two-cell label cull and Reduced Effects. Validate discovery with developer mode both on/off on server, client and Magic; unavailable-floor Q/M/VR notices; cache isolation; globe closed outward geometry/eye facing; one Hermit HUD prompt at existing 112-unit talk reach and rebound keys. Native appearance remains separate.\n\n"
+    ]
+  ]
+}

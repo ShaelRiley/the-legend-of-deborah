@@ -163,7 +163,8 @@ end
 LOD.StagingPromptOwnedByGamemode=true
 hook.Add("HUDPaint", "LOD_StagingInteractionPrompt", function()
     local manual = LOD and LOD.FieldManual
-    if (manual and IsValid(manual.Frame)) or LOD.UI.ActivePage then return end
+    if (manual and IsValid(manual.Frame)) or LOD.UI.ActivePage
+        or (LOD.Damsels and IsValid(LOD.Damsels.DialogueFrame)) then return end
 
     local ply = LocalPlayer()
     if not IsValid(ply) or not ply:Alive() or ply:GetNW2Bool("LOD_Deployed", false) then return end
@@ -173,6 +174,13 @@ hook.Add("HUDPaint", "LOD_StagingInteractionPrompt", function()
     local target=ply:GetEyeTrace().Entity
     if IsValid(target) and target:GetClass()=='lod_debbie_statue' and ply:GetPos():DistToSqr(target:GetPos())<=128^2 then
         text=string.format('Press "%s" to Open the Wallet',key)
+    elseif IsValid(target) and target:GetClass()=='lod_staging_prop'
+        and target.GetStageKind and target:GetStageKind()==target.KIND_GUIDE
+        and ply:GetNW2Bool("LOD_Staged",false) and not ply:GetNW2Bool("LOD_IsSoldier",false)
+        and not ply:GetNW2Bool("LOD_Eliminated",false)
+        and ply:GetPos():DistToSqr(target:GetPos())<=112^2 then
+        local speaker=target:GetStageLabel()=="HECTOR THE DIRECTOR" and "Hector" or "the Hermit"
+        text=string.format("Press %s to Talk to %s",key,speaker)
     elseif IsValid(aimedAtManual(ply)) then
         text = string.format("Press \"%s\" to Read", key)
     elseif IsValid(aimedAtPortal(ply)) then

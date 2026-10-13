@@ -1,4 +1,25 @@
-# Current checkpoint — shared collectible floor maps
+# Current checkpoint — floor-map access/visibility repair and Hermit prompt
+
+Author's native report and prompt request, based on published main
+`47f4e74e4790155b149de323d956ca155585b622`. Removed the developer-mode exceptions
+that made every floor available in installed development builds. Q/M/VR on an
+unfound floor closes/denies with “Map not found — find this floor's map”; server
+transport, party mirrors and real personal Magic admission follow discovery.
+Paper is now a cached floating globe with a viewer-facing eye and complete bounds.
+The existing large staging prompt also covers the Hermit, rebound Use and reveal.
+Shared touch ownership, entrance paths, ditty/notice and tutorial remain.
+
+24 finite checks pass, with three parent failures retained. Exact source/evidence
+and native limits: [floor-map repair](validation/FLOOR_MAP_REPAIR_20261012.md).
+Coverage is 76 installed / 72 server / 28 client sources. All current-turn live GDD
+writes failed; prior 00/01 amendment remains and subsystem mirrors are incomplete.
+Next native action: fully quit/update/install, restart gm_flatgrass, observe the
+Hermit prompt, Q denial before pickup, globe/eye from different sides, shared
+pickup and Magic cost, then denial on the next unfound floor in developer mode.
+Native visual/co-op acceptance and the previous Steam Deck >=40 FPS gate remain
+pending. No Workshop/VPS operation.
+
+# Previous checkpoint — shared collectible floor maps
 
 Author-requested map correction on main `297ed8c3bae1771b9eb2310e77a101d5f4daf0db`.
 Exactly one party-owned pickup per physical floor replaces automatic access;

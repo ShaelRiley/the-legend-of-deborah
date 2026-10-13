@@ -243,6 +243,11 @@ net.ReadDouble=function() return read('double') end
 net.ReadUInt=read;net.ReadBool=function() return read('bool') end;net.ReadFloat=function() return read('float') end
 dofile(root..'sv_minimap.lua');dofile(root..'cl_minimap.lua')
 local function roundTrip()
+ -- This codec fixture owns every floor; developer mode cannot award discoveries.
+ local run=R.State
+ local owned={};for z=0,g.Layers-1 do owned[z]=true end
+ run.FloorMaps={graph=g,level=run.Level,epoch=run.CampaignEpoch,seed=run.LevelSeed,
+  owned=owned,mask=2^g.Layers-1,serial=1}
  packets={};assert(LOD.MinimapServer:Send(env.hero))
  for _,p in ipairs(packets) do packet=p;readAt=1;receivers[p.id]();assert(readAt==#packet.values+1) end
  assert(#LOD.Minimap.cells==table.Count(g.Cells))

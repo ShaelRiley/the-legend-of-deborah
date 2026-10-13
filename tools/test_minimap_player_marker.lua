@@ -42,7 +42,7 @@ EyeAngles=function() return {y=0} end
 local player={pos={x=0,y=0,z=0},alive=true,access=true}
 function player:Alive() return self.alive end
 function player:GetPos() return self.pos end
-function player:GetNW2Bool(key) if key=='LOD_IsSoldier' or key=='LOD_DeveloperMode' then return false end;return self.access end
+function player:GetNW2Bool(key) if key=='LOD_IsSoldier' then return false elseif key=='LOD_DeveloperMode' then return self.developer==true end;return self.access end
 function player:GetNW2Int(key,default)
  if key=='LOD_MapFloorMask' then return self.mask or 127 end
  if key=='LOD_MapUnlockedLevel' then return 1 end
@@ -109,7 +109,10 @@ local covered,focused,down=false,false,{}
 gui={IsGameUIVisible=function() return covered end}
 vgui={GetKeyboardFocus=function() return focused and player or nil end}
 input={IsKeyDown=function(key) return down[key]==true end}
-LOD.Audio={Play=noop};notification={AddLegacy=noop};NOTIFY_HINT=1
+local notices={}
+LOD.Audio={Play=noop};notification={AddLegacy=function(text,kind,seconds)
+ notices[#notices+1]={text=text,kind=kind,seconds=seconds}
+end};NOTIFY_HINT=1
 player.alive=true;player.access=true;M.open=false
 commands.lod_minimap_toggle();assert(M.open,'controller command opens owned map')
 local reopens=M.stats.mapCacheReopens
@@ -201,13 +204,25 @@ M.open=true;player.magic=0;preferences.lod_map_opacity.value=0
 hooks.Think.LOD_MinimapMagicHeartbeat();assert(not M.open,'transparent map bypassed forced zero-Magic close')
 -- Party discovery gates the current physical floor, even if an old cache
 -- happened to contain that floor. Switching to it must close before rendering.
-player.mask=1;M.floorMask=1;M.buildSerial=1;player.pos={x=0,y=0,z=384};M.open=true
+player.developer=true;player.mask=1;M.floorMask=1;M.buildSerial=1;player.pos={x=0,y=0,z=384};M.open=true
 hooks.HUDPaint.LOD_MinimapHUD();assert(not M.open,'cached unowned floor remained visible')
 commands.lod_minimap_toggle();assert(not M.open,'Q/M/controller bypassed current-floor ownership')
+for _,key in ipairs({KEY_Q,KEY_M}) do
+ down={};hooks.Think.LOD_MinimapToggleInput()
+ M.open=true -- an already-open map must close on the unfound floor as well
+ local count=#notices
+ down[key]=true;hooks.Think.LOD_MinimapToggleInput()
+ assert(not M.open and #notices==count+1,'unfound-floor key did not close/notify once')
+ hooks.Think.LOD_MinimapToggleInput();assert(#notices==count+1,'held denial spammed')
+end
+assert(notices[#notices].text=="Map not found — find this floor's map" and notices[#notices].seconds==3)
+local count=#notices
+commands.lod_minimap_toggle();assert(not M.open and #notices==count+1,'VR denial did not notify')
+assert(notices[#notices].text=="Map not found — find this floor's map")
 player.pos.z=0;M.open=true;player.serial=2
 local requests=M.stats.mapRequests;M.nextRequestAt=0;circles={}
 hooks.HUDPaint.LOD_MinimapHUD()
 assert(M.stats.mapRequests==requests+1 and #circles==0,'same-level stale build cache rendered')
-player.serial=1;player.mask=nil;M.floorMask=127
+player.serial=1;player.mask=nil;player.developer=false;M.floorMask=127
 print('MINIMAP_PLAYER_PASS: blue marker; expanded topology; Q/M/VR access/focus; shared panel/text/quadrant transforms and alpha; 81 size/opacity/grid/window cases; cached Matrix; no topology rebuild; draw-state cleanup; Magic expiry')
 return {hooks=hooks,Map=M,preferences=preferences,player=player,wall=wall}

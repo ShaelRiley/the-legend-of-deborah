@@ -1,0 +1,21 @@
+{
+  "parent_main": "47f4e74e4790155b149de323d956ca155585b622",
+  "scope": "Changed production and validators; all unchanged repository sources inherited from the pinned parent.",
+  "files": {
+    "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua": "958a564b73ffcc7d4012ae881091490e6fd7b0d043e5b6700ccad2c0e80d28da",
+    "gamemodes/legend_of_deborah/gamemode/cl_init.lua": "88734f0379cc9120ffd81809272db1ad558a344d82088c90523c7cfde68b3714",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua": "b64070ce9b8bd73d03ce05d09ea5ed17542c551daea3e2cae6aad2152b8a07bf",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua": "02665451b07b1f8dde7117f07e37084049923fbb862fd717e30c1047c7bf6ef7",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua": "fe457f9fe2e63a9cbd222d7b3d233c45af0d280673fa0747b27c2e370794e70d",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_contracts.lua": "b87037e92bb6890cd4636e15a32bcb86c022506fdd58714eaee26f90b732e2ac",
+    "tools/test_floor_map_visual.lua": "e53566e0d9a0888d0b77d137b8dc9a50cf65332895ee9c143c881b158af31950",
+    "tools/test_floor_maps.lua": "b28cd64ac5298328ad37943214b051cb7d6053748511659d196b6b362390d81a",
+    "tools/test_minimap_player_marker.lua": "35c193c24cf5dbd6363e85799cd35f27dbad47054f8af6d8690006846f91cd71",
+    "tools/test_minimap_transport.lua": "b230dbc2f5c023d3c08fcfec1eb8f226dcf15610901bdbd458d736cc914aca5d",
+    "tools/test_neil_brute.lua": "eecf809edb6c779d21b9146ee09c6c275acfd857c99a39f02283ad9e2f9d7e06",
+    "tools/test_performance_capture.lua": "80d0959cc7bffd1d531c03d7b44d74ea8de01959abfa215eaff8bfb5526a1ca7",
+    "tools/test_performance_profile.lua": "871a50eeb8d909d7c60927e7f7b990f884dfb8dc33d45e18824ee47a07149f3a",
+    "tools/test_staging_interaction_prompt.lua": "60570a1af42bba777af33e912fbe4123e70f18e832e491f2b9444610266bd0e0"
+  },
+  "manifest_sha256": "36780f7802ec8c0952f5b3419378149f66285b2fd788506241451bde52a27f79"
+}

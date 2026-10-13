@@ -15,7 +15,7 @@ net={Receive=function(n,f) receivers[n]=f end,
 for _,name in ipairs({'WriteUInt','WriteDouble','WriteBool','WriteFloat','WriteString'}) do
  net[name]=function(v) packet.values[#packet.values+1]=v end
 end
-GetConVar=function() return {GetBool=function() return false end} end
+GetConVar=function(name) return {GetBool=function() return name=='lod_developer_mode' end} end
 local function key(x,y,z) return x..':'..y..':'..z end
 LOD={Config={Maze={Origin={x=0,y=0,z=0},LevelHeight=384}},MazeGenerator={CellKey=key},
  RunManager={State={CampaignEpoch=1,Level=1,LevelSeed=42,BuildReady=true}},
@@ -80,6 +80,7 @@ assert(M:Send(p) and packets[1].values[3]==1,'undiscovered topology escaped serv
 local chunk=packets[2];assert(chunk.values[5]==1 and chunk.values[8]==0)
 local encoded=M.EncodeBuilds
 p.pos={z=384};packets={};assert(not M:Send(p) and #packets==1 and packets[1].name=='LOD_MapDenied')
+assert(packets[1].values[1]=="Map not found — find this floor's map",'server denial text drifted')
 run.FloorMaps.owned[1]=true;run.FloorMaps.mask=3;packets={}
 assert(M:Send(p) and packets[1].values[3]==2 and M.EncodeBuilds==encoded,'new floor reencoded entire graph')
 run.FloorMaps.epoch=0;packets={};assert(not M:Send(p),'stale party epoch sent topology')

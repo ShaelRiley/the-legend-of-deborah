@@ -1,0 +1,3 @@
+hermit_return PASS: production advance, preserved lives/starter, per-visit sealing, reconnect, owner/replay isolation, no second firearm, full-ammo fallback
+hermit_board PASS: mirror-size panel and non-overlapping placement
+hermit_admission PASS: production staged collection without enabling combat, source/owner checks, idempotent grant

@@ -8,7 +8,8 @@ local hooks,receivers,fx,announcements={}, {}, {}, {}
 hook={Add=function(event,id,f) hooks[id]=f end,GetTable=function() return {} end}
 concommand={Add=noop}
 timer={Simple=function(_,f) f() end}
-GetConVar=function() return {GetBool=function() return false end} end
+local developer=false
+GetConVar=function(name) return {GetBool=function() return name=='lod_developer_mode' and developer end} end
 CreateConVar=GetConVar
 bit={band=function(a,b) return a&b end,bor=function(a,b) return a|b end,lshift=function(a,b) return a<<b end}
 net={Receive=function(n,f) receivers[n]=f end,Start=noop,Send=noop,WriteString=noop}
@@ -108,7 +109,12 @@ local function build(graph,level)
  return Run.State.FloorMaps
 end
 local maps=build(g)
-assert(maps.mask==0 and not Map:CanUse(p) and not Map:Grant(p),'spawn or compatibility Grant unlocked a map')
+for _,mode in ipairs({false,true}) do
+ developer=mode;Run:_SyncPlayerVars(p)
+ assert(maps.mask==0 and not Map:CanUse(p) and not Map:Grant(p),'developer mode bypassed undiscovered floor')
+ assert(p.nw.LOD_MapFloorMask==0 and not p.nw.LOD_MapUnlocked,'developer mirror revealed all floors')
+end
+developer=true -- installed development checkout throughout the remaining lifecycle gate
 local row=maps.plan.maps[0]
 p:SetPos(row.entity:GetPos()-Vector(0,0,36));q:SetPos(p:GetPos())
 p.active=false;assert(not Map:CollectFloorMap(p,row.entity));p.active=true
@@ -127,6 +133,30 @@ q.alive=false;Run:_SyncPlayerVars(q);assert(not Map:CanUse(q) and maps.owned[0])
 q.alive=true;Run:_SyncPlayerVars(q);assert(Map:CanUse(q),'respawn did not inherit party discovery')
 q:SetPos(Vector(q:GetPos().x,q:GetPos().y,LOD.Config.Maze.Origin.z+LOD.Config.Maze.LevelHeight))
 assert(not Map:CanUse(q),'one floor map revealed another floor')
+-- Real Magic admission must obey discovery even in the installed developer mode.
+-- Reject forged open heartbeats and retire a lease as soon as its floor changes.
+local drains,pools={},{}
+timer.Create=function(id,_,__,fn) drains[id]=fn end
+local requestedOpen=true;net.ReadBool=function() return requestedOpen end
+LOD.Magic={_EnsureState=function(_,member)
+ pools[member]=pools[member] or {magic=100};return pools[member]
+end,_Sync=noop}
+dofile(root..'sv_minimap_magic.lua')
+local magic=LOD.MinimapMagic
+env.setTime(100)
+receivers.LOD_MapMagicState(0,q)
+assert(not magic.Active[q] and not magic:IsOpen(q),'unfound floor admitted a forged Magic open')
+q:SetPos(p:GetPos());receivers.LOD_MapMagicState(0,q)
+assert(magic:IsOpen(q),'found floor could not open its Magic lease')
+local budget=pools[q].magic
+q:SetPos(Vector(q:GetPos().x,q:GetPos().y,LOD.Config.Maze.Origin.z+LOD.Config.Maze.LevelHeight))
+assert(not magic:IsOpen(q),'floor transition kept map movement admission')
+env.setTime(100.1);drains.LOD_MinimapMagicDrain()
+assert(not magic.Active[q] and pools[q].magic==budget,'unfound floor retained/drained old lease')
+receivers.LOD_MapMagicState(0,q);assert(not magic.Active[q],'new heartbeat bypassed floor discovery')
+receivers.LOD_MapMagicState(0,p);assert(magic:IsOpen(p))
+env.setTime(100.2);drains.LOD_MinimapMagicDrain();assert(pools[p].magic<100,'found map lost normal Magic cost')
+requestedOpen=false;receivers.LOD_MapMagicState(0,p)
 local oldEnt=maps.plan.maps[1].entity
 local serial=maps.serial
 maps=build(g,21)
@@ -141,4 +171,4 @@ failAt=#created+2
 Run.State={Graph=graphs[2],Level=1,CampaignEpoch=11,LevelSeed=233,BuildReady=false}
 local ok,err=Builder:Build(graphs[2]);assert(not ok and err:find('required floor map creation failed',1,true))
 assert(#Builder.Entities==0 and not Map:CanUse(p))
-print('FLOOR_MAPS_PASS: '..#graphs..' production layouts / '..floors..' floor paths; all doors closed; event reservations; required spawning/failure cleanup; party touch, duplicate/remote/stale rejection; joins, death/respawn, Cash and reset isolation')
+print('FLOOR_MAPS_PASS: '..#graphs..' production layouts / '..floors..' floor paths; all doors closed; event reservations; required spawning/failure cleanup; party touch, duplicate/remote/stale rejection; joins, death/respawn, Cash and reset isolation; developer on/off; real Magic admission/revocation/drain')

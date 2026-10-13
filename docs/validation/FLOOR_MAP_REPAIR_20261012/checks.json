@@ -1,0 +1,260 @@
+{
+  "parent_main": "47f4e74e4790155b149de323d956ca155585b622",
+  "source_sha256": "36780f7802ec8c0952f5b3419378149f66285b2fd788506241451bde52a27f79",
+  "source_files": 14,
+  "checks": [
+    {
+      "name": "floor_maps",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 4.348
+    },
+    {
+      "name": "floor_map_visual",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_visual.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.044
+    },
+    {
+      "name": "staging_interaction_prompt",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_interaction_prompt.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.036
+    },
+    {
+      "name": "floor_maps_ui",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.038
+    },
+    {
+      "name": "minimap_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.034
+    },
+    {
+      "name": "minimap_player_marker",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_player_marker.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.037
+    },
+    {
+      "name": "map_movement",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_map_movement.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.042
+    },
+    {
+      "name": "quantum",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_quantum.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.043
+    },
+    {
+      "name": "staging_lore",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_lore.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.034
+    },
+    {
+      "name": "staging_lore_ui",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_lore_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.039
+    },
+    {
+      "name": "friendly_idle",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_friendly_idle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.039
+    },
+    {
+      "name": "hermit_return",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_hermit_return.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.039
+    },
+    {
+      "name": "neil_brute",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_neil_brute.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 1.31
+    },
+    {
+      "name": "faction_roles",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_faction_roles.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.278
+    },
+    {
+      "name": "faction_damage",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_faction_damage.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.039
+    },
+    {
+      "name": "cleanup_contracts",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_cleanup_contracts.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.277
+    },
+    {
+      "name": "performance_capture",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_performance_capture.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.151
+    },
+    {
+      "name": "performance_profile",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_performance_profile.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.074
+    },
+    {
+      "name": "population_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.046
+    },
+    {
+      "name": "floor_maps_integration",
+      "command": [
+        "python",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_floor_maps_integration.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 5.21
+    },
+    {
+      "name": "dev_manifest",
+      "command": [
+        "python",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.326
+    },
+    {
+      "name": "changed_lua_syntax",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",
+        "gamemodes/legend_of_deborah/gamemode/cl_init.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_contracts.lua",
+        "tools/test_floor_map_visual.lua",
+        "tools/test_floor_maps.lua",
+        "tools/test_minimap_player_marker.lua",
+        "tools/test_minimap_transport.lua",
+        "tools/test_neil_brute.lua",
+        "tools/test_performance_capture.lua",
+        "tools/test_performance_profile.lua",
+        "tools/test_staging_interaction_prompt.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.051
+    },
+    {
+      "name": "installer_syntax",
+      "command": [
+        "bash",
+        "-n",
+        "tools/install_dev.sh"
+      ],
+      "exit_code": 0,
+      "seconds": 0.002
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.012
+    }
+  ]
+}

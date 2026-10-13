@@ -40,7 +40,7 @@ local function mapViewerEligible(ply)
 end
 
 local function shouldHaveMapAccess(ply)
-    return mapViewerEligible(ply) and (developerMode() or Minimap:HasFloor(ply))
+    return mapViewerEligible(ply) and Minimap:HasFloor(ply)
 end
 
 -- Mirrors are derived from the party's current-build discovered floors. Neither
@@ -50,9 +50,9 @@ function Contracts:SyncMapCompatibility(ply)
     local allowed = shouldHaveMapAccess(ply)
     local maps = Minimap and Minimap:PartyMaps()
     ply:SetNW2Bool("LOD_MapUnlocked", mapViewerEligible(ply)
-        and (developerMode() or maps~=nil and maps.mask>0))
+        and maps~=nil and maps.mask>0)
     ply:SetNW2Int("LOD_MapUnlockedLevel", (maps or allowed) and currentLevel() or 0)
-    ply:SetNW2Int("LOD_MapFloorMask", developerMode() and 127 or maps and maps.mask or 0)
+    ply:SetNW2Int("LOD_MapFloorMask", maps and maps.mask or 0)
     ply:SetNW2Int("LOD_MapBuildSerial", maps and maps.serial or 0)
     self.Stats.mapPolicySyncs = (self.Stats.mapPolicySyncs or 0) + 1
 end

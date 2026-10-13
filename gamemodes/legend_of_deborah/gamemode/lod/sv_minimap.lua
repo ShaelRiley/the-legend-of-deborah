@@ -40,11 +40,6 @@ local function edgeKey(a, b)
     return a < b and (a .. "|" .. b) or (b .. "|" .. a)
 end
 
-local function developerMode()
-    local cv = GetConVar("lod_developer_mode")
-    return cv and cv:GetBool() or false
-end
-
 function Minimap:PartyMaps()
     local state = LOD.RunManager and LOD.RunManager.State
     local maps = state and state.FloorMaps
@@ -68,7 +63,6 @@ end
 
 function Minimap:CanUse(ply)
     if not IsValid(ply) or not ply:Alive() then return false end
-    if developerMode() then return true end
     return self:HasFloor(ply)
 end
 
@@ -189,7 +183,6 @@ end
 
 local function discoveredCells(state, graph)
     local canonical = cachedCanonicalCells(state, graph)
-    if developerMode() then return canonical, math.max(1, math.ceil(#canonical / CHUNK_SIZE)), 127 end
     local maps = Minimap:PartyMaps()
     local mask = maps and maps.mask or 0
     local cached = Minimap.FloorEncodings[mask]
@@ -208,7 +201,7 @@ end
 function Minimap:Send(ply)
     if not self:CanUse(ply) then
         net.Start("LOD_MapDenied")
-        net.WriteString("NO MAP FOR THIS FLOOR — FIND IT NEAR THE ENTRANCE")
+        net.WriteString("Map not found — find this floor's map")
         net.Send(ply)
         return false
     end
@@ -240,7 +233,7 @@ function Minimap:Send(ply)
     net.WriteFloat(MC.Origin.z)
 
     local jail = graph.Progression and graph.Progression.JailEdge
-    if jail and not developerMode() and not (maps and maps.owned[jail.beforeCell.z]
+    if jail and not (maps and maps.owned[jail.beforeCell.z]
         and maps.owned[jail.afterCell.z]) then jail = nil end
     net.WriteBool(jail ~= nil)
     if jail then

@@ -50,6 +50,7 @@ local paths={'gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.
     root..'cl_combat_roll_feed_semantics.lua',root..'sh_player_options.lua',root..'cl_player_options.lua',
     root..'cl_minimap.lua',root..'cl_minimap_magic_quadrants.lua',root..'sh_runtime_audit.lua'}
 for _,path in ipairs({'gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_major_fx.lua','gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_reliability.lua','gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua','gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua'}) do paths[#paths+1]=path end
+paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/cl_init.lua'
 local manifest={}
 for _,p in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;files['GAME:'..p]='exact' end
 files['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')

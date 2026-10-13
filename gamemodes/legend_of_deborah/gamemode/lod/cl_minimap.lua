@@ -100,7 +100,6 @@ end
 
 local function hasAccess(ply)
     if not IsValid(ply) then return false end
-    if ply:GetNW2Bool("LOD_DeveloperMode", false) then return true end
     if not ply:GetNW2Bool("LOD_MapUnlocked", false) then return false end
     local unlockedLevel = ply:GetNW2Int("LOD_MapUnlockedLevel", 0)
     local level = currentClientLevel()
@@ -357,8 +356,9 @@ function Map:Toggle()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
     if not hasAccess(ply) then
+        Map.open = false
         LOD.Audio:Play('deny')
-        notification.AddLegacy("NO MAP FOR THIS FLOOR — FIND IT NEAR THE ENTRANCE", NOTIFY_HINT, 3)
+        notification.AddLegacy("Map not found — find this floor's map", NOTIFY_HINT, 3)
         return
     end
 
