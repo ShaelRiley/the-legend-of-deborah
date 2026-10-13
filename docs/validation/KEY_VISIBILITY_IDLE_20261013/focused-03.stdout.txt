@@ -1,0 +1,23 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B7_SPACING_PASS: canonical physical melee, broad flank/rear/range/height/cover answers, two distinct beat contracts, frozen escape interval, deadlines/recovery
+BESTIARY_B7_MOTION_PASS: real MotionV2, fixed non-damaging backstep, narrow thrust, no stall teleport/deadline extension, swept scaled obstruction
+BESTIARY_B7_LIFETIME_PASS: exact source/Hero/run/graph/progression/campaign scopes; same-seed replacement; cover/support/gates; freeze/death/stun; canonical Held/Muted/morale
+BESTIARY_B7_MULTIPLAYER_PASS: captured lives, no unseen tell inheritance/rescans, lethal-primary order independence, canonical one-roll settlement
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+B20_FULL_BOOTSTRAP_PASS themed=60 common=6
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+BESTIARY_B23_PASS pools=192 production spawn/replay/role/caps/native failures/20s replacement/exact owner/cleanup
+B28_BOUNDARY_PASS supported-ray-miss recovery; missing/steep/embedded/wrong-height/blocked rejection; generated-only visibility; bounded8 control rays
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+B28_COMPILED_REPLAY_PASS campaign=1515962883 master=163197061 layout=1756475100 attempt=3 mazeAttempt=2 baseCells=520 courtCells=19 boxes=791 directed=18 wanderers=40/40 rayMisses=8
+B28_OBSERVER_PASS developer-off capture; exact installer mount fingerprints; absent/mixed source disclosure; cached hashing; gate/shutdown receipts; bounded64 records; no gameplay mutation
+B29_RUNTIME_PASS long-staging/replacement safety; exact sanctuary; bilateral damage/proxy; long-sweep rejection; combined quotas1/2/3/4/6; tail/respite; progression; staggered/returning/reconnected Heroes; exact owner replacement
+ENEMY_AI_WORK_PASS close_lua_field_reads=134400 status_queries=12000 ticks=3600 admission_decisions=5001 cell_queries=2001 position_queries=12003 trace_rows=20608; callback/expiry/primary/fresh-position/lifecycle parity; not native FPS

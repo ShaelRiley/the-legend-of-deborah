@@ -2,7 +2,7 @@
 -- loop. Stock player counterparts retain the face with an unarmed sequence.
 LOD.FriendlyIdle = LOD.FriendlyIdle or {}
 local I = LOD.FriendlyIdle
-I.Version = 'unarmed-service-idle-20261012-1'
+I.Version = 'unarmed-service-idle-20261013-2'
 local profiles = {
     hermit = {rate = .85, smile = .55, nod = 4, glance = 3, period = 9},
     game_master = {rate = .92, smile = .4, nod = 3, glance = 5, period = 7},
@@ -40,7 +40,9 @@ local function discover(ent, role, model)
         end
     end
     -- Never guess sequence zero, an activity, or a generic Grigory gun idle.
-    ent:SetAutomaticFrameAdvance(false)
+    -- This property is what base_anim's Lua setter writes. A DModelPanel's
+    -- native ClientsideModel does not inherit that scripted-entity method.
+    ent.AutomaticFrameAdvance = false
     ent:SetPlaybackRate(0) -- elapsed-time SetCycle below is the sole clock
     for _, name in ipairs(boneNames) do
         local bone = ent:LookupBone('ValveBiped.Bip01_' .. name)

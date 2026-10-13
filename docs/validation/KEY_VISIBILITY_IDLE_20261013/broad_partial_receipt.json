@@ -1,0 +1,2030 @@
+{
+  "status": "INCOMPLETE_FULL_MATRIX",
+  "reason": "Stopped broad attempt after inherited fixture failures and unrelated long campaign timeouts; unfinished cases are not passes. Source-only B28 fixture repair occurred near termination; production files stayed unchanged.",
+  "registered": 321,
+  "completed": 144,
+  "passed": 132,
+  "failed": 12,
+  "source_before": "91448fbec004b0408f373af797d2e4d5e00140f7abc38441dbe3d4681ed0cf7c",
+  "source_after": "0c1ceb110bc2e201a6ee7feb9a72840cee5e799eafc0a739d179d1fbcc6021db",
+  "changed_during_gate": [
+    "tools/test_bestiary_b28.lua"
+  ],
+  "native_gmod_accepted": false,
+  "results": [
+    {
+      "index": 1,
+      "name": "Jail Key All-Angle Display & Solid Jumpable Pedestal",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_jail_key_visibility.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.852,
+      "log_prefix": "001-jail-key-all-angle-display-solid-jumpable-pedestal",
+      "stdout_sha256": "6f3908997631e4e1875a1eff5ca87c32f81b18f054855c826b80f3350278791d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 2,
+      "name": "Reduced Monster Aura Orbit Work & Exact Sprite Parity",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_monster_aura_orbit_work.lua",
+        "--gate"
+      ],
+      "returncode": 0,
+      "seconds": 2.16,
+      "log_prefix": "002-reduced-monster-aura-orbit-work-exact-sprite-parity",
+      "stdout_sha256": "70e25d68de1bef2adea9d610008a645d4dcc80e463deb4bd45749dd7281599f5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 3,
+      "name": "Hostile Visual Scale Key Work & Exact Drawing Parity",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hostile_visual_scale_work.lua",
+        "--gate"
+      ],
+      "returncode": 0,
+      "seconds": 2.028,
+      "log_prefix": "003-hostile-visual-scale-key-work-exact-drawing-parity",
+      "stdout_sha256": "ae9793d9c46d6b41b7c228b07742e5d6cf1c226cc2abe3625795db6eee17c6f6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 4,
+      "name": "Physical Footstep Native Fields & Exact RNG Parity",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_enemy_stride_work.lua",
+        "--gate"
+      ],
+      "returncode": 0,
+      "seconds": 1.162,
+      "log_prefix": "004-physical-footstep-native-fields-exact-rng-parity",
+      "stdout_sha256": "73a043da91ed524e75f6c6d0276e5fc20811b070e8303233a391a2938b84045f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 5,
+      "name": "Low-end Exact View Visibility Work & Drawing Parity",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_render.lua",
+        "--view-gate",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.104,
+      "log_prefix": "005-low-end-exact-view-visibility-work-drawing-parity",
+      "stdout_sha256": "18c3ca2f69b91e9bf4822f1bf9026b99d79323b319e98a2716a8dae40051cabc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 6,
+      "name": "Shared Enemy AI Native Work & Callback Parity",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_enemy_ai_work.lua"
+      ],
+      "returncode": 1,
+      "seconds": 16.515,
+      "log_prefix": "006-shared-enemy-ai-native-work-callback-parity",
+      "stdout_sha256": "d352742ee9224936378afbd10d74768c068d920c43f9402383a2587a9e10329d",
+      "stderr_sha256": "76c33212705ecc05baaeeeebd183e207cbcb68c8c1183f6c4e4a87b98773911c"
+    },
+    {
+      "index": 7,
+      "name": "HUD Feed Native Text Parity & Bounded Work",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hud_text_work.lua"
+      ],
+      "returncode": 0,
+      "seconds": 4.046,
+      "log_prefix": "007-hud-feed-native-text-parity-bounded-work",
+      "stdout_sha256": "dc46e53234b510805991f5629bd135d7d7c2785e51716469f26ddaf7c7991d0b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 8,
+      "name": "Hair Trigger Singleton & All Firearm Cadence",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hair_trigger.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.719,
+      "log_prefix": "008-hair-trigger-singleton-all-firearm-cadence",
+      "stdout_sha256": "99d4cd7dc7d07036811b2fb048280239892bdb8f7c263681387065353741b37a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 9,
+      "name": "Hostile Sanctuary Route Cache & Exact Paths",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hostile_route_cache.lua"
+      ],
+      "returncode": 0,
+      "seconds": 14.052,
+      "log_prefix": "009-hostile-sanctuary-route-cache-exact-paths",
+      "stdout_sha256": "756e17e9a3d58bccef90289af8ccf3d4e7ad699230abc5256a9eafd4d1a0ca17",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 10,
+      "name": "Entrance Spatial Query & Source Allocation Equivalence",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_entry_safety_hotpath.lua"
+      ],
+      "returncode": 1,
+      "seconds": 16.616,
+      "log_prefix": "010-entrance-spatial-query-source-allocation-equivalence",
+      "stdout_sha256": "5111c0208b1beb3af30c43e6519f61d22c310f3b0cf3d2d3f2a93d51677faeb0",
+      "stderr_sha256": "55157128bba2d03f1a2f031ebd52e7a9b6a05f753178996a0f1e7fe1f1d6e3b6"
+    },
+    {
+      "index": 11,
+      "name": "Reduced Container Batching & Exact Hulls",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_wall_batch.lua"
+      ],
+      "returncode": 0,
+      "seconds": 105.701,
+      "log_prefix": "011-reduced-container-batching-exact-hulls",
+      "stdout_sha256": "fe78e4257e27d33f096f15a874ea01c8ae0db856600fe4debfe6ce4ad3bef121",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 12,
+      "name": "Opt-in Rendered Frame Evidence & Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_performance_capture.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.301,
+      "log_prefix": "012-opt-in-rendered-frame-evidence-lifecycle",
+      "stdout_sha256": "24ad4f23dbf527856ec1644af15014dd6803a700017d58e13dbd0112b1f67621",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 13,
+      "name": "Opt-in Client/Server CPU Attribution & Transparent Lifetimes",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_performance_profile.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.197,
+      "log_prefix": "013-opt-in-client-server-cpu-attribution-transparent-lifetimes",
+      "stdout_sha256": "c047160240958caf7c16926508bfea8f615c51d6dcd5129cb3396e9392a3f99d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 14,
+      "name": "Bounded Server Population Evidence Client Mirror",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.1,
+      "log_prefix": "014-bounded-server-population-evidence-client-mirror",
+      "stdout_sha256": "bc4763bd0b8abee54f45dbc7d149d05a02745a4e078857f9b41f72fa3cc30212",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 15,
+      "name": "Gate Reveal Native Enemy Engagement",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_gate_enemy_engagement.lua"
+      ],
+      "returncode": 1,
+      "seconds": 14.05,
+      "log_prefix": "015-gate-reveal-native-enemy-engagement",
+      "stdout_sha256": "5111c0208b1beb3af30c43e6519f61d22c310f3b0cf3d2d3f2a93d51677faeb0",
+      "stderr_sha256": "8a80b93bed2947606a3fb1c3e7cae52c3ca8a3f4afc06880f14891f08f938efd"
+    },
+    {
+      "index": 16,
+      "name": "Boss Full Button Routes & Native E Interaction",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_boss_button_routes.lua"
+      ],
+      "returncode": 0,
+      "seconds": 4.79,
+      "log_prefix": "016-boss-full-button-routes-native-e-interaction",
+      "stdout_sha256": "a6af1813c24625b0f49bcc41a4daaba6565980d4a3527a5a512a874bcb117c86",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 17,
+      "name": "Boss Native Snapshot & Client Presentation Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_boss_presentation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 8.997,
+      "log_prefix": "017-boss-native-snapshot-client-presentation-lifecycle",
+      "stdout_sha256": "ec760ee77de329e19e740fc691bac901aaabdba9871d278fb401fe043f713b1e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 18,
+      "name": "Boss Original Audio Asset Integrity",
+      "command": [
+        "python3",
+        "tools/test_boss_assets.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.131,
+      "log_prefix": "018-boss-original-audio-asset-integrity",
+      "stdout_sha256": "03456706c404e2a9dffd0e2870bfa8201b961a9cebf2484d11a77029d1c816ce",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 19,
+      "name": "Authored Boss Registry, Ownership & Native Integration",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_boss_framework.lua"
+      ],
+      "returncode": 0,
+      "seconds": 78.847,
+      "log_prefix": "019-authored-boss-registry-ownership-native-integration",
+      "stdout_sha256": "9e9170aa4a075e76e81260dda12dd70078413da7ea21fa7c3ee293924cff16da",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 20,
+      "name": "Authored Physical Boss Mechanics",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_boss_physical.lua"
+      ],
+      "returncode": 0,
+      "seconds": 2.806,
+      "log_prefix": "020-authored-physical-boss-mechanics",
+      "stdout_sha256": "02a6be616267562d5e12371677d179b0a7ef46ab7d8e8680554a81fca738ee94",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 21,
+      "name": "Authored Boss Resource Cycles",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_boss_resources.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.04,
+      "log_prefix": "021-authored-boss-resource-cycles",
+      "stdout_sha256": "2aeb3bd50f990b53efe6a0740794309704be842b71433390003adf8eca9b9b81",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 22,
+      "name": "Authored Boss Special Completion",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_boss_special.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.204,
+      "log_prefix": "022-authored-boss-special-completion",
+      "stdout_sha256": "9f9c057625a9c0efab11b6c7bc461902c530bdc6df8fec882f5237d3d3243efc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 23,
+      "name": "Authored Boss Companions & Chuck Receipt",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_boss_companions.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.226,
+      "log_prefix": "023-authored-boss-companions-chuck-receipt",
+      "stdout_sha256": "60721c92dfdd95d0d2ab192f20c32f10f01676b5718a44c44b7df7a11761120b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 24,
+      "name": "Authored Large Body & Aerial Bosses",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_boss_large.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.623,
+      "log_prefix": "024-authored-large-body-aerial-bosses",
+      "stdout_sha256": "c06a907cab7f7abca8d25454397226f696ce0179ecd0151a2de2c0914fd88ae8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 25,
+      "name": "Gordon Dancefloor Actual Exposure & Presentation",
+      "command": [
+        "python3",
+        "tools/test_warden_dancefloor.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.181,
+      "log_prefix": "025-gordon-dancefloor-actual-exposure-presentation",
+      "stdout_sha256": "84a06454413b13e0927b5f09285ed36a68c5fc9df5d1a1a4a7cf8d7ecc3b6c43",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 26,
+      "name": "Universal Enemy Close Defense & Melee Retaliation",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_enemy_close_defense.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.537,
+      "log_prefix": "026-universal-enemy-close-defense-melee-retaliation",
+      "stdout_sha256": "f67bd94542b2b1da46ecab2aa201fd58bfbdfcf53a8ea1c40b9d4865b84cb6ef",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 27,
+      "name": "Enemy Stock Attack Animation Resolution",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_enemy_attack_animation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.102,
+      "log_prefix": "027-enemy-stock-attack-animation-resolution",
+      "stdout_sha256": "192c12618ffe21b935ffc105a81024be8653fdd2fd030d8fdd2a11ec54362b7c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 28,
+      "name": "Skeleton Stock Player Animation & Motion",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_skeleton_animation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.171,
+      "log_prefix": "028-skeleton-stock-player-animation-motion",
+      "stdout_sha256": "47a6423bf8bfb2c882c430973fe378e3905cc6820b5c6a4e7c80d3f9860ef11d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 29,
+      "name": "Discrete Systems Math & Snapshot Equivalence",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_system_quantization.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.414,
+      "log_prefix": "029-discrete-systems-math-snapshot-equivalence",
+      "stdout_sha256": "f2ff0d94207f73b0ab9a0c0332c314f76339c57a0d0fbe26bbd104ca81315849",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 30,
+      "name": "Discrete Event Routes & Cache Lifetimes",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_quantized_routes.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.154,
+      "log_prefix": "030-discrete-event-routes-cache-lifetimes",
+      "stdout_sha256": "e58d753ab20ec9546dc8e1d475eab6869f99e2629b334b2b3b912dbecdf5f220",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 31,
+      "name": "Low-end Static Draw Cache & Perspective Culling",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_render.lua"
+      ],
+      "returncode": 0,
+      "seconds": 4.262,
+      "log_prefix": "031-low-end-static-draw-cache-perspective-culling",
+      "stdout_sha256": "e461ba0b85669ba9c8a1a12af70df73a4abec9b1453bfa165a265a9d38f8c4cf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 32,
+      "name": "Low-end Immutable Palette & Reconciliation",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_palette.lua"
+      ],
+      "returncode": 0,
+      "seconds": 3.528,
+      "log_prefix": "032-low-end-immutable-palette-reconciliation",
+      "stdout_sha256": "e9c2ed937f065c860253b6266d6465547ef9146df826004b84a52199a9697faa",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 33,
+      "name": "Low-end Conservative Geometry & Material Batching",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_geometry.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.202,
+      "log_prefix": "033-low-end-conservative-geometry-material-batching",
+      "stdout_sha256": "af6dbacec8141f3e9b2064f2318cd873c607225e2fee93eebd00a191b1d64aa3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 34,
+      "name": "Low-end Saved Options & Screen Bounds",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_low_end_options.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.15,
+      "log_prefix": "034-low-end-saved-options-screen-bounds",
+      "stdout_sha256": "e8a5630fd712aa164a2e437dcc921b9beacd1eb5ea23e128f5a463226a2ceff4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 35,
+      "name": "Player Options Movement Invariants",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_player_options.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.157,
+      "log_prefix": "035-player-options-movement-invariants",
+      "stdout_sha256": "3b9d4b1309c023dbad5ce3a612e5b329249c16068deed12c1b5fd4210c933767",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 36,
+      "name": "Big Event Services & Atomic Resources",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_services.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.325,
+      "log_prefix": "036-big-event-services-atomic-resources",
+      "stdout_sha256": "e72e0f6fa1d5d036a73aaabd579ab076974a3f1048f69c862dd2756a3011a312",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 37,
+      "name": "Big Event Incidents & Body Lifecycles",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_incidents.lua"
+      ],
+      "returncode": 0,
+      "seconds": 4.893,
+      "log_prefix": "037-big-event-incidents-body-lifecycles",
+      "stdout_sha256": "021035ff9478b264671563cacd88b4a8457d1cdbbb366369040e6ba8ae775579",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 38,
+      "name": "Big Event Campaign Ecology & Determinism",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_ecology.lua"
+      ],
+      "returncode": 0,
+      "seconds": 5.951,
+      "log_prefix": "038-big-event-campaign-ecology-determinism",
+      "stdout_sha256": "d25f2dc82b47058d27622c12f78e3e3dbd11e01c8ce31f43feaae33c44051204",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 39,
+      "name": "Big Event Campaign Coverage & Novelty",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/sample_event_ecology.lua"
+      ],
+      "returncode": 0,
+      "seconds": 11.814,
+      "log_prefix": "039-big-event-campaign-coverage-novelty",
+      "stdout_sha256": "fd44a40116918b048e039085d742214ddfd3d377ef8b4c36235ddadd0783e49f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 40,
+      "name": "Big Event Full Catalog & Production Generation",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_expansion_generation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 101.247,
+      "log_prefix": "040-big-event-full-catalog-production-generation",
+      "stdout_sha256": "f1d41543be438a7c9acf4cd6786c1afea830eb675ae6a8d29a46ca388c1377aa",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 41,
+      "name": "Big Event Native Presentation & Client Prompts",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_event_expansion_ui.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.508,
+      "log_prefix": "041-big-event-native-presentation-client-prompts",
+      "stdout_sha256": "eb58d9475ce94d610e1d68986cae6486930ec1bb075b823bbab1f3e40bddb528",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 42,
+      "name": "Big Loot Authored Catalog & Budget",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_big_loot_catalog.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.875,
+      "log_prefix": "042-big-loot-authored-catalog-budget",
+      "stdout_sha256": "9d4a495b7225331ded5093e4982a97ec6393bdb4247ae1f8a9fe6d04d55ebdc9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 43,
+      "name": "Big Loot Inventory Finality",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_big_loot_inventory.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.006,
+      "log_prefix": "043-big-loot-inventory-finality",
+      "stdout_sha256": "06b58e3eb5ee22fd55f46ae255bf897a349503333da61045db7e1973f76fef32",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 44,
+      "name": "Big Loot Reward Ecology & Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_big_loot_ecology.lua"
+      ],
+      "returncode": 0,
+      "seconds": 2.855,
+      "log_prefix": "044-big-loot-reward-ecology-lifecycle",
+      "stdout_sha256": "74f6084dc0a8a70a565d4bf96f152ce6df13760791dd58a49d397c848d22d614",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 45,
+      "name": "Big Loot Natural Campaign Coverage",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_big_loot_campaign.lua"
+      ],
+      "returncode": 124,
+      "seconds": 180.026,
+      "log_prefix": "045-big-loot-natural-campaign-coverage",
+      "stdout_sha256": "b93fee21b13dfddea8d286e65ae7946eef1f2101d1e3df0c3bd20603510a6a2a",
+      "stderr_sha256": "22073385383d989afe26d5afe5dda1a5edb03ea54cc45a97f2dc29f6079d79fb"
+    },
+    {
+      "index": 46,
+      "name": "Standing Stair Headroom & Upper Crossover",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_stair_headroom.lua"
+      ],
+      "returncode": 0,
+      "seconds": 14.994,
+      "log_prefix": "046-standing-stair-headroom-upper-crossover",
+      "stdout_sha256": "1062e1a6e2bdda921e25a7759c00757f7e9943ce9700ba69febe1df5a5c6965c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 47,
+      "name": "SPOT-05 Canonical Die Logger",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/validate_spot05_die_logger.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.451,
+      "log_prefix": "047-spot-05-canonical-die-logger",
+      "stdout_sha256": "8c3024e010094522378db017cf678e1ea1e0b30aa948b62ee8cddf66066e5596",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 48,
+      "name": "SPOT-04 Enemy Loop Audio Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/validate_spot04_audio.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.776,
+      "log_prefix": "048-spot-04-enemy-loop-audio-lifecycle",
+      "stdout_sha256": "41530cef2f00bcdbf9946e36396a5c35296f41e1e03876dcc12227af06d4c7e2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 49,
+      "name": "SPOT-03 Razor Presentation, Pursuit & Release Diagnostics",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/validate_spot03_razor.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.41,
+      "log_prefix": "049-spot-03-razor-presentation-pursuit-release-diagnostics",
+      "stdout_sha256": "1509b73566fa3a073686102f98c88b30d3a4c8daa600f36e20fc3d87b7c97a32",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 50,
+      "name": "Bestiary B29 Full Build & Opening Safety",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b29.lua"
+      ],
+      "returncode": 1,
+      "seconds": 29.682,
+      "log_prefix": "050-bestiary-b29-full-build-opening-safety",
+      "stdout_sha256": "5111c0208b1beb3af30c43e6519f61d22c310f3b0cf3d2d3f2a93d51677faeb0",
+      "stderr_sha256": "1fb0d4b981756b88b772d5226cd5c94979d3bb7af8e8d3148001e44dc7af9a79"
+    },
+    {
+      "index": 51,
+      "name": "Bestiary B29 Native Dispatch & Withdrawal",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b29_dispatch.lua"
+      ],
+      "returncode": 1,
+      "seconds": 35.167,
+      "log_prefix": "051-bestiary-b29-native-dispatch-withdrawal",
+      "stdout_sha256": "5111c0208b1beb3af30c43e6519f61d22c310f3b0cf3d2d3f2a93d51677faeb0",
+      "stderr_sha256": "82f798885798c00cff0d79df7be47dde940435d3a5b3958519358ebb8b111931"
+    },
+    {
+      "index": 52,
+      "name": "Bestiary B29 Bilateral Combat Seams",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b29_combat.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.417,
+      "log_prefix": "052-bestiary-b29-bilateral-combat-seams",
+      "stdout_sha256": "1757e86552554f0a8f882f1bac39a1767d8da8eec58ed5a97b8259587e3624da",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 53,
+      "name": "Development Population Source Manifest",
+      "command": [
+        "python3",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "returncode": 0,
+      "seconds": 1.688,
+      "log_prefix": "053-development-population-source-manifest",
+      "stdout_sha256": "9b1f1d6d9d7e2a624da70ba9f9cf94e970e57cb4725e74cdd7f495034702349d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 54,
+      "name": "Bestiary B28 Native Population Boundaries",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b28.lua"
+      ],
+      "returncode": 1,
+      "seconds": 54.231,
+      "log_prefix": "054-bestiary-b28-native-population-boundaries",
+      "stdout_sha256": "5111c0208b1beb3af30c43e6519f61d22c310f3b0cf3d2d3f2a93d51677faeb0",
+      "stderr_sha256": "0a72d8be215d053389ecdcaff55cbe9c2f0884f4bf256545f7855848a370f8f9"
+    },
+    {
+      "index": 55,
+      "name": "Bestiary B27 Autonomous Patrols & Adventure Pacing",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b27.lua"
+      ],
+      "returncode": 0,
+      "seconds": 83.886,
+      "log_prefix": "055-bestiary-b27-autonomous-patrols-adventure-pacing",
+      "stdout_sha256": "c18c2b8a6e49aede6d1fa22b3eaf1333fefee38774b3928ed04a9d782ba404f6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 56,
+      "name": "Bestiary B26 Production Population Recovery",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b26.lua"
+      ],
+      "returncode": 0,
+      "seconds": 94.916,
+      "log_prefix": "056-bestiary-b26-production-population-recovery",
+      "stdout_sha256": "ddc848f8da29897da2c6165f48c71a2a833b921d738c233dbcbd64d94b974831",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 57,
+      "name": "Great Crate Stock Gates & Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_gates.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.991,
+      "log_prefix": "057-great-crate-stock-gates-lifecycle",
+      "stdout_sha256": "03140e5db82fe473bc9d7d79f84c2db70d4fe317ab25b90ecbc9551326e0a117",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 58,
+      "name": "Great Crate Stock Hull Assets",
+      "command": [
+        "python3",
+        "tools/test_great_crate_hull.py"
+      ],
+      "returncode": 0,
+      "seconds": 6.171,
+      "log_prefix": "058-great-crate-stock-hull-assets",
+      "stdout_sha256": "e7b6475b49df0f77696628218e9051a937fd95e4dd46902bffe64da6d49a01ba",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 59,
+      "name": "Great Crate Hull Candidate Reconciliation",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_hull_runtime.lua"
+      ],
+      "returncode": 0,
+      "seconds": 6.014,
+      "log_prefix": "059-great-crate-hull-candidate-reconciliation",
+      "stdout_sha256": "a7e81c63ca047de60fbe8cdafa33e21177ba5e35c4c5f63b145e2821c49924a5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 60,
+      "name": "Great Crate Original Assets & Safe Fit",
+      "command": [
+        "python3",
+        "tools/test_great_crate_assets.py"
+      ],
+      "returncode": 0,
+      "seconds": 30.899,
+      "log_prefix": "060-great-crate-original-assets-safe-fit",
+      "stdout_sha256": "88d2c019d728fd4c173601fdfa3a4c93181bada6837aeae7358690a18d02e1ed",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 61,
+      "name": "Great Crate Deterministic Floor & Collision",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_geometry.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.981,
+      "log_prefix": "061-great-crate-deterministic-floor-collision",
+      "stdout_sha256": "f7458d274a97b353520c65f0ec2d3d5ae9ad63f019ccecdcf0bf5a3fce3ec859",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 62,
+      "name": "Great Crate Rendering, UV & Resource Bounds",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_render.lua"
+      ],
+      "returncode": 0,
+      "seconds": 22.075,
+      "log_prefix": "062-great-crate-rendering-uv-resource-bounds",
+      "stdout_sha256": "f772cc9d4220887e120715c85f3714a2e4247f1c19c49592a3858cacf21b0c98",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 63,
+      "name": "Bestiary B25 Motif Intensity & Tier Exposure",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b25.lua"
+      ],
+      "returncode": 124,
+      "seconds": 180.108,
+      "log_prefix": "063-bestiary-b25-motif-intensity-tier-exposure",
+      "stdout_sha256": "975187bea1a60a73a443ec1c6e7c64f190a16d59082063ecde3e9cd090e4e0a4",
+      "stderr_sha256": "22073385383d989afe26d5afe5dda1a5edb03ea54cc45a97f2dc29f6079d79fb"
+    },
+    {
+      "index": 64,
+      "name": "Bestiary B24 Encounter and Wandering Homes",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b24.lua"
+      ],
+      "returncode": 0,
+      "seconds": 25.756,
+      "log_prefix": "064-bestiary-b24-encounter-and-wandering-homes",
+      "stdout_sha256": "fc6ee584103ca1fdc35058dc216c0ff3068bf8aaea579085ad56fe3931f81797",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 65,
+      "name": "Bestiary B23 Wandering Population & Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b23.lua"
+      ],
+      "returncode": 0,
+      "seconds": 19.303,
+      "log_prefix": "065-bestiary-b23-wandering-population-lifecycle",
+      "stdout_sha256": "975187bea1a60a73a443ec1c6e7c64f190a16d59082063ecde3e9cd090e4e0a4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 66,
+      "name": "Bestiary B23 Campaign Wandering Ecology",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b23_campaign.lua"
+      ],
+      "returncode": 124,
+      "seconds": 180.02,
+      "log_prefix": "066-bestiary-b23-campaign-wandering-ecology",
+      "stdout_sha256": "bfca6708a05e187209d95da6a5f3786d90e6cf0d5a0e99dfb20bf82dff6c0999",
+      "stderr_sha256": "22073385383d989afe26d5afe5dda1a5edb03ea54cc45a97f2dc29f6079d79fb"
+    },
+    {
+      "index": 67,
+      "name": "Bestiary B22 Route Pacing & Production Effects",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b22.lua"
+      ],
+      "returncode": 0,
+      "seconds": 32.722,
+      "log_prefix": "067-bestiary-b22-route-pacing-production-effects",
+      "stdout_sha256": "e3218027ae39f5d7fc745e5c620a0026e37f684074094e76273b40e873a34573",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 68,
+      "name": "Bestiary B21 Topology & Spatial Admission",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b21.lua"
+      ],
+      "returncode": 0,
+      "seconds": 8.3,
+      "log_prefix": "068-bestiary-b21-topology-spatial-admission",
+      "stdout_sha256": "984ca1842d41231c9cf6b82dbd3946cce54633ad8b61e466d4d5a1bc4371b9ad",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 69,
+      "name": "Bestiary B20 Ecology Selection & Receipts",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b20.lua"
+      ],
+      "returncode": 0,
+      "seconds": 11.065,
+      "log_prefix": "069-bestiary-b20-ecology-selection-receipts",
+      "stdout_sha256": "10bb90143f516a99c0765b895f99add4c8dec411b7011b7761cc832182b392d8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 70,
+      "name": "Bestiary B20 Campaign Ecology Coverage",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b20_campaign.lua"
+      ],
+      "returncode": 124,
+      "seconds": 180.023,
+      "log_prefix": "070-bestiary-b20-campaign-ecology-coverage",
+      "stdout_sha256": "7c32fd334c5ba80c4593586554b7ac095c7aebb1a898fc1f58264c0eb5526cfb",
+      "stderr_sha256": "22073385383d989afe26d5afe5dda1a5edb03ea54cc45a97f2dc29f6079d79fb"
+    },
+    {
+      "index": 71,
+      "name": "Bestiary B20 Campaign Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b20_lifecycle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.116,
+      "log_prefix": "071-bestiary-b20-campaign-lifecycle",
+      "stdout_sha256": "468485de5ee0fcdc56c43702ec7a4b27b3e5754f1273bc24ac475abc7c57f70a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 72,
+      "name": "Bestiary B19 Companion Links & Exact Ownership",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b19.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.306,
+      "log_prefix": "072-bestiary-b19-companion-links-exact-ownership",
+      "stdout_sha256": "99fa133a941bf2a4754ded0b7b7612de7c4f2f6ee13afdaffe3c094ccf5f2d3e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 73,
+      "name": "Bestiary B19 Production Progression & Spawn",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b19_production.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.427,
+      "log_prefix": "073-bestiary-b19-production-progression-spawn",
+      "stdout_sha256": "6092a4a08c126dd0646ba30ee3e166ca47dbc2e5bbe9d8195fe9db340a021ec8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 74,
+      "name": "Bestiary B19 Readable Companion Links",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b19_visual.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.133,
+      "log_prefix": "074-bestiary-b19-readable-companion-links",
+      "stdout_sha256": "fff9faba3c7f052bece8a5a32cd89a5eb93857ea33575210127b75fd4222e06f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 75,
+      "name": "Bestiary B18 Attack Restraint & Displaced Refuge",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b18.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.412,
+      "log_prefix": "075-bestiary-b18-attack-restraint-displaced-refuge",
+      "stdout_sha256": "2ffb48e6f71274dad4ddd7d398760877d55f03cea849203211f2c1ff6b7d07d9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 76,
+      "name": "Bestiary B18 Production Progression & Spawn",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b18_production.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.502,
+      "log_prefix": "076-bestiary-b18-production-progression-spawn",
+      "stdout_sha256": "707eddb1e4338bb07866e784de70924723cb536c4461feac73bf0ed24374ce99",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 77,
+      "name": "Bestiary B18 Readable Edicts",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b18_visual.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.151,
+      "log_prefix": "077-bestiary-b18-readable-edicts",
+      "stdout_sha256": "39b15303840c177d847251c10af927594eec39978d1d5a8398805985a8d496de",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 78,
+      "name": "Bestiary B17 Companion Commitments & Exact Ownership",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b17.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.548,
+      "log_prefix": "078-bestiary-b17-companion-commitments-exact-ownership",
+      "stdout_sha256": "c725a09145ecdbcb31167868a682a5c5927cf4b1fea39f451fcc7d4fa8fd03db",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 79,
+      "name": "Bestiary B17 Production Progression & Spawn",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b17_production.lua"
+      ],
+      "returncode": 0,
+      "seconds": 2.027,
+      "log_prefix": "079-bestiary-b17-production-progression-spawn",
+      "stdout_sha256": "460928a652e2196076e10dcc03e1ffe3009b7f892eeac15f0df5970083a5594c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 80,
+      "name": "Bestiary B17 Readable Bodyguard & Oath",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b17_visual.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.368,
+      "log_prefix": "080-bestiary-b17-readable-bodyguard-oath",
+      "stdout_sha256": "e7e0757bda48fb818c04df67c4bcdf5eebfb51e935194ff705d64ec62aafba05",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 81,
+      "name": "Bestiary B16 Movement Discipline & Exact Ownership",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b16.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.536,
+      "log_prefix": "081-bestiary-b16-movement-discipline-exact-ownership",
+      "stdout_sha256": "2b8c741fe9c2fbd20316bfcfd6318699ec97480ce056162c1cfb54361b552b3f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 82,
+      "name": "Bestiary B16 Production Progression & Spawn",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b16_production.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.845,
+      "log_prefix": "082-bestiary-b16-production-progression-spawn",
+      "stdout_sha256": "f9bfb83622ea6ce2c8e1398937dd4ac16d9e9c5d3ebb774654845c5a55bcbadc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 83,
+      "name": "Bestiary B16 Readable Movement Demands",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b16_visual.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.253,
+      "log_prefix": "083-bestiary-b16-readable-movement-demands",
+      "stdout_sha256": "51be06d74116a2fe286d7487ba02485333fd97fa60c420f95e4f2309734db6fc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 84,
+      "name": "Bestiary B15 Careless Fire & Exact Ownership",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b15.lua"
+      ],
+      "returncode": 0,
+      "seconds": 2.703,
+      "log_prefix": "084-bestiary-b15-careless-fire-exact-ownership",
+      "stdout_sha256": "c86b5ba2d4902a5a7ed4c69573ca221cf5c57f53da1d589d0d7b5e11cecb40a2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 85,
+      "name": "Bestiary B15 Production Progression & Spawn",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b15_production.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.819,
+      "log_prefix": "085-bestiary-b15-production-progression-spawn",
+      "stdout_sha256": "90b76296bf97c3a7f9c160897fb60a80dbf1b43875aa6f5a4c020b27a4197fbb",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 86,
+      "name": "Bestiary B15 Readable Careless Fire",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b15_visual.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.156,
+      "log_prefix": "086-bestiary-b15-readable-careless-fire",
+      "stdout_sha256": "34203d1e175119ef394cac08ee3089cc8c8f983129fd197fe9b750353ed12feb",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 87,
+      "name": "Bestiary B14 Canonical Resource Pressure",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b14.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.874,
+      "log_prefix": "087-bestiary-b14-canonical-resource-pressure",
+      "stdout_sha256": "97e21b106fb241c5583303b568b0419bf0be6d6c0fd1c0afaea6ce71a498029c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 88,
+      "name": "Bestiary B14 Production Progression & Spawn",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b14_production.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.411,
+      "log_prefix": "088-bestiary-b14-production-progression-spawn",
+      "stdout_sha256": "92b5026d0422f688471a5208e3ab1e67213baaa359390f048ed58d9eab618e96",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 89,
+      "name": "Bestiary B14 Readable Resource Commitments",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b14_visual.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.128,
+      "log_prefix": "089-bestiary-b14-readable-resource-commitments",
+      "stdout_sha256": "a59a64e5a481b80402b0a0260ba0ecb7cd64a2e5de0143bc8fa3fff28d28b2ee",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 90,
+      "name": "Deborah Finale Client Presentation & Cleanup",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_deborah_finale_presentation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.194,
+      "log_prefix": "090-deborah-finale-client-presentation-cleanup",
+      "stdout_sha256": "dce073763d9f5131041ae5d4f72f7c2cad3b778cf3a6c8c979bd5f5d47828c69",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 91,
+      "name": "Deborah Staging Succession & Canonical Services",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_deborah_succession.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.106,
+      "log_prefix": "091-deborah-staging-succession-canonical-services",
+      "stdout_sha256": "e9b2728a9c6c77db6ed8c04542d50a776451ab2051472ea963e9966b0364c395",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 92,
+      "name": "Hector Encounter, Native Death & Level-20 Rescue Gate",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hector_encounter.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.504,
+      "log_prefix": "092-hector-encounter-native-death-level-20-rescue-gate",
+      "stdout_sha256": "50c6fbc6a3cc0ddcd25a480ee9ab648ca7fea13046441554f9b9d31d6cef8d9e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 93,
+      "name": "Hector Canonical Actor Health & Defenses",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hector_health.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.779,
+      "log_prefix": "093-hector-canonical-actor-health-defenses",
+      "stdout_sha256": "f5e6570fdeac417be25422f297d83b7dd8cdc11f019499f17686b26fca77ea1e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 94,
+      "name": "Hector Horizon & Telegraph Presentation",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hector_presentation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.177,
+      "log_prefix": "094-hector-horizon-telegraph-presentation",
+      "stdout_sha256": "569a31f8af5349fdb98dc58a60bafc0d5a1eaf8cdd72dd59ee2c364456da0701",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 95,
+      "name": "Friendly NPC Unarmed Idle & Native Draw Admission",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_friendly_idle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.142,
+      "log_prefix": "095-friendly-npc-unarmed-idle-native-draw-admission",
+      "stdout_sha256": "bccf22f5a904e9abfe31683a1721b5860bef2f584269790f549fc120f9b60156",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 96,
+      "name": "Equipment Quiz Lifecycle & Atomic Settlement",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_equipment_quiz.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.68,
+      "log_prefix": "096-equipment-quiz-lifecycle-atomic-settlement",
+      "stdout_sha256": "af9dee705b0dda28d817ae140231ef5d5bca700c036ff5df2f26c536aae73ed5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 97,
+      "name": "Active Event Catalog, Bribe Removal & Quiz Placement",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_quiz_generation.lua"
+      ],
+      "returncode": 1,
+      "seconds": 22.437,
+      "log_prefix": "097-active-event-catalog-bribe-removal-quiz-placement",
+      "stdout_sha256": "a087149cb7903b3913a586f31cb36fecf0e3b1427d516d82adc87a506b7c6395",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 98,
+      "name": "Minigame Shell & Equipment UI Restrictions",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_minigame_ui.lua"
+      ],
+      "returncode": 1,
+      "seconds": 3.185,
+      "log_prefix": "098-minigame-shell-equipment-ui-restrictions",
+      "stdout_sha256": "72d5de88c2788131f3a64911d38f8589b50872163f60758cdcbe025bcdf487a3",
+      "stderr_sha256": "10e9655edb4b644b07a7fcacfd29846df1a8e28c7c393e54daab554c8bb0ab7b"
+    },
+    {
+      "index": 99,
+      "name": "Skeleton Hero Generation & Shared Combat",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_skeleton_hero.lua"
+      ],
+      "returncode": 0,
+      "seconds": 3.176,
+      "log_prefix": "099-skeleton-hero-generation-shared-combat",
+      "stdout_sha256": "80208a170efd3863db62c35438b08945475f85db595dbd2acfc6b24d6cf9641a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 100,
+      "name": "Fallen Player Skeletons & Shared Combat",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_fallen_heroes.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.249,
+      "log_prefix": "100-fallen-player-skeletons-shared-combat",
+      "stdout_sha256": "dd57d1d13b69b19cb8f86fb97935d3b8fecb0070b3d36949756221eadda9b091",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 101,
+      "name": "Frequent Skeleton Events & Natural Builds",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_skeleton_frequency.lua"
+      ],
+      "returncode": 0,
+      "seconds": 87.421,
+      "log_prefix": "101-frequent-skeleton-events-natural-builds",
+      "stdout_sha256": "d97c6382a64283ef283ad92e4aef3a35c85b41a0e121bcf112603d0d1523fdf8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 103,
+      "name": "Skeleton Blockade Death & Rewards",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_skeleton_lifecycle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 6.707,
+      "log_prefix": "103-skeleton-blockade-death-rewards",
+      "stdout_sha256": "8a85837c013de0224b933f814ca3e211dc7f5995c57059a99fba2e737770e404",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 104,
+      "name": "Warp Hole Utility & Safe Traversal",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_warp_hole.lua"
+      ],
+      "returncode": 0,
+      "seconds": 7.001,
+      "log_prefix": "104-warp-hole-utility-safe-traversal",
+      "stdout_sha256": "52adc066cd0ca7235afce261a957d63523e02e659248b55e9b703ce05502ddc8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 105,
+      "name": "False Floor Hazard & Native Geometry Boundaries",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_false_floor.lua"
+      ],
+      "returncode": 0,
+      "seconds": 3.374,
+      "log_prefix": "105-false-floor-hazard-native-geometry-boundaries",
+      "stdout_sha256": "7728a267b8488b2485c27ab1089680f51921b35fe8e922f83f4029bd5787dfbe",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 106,
+      "name": "Combined Event Population & Rarity",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_population.lua"
+      ],
+      "returncode": 0,
+      "seconds": 51.38,
+      "log_prefix": "106-combined-event-population-rarity",
+      "stdout_sha256": "c0647d4a512718845a846ac9ae4e646ddbad4a3d63c5cceafbbe3c1c7ebc17b0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 107,
+      "name": "Vending Machine Wallet & Potion Settlement",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_vending_machine.lua"
+      ],
+      "returncode": 0,
+      "seconds": 3.325,
+      "log_prefix": "107-vending-machine-wallet-potion-settlement",
+      "stdout_sha256": "9748704b1a9144013947cf2614904367721d01d56b1275c48b2597c9eea13265",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 108,
+      "name": "Treasure Chest DFT Transactions",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_treasure_chest.lua"
+      ],
+      "returncode": 0,
+      "seconds": 5.34,
+      "log_prefix": "108-treasure-chest-dft-transactions",
+      "stdout_sha256": "ff83043db53b42e62f8200f33e408c557f9ddaf067dda0093bc00c7410a07fcc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 109,
+      "name": "Chest Keys & Locked Loot Claims",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_locked_chest.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.908,
+      "log_prefix": "109-chest-keys-locked-loot-claims",
+      "stdout_sha256": "2d56522c439c0e3bff539a95e672cf022337c6d0d275b677d317f2d4c1f55455",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 110,
+      "name": "Dungeon Events & Transactional Slot Machine",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_dungeon_events.lua"
+      ],
+      "returncode": 0,
+      "seconds": 23.379,
+      "log_prefix": "110-dungeon-events-transactional-slot-machine",
+      "stdout_sha256": "d3532529fb0d8ee7be81d5141d90d13a233ff8abc82a3d03ac2553f3c7d0cba1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 111,
+      "name": "Live Ranking Boards & Pagination",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_live_boards.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.209,
+      "log_prefix": "111-live-ranking-boards-pagination",
+      "stdout_sha256": "5f7f85e2d11cef1dfacd264f5d9cc93e3cfea987e0ea80a01700acc71c8043d2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 112,
+      "name": "Magic Hourglass & Shared Clock",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_magic_hourglass.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.25,
+      "log_prefix": "112-magic-hourglass-shared-clock",
+      "stdout_sha256": "b0dfcf5f021e102de0d1e80ea981d95bfc8c38ff6c41b3751fa584e603ebf95b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 113,
+      "name": "Moon Boots Gravity",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_moon_boots.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.2,
+      "log_prefix": "113-moon-boots-gravity",
+      "stdout_sha256": "15e837ccca32d52843f00c1fc89735778bbe7a3bc93f47bc38cff5ef22767d6a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 114,
+      "name": "Finite Wand Weapon",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_wand.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.696,
+      "log_prefix": "114-finite-wand-weapon",
+      "stdout_sha256": "b1bfeee7ba4fc272610be3753253aee259e25cd2cba1b4f5f9c8f81c5108c03e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 115,
+      "name": "Tanuki Statue",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_tanuki_ring.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.909,
+      "log_prefix": "115-tanuki-statue",
+      "stdout_sha256": "602c5657e08e91b8b408bb9c62aa3ee858de115c943e8ea058009e557a5890bd",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 116,
+      "name": "Heavy Plumber Stomp",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_heavy_plumber.lua"
+      ],
+      "returncode": 0,
+      "seconds": 3.817,
+      "log_prefix": "116-heavy-plumber-stomp",
+      "stdout_sha256": "1cf48c0af91b3424337e505e377d42a115886c64922f8c30022232e5f2702343",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 117,
+      "name": "Stomp Movement Contact",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_stomp_contact.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.174,
+      "log_prefix": "117-stomp-movement-contact",
+      "stdout_sha256": "bc282fa28705361a13fa9d8d2c6ea7be33b1788a98d18929bfd91b7e5f960613",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 118,
+      "name": "Thunder Hat Charge",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_thunder_charge.lua"
+      ],
+      "returncode": 0,
+      "seconds": 2.481,
+      "log_prefix": "118-thunder-hat-charge",
+      "stdout_sha256": "205dc8e6a706cb900925c1bbd4cf3433b387a5d8e9f351c09eb6000e259de506",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 119,
+      "name": "Ring of Invisibility",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_invisibility_ring.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.691,
+      "log_prefix": "119-ring-of-invisibility",
+      "stdout_sha256": "6f06957948ba1070b16b4953483494a1ae56538ac752512eb1b1139a2d66b0e9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 120,
+      "name": "Fighting Streets Techniques",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_fighting_streets.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.271,
+      "log_prefix": "120-fighting-streets-techniques",
+      "stdout_sha256": "1af01d6780bcca6a333a7037ea6b78547793499543de3b46a5d12f896053d5d8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 121,
+      "name": "Feather & Canonical Hero Revival",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_resurrection_feather.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.723,
+      "log_prefix": "121-feather-canonical-hero-revival",
+      "stdout_sha256": "1bafc951c604ccaf054eb09f8f460e63189ceacfbe40f2b0ed8e3dc4bb4a9903",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 122,
+      "name": "Safe Teleport & Summon Card",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_summon_card.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.011,
+      "log_prefix": "122-safe-teleport-summon-card",
+      "stdout_sha256": "be0661dde09bb7d7c1ce6f57d9fe95e497dc802e100b88c0ab4a245045a307b0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 123,
+      "name": "Responsive Character Sheet & Canonical Feat Text",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_character_sheet_layout.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.421,
+      "log_prefix": "123-responsive-character-sheet-canonical-feat-text",
+      "stdout_sha256": "59cb73d5e9108db26ee655c2141dfd06ff7c5ce2930782bde855a8805e2a7307",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 124,
+      "name": "Equipment Combo Abilities",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_equipment_combo_abilities.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.165,
+      "log_prefix": "124-equipment-combo-abilities",
+      "stdout_sha256": "2869fcb819e02c46f9ac7cf1f0a13026bd76735cd10769af6b5dfb6719ccfc60",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 125,
+      "name": "Monster Defense Balance & Tactical Feedback",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_monster_defenses.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.083,
+      "log_prefix": "125-monster-defense-balance-tactical-feedback",
+      "stdout_sha256": "35246e5b7c7f07fc86f259d5be16f5cd60abe6a7ffc5434e1a7b670756e1ae30",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 126,
+      "name": "Invisible Overhead Walls & Free Movement",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_maze_overhead_walls.lua"
+      ],
+      "returncode": 0,
+      "seconds": 14.996,
+      "log_prefix": "126-invisible-overhead-walls-free-movement",
+      "stdout_sha256": "583f3a7d4632e338b5d7c429032076d47cc2fea1d1dfe1591d2f90e4a205bd78",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 127,
+      "name": "September 22 Navigation Recovery",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_navigation_recovery.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.177,
+      "log_prefix": "127-september-22-navigation-recovery",
+      "stdout_sha256": "207245e9f49b7d30cf48ab222af4da84d477c5e3214e62ce2864b15876548655",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 128,
+      "name": "Spell Availability",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_refresh_ui.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.361,
+      "log_prefix": "128-spell-availability",
+      "stdout_sha256": "0a92c0ca71fae8c0e04b5a417ad40e52298dbbdc4e8525fdccf04da3ea4c8f7b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 130,
+      "name": "Integrated Combat, Remedy & Derived UI",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_integrated_refresh.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.328,
+      "log_prefix": "130-integrated-combat-remedy-derived-ui",
+      "stdout_sha256": "249ea18fcf3de72bcec69cf4fb07b1f6503649d149b43b8e15972e69fad5e023",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 131,
+      "name": "Client Geometry Full-Update Recovery",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_geometry_fullupdate.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.196,
+      "log_prefix": "131-client-geometry-full-update-recovery",
+      "stdout_sha256": "b5ff9851078684944c7e6f6912a39710760ece4e62608736cbe6c8b17eb00635",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 132,
+      "name": "Dungeon Transition Inventory",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_dungeon_transition.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.217,
+      "log_prefix": "132-dungeon-transition-inventory",
+      "stdout_sha256": "53230ea94eda57df6d7e419e9187a991d2854e172ddc11440e24b24cf681fa77",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 133,
+      "name": "Exact Native-Crash Reward Replay",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_equipment_crash_replay.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.566,
+      "log_prefix": "133-exact-native-crash-reward-replay",
+      "stdout_sha256": "ca41e57fec8eb39b0d9542fd1add5c06ab048447086b658ad9d29b0962672a0a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 134,
+      "name": "Equipment LuaJIT Compatibility Boundary",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_equipment_jit_guard.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.313,
+      "log_prefix": "134-equipment-luajit-compatibility-boundary",
+      "stdout_sha256": "f9ac660f7310ab1dd4b63662e10f0067b1e7b6f582f7355daa22ba4bc84ca922",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 135,
+      "name": "Force-close Evidence Export",
+      "command": [
+        "python3",
+        "tools/test_crash_evidence_export.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.327,
+      "log_prefix": "135-force-close-evidence-export",
+      "stdout_sha256": "f13651f7a5bd34cc32b9e5063572cc01586a0288e15d31ee156e4b27a3cdb7a6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 136,
+      "name": "Canonical Blue Minimap Marker",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_minimap_player_marker.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.131,
+      "log_prefix": "136-canonical-blue-minimap-marker",
+      "stdout_sha256": "fc52f2fc7cffa3f771b442da963c0868779c9ad3b0443a070751cefba6415452",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 137,
+      "name": "Shared Native DamageInfo Lifetime",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_shared_damage_lifetime.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.283,
+      "log_prefix": "137-shared-native-damageinfo-lifetime",
+      "stdout_sha256": "90bf90c0ff90bc362feb3146c4e7d4a88e743b271b9d5ed410e709290f858161",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 138,
+      "name": "Durable Stability Diagnostics",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_stability_diagnostics.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.126,
+      "log_prefix": "138-durable-stability-diagnostics",
+      "stdout_sha256": "220a2a2fefdfab44016d6f65a72abae1ed348de04f89467273b76003137ce452",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 139,
+      "name": "Release Include & Registration Wiring",
+      "command": [
+        "python3",
+        "tools/validate_release_wiring.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.53,
+      "log_prefix": "139-release-include-registration-wiring",
+      "stdout_sha256": "8b175304839e7dd0652be4fac475422997f3bda20cc3291dc625b511d7e176ca",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 140,
+      "name": "Shotgun Native Bullet Aggregation",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_shotgun_native_path.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.429,
+      "log_prefix": "140-shotgun-native-bullet-aggregation",
+      "stdout_sha256": "fa1c2a830b61f1ea2a85cc53657b2f9158254251f305440d49c374a1a27a1aa3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 141,
+      "name": "Canonical Manual & Portable Menu",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_instruction_manual.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.11,
+      "log_prefix": "141-canonical-manual-portable-menu",
+      "stdout_sha256": "2db0bd463f8621c7f4d3a574245b24085f67b31dcb722ef1c4453ffa3cde1685",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 142,
+      "name": "Canonical Manual Server Transport",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_manual_transport.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.268,
+      "log_prefix": "142-canonical-manual-server-transport",
+      "stdout_sha256": "63f51a97b5cb50473a5327000e6a501de2fb926c9d46d5b5ca1036110a20145a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 143,
+      "name": "Manual Source & Reader Navigation",
+      "command": [
+        "python3",
+        "tools/test_manual_document.py"
+      ],
+      "returncode": 0,
+      "seconds": 1.408,
+      "log_prefix": "143-manual-source-reader-navigation",
+      "stdout_sha256": "2b5ca05bcedbc1d4b7074202d1606a6144251fca970ebf518fa99b5c879ce6e1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 144,
+      "name": "Campaign Clock & TIME OVER Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_campaign_timeout.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.132,
+      "log_prefix": "144-campaign-clock-time-over-lifecycle",
+      "stdout_sha256": "5735dd85089a779ea450d3f450eab8d2e42e9008df95efc2968899b9fd2644c1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 145,
+      "name": "Bootstrap Failure & Explicit Recovery",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bootstrap_failure.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.146,
+      "log_prefix": "145-bootstrap-failure-explicit-recovery",
+      "stdout_sha256": "a4d55987b7c11f30c2f7c0d1cdc35725e351a737fb713fbbed7f17d875707183",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 146,
+      "name": "Event-Safe Campaign Bootstrap & Staging",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_bootstrap.lua"
+      ],
+      "returncode": 0,
+      "seconds": 23.792,
+      "log_prefix": "146-event-safe-campaign-bootstrap-staging",
+      "stdout_sha256": "9b0201a675fbc7f5ea5d46b896ae27ea074d5cc180bf3cf183ef5eef7c6f7488",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

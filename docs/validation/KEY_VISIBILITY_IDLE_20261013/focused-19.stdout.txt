@@ -1,0 +1,1 @@
+HECTOR_PRESENTATION_PASS: native receiver/render paths; bounded models/marks/hazards; readable phases; reduced effects; clip fault unwind; inactive/stale/entity/map/shutdown/hot reload cleanup

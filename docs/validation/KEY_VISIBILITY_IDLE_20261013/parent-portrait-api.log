@@ -1,0 +1,1 @@
+/workspace/scratch/37a520302f51/the-legend-of-deborah/tools/test_friendly_idle.lua: ...odes/legend_of_deborah/gamemode/lod/cl_friendly_idle.lua:43: attempt to call a nil value (method 'SetAutomaticFrameAdvance')

@@ -1,0 +1,11 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 112
+[AUDIT] Implementation Feats Count: 112
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+EQUIPMENT_DOUBLE_CLICK_PASS: default clothing, paired gloves, active/stored weapons, throwables, bag-only and stale/drag/duplicate/destination rejection; no optimistic mutation
+EQUIPMENT_INVENTORY_UI_PASS: body/grid layout, owned icons/stacks, correct/invalid/stale drops, paired hands, native weapon selection, server-only mutation, retained/deferred snapshot UI and scroll
+EQUIPMENT_PAGE_PASS: independent frame, direct sibling tab, pending request cancellation, late snapshot isolation
+EQUIPMENT_TOGGLE_PASS: focused frame open/close, shared debounce and rebinding
+EQUIPMENT_CAPACITY_INPUT_PASS: real capacity and stack separation; popup/single-player/bound input, debounce, chat and text entry
+DYNAMIC_CAPACITY_PASS: expansion/shrink, exact vacancies, preserved overflow, shared admission and state roundtrip

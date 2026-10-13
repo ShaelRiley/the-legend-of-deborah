@@ -90,4 +90,28 @@ local portrait,name;frame,portrait,name=show(30);assert(name.text=='Hector the D
 guide.removed=true;frame.Think();assert(frame.removed,'replaced guide retained its window');guide.removed=nil
 frame,portrait,name=show(20);assert(name.text=='Deborah' and portrait.model=='deborah-model')
 local old=frame;frame=show(0);assert(old.removed and D.DialogueFrame==frame)
-print('STAGING_LORE_UI_PASS: complete long text and distinct receipt on native scroll canvas; four screen bounds; speaker/model correctness; Escape; death/deployment/campaign/dungeon/reveal/succession/replacement retirement')
+-- Execute the real LayoutEntity -> FriendlyIdle path with a native client model
+-- that has no scripted base_anim:SetAutomaticFrameAdvance method.
+local _,nativePortrait=show()
+local model=nativePortrait.Entity
+function model:GetModel() return nativePortrait.model end
+function model:EntIndex() return -1 end
+function model:LookupSequence() return 7,2 end
+function model:ResetSequence(id) self.sequence=id end
+function model:GetSequence() return self.sequence end
+function model:SetCycle(cycle) self.cycle=cycle end
+function model:SetPlaybackRate(rate) self.rate=rate end
+function model:LookupBone() return nil end
+function model:GetFlexNum() return 0 end
+local clock,frame=1,1
+CurTime=function() return clock end;FrameNumber=function() return frame end
+GetConVar=function() return nil end
+angle_zero=Angle(0,0,0)
+dofile(root..'cl_friendly_idle.lua')
+assert(not model.SetAutomaticFrameAdvance)
+nativePortrait.LayoutEntity(nativePortrait,model)
+local first=model.cycle
+clock=1.5;frame=2;nativePortrait.LayoutEntity(nativePortrait,model)
+assert(model.AutomaticFrameAdvance==false and model.rate==0 and model.cycle~=first,
+ 'native client portrait failed to animate without scripted-only method')
+print('STAGING_LORE_UI_PASS: complete scrolling and receipt; four screen bounds; speaker/model; Escape; lifecycle retirement; actual LayoutEntity -> FriendlyIdle client-model API and advancing cycle')

@@ -111,6 +111,9 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua \
     gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua \
     gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua \
+    gamemodes/legend_of_deborah/entities/entities/lod_jail_key/init.lua \
+    gamemodes/legend_of_deborah/entities/entities/lod_jail_key/shared.lua \
+    gamemodes/legend_of_deborah/entities/entities/lod_jail_key/cl_init.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_minimap_magic_quadrants.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua \
     gamemodes/legend_of_deborah/gamemode/cl_init.lua \

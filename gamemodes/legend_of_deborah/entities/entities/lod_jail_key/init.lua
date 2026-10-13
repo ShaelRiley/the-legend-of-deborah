@@ -7,7 +7,9 @@ local PC = LOD.Config.Progression
 function ENT:Initialize()
     self:SetModel("models/hunter/blocks/cube025x025x025.mdl")
     self:SetMoveType(MOVETYPE_NONE)
-    self:SetSolid(SOLID_NONE)
+    self:SetSolid(SOLID_BBOX)
+    self:SetCollisionBounds(self.PedestalMins, self.PedestalMaxs)
+    self:SetCollisionGroup(COLLISION_GROUP_NONE)
     self:DrawShadow(false)
     if self:GetKeySource() == "" then self:SetKeySource("production") end
     self.NextPickupCheck = 0

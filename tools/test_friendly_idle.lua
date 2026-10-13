@@ -33,7 +33,8 @@ local function actor(id)
     function e:ResetSequence(id) assert(id==7);self.sequence=id;self.resets=self.resets+1 end
     function e:GetSequence() return self.sequence end
     function e:SetCycle(c) assert(c>=0 and c<1);self.cycle=c;self.cycles=self.cycles+1 end
-    function e:SetAutomaticFrameAdvance(v) self.auto=v end
+    -- DModelPanel's ClientsideModel has native Entity methods, but does not
+    -- inherit the Lua base_anim:SetAutomaticFrameAdvance convenience method.
     function e:SetPlaybackRate(v) self.rate=v end
     local bones={'Spine2','Neck1','Head1','L_UpperArm','L_Forearm','L_Hand','R_UpperArm','R_Forearm','R_Hand'}
     function e:LookupBone(name)
@@ -53,7 +54,7 @@ local function actor(id)
 end
 local function advance(t) now=t;frame=frame+1 end
 local guide=actor()
-assert(I:Apply(guide,'hermit') and guide.sequence==7 and guide.auto==false and guide.rate==0)
+assert(I:Apply(guide,'hermit') and guide.sequence==7 and guide.AutomaticFrameAdvance==false and guide.rate==0)
 local cycle,lookups,writes=guide.cycle,guide.boneLookups,guide.boneWrites
 I:Apply(guide,'hermit');assert(guide.cycles==1 and guide.boneWrites==writes,'duplicate render advanced twice')
 advance(.01);I:Apply(guide,'hermit');assert(guide.cycle~=cycle and guide.boneWrites==writes,'cadence or clock failure')

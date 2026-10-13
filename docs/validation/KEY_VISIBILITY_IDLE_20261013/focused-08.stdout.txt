@@ -1,0 +1,21 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+B20_FULL_BOOTSTRAP_PASS themed=60 common=6
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+BESTIARY_B23_PASS pools=192 production spawn/replay/role/caps/native failures/20s replacement/exact owner/cleanup
+B28_BOUNDARY_PASS supported-ray-miss recovery; missing/steep/embedded/wrong-height/blocked rejection; generated-only visibility; bounded8 control rays
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+B28_COMPILED_REPLAY_PASS campaign=1515962883 master=163197061 layout=1756475100 attempt=3 mazeAttempt=2 baseCells=520 courtCells=19 boxes=791 directed=18 wanderers=40/40 rayMisses=8
+B28_OBSERVER_PASS developer-off capture; exact installer mount fingerprints; absent/mixed source disclosure; cached hashing; gate/shutdown receipts; bounded64 records; no gameplay mutation
+B29_RUNTIME_PASS long-staging/replacement safety; exact sanctuary; bilateral damage/proxy; long-sweep rejection; combined quotas1/2/3/4/6; tail/respite; progression; staggered/returning/reconnected Heroes; exact owner replacement
+GATE_ENGAGEMENT_PASS: real first-gate/home-leash ghost rejected; native close attack, shared reveal quota, closed gate/cover, real-target diagnostics
+GATE_ENGAGEMENT_LIFECYCLE_PASS: stale routes/stairs, concealment, bounded refresh, shared co-op quota, real Soldier tell/burst/cancel/rearm, Sniper retirement, freeze/reset
+GATE_CURRENT_LEASH_PASS: displaced actor and Hero home-leash gates agree before reservation
+GATE_FRESH_SELECTION_PASS: cached positive target cannot reserve; native refresh cadence preserved
+GATE_ADMISSION_PARITY_PASS: stale invisible/dead/inactive targets, one native Reckless draw, bounded negative polling, owned deadlines, stationary cover/cone/cell, beam reorientation, mobile pursuit
+GATE_WANDER_WRAPPER_PASS: live wrapper forwards directed admission and preserves separate roaming home/floor policy
+GATE_LISTENER_AUTHORITY_PASS: actual footstep receipt, native zero-distance override, displaced source, expired receipt rejection

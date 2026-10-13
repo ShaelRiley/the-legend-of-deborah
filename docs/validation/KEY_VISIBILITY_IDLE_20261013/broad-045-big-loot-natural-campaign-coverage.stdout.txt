@@ -1,0 +1,18 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+B20_FULL_BOOTSTRAP_PASS themed=60 common=6
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 112
+[AUDIT] Implementation Feats Count: 112
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+BIG_LOOT_CAMPAIGN campaign=1 hash=1707977371 coverage=101/106
+BIG_LOOT_CAMPAIGN campaign=2 hash=1220504212 coverage=108/105
+BIG_LOOT_CAMPAIGN campaign=3 hash=1011458172 coverage=106/107
+BIG_LOOT_CAMPAIGN campaign=4 hash=2133598181 coverage=103/109
+BIG_LOOT_CAMPAIGN campaign=5 hash=1555630370 coverage=108/106

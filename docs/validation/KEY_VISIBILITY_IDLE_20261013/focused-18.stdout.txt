@@ -1,0 +1,2 @@
+actor progression headless validation PASS
+HECTOR_HEALTH_PASS: canonical champion28, 420 reference+d20/CON/feats, frozen 1/1.2/1.4/1.6 HP, standard XP, no regeneration or reattach healing

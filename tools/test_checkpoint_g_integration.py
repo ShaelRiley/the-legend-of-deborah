@@ -26,6 +26,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Jail Key All-Angle Display & Solid Jumpable Pedestal", ["python3", "tools/run_lua54.py", "tools/test_jail_key_visibility.lua"]),
+    ("Hermit Dialogue Native Client Model Idle API", ["python3", "tools/run_lua54.py", "tools/test_staging_lore_ui.lua"]),
     ("Reduced Monster Aura Orbit Work & Exact Sprite Parity", ["python3", "tools/run_lua54.py", "tools/test_monster_aura_orbit_work.lua", "--gate"]),
     ("Hostile Visual Scale Key Work & Exact Drawing Parity", ["python3", "tools/run_lua54.py", "tools/test_hostile_visual_scale_work.lua", "--gate"]),
     ("Physical Footstep Native Fields & Exact RNG Parity", ["python3", "tools/run_lua54.py", "tools/test_enemy_stride_work.lua", "--gate"]),

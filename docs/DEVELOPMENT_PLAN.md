@@ -1,4 +1,27 @@
-# Current checkpoint — blank Magic map panel and collected-floor bootstrap
+# Current checkpoint — conspicuous Jail Key and native Hermit portrait API
+
+Author's key-visibility/pedestal request and native nil-method report, based on
+main `4cd2232a99d3a996f67d0ba7b47df4eb5cc03ec2`. The Jail Key now has complete
+bounds, an upright viewer-facing display and a real 40×40×28-unit jumpable plinth.
+Gold/ivory against deep blue-violet and dark trim provide contrast; wall depth,
+original pickup/receipt/progression and same-entity lifecycle remain. Hermit
+portrait animation writes the base_anim property without calling a method absent
+on ClientsideModel. Cached unarmed roles and the prior map clarification remain.
+
+35 distinct focused checks pass (36 executions), including 640 key views, the
+real portrait path, 905-file Lua syntax, boss/receipt, floor-map/SQLite, lifecycle
+and exact 81 installed / 77 server / 31 client source coverage. The old errors
+and fixture failures are retained. The broader run is incomplete, with inherited
+fixture failures and campaign timeouts, not a full-matrix pass. Google rejected
+the scoped live GDD amendment and pointer; the author's request governs and
+proposed text/failure receipts are retained. Evidence and limits:
+[key/idle repair](validation/KEY_VISIBILITY_IDLE_20261013.md).
+Next native action: fully quit/update/install, restart gm_flatgrass, open Hermit
+dialogue without an error, then after the boss orbit the visible key, jump onto/
+over its pedestal and collect. Native visual/jump/co-op and Steam Deck ≥40 FPS
+acceptance remain pending. No Workshop/VPS operation.
+
+# Previous checkpoint — blank Magic map panel and collected-floor bootstrap
 
 Author's clarification/native report, based on published main
 `df567c8dd970296314771d268a337196c5552c43`. Q/M/VR now open the existing panel

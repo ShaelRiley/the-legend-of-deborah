@@ -148,55 +148,13 @@ print(string.format('B28_COMPILED_REPLAY_PASS campaign=1515962883 master=1631970
 -- Release telemetry is independent of developer logging and cannot consume
 -- population RNG, create actors, alter the plan or reset the dungeon.
 local memory,reads,writes={},0,0
-local watched={
- 'gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua',
- 'gamemodes/legend_of_deborah/entities/entities/lod_hostile/cl_init.lua',
- 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua',
- 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_wayfinding_projection.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/cl_container_branding.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua',
- 'gamemodes/legend_of_deborah/gamemode/cl_init.lua',
- 'gamemodes/legend_of_deborah/gamemode/init.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/cl_entry_safety.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_climber.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab_latch_parent_safety.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_device_motion_safety.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_director.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_ecology.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_encounter_spawn_variance.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_no_progress_recovery.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_stair_recovery.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_m3_run_integration.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_neil_brute.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_pushback.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_seeker.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_seeker_personality.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_staging_deployment.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_ungrounded_stall_recovery.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua',
- 'gamemodes/legend_of_deborah/gamemode/lod/sv_watcher_instance_dispatch.lua',
- 'lua/autorun/server/lod_population_observability.lua'}
+-- The production observer owns this list; old copies omitted newer rendered
+-- authorities and failed verification before any native boundary assertions.
+local sourceFile=assert(io.open('lua/autorun/server/lod_population_observability.lua','rb'))
+local sourceBytes=sourceFile:read('*a');sourceFile:close()
+local declaration=assert(sourceBytes:match('local watched=(%b{})'))
+local watched={};for path in declaration:gmatch('"([^"]+)"') do watched[#watched+1]=path end
+assert(#watched==77,'source coverage changed without fixture review')
 local manifest={};for _,p in ipairs(watched) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;memory['GAME:'..p]='exact' end
 memory['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
 memory['DATA:legend_of_deborah/dev_build.txt']='test-checkout clean'
@@ -212,7 +170,7 @@ hook.Add=function(event,id,fn) if event=='ShutDown' then shutdown=fn end end
 local before=H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(plan)})
 dofile('lua/autorun/server/lod_population_observability.lua')
 local A=LOD.PopulationObservability
-local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==48 and not snap.developerMode)
+local snap=A:Snapshot('test');assert(snap.source.verified and snap.source.checked==#watched and not snap.developerMode)
 assert(snap.nativeProbes.supportBound and snap.nativeProbes.visibilityBound and snap.revision=='b28')
 local lastReads=reads;A:Snapshot('repeat');assert(reads==lastReads,'source files rehashed on every heartbeat')
 T.setTime(2000);T.quiet(function() timers.LOD_PopulationEvidence() end)
@@ -225,7 +183,7 @@ assert(H.serial({W.SpawnOrdinal,W.InitialRemaining,T.signature(),H.signature(pla
 A.Source=nil;memory['GAME:'..watched[2]]='stale workshop bytes'
 assert(not A:SourceIdentity().verified and A.Source.mismatches==1,'mixed mount certified by install label')
 A.Source=nil;memory['DATA:legend_of_deborah/dev_population_sources.txt']=''
-assert(not A:SourceIdentity().verified and A.Source.missing==48,'absent manifest claimed verified')
+assert(not A:SourceIdentity().verified and A.Source.missing==#watched,'absent manifest claimed verified')
 T.quiet(function() shutdown() end);assert(#A.Records==64 and A.Records[64]:find('shutdown'),'shutdown evidence missing')
 print('B28_OBSERVER_PASS developer-off capture; exact installer mount fingerprints; absent/mixed source disclosure; cached hashing; gate/shutdown receipts; bounded64 records; no gameplay mutation')
 
