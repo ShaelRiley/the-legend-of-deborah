@@ -1,4 +1,27 @@
-# Current checkpoint — map/navigation feats and relentlessly proud GPS
+# Current checkpoint — stock physical floor-map props
+
+Author's continued native invisibility report and physical-prop request, based on
+main `a2ab35a46a976dc6b198b2c55b06f34dbca1cd95`.
+Source candidate `d53c3756571429a6d09d3392ed9ff753dda1a66a` replaces the custom globe body with an upright
+stock binder and separate solid stock block. Native dimensions/rendering, complete
+bounds and a low pedestal clear of the cell's arrival center address visibility
+and collision; the current map cell and closed-door entry plan remain. Both
+entities and Map Finder helpers retire with the shared pickup owner. Party maps,
+cue/notice, personal map Magic and navigation feats remain.
+
+17 selected CI checks pass on the exact candidate in Actions run 38450969612,
+including actual prop/rendering boundaries, pickup/Compass, real SQLite builds,
+source identity and changed production syntax. Coverage is 94 installed /
+90 server / 38 client. The unavailable local executor and inherited full-matrix
+failures are explicit; native GMod appearance/collision/co-op and Steam Deck
+≥40 FPS remain unaccepted. The scoped GDD mirror again failed; proposed text and
+receipt are preserved. Evidence:
+[stock-map repair](validation/FLOOR_MAP_STOCK_PROPS_20261013.md).
+Next native action: fully quit/update/install and restart gm_flatgrass; approach
+and circle the book/gold block, then touch it and confirm the shared floor unlock.
+No Workshop/VPS operation.
+
+# Previous checkpoint — map/navigation feats and relentlessly proud GPS
 
 Author additions on `4cd2232a99d3a996f67d0ba7b47df4eb5cc03ec2`, integrated with
 the Jail Key/Hermit repair on parent `95597c0c0352d40ee428410e634fcc03e62b2809`.

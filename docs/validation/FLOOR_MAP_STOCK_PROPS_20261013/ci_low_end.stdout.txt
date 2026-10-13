@@ -1,0 +1,615 @@
+﻿2026-10-13T18:57:36.8469478Z Current runner version: '2.337.0'
+2026-10-13T18:57:36.8493301Z ##[group]Runner Image Provisioner
+2026-10-13T18:57:36.8494178Z Hosted Compute Agent
+2026-10-13T18:57:36.8494684Z Version: 20261002.596
+2026-10-13T18:57:36.8495227Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-13T18:57:36.8495893Z Build Date: 2026-10-02T22:28:27Z
+2026-10-13T18:57:36.8496449Z Worker ID: {3af67cf3-22ad-4c71-80fb-b3fe37d992bf}
+2026-10-13T18:57:36.8497064Z Region: westus3
+2026-10-13T18:57:36.8497516Z Cloud: Azure
+2026-10-13T18:57:36.8497947Z ##[endgroup]
+2026-10-13T18:57:36.8499261Z ##[group]Operating System
+2026-10-13T18:57:36.8499850Z Ubuntu
+2026-10-13T18:57:36.8500346Z 24.04.5
+2026-10-13T18:57:36.8500778Z LTS
+2026-10-13T18:57:36.8501187Z ##[endgroup]
+2026-10-13T18:57:36.8501726Z ##[group]Runner Image
+2026-10-13T18:57:36.8502226Z Image: ubuntu-24.04
+2026-10-13T18:57:36.8502743Z Version: 20261004.327.1
+2026-10-13T18:57:36.8503828Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-13T18:57:36.8505119Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-13T18:57:36.8505895Z ##[endgroup]
+2026-10-13T18:57:36.8506850Z ##[group]GITHUB_TOKEN Permissions
+2026-10-13T18:57:36.8508462Z Contents: read
+2026-10-13T18:57:36.8509149Z Metadata: read
+2026-10-13T18:57:36.8509659Z ##[endgroup]
+2026-10-13T18:57:36.8511460Z Secret source: Actions
+2026-10-13T18:57:36.8512397Z Cache mode: write
+2026-10-13T18:57:36.8512984Z Prepare workflow directory
+2026-10-13T18:57:36.8921275Z Prepare all required actions
+2026-10-13T18:57:36.9012420Z Getting action download info
+2026-10-13T18:57:37.1834996Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-13T18:57:38.2624388Z Complete job name: validate
+2026-10-13T18:57:38.3563940Z ##[group]Run actions/checkout@v4
+2026-10-13T18:57:38.3565093Z with:
+2026-10-13T18:57:38.3565856Z   ref: d53c3756571429a6d09d3392ed9ff753dda1a66a
+2026-10-13T18:57:38.3566947Z   repository: ShaelRiley/the-legend-of-deborah
+2026-10-13T18:57:38.3574539Z   token: ***
+2026-10-13T18:57:38.3575272Z   ssh-strict: true
+2026-10-13T18:57:38.3576022Z   ssh-user: git
+2026-10-13T18:57:38.3576765Z   persist-credentials: true
+2026-10-13T18:57:38.3577947Z   clean: true
+2026-10-13T18:57:38.3579633Z   sparse-checkout-cone-mode: true
+2026-10-13T18:57:38.3580989Z   fetch-depth: 1
+2026-10-13T18:57:38.3582076Z   fetch-tags: false
+2026-10-13T18:57:38.3583089Z   show-progress: true
+2026-10-13T18:57:38.3583851Z   lfs: false
+2026-10-13T18:57:38.3584553Z   submodules: false
+2026-10-13T18:57:38.3585353Z   set-safe-directory: true
+2026-10-13T18:57:38.3586209Z   allow-unsafe-pr-checkout: false
+2026-10-13T18:57:38.3587426Z ##[endgroup]
+2026-10-13T18:57:38.4501577Z Syncing repository: ShaelRiley/the-legend-of-deborah
+2026-10-13T18:57:38.4505025Z ##[group]Getting Git version info
+2026-10-13T18:57:38.4507173Z Working directory is '/home/runner/work/the-legend-of-deborah/the-legend-of-deborah'
+2026-10-13T18:57:38.4510198Z [command]/usr/bin/git version
+2026-10-13T18:57:38.4587363Z git version 2.55.0
+2026-10-13T18:57:38.4604805Z ##[endgroup]
+2026-10-13T18:57:38.4617816Z Temporarily overriding HOME='/home/runner/work/_temp/d75c6964-e32b-42ba-886c-fcae87dcaa0f' before making global git config changes
+2026-10-13T18:57:38.4621402Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-13T18:57:38.4625049Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/the-legend-of-deborah/the-legend-of-deborah
+2026-10-13T18:57:38.4673185Z Deleting the contents of '/home/runner/work/the-legend-of-deborah/the-legend-of-deborah'
+2026-10-13T18:57:38.4676682Z ##[group]Initializing the repository
+2026-10-13T18:57:38.4686995Z [command]/usr/bin/git init /home/runner/work/the-legend-of-deborah/the-legend-of-deborah
+2026-10-13T18:57:38.4795010Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-13T18:57:38.4796905Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-13T18:57:38.4798754Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-13T18:57:38.4800287Z hint: call:
+2026-10-13T18:57:38.4800945Z hint:
+2026-10-13T18:57:38.4801786Z hint: 	git config --global init.defaultBranch <name>
+2026-10-13T18:57:38.4802773Z hint:
+2026-10-13T18:57:38.4803713Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-13T18:57:38.4805225Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-13T18:57:38.4806431Z hint:
+2026-10-13T18:57:38.4807098Z hint: 	git branch -m <name>
+2026-10-13T18:57:38.4807863Z hint:
+2026-10-13T18:57:38.4808867Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-13T18:57:38.4812669Z Initialized empty Git repository in /home/runner/work/the-legend-of-deborah/the-legend-of-deborah/.git/
+2026-10-13T18:57:38.4821707Z [command]/usr/bin/git remote add origin https://github.com/ShaelRiley/the-legend-of-deborah
+2026-10-13T18:57:38.4907716Z ##[endgroup]
+2026-10-13T18:57:38.4910031Z ##[group]Disabling automatic garbage collection
+2026-10-13T18:57:38.4912049Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-13T18:57:38.4945516Z ##[endgroup]
+2026-10-13T18:57:38.4946770Z ##[group]Setting up auth
+2026-10-13T18:57:38.4953558Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-13T18:57:38.4988595Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-13T18:57:38.5954909Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-13T18:57:38.5989940Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-13T18:57:38.6184879Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-13T18:57:38.6217226Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-13T18:57:38.6413308Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-13T18:57:38.7225715Z ##[endgroup]
+2026-10-13T18:57:38.7233723Z ##[group]Fetching the repository
+2026-10-13T18:57:38.7236594Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin d53c3756571429a6d09d3392ed9ff753dda1a66a
+2026-10-13T18:57:43.6955128Z From https://github.com/ShaelRiley/the-legend-of-deborah
+2026-10-13T18:57:43.6956335Z  * branch            d53c3756571429a6d09d3392ed9ff753dda1a66a -> FETCH_HEAD
+2026-10-13T18:57:43.6958202Z ##[endgroup]
+2026-10-13T18:57:43.6958783Z ##[group]Determining the checkout info
+2026-10-13T18:57:43.6961045Z ##[endgroup]
+2026-10-13T18:57:43.6966340Z [command]/usr/bin/git sparse-checkout disable
+2026-10-13T18:57:43.7018645Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-13T18:57:43.7047907Z ##[group]Checking out the ref
+2026-10-13T18:57:43.7051762Z [command]/usr/bin/git checkout --progress --force d53c3756571429a6d09d3392ed9ff753dda1a66a
+2026-10-13T18:57:44.0406255Z Note: switching to 'd53c3756571429a6d09d3392ed9ff753dda1a66a'.
+2026-10-13T18:57:44.0406772Z 
+2026-10-13T18:57:44.0407070Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-13T18:57:44.0407681Z changes and commit them, and you can discard any commits you make in this
+2026-10-13T18:57:44.0408375Z state without impacting any branches by switching back to a branch.
+2026-10-13T18:57:44.0408777Z 
+2026-10-13T18:57:44.0409230Z If you want to create a new branch to retain commits you create, you may
+2026-10-13T18:57:44.0409848Z do so (now or later) by using -c with the switch command. Example:
+2026-10-13T18:57:44.0410451Z 
+2026-10-13T18:57:44.0410619Z   git switch -c <new-branch-name>
+2026-10-13T18:57:44.0410882Z 
+2026-10-13T18:57:44.0411052Z Or undo this operation with:
+2026-10-13T18:57:44.0411277Z 
+2026-10-13T18:57:44.0411416Z   git switch -
+2026-10-13T18:57:44.0411619Z 
+2026-10-13T18:57:44.0411917Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-13T18:57:44.0412340Z 
+2026-10-13T18:57:44.0412643Z HEAD is now at d53c375 Replace floor-map artwork with stock physical book and pedestal
+2026-10-13T18:57:44.0430713Z ##[endgroup]
+2026-10-13T18:57:44.0475706Z [command]/usr/bin/git log -1 --format=%H
+2026-10-13T18:57:44.0500213Z d53c3756571429a6d09d3392ed9ff753dda1a66a
+2026-10-13T18:57:44.1421693Z ##[group]Run sudo apt-get update && sudo apt-get install -y liblua5.4-0
+2026-10-13T18:57:44.1422186Z [36;1msudo apt-get update && sudo apt-get install -y liblua5.4-0[0m
+2026-10-13T18:57:44.1845635Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:57:44.1845941Z ##[endgroup]
+2026-10-13T18:57:44.3810818Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-13T18:57:44.4026014Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-13T18:57:44.4144670Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-13T18:57:44.4152407Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-13T18:57:44.4179541Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-13T18:57:44.4242404Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-13T18:57:44.4737963Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.3 kB]
+2026-10-13T18:57:44.4870345Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main all Packages [640 B]
+2026-10-13T18:57:44.4898177Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [574 kB]
+2026-10-13T18:57:44.4973366Z Get:10 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [517 kB]
+2026-10-13T18:57:44.5668108Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1397 kB]
+2026-10-13T18:57:44.5746417Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [308 kB]
+2026-10-13T18:57:44.5751862Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1702 kB]
+2026-10-13T18:57:44.5835832Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+2026-10-13T18:57:44.5837380Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+2026-10-13T18:57:44.5913496Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+2026-10-13T18:57:44.5934749Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [50.7 kB]
+2026-10-13T18:57:44.5942347Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [14.0 kB]
+2026-10-13T18:57:44.6226274Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [748 B]
+2026-10-13T18:57:44.6812672Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1144 kB]
+2026-10-13T18:57:44.7269518Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [230 kB]
+2026-10-13T18:57:44.7283507Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1221 kB]
+2026-10-13T18:57:44.7341010Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+2026-10-13T18:57:44.7351482Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+2026-10-13T18:57:44.7419243Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+2026-10-13T18:57:44.7438365Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [45.4 kB]
+2026-10-13T18:57:44.7443841Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse Translation-en [12.1 kB]
+2026-10-13T18:57:51.9104601Z Fetched 12.5 MB in 1s (11.6 MB/s)
+2026-10-13T18:57:52.7243541Z Reading package lists...
+2026-10-13T18:57:52.7516226Z Reading package lists...
+2026-10-13T18:57:52.9820645Z Building dependency tree...
+2026-10-13T18:57:52.9827504Z Reading state information...
+2026-10-13T18:57:53.2344454Z liblua5.4-0 is already the newest version (5.4.6-3build2).
+2026-10-13T18:57:53.2344929Z liblua5.4-0 set to manually installed.
+2026-10-13T18:57:53.2345357Z 0 upgraded, 0 newly installed, 0 to remove and 29 not upgraded.
+2026-10-13T18:57:53.2394297Z ##[group]Run python3 tools/run_lua54.py tools/test_hostile_route_cache.lua
+2026-10-13T18:57:53.2394725Z [36;1mpython3 tools/run_lua54.py tools/test_hostile_route_cache.lua[0m
+2026-10-13T18:57:53.2450595Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:57:53.2450813Z ##[endgroup]
+2026-10-13T18:57:56.8522275Z HOSTILE_ROUTE_CACHE_PASS exact_path_cases=9072 requests=1920 legacy_filter_visits=749190 cached_filter_visits=24973 legacy_lua_seconds=1.609871 cached_lua_seconds=0.032051 general_tree_limit=72 completed_path_limit=72 native_fps_measured=false
+2026-10-13T18:57:56.8523558Z MIXED_HOSTILE_ROUTE_CACHE_PASS requests=1920 legacy_filter_visits=514200 cached_filter_visits=17140 legacy_home_trees=64 cached_home_trees=64 legacy_lua_seconds=1.095130 cached_lua_seconds=0.047157 native_fps_measured=false
+2026-10-13T18:57:56.8629894Z ##[group]Run python3 tools/run_lua54.py tools/test_wall_batch.lua
+2026-10-13T18:57:56.8630284Z [36;1mpython3 tools/run_lua54.py tools/test_wall_batch.lua[0m
+2026-10-13T18:57:56.8687470Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:57:56.8687705Z ##[endgroup]
+2026-10-13T18:57:59.1600430Z WALL_BATCH_WORK instances=600 legacy_native_submissions=600 batched_submissions=95 exact_triangles=256800 native_fps_measured=false
+2026-10-13T18:58:17.9833218Z WALL_BATCH_PASS: native walls by default with Reduced Effects; explicit unsaved experimental opt-in; isolated world matrix and draw-failure recovery without retry bursts; exact stock geometry/UV/tint/yaw; conservative view/pass handling; bounded incremental uploads; same-world idle; transactional failures; preference/appearance/owner/map/refresh/shutdown cleanup; real 1542-instance palette pipeline independent of stalled native overrides; construction/retry/unavailable-material guards
+2026-10-13T18:58:18.0126177Z ##[group]Run python3 tools/run_lua54.py tools/test_performance_capture.lua
+2026-10-13T18:58:18.0126605Z [36;1mpython3 tools/run_lua54.py tools/test_performance_capture.lua[0m
+2026-10-13T18:58:18.0182310Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:18.0182525Z ##[endgroup]
+2026-10-13T18:58:18.0539881Z [LOD:PERF] Recording 180s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.0636853Z [LOD:PERF] active_frames=4881 active_seconds=131.43 fps=37.14 median_ms=25.000 p95_ms=25.000 p99_ms=120.000 max_ms=120.000 over25=99 over50=99 over100=99 source_verified=true reason=complete renderer=ready preparation_timed_out=false
+2026-10-13T18:58:18.0638219Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.0639469Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.0641092Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=ready preparation_timed_out=false
+2026-10-13T18:58:18.0642284Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.0643288Z [LOD:PERF] Recording 180s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.0644910Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=ready preparation_timed_out=false
+2026-10-13T18:58:18.0646528Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.0647533Z [LOD:PERF] Recording 180s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1433350Z [LOD:PERF] active_frames=65536 active_seconds=6.55 fps=10000.00 median_ms=0.100 p95_ms=0.100 p99_ms=0.100 max_ms=0.100 over25=0 over50=0 over100=0 source_verified=false reason=sample-limit renderer=ready preparation_timed_out=false
+2026-10-13T18:58:18.1434641Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.1435630Z [LOD:PERF] Recording 300s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1437234Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=shutdown renderer=ready preparation_timed_out=false
+2026-10-13T18:58:18.1438424Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.1439650Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1444818Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=lua-refresh renderer=ready preparation_timed_out=false
+2026-10-13T18:58:18.1446069Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.1447060Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1449412Z [LOD:PERF] active_frames=100 active_seconds=5.00 fps=20.00 median_ms=50.000 p95_ms=50.000 p99_ms=50.000 max_ms=50.000 over25=100 over50=0 over100=0 source_verified=false reason=complete renderer=waiting-appearance preparation_timed_out=true
+2026-10-13T18:58:18.1450656Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.1451547Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1453136Z [LOD:PERF] active_frames=1 active_seconds=0.05 fps=20.00 median_ms=50.000 p95_ms=50.000 p99_ms=50.000 max_ms=50.000 over25=1 over50=0 over100=0 source_verified=false reason=shutdown renderer=off preparation_timed_out=false
+2026-10-13T18:58:18.1454292Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.1455290Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1456798Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=renderer-timeout renderer=building preparation_timed_out=false
+2026-10-13T18:58:18.1457881Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.1458748Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1460309Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=ready preparation_timed_out=false
+2026-10-13T18:58:18.1461651Z [LOD:PERF] Save failed: ...the-legend-of-deborah/tools/test_performance_capture.lua:186: injected disk failure
+2026-10-13T18:58:18.1462691Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1464084Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=ready preparation_timed_out=false
+2026-10-13T18:58:18.1465286Z [LOD:PERF] Save failed: ...odes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua:564: DATA write did not persist
+2026-10-13T18:58:18.1467475Z PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows with live renderer history; native/default route without batch-preparation delay; build/settings/resource evidence including experimental preference; preparation excluded or explicitly timed out; stalled renderer still measured; true no-render wait; 65536 limit; reset/refresh/shutdown/throwing and silent I/O cleanup
+2026-10-13T18:58:18.1558014Z ##[group]Run python3 tools/run_lua54.py tools/test_performance_profile.lua
+2026-10-13T18:58:18.1558441Z [36;1mpython3 tools/run_lua54.py tools/test_performance_profile.lua[0m
+2026-10-13T18:58:18.1614864Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:18.1615084Z ##[endgroup]
+2026-10-13T18:58:18.1985657Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1987247Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.1988020Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.1988697Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.1989402Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.1991655Z [LOD:PERF] active_frames=1 active_seconds=0.03 fps=34.48 median_ms=29.000 p95_ms=29.000 p99_ms=29.000 max_ms=29.000 over25=1 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.1992527Z [LOD:PERF] CPU attribution: client_rows=5 server_status=partial server_rows=11; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.1993296Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.1994083Z [LOD:PERF] active_frames=1 active_seconds=0.03 fps=34.48 median_ms=29.000 p95_ms=29.000 p99_ms=29.000 max_ms=29.000 over25=1 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.1994870Z [LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=11; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.1995335Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2001455Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.2002427Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2042447Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=compression-test renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2043381Z [LOD:PERF] CPU attribution: client_rows=5 server_status=partial server_rows=10; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2044109Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2046278Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=compression-test renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2047183Z [LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2047659Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2055669Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.2056426Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2057550Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2059117Z [LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2059633Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2060232Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.2060822Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2067573Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2068800Z [LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2069471Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2070173Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2071159Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2091376Z [LOD:PERF] active_frames=769 active_seconds=29.99 fps=25.64 median_ms=39.000 p95_ms=39.000 p99_ms=39.000 max_ms=39.000 over25=769 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2092359Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=25.64 profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2093203Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2094188Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2094932Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2123135Z [LOD:PERF] active_frames=468 active_seconds=29.95 fps=15.62 median_ms=64.000 p95_ms=64.000 p99_ms=64.000 max_ms=64.000 over25=468 over50=468 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2124035Z [LOD:PERF] CPU attribution: client_rows=5 server_status=partial server_rows=10; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2124698Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=complete unprofiled_fps=25.64 profiled_fps=15.62; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2125764Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2126483Z [LOD:PERF] active_frames=468 active_seconds=29.95 fps=15.62 median_ms=64.000 p95_ms=64.000 p99_ms=64.000 max_ms=64.000 over25=468 over50=468 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2127285Z [LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2128001Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=complete unprofiled_fps=25.64 profiled_fps=15.62; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2128859Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2129920Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2131454Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2132598Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2133802Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2134608Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2135757Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2136796Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2137697Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2138733Z [LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2139848Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2140543Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2141448Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2142793Z [LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2143724Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2144471Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2145377Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2146355Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2147561Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2148482Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2149235Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2149908Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2150747Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2151600Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2152435Z [LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2153158Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2153892Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2154852Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2155885Z [LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2157051Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2157971Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2159219Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2160805Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2162424Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2163979Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2164780Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2165906Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2166958Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2168105Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2168939Z [LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2170410Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2171342Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2172416Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2173231Z [LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2174258Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2174921Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2175732Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2176720Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2177701Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2178819Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2179841Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2181022Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2182432Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2183908Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2185468Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2186328Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2187153Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2188781Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2190454Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2191657Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2192597Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2193894Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2195148Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2196753Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2198287Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2199330Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2200600Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2202242Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2203841Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=restarted renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2205359Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2206321Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2207451Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2208707Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2210461Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=sample-limit renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2211878Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2212746Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2213892Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2215441Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2216886Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2218065Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2218902Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2219979Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2220675Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2221374Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2222185Z [LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2222894Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2223467Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2224296Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2225299Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2226284Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2227211Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2227797Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2228481Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2229360Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2230048Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2230848Z [LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2231548Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2232111Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2232785Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2233750Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2234699Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2235626Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2236205Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2237037Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2237723Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2238408Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2239377Z [LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2240069Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2240636Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2241404Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2242377Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2243331Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2244239Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2244817Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2245481Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2246159Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2246837Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2247629Z [LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2248317Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2248873Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2249701Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2250666Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2251619Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2252535Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2253238Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2253919Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2254612Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2255304Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=restarted renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2256109Z [LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2256805Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2257377Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2258171Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2259391Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2260391Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2261321Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2261918Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2262609Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2263305Z [LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+2026-10-13T18:58:18.2264001Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=sample-limit renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2282166Z [LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+2026-10-13T18:58:18.2283272Z [LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2283912Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2284660Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2286408Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2287666Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=restarted renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2288600Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2289545Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2290134Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+2026-10-13T18:58:18.2291054Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2291727Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2292440Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2293536Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2294530Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2295460Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2296180Z [LOD:PERF] Save failed: ...the-legend-of-deborah/tools/test_performance_profile.lua:406: pair disk failure
+2026-10-13T18:58:18.2296966Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2297959Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2298929Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2300017Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2300619Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2301295Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2302223Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=snapshot-failed unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2302801Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2303162Z [LOD:PERF] Same-scene diagnostic ended: baseline snapshot could not be frozen.
+2026-10-13T18:58:18.2303873Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2304836Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2305795Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2306863Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2307450Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2308110Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2309225Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=snapshot-failed unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2309808Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2310174Z [LOD:PERF] Same-scene diagnostic ended: baseline snapshot could not be frozen.
+2026-10-13T18:58:18.2311050Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2312029Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2312995Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2313906Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2314490Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2315156Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2316055Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=snapshot-failed unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2316631Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2316991Z [LOD:PERF] Same-scene diagnostic ended: baseline snapshot could not be frozen.
+2026-10-13T18:58:18.2317693Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2318666Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2319814Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2320715Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2321289Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2321963Z [LOD:PERF] Recording 60s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2322924Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2324060Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2324947Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2325508Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2326171Z [LOD:PERF] Recording 60s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2327133Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2328174Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2329270Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2329850Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2330529Z [LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2331495Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2332460Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2333357Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2333931Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2334608Z [LOD:PERF] Recording 300s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+2026-10-13T18:58:18.2335585Z [LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+2026-10-13T18:58:18.2336534Z [LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+2026-10-13T18:58:18.2337417Z [LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+2026-10-13T18:58:18.2337987Z [LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+2026-10-13T18:58:18.2339163Z PERFORMANCE_PAIR_PASS baseline_frames=769 profiled_frames=468; complete same-file native transport; no baseline instrumentation or per-frame I/O; scalar view evidence; stale callbacks/replies; 12 interruption cases and 3 active-profile native lifecycle events; restart/save/default/duration/idle bounds; synthetic clocks, not native FPS
+2026-10-13T18:58:18.2341254Z PERFORMANCE_PROFILE_PASS: opt-in/post-warmup; client/server real observer; exact inclusive timings; vararg/nil/self/error preservation; existing/new native instances; Watcher direct service; weak ownership and guarded restores; partial/final same-file transport; complete compressed reports and bounded malformed/oversized codecs; stale/admin/lease bounds; finite deadline; cleanup/reload/shutdown; no native FPS/GPU measurement
+2026-10-13T18:58:18.2369588Z ##[group]Run python3 tools/run_lua54.py tools/test_population_transport.lua
+2026-10-13T18:58:18.2370033Z [36;1mpython3 tools/run_lua54.py tools/test_population_transport.lua[0m
+2026-10-13T18:58:18.2425262Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:18.2425483Z ##[endgroup]
+2026-10-13T18:58:18.2922608Z POPULATION_TRANSPORT_PASS: one automatic opt-in request; existing census/source cache; admin/rate/map/payload bounds; complete client mirror and performance embedding; valid bounded console; native DATA silent/throwing failures; malformed packets; no second census or timer
+2026-10-13T18:58:18.3013429Z ##[group]Run python3 tools/run_lua54.py tools/test_low_end_render.lua
+2026-10-13T18:58:18.3013839Z [36;1mpython3 tools/run_lua54.py tools/test_low_end_render.lua[0m
+2026-10-13T18:58:18.3070148Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:18.3070369Z ##[endgroup]
+2026-10-13T18:58:18.4068206Z LOW_END_STATIC_WORK entities=120 frames=120 cache_key_formats=0 matrix_allocations=0 native_peak_meshes=61
+2026-10-13T18:58:18.4068827Z LOW_END_NATIVE_GETTERS entities=120 frames=120 reads=57600 native_fps_measured=false
+2026-10-13T18:58:18.4069603Z LOW_END_DRAW_SNAPSHOT entities=120 passes=120 native_vector_components=129600 native_fps_measured=false
+2026-10-13T18:58:18.4070190Z LOW_END_PLANE_WORK entities=120 passes=120 absolute_values=0 basis_component_reads=1080 native_fps_measured=false
+2026-10-13T18:58:18.4559852Z LOW_END_STATE_WORK entities=120 passes=120 submissions=14400 native_state_calls=600 native_fps_measured=false
+2026-10-13T18:58:18.4565332Z LOW_END_STATE_LIFETIME_PASS: mixed floor/stair/grate/false-floor; neutral wireframes; replacement/missing helpers; nested material/alpha; owned error unwind; untouched empty/culled scopes; ordinary API
+2026-10-13T18:58:18.6058218Z LOW_END_KIND_WORK entities=1200 drawable=120 passes=120 submissions=14400 native_kind_reads=0 native_validity_calls=14400 collision_entity_field_reads=0 native_fps_measured=false
+2026-10-13T18:58:18.6059743Z LOW_END_DRAWABLE_TABLE_WORK drawable=120 passes=120 submissions=14400 native_entity_field_reads=172800 native_fps_measured=false
+2026-10-13T18:58:18.6580706Z LOW_END_KIND_LIFETIME_PASS: declared native proxies; same-pass transitions; pre-write reentrancy; missed initial replication; legacy/replaced accessors; weak/copy Lua-table fallback; invalid native guards; full update/transmission; missing datatables; removal
+2026-10-13T18:58:18.6698021Z LOW_END_STATIC_THINK entities=120 frames=600 callbacks=1200 native_fps_measured=false
+2026-10-13T18:58:18.6776421Z LOW_END_VIEW_WORK entities=600 submitted=100 native_fps_measured=false
+2026-10-13T18:58:18.6813426Z LOW_END_ELONGATED_VIEW entities=301 submitted=101 native_fps_measured=false
+2026-10-13T18:58:18.8039278Z LOW_END_RENDER_PASS: 173 visible-corner and 73 conservative plane cases (3 without an inside corner); native getter reuse and scheduled bounds; FOV/aspect/roll/pitch/yaw/nested views; mutations/kind/UV/material/eviction/cleanup/refresh/weak owners; ceiling=256
+2026-10-13T18:58:18.9831299Z LOW_END_SUPPORT_WORK entities=120 rotated=30 frames=120 passes=240 absolute_values=0 native_geometry_getters=115200 camera_basis_reads=2160 native_draws=28800 wireframes=9600 native_fps_measured=false
+2026-10-13T18:58:19.0240692Z LOW_END_SUPPORT_PARITY passes=300 exact_native_mesh_wireframe_fallback_values=true; eye translation, axes/projection, mutable bounds/pose, live getters, hazards/grates, life/kind, full update, incomplete/nested views, refresh/removal
+2026-10-13T18:58:19.0356694Z ##[group]Run python3 tools/run_lua54.py tools/test_low_end_palette.lua
+2026-10-13T18:58:19.0358285Z [36;1mpython3 tools/run_lua54.py tools/test_low_end_palette.lua[0m
+2026-10-13T18:58:19.0414339Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:19.0414568Z ##[endgroup]
+2026-10-13T18:58:19.1081878Z LOW_END_PALETTE build_world_visits=600 build_material_lookups=32 idle_600_world_visits=0 idle_material_lookups=0 build_lua_seconds=0.027347 idle_lua_seconds=0.000116 native_fps_measured=false
+2026-10-13T18:58:19.1107937Z LOW_END_PALETTE visible_assignment_fingerprint=151650907
+2026-10-13T18:58:19.5396744Z NATIVE_PALETTE_WORK instances=1868 initial_writes_per_setter=1868 steady_600_ticks_writes=0 getters_acknowledged=false native_fps_measured=false
+2026-10-13T18:58:19.5398228Z LOW_END_PALETTE_PASS: exact visible assignment, stable quiescence including native stale material/color getters; world/count/seed/model/mode/refresh lifetimes, <=192-model write cap, fallback/recovery
+2026-10-13T18:58:19.5612362Z ##[group]Run python3 tools/run_lua54.py tools/test_low_end_geometry.lua
+2026-10-13T18:58:19.5612786Z [36;1mpython3 tools/run_lua54.py tools/test_low_end_geometry.lua[0m
+2026-10-13T18:58:19.5668499Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:19.5668723Z ##[endgroup]
+2026-10-13T18:58:19.6066809Z LOW_END_GEOMETRY boxes=600 submitted=300 floor_material_resolutions=1 native_fps_measured=false
+2026-10-13T18:58:19.6083610Z LOW_END_GEOMETRY_PASS: rear-only rejection; camera/rotation/intersection/asymmetry/changed bounds; orthographic/unknown fail-open; floors/stairs/grates/hazards; full update; per-pass material refresh
+2026-10-13T18:58:19.6180737Z ##[group]Run python3 tools/run_lua54.py tools/test_low_end_options.lua
+2026-10-13T18:58:19.6181155Z [36;1mpython3 tools/run_lua54.py tools/test_low_end_options.lua[0m
+2026-10-13T18:58:19.6236941Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:19.6237169Z ##[endgroup]
+2026-10-13T18:58:19.6596706Z LOW_END_OPTIONS_PASS: six unique saved bindings; map ranges; scrollable 1280x800 and 640x480 bounds; no preference writes on open; minigame lock
+2026-10-13T18:58:19.6676002Z ##[group]Run python3 tools/run_lua54.py tools/test_great_crate_render.lua
+2026-10-13T18:58:19.6676429Z [36;1mpython3 tools/run_lua54.py tools/test_great_crate_render.lua[0m
+2026-10-13T18:58:19.6732355Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:19.6732574Z ##[endgroup]
+2026-10-13T18:58:19.7885194Z OVERLAY_SUBMISSIONS unknown_view_boards=300 known_view_boards=150 unknown_view_brands=64 known_view_brands=32
+2026-10-13T18:58:21.5007493Z OVERLAY_WORK unknown_view_boards=300 known_view_boards=150 unknown_view_brands=64 known_view_brands=32 stable_600_frames_metric_reads=0 projected_corner_cases=181 native_fps_measured=false
+2026-10-13T18:58:21.5045918Z BRAND_GEOMETRY_WORK draws=600 vectors=600 fit_resolutions=0 native_fps_measured=false
+2026-10-13T18:58:21.5562637Z BRAND_SELECTION_WORK exact_scenes=32 largest_sort=64 max_admitted=64 native_fps_measured=false
+2026-10-13T18:58:22.3303884Z BRAND_SCENE_WORK candidates=968 admitted=64 frames=600 lua_seconds=0.772363 native_fps_measured=false
+2026-10-13T18:58:22.3346615Z CRATE_RENDER_PASS: 2048 original composition/orientation checks; independent untinted artwork; two lazy shader slots; 64-draw ceiling for 1000 candidates; rotated/shared slab UV seams; 192.0 cached opaque grate quads with underside and cleanup
+2026-10-13T18:58:22.3468728Z ##[group]Run python3 tools/test_dev_population_manifest.py
+2026-10-13T18:58:22.3469249Z [36;1mpython3 tools/test_dev_population_manifest.py[0m
+2026-10-13T18:58:22.3524732Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:22.3524962Z ##[endgroup]
+2026-10-13T18:58:22.8812597Z DEV_POPULATION_MANIFEST_PASS exact 94-source hashes including key pedestal/display/collision and friendly idle; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup
+2026-10-13T18:58:22.8905873Z ##[group]Run python3 tools/run_lua54.py tools/test_floor_map_props.lua
+2026-10-13T18:58:22.8906277Z [36;1mpython3 tools/run_lua54.py tools/test_floor_map_props.lua[0m
+2026-10-13T18:58:22.8961681Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:22.8961891Z ##[endgroup]
+2026-10-13T18:58:22.9307191Z FLOOR_MAP_PROPS_PASS: actual book/pedestal entities; upright native models; solid stationary bounds; unscaled low block; clear arrival center; canonical touch anchor/cadence; fallback; both-floor transmission; owned teardown
+2026-10-13T18:58:22.9384206Z ##[group]Run python3 tools/run_lua54.py tools/test_floor_map_visual.lua
+2026-10-13T18:58:22.9384621Z [36;1mpython3 tools/run_lua54.py tools/test_floor_map_visual.lua[0m
+2026-10-13T18:58:22.9439981Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:22.9440196Z ##[endgroup]
+2026-10-13T18:58:22.9800058Z FLOOR_MAP_PROPS_PASS: actual book/pedestal entities; upright native models; solid stationary bounds; unscaled low block; clear arrival center; canonical touch anchor/cadence; fallback; both-floor transmission; owned teardown
+2026-10-13T18:58:22.9812709Z FLOOR_MAP_VISUAL_PASS: native book and pedestal DrawModel; 24 hint viewpoints; complete all-orientation bounds; no body distance cull; distant other-floor Finder; cached helpers; death/role/depth guards; collection/shutdown; native rendering errors restore lighting/depth
+2026-10-13T18:58:22.9896489Z ##[group]Run python3 tools/run_lua54.py tools/test_floor_map_panel.lua
+2026-10-13T18:58:22.9897063Z [36;1mpython3 tools/run_lua54.py tools/test_floor_map_panel.lua[0m
+2026-10-13T18:58:22.9975081Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:22.9975434Z ##[endgroup]
+2026-10-13T18:58:23.0393569Z [LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+2026-10-13T18:58:23.0394662Z [LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+2026-10-13T18:58:23.0395525Z [LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+2026-10-13T18:58:23.0396679Z enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+2026-10-13T18:58:23.0430361Z FLOOR_MAP_PANEL_PASS: two realms/offset origins; Q/M/VR panel; blank metadata/no topology leaks or polling; actual party touch/maze transition; unchanged personal Magic lease/drain/movement; exhaustion, late Hero and rebuild/death
+2026-10-13T18:58:23.0532936Z ##[group]Run python3 tools/run_lua54.py tools/test_floor_map_panel.lua --compass
+2026-10-13T18:58:23.0533441Z [36;1mpython3 tools/run_lua54.py tools/test_floor_map_panel.lua --compass[0m
+2026-10-13T18:58:23.0588790Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:23.0589080Z ##[endgroup]
+2026-10-13T18:58:23.0978252Z [LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+2026-10-13T18:58:23.0978889Z [LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+2026-10-13T18:58:23.0979616Z [LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+2026-10-13T18:58:23.0980233Z enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+2026-10-13T18:58:23.1012727Z INTERNAL_COMPASS_PIPELINE_PASS: real two-realm Magic admission; route-only payload; hidden walls/quadrants; current floor/stair bound; closed/open gate; flag loss; no shared ownership
+2026-10-13T18:58:23.1095110Z ##[group]Run python3 tools/test_crypto_sqlite.py tools/test_floor_maps_integration.lua
+2026-10-13T18:58:23.1095597Z [36;1mpython3 tools/test_crypto_sqlite.py tools/test_floor_maps_integration.lua[0m
+2026-10-13T18:58:23.1151257Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:23.1151483Z ##[endgroup]
+2026-10-13T18:58:23.1810582Z [LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+2026-10-13T18:58:23.1827495Z [AUDIT] Expected Implemented Feats Count: 114
+2026-10-13T18:58:23.1827924Z [AUDIT] Implementation Feats Count: 114
+2026-10-13T18:58:23.1863151Z [CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+2026-10-13T18:58:23.3247595Z PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+2026-10-13T18:58:24.1158773Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:24.3405614Z [LOD] Level 1 ready. campaign=41 levelSeed=107922 layoutAttempt=1 cells=699 entities=402 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:24.5883396Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:24.9926797Z [LOD] Level 1 ready. campaign=41 levelSeed=115841 layoutAttempt=4 cells=681 entities=421 vertical=4 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:25.0718314Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=3 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:25.2896289Z [LOD] Level 1 ready. campaign=41 levelSeed=123760 layoutAttempt=1 cells=610 entities=369 vertical=4 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:25.3675076Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:25.5679655Z [LOD] Level 1 ready. campaign=41 levelSeed=131679 layoutAttempt=1 cells=663 entities=419 vertical=4 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:25.6424700Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:25.8512249Z [LOD] Level 20 ready. campaign=41 levelSeed=2007979 layoutAttempt=1 cells=539 entities=275 vertical=5 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:25.9666648Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:26.3866995Z [LOD] Level 20 ready. campaign=41 levelSeed=2015898 layoutAttempt=1 cells=678 entities=397 vertical=4 mazeAttempt=7 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:26.4711853Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=3 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:26.7514590Z [LOD] Level 20 ready. campaign=41 levelSeed=2023817 layoutAttempt=1 cells=646 entities=413 vertical=4 mazeAttempt=3 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:26.8521737Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:27.1647704Z [LOD] Level 20 ready. campaign=41 levelSeed=2031736 layoutAttempt=2 cells=540 entities=269 vertical=6 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:27.2804940Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:27.3930240Z [LOD] Level 21 ready. campaign=41 levelSeed=2107982 layoutAttempt=2 cells=517 entities=240 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:27.4911522Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:27.8299900Z [LOD] Level 21 ready. campaign=41 levelSeed=2115901 layoutAttempt=1 cells=598 entities=349 vertical=6 mazeAttempt=4 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:28.0227186Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:28.4272828Z [LOD] Level 21 ready. campaign=41 levelSeed=2123820 layoutAttempt=3 cells=650 entities=396 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:28.5729346Z [LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+2026-10-13T18:58:28.6752568Z [LOD] Level 21 ready. campaign=41 levelSeed=2131739 layoutAttempt=2 cells=665 entities=407 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+2026-10-13T18:58:28.6768932Z FLOOR_MAPS_INTEGRATION_PASS: 12 full builds / 35 reserved floor paths; 28-event catalog and real SQLite; unchanged 1d4 counts; native-boundary floors and maps; Dungeons 1/20/21
+2026-10-13T18:58:28.7132985Z ##[group]Run python3 tools/run_lua54.py --syntax gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/shared.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/cl_init.lua gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua
+2026-10-13T18:58:28.7135821Z [36;1mpython3 tools/run_lua54.py --syntax gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/shared.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/cl_init.lua gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua[0m
+2026-10-13T18:58:28.7192123Z shell: /usr/bin/bash -e {0}
+2026-10-13T18:58:28.7192335Z ##[endgroup]
+2026-10-13T18:58:28.7542298Z PASS /home/runner/work/the-legend-of-deborah/the-legend-of-deborah/gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua
+2026-10-13T18:58:28.7543544Z PASS /home/runner/work/the-legend-of-deborah/the-legend-of-deborah/gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua
+2026-10-13T18:58:28.7544656Z PASS /home/runner/work/the-legend-of-deborah/the-legend-of-deborah/gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua
+2026-10-13T18:58:28.7545811Z PASS /home/runner/work/the-legend-of-deborah/the-legend-of-deborah/gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/shared.lua
+2026-10-13T18:58:28.7546979Z PASS /home/runner/work/the-legend-of-deborah/the-legend-of-deborah/gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua
+2026-10-13T18:58:28.7548127Z PASS /home/runner/work/the-legend-of-deborah/the-legend-of-deborah/gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/cl_init.lua
+2026-10-13T18:58:28.7549514Z PASS /home/runner/work/the-legend-of-deborah/the-legend-of-deborah/gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua
+2026-10-13T18:58:28.7693639Z Post job cleanup.
+2026-10-13T18:58:28.8397502Z [command]/usr/bin/git version
+2026-10-13T18:58:28.8435811Z git version 2.55.0
+2026-10-13T18:58:28.8469477Z Temporarily overriding HOME='/home/runner/work/_temp/7533dfef-3f9a-400d-a0e6-8706e15380ab' before making global git config changes
+2026-10-13T18:58:28.8470443Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-13T18:58:28.8474651Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/the-legend-of-deborah/the-legend-of-deborah
+2026-10-13T18:58:28.8511825Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-13T18:58:28.8545484Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-13T18:58:28.8761466Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-13T18:58:29.1411668Z http.https://github.com/.extraheader
+2026-10-13T18:58:29.1423191Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-13T18:58:29.1459469Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-13T18:58:29.1660752Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-13T18:58:29.1692494Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-13T18:58:29.2013879Z Cleaning up orphan processes
+2026-10-13T18:58:29.2293718Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

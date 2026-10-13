@@ -1,0 +1,243 @@
+{
+  "candidate": "d53c3756571429a6d09d3392ed9ff753dda1a66a",
+  "tree": "ced8ed34a2bd3eb78564f732c4b6fad83840aefb",
+  "parent": {
+    "sha": "a2ab35a46a976dc6b198b2c55b06f34dbca1cd95",
+    "tree": "666c5562e9f48764814c8a2f139e4e0690323372"
+  },
+  "runId": 38450969612,
+  "jobId": 115481463850,
+  "checks": [
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_hostile_route_cache.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 4
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_wall_batch.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 5
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_performance_capture.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 6
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_performance_profile.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 7
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_population_transport.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 8
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_low_end_render.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 9
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_low_end_palette.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 10
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_low_end_geometry.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 11
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_low_end_options.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 12
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_great_crate_render.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 13
+    },
+    {
+      "name": "Run python3 tools/test_dev_population_manifest.py",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 14
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_floor_map_props.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 15
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_floor_map_visual.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 16
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_floor_map_panel.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 17
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py tools/test_floor_map_panel.lua --compass",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 18
+    },
+    {
+      "name": "Run python3 tools/test_crypto_sqlite.py tools/test_floor_maps_integration.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 19
+    },
+    {
+      "name": "Run python3 tools/run_lua54.py --syntax gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/shared.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/cl_init.lua gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 20
+    }
+  ],
+  "sourceBlobs": [
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/shared.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10e76d94b68efec05cfc0c90c08cfd6b59f9d65e"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f3819a62847f85af1695bd3575bac5ed5fcca438"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/shared.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7552a077e13d9b2fb2b7a3d8645153147f05d7f2"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/init.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "793b79c255b2382309ac72c34dce551302105a39"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_floor_map_pedestal/cl_init.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "906dffbcb440f12034f802b753751ddecf8dd0e2"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e08f759cecbb581ed7d6934e3e8fb50b3f27971f"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3de9f43fd6314bac44a2e341e471c0f34156a434"
+    },
+    {
+      "path": "tools/install_dev.sh",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2061c043eefd11ffeed0ece15950df84494b13e7"
+    },
+    {
+      "path": "lua/autorun/server/lod_population_observability.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "38904082d48b659fd171625c4d42d66027c15624"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f12d77b311a005037c0fa90bd227e424fde25f64"
+    },
+    {
+      "path": "tools/test_dev_population_manifest.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "724146711aaf4f30a157e2df7b1086b541fce07f"
+    },
+    {
+      "path": "tools/test_population_transport.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "441d636dff4b6c8e2bb8bcd226d269e3e90241e1"
+    },
+    {
+      "path": "tools/test_performance_capture.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "526d3a80654b87597df5a48b2e50658b0c760ff1"
+    },
+    {
+      "path": "tools/test_performance_profile.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10b09fb592f686850eeaeeab1d9a72df8a38f3af"
+    },
+    {
+      "path": "tools/test_floor_map_props.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82940be5f08c336f0e54b6e947aa5035c1be9d48"
+    },
+    {
+      "path": "tools/test_floor_map_visual.lua",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "32499365fec6042093b781d4bc4a774d8fd8dc7b"
+    },
+    {
+      "path": ".github/workflows/low-end.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76f933e20367d6cfc1c2d145e81c82f49be0364b"
+    },
+    {
+      "path": "tools/test_checkpoint_g_integration.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a25eeb36f023336be1be70f4586241654b5b399"
+    },
+    {
+      "path": "docs/validation/FLOOR_MAP_STOCK_PROPS_20261013_PREFLIGHT.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5e8b8ddfa8f4debb933a1bf1471218471246ff8"
+    }
+  ],
+  "gddWriteSucceeded": false,
+  "localExecutorAvailable": false,
+  "nativeGmodAccepted": false,
+  "parentMatrix": [
+    {
+      "id": 38435824490,
+      "name": "Validate complete frozen source matrix",
+      "head": "a2ab35a46a976dc6b198b2c55b06f34dbca1cd95",
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  ],
+  "scope": "17 selected checks pass on the exact candidate; broader parent matrix has inherited failures and is not claimed as passing."
+}
