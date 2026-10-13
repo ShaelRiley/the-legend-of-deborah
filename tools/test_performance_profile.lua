@@ -44,6 +44,11 @@ for _,path in ipairs({'gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_major_fx.
 for _,leaf in ipairs({'shared.lua','cl_init.lua'}) do paths[#paths+1]='gamemodes/legend_of_deborah/entities/entities/lod_jail_key/'..leaf end
 paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/cl_init.lua'
 paths[#paths+1]=root..'cl_minimap_logical_cell.lua'
+paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua'
+paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/lod/sh_gps_voice.lua'
+paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/lod/sh_gps_praise.lua'
+paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_gps.lua'
+paths[#paths+1]='gamemodes/legend_of_deborah/content/sound/lod/gps_praise_bank.mp3'
 local manifest={};for _,path in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..path end
 for _,f in pairs(files) do
     f.dev_build='profile-test clean';f['legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')

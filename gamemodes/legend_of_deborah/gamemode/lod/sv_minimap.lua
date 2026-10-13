@@ -12,6 +12,7 @@ util.AddNetworkString("LOD_MapRequest")
 util.AddNetworkString("LOD_MapBegin")
 util.AddNetworkString("LOD_MapChunk")
 util.AddNetworkString("LOD_MapDenied")
+util.AddNetworkString("LOD_MapCompass")
 
 local DIRS = {
     {dx = 0, dy = 1, dz = 0, bit = 0, gateShift = 0}, -- N
@@ -73,6 +74,49 @@ function Minimap:CanUse(ply)
     return self:HasFloor(ply)
 end
 
+-- Only the bounded route is sent for an unfound floor, never its topology.
+-- Reuse Navigator's legal, cached objective route; no second pathfinder/timer.
+local compassSent=setmetatable({}, {__mode="k"})
+local writeCell
+function Minimap:SendCompass(ply, force)
+    local rules,magic=LOD.RPGAbilityRules,LOD.MinimapMagic
+    local derived=rules and rules.Derived and rules:Derived(ply)
+    if not derived or not derived.internalCompassEnabled or not magic or not magic:IsOpen(ply)
+        or self:HasFloor(ply) then return false end
+    local maps=self:PartyMaps()
+    local run=LOD.RunManager.State
+    local nav,dir=LOD.MazeNavigator,LOD.ProgressionDirector
+    if not maps or not nav or not dir or not dir.GetObjectiveGraphTarget then return false end
+    local now=CurTime()
+    local cached=compassSent[ply]
+    if not force and cached and now<cached.nextAt then return false end
+    local floor=self:FloorForPlayer(ply)
+    local cell=nav:WorldToCell(run.Graph,ply:GetPos())
+    local objective=dir:GetObjectiveGraphTarget()
+    local range=rules:BreadcrumbCells(ply)
+    local path=cell and cell.z==floor and objective and objective.a
+        and nav:FindPath(run.Graph,cell,objective.a) or nil
+    local points={}
+    for i=1,math.min(path and #path or 0,range+1) do
+        local c=path[i];points[#points+1]=c
+        if c.z~=floor then break end
+    end
+    -- Constant heartbeats reuse Navigator's tree and transmit only on change.
+    local stamp={maps.serial,run.Level,run.ObjectiveStage or 0,range,floor}
+    for _,c in ipairs(points) do stamp[#stamp+1]=key(c.x,c.y,c.z) end
+    local signature=table.concat(stamp,"|")
+    compassSent[ply]={nextAt=now+REQUEST_INTERVAL,signature=signature}
+    if not force and cached and cached.signature==signature then return true end
+    net.Start("LOD_MapCompass")
+    net.WriteDouble(run.Level or 1);net.WriteUInt(maps.serial,32)
+    net.WriteUInt(math.Clamp(floor,0,6),3)
+    net.WriteUInt(math.Clamp(run.ObjectiveStage or 0,0,15),4)
+    net.WriteUInt(#points,5)
+    for _,c in ipairs(points) do writeCell(c) end
+    net.Send(ply)
+    return true
+end
+
 -- Legacy Grant cannot invent a discovery. Party ownership is awarded only by
 -- the current build's registered physical pickup in CollectFloorMap.
 function Minimap:Grant(ply)
@@ -87,7 +131,7 @@ function Minimap:Revoke(ply)
     ply:SetNW2Int("LOD_MapUnlockedLevel", 0)
 end
 
-local function writeCell(cell)
+writeCell=function(cell)
     net.WriteUInt(math.Clamp(cell.x or 0, 0, 127), 7)
     net.WriteUInt(math.Clamp(cell.y or 0, 0, 127), 7)
     net.WriteUInt(math.Clamp(cell.z or 0, 0, 7), 3)
@@ -273,6 +317,7 @@ function Minimap:Send(ply)
         end
         net.Send(ply)
     end
+    self:SendCompass(ply,true)
     return true
 end
 

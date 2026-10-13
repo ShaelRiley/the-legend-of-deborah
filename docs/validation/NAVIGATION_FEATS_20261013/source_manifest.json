@@ -1,0 +1,251 @@
+{
+  "parent_main": "95597c0c0352d40ee428410e634fcc03e62b2809",
+  "original_parent_main": "4cd2232a99d3a996f67d0ba7b47df4eb5cc03ec2",
+  "sha256": "5010100e9275fb2e3972935cd68f55eb59ac8c6875643fad1159b3d9489a456c",
+  "files": [
+    {
+      "path": "docs/lore/room/gps_navigation_praise_20261013.md",
+      "sha256": "3ba8446070112937c44564f5adea8a3e1ff702828d577d014a8a31636bee9e8a"
+    },
+    {
+      "path": "docs/manual/book.json",
+      "sha256": "dd07a4d4803caaaf024e46801a68b05ae88e2b860ab33c37a1e8b40d62c8a49d"
+    },
+    {
+      "path": "docs/manual/catalog.json",
+      "sha256": "4d44f8616181eda6d01acdb237f31fb4666f880e08949e27056481539456bb4e"
+    },
+    {
+      "path": "docs/manual/manual.html",
+      "sha256": "4728955a8fcf85f868d91b4fea34b65c6ebaa55cbef83b19467707b435a83951"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/content/sound/lod/gps_praise_bank.mp3",
+      "sha256": "388ac834da6f7d944ab53b564da9214affe639c597039c409c8de8eaa609bf64"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",
+      "sha256": "c59b67854ea4d27d537b1a3083414e351481a537b153cbd13c39e6ba53d223f2"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua",
+      "sha256": "59dcac37526976305a576808210cdb2de46b513a2f7bbc50474bcfedd269feb4"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+      "sha256": "55c493526b65e28d8bf15d2907b7070736def4f792904c26c2eb9e642c3e55af"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_gps.lua",
+      "sha256": "c4da92914a1204f80b581983779a9bc7a4554482db454093981ea90079fb32ea"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_15.lua",
+      "sha256": "fce0e9363f49f1c39b6862b20df188a538068ff2ab42d3ffab8d8431ec118ff8"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_16.lua",
+      "sha256": "6310215dac471f2b756c71d7a78fd0b4bbbee7a854c663480906dd8c61f21847"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_17.lua",
+      "sha256": "d130b405d64c6a62df596181c4cd8188e498d6c323e549bfd3cee0e78bd4d6c3"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_18.lua",
+      "sha256": "660de996f1b446ff490c19e16e500374cf6add09a55e7a55a5aaa89acd38c70e"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_19.lua",
+      "sha256": "dc7a42170b26fa7d03e4b049bf55325400f7a79b395541e54d6b12920154d684"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_20.lua",
+      "sha256": "385987af8f77b91650c47249f759575147c99e1989120de46d6a53d890c9a6d9"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_21.lua",
+      "sha256": "bdca4ee4c9381934bb8738248889cfb493a2045dee773605e242c42d4f51ea2f"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_22.lua",
+      "sha256": "fe87fac102422abe3f4eda57d735f0f64544cc50e5b3137d86be34adef4a2802"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_23.lua",
+      "sha256": "aeefa5115e506d6cc3cec4dd68bce90eaa65e3d07333097b329d75d6a7d6a009"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_24.lua",
+      "sha256": "d7bd622d03dad04d7fe63a5fc0a6ac67ad3fad5f40486e31d721027f3e07475d"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_25.lua",
+      "sha256": "ddbfb5ac689fb82d71eacb048d8eba903531cea1302462f52d5149447736b47b"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_26.lua",
+      "sha256": "779fa67017d98e21c1c2574fe0f436be46e7c9ec1c829a21069848da98232aa3"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_27.lua",
+      "sha256": "2314f5dde3fd9c03a8c3cd676fe05155a9a1e0b8c9844f02a186197b9f4c4f91"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_28.lua",
+      "sha256": "5afdc6d30c2babfed9e0c737eff5a52fd8e1651d92c14b1adc08c96560c3c9a2"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua",
+      "sha256": "ea292bbd5cd235308da95a60a8d585657273087a5e0f0d089e587d656003447c"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua",
+      "sha256": "525e498449e4b49378ca520d6c50627f01646d1d37cf790b883eccbacff936ea"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua",
+      "sha256": "007fd3c135f111f5ffe459d1052aaed7fe9b1448a2fa3612d24fd0ccd79699ee"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua",
+      "sha256": "dac7d97ca8f6946f0d4444ae744d9a1811bdf1cfc8a9db9dfbffa08ff3c721ee"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua",
+      "sha256": "a974b56e5fe7c2bfb8a2b9f47feccddc7a49d5fe8cfbee168ac034cad384e3f7"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_gps_praise.lua",
+      "sha256": "0dee2a9e05494a79a53a7313affea8b14c02f77c71ae6cadf6c900e86204013e"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_gps_voice.lua",
+      "sha256": "8662175574a4ef2bda5daac59d794aa78aa5f8252b985b03d6dfda14849cbe49"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua",
+      "sha256": "9c4b660eb96966aa8bc16fc4219058e2ab929a47f247599b28c9ecb8dde82c24"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+      "sha256": "786b7e773bedd6cea2c7c0e893e20f057665b1e05e76a161f0ab0d4b651defcc"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_character_progression.lua",
+      "sha256": "e8eba428c15fd94012115e51add85d6d7d8bbb16b702cdf74e98d7cd4073d905"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_feat_card_text.lua",
+      "sha256": "200d74d03377b5f88fa7e2be8845f1ec646a4b204e1e3c8ce60144c6bff3d80b"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua",
+      "sha256": "c532cb22c79fbf71ece03d985316fad41360fa5a7725dd9277d7fbb0b9c83501"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap_magic.lua",
+      "sha256": "0fcf9741cce28da0a0532810844ea882af78f5f3d0ec77aeea79dbce46ee66e2"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua",
+      "sha256": "0f0d0ced3f6528c6463f2e88ef9a85d2fb200d36c6cd7e556c17ba0f842ab4d6"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_gps_feat.lua",
+      "sha256": "dad2a1f748a8cb88d02dd1f76d7251c3b3b7535444b3805000624e5e8c8afab9"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+      "sha256": "6569b676600233ba684c027d4de63c367dc02f9240a2882e3f24da166d0acdd7"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_e_feats.lua",
+      "sha256": "13ae81475f607027bad6faf585aef8ed9e5e3739912cd089bf4ed37b98765901"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua",
+      "sha256": "cc64add253de02df652a535294e40bbf302e22cb0d24a535771cff90a23f534a"
+    },
+    {
+      "path": "lua/autorun/server/lod_population_observability.lua",
+      "sha256": "c68fded11c11b97ca5f53e53abbfd4f1301fe575998b782627b62338f9462caa"
+    },
+    {
+      "path": "tools/build_gps_praise.py",
+      "sha256": "9186c4728e944f5f1202156768e3d3228b5f029909000ff3ca31642ca1b59adf"
+    },
+    {
+      "path": "tools/build_manual.py",
+      "sha256": "f993db14be3242be7c507307398762e225ab72bc3b10be1bcc16cce8c1a5c2fe"
+    },
+    {
+      "path": "tools/install_dev.sh",
+      "sha256": "c5c64aa8876b84cd5cb6a0b998fa78af42a9aae1fbc6f3e0603501152fbbdb0c"
+    },
+    {
+      "path": "tools/test_checkpoint_d_closure.lua",
+      "sha256": "882cbbd77e6546b51f7089f2b956da147a3c3cddcdbc7b035375ad493b210a3c"
+    },
+    {
+      "path": "tools/test_checkpoint_d_gps.lua",
+      "sha256": "e8e9a2cc5d5eaeae3831797de97ea46a315f16b7d9df940043ba4ba6bb88a05b"
+    },
+    {
+      "path": "tools/test_dev_population_manifest.py",
+      "sha256": "6b1a1cc552dc406506c8cc2953022120184c388bbfd74fdf3e6250785f90ac9e"
+    },
+    {
+      "path": "tools/test_floor_map_panel.lua",
+      "sha256": "acf63cd36d8729eede3d8d8b25f351f549f8c2f4ce39de72e6b5c3807d1d2635"
+    },
+    {
+      "path": "tools/test_floor_map_visual.lua",
+      "sha256": "314759c8796102562b6174a9afe80998aa2b9ddcdac3925a84ef31ee995805ec"
+    },
+    {
+      "path": "tools/test_gps_cadence.lua",
+      "sha256": "ae853ec0eb2c22fe914fcc52bb71a42cc1ada22d37fa3c293eafc0fa35e01a83"
+    },
+    {
+      "path": "tools/test_gps_praise_audio.py",
+      "sha256": "90e37efa6a429f0233af440bb12457fbde35c36c61c02519bd8e1d51cd9da4fb"
+    },
+    {
+      "path": "tools/test_manual_document.py",
+      "sha256": "f7402e9c77ef4be832ce6a97f2dab7f58c5acbb6a35411057db7478a3109e5cb"
+    },
+    {
+      "path": "tools/test_minimap_player_marker.lua",
+      "sha256": "be83a9048b57abb0fc626de5163388ef049aca95cc1e562993899b5a0714433a"
+    },
+    {
+      "path": "tools/test_navigation_door_cache.lua",
+      "sha256": "8430e50043b382b1f90a8244844a7d74a92ed3a07d7d052315bc489b32d0e906"
+    },
+    {
+      "path": "tools/test_navigation_feats.lua",
+      "sha256": "4daf831c4e2f0c240d5638cff7961763490d57414e8a13e336e495764437e54f"
+    },
+    {
+      "path": "tools/test_performance_capture.lua",
+      "sha256": "31963f6978d69f422d3eebe1d577bb473fe4d39a88566af8d8853952c3f67887"
+    },
+    {
+      "path": "tools/test_performance_profile.lua",
+      "sha256": "0d556c2f52fd83d224c02d7866acdb455d29bcd84c468db8c24613210423ba77"
+    },
+    {
+      "path": "tools/test_population_transport.lua",
+      "sha256": "6be36cb55d8ff69688f26e8ddda0d315f0162ae4e777c104dc40902600675ad2"
+    }
+  ],
+  "changes_after_initial_checks": [
+    "docs/manual/catalog.json",
+    "docs/manual/manual.html",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_gps_feat.lua",
+    "tools/test_minimap_player_marker.lua"
+  ]
+}

@@ -1,0 +1,1 @@
+/workspace/scratch/5231d3e900c1/parent_navigation_door_cache.lua: ...ce/scratch/5231d3e900c1/parent_navigation_door_cache.lua:16: cached path bypassed the closed jail

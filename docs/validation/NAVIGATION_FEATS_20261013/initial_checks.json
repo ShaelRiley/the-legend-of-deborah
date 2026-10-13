@@ -1,0 +1,464 @@
+{
+  "parent_main": "95597c0c0352d40ee428410e634fcc03e62b2809",
+  "source_sha256": "0d49d9a394f460e025b841e662b27b1c8ceb7b1bd4cfd8d4c8b68a319be77fa2",
+  "source_files": 58,
+  "checks": [
+    {
+      "name": "navigation_feats",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_navigation_feats.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.235
+    },
+    {
+      "name": "floor_map_panel",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.323
+    },
+    {
+      "name": "floor_map_visual",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_visual.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.297
+    },
+    {
+      "name": "gps_cadence",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_gps_cadence.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.307
+    },
+    {
+      "name": "checkpoint_d_gps",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_d_gps.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.212
+    },
+    {
+      "name": "navigation_door_cache",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_navigation_door_cache.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.286
+    },
+    {
+      "name": "floor_maps",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 21.544
+    },
+    {
+      "name": "floor_maps_ui",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.217
+    },
+    {
+      "name": "minimap_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.217
+    },
+    {
+      "name": "minimap_player_marker",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_minimap_player_marker.lua"
+      ],
+      "exit_code": 1,
+      "seconds": 0.325
+    },
+    {
+      "name": "map_movement",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_map_movement.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.195
+    },
+    {
+      "name": "quantum",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_quantum.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.287
+    },
+    {
+      "name": "backpedal",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_backpedal.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.673
+    },
+    {
+      "name": "strafe",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_strafe.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.175
+    },
+    {
+      "name": "quantized_routes",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_quantized_routes.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.606
+    },
+    {
+      "name": "hostile_route_cache",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_hostile_route_cache.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 17.718
+    },
+    {
+      "name": "warden",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_warden.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 9.109
+    },
+    {
+      "name": "hector_encounter",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_hector_encounter.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 1.158
+    },
+    {
+      "name": "navigation_recovery",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_navigation_recovery.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.366
+    },
+    {
+      "name": "staging_interaction_prompt",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_interaction_prompt.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.191
+    },
+    {
+      "name": "staging_lore_ui",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_staging_lore_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.242
+    },
+    {
+      "name": "friendly_idle",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_friendly_idle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.199
+    },
+    {
+      "name": "jail_key_visibility",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_jail_key_visibility.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 1.083
+    },
+    {
+      "name": "cleanup_contracts",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_cleanup_contracts.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 2.81
+    },
+    {
+      "name": "performance_capture",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_performance_capture.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.751
+    },
+    {
+      "name": "performance_profile",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_performance_profile.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.357
+    },
+    {
+      "name": "population_transport",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_population_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.24
+    },
+    {
+      "name": "checkpoint_d_closure",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_d_closure.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.882
+    },
+    {
+      "name": "internal_compass_panel",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--compass"
+      ],
+      "exit_code": 0,
+      "seconds": 0.505
+    },
+    {
+      "name": "pickup_bootstrap_positive",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--pickup-only"
+      ],
+      "exit_code": 0,
+      "seconds": 1.23
+    },
+    {
+      "name": "pickup_bootstrap_negative",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--pickup-only-negative"
+      ],
+      "exit_code": 0,
+      "seconds": 0.274
+    },
+    {
+      "name": "magic_resource_lifecycle",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/validate_spot10_approved.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.7
+    },
+    {
+      "name": "feat_drafts",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "tools/validate_spot11_drafts.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.731
+    },
+    {
+      "name": "floor_maps_integration",
+      "command": [
+        "python",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_floor_maps_integration.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 23.149
+    },
+    {
+      "name": "gps_praise_audio",
+      "command": [
+        "python",
+        "tools/test_gps_praise_audio.py"
+      ],
+      "exit_code": 0,
+      "seconds": 1.943
+    },
+    {
+      "name": "dev_manifest",
+      "command": [
+        "python",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "exit_code": 0,
+      "seconds": 1.405
+    },
+    {
+      "name": "manual_document",
+      "command": [
+        "python",
+        "tools/test_manual_document.py"
+      ],
+      "exit_code": 0,
+      "seconds": 1.934
+    },
+    {
+      "name": "checkpoint_integration",
+      "command": [
+        "python",
+        "tools/test_checkpoint_g_integration.py"
+      ],
+      "exit_code": 124,
+      "seconds": 90.234
+    },
+    {
+      "name": "changed_lua_syntax",
+      "command": [
+        "python",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/cl_init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_floor_map/init.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_gps.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_15.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_16.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_17.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_18.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_19.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_20.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_21.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_22.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_23.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_24.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_25.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_26.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_27.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_28.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_29.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_30.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_31.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/html_32.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/manual/manifest.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_gps_praise.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_gps_voice.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_character_progression.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_feat_card_text.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_minimap_magic.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_gps_feat.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_e_feats.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua",
+        "lua/autorun/server/lod_population_observability.lua",
+        "tools/test_checkpoint_d_closure.lua",
+        "tools/test_checkpoint_d_gps.lua",
+        "tools/test_floor_map_panel.lua",
+        "tools/test_floor_map_visual.lua",
+        "tools/test_gps_cadence.lua",
+        "tools/test_navigation_door_cache.lua",
+        "tools/test_navigation_feats.lua",
+        "tools/test_performance_capture.lua",
+        "tools/test_performance_profile.lua",
+        "tools/test_population_transport.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.332
+    },
+    {
+      "name": "installer_syntax",
+      "command": [
+        "bash",
+        "-n",
+        "tools/install_dev.sh"
+      ],
+      "exit_code": 0,
+      "seconds": 0.008
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "HEAD",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.131
+    }
+  ]
+}

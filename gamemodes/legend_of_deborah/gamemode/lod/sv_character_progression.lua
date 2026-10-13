@@ -1729,6 +1729,8 @@ function CharacterProgressionSystem:BuildClientSnapshot(ply)
             or state.derivedStats.breadcrumbCells,
         breadcrumbFeatRank = state.derivedStats.breadcrumbFeatRank,
         breadcrumbFeatBonusCells = state.derivedStats.breadcrumbFeatBonusCells,
+        internalCompassEnabled = state.derivedStats.internalCompassEnabled == true,
+        mapFinderEnabled = state.derivedStats.mapFinderEnabled == true,
         frugalMapEnabled = state.derivedStats.frugalMapEnabled == true,
         mapDrainFeatMultiplier = state.derivedStats.mapDrainFeatMultiplier,
         mapDrainRatePerSecond = LOD.RPGAbilityRules

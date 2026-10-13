@@ -42,7 +42,11 @@ EyeAngles=function() return {y=0} end
 local player={pos={x=0,y=0,z=0},alive=true,access=true}
 function player:Alive() return self.alive end
 function player:GetPos() return self.pos end
-function player:GetNW2Bool(key) if key=='LOD_IsSoldier' then return false elseif key=='LOD_DeveloperMode' then return self.developer==true end;return self.access end
+function player:GetNW2Bool(key)
+ if key=='LOD_IsSoldier' or key=='LOD_RPGInternalCompass' or key=='LOD_RPGMapFinder' then return false end
+ if key=='LOD_DeveloperMode' then return self.developer==true end
+ return self.access
+end
 function player:GetNW2Int(key,default)
  if key=='LOD_MapFloorMask' then return self.mask or 127 end
  if key=='LOD_MapUnlockedLevel' then return 1 end

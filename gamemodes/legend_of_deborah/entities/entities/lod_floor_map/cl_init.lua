@@ -6,6 +6,7 @@ local material=CreateMaterial("lod_floor_map_globe","UnlitGeneric",{
     ["$basetexture"]="color/white",["$vertexcolor"]="1",["$vertexalpha"]="1",["$ignorez"]="0"})
 LOD.FloorMapVisual=LOD.FloorMapVisual or {}
 local Visual=LOD.FloorMapVisual
+Visual.pickups=Visual.pickups or setmetatable({}, {__mode="k"})
 if Visual.mesh then Visual.mesh:Destroy();Visual.mesh=nil end
 
 -- One immutable toy globe mesh for every pickup; no per-frame vertex/RNG work.
@@ -63,10 +64,11 @@ end
 
 function ENT:Initialize()
     self:SetRenderBounds(Vector(-36,-36,-24),Vector(36,36,84))
+    Visual.pickups[self]=true
 end
 
-function ENT:Draw()
-    if not self.GetFloorIndex or self:GetPos():DistToSqr(EyePos())>(MC.CellSize*6)^2 then return end
+local function drawPickup(self,finder)
+    if not self.GetFloorIndex or (not finder and self:GetPos():DistToSqr(EyePos())>(MC.CellSize*6)^2) then return end
     local reduced=LOD.AdventurePresentation and LOD.AdventurePresentation:Reduced()
     local pos=self:GetPos()+Vector(0,0,reduced and 0 or math.sin(CurTime()*1.8+self:EntIndex())*3)
     self.LODGlobeTransform=self.LODGlobeTransform or Matrix()
@@ -83,13 +85,33 @@ function ENT:Draw()
             surface.SetDrawColor(layer[2]);surface.DrawPoly(layer[1])
         end
     cam.End3D2D()
-    if self:GetPos():DistToSqr(EyePos())>(MC.CellSize*2)^2 then return end
+    if not finder and self:GetPos():DistToSqr(EyePos())>(MC.CellSize*2)^2 then return end
     local label=pos+Vector(0,0,60)
-    cam.Start3D2D(label,facing(label),0.12)
+    local scale=0.12*(finder and math.max(1,math.sqrt(self:GetPos():DistToSqr(EyePos()))/600) or 1)
+    cam.Start3D2D(label,facing(label),scale)
         draw.RoundedBox(4,-145,-25,290,50,Color(16,18,20,230))
         draw.SimpleText("FLOOR "..(self:GetFloorIndex()+1).." MAP","DermaLarge",0,0,WHITE,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
     cam.End3D2D()
 end
+
+function ENT:Draw() drawPickup(self,false) end
+
+hook.Add("PostDrawTranslucentRenderables","LOD_MapFinderPickups",function(depth,sky)
+    if depth or sky then return end
+    local ply=LocalPlayer()
+    if not IsValid(ply) or not ply:Alive() or ply:GetNW2Bool("LOD_IsSoldier",false)
+        or ply:GetNW2Bool("LOD_Eliminated",false)
+        or not ply:GetNW2Bool("LOD_RPGMapFinder",false) then return end
+    if ply.GetObserverMode and ply:GetObserverMode()~=(OBS_MODE_NONE or 0) then return end
+    cam.IgnoreZ(true)
+    local ok,err=pcall(function()
+        for ent in pairs(Visual.pickups) do
+            if IsValid(ent) then drawPickup(ent,true) else Visual.pickups[ent]=nil end
+        end
+    end)
+    cam.IgnoreZ(false)
+    if not ok then ErrorNoHalt(tostring(err).."\n") end
+end)
 
 hook.Add("ShutDown","LOD_FloorMapGlobeCleanup",function()
     if Visual.mesh then Visual.mesh:Destroy();Visual.mesh=nil end

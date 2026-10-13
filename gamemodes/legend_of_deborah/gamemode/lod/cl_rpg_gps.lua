@@ -36,7 +36,7 @@ local function speak(text)
     local tokens = Voice.Tokens(text)
     if not tokens then return end
     local serial = generation
-    sound.PlayFile(BANK, "mono noblock noplay", function(channel, errCode)
+    sound.PlayFile(Voice.BankFor(text), "mono noblock noplay", function(channel, errCode)
         if serial ~= generation or not GPS.Enabled then
             if IsValid(channel) then channel:Stop() end
             return

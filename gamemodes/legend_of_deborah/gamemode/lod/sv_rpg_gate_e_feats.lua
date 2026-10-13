@@ -88,6 +88,14 @@ Feats.WIS_FRUGAL_MAP = navigationDefinition("WIS_FRUGAL_MAP", "Frugal Cartograph
         minimumMapDrainPerSecond = 3.0,
         description = "Multiplies WIS-scaled minimap drain by 0.75, with final drain never below 3.0 Magic/second; Magic regeneration remains disabled while open."
     })
+Feats.WIS_INTERNAL_COMPASS = navigationDefinition("WIS_INTERNAL_COMPASS", "Internal Compass", 15,
+    nil, "wis_internal_compass", 1, {
+        description = "While your map panel is open, follow the ordinary current-objective breadcrumb trail even before finding this floor's map. Its walls remain hidden. Uses your existing breadcrumb range and normal map Magic cost."
+    })
+Feats.WIS_MAP_FINDER = navigationDefinition("WIS_MAP_FINDER", "Map Finder", 13,
+    nil, "wis_map_finder", 1, {
+        description = "See uncollected map pickups in the world through walls and ceilings, including maps on other floors. Does not reveal their maze layouts or grant ownership. No map panel or Magic expenditure is required."
+    })
 
 local function ammoFloorDefinition(featId, displayName, requirement, prerequisite, rank, fraction, speedMultiplier)
     return {
@@ -184,6 +192,8 @@ function FeatEffectSystem:NavigationProfile(state)
     local breadcrumbParams = bestDefinition and bestDefinition.effectParams or {}
     local frugalParams = frugal and Feats.WIS_FRUGAL_MAP.effectParams or {}
     return {
+        internalCompassEnabled = ownsFeat(state, "WIS_INTERNAL_COMPASS"),
+        mapFinderEnabled = ownsFeat(state, "WIS_MAP_FINDER"),
         breadcrumbRank = bestRank,
         breadcrumbFeatId = bestDefinition and bestDefinition.featId or nil,
         breadcrumbBonusCells = tonumber(breadcrumbParams.breadcrumbBonusCells) or 0,
@@ -219,6 +229,8 @@ function FeatEffectSystem:ApplyDerived(state, derived)
     derived.healthRegenBaseMaxHPPerSecond = profile.baseMaxHPPerSecond
 
     local navigation = self:NavigationProfile(state)
+    derived.internalCompassEnabled = navigation.internalCompassEnabled
+    derived.mapFinderEnabled = navigation.mapFinderEnabled
     derived.breadcrumbFeatRank = navigation.breadcrumbRank
     derived.breadcrumbFeatBonusCells = navigation.breadcrumbBonusCells
     derived.breadcrumbCells = math.Clamp(

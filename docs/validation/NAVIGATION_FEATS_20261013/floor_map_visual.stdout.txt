@@ -1,0 +1,1 @@
+FLOOR_MAP_VISUAL_PASS: closed outward 224-triangle colored globe; 24 eye viewpoints; complete render bounds; shared cached mesh/polygons; Reduced Effects; distance culls; refresh/shutdown cleanup

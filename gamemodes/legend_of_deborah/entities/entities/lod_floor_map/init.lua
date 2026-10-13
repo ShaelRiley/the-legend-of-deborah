@@ -2,6 +2,9 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 
+-- At most seven pickups. Map Finder must locate other floors outside the PVS.
+function ENT:UpdateTransmitState() return TRANSMIT_ALWAYS end
+
 function ENT:Initialize()
     self:SetModel("models/props_lab/clipboard.mdl")
     self:SetMoveType(MOVETYPE_NONE)

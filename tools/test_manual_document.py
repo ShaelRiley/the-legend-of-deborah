@@ -25,14 +25,14 @@ for i in range(1,count+1):
     chunks.append(content.split('return [====[',1)[1].rsplit(']====]',1)[0])
 assert ''.join(chunks)==html, 'Server transport source must equal the canonical document'
 assert (builder.SOURCE/'manual.html').read_text()==html
-for term in ['Find one map on each physical floor', 'Touching it unlocks only that floor for the whole party', 'Maps never enter an inventory', 'Press Q to open or close the map panel; M works too', 'Every open panel consumes Magic', 'even on an unfound floor']:
+for term in ['Internal Compass', 'Map Finder', 'sixteen', 'Find one map on each physical floor', 'Touching it unlocks only that floor for the whole party', 'Maps never enter an inventory', 'Press Q to open or close the map panel; M works too', 'Every open panel consumes Magic', 'even on an unfound floor']:
     assert term in html_entities.unescape(html), 'Floor map guidance missing: '+term
 for term in ['Double-click an item', 'Each button casts its own Form with its own Content or RAW', 'Selecting Content for one button leaves the others unchanged']:
     assert term in html_entities.unescape(html), 'Item/Content controls missing: '+term
 for term in ['New favored enemy perks target model families from recurring dungeon encounters and wandering enemies', 'Nodule/Barnacle family', 'Existing Heroes keep their saved perks']:
     assert term in html_entities.unescape(html), 'Favored Enemy pool guidance missing: '+term
 entries=[e for c in book['chapters'] for e in c.get('entries',[])]
-assert len(entries)==127 and len({e['id'] for e in entries})==127
+assert len(entries)==129 and len({e['id'] for e in entries})==129
 assert len(json.loads((builder.SOURCE/'catalog.json').read_text())['EquipmentProperties'])==60
 assert sum(e['id']=='INT_TIME_MANAGEMENT' for e in entries)==1, 'Time Management appears exactly once'
 for term in ['Time Management requires INT 17', 'INT 17 contributes three minutes', 'Different Heroes stack', 'Losing an allowance can cause TIME OVER immediately', 'elapsed time is never refunded', 'nothing revives an expired clock']:
@@ -56,6 +56,6 @@ for term in ["Damsel's Revenge", 'One use per fight', 'Its procedural properties
 for term in ['Relay', 'Lacemaker', 'RELAY SHOT', 'LEAVE RIBBON', 'SOURCE SHOT', 'The shot comes from the ally’s captured position', 'There is no invisible lingering trail', 'Interposer', 'Mourner', 'BODYGUARD', 'RETALIATION', 'an old corpse cannot trigger its oath', 'protection is never guaranteed', 'separate, full 1.2-second shot warning', 'Halter', 'Pacer', 'KEEP MOVING', 'JUDGMENT', 'Only actual voluntary motion counts', 'Fusilier', 'Bombardier', 'body-bracket glyph', 'lure ordinary enemies into it', 'unmarked body can still absorb', 'Siphoner', 'Accumulator', 'downward funnel', 'battery-and-plus glyph', 'supplemental aura damage to other nearby Heroes', 'Only a surviving Hero who actually loses HP', 'The amber Metrocop hears', 'The violet fast zombie remembers', 'The pale-cyan slave Vortigaunt draws', 'The crimson Combine elite marks', 'Outrider', 'Conductor', 'lone bracket glyph', 'linked 64-unit circles', 'TIME OVER','1,800','Black Keycard','Backstab','Quickstep','Rebuff','Stink Bomb','Arcane Surge','DFTs normally mint','Abundance','SECURE THE BAG','Nessa','Beam Sweeper']:
     assert term in html,term
 subprocess.run(['node',str(ROOT/'tools/test_manual_reader.js')],check=True,cwd=ROOT)
-print('PASS: canonical bytes, all 127 feat entries, 60 properties, offline assets, portable access')
+print('PASS: canonical bytes, all 129 feat entries, 60 properties, offline assets, portable access')
 
 assert "call('tab',e.keyCode,e.key||'')" in html and 'e.keyCode===79' in html, 'Reader must forward Equipment key and rebound key name'

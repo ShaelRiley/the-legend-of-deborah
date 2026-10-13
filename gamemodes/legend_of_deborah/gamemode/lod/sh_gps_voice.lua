@@ -1,6 +1,9 @@
 LOD = LOD or {}
 LOD.GPSVoice = {}
 local Voice = LOD.GPSVoice
+if include then include("legend_of_deborah/gamemode/lod/sh_gps_praise.lua") end
+local Praise=LOD.GPSPraise or {Lines={},Markers={}}
+Voice.Praise= Praise.Lines
 local BANK = "sound/lod/gps_voice_bank.mp3"
 local VOICE = {
     turn_left={0.0000,0.5107}, turn_right={0.5507,0.5015}, turn_around={1.0922,0.5652},
@@ -15,6 +18,7 @@ local DIGIT = {["0"]="zero",["1"]="one",["2"]="two",["3"]="three",["4"]="four",
     ["5"]="five",["6"]="six",["7"]="seven",["8"]="eight",["9"]="nine"}
 
 local function voiceTokens(text)
+    for i,line in ipairs(Praise.Lines) do if text==line then return {string.format("praise_%02d",i)} end end
     if text == "TURN LEFT" then return {"turn_left"} end
     if text == "TURN RIGHT" then return {"turn_right"} end
     if text == "TURN AROUND" then return {"turn_around"} end
@@ -36,7 +40,12 @@ local function voiceTokens(text)
     return out
 end
 
+for token,marker in pairs(Praise.Markers) do VOICE[token]=marker end
 Voice.Bank, Voice.Markers, Voice.Tokens = BANK, VOICE, voiceTokens
+function Voice.BankFor(text)
+    for _,line in ipairs(Praise.Lines) do if text==line then return Praise.Bank end end
+    return BANK
+end
 function Voice.Duration(text)
     local tokens = voiceTokens(text)
     if not tokens then return 0 end

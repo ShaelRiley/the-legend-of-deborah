@@ -354,6 +354,14 @@ net.Receive("LOD_MapDenied", function()
     notification.AddLegacy(text ~= "" and text or "NO MAP", NOTIFY_HINT, 2.5)
 end)
 
+net.Receive("LOD_MapCompass",function()
+    local trail={level=net.ReadDouble(),serial=net.ReadUInt(32),floor=net.ReadUInt(3),stage=net.ReadUInt(4),points={}}
+    local count=net.ReadUInt(5)
+    for i=1,count do trail.points[i]={x=net.ReadUInt(7),y=net.ReadUInt(7),z=net.ReadUInt(3)} end
+    if count>25 then return end
+    Map.compass=trail
+end)
+
 function Map:Toggle()
     if gui.IsGameUIVisible() or IsValid(vgui.GetKeyboardFocus()) then return end
 
@@ -769,6 +777,38 @@ local function paintMap(layout,ply,state,level)
     draw.SimpleText(objectiveLine, "LOD_Map_Small", panelX + 18, panelY + 42,
         COLORS.objective, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
+    if not hasAccess(ply) and ply:GetNW2Bool("LOD_RPGInternalCompass",false) then
+        local trail=Map.compass
+        local points=trail and trail.points or {}
+        local first=points[1]
+        local current=mapReadyForLevel(level) and trail and trail.level==level
+            and trail.serial==Map.buildSerial and trail.floor==gz
+            and trail.stage==(state.objectiveStage or 0)
+        local valid=current and first and first.x==gx and first.y==gy and first.z==gz
+        draw.SimpleText("INTERNAL COMPASS — WALLS HIDDEN", "LOD_Map_Small",panelX+18,panelY+panelH-18,
+            COLORS.footer,TEXT_ALIGN_LEFT,TEXT_ALIGN_BOTTOM)
+        if not valid then
+            draw.SimpleText(current and #points==0 and "NO LEGAL ROUTE" or "FINDING TRAIL...", "LOD_Map_Title",panelX+panelW*.5,panelY+panelH*.5,
+                COLORS.loading,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+            return
+        end
+        for i=2,#points do
+            local a,b=points[i-1],points[i]
+            local ax,ay=mapCellCenter(a,gridX,gridY,cellSize)
+            if b.z~=gz then
+                draw.SimpleText((b.z>gz and "↑" or "↓").." STAIRS","LOD_Map_Small",ax,ay-11,
+                    COLORS.routeBright,TEXT_ALIGN_CENTER,TEXT_ALIGN_BOTTOM)
+                break
+            end
+            local bx,by=mapCellCenter(b,gridX,gridY,cellSize)
+            drawThickLine(ax,ay,bx,by,COLORS.route)
+            surface.DrawCircle(bx,by,2,COLORS.routeBright.r,COLORS.routeBright.g,COLORS.routeBright.b,235)
+        end
+        local px,py=mapCellCenter(first,gridX,gridY,cellSize)
+        drawPlayerMarker(px,py,3)
+        return
+    end
+
     if not hasAccess(ply) then
         draw.SimpleText("Map not found", "LOD_Map_Title", panelX + panelW * 0.5, panelY + panelH * 0.5 - 12,
             COLORS.loading, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
@@ -912,6 +952,8 @@ hook.Add("HUDPaint", "LOD_MinimapHUD", function()
     local state=LOD.ClientState or {}
     local level=tonumber(state.level) or 0
     if not mapReadyForLevel(level) then requestMap(false) end
+    if ply:GetNW2Bool("LOD_RPGInternalCompass",false) and not hasAccess(ply)
+        and (not Map.compass or Map.compass.serial~=Map.buildSerial) then requestMap(false) end
     Map:WithPresentation(paintMap,ply,state,level)
 end)
 

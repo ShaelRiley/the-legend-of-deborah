@@ -1,0 +1,33 @@
+COMPLETE SYSTEMS MATRIX: 322 suites; native acceptance remains separate
+[PASS] 1/322 Jail Key All-Angle Display & Solid Jumpable Pedestal (1.021s)
+[PASS] 2/322 Hermit Dialogue Native Client Model Idle API (0.143s)
+[PASS] 3/322 Reduced Monster Aura Orbit Work & Exact Sprite Parity (2.88s)
+[PASS] 4/322 Hostile Visual Scale Key Work & Exact Drawing Parity (1.707s)
+[PASS] 5/322 Physical Footstep Native Fields & Exact RNG Parity (1.425s)
+[PASS] 6/322 Low-end Exact View Visibility Work & Drawing Parity (1.256s)
+[FAIL] 7/322 Shared Enemy AI Native Work & Callback Parity (23.098s)
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B7_SPACING_PASS: canonical physical melee, broad flank/rear/range/height/cover answers, two distinct beat contracts, frozen escape interval, deadlines/recovery
+BESTIARY_B7_MOTION_PASS: real MotionV2, fixed non-damaging backstep, narrow thrust, no stall teleport/deadline extension, swept scaled obstruction
+BESTIARY_B7_LIFETIME_PASS: exact source/Hero/run/graph/progression/campaign scopes; same-seed replacement; cover/support/gates; freeze/death/stun; canonical Held/Muted/morale
+BESTIARY_B7_MULTIPLAYER_PASS: captured lives, no unseen tell inheritance/rescans, lethal-primary order independence, canonical one-roll settlement
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+ENEMY_ROSTER_PASS: nine archetypes; animation fallback/cache/recovery; fire/venom riders; frozen marks/LOS; sweep stance/dedup; fair placements; legal wall routing/latch lifecycle; freeze cleanup
+ENEMY_REPAIRS_PASS: Arc Caster recovery travel, Climber 128-unit wall clearance, Nodule inversion/size/growth hull parity
+B20_FULL_BOOTSTRAP_PASS themed=60 common=6
+BESTIARY_B20_PASS: real-plan purity, repeatability, exact run/graph/level/seed receipt, one-time commit, rebuild, cleanup, bounded level21 history, reset, objectives/budgets retained
+BESTIARY_B23_PASS pools=192 production spawn/replay/role/caps/native failures/20s replacement/exact owner/cleanup
+B28_BOUNDARY_PASS supported-ray-miss recovery; missing/steep/embedded/wrong-height/blocked rejection; generated-only visibility; bounded8 control rays
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+B28_COMPILED_REPLAY_PASS campaign=1515962883 master=163197061 layout=1756475100 attempt=3 mazeAttempt=2 baseCells=520 courtCells=19 boxes=791 directed=18 wanderers=40/40 rayMisses=8
+/workspace/scratch/5231d3e900c1/the-legend-of-deborah/tools/test_enemy_ai_work.lua: tools/test_bestiary_b28.lua:157: source coverage changed without fixture review
+
+[PASS] 8/322 HUD Feed Native Text Parity & Bounded Work (5.184s)
+[PASS] 9/322 Hair Trigger Singleton & All Firearm Cadence (1.455s)
+[PASS] 10/322 Hostile Sanctuary Route Cache & Exact Paths (24.174s)

@@ -117,6 +117,7 @@ local function beginOrRefresh(ply)
         state.mapMagic = math.min(state.mapMagic or MAX_MAGIC,
             math.Clamp(tonumber(ps.magic) or 0, 0, MAX_MAGIC))
     end
+    if Minimap.SendCompass then Minimap:SendCompass(ply) end
     return true
 end
 

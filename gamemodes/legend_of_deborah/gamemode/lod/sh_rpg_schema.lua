@@ -251,7 +251,7 @@ RPG.Schema = {
         "hpToMagicDiversionFraction", "magicRegenMultiplier", "wizardCapstoneMagicRegenMultiplier",
         "magicDamageBonus", "wizardCapstoneMagicPowerMultiplier", "wizardCapstoneMagicDCBonus",
         "utilityMagicCostMultiplier", "breadcrumbCells", "breadcrumbFeatRank",
-        "breadcrumbFeatBonusCells", "frugalMapEnabled", "mapDrainFeatMultiplier",
+        "breadcrumbFeatBonusCells", "internalCompassEnabled", "mapFinderEnabled", "frugalMapEnabled", "mapDrainFeatMultiplier",
         "minimumMapDrainPerSecond", "chaHitStunInflictMultiplier",
         "chaHitStunResistanceMultiplier", "featHitStunMultiplier", "weaponKnockbackProcChance",
         "weaponKnockbackProcDistance", "pusherProcTargetCooldownSeconds", "wallSlamDieSides",

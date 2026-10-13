@@ -1,0 +1,1 @@
+JAIL_KEY_VISIBILITY_PASS: 640 angle/time/source views; complete bounds; viewer-facing thick key/text; real low/narrow pedestal; opaque/translucent/depth/material budget; Reduced Effects; full-update/reload; partial accessor; culling/cadence/active/live/touch admission; same-entity removal

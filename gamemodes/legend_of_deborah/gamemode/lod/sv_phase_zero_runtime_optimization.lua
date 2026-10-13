@@ -35,6 +35,7 @@ local function gateSignature()
     if gates and gates[2] then signature = signature + 2 end
     if gates and gates[3] then signature = signature + 4 end
     if gates and gates[4] then signature = signature + 8 end
+    if Navigator.ProgressionDoorSignature then signature=signature+16*Navigator:ProgressionDoorSignature() end
     return signature
 end
 
@@ -98,6 +99,7 @@ local function currentNavCache(graph)
 end
 
 local function edgeTraversable(graph, cache, aKey, bKey)
+    if Navigator.CanTraverseProgressionDoors and not Navigator:CanTraverseProgressionDoors(graph,aKey,bKey) then return false end
     local edge = Navigator:EdgeKey(aKey, bKey)
     if LOD.EventDirector and LOD.EventDirector:BlocksEdge(graph,edge) then return false end
     local gateIndex = edge and staticGateMap(graph)[edge] or nil

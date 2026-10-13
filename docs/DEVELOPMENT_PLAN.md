@@ -1,4 +1,30 @@
-# Current checkpoint — conspicuous Jail Key and native Hermit portrait API
+# Current checkpoint — map/navigation feats and relentlessly proud GPS
+
+Author additions on `4cd2232a99d3a996f67d0ba7b47df4eb5cc03ec2`, integrated with
+the Jail Key/Hermit repair on parent `95597c0c0352d40ee428410e634fcc03e62b2809`.
+Internal Compass (WIS 15) retains the ordinary bounded objective breadcrumb on
+an unfound floor's open Magic panel, with walls hidden. Map Finder (WIS 13)
+passively shows actual uncollected map globes through walls and ceilings in world
+view, including other floors. GPS remains WIS 17/G/no Magic, corrects moving
+wrong-way travel on its 0.20-second update and cycles sixteen eight-writer praise
+lines with a 0.25-second post-phrase pause. Existing idle/lifecycle rules remain.
+All three reuse ordinary ownership, route and presentation authorities; a proven
+cached jail/arena traversal bypass is repaired at the shared navigator.
+
+41 selected checks pass against 59 frozen changed files and the pinned parent;
+catalog/Manual now include 114 ordinary feats and source coverage is 91 installed /
+87 server / 36 client. Initial fixture failure and incomplete accidental broad
+run are retained. Evidence and limits:
+[navigation additions](validation/NAVIGATION_FEATS_20261013.md).
+Google rejected the narrow live author-rule mirror; exact proposals/failure are
+preserved and the author's explicit corrections govern. Next native action:
+fully quit/update/install and restart gm_flatgrass; with the feats owned, verify
+unfound-floor trail/Magic, globe visibility through walls/ceilings, GPS repeated
+praise and immediate reverse correction, then G cancellation. Native/co-op/audio
+and the outstanding Steam Deck ≥40 FPS acceptance remain pending. No Workshop/VPS
+operation.
+
+# Previous checkpoint — conspicuous Jail Key and native Hermit portrait API
 
 Author's key-visibility/pedestal request and native nil-method report, based on
 main `4cd2232a99d3a996f67d0ba7b47df4eb5cc03ec2`. The Jail Key now has complete

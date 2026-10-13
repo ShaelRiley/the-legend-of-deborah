@@ -98,6 +98,26 @@ reduced=true;a:Draw();local t=a.LODGlobeTransform;local pos,angle=t.pos,t.angles
 now=23;a:Draw();assert(t.pos.z==pos.z and t.angles.y==angle.y and angle.y==0,'reduced globe still bobs/spins')
 eye=Vector(384*3,0,0);planes={};a:Draw();assert(#planes==1,'far label not culled')
 eye=Vector(384*6+1,0,0);planes={};local draws=m.draws;a:Draw();assert(m.draws==draws and #planes==0,'distant pickup not culled')
+-- Finder uses registered pickups (no recurring scan), including distant floors,
+-- and always restores native depth after an entity drawing failure.
+local depth=false;cam.IgnoreZ=function(v) depth=v end
+local owner={alive=true,finder=false,nw={}}
+function owner:Alive() return self.alive end
+function owner:GetNW2Bool(key) return key=='LOD_RPGMapFinder' and self.finder or self.nw[key] or false end
+LocalPlayer=function() return owner end
+IsValid=function(e) return e==owner or (e==a or e==b) and not e.removed end
+ErrorNoHalt=function() end
+local finder=hooks.LOD_MapFinderPickups
+local before=m.draws;finder(false,false);assert(m.draws==before and not depth)
+owner.finder=true;finder(true,false);assert(m.draws==before,'depth pass drew Finder')
+finder(false,false);assert(m.draws==before+2 and not depth,'Finder lost distant pickup or depth cleanup')
+for _,key in ipairs({'LOD_IsSoldier','LOD_Eliminated'}) do
+ owner.nw[key]=true;before=m.draws;finder(false,false);assert(m.draws==before);owner.nw[key]=nil
+end
+owner.alive=false;before=m.draws;finder(false,false);assert(m.draws==before);owner.alive=true
+b.removed=true;finder(false,false);assert(not LOD.FloorMapVisual.pickups[b])
+local renderOld=render.SetMaterial;render.SetMaterial=function() error('draw failure') end
+finder(false,false);assert(not depth,'Finder left the rest of the world visible through walls');render.SetMaterial=renderOld
 dofile(path);assert(m.destroyed and not LOD.FloorMapVisual.mesh,'Lua refresh retained old GPU mesh')
 eye=Vector(100,0,0);a:Draw();assert(#meshes==2)
 hooks.LOD_FloorMapGlobeCleanup();assert(meshes[2].destroyed and not LOD.FloorMapVisual.mesh)

@@ -22,11 +22,16 @@ expect(server:find('navigator:FindPath(graph, cell, objective.a)', 1, true),
     "GPS must consume canonical MazeNavigator route")
 expect(not server:find('ents.GetAll', 1, true), "GPS may not world-scan")
 expect(server:find('r.nextBark = r.speakingUntil + 4', 1, true), "pause starts after voice finishes")
-expect(server:find('ply:GetVelocity():LengthSqr() >= MOVE_SPEED_SQR', 1, true), "movement re-arms")
+expect(server:find('local velocity=ply:GetVelocity()', 1, true)
+    and server:find('local moving = velocity:LengthSqr() >= MOVE_SPEED_SQR', 1, true),
+    "moving feedback must use actual travel velocity")
+expect(server:find('correctionIntervalSeconds = 0.20', 1, true)
+    and server:find('praisePauseSeconds = 0.25, praiseCount = 16', 1, true),
+    "GPS needs quick corrections and sixteen continuous praise lines")
 expect(server:find('if ply:GetObserverMode() ~= OBS_MODE_NONE then return true end', 1, true),
     "GPS must suspend while spectating")
-expect(server:find('if ply:KeyDown(IN_ATTACK) or ply:KeyDown(IN_ATTACK2) then return true end', 1, true),
-    "GPS must suspend during active combat input")
+expect(server:find('if nearbyEnemy(ply, graph, cell) or activeCombat(ply) then resetEpisode(r,ply);return end', 1, true),
+    "stopped directions retain the nearby-enemy and active-combat guard")
 
 expect(client:find('concommand.Add("lod_gps_toggle", requestToggle)', 1, true),
     "GPS must expose a rebindable toggle action")
@@ -37,7 +42,7 @@ expect(client:find('GPS ENABLED — If it gets annoying, press G to turn it off.
     "GPS acquisition notice mismatch")
 expect(client:find('notice(enabled and "GPS ON" or "GPS OFF")', 1, true), "GPS toggle notice mismatch")
 expect(client:find('switchChime()', 1, true), "GPS toggle must play a switch/chime")
-expect(client:find('sound.PlayFile(BANK, "mono noblock noplay"', 1, true),
+expect(client:find('sound.PlayFile(Voice.BankFor(text), "mono noblock noplay"', 1, true),
     "GPS must use private synthetic/concatenative voice playback")
 
 local supported = {

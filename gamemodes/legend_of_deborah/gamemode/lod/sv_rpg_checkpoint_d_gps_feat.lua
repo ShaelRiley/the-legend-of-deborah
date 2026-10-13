@@ -5,6 +5,7 @@ local Feats = assert(Catalog.OrdinaryFeats or Catalog.LevelOneOrdinaryFeats, "GP
 local Rules = assert(LOD.RPGAbilityRules, "GPS requires ability rules")
 local GPS_ID = "WIS_GPS"
 AddCSLuaFile("legend_of_deborah/gamemode/lod/sh_gps_voice.lua")
+AddCSLuaFile("legend_of_deborah/gamemode/lod/sh_gps_praise.lua")
 include("legend_of_deborah/gamemode/lod/sh_gps_voice.lua")
 local Voice = LOD.GPSVoice
 
@@ -17,9 +18,9 @@ Feats[GPS_ID] = {
     allowedActorTypes = {"hero"}, requiredSubsystemTags = {"navigation", "information"},
     synergyTags = {"wisdom", "navigation", "information"}, oneRank = true,
     effectHandlerId = "canonical_gps_navigation",
-    effectParams = {description = "Adds a private old-school synthetic GPS navigation assist with a dedicated rebindable toggle whose default keyboard binding is G. GPS starts enabled immediately when the feat is acquired. Acquisition displays a concise tooltip/system notice: GPS ENABLED — If it gets annoying, press G to turn it off. Press G again to turn it back on. Pressing the GPS action toggles the feature without spending Magic; every toggle plays a short electronic switch/chime and produces the ordinary bounded on-screen system notice GPS ON or GPS OFF. While enabled, GPS speaks after 1 second standing still without living enemies within 2 cells on the same floor, including enemies behind walls and human Soldiers. It repeats after a 4-second silence following each phrase. Movement, danger, combat or inactive states reset the trigger and cancel speech. Aim/facing may change while stationary. When triggered, GPS reads only the authoritative canonical route from the Hero's current cell to the currently active progression objective and emits one short 2000s/early-2010s-style direction assembled from a small fixed synthetic/concatenative voice bank. Supported phrase families include TURN LEFT, TURN RIGHT, TURN AROUND, CONTINUE FORWARD, IN N SQUARES TURN LEFT/RIGHT, IN N SQUARES TAKE THE STAIRS UP/DOWN, TAKE THE STAIRS UP/DOWN, and YOU HAVE ARRIVED AT YOUR DESTINATION. N is derived from the contiguous legal route segment to the next turn, stair transition, or objective rather than guessed. GPS never invents a shortcut, predicts future progression stages, reveals enemies or loot, or performs a second pathfinding authority: it consumes the same canonical current-objective route used by ordinary navigation/breadcrumb logic. GPS is supplemental information and remains available even when lod_mapless 1 removes the visual minimap; it does not itself reveal a map or persistent route display. Active combat, death/spectating, staging, cutscenes, and other states where a navigation bark would be intrusive suspend the idle trigger. GPS has no Magic cost and does not alter Magic regeneration, BreadcrumbCells, movement, combat statistics, rewards, or objective logic.",
+    effectParams = {description = "Press G to toggle private spoken navigation to the current objective; starts enabled and costs no Magic. While moving, hear quick corrections when you head the wrong way and sixteen extravagant praise lines when you're on course. Praise repeats after a quarter-second pause and is interrupted when you turn off course. When stopped outside combat, directions start after one second with no enemy within two cells on your floor and repeat four seconds after each phrase.",
         idleBaseSeconds = 1, repeatPauseSeconds = 4, nearbyCellRadius = 2, defaultKey = "G",
-        magicCost = 0
+        magicCost = 0, movingFeedback = true, correctionIntervalSeconds = 0.20, praisePauseSeconds = 0.25, praiseCount = 16
     },
     directorBaseWeight = 1.0, eligibilityText = "WIS 17",
     actorText = "Player-controlled Heroes only"
@@ -33,6 +34,7 @@ util.AddNetworkString(NET_STATE)
 util.AddNetworkString(NET_TOGGLE)
 util.AddNetworkString(NET_BARK)
 resource.AddFile("sound/lod/gps_voice_bank.mp3")
+resource.AddFile("sound/lod/gps_praise_bank.mp3")
 
 local runtime = setmetatable({}, {__mode = "k"})
 local MOVE_SPEED_SQR = 8 * 8
@@ -92,7 +94,7 @@ local function intrusiveState(ply)
     if rs and (rs.Failed or rs.LevelCleared or rs.IntermissionEnd) then return true end
     if ply:GetObserverMode() ~= OBS_MODE_NONE then return true end
     if ply:GetNW2Bool("LOD_Staged", false) then return true end
-    return activeCombat(ply)
+    return false
 end
 
 local function cardinalFromYaw(yaw)
@@ -150,7 +152,7 @@ function RPG:CheckpointDWisGPSGuidance(path, yaw)
     return "CONTINUE FORWARD"
 end
 
-local function guidanceFor(ply, cell)
+local function routeFor(ply, cell)
     local rm = LOD.RunManager
     local graph = rm and rm.State and rm.State.Graph
     local navigator = LOD.MazeNavigator
@@ -160,7 +162,7 @@ local function guidanceFor(ply, cell)
     if not objective or not objective.a then return nil end
     local path = navigator:FindPath(graph, cell, objective.a)
     if not path then return nil end
-    return RPG:CheckpointDWisGPSGuidance(path, ply:EyeAngles().y)
+    return path
 end
 
 local function updateGPS(ply)
@@ -190,15 +192,49 @@ local function updateGPS(ply)
     local cell = navigator:WorldToCell(graph, ply:GetPos())
     if not cell then resetEpisode(r, ply); return end
 
-    if nearbyEnemy(ply, graph, cell) then resetEpisode(r, ply); return end
-    local moving = ply:GetVelocity():LengthSqr() >= MOVE_SPEED_SQR
-        or (r.anchor and ply:GetPos():DistToSqr(r.anchor) > 16)
+    local rs=LOD.RunManager.State
+    if r.graph~=graph or r.run~=rs or r.spawn~=ply.LODRunSpawnSerial then
+        resetEpisode(r,ply);r.graph,r.run,r.spawn=graph,rs,ply.LODRunSpawnSerial
+        r.kind=nil;r.lastText=nil
+    end
+    local velocity=ply:GetVelocity()
+    local moving = velocity:LengthSqr() >= MOVE_SPEED_SQR
     local key = cellKey(cell)
-    if moving or (r.cellKey and r.cellKey ~= key) then
-        resetEpisode(r, ply)
-        r.cellKey = key
+    if moving then
+        r.idleStarted=nil;r.anchor=nil;r.cellKey=key
+        local path=routeFor(ply,cell)
+        if not path then resetEpisode(r,ply);r.kind=nil;return end
+        local dx,dy
+        if path[2] then dx,dy=edgeDirection(path[1],path[2]) end
+        local yaw=math.abs(velocity.x)>=math.abs(velocity.y)
+            and (velocity.x>=0 and 0 or 180) or (velocity.y>=0 and 90 or -90)
+        local fx,fy=cardinalFromYaw(yaw)
+        local horizontal=velocity.x^2+velocity.y^2>=MOVE_SPEED_SQR
+        if not horizontal and type(dx)=="number" then resetEpisode(r,ply);r.kind=nil;return end
+        local right=horizontal and type(dx)=="number" and dx*fx+dy*fy==1
+        if dx=="UP" then right=velocity.z>8 elseif dx=="DOWN" then right=velocity.z< -8 end
+        local kind=right and "praise" or "correction"
+        local text=right and nil or RPG:CheckpointDWisGPSGuidance(path,yaw)
+        if r.kind~=kind or (kind=="correction" and r.lastText~=text) then
+            resetEpisode(r,ply);r.nextBark=CurTime()
+        end
+        r.kind=kind
+        if CurTime()<(r.nextBark or 0) then return end
+        if right then
+            r.praiseIndex=((r.praiseIndex or 0)%#Voice.Praise)+1
+            text=Voice.Praise[r.praiseIndex]
+        end
+        if text then
+            r.lastText=text;r.speakingUntil=CurTime()+Voice.Duration(text)
+            r.nextBark=r.speakingUntil+.25
+            net.Start(NET_BARK);net.WriteString(text);net.Send(ply)
+        end
         return
     end
+
+    if r.kind then resetEpisode(r,ply);r.kind=nil end
+    if nearbyEnemy(ply, graph, cell) or activeCombat(ply) then resetEpisode(r,ply);return end
+    if r.anchor and ply:GetPos():DistToSqr(r.anchor)>16 then resetEpisode(r,ply);r.cellKey=key;return end
 
     if r.cellKey ~= key or not r.idleStarted then
         r.cellKey = key
@@ -210,7 +246,8 @@ local function updateGPS(ply)
 
     if CurTime() < r.nextBark then return end
     r.nextBark = CurTime() + 1 -- bounded retry if the current route is unavailable
-    local text = guidanceFor(ply, cell)
+    local path=routeFor(ply,cell)
+    local text=path and RPG:CheckpointDWisGPSGuidance(path,ply:EyeAngles().y)
     if not text then return end
     r.speakingUntil = CurTime() + Voice.Duration(text)
     r.nextBark = r.speakingUntil + 4

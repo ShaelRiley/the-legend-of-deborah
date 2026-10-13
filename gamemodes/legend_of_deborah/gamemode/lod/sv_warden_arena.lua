@@ -69,8 +69,15 @@ function B:_BuildProgressionEntities(g)
         if IsValid(e) then e.LODWardenEntry=true;e:OpenGate() end
     end
 end
-local traverse=N.CanTraverse
-function N:CanTraverse(g,ak,bk)
+function N:ProgressionDoorSignature()
+    local s=LOD.RunManager.State
+    local boss=s.Boss or s.Warden
+    return (s.JailDoorOpen and 1 or 0)+(s.WardenStarted and 2 or 0)
+        +(boss and boss.dead and 4 or 0)
+        +(s.Level==20 and LOD.Hector and LOD.Hector:RescueAllowed(s) and 8 or 0)
+        +(s.Level==20 and 16 or 0)
+end
+function N:CanTraverseProgressionDoors(g,ak,bk)
     local a=g.Progression and g.Progression.Warden
     if a then
         local edge=ak<bk and ak.."|"..bk or bk.."|"..ak
@@ -79,5 +86,9 @@ function N:CanTraverse(g,ak,bk)
             or s.Level==20 and not (LOD.Hector and LOD.Hector:RescueAllowed(s))) then return false end
         if edge==g.Progression.JailEdge.edgeKey and not s.JailDoorOpen then return false end
     end
-    return traverse(self,g,ak,bk)
+    return true
+end
+local traverse=N.CanTraverse
+function N:CanTraverse(g,ak,bk)
+    return self:CanTraverseProgressionDoors(g,ak,bk) and traverse(self,g,ak,bk)
 end

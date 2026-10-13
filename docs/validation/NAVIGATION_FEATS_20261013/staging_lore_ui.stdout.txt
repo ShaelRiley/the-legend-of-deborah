@@ -1,0 +1,1 @@
+STAGING_LORE_UI_PASS: complete scrolling and receipt; four screen bounds; speaker/model; Escape; lifecycle retirement; actual LayoutEntity -> FriendlyIdle client-model API and advancing cycle

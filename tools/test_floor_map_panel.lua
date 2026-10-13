@@ -78,7 +78,9 @@ server.Magic={_EnsureState=function(_,who) pools[who]=pools[who] or {magic=100};
 dofile(root..'sv_minimap_magic.lua')
 server.RPG={IdentityCatalog={OrdinaryFeats={}},FeatEffectSystem={ApplyDerived=noop}}
 server.CharacterProgressionSystem={}
-server.RPGAbilityRules={MovementMultiplier=function() return 1 end,Derived=function() return {mapOpenMovementMultiplier=1.75} end}
+server.RPGAbilityRules={MovementMultiplier=function() return 1 end,
+ Derived=function(_,who) return {mapOpenMovementMultiplier=1.75,internalCompassEnabled=who.ownsCompass==true} end,
+ BreadcrumbCells=function(_,who) return who.breadcrumbs or 6 end}
 dofile(root..'sv_rpg_gate_e_map_movement.lua')
 local function replicate(who) who.clientNW=table.Copy(who.nw);who.clientNW.LOD_Magic=(pools[who] or {}).magic or 100 end
 for _,who in ipairs(online) do who:SetPos(MC.Origin+Vector(MC.CellSize,0,MC.LevelHeight));R:_SyncPlayerVars(who);replicate(who) end
@@ -123,8 +125,32 @@ local function paint(blank)
  hooks.client.LOD_MinimapTopologyCache();hooks.client.LOD_MinimapHUD();hooks.client.LOD_MinimapQuadrantPresentation()
  local hasMessage=false;for _,t in ipairs(texts) do if t=='Map not found' then hasMessage=true end end
  assert(M.open,'paint closed the requested panel')
- if blank then assert(hasMessage and textures==0 and lines==0 and rects==1,'blank panel leaked maze/route/quadrant overlays')
+ if blank=='compass' then assert(not hasMessage and textures==0 and lines>0 and rects==1,'compass lost trail or revealed walls/quadrants')
+ elseif blank then assert(hasMessage and textures==0 and lines==0 and rects==1,'blank panel leaked maze/route/quadrant overlays')
  else assert(not hasMessage and textures==1,'collected floor did not render its maze') end
+end
+if arg[1]=='--compass' then
+ switch('server');p.ownsCompass=true;p:SetNW2Bool('LOD_RPGInternalCompass',true);replicate(p)
+ server.ProgressionDirector.GetObjectiveGraphTarget=function() return {a=d} end
+ R.State.ObjectiveStage=1;client.ClientState.objectiveStage=1
+ switch('client');commands.client.lod_minimap_toggle();pump()
+ hooks.client.LOD_MinimapMagicHeartbeat();pump();paint('compass')
+ assert(#M.cells==0 and maps.mask==0 and #M.compass.points==2,'compass disclosed topology or awarded a map')
+ switch('server');assert(server.MinimapMagic:IsOpen(p));local budget=pools[p].magic
+ now=now+.1;timers.server.LOD_MinimapMagicDrain();assert(pools[p].magic<budget)
+ p:SetPos(MC.Origin);assert(S:SendCompass(p,true));pump();paint('compass')
+ assert(#M.compass.points==3 and M.compass.points[3].z==1,'trail did not stop at the first stair transition')
+ switch('server');g.Progression.Gates={{edgeKey=key(a)..'|'..key(b)}};R.State.GatesOpen={}
+ assert(S:SendCompass(p,true));pump()
+ texts={};lines=0;hooks.client.LOD_MinimapHUD()
+ local noRoute=false;for _,text in ipairs(texts) do if text=='NO LEGAL ROUTE' then noRoute=true end end
+ assert(noRoute and lines==0 and #M.compass.points==0,'compass crossed a closed progression door')
+ switch('server');R.State.GatesOpen[1]=true;assert(S:SendCompass(p,true));pump();paint('compass')
+ switch('server');p.ownsCompass=false;p:SetNW2Bool('LOD_RPGInternalCompass',false);replicate(p)
+ assert(not S:SendCompass(p,true));switch('client');paint(true)
+ assert(maps.mask==0 and q.nw.LOD_MapFloorMask==0,'private compass became party ownership')
+ print('INTERNAL_COMPASS_PIPELINE_PASS: real two-realm Magic admission; route-only payload; hidden walls/quadrants; current floor/stair bound; closed/open gate; flag loss; no shared ownership')
+ return
 end
 if arg[1]=='--pickup-only' or arg[1]=='--pickup-only-negative' then
  switch('server');assert(S:CollectFloorMap(p,maps.plan.maps[1].entity));replicate(p)

@@ -1,0 +1,31 @@
+{
+  "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "tabsRead": [
+    "00 — AI ENTRYPOINT",
+    "01 — AI RULE INDEX",
+    "04 — FEATS & IDENTITY",
+    "05 — CORE LOOP & WORLD",
+    "06 — MULTIPLAYER, LIFECYCLE & UI"
+  ],
+  "revisionId": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+  "writeAttempt": "Narrow Internal Compass author-rule insertion into tab 04",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})"
+      }
+    ],
+    "structuredContent": {
+      "error": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})",
+      "error_code": "INVALID_ARGUMENT"
+    },
+    "isError": true
+  },
+  "requestedInternalCompassMirror": "LOD-FEAT-INTERNAL-COMPASS-001 — AUTHOR ADDITION (2026-10-13)\nRegister WIS_INTERNAL_COMPASS, display name Internal Compass, one ordinary non-repeatable navigation feat gated at WIS 15 with no feat prerequisite. Standard qualification/capability/actor rules apply. While the existing personal map panel is open, the holder retains the ordinary current-objective breadcrumb trail on an unfound physical floor. This does not reveal its walls, grant party map ownership, increase breadcrumb range, bypass locks, or change Magic cost/map-up effects. Reuse the existing BreadcrumbCells formula and Cartographer bonus; show only bounded current-floor trail points and the next stair transition. Non-holders retain the no-map reminder. Finding the shared floor map restores the normal map presentation.\n\n",
+  "remainingAuthorMirrors": [
+    "Map Finder: WIS_MAP_FINDER, Wisdom 13; one ordinary non-repeatable navigation feat with no prerequisite. Passively show actual uncollected map pickups through walls and ceilings in world view, including other floors. No floor ownership, maze revelation, panel requirement or Magic cost.",
+    "GPS retains Wisdom 17, Hero ownership, private playback, enabled acquisition, G toggle, no Magic cost. Assess moving travel from actual velocity on the current objective's legal route. Wrong-way travel interrupts speech on the next 0.20-second update; correct travel cycles the sixteen eight-writer praise lines with a 0.25-second pause after each phrase. Moving feedback continues near enemies/while attacking. Retain existing guarded idle directions and death/spectator/staging/run/body cancellation."
+  ],
+  "status": "No live Doc write succeeded. Exact author requests govern the source/manual additions; the remaining mirrors are proposed only."
+}

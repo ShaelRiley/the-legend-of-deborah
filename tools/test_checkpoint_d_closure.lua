@@ -181,6 +181,8 @@ local CANONICAL_FEATS = {
     -- WIS
     WIS_CARTOGRAPHER = {ability = "wis", req = {wis = 13}, prereq = {}, family = "wis_breadcrumb_range", rank = 1, replaces = false},
     WIS_FRUGAL_MAP = {ability = "wis", req = {wis = 15}, prereq = {}, family = "wis_frugal_map", rank = 1, replaces = false},
+    WIS_INTERNAL_COMPASS = {ability = "wis", req = {wis = 15}, prereq = {}, family = "wis_internal_compass", rank = 1, replaces = false},
+    WIS_MAP_FINDER = {ability = "wis", req = {wis = 13}, prereq = {}, family = "wis_map_finder", rank = 1, replaces = false},
     WIS_MUTE_PROC_1 = {ability = "wis", req = {wis = 13}, prereq = {}, family = "wis_mute_proc", rank = 1, replaces = false},
     WIS_MUTE_PROC_2 = {ability = "wis", req = {wis = 15}, prereq = {"WIS_MUTE_PROC_1"}, family = "wis_mute_proc", rank = 2, replaces = true},
     WIS_MUTE_PROC_3 = {ability = "wis", req = {wis = 17}, prereq = {"WIS_MUTE_PROC_2"}, family = "wis_mute_proc", rank = 3, replaces = true},
@@ -424,7 +426,7 @@ check(featSlotsAt21 == featSlotsAt20, "level 21 grants zero new ordinary feat sl
 
 -- Report Final Closure Status
 if #errors == 0 then
-    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 112 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
+    print("[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.")
 else
     print("[CHECKPOINT_D_CLOSURE] FAIL — Discrepancies found:")
     for _, err in ipairs(errors) do

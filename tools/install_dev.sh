@@ -99,6 +99,16 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/gamemode/lod/sh_player_options.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_player_options.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_character_progression.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_e_feats.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_feat_card_text.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_gps_feat.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sh_gps_voice.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sh_gps_praise.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_gps.lua \
+    gamemodes/legend_of_deborah/content/sound/lod/gps_praise_bank.mp3 \
     gamemodes/legend_of_deborah/gamemode/lod/sv_minimap.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_minimap_magic.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_floor_maps.lua \

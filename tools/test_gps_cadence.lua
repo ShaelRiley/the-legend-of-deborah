@@ -65,11 +65,33 @@ hero.state={featIds={}};advance(82);assert(events[#events].name=='LOD_RPGWisGPSS
 hero.state={featIds={'WIS_GPS'}};hero.noRoute=false;advance(83);advance(84);assert(#barks()==7)
 local ok,errors=LOD.RPG:ValidateCheckpointDWisGPS();assert(ok,table.concat(errors,';'))
 
+-- Moving GPS: all sixteen voiced lines cycle without overlaps; actual travel
+-- determines correctness, including during aiming/combat and beside enemies.
+events={};hero.pos=V();hero.velocity=V(100,0,0);hero.yaw=180;hero.attack=true
+foes={{GetPos=function() return V() end}};advance(100)
+local praise=LOD.GPSVoice.Praise;assert(#praise==16)
+assert(barks()[1]==praise[1],'aiming backwards or combat silenced correct travel')
+local at=100
+for i=1,16 do
+ assert(LOD.GPSVoice.Duration(praise[i])>1 and LOD.GPSVoice.Tokens(praise[i]))
+ local gap=LOD.GPSVoice.Duration(praise[i])+.25
+ advance(at+gap-.01);assert(#barks()==i,'praise overlapped/repeated prematurely')
+ if i<16 then at=at+gap;advance(at);assert(barks()[i+1]==praise[i+1],'praise bank did not cycle') end
+end
+local count=#barks();hero.velocity=V(-100,0,0);advance(now+.2)
+assert(#barks()==count+1 and barks()[#barks()]=='TURN AROUND','wrong travel waited for praise to finish')
+assert(events[#events-1].values[1]=='','correction did not cancel the old utterance')
+hero.velocity=V(100,0,0);advance(now+.2);assert(barks()[#barks()]==praise[1],'right travel did not resume encouragement')
+local before=#barks();receivers.LOD_RPGWisGPSToggle(0,hero);advance(now+20);assert(#barks()==before,'G did not stop endless praise')
+receivers.LOD_RPGWisGPSToggle(0,hero);advance(now+.2);assert(#barks()==before+1)
+hero.dead=true;advance(now+.2);assert(events[#events].values[1]=='','death did not cancel moving speech');hero.dead=false
+hero.velocity=V();hero.attack=false;foes={}
+
 -- Delayed file opens and timer callbacks must never revive canceled speech.
 local pending,timers,hooks,notices={},{},{},0
 hook={Add=function(id,key,fn) hooks[key]=fn end}
 notification={AddLegacy=function() notices=notices+1 end};chat={AddText=noop};surface={PlaySound=noop}
-sound={PlayFile=function(_,_,fn) pending[#pending+1]=fn end}
+local voiceFiles={};sound={PlayFile=function(path,_,fn) voiceFiles[#voiceFiles+1]=path;pending[#pending+1]=fn end}
 timer.Simple=function(_,fn) timers[#timers+1]=fn end
 LOD.Audio=dofile('tools/audio_test_double.lua')
 include('lod/cl_rpg_gps.lua')
@@ -80,5 +102,7 @@ state(true);bark('TURN LEFT');state(false);local stale=channel();table.remove(pe
 state(true);bark('IN 2 SQUARES TURN LEFT');local c=channel();table.remove(pending,1)(c);assert(c.plays==1)
 bark('');for _,fn in ipairs(timers) do fn() end;timers={};assert(c.stops==1 and c.plays==1)
 bark('TURN LEFT');local last=channel();table.remove(pending,1)(last);last.valid=false;for _,fn in ipairs(timers) do fn() end
+bark(praise[1]);assert(voiceFiles[#voiceFiles]=='sound/lod/gps_praise_bank.mp3','praise selected the direction bank')
+local pc=channel();table.remove(pending,1)(pc);assert(pc.plays==1);bark('');assert(pc.stops==1)
 hooks.LOD_GPSStopVoice()
-print('GPS_CADENCE_PASS: exact idle/repeat timing, near enemies/floors, movement, toggles, staging/death, route retry, ownership and canceled async audio')
+print('GPS_CADENCE_PASS: retained idle rules; 16 moving praise clips; travel versus aiming; combat/near enemies; immediate correction/preemption; G/death; distinct bank and canceled async audio')

@@ -629,6 +629,8 @@ function AbilityRules:SyncPlayer(ply)
     if not IsValid(ply) then return end
     ply:SetNW2Int("LOD_RPGBreadcrumbCells", self:BreadcrumbCells(ply))
     local derived = self:Derived(ply)
+    ply:SetNW2Bool("LOD_RPGInternalCompass", derived and derived.internalCompassEnabled == true or false)
+    ply:SetNW2Bool("LOD_RPGMapFinder", derived and derived.mapFinderEnabled == true or false)
     local primeSeconds = tonumber(derived and derived.rogueAcePrimeSeconds) or 0
     if primeSeconds > 0 and ply.LODRPGNextAceReadyAt == nil then
         ply.LODRPGNextAceReadyAt = CurTime() + primeSeconds

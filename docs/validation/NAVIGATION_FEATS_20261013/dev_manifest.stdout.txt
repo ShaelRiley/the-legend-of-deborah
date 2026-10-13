@@ -1,0 +1,1 @@
+DEV_POPULATION_MANIFEST_PASS exact 91-source hashes including key pedestal/display/collision and friendly idle; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup
