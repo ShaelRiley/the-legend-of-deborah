@@ -1,0 +1,1 @@
+MANUAL_TRANSPORT_PASS: exact bytes, one in-flight chunk, duplicate/foreign ACK, expiry, disconnect

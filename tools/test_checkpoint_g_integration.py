@@ -26,6 +26,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Neil Release Native Prop", ["python3", "tools/run_lua54.py", "tools/test_neil_release_prop.lua"]),
+    ("Invisible Sanctuary & Nullified Combat", ["python3", "tools/run_lua54.py", "tools/test_invisible_sanctuary.lua"]),
     ("Progression Stock Models & Stable Pickup Anchors", ["python3", "tools/run_lua54.py", "tools/test_progression_stock_props.lua"]),
     ("Ordinary Cross-Floor Route Without Discovery Leaks", ["python3", "tools/run_lua54.py", "tools/test_floor_map_panel.lua", "--cross-floor-route"]),
     ("Jail Key All-Angle Display & Solid Jumpable Pedestal", ["python3", "tools/run_lua54.py", "tools/test_jail_key_visibility.lua"]),

@@ -223,7 +223,7 @@ observe(LOD.MagicProgression, "SendSnapshot", nil, function(_, _, _, ply)
         end
     end
     if current.form ~= previous.form or current.content ~= previous.content then
-        emit(ply, "magic", string.upper(current.form or "no Form") .. " / " .. string.upper(current.content or "raw")
+        emit(ply, "selection", string.upper(current.form or "no Form") .. " / " .. string.upper(current.content or "raw")
             .. " SELECTED", "magic_selected", {form = current.form, content = current.content or "raw"})
     end
 end)

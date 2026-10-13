@@ -84,10 +84,21 @@ function H:Plan(g,seed)
     local escort
     for _,k in ipairs(sorted(d)) do if d[k]==2 and not stair[k] then escort=k;break end end
     if not escort then return false,"no two-cell Brute escort spawn" end
+    -- The release control must be newly accessible after Yellow, with Black
+    -- and the jail still closed. Keep the hunt's existing RNG/spawn positions.
+    local beforeYellow=self:Walk(g,{key(g.Start)},
+        {[p.Gates[3].edgeKey]=true,[black.edgeKey]=true,[jail.edgeKey]=true})
+    local releases={}
+    for _,k in ipairs(sorted(reach)) do
+        if not beforeYellow[k] and not stair[k] then releases[#releases+1]=k end
+    end
+    if #releases==0 then return false,"no legal post-Yellow Neil release button" end
+    local releaseKey=rng:Derive("release-button"):Pick(releases)
     p.Gates[4]=black
-    p.Hunt={neilCell=table.Copy(g.Cells[neilKey]),bruteCell=table.Copy(g.Cells[escort]),seed=seed}
+    p.Hunt={neilCell=table.Copy(g.Cells[neilKey]),bruteCell=table.Copy(g.Cells[escort]),
+        releaseCell=table.Copy(g.Cells[releaseKey]),seed=seed}
     p.Validation.blackGate=true;p.Validation.huntFloors=true
-    p.Validation.orderedRoute="Start>Red>Blue>Yellow>Neil>Black Keycard>Black Gate>Temporary Core Jail Key>Jail Door>Deborah"
+    p.Validation.orderedRoute="Start>Red>Blue>Yellow>Release Button>Neil>Black Keycard>Black Gate>Temporary Core Jail Key>Jail Door>Deborah"
     return true,p
 end
 local basePlan=P.Plan
@@ -108,7 +119,8 @@ if baseReserve then
 end
 function H:Start()
     local s=R.State;local g=s and s.Graph
-    if not g or not s.BuildReady or s.Failed or s.LevelCleared or not s.GatesOpen[3] then return false end
+    if not g or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen
+        or not s.GatesOpen[3] or not s.NeilReleased or s.ObjectiveStage~=S.FIND_NEIL then return false end
     local meta=g.Progression.Hunt;if not meta then return false end
     local h=s.NeilHunt
     if h and h.started then return true end
@@ -135,6 +147,42 @@ function H:Start()
     P:Announce("FIND NEIL AND THE BLACK KEYCARD — THE BRUTE IS HIS BODYGUARD")
     P:SyncAll();log("NEIL_HUNT_START",{seed=h.seed,neil=h.neil:EntIndex(),brute=h.brute:EntIndex()})
     return true
+end
+
+function H:Release(ply,button)
+    local s=R.State;local g=s and s.Graph
+    if not g or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen
+        or not activeHero(ply) or not LOD.Equipment:CanAct(ply)
+        or not s.GatesOpen[3] or s.ObjectiveStage~=S.FIND_NEIL or s.NeilReleased
+        or not IsValid(button) or button~=s.NeilReleaseButton
+        or button.LODReleaseState~=s or button.LODReleaseGraph~=g
+        or button.LODReleaseSeed~=s.LevelSeed then return false end
+    local anchor=button:GetPickupPosition()
+    if ply:GetPos():DistToSqr(anchor)>96*96 then return false end
+    local trace=ply:GetEyeTrace()
+    if not trace or trace.Entity~=button then return false end
+    s.NeilReleased=true
+    button:SetReleased(true)
+    -- Capacity/native creation failures retain the committed release receipt;
+    -- the ordinary hunt service retries without requiring another press.
+    self:Start()
+    if not (s.NeilHunt and s.NeilHunt.started) then
+        P:Announce("NEIL RELEASED — FIND NEIL AND THE BLACK KEYCARD")
+        P:SyncAll()
+    end
+    log("NEIL_RELEASED",{seed=s.LevelSeed,player=ply:EntIndex()})
+    return true
+end
+
+function H:EnsureReleaseButton()
+    local s=R.State;local g=s and s.Graph
+    if not g or not s.BuildReady or s.Failed or s.LevelCleared or s.NeilReleased
+        or not (g.Progression and g.Progression.Hunt) then return end
+    if IsValid(s.NeilReleaseButton) then return s.NeilReleaseButton end
+    local builder=LOD.MazeBuilder
+    local ent=builder:_SpawnNeilReleaseButton(g)
+    if IsValid(ent) then builder:_Register(ent) end
+    return ent
 end
 
 function H:Blocked(g)
@@ -456,6 +504,7 @@ hook.Add("Think","LOD_NeilHuntService",function()
     if CurTime()<nextService then return end;nextService=CurTime()+0.25
     local s=R.State
     if not s or s.Failed or s.LevelCleared or s.SimulationFrozen or not s.BuildReady then return end
+    if not s.NeilReleased then H:EnsureReleaseButton() end
     if s.ObjectiveStage==S.FIND_NEIL then H:Start() end
     if s.ObjectiveStage==S.TAKE_BLACK_KEYCARD then H:EnsureBlackCard() end
 end)
@@ -476,7 +525,8 @@ concommand.Add("lod_neil_brute_testkit",function(ply)
     local s=R.State
     if not s.Graph or not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen then return end
     if s.ObjectiveStage==S.FIND_NEIL then
-        H:Start();ply:ChatPrint("Follow the objective to Neil; the original hunt is still active.");return
+        H:Start();ply:ChatPrint(s.NeilReleased and "Follow the objective to Neil; the original hunt is still active."
+            or "Follow the objective to the release button behind Yellow, then press E.");return
     end
     if s.ObjectiveStage>6 then ply:ChatPrint("This dungeon's hunt has already progressed; no replacement pair is spawned.");return end
     local gates={}
@@ -490,6 +540,6 @@ concommand.Add("lod_neil_brute_testkit",function(ply)
     for _,e in ipairs(ents.FindByClass("lod_keycard")) do
         if e:GetCardIndex()<=3 then e:Remove() end
     end
-    ply:ChatPrint("Neil/Brute hunt opened. Follow the minimap objective; kill Neil and collect his Black Keycard. Hostile reserves remain enforced.")
+    ply:ChatPrint("Yellow opened. Follow the minimap to the release button and press E; then hunt Neil for his Black Keycard.")
 end)
 

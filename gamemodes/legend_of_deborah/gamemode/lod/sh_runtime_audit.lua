@@ -341,6 +341,12 @@ if CLIENT then
         "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects","lod_wall_batches",
         "lod_third_person","lod_map_scale","lod_map_opacity"}
     local renderSources={
+        "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/cl_init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_entry_safety.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_die_logger.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_feedback_language.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_gps_voice.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_gps_praise.lua",

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/64dfa109c475/the-legend-of-deborah/tools/test_manual_document.py", line 53, in <module>
+    assert term in html, 'SPOT-05 manual guidance missing: '+term
+           ^^^^^^^^^^^^
+AssertionError: SPOT-05 manual guidance missing: up to 1,000 records

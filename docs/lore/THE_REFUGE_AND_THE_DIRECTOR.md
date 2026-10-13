@@ -126,11 +126,11 @@ The chapter is indexed by the upcoming Dungeon Level, not character Combat Level
 Dungeon 1 — A refuge, provisionally
 Welcome to the refuge. Gordon the Warden has imprisoned the women who kept the Debbie Fund running. Twenty women, twenty rescues. Nessa is first; Deborah is last. They pooled supplies so nobody had to survive alone. Gordon has a different idea of cooperation: everybody does what Gordon says.
 
-Default controls: WASD moves; mouse aims; Space jumps; Ctrl crouches; Shift sprints. Left mouse attacks, R reloads, right mouse casts selected Magic—or drinks a held Healing Potion. E uses the object you face. P opens your Character Sheet: choose a Class and your Level-1 Feat. O opens Equipment; I opens the Spellbook; L opens the Die Log. Q or M toggles the map, which spends Magic. The Manual and Options are in the Player Menu; Always Run changes what Shift does.
+Default controls: WASD moves; mouse aims; Space jumps; Ctrl crouches; Shift sprints. Left mouse attacks, R reloads, right mouse casts selected Magic—or drinks a held Healing Potion. E uses the object you face. P opens your Character Sheet: choose a Class and your Level-1 Feat. O opens Equipment; I opens the Spellbook; L opens the Die Log. Each physical floor hides its own map near the first entrance, before any locked doors. Touching it unlocks that floor for the whole party; it never goes into your bag. Use Q to open or close the map panel; M works too. Until you find this floor's map, the panel shows a reminder instead of its layout. An open panel still consumes Magic and grants your map-up effects. The Manual and Options are in the Player Menu; Always Run changes what Shift does.
 
 Take your first weapon from the pedestal, then use the blue portal when ready. The first Hero to deploy starts the thirty-minute collapse clock, before any Time Management allowance. Staying here will not pause it for friends already inside. Menus do not pause the world.
 
-Follow Red Keycard, Red Gate; Blue; Yellow; then find Neil and his Brute escort. Neil carries Black. Beyond Black Gate, defeat Gordon, collect the Jail Key, open the chamber and reach Nessa. Defeating a boss alone is not a rescue. Come back and talk to me before each new dungeon. I like to know how the story is going.
+Follow Red Keycard, Red Gate; Blue; Yellow; then find the release button beyond Yellow and press E. Only then will Neil and his Brute escort appear. Neil carries Black. Beyond Black Gate, defeat Gordon, collect the Jail Key, open the chamber and reach Nessa. Defeating a boss alone is not a rescue. Come back and talk to me before each new dungeon. I like to know how the story is going.
 
 Dungeon 2 — The cost of coming home
 Nessa is home; Bessa is next. Nessa counts the ammunition. Bessa insists courage needs company. They argued about the noise, then agreed nobody should have to make it alone. That was the Debbie Fund before it became an excellent excuse for a prison.
@@ -177,7 +177,7 @@ Daryl the Barrel wants his scorch marks remembered. Estelle wants injuries treat
 Dungeon 8 — The price of knowing
 Mirabelle restored Magic for the Fund's rescuers. She says a resource is not a moral rank: being empty does not make you less worthy. Estelle approves the sentiment and objects to how frequently Mirabelle tests it.
 
-Your map spends Magic while open. Your equipment and held throwable can affect what you can cast; consult the Spellbook and Manual rather than treating a failed cast as a prophecy. This refuge was built for preparation, not interpretation.
+Find the map for each physical floor. One touch shares that floor with the whole party. Q opens the map panel; M works too. An unfound floor shows a reminder instead of its layout. Your map spends Magic and grants map-up effects while open, even before discovery. Your equipment and held throwable can affect what you can cast; consult the Spellbook and Manual rather than treating a failed cast as a prophecy. This refuge was built for preparation, not interpretation.
 
 Sofa King Dangerous offers the sort of comfort that keeps you precisely where he wants you. A seat can be restful. A seat you cannot leave is another kind of cell. Deborah was very exact about the difference.
 

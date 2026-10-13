@@ -33,7 +33,7 @@ function Map:PlanFloorMaps(graph)
         if door.edgeKey then blocked[door.edgeKey] = true end
         protect(door.beforeCell); protect(door.afterCell)
     end
-    if p.Hunt then protect(p.Hunt.neilCell); protect(p.Hunt.bruteCell) end
+    if p.Hunt then protect(p.Hunt.neilCell); protect(p.Hunt.bruteCell); protect(p.Hunt.releaseCell) end
 
     -- Arena galleries may add a physical layer outside the original critical
     -- spine. Its first BFS arrival is a canonical staircase endpoint, not a

@@ -45,7 +45,7 @@ function A:Plan(g)
     g.WardenVoid={[LOD.MazeGenerator.CellKey(x+3,y,z+1)]=true}
     g.WanderLayers=g.Layers -- the private gallery is not a new wandering floor
     g.Layers=math.max(g.Layers,z+2);g.Width=x+5
-    p.Validation.orderedRoute="Start>Red>Blue>Yellow>Neil>Black Keycard>Black Gate>Gordon>Jail Key>Jail Door>Deborah"
+    p.Validation.orderedRoute="Start>Red>Blue>Yellow>Release Button>Neil>Black Keycard>Black Gate>Gordon>Jail Key>Jail Door>Deborah"
     local blocked={[p.Gates[4].edgeKey]=true,[p.JailEdge.edgeKey]=true}
     local reach=LOD.NeilBrute:Walk(g,{key(g.Start)},blocked)
     if reach[key(a.entry)] then return false,"boss entry bypasses Black Gate" end

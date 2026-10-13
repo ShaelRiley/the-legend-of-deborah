@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/64dfa109c475/the-legend-of-deborah/tools/test_lore_canon.py", line 16, in <module>
+    assert chapters==[[c['title'],c['text']] for c in data['chapters']]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

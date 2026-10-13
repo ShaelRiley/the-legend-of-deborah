@@ -378,6 +378,8 @@ function ProgressionDirector:ResetLevelState(graph)
     state.JailDoorOpen = false
     state.JailKeyEntity = nil
     state.NeilHunt = nil
+    state.NeilReleased = false
+    state.NeilReleaseButton = nil
     state.ObjectiveStage = Stages.FIND_RED_KEYCARD
     state.CheckpointIndex = 0
     state.CheckpointPos = nil
@@ -394,6 +396,9 @@ end
 
 function ProgressionDirector:GetObjectiveText()
     local stage = (LOD.RunManager.State and LOD.RunManager.State.ObjectiveStage) or 1
+    if stage==Stages.FIND_NEIL and not LOD.RunManager.State.NeilReleased then
+        return "FIND AND PRESS THE BUTTON TO RELEASE NEIL"
+    end
     local target = LOD.Damsels and LOD.Damsels:Current()
     local objectives = {
         "FIND RED KEYCARD — R / TRIANGLE",
@@ -423,6 +428,10 @@ function ProgressionDirector:GetObjectiveGraphTarget()
 
     local stage = state.ObjectiveStage or Stages.FIND_RED_KEYCARD
     if stage == Stages.FIND_NEIL or stage == Stages.TAKE_BLACK_KEYCARD then
+        if stage==Stages.FIND_NEIL and not state.NeilReleased then
+            local c=progression.Hunt and progression.Hunt.releaseCell
+            return c and {kind=1,a=copyCell(c)} or nil
+        end
         local hunt = state.NeilHunt
         local target = hunt and (stage == Stages.FIND_NEIL and hunt.neilCell or hunt.dropCell)
         target = target or (progression.Hunt and progression.Hunt.neilCell)
@@ -583,7 +592,6 @@ function ProgressionDirector:TryOpenGate(index, ply, gateEnt)
     if meta then state.CheckpointPos = LOD.MazeBuilder:CellCenter(meta.afterCell) + Vector(0, 0, 12) end
 
     if IsValid(gateEnt) and gateEnt.OpenGate then gateEnt:OpenGate() end
-    if index == 3 and LOD.NeilBrute then LOD.NeilBrute:Start() end
     if index == 4 and state.Graph.Progression.Warden then
         state.ObjectiveStage = Stages.ENTER_WARDEN
     elseif index == 4 then

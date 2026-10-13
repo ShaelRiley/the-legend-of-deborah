@@ -3,6 +3,16 @@ LOD.DieLogger = LOD.DieLogger or {}
 local Log = LOD.DieLogger
 Log.MaxText = 4096
 
+-- All records still reach retained history. Only combat enters the transient
+-- HUD tail; private progression/resource/objective/music chatter stays in menu.
+local combatFamilies={damage=true,roll=true,status=true,clear=true,resist=true,
+    weakness=true,proc=true,kill=true,magic=true,sanctuary=true}
+function Log:IsCombatEntry(entry)
+    if combatFamilies[entry.family] then return true end
+    -- Legacy damage/save producers use routine with the combat category.
+    return entry.family=="routine" and (entry.category==0 or entry.category==1)
+end
+
 -- Formatting observes actual sampled values. '+' starts another base die;
 -- '>' exclusively means a continuation when the contract carries chain starts.
 function Log:RollDetail(contract)

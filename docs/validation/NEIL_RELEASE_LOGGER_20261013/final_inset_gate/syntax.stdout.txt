@@ -1,0 +1,2 @@
+PASS /workspace/scratch/64dfa109c475/the-legend-of-deborah/gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/init.lua
+PASS /workspace/scratch/64dfa109c475/the-legend-of-deborah/tools/test_neil_release_prop.lua

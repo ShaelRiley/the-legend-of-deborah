@@ -419,6 +419,7 @@ function System:Apply(target, id, source, options)
     local definition = self.Registry[id]
     if not definition or not valid(target) or not isAlive(target) then return false, "invalid" end
     if not definition.beneficial and LOD.EntrySafety and not LOD.EntrySafety:CombatAllowed(target,source) then
+        if LOD.EntrySafety.ReportNullifiedCombat then LOD.EntrySafety:ReportNullifiedCombat(target,source) end
         LOD.EntrySafety.Stats.statusDenied=LOD.EntrySafety.Stats.statusDenied+1
         return false, "entry_sanctuary_or_pressure"
     end

@@ -349,7 +349,10 @@ end
 
 function Pushback:Apply(hostile, opts)
     opts = opts or {}
-    if LOD.EntrySafety and not LOD.EntrySafety:CombatAllowed(hostile,opts.attacker) then return nil end
+    if LOD.EntrySafety and not LOD.EntrySafety:CombatAllowed(hostile,opts.attacker) then
+        if LOD.EntrySafety.ReportNullifiedCombat then LOD.EntrySafety:ReportNullifiedCombat(hostile,opts.attacker) end
+        return nil
+    end
     local eligibility = LOD.RPG and LOD.RPG.FeatEffectSystem
     if eligibility and eligibility.ValidPushTarget then
         if not eligibility:ValidPushTarget(hostile) then return nil end

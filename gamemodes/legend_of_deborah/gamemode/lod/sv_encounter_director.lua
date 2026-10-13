@@ -143,6 +143,11 @@ function EncounterDirector:_BuildCellTags(graph, sectorByKey)
         local k = keyOf(card.cell)
         if tags[k] then tags[k].role = "objective" tags[k].objective = true end
     end
+    local release=progression.Hunt and progression.Hunt.releaseCell
+    if release and tags[keyOf(release)] then
+        tags[keyOf(release)].objective=true
+        tags[keyOf(release)].role="objective"
+    end
 
     markSafe(progression.CoreCell, "boss")
     markSafe(progression.DeborahCell, "safe")

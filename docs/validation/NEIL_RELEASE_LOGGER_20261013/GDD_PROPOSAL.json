@@ -1,0 +1,35 @@
+{
+  "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "status": "rejected",
+  "changes": [
+    [
+      "t.dkjl8amu37zv",
+      "LOD-NEIL-RELEASE-LOGGER-001 — AUTHOR CORRECTION (2026-10-13)\nThe current author request supersedes immediate post-Yellow Neil spawning, visible arrival-sanctuary presentation and strict HUD/history parity. Read 05 LOD-NEIL-RELEASE-001 and 06 LOD-COMBAT-TAIL-001. Release/source validation does not establish native acceptance or authorize deployment.\n\n"
+    ],
+    [
+      "t.l29tf4evc12u",
+      "LOD-NEIL-RELEASE-LOGGER-001 — Current author correction\n05 → LOD-NEIL-RELEASE-001 owns the reachable post-Yellow release button and Neil spawn receipt. 06 → LOD-COMBAT-TAIL-001 owns invisible sanctuary presentation, nullified-combat notes and combat-only lower-right tail with complete retained menu history. These supersede conflicting older post-Yellow, boundary-overlay and strict-parity paragraphs only.\n\n"
+    ],
+    [
+      "t.8p7v8fnmr641",
+      "LOD-NEIL-RELEASE-001 — AUTHOR CORRECTION (2026-10-13)\nOpening Yellow no longer spawns Neil or his Brute escort. The objective first guides the party to a physical stock-prop release button somewhere beyond Yellow, reachable while Black and the jail remain closed. A living deployed Hero presses E to commit one shared release; only then does the unique Neil/Brute hunt spawn. Preserve existing hunt spawn locations, mobility, escort, death-only Black Keycard receipt, entity ceilings and subsequent Black/boss/jail/rescue sequence. Protect button access from generated obstructions; capacity/native creation failures retry the committed release without duplicate actors or another required press. Bind button interactions to the exact current dungeon/graph and retire with it.\n\n"
+    ],
+    [
+      "t.5ffvxbn7lbs",
+      "LOD-COMBAT-TAIL-001 — AUTHOR CORRECTION (2026-10-13)\nThe arrival sanctuary is invisible: remove its world boundary overlay and persistent HUD caption, including old hooks on Lua refresh. Retain spatial bilateral damage/status/displacement protection and opening-pressure rules. An actual sanctuary-blocked combat outcome records: Combat is nullified in the sanctuary zone. Pure spatial/acquisition queries do not emit logger events.\nThe lower-right feed shows combat only: actual damage/attack/save rolls, combat statuses, clears, resistance/weakness, procs, kills, casting and sanctuary-nullification records. Generation/HP/progression, XP, resources, pickups, objectives, music and other noncombat records remain in the full menu Die Logger (also available via L). All canonical received records still enter bounded retained history with exact text, spans, order, dice detail and replay protection; noncombat traffic cannot evict live combat rows. Preserve existing authoritative cues and critical notices. This explicitly supersedes strict event parity in LOD-UI-003/004; shared combat records retain identical wording across both views.\n\n"
+    ]
+  ],
+  "receipt": {
+    "content": [
+      {
+        "type": "text",
+        "text": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})"
+      }
+    ],
+    "structuredContent": {
+      "error": "HTTPError: 400: \n\n\n\nBad Request\n\nContent:\n{'code': 400,\n 'message': 'Precondition check failed.',\n 'status': 'FAILED_PRECONDITION'}\n\nRequest URL:\nhttps://docs.googleapis.com/v1/documents/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY:batchUpdate (Response: {'error': {'code': 400, 'message': 'Precondition check failed.', 'status': 'FAILED_PRECONDITION'}})",
+      "error_code": "INVALID_ARGUMENT"
+    },
+    "isError": true
+  }
+}

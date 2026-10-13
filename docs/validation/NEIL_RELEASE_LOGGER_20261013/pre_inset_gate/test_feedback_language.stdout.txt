@@ -1,0 +1,4 @@
+FEEDBACK_LANGUAGE_PASS: isolation, typed transport, ACK ownership/dedup, Magic cost/refund, lifecycle, history and draw boundaries
+PASS: discovery cue, logger/history parity and duplicate/denial isolation
+PASS: spatial awareness event position, history, priority sound and replay isolation
+COMBAT_TAIL_PASS: history retains all noncombat families; bursts cannot evict combat; sanctuary note; exact shared combat text; replay/ACK/cues retained; hot reload cleanup

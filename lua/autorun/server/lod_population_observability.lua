@@ -5,6 +5,15 @@ local A=LOD.PopulationObservability
 A.Version="b29-entry-safety"
 A.Records=A.Records or {}
 local watched={
+        "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/cl_init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/init.lua",
+        "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_die_logger.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sh_feedback_language.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_combat_feed_semantics.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_observers.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_staging_lore.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_character_progression.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_e_feats.lua",

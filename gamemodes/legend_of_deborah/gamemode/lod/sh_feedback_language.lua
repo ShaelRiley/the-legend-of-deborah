@@ -23,7 +23,9 @@ LOD.FeedbackLanguage = {
     life = {label = "LIFE", priority = 3, cueId = "life"},
     soldier = {label = "SOLDIER", priority = 2, cueId = "soldier"},
     progress = {label = "PROGRESS", priority = 2, cueId = "progress"},
-    kill = {label = "DEFEATED", priority = 0}
+    kill = {label = "DEFEATED", priority = 0},
+    sanctuary = {label = "SANCTUARY", priority = 0},
+    selection = {label = "", priority = 0}
 }
 
 -- Cosmetic event vocabulary carried by the existing authoritative logger packet.

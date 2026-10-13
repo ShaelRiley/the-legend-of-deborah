@@ -327,7 +327,7 @@ end}
 P:Event(a,'objective','GREEN KEYCARD ACQUIRED',{event='keycard_acquired',cardIndex=2})
 local treasurePacket=sent[#sent]
 deliver(treasurePacket)
-assert(accentCalls==1 and feed.entries[#feed.entries].cue==1 and feed.history[#feed.history].cue==1)
+assert(accentCalls==1 and feed.history[#feed.history].cue==1 and (#feed.entries==0 or feed.entries[#feed.entries].cue~=1),'discovery stays in history and keeps its cue')
 deliver(treasurePacket)
 assert(accentCalls==1,'duplicate transport cannot replay discovery sound')
 P:Event(a,'blocked','KEYCARD REQUIRED',{event='objective_denied'})
@@ -361,3 +361,23 @@ rolls:_Send(a,3,'[AWARENESS] BEHIND YOU: SOLDIER','awareness',{event='spatial_aw
 deliver(sent[#sent])
 assert(#sounds==beforeSounds+2,'awareness rearms its distinct sound after spacing')
 print('PASS: spatial awareness event position, history, priority sound and replay isolation')
+
+-- Noncombat delivery remains ordered, retained and acknowledged; a burst cannot
+-- consume the independent ten-record combat tail or masquerade as spell combat.
+local beforeCount=#feed.entries
+local firstSerial=feed.entries[1] and feed.entries[1].serial
+for _,family in ipairs({'progression','progress','objective','resource','awareness','selection','life','soldier','blocked'}) do
+    P:Event(a,family,'NONCOMBAT '..family,{event='history_only_fixture',position=position})
+    deliver(sent[#sent])
+    assert(feed.history[#feed.history].text:find('NONCOMBAT '..family,1,true),'noncombat history discarded')
+    assert(#feed.entries==beforeCount and (not firstSerial or feed.entries[1].serial==firstSerial),'noncombat evicted combat')
+end
+P:CombatEvent(a,enemy,'sanctuary','Combat is nullified in the sanctuary zone.',{event='sanctuary_combat_nullified'})
+deliver(sent[#sent])
+assert(feed.entries[#feed.entries].family=='sanctuary' and feed.history[#feed.history].family=='sanctuary')
+assert(feed.entries[#feed.entries].text==feed.history[#feed.history].text,'combat/history wording diverged')
+local stale={family='progression',text='old HP roll',category=2,created=clock}
+feed.entries[#feed.entries+1]=stale
+dofile(root..'cl_combat_roll_feed.lua')
+for _,entry in ipairs(feed.entries) do assert(entry~=stale,'Lua refresh retained old noncombat rows') end
+print('COMBAT_TAIL_PASS: history retains all noncombat families; bursts cannot evict combat; sanctuary note; exact shared combat text; replay/ACK/cues retained; hot reload cleanup')

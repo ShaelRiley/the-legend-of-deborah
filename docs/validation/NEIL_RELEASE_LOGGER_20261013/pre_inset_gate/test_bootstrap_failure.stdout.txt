@@ -1,0 +1,13 @@
+[LOD:BOOTSTRAP] campaign initialization start reason=failure fixture attempt=1
+[LOD:BOOTSTRAP] campaign initialization start reason=explicit retry attempt=2
+[LOD:BOOTSTRAP] recovery complete seed=2 buildReady=true recoveries=1
+[LOD:BOOTSTRAP] campaign initialization start reason=returned failure attempt=3
+[LOD:BOOTSTRAP] campaign initialization start reason=retry returned failure attempt=4
+PASS bootstrap exceptions, partial seed retry, bounded automatic recovery and live-state preservation
+[LOD:BOOTSTRAP] campaign initialization start reason=InitPostEntity attempt=5
+[LOD:BOOTSTRAP] campaign initialization start reason=player recovery after startup attempt=6
+[LOD:BOOTSTRAP] recovery complete seed=6 buildReady=true recoveries=2
+[LOD:BOOTSTRAP] campaign initialization start reason=InitPostEntity attempt=7
+[LOD:BOOTSTRAP] campaign initialization start reason=player recovery after startup attempt=8
+[LOD:BOOTSTRAP] recovery complete seed=8 buildReady=true recoveries=3
+PASS actual InitPostEntity exception/false-return recovery, empty-server startup and late callback preservation

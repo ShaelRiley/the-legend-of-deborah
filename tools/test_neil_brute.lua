@@ -40,6 +40,9 @@ for seed=1,10 do
  assert(escort[key(meta.Hunt.bruteCell)]==2)
  local g2=assert(LOD.MazeGenerator:Generate(seed*1297));assert(P:Plan(g2,seed*1297))
  assert(key(g2.Progression.Hunt.neilCell)==key(meta.Hunt.neilCell))
+ assert(key(g2.Progression.Hunt.releaseCell)==key(meta.Hunt.releaseCell))
+ local pre=H:Walk(g,{key(g.Start)},{[meta.Gates[3].edgeKey]=true,[meta.Gates[4].edgeKey]=true,[meta.JailEdge.edgeKey]=true})
+ assert(not pre[key(meta.Hunt.releaseCell)] and reach[key(meta.Hunt.releaseCell)],'button not behind Yellow/before Black')
  graphs[#graphs+1]=g
 end
 local g=graphs[1]
@@ -63,7 +66,32 @@ end
 LOD.EnemyVariance={Apply=function(_,e) assert(e.LODEncounterOrdinal and e.LODArchetypeId);mutations=mutations+1 end}
 assert(not H:Start() and made==0,'early spawn')
 s.GatesOpen={true,true,true,false};s.ObjectiveStage=P.Stages.FIND_NEIL
+assert(not H:Start() and made==0,'Yellow alone spawned Neil')
+assert(P:GetObjectiveText():find('BUTTON'))
+assert(key(P:GetObjectiveGraphTarget().a)==key(g.Progression.Hunt.releaseCell))
+local button=env.actor(1)
+button.LODReleaseState=s;button.LODReleaseGraph=g;button.LODReleaseSeed=s.LevelSeed
+button.anchor=N:CellCenter(g.Progression.Hunt.releaseCell)
+function button:GetPickupPosition() return self.anchor end
+function button:SetReleased(value) self.released=value end
+s.NeilReleaseButton=button
+local oldEye=env.hero.GetEyeTrace
+env.hero.GetEyeTrace=function() return {Entity=button} end
+env.hero:SetPos(button.anchor+Vector(100,0,0))
+assert(not H:Release(env.hero,button),'remote button use')
+env.hero:SetPos(button.anchor)
+s.GatesOpen[3]=false;assert(not H:Release(env.hero,button),'early release');s.GatesOpen[3]=true
+button.LODReleaseState={};assert(not H:Release(env.hero,button),'stale run button');button.LODReleaseState=s
+button.LODReleaseGraph={};assert(not H:Release(env.hero,button),'stale graph button');button.LODReleaseGraph=g
+button.LODReleaseSeed=0;assert(not H:Release(env.hero,button),'stale seed button');button.LODReleaseSeed=s.LevelSeed
+s.SimulationFrozen=true;assert(not H:Release(env.hero,button),'frozen release');s.SimulationFrozen=false
+env.hero.GetEyeTrace=function() return {Entity=nil} end
+assert(not H:Release(env.hero,button),'untraced use');env.hero.GetEyeTrace=function() return {Entity=button} end
 D.activeCount=LOD.Config.Encounter.ActiveHostileCeiling-4
+assert(H:Release(env.hero,button) and s.NeilReleased and button.released and not s.NeilHunt,'capacity denied release receipt lost')
+assert(not H:Release(env.hero,button),'duplicate release')
+assert(P:GetObjectiveText():find('FIND NEIL') and key(P:GetObjectiveGraphTarget().a)==key(g.Progression.Hunt.neilCell))
+env.hero.GetEyeTrace=oldEye
 assert(not H:Start() and made==0,'wanderer reserve stolen')
 D.activeCount=0;failAt=2
 assert(not H:Start() and not s.NeilHunt,'partial pair committed')
@@ -218,7 +246,9 @@ end
 ents.FindByClass=function(class) return class=='lod_gate' and gates or {} end
 D.activeCount=0;D.Entities={};R.unranked=false
 local n=made;env.commands.lod_neil_brute_testkit(env.hero)
-assert(R.unranked and s.ObjectiveStage==P.Stages.FIND_NEIL and s.NeilHunt.started)
+assert(R.unranked and s.ObjectiveStage==P.Stages.FIND_NEIL and not s.NeilHunt and not s.NeilReleased)
+assert(made==n,'testkit skipped the release button')
+s.NeilReleased=true;assert(H:Start())
 assert(made==n+2 and not s.Cards[4] and not s.GatesOpen[4] and not s.JailKey)
 env.commands.lod_neil_brute_testkit(env.hero);assert(made==n+2)
 s.ObjectiveStage=P.Stages.RESCUE_DEBORAH;s.JailKey=true;s.JailDoorOpen=true
@@ -257,4 +287,14 @@ end
 s.Level=2^20+21 -- campaign transport must not wrap at the former 20-bit boundary
 roundTrip();assert(LOD.Minimap.level==s.Level)
 dofile(root..'cl_minimap_reliability.lua');roundTrip();assert(LOD.Minimap.level==s.Level)
+-- The build-owned release control recovers if its native entity disappears;
+-- released/failed dungeons never manufacture another control or pair.
+dofile(root..'sv_progression_builder.lua')
+P:ResetLevelState(g);s=R.State;s.LevelSeed=1297;s.BuildReady=true
+local b1=assert(H:EnsureReleaseButton())
+assert(b1==s.NeilReleaseButton and b1.LODReleaseGraph==g and b1.LODReleaseState==s)
+assert(H:EnsureReleaseButton()==b1,'duplicate control')
+b1:Remove();local b2=assert(H:EnsureReleaseButton());assert(b2~=b1 and b2==s.NeilReleaseButton)
+s.NeilReleased=true;b2:Remove();assert(not H:EnsureReleaseButton(),'released control respawned')
+s.NeilReleased=false;s.Failed=true;assert(not H:EnsureReleaseButton(),'failed dungeon control respawned');s.Failed=false
 print('NEIL_BRUTE_PASS: seeded multi-floor progression, pair/reserve, armed defense/repeated Neil hits/survivor attacks/cooldown, death-only key, Black checkpoint, stale callbacks, charge/hit-stun/stairs, testkit, both minimap decoders')

@@ -32,9 +32,16 @@ local function addEntry(category, text, serial, family, tracked, segments, cue, 
         text = tostring(text or ""),
         created = CurTime(), serial = serial, family = family, tracked = tracked, position=position
     }
-    Feed.entries[#Feed.entries + 1] = entry
-    while #Feed.entries > MAX_ENTRIES do table.remove(Feed.entries, 1) end
     if Feed.RetainFeedback then Feed:RetainFeedback(entry) end
+    if LOD.DieLogger:IsCombatEntry(entry) then
+        Feed.entries[#Feed.entries + 1] = entry
+        while #Feed.entries > MAX_ENTRIES do table.remove(Feed.entries, 1) end
+    end
+end
+
+-- A hot reload must also retire noncombat rows already in the old live tail.
+for i=#Feed.entries,1,-1 do
+    if not LOD.DieLogger:IsCombatEntry(Feed.entries[i]) then table.remove(Feed.entries,i) end
 end
 
 net.Receive("LOD_CombatRoll", function()

@@ -83,7 +83,7 @@ end
 -- nearby living observers use their OWN WIS radius around the actual actors.
 -- NPC-only resolutions therefore have a route, without scanning the world.
 local publicFamilies = {routine=true, damage=true, roll=true, status=true,
-    clear=true, resist=true, weakness=true, proc=true}
+    clear=true, resist=true, weakness=true, proc=true, sanctuary=true}
 local function send(self, actors, category, text, family, fields)
     if IsValid(actors) then actors = {actors} end
     if type(actors) ~= "table" then return end

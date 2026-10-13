@@ -73,7 +73,7 @@ function D:ProtectedCells(g)
         if tag.safe or tag.objective or tag.role == "resupply" or tag.role == "boss" then out[k] = true end
     end
     for k in pairs(p.Warden and p.Warden.cells or {}) do out[k] = true end
-    if p.Hunt then add(p.Hunt.neilCell); add(p.Hunt.bruteCell) end
+    if p.Hunt then add(p.Hunt.neilCell); add(p.Hunt.bruteCell); add(p.Hunt.releaseCell) end
     for _, encounter in ipairs(g.EncounterPlan and g.EncounterPlan.encounters or {}) do
         out[encounter.cellKey or key(encounter.cell)] = true
     end
@@ -92,6 +92,9 @@ function D:ValidateRoutes(g, extraEdges, extraCells)
     blocked[p.JailEdge.edgeKey] = true
     for i, gate in ipairs(p.Gates or {}) do
         local reach = walk(g, key(g.Start), blocked, extraCells)
+        if i==4 and p.Hunt and p.Hunt.releaseCell and not reach[key(p.Hunt.releaseCell)] then
+            return false,"unreachable Neil release button"
+        end
         local objective = p.Keycards and p.Keycards[i] and p.Keycards[i].cell
             or (i == 4 and p.Hunt and p.Hunt.neilCell)
         if objective and not reach[key(objective)] then return false, "unreachable gate objective " .. i end
@@ -167,6 +170,7 @@ function D:BlockadeApproach(g, placement, environment)
         if gate then
             local objective=p.Keycards and p.Keycards[stage+1] and p.Keycards[stage+1].cell
                 or (stage+1==4 and p.Hunt and p.Hunt.neilCell)
+            if stage+1==4 and p.Hunt and p.Hunt.releaseCell and not reach[key(p.Hunt.releaseCell)] then return nil end
             if not reach[key(gate.beforeCell)] or (objective and not reach[key(objective)]) then return nil end
             blocked[gate.edgeKey]=environment and environment.edges[gate.edgeKey] or nil
         end

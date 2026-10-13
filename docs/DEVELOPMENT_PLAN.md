@@ -1,4 +1,25 @@
-# Current checkpoint — legal cross-floor routes and stock progression pickups
+# Current checkpoint — Neil release button and quieter logger
+
+Author's three corrections on main `4d14c2b140b9845a0d46c53957dc0695830e3744`.
+Yellow now directs the party to a reachable stock-prop E release button before
+the unique Neil/Brute hunt can spawn. Exact ownership, shared receipt, retries,
+reserved access and a low inset pedestal retain progression and clear spawn
+centers. Sanctuary visuals retire; bilateral protection remains with combat
+nullification notes. The lower-right tail admits combat only; full menu/L history
+retains all canonical records, cues, order and bounded persistence.
+
+23 selected checks passed on frozen source before the final map-style prop inset;
+5 final prop/hunt/full-build/installer/syntax checks pass on unchanged final source.
+110 installer / 106 server / 48 client source identities are covered. Google
+rejected the scoped GDD mirror; the author's correction governs and proposals/
+failure receipts remain. See [evidence](validation/NEIL_RELEASE_LOGGER_20261013.md).
+
+Next native action: fully quit/update/install main, restart gm_flatgrass, open
+Yellow and press its release button; confirm one hunt, invisible sanctuary note,
+combat-only tail and full L/menu history. Native physical Use/collision/co-op and
+Steam Deck ≥40 FPS remain unaccepted. No Workshop/VPS operation.
+
+# Previous checkpoint — legal cross-floor routes and stock progression pickups
 
 Author's Dungeon-1 NO LEGAL ROUTE screenshot and all-angle stock-prop correction,
 based on main `3893adc3d3f262d9c10548823d24edabd19119f9`. The client searched only

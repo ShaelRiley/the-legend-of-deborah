@@ -22,7 +22,7 @@
         "In staging, visit the Hermit. Choose Fighter, Rogue, or Wizard and settle your first feat choice. Collect your starter weapon.",
         "Press P to inspect your character. Use Equipment to choose gear, and I to set your spell. Read any unfamiliar effect before entering.",
         "Use the portal. The first Hero entering each dungeon starts its base 30:00 collapse clock, plus any active Time Management allowance.",
-        "Find the cards and open their gates: Red, Blue, Yellow, then Black. Neil carries the Black Keycard.",
+        "Find the cards and open their gates: Red, Blue, Yellow. Find the release button behind Yellow and press E to spawn Neil and his Brute escort. Defeat Neil, collect his Black Keycard, then open Black.",
         "Defeat Gordon; at Level 20, also defeat Hector’s Director’s Heart in the court. Collect the Jail Key at the arena center, open the rescue chamber, then touch or use the current damsel to complete the level. From Level 21, recover the marked cash case instead."
       ],
       "quote": "Beating the Warden isn't the rescue. Come and get me!"
@@ -31,7 +31,7 @@
       "id": "arrival-sanctuary",
       "title": "Arrive, look, then explore",
       "text": [
-        "The portal places you in a small sanctuary inside the dungeon. A gold floor outline and SANCTUARY message mark the protected area. Monsters cannot enter it or harm its occupants. Combat is disabled in both directions: you cannot shoot, cast harmful effects, or attack through a proxy from safety. The sanctuary is not a healing service, and the collapse clock keeps running.",
+        "The portal places you in a small sanctuary inside the dungeon. The sanctuary is invisible. A blocked attack adds “Combat is nullified in the sanctuary zone” to the logger. Monsters cannot enter it or harm its occupants. Combat is disabled in both directions: you cannot shoot, cast harmful effects, or attack through a proxy from safety. The sanctuary is not a healing service, and the collapse clock keeps running.",
         "Look around, choose your exit, then leave normally. The opening admits a small first contact, a breathing space, and gradually larger, more varied contacts as you explore. Wandering monsters and room squads share this opening-pressure limit; they do not each get a separate allowance. The wider dungeon remains inhabited.",
         "Teammates may arrive at different times. Someone waiting safely at the entrance does not pause distant explorers. Returning to safety or reconnecting does not restart the whole dungeon’s introduction. Ordinary checkpoint and boss-respawn destinations remain unchanged."
       ]
@@ -158,7 +158,7 @@
         ],
         [
           "4 · Black",
-          "Find Neil → defeat Neil → take Black Keycard"
+          "Press the release button beyond Yellow → find and defeat Neil → take Black Keycard"
         ],
         [
           "5 · The dungeon boss",
@@ -311,7 +311,7 @@
         "A damage expression such as 2d6 means two six-sided dice. Eligible damage dice can explode: a qualifying result adds another die, which may continue the chain. Generation, progression, healing, and other sealed rolls do not inherit damage explosions.",
         "Strength adds once to a physical damage contract per target; Wisdom does the same for Wisdom-scaled Magic. Constitution reduces positive die contributions, with the ordinary minimum-one rule. Strength and Wisdom are flat additions, not percentage multipliers.",
         "Aimed and Backstab multiples, equipment, elements, Dodge, Block, and Arcane Shield then matter according to their rules. A zero or immune attack does not become damaging merely because a bonus exists.",
-        "Watch the lower-right readout, or press L for the Die Log. Both display the same authoritative events, wording, dice and identity colors in the same order. The live tail fades; the Die Log retains up to 1,000 records. Saves, failed Dodge checks, misses, status duration and recovery dice, Health Regeneration, and HP growth are meaningful even without a damaging hit. Long dice groups use ordered parts rather than discarding results.",
+        "The lower-right feed shows combat only: attacks and their dice, saves, statuses, defenses, procs, kills, casting and sanctuary-nullification notes. Open the Die Logger from the Player Menu or press L for up to 1,000 records of all events, including progression, XP, resources, discoveries, objectives and music. Combat records keep the same wording and dice detail in both views. Nearby combat observations use your Wisdom radius; your progression and personal resources remain private. Routine passive Magic refill and reaching 100 do not add log entries. Repeated legitimate rolls remain distinct. Long dice groups use ordered parts rather than discarding results.",
         "Wisdom expands your listening range for nearby combat rolls, including enemy-only outcomes. Each eligible listener receives one copy of a resolution; repeated real rolls remain separate. Your progression and personal resource records stay private. Routine passive Magic refill and reaching 100 do not add log entries; Magic spend, diversion and actual authored proc restoration still matter. Look directly at a teammate for their styled username as character name; a controlled Soldier is identified as Soldier. Active ailments retain their HUD and enemy effects.",
         "Every creature can defend itself up close. Ranged and support enemies can answer with a short physical strike: watch the forward arc and sidestep, retreat, or use cover. Held and Muted do not prevent this stationary attack.",
         "Crowbar hits still hurt during an enemy’s melee-stagger recovery, but only one ordinary melee flinch can begin every three seconds. Repeated bashing cannot keep an enemy permanently defenseless; be ready for its reply."
@@ -1398,7 +1398,7 @@
       "title": "Neil has the Black Keycard",
       "art": "bosses",
       "text": [
-        "After Yellow Gate, look for Neil: the green-suited bureaucrat clutching a briefcase. Neil flees through the open labyrinth and across connected floors. He does not attack you. He alone carries the Black Keycard.",
+        "After Yellow Gate, find the physical release button and press E. Neil and his Brute escort appear only after this shared release. Then look for Neil: the green-suited bureaucrat clutching a briefcase. Neil flees through the open labyrinth and across connected floors. He does not attack you. He alone carries the Black Keycard.",
         "Brute is his independently killable antlion-guard escort. It keeps near Neil and reacts when you hit him. Orange warning marks a charge: after a 1.25-second preparation, Brute commits to its direction. Sidestep that line. A wall collision stuns it for two seconds.",
         "You may defeat the escort first, but Brute is not an invulnerability switch. Neil can be defeated independently. Take the Black Keycard dropped by Neil to progress.",
         "Neil is fixed at Dungeon Level. Brute is fixed at Dungeon Level +1."

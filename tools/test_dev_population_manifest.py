@@ -35,7 +35,7 @@ with tempfile.TemporaryDirectory() as tmp:
                 stdout, stderr = process.communicate()
                 assert process.returncode == 0, stdout + stderr
             rows = (data / 'dev_population_sources.txt').read_text().splitlines()
-            assert len(rows) == 101
+            assert len(rows) == 110
             assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua') for row in rows)
             assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/shared.lua') for row in rows)
             assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sv_progression_director.lua') for row in rows)

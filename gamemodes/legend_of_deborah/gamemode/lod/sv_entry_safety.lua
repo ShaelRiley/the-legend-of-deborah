@@ -563,6 +563,7 @@ function S:DamageGate(target,info)
     local source=info and self:Source(info:GetAttacker())
     if not info then return false end
     if not self:CombatAllowed(target,source) then
+        if info:GetDamage()>0 then self:ReportNullifiedCombat(target,source) end
         self.Stats.damageDenied=self.Stats.damageDenied+1;info:SetDamage(0)
         if info.SetDamageForce then info:SetDamageForce(vector_origin) end
         if LOD.CombatRolls and LOD.CombatRolls.PendingDamageReports then LOD.CombatRolls.PendingDamageReports[info]=nil end
@@ -580,6 +581,23 @@ function S:DamageGate(target,info)
     end
     return false
 end
+function S:ReportNullifiedCombat(target,source)
+    source=self:Source(source)
+    if not self:Protected(target) and not self:Protected(source) then return end
+    local presentation=LOD.RPGPresentation
+    if presentation and presentation.CombatEvent then
+        presentation:CombatEvent(target,source,"sanctuary",
+            "Combat is nullified in the sanctuary zone.",{event="sanctuary_combat_nullified"})
+    end
+end
+-- Ordinary weapon attack admission refuses sanctuary occupants before damage
+-- exists. Explain a deliberate primary-attack press once, not every AI query
+-- or held-fire frame. Harmful Magic/status/native outcomes use their own gates.
+hook.Add("KeyPress","LOD_EntrySanctuaryAttackNotice",function(ply,keyPressed)
+    if keyPressed==IN_ATTACK and IsValid(ply) and ply:Alive() and S:Protected(ply) then
+        S:ReportNullifiedCombat(ply,ply)
+    end
+end)
 function S:Snapshot()
     local s=state();local g=s and s.Graph;local data=g and g.EntrySafety
     if not data or not self.Owner or self.Owner.state~=s or self.Owner.graph~=g then

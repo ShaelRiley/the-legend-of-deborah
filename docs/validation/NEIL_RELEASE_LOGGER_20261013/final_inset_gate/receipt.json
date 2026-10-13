@@ -1,0 +1,30 @@
+{
+  "passed": 5,
+  "total": 5,
+  "results": [
+    {
+      "name": "release_prop",
+      "returncode": 0
+    },
+    {
+      "name": "neil_hunt",
+      "returncode": 0
+    },
+    {
+      "name": "full_build",
+      "returncode": 0
+    },
+    {
+      "name": "installer",
+      "returncode": 0
+    },
+    {
+      "name": "syntax",
+      "returncode": 0
+    }
+  ],
+  "source_before": "e7de4398993220ef4c66f38348ca9a3da590d996b72321b8e712f51b107f97aa",
+  "source_after": "e7de4398993220ef4c66f38348ca9a3da590d996b72321b8e712f51b107f97aa",
+  "changed_during_gate": false,
+  "native_gmod_accepted": false
+}

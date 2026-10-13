@@ -1,0 +1,79 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+PASS 1 one union delivery per participant/nearby observer
+PASS 2 one event serial and frozen wording for all recipients
+PASS 3 only direct participants own feedback acknowledgments
+PASS 4 dead/far observers excluded; shared spans encoded once
+PASS 5 direct victim receives its result beyond observer radius
+PASS 6 NPC-only outcome routes by actual NPC positions and observer WIS
+PASS 7 explicit progression/resource families remain private
+PASS 8 identical legitimate outcomes retain distinct serials
+PASS 9 real Magic sync/full-cap crossing is silent, HUD state preserved
+PASS 10 real passive regeneration reaches 100 without event noise
+PASS 11 saved status consumes its original one die
+PASS 12 save natural/DC and outcome both represented
+PASS 13 failed save/duration preserve draws and deadline
+PASS 14 save → duration → outcome share causal order
+PASS 15 already-active status does not hide newly consumed duration dice
+PASS 16 actual status clear reaches source and target
+PASS 17 Attunement doubles the single ordinary weakness bonus
+PASS 18 exactly one elemental-table choice is reported
+PASS 19 initial poison recovery dice are visible without timing change
+PASS 20 failed poison recovery shows save and fresh interval
+PASS 21 successful poison recovery retains save and clear
+PASS 22 actual status damage reports its consumed die and resolved result
+PASS 23 long dice array splits into finite 64-value records rather than truncating
+PASS 24 ordered parts have explicit common labels in canonical stream
+PASS 25 fallible dice presentation cannot change status result or draw count
+PASS 26 failed Dodge preserves damage and one authoritative float
+PASS 27 failed Dodge is visible once to both participants
+PASS 28 cached failed Dodge does not reroll or duplicate the record
+PASS 29 successful Dodge still commits zero damage
+PASS 30 successful Dodge explicitly represents its zero result
+PASS 31 ineligible zero-chance Dodge produces neither RNG nor fake event
+PASS 32 real Block authority retains chance and damage outcome
+PASS 33 Block uses the same single-event participant union and cache
+PASS 34 NPC Morale save/cooldown retain exactly four draws and timing
+PASS 35 Morale record retains previously omitted cooldown dice
+PASS 36 enemy HP generation has one serial, no all-player fan-out duplicates
+PASS 37 ordinary non-exploding miss keeps its committed dice exactly once
+PASS 38 delayed restoration to 100 remains meaningful despite passive-noise exception
+PASS 39 zero actual recovery emits no fake resource gain
+PASS 40 total-only legacy save remains authoritative without fabricated natural dice or report errors
+PASS 41 first local sync establishes baseline without invented revival
+PASS 42 real same-Hero life loss reported
+PASS 43 elimination remains meaningful
+PASS 44 same retained Hero resurrection reported
+PASS 45 replacement Hero is not reported as revived
+PASS 46 replacement run with same epoch establishes new baseline
+PASS 47 new campaign epoch cannot inherit life comparison
+PASS 48 late-joining controller receives no synthetic life event
+PASS 49 active Soldier identity uses actual role, not dormant Hero
+PASS 50 username containing as and Soldier have separate canonical semantic roles
+PASS 51 role retirement uses shared lifecycle stream
+PASS 52 fractional HP regeneration is not a committed outcome
+PASS 53 actual whole HP regeneration is retained
+PASS 54 regeneration ceiling no-op is silent
+[LOD:RPG-ABILITIES] Starting abilities: raw total 78 >= 74; STR 4d6[6+2+4+2] drop lowest = 12; DEX 4d6[3+5+6+5] drop lowest = 16; CON 4d6[1+4+1+3] drop lowest = 8; INT 4d6[3+6+1+6] drop lowest = 15; WIS 4d6[1+1+4+5] drop lowest = 10; CHA 4d6[6+5+6+3] drop lowest = 17; CON 8 - 2d2[2+2] = 4; WIS 10 - 1d3[3] = 7; STR 12 - 1d3[3] = 9; final total 68. No post-weakness reroll.
+PASS 55 real Hero initialization/class authority loads
+PASS 56 actual Hero advancement succeeds
+PASS 57 committed Hero HP die reaches canonical stream
+PASS 58 HP progression is private and delivered once
+PASS 59 cached/repeated level does not replay HP dice
+PASS 60 actual Soldier admission owns its separate progression
+PASS 61 fresh Soldier HP dice are private and complete for committed levels
+PASS 62 repeated Soldier admission neither rerolls nor replays HP dice
+PASS 63 actual Soldier XP growth reports its new dice and outcome
+PASS 64 Soldier events cannot mutate or advance dormant Hero ownership
+PASS 65 retired Soldier reference cannot emit a new growth event
+PASS 66 real receiver retains exact live/history wording
+PASS 67 live/history preserve event identity and semantic spans
+PASS 68 unrelated client cannot acknowledge another player event
+PASS 69 owner acknowledgment records transport receipt only
+PASS 70 repeat network serial does not duplicate history
+PASS 71 same text with a fresh authoritative serial is not suppressed
+PASS 72 live tail, history and replay memory remain bounded
+PASS 73 retained chronological order survives rollover
+PASS 74 batched persistence retains serial/order
+PASS 75 oversize persisted history is bounded and not replayed live
+PASS 76 no unexpected presentation or engine-boundary errors: 
+SPOT05_DIE_LOGGER_PASS 76 bounded production assertions; native rendering/network acceptance pending

@@ -1,0 +1,2 @@
+FLOOR_MAP_PROPS_PASS: actual book/pedestal entities; upright native models; solid stationary bounds; unscaled low block; clear arrival center; canonical touch anchor/cadence; fallback; both-floor transmission; owned teardown
+NEIL_RELEASE_PROP_PASS: real Initialize/Use/Draw/cleanup; stock body and native physics/use; seating on signed floors; failure rejects body and retires pedestal

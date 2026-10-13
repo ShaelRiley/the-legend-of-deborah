@@ -118,8 +118,24 @@ function MazeBuilder:_BuildProgressionEntities(graph)
 
     for _, gate in ipairs(progression.Gates or {}) do self:_Register(self:_SpawnProgressionGate(gate, graph)) end
     for _, card in ipairs(progression.Keycards or {}) do self:_Register(self:_SpawnKeycard(card)) end
+    if progression.Hunt then self:_Register(self:_SpawnNeilReleaseButton(graph)) end
     self:_Register(self:_SpawnJailDoor(progression.JailEdge, graph))
     self:_Register(self:_SpawnDeborah(progression.DeborahCell))
+end
+
+function MazeBuilder:_SpawnNeilReleaseButton(graph)
+    local c=graph.Progression.Hunt.releaseCell
+    if not c then return nil end
+    local ent=ents.Create("lod_neil_release_button")
+    if not IsValid(ent) then return nil end
+    local state=LOD.RunManager.State
+    ent.LODReleaseState=state;ent.LODReleaseGraph=graph;ent.LODReleaseSeed=state.LevelSeed
+    ent:SetPos(self:CellCenter(c)+Vector(0,0,PC.KeycardHeight))
+    ent:Spawn()
+    if not IsValid(ent) then return nil end
+    ent:Activate()
+    state.NeilReleaseButton=ent
+    return ent
 end
 
 local previousBuild = MazeBuilder.Build
