@@ -1,0 +1,15 @@
+LOW_END_STATIC_WORK entities=120 frames=120 cache_key_formats=0 matrix_allocations=0 native_peak_meshes=61
+LOW_END_NATIVE_GETTERS entities=120 frames=120 reads=57600 native_fps_measured=false
+LOW_END_DRAW_SNAPSHOT entities=120 passes=120 native_vector_components=129600 native_fps_measured=false
+LOW_END_PLANE_WORK entities=120 passes=120 absolute_values=0 basis_component_reads=1080 native_fps_measured=false
+LOW_END_STATE_WORK entities=120 passes=120 submissions=14400 native_state_calls=600 native_fps_measured=false
+LOW_END_STATE_LIFETIME_PASS: mixed floor/stair/grate/false-floor; neutral wireframes; replacement/missing helpers; nested material/alpha; owned error unwind; untouched empty/culled scopes; ordinary API
+LOW_END_KIND_WORK entities=1200 drawable=120 passes=120 submissions=14400 native_kind_reads=0 native_validity_calls=14400 collision_entity_field_reads=0 native_fps_measured=false
+LOW_END_DRAWABLE_TABLE_WORK drawable=120 passes=120 submissions=14400 native_entity_field_reads=172800 native_fps_measured=false
+LOW_END_KIND_LIFETIME_PASS: declared native proxies; same-pass transitions; pre-write reentrancy; missed initial replication; legacy/replaced accessors; weak/copy Lua-table fallback; invalid native guards; full update/transmission; missing datatables; removal
+LOW_END_STATIC_THINK entities=120 frames=600 callbacks=1200 native_fps_measured=false
+LOW_END_VIEW_WORK entities=600 submitted=100 native_fps_measured=false
+LOW_END_ELONGATED_VIEW entities=301 submitted=101 native_fps_measured=false
+LOW_END_RENDER_PASS: 173 visible-corner and 73 conservative plane cases (3 without an inside corner); native getter reuse and scheduled bounds; FOV/aspect/roll/pitch/yaw/nested views; mutations/kind/UV/material/eviction/cleanup/refresh/weak owners; ceiling=256
+LOW_END_SUPPORT_WORK entities=120 rotated=30 frames=120 passes=240 absolute_values=0 native_geometry_getters=115200 camera_basis_reads=2160 native_draws=28800 wireframes=9600 native_fps_measured=false
+LOW_END_SUPPORT_PARITY passes=300 exact_native_mesh_wireframe_fallback_values=true; eye translation, axes/projection, mutable bounds/pose, live getters, hazards/grates, life/kind, full update, incomplete/nested views, refresh/removal

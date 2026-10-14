@@ -517,7 +517,9 @@ hook.Add("Think", "LOD_ReconcileContainerSectionMaterials", function()
 
     local changedThisBatch = false
     local processed = 0
+    local deadline = SysTime and SysTime() + 0.0035
     while processed < RECONCILE_BATCH_SIZE and total > 0 do
+        if processed > 0 and deadline and SysTime() >= deadline then break end
         if reconcileCursor > total then
             reconcileCursor = 1
             if changedThisBatch then

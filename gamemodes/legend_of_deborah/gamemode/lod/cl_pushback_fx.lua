@@ -19,6 +19,10 @@ local ghostMaterial = Material("models/debug/debugwhite")
 local dustTexture = "particle/particle_smokegrenade"
 local sparkTexture = "effects/spark"
 local TRAIL_LIFETIME = 0.30
+local function ghostBudget()
+    local cv=GetConVar and GetConVar("lod_reduced_effects")
+    return (cv and cv:GetBool() or FrameTime and FrameTime()>0.022) and 8 or 16
+end
 local MAX_TRAILS = 12
 local MAX_GHOST_DISTANCE_SQR = 2200 * 2200
 local MIN_GHOST_SAMPLES = 4
@@ -155,7 +159,7 @@ net.Receive("LOD_PushbackFX", function()
     local delta = endPos - startPos
     local moved = delta:Length()
     if moved > 0.05 then
-        local sampleCount = ghostSampleCount(moved)
+        local sampleCount = math.min(ghostSampleCount(moved),ghostBudget())
         local ghosts = {}
         for i = 1, sampleCount do
             local ghost = acquireGhost(model)
@@ -230,7 +234,7 @@ local function drawBodyGhost(event, ghost, t, alpha)
     render.MaterialOverride(nil)
 end
 
-local function drawTrail(event, now)
+local function drawTrail(event, now, budget)
     local age = now - event.started
     local fraction = math.Clamp(age / event.lifetime, 0, 1)
     local fade = 1 - fraction
@@ -250,10 +254,14 @@ local function drawTrail(event, now)
     -- throws can use the full sixteen without making every ordinary push noisy.
     if nearby then
         local samples = math.max(1, tonumber(event.sampleCount) or #event.ghosts)
-        for i, ghost in ipairs(event.ghosts or {}) do
-            local t = i / (samples + 1)
+        local count=math.min(samples,budget,#(event.ghosts or {}))
+        for i=1,count do
+            -- Sparse overload samples still span the complete throw.
+            local index=math.max(1,math.floor(i*#event.ghosts/count))
+            local t = i / (count + 1)
             local pathBrightness = 0.58 + 0.42 * t
-            drawBodyGhost(event, ghost, t, math.floor(150 * fade * pathBrightness))
+            drawBodyGhost(event, event.ghosts[index], t, math.floor(150 * fade * pathBrightness))
+            FX.ghostDraws=FX.ghostDraws+1
         end
     end
 
@@ -267,15 +275,22 @@ local function drawTrail(event, now)
     return true
 end
 
-hook.Add("PostDrawTranslucentRenderables", "LOD_PushbackMotionTrails", function()
+hook.Add("PostDrawTranslucentRenderables", "LOD_PushbackMotionTrails", function(depth,sky,sky3d)
+    if depth or sky or sky3d then return end
     local now = CurTime()
+    local frame=FrameNumber and FrameNumber()
+    if not frame or FX.drawFrame~=frame then FX.drawFrame=frame;FX.ghostDraws=0 end
+    local remaining=math.max(0,ghostBudget()-(FX.ghostDraws or 0))
+    local perTrail=math.max(1,math.floor(remaining/math.max(1,#FX.trails)))
     for i = #FX.trails, 1, -1 do
         local event = FX.trails[i]
         if now - event.started >= event.lifetime then
             releaseTrailGhosts(event)
             table.remove(FX.trails, i)
         else
-            drawTrail(event, now)
+            local before=FX.ghostDraws
+            drawTrail(event, now, math.min(perTrail,remaining))
+            remaining=remaining-(FX.ghostDraws-before)
         end
     end
 end)

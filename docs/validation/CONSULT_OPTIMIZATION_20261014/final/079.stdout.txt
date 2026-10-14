@@ -1,0 +1,1 @@
+BESTIARY_B11_VISUAL_PASS: native Draw and cull bounds, full/reduced semantic glyphs/frozen routes, movement and melee countdowns, interruption/death/distance/fixed expiry

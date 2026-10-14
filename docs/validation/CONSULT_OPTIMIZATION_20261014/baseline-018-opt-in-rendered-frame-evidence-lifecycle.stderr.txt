@@ -1,0 +1,1 @@
+/workspace/scratch/24d8d722135d/the-legend-of-deborah/tools/test_performance_capture.lua: ...the-legend-of-deborah/tools/test_performance_capture.lua:76: assertion failed!

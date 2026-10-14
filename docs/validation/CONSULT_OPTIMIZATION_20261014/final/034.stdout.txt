@@ -1,0 +1,4 @@
+PASS boss resource modules: 120 substantive assertions; native traces, status authority and presentation remain runtime gates
+PASS boss resource soak and retention: 149 total assertions
+PASS boss resources plus drainage geometry: 184 total assertions
+PASS boss resources with production drainage support: 254 total assertions

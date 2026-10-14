@@ -1,0 +1,4 @@
+LOW_END_PALETTE build_world_visits=600 build_material_lookups=32 idle_600_world_visits=0 idle_material_lookups=0 build_lua_seconds=0.034453 idle_lua_seconds=0.000111 native_fps_measured=false
+LOW_END_PALETTE visible_assignment_fingerprint=151650907
+NATIVE_PALETTE_WORK instances=1868 initial_writes_per_setter=1868 steady_600_ticks_writes=0 getters_acknowledged=false native_fps_measured=false
+LOW_END_PALETTE_PASS: exact visible assignment, stable quiescence including native stale material/color getters; world/count/seed/model/mode/refresh lifetimes, <=192-model write cap, fallback/recovery

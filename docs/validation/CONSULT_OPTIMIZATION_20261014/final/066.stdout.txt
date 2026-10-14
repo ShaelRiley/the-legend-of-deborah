@@ -1,0 +1,1 @@
+PASS: B6 production Draw: exact footprints/heights, arming/armed/snap semantics, reduced effects, finite cleanup and distance culling

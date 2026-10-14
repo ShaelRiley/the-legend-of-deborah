@@ -1,0 +1,11 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B13_ISOLATION_PASS: B7 canonical physical attack, solo escape, party1–4 regroup, no walls/floors/dead/cloaked false cooperation, finite recovery
+BESTIARY_B13_LINK_PASS: frozen pair, Raw shared roll, pair1–4 deterministic selection, separating/exiting/LOS/acquisition/lives and no bystanders
+BESTIARY_B13_LIFETIME_PASS: source/Hero/run/graph/progression/campaign matrix before/deadline, Held/Muted/morale/hitstun, service gaps and finite deadlines
+BESTIARY_B13_GEOMETRY_PASS: support/cover/hulls, safe/objective/transition/gate exclusions and both Heroes actual hulls and supported lateral escape
+BESTIARY_B13_CALLBACK_PASS: death does not create order dependence, source/second-life/dungeon replacement stops stale settlement, reentrancy cannot repeat
+BESTIARY_B13_BOUNDS_PASS: cached32 fail closed, cap16/release, solo full warned finite exact-life Raw projectile and no service/deadline catchup
+BESTIARY_B13_NATIVE_GUARDS_PASS: initialized/reentrant warning, release replacement ownership, real solo Raw hit, no late-join transfer, Muted fallback and canonical morale dispatch

@@ -1,0 +1,1 @@
+DEV_POPULATION_MANIFEST_PASS exact 114-source hashes including optimized cargo/ghost/audio/trace/boss authorities; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup

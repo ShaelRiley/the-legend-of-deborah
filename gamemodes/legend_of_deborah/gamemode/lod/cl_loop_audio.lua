@@ -3,6 +3,9 @@
 if LOD.LoopAudio then LOD.LoopAudio.Closed=true;LOD.LoopAudio:Reset() end
 LOD.LoopAudio={Groups={},Limits={gas=2,watcher=2,fuse=4},Retired=setmetatable({}, {__mode='k'})}
 local A=LOD.LoopAudio
+local leaseService
+A.LeaseCount=0
+hook.Remove('Think','LOD_LoopAudioLeases')
 local function generation()
     local identity=LOD.ClientTopologyIdentity
     if identity and identity.key then return identity.key end
@@ -14,6 +17,8 @@ function A:Stop(group,entity)
     local rows=self.Groups[group];local row=rows and rows[entity]
     if row then
         rows[entity]=nil -- detach before native/reentrant cleanup
+        self.LeaseCount=math.max(0,self.LeaseCount-1)
+        if self.LeaseCount==0 then hook.Remove('Think','LOD_LoopAudioLeases') end
         local ok,err=pcall(row.patch.Stop,row.patch)
         if not ok and ErrorNoHalt then ErrorNoHalt('[LOD:AUDIO] '..tostring(err)..'\n') end
     end
@@ -81,6 +86,8 @@ function A:Touch(group,entity,path,volume,pitch,level,lease)
         end
         local patch=CreateSound(entity,path);if not patch then return end
         row={patch=patch,path=path,expires=CurTime()+math.min(2,math.max(.1,lease or .5))};rows[entity]=row
+        self.LeaseCount=self.LeaseCount+1
+        if self.LeaseCount==1 then hook.Add('Think','LOD_LoopAudioLeases',leaseService) end
         local ok,err=pcall(function()
             patch:SetSoundLevel(level)
             if rows[entity]==row and not self.Closed then patch:PlayEx(volume/self.Limits[group],pitch) end
@@ -98,7 +105,7 @@ function A:Touch(group,entity,path,volume,pitch,level,lease)
     row.expires=CurTime()+math.min(2,math.max(.1,lease or .5))
     return row.patch
 end
-hook.Add('Think','LOD_LoopAudioLeases',function()
+leaseService=function()
     local current=generation()
     if current~=A.Generation then A:Reset();A.Generation=current end
     if A:Muted() then A:Reset();return end
@@ -107,7 +114,7 @@ hook.Add('Think','LOD_LoopAudioLeases',function()
             if not A:OwnerLive(group,entity) or CurTime()>=row.expires then A:Stop(group,entity) end
         end
     end
-end)
+end
 hook.Add('EntityRemoved','LOD_LoopAudioEntityRemoved',function(entity,fullUpdate)
     -- Full updates/PVS loss are temporary; returning living actors may renew.
     A:StopOwner(entity,not fullUpdate)

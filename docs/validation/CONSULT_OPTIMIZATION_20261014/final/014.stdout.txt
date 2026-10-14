@@ -1,0 +1,1 @@
+LOW_END_OPTIONS_PASS: six unique saved bindings; map ranges; scrollable 1280x800 and 640x480 bounds; no preference writes on open; minigame lock

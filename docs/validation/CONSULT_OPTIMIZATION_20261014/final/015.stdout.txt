@@ -1,0 +1,6 @@
+OVERLAY_SUBMISSIONS unknown_view_boards=300 known_view_boards=150 unknown_view_brands=64 known_view_brands=32
+OVERLAY_WORK unknown_view_boards=300 known_view_boards=150 unknown_view_brands=64 known_view_brands=32 stable_600_frames_metric_reads=0 projected_corner_cases=181 native_fps_measured=false
+BRAND_GEOMETRY_WORK draws=600 vectors=600 fit_resolutions=0 native_fps_measured=false
+BRAND_SELECTION_WORK exact_scenes=32 largest_sort=64 max_admitted=64 native_fps_measured=false
+BRAND_SCENE_WORK candidates=968 admitted=64 frames=600 lua_seconds=1.302106 native_fps_measured=false
+CRATE_RENDER_PASS: 2048 original composition/orientation checks; independent untinted artwork; two lazy shader slots; 64-draw ceiling for 1000 candidates; rotated/shared slab UV seams; 192.0 cached opaque grate quads with underside and cleanup

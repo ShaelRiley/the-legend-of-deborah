@@ -1,0 +1,218 @@
+PHYSICAL_OK 1 Chonker is an ordinary-size stock pigeon
+PHYSICAL_OK 2 Black bomb is native-HP attackable with explicit initial state
+PHYSICAL_OK 3 Destroying Black bomb defuses without explosion
+PHYSICAL_OK 4 Proximity mine has a real arming window
+PHYSICAL_OK 5 Red mine triggers but preserves .85-second escape warning
+PHYSICAL_OK 6 Mine cannot damage before committed fuse
+PHYSICAL_OK 7 Triggered mine uses one shared blast
+PHYSICAL_OK 8 Gold and THE BIG ONE share one active signature slot
+PHYSICAL_OK 9 Focus-firing THE BIG ONE safely backfires into largest punish window
+PHYSICAL_OK 10 Duplicate bomb death cannot replay backfire
+PHYSICAL_OK 11 Bomb population is capped at eight
+PHYSICAL_OK 12 Guaranteed safe anchor rejects nearby bomb placement
+PHYSICAL_OK 13 Connectivity proof gates every new bomb
+PHYSICAL_OK 14 Skate movement has bounded turn rate
+PHYSICAL_OK 15 Phase two releases a staggered fast bomb-dropping lap
+PHYSICAL_OK 16 Phase three grammar reaches THE BIG ONE
+PHYSICAL_OK 17 No-Hero pause retires offensive bombs without boss reset
+PHYSICAL_OK 18 Felon body rejects the spawned-melon Push rule
+PHYSICAL_OK 19 Single arc and Bank Shot have differentiated lift and ricochet budgets
+PHYSICAL_OK 20 Spawned produce is explicitly Push-displaceable
+PHYSICAL_OK 21 Melon shatters after bounded admitted bounces
+PHYSICAL_OK 22 Melon fragments are harmless and short lived
+PHYSICAL_OK 23 Melon fragments are harmless and short lived
+PHYSICAL_OK 24 Duplicate impact cannot multiply chunks
+PHYSICAL_OK 25 Short bounce is a warned committed body attack
+PHYSICAL_OK 26 Short landing has real recovery
+PHYSICAL_OK 27 Long phase-two bounce drops bounded Melon Trail
+PHYSICAL_OK 28 Hard wall collision creates a separately previewed reflected rebound
+PHYSICAL_OK 29 Phase-three hard impacts have a total 14% nonlethal self-damage ceiling
+PHYSICAL_OK 30 Produce rain excludes authored safe anchor
+PHYSICAL_OK 31 Produce rain excludes authored safe anchor
+PHYSICAL_OK 32 Produce rain excludes authored safe anchor
+PHYSICAL_OK 33 Produce rain excludes authored safe anchor
+PHYSICAL_OK 34 Produce rain excludes authored safe anchor
+PHYSICAL_OK 35 Produce rain excludes authored safe anchor
+PHYSICAL_OK 36 Produce Section is bounded rain through connectivity-checked marked regions
+PHYSICAL_OK 37 Stuck geometry triggers a high escape bounce
+PHYSICAL_OK 38 High bounce remains reachable in phase-two grammar
+PHYSICAL_OK 39 Pause cancels produce and transient body commitment
+PHYSICAL_OK 40 Lesser barrel starts Stable and movable
+PHYSICAL_OK 41 A damaging hit visibly arms and bounds barrel movement
+PHYSICAL_OK 42 Armed fuse is not secretly shortened
+PHYSICAL_OK 43 Fuse exposes a distinct Critical state
+PHYSICAL_OK 44 Barrel detonation can modestly hurt Daryl
+PHYSICAL_OK 45 Back-to-back barrel chain cannot renew blast stagger
+PHYSICAL_OK 46 Next permitted blast stagger has diminishing returns
+PHYSICAL_OK 47 Chain reactions have an encounter-wide 18% self-damage cap
+PHYSICAL_OK 48 Blue barrel repositions stable hazards without arming them
+PHYSICAL_OK 49 Rare Blue pressure burst cannot become ordinary self-damage chain
+PHYSICAL_OK 50 Blue barrel has strong low-damage Push
+PHYSICAL_OK 51 Visible fuse transfer finds a valid source and recipient
+PHYSICAL_OK 52 Fuse transfers exactly once with readable destination window
+PHYSICAL_OK 53 Controlled Detonation respects cover and fixed bounded self-damage
+PHYSICAL_OK 54 Internal Fuse cannot kill or indefinitely erode Daryl
+PHYSICAL_OK 55 Signature sequential ignition ends in real overheat vulnerability
+PHYSICAL_OK 56 Signature admits only bounded connectivity-checked barrels
+PHYSICAL_OK 57 Pause clears armed ordnance but preserves self-damage ledger
+PHYSICAL_OK 58 Rare barrel selection uses isolated deterministic substream
+PHYSICAL_OK 59 Finite designated furniture is admitted with connected Hero routes
+PHYSICAL_OK 60 Missed charge smashes designated furniture for bounded punish
+PHYSICAL_OK 61 Unrelated scenery cannot produce furniture stagger
+PHYSICAL_OK 62 Sectional Split creates a hazard, never a support boss body
+PHYSICAL_OK 63 Destroyed chaise reconnects without changing main boss HP or receipt
+PHYSICAL_OK 64 Undamaged section automatically reconnects after bounded lifetime
+PHYSICAL_OK 65 Broken-Leg Drift commits a crooked first segment
+PHYSICAL_OK 66 Broken-Leg Drift completes fixed second segment without tracking
+PHYSICAL_OK 67 Missed Full Recline genuinely inverts into the longest punish window
+PHYSICAL_OK 68 Inverted underside improves melee only, leaving ordinary damage intact
+PHYSICAL_OK 69 Inversion ends with warned violent recovery shove
+PHYSICAL_OK 70 Full Recline hit uses rectangle damage and shorter non-inverted recovery
+PHYSICAL_OK 71 Lamp falls from a visible bounded overhead source
+PHYSICAL_OK 72 Skidding table and sliding chair have meaningful impact/mass differences
+PHYSICAL_OK 73 Ottoman body and arcing cushion have distinct bounds and trajectories
+PHYSICAL_OK 74 Cushion mine warns for two seconds before soft burst
+PHYSICAL_OK 75 Cushion mine uses a finite damage/Push burst then cleans up
+PHYSICAL_OK 76 Furniture Storm combines bounded catalog lanes with one Full Recline
+PHYSICAL_OK 77 Pause cancels Storm and removes temporary body poses
+PHYSICAL_OK 78 Authored cushion key location resolves to reachable boss floor
+PHYSICAL_OK 79 Unsafe cushion drop falls back to recoverable court center
+PHYSICAL_OK 80 Retired chonker owner cannot execute a stale callback
+PHYSICAL_OK 81 Phase transition cancels old chonker commitments
+PHYSICAL_OK 82 Retired felon owner cannot execute a stale callback
+PHYSICAL_OK 83 Phase transition cancels old felon commitments
+PHYSICAL_OK 84 Retired daryl owner cannot execute a stale callback
+PHYSICAL_OK 85 Phase transition cancels old daryl commitments
+PHYSICAL_OK 86 Retired sofa owner cannot execute a stale callback
+PHYSICAL_OK 87 Phase transition cancels old sofa commitments
+PHYSICAL_OK 88 Denied shared zone budget exits vertical recline into safe recovery
+PHYSICAL_OK 89 Lost native movement callback has a bounded safe Sofa recovery
+PHYSICAL_OK 90 Authored chonker death sequence executes without gameplay damage
+PHYSICAL_OK 91 Authored felon death sequence executes without gameplay damage
+PHYSICAL_OK 92 Death prop has no hazard or reward authority
+PHYSICAL_OK 93 Authored daryl death sequence executes without gameplay damage
+PHYSICAL_OK 94 Death prop has no hazard or reward authority
+PHYSICAL_OK 95 Death prop has no hazard or reward authority
+PHYSICAL_OK 96 Death prop has no hazard or reward authority
+PHYSICAL_OK 97 Authored sofa death sequence executes without gameplay damage
+PHYSICAL_OK 98 Death prop has no hazard or reward authority
+PHYSICAL_OK 99 Untriggered Red mine expires harmlessly rather than forcing unavoidable detonation
+PHYSICAL_OK 100 Toss and constrained Rolling Bomb have distinct ballistic and rolling motion
+PHYSICAL_OK 101 Unsafe large slam rectangle is not admitted
+PHYSICAL_OK 102 Phase-two grammar actually reaches all five furniture trajectories
+PHYSICAL_OK 103 Felon Start admits six actual shallow rim ramps within 24-box reservation
+PHYSICAL_OK 104 Bowl rim has shallow eight-unit steps rather than visual-only metadata
+PHYSICAL_OK 105 Bowl rim has shallow eight-unit steps rather than visual-only metadata
+PHYSICAL_OK 106 Bowl rim has shallow eight-unit steps rather than visual-only metadata
+PHYSICAL_OK 107 Bowl rim has shallow eight-unit steps rather than visual-only metadata
+PHYSICAL_OK 108 Bowl rim has shallow eight-unit steps rather than visual-only metadata
+PHYSICAL_OK 109 Bowl rim has shallow eight-unit steps rather than visual-only metadata
+PHYSICAL_OK 110 Powder Yard Start admits two real loading ramps
+PHYSICAL_OK 111 Powder Yard contains solid blast barriers and visibly stocked racks
+PHYSICAL_OK 112 Blast cover is permanent and cannot be shot or pushed away
+PHYSICAL_OK 113 Blast cover is permanent and cannot be shot or pushed away
+PHYSICAL_OK 114 Scenery reservation preserves all twelve lesser barrels and four spare object slots
+PHYSICAL_OK 115 Rejected connectivity admits no partial Powder Yard scenery
+PHYSICAL_OK 116 Rejected connectivity admits no partial bowl rim
+PHYSICAL_OK 117 Rolling barrel preserves Hero impact damage while settling and visibly arming
+PHYSICAL_OK 118 Chaise onImpact preserves native Hero contact damage and Push
+PHYSICAL_OK 119 Chaise settles after Hero contact without becoming a second boss body
+PHYSICAL_OK 120 Chaise world collision is consumed without a spurious Hero hit or deletion
+PHYSICAL_OK 121 All four retain ordinary canonical damage/death receipt authority
+PASS physical boss production behavior: 121 assertions; API doubles, not native runtime acceptance
+PHYSICAL_OK 122 Production Start creates twenty-four actual canonical lod_static_box bowl surfaces
+PHYSICAL_OK 123 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 124 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 125 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 126 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 127 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 128 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 129 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 130 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 131 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 132 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 133 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 134 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 135 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 136 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 137 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 138 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 139 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 140 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 141 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 142 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 143 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 144 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 145 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 146 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 147 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 148 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 149 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 150 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 151 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 152 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 153 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 154 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 155 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 156 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 157 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 158 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 159 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 160 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 161 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 162 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 163 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 164 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 165 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 166 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 167 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 168 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 169 Native static-box Initialize creates owned solid geometry
+PHYSICAL_OK 170 Production bowl collision tops rise monotonically in safe eight-unit steps
+PHYSICAL_OK 171 Shallow bowl has actual raised rims around its unchanged lower center
+PHYSICAL_OK 172 Actual graph still connects court entry and jail after bowl admission
+PHYSICAL_OK 173 Production geometry reservation rejects a twenty-fifth static surface atomically
+PHYSICAL_OK 174 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 175 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 176 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 177 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 178 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 179 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 180 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 181 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 182 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 183 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 184 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 185 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 186 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 187 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 188 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 189 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 190 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 191 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 192 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 193 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 194 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 195 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 196 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 197 Retirement removes exact owned static bowl collision
+PHYSICAL_OK 198 Production Daryl Start creates eight actual loading-ramp collision boxes
+PHYSICAL_OK 199 Production Daryl admits native blast barrier and rack objects
+PHYSICAL_OK 200 Blast barrier has real opaque-height native collision bounds
+PHYSICAL_OK 201 Blast barrier has real opaque-height native collision bounds
+PHYSICAL_OK 202 Powder Yard ramp footprint does not intersect permanent solid cover/rack
+PHYSICAL_OK 203 Powder Yard ramp footprint does not intersect permanent solid cover/rack
+PHYSICAL_OK 204 Powder Yard ramp footprint does not intersect permanent solid cover/rack
+PHYSICAL_OK 205 Powder Yard ramp footprint does not intersect permanent solid cover/rack
+PHYSICAL_OK 206 Powder Yard ramp footprint does not intersect permanent solid cover/rack
+PHYSICAL_OK 207 Powder Yard ramp footprint does not intersect permanent solid cover/rack
+PHYSICAL_OK 208 Powder Yard ramp footprint does not intersect permanent solid cover/rack
+PHYSICAL_OK 209 Powder Yard ramp footprint does not intersect permanent solid cover/rack
+PHYSICAL_OK 210 No-room bowl still admits ordinary boss progression
+PHYSICAL_OK 211 Actual denied route validation emits no misleading partial bowl geometry
+PHYSICAL_OK 212 Actual production chaise trace reaches canonical Hero damage instead of being consumed by onImpact
+PHYSICAL_OK 213 Settled production chaise does not repeatedly damage the same Hero
+PHYSICAL_OK 214 Production partial static-box allocation failure removes earlier boxes without registering partial geometry
+PHYSICAL_OK 215 Production static geometry rejects footprints outside the exact court
+PHYSICAL_OK 216 No hidden module or native collision errors in physical geometry integration
+PASS physical boss behavior plus production geometry: 216 assertions; Source engine boundary emulated, native gameplay acceptance still pending

@@ -1,0 +1,79 @@
+PASS living gas starts at original level, volume share and pitch
+PASS 1000 renewals keep one owned patch
+PASS nearest-two cap and displacement retained
+PASS ordinary finite lease expires
+PASS maximum watcher lease remains two seconds
+PASS death presentation stops loop while corpse is valid
+PASS server audio retirement rejects previously unaudible corpse
+PASS gas retirement rejects stale draw renewal
+PASS one dead enemy leaves another living enemy audible
+PASS actual Sixth Sense authorization starts watcher loop
+PASS late actual Sixth Sense packet cannot renew dying watcher
+PASS actual Sixth Sense revocation stops its owned loop
+PASS custom hostile does not rely on unreplicated client health
+PASS permanent removal is terminal even before IsValid turns false
+PASS repeated removal and cleanup stop a patch only once
+PASS full-update removal permits legitimate living renewal
+PASS dormant owner stops and cannot renew out of PVS
+PASS transmission loss stops before dormant flag updates
+PASS returning living PVS owner can renew
+PASS same-seed different build stops prior owners
+PASS new build rejects previously unseen stale entity callback
+PASS new build owner starts before next maintenance Think
+PASS ordinary same-build identity snapshot preserves audio
+PASS fuse survives caster death but not projectile retirement
+PASS fuse cannot restart across same-seed rebuild
+PASS staging suspends loops without globally disabling later living audio
+PASS failed suspends loops without globally disabling later living audio
+PASS levelCleared suspends loops without globally disabling later living audio
+PASS generation suspends loops without globally disabling later living audio
+PASS map cleanup rejects stale owners but permits new entities
+PASS shutdown is terminal for late callbacks including unseen owners
+PASS hot refresh closes old authority and preserves legitimate living audio
+PASS reset rejects reentrant touch and remains idempotent
+PASS creation failure owns no phantom loop
+PASS level mutation reentrant cleanup cannot play detached patch
+PASS native play failure is cleaned and reported, not a pass for audibility
+PASS one failed native stop does not skip other owned cleanup
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+PASS real roster Beam warning acquires owned loop
+PASS real roster cancellation stops the same loop
+PASS real roster finish preserves living next-attack audio
+PASS maintainer stops expired Beam commitment
+PASS maintainer stops replaced commitment, not later living attack
+PASS logical death blocks delayed emit before corpse changes
+PASS death of one Beam owner does not silence another
+PASS repeated retirement, cancellation and removal are idempotent
+PASS live native entity removal stops loop without death
+PASS server rejects exact lifecycle replacement: state
+PASS server rejects exact lifecycle replacement: graph
+PASS server rejects exact lifecycle replacement: seed
+PASS server rejects exact lifecycle replacement: epoch
+PASS server rejects exact lifecycle replacement: runId
+PASS server rejects exact lifecycle replacement: build
+PASS pre-ready spawn binds build identity without borrowing old graph
+PASS cleanup rejects stale callbacks, including previously silent owners
+PASS expired deferred native start is refused
+PASS ordinary death and attack one-shots are not suppressed
+PASS legacy administrative death blip remains suppressed
+PASS resolved stock script owns its original stop identifier
+PASS generation barrier passes SND_STOP and combined stop flags
+PASS Seeker missing-file filter never substitutes stop events
+PASS current living Seeker one-shots remain eligible
+PASS retirement cleans both legacy Seeker loops
+PASS shutdown rejects new and old server loop callbacks
+PASS native hostile OnKilled seals without new native audio mutations
+PASS native deferred corpse presentation retires audio, preserves death cue
+PASS native hostile OnRemove uses shared retirement
+PASS native constructor binds before model initialization
+PASS server cleanup invalidates before reentrant late emission
+PASS same actor cannot bind into a later generation after retirement
+PASS server auto-refresh retains owned resource and retirement state
+PASS actual build/campaign barriers retire old audio before construction
+PASS actual map cleanup barrier retires existing owners
+PASS raw loop on unrelated non-hostile entity is not suppressed or claimed
+PASS no unshipped Razor startup path remains in executable references
+SPOT04_AUDIO_RESULT passed=74 failed=0 native=false

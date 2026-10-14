@@ -18,11 +18,8 @@ function V:Prop(k,model)
     if table.Count(self.Props)>=8 then return end
     local e=ClientsideModel(model,RENDERGROUP_OPAQUE);if IsValid(e) then e:SetNoDraw(true);self.Props[k]=e;return e end
 end
-net.Receive('LOD_BossState',function()
-    if not net.ReadBool() then V:Dispose();return end
-    local n=net.ReadUInt(16);if n==0 or n>32768 then V:Dispose();return end
-    local raw=util.Decompress(net.ReadData(n),131072);if not raw or #raw>131072 then V:Dispose();return end
-    local s=util.JSONToTable(raw);if type(s)~='table' or not LOD.BossRegistry.Primary[s.id] or s.id=='warden'
+local function acceptSnapshot(s)
+    if type(s)~='table' or not LOD.BossRegistry.Primary[s.id] or s.id=='warden'
         or type(s.serial)~='number' or type(s.phase)~='number' or type(s.maximum)~='number' then V:Dispose();return end
     if not state or state.serial~=s.serial or state.id~=s.id then V:Dispose() end
     s.position=vector(s.position);s.angles=angle(s.angles);if s.deathTarget then s.deathTarget=vector(s.deathTarget) end;if s.deathDestination then s.deathDestination=vector(s.deathDestination) end;s.received=CurTime();s.entity=Entity(s.actor or 0)
@@ -44,6 +41,16 @@ net.Receive('LOD_BossState',function()
             if s.id=='chuck' then ghost:SetNW2Bool('LOD_Beaver',true) end
         end
     end
+end
+net.Receive('LOD_BossState',function()
+    if not net.ReadBool() then V:Dispose();return end
+    local n=net.ReadUInt(16);if n==0 or n>32768 then V:Dispose();return end
+    local raw=util.Decompress(net.ReadData(n),131072);if not raw or #raw>131072 then V:Dispose();return end
+    acceptSnapshot(util.JSONToTable(raw))
+end)
+net.Receive('LOD_BossStateNative',function()
+    if not net.ReadBool() then V:Dispose();return end
+    acceptSnapshot(net.ReadTable())
 end)
 surface.CreateFont('LOD_BossTitle',{font='Trebuchet MS',size=26,weight=900})
 surface.CreateFont('LOD_BossDetail',{font='Trebuchet MS',size=17,weight=700})

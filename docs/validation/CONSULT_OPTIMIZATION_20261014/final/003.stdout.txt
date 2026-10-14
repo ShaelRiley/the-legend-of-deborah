@@ -1,0 +1,9 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B7_SPACING_PASS: canonical physical melee, broad flank/rear/range/height/cover answers, two distinct beat contracts, frozen escape interval, deadlines/recovery
+BESTIARY_B7_MOTION_PASS: real MotionV2, fixed non-damaging backstep, narrow thrust, no stall teleport/deadline extension, swept scaled obstruction
+BESTIARY_B7_LIFETIME_PASS: exact source/Hero/run/graph/progression/campaign scopes; same-seed replacement; cover/support/gates; freeze/death/stun; canonical Held/Muted/morale
+BESTIARY_B7_MULTIPLAYER_PASS: captured lives, no unseen tell inheritance/rescans, lethal-primary order independence, canonical one-roll settlement
+CONSULT_TRACE_SCRATCH_PASS 20000 predicates reuse request/output/filter/hull vectors; nested actor isolation, output-only and allocated native results, blocked/embedded/error cleanup; collision checks retained; native FPS unmeasured

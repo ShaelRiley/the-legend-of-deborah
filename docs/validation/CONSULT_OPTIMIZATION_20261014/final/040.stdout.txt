@@ -1,0 +1,5 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B19_PRODUCTION_PASS: physical class-feat-HP identities; seeded replay; exact-life/graph/progression/campaign/freeze/death/disconnect; shared XP once; cap; production spawn/variance/progression; idempotence; complementary templates; safe/objective/transitions/blocked hull; companion-link admission and96-unit escape pockets; bounded fallback

@@ -529,6 +529,32 @@ function B:Service(now)
     end
 end
 util.AddNetworkString('LOD_BossState')
+util.AddNetworkString('LOD_BossStateNative')
+local binarySnapshots=CreateConVar('lod_boss_binary_snapshots','1',FCVAR_ARCHIVE or 0,
+    'Use bounded native boss snapshots instead of synchronous JSON/LZMA')
+-- Conservative wire-size admission before net.WriteTable. Snapshot fields are
+-- server-authored; this also catches an accidentally unbounded module payload.
+-- Full typed keyframes keep late joins and dropped/stale state self-contained.
+local function snapshotBounded(value,depth,budget)
+    budget.nodes=budget.nodes+1
+    if depth>8 or budget.nodes>2048 then return false end
+    local kind=type(value)
+    if kind=='string' then
+        if #value>4096 then return false end
+        budget.bytes=budget.bytes+#value+3
+    elseif kind=='number' then
+        if value~=value or value<=-math.huge or value>=math.huge then return false end
+        budget.bytes=budget.bytes+10
+    elseif kind=='boolean' then budget.bytes=budget.bytes+3
+    elseif isvector and isvector(value) or isangle and isangle(value) then budget.bytes=budget.bytes+16
+    elseif kind=='table' then
+        budget.bytes=budget.bytes+4
+        for k,v in pairs(value) do
+            if not snapshotBounded(k,depth+1,budget) or not snapshotBounded(v,depth+1,budget) then return false end
+        end
+    else return false end
+    return budget.bytes<=60000
+end
 function B:Snapshot(c)
     local e=c.actor
     local visual=c.visual or {bools={},strings={},numbers={}}
@@ -553,10 +579,20 @@ function B:Snapshot(c)
 end
 function B:Sync(recipient)
     local c=R.State and R.State.Boss;local active=self:Current(c) and c.started
-    local data=active and util.Compress(util.TableToJSON(self:Snapshot(c))) or nil
-    if data and #data>32768 then self:Log(c,'SNAPSHOT_REJECT',{bytes=#data});data=nil end
-    net.Start('LOD_BossState');net.WriteBool(data~=nil)
-    if data then net.WriteUInt(#data,16);net.WriteData(data,#data) end
+    if binarySnapshots:GetBool() and net.WriteTable then
+        local snapshot=active and self:Snapshot(c) or nil
+        local budget={nodes=0,bytes=0}
+        if snapshot and not snapshotBounded(snapshot,0,budget) then
+            self:Log(c,'SNAPSHOT_REJECT',{estimatedBytes=budget.bytes,nodes=budget.nodes});snapshot=nil
+        end
+        net.Start('LOD_BossStateNative');net.WriteBool(snapshot~=nil)
+        if snapshot then net.WriteTable(snapshot) end
+    else
+        local data=active and util.Compress(util.TableToJSON(self:Snapshot(c))) or nil
+        if data and #data>32768 then self:Log(c,'SNAPSHOT_REJECT',{bytes=#data});data=nil end
+        net.Start('LOD_BossState');net.WriteBool(data~=nil)
+        if data then net.WriteUInt(#data,16);net.WriteData(data,#data) end
+    end
     if IsValid(recipient) then net.Send(recipient) else net.Broadcast() end
 end
 local nextStep,nextSync=0,0

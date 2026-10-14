@@ -1,0 +1,12 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B4_GUARD_PASS: real capped Block; 0.65s warning; fixed exposed flank; duplicate event; magic bypass; duration/cooldown
+BESTIARY_B4_REPRISER_PASS: native effective hit follows triggering stun; no immediate damage; shared warned release; nonhoming projectile; cooldown
+BESTIARY_B4_LIFECYCLE_PASS: full cohort source/Hero/status-life and exact dungeon/run/campaign identity; same-seed replacement; freeze/death/disable/expiry; effective-only nonrecursive native observation; second hit and duplicate callback
+BESTIARY_B4_REDLINER_PASS: 40/60 hysteresis; existing-route pursuit bounded at four seconds; 400-unit warned nonhoming shared dive; finite recovery; no repeated wounded episode; ordinary ranged fallback
+BESTIARY_B4_PIPELINE_PASS: actual shared projectile -> physical combat roll/contract -> GM mitigation -> native HP once; exact emitted projectile life/reset/expiry; ordinary attack scopes; 64-projectile ceiling; finite scheduler without world scan/global RNG
+BESTIARY_B4_DAMAGE_ORDER_PASS: inherited dive real HP once; exact recovery under repeated interruption/damage; between-tick healed episode; committed incoming guard origin; Block cache life and same-seed replacement
+BESTIARY_B4_SHOTGUN_ORDER_PASS: actual native HP settlement then real aggregate feed and production four-times stun override; exact triggering attack preserved without extending queue; later different shell interrupts
+BESTIARY_B4_MAGIC_MELEE_ORDER_PASS: actual Wall Form and Crowbar PrimaryAttack native HP then late shared stun; exact triggering cast/attack preserved; delayed warned response

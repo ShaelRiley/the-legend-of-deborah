@@ -1,0 +1,11 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B1_PASS: frozen Ice mark; finite Light bolt; committed Earth pulse; canonical saves/riders/push; cover/faction/dedup; Mute/Held/stun; bounded pool; exact-run lifecycle; cap/partial-spawn ordinals
+BESTIARY_B1_VISUAL_PASS: exact warning discs/rings at full and reduced effects; two-bit Light decode; finite visual timeout
+BESTIARY_B2_VISUAL_PASS: distinct support glyphs and source tethers; full/reduced effects; cancellation/status/healing visual expiration
+BESTIARY_B3_VISUAL_PASS: semantic flank/retreat/junction tells; exact destination; full/reduced effects; cancellation and expiry
+BESTIARY_B4_VISUAL_PASS: directional guard arc; distinct retaliation/lunge/recovery glyphs; bounded lunge line; full/reduced; death/cancellation/expiry
+actor progression headless validation PASS
+BESTIARY_B1_PROGRESSION_PASS: own actor identity; seeded class/Level/HP; Magic capability; level-scaled XP; one settlement

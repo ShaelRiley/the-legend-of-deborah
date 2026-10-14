@@ -1,0 +1,5 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+INTERNAL_COMPASS_PIPELINE_PASS: real two-realm Magic admission; route-only payload; hidden walls/quadrants; current floor/stair bound; closed/open gate; flag loss; no shared ownership

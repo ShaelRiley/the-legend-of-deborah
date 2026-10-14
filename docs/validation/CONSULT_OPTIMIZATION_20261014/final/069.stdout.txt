@@ -1,0 +1,2 @@
+PASS: B7 production Draw: frozen exact sectors/thrust, two-beat timing, distinct retreat, reduced effects, finite cleanup and culling
+CLOSE_DEFENSE_VISUAL_PASS all archetype Draw routes; fixed reach; reduced-effects parity; finite device pullback/jab/cancel/death

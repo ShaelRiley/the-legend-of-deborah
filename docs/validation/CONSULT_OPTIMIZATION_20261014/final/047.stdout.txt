@@ -1,0 +1,1 @@
+BESTIARY_B17_VISUAL_PASS: real native Draw/bounds; BODYGUARD/OATH/RETALIATION/SHOT labels and countdowns; actual-body shield/frozen route; oath/broken-oath; snapshot-only lane/ward; reduced parity, expiry/drift/culling/death; render/NW doubles, not Source QA

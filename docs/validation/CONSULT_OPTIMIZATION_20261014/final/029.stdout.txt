@@ -1,0 +1,3 @@
+BOSS_BUTTON_ROUTES_PASS baseline150	party	1	dead	true	successes	8	attempts	8	timeouts	0	worst_route_window_ratio	0.95533828933457
+BOSS_BUTTON_ROUTES_PASS baseline150	party	2	dead	true	successes	9	attempts	9	timeouts	0	worst_route_window_ratio	0.95533828933457
+BOSS_BUTTON_ROUTES_PASS baseline150	party	4	dead	true	successes	11	attempts	11	timeouts	0	worst_route_window_ratio	0.95533828933457

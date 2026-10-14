@@ -1,0 +1,11 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B6_WIRE_PASS: full warning, no warning-tail hit, swept crossing, endpoint/jump/cover escape, one physical settlement, fixed expiry and no participant rescan
+BESTIARY_B6_RING_PASS: safe center/exterior, one pulse, canonical recovery and cover
+BESTIARY_B6_SNARE_PASS: separate fixed arm/snap deadlines, bait escape, no tracking/extension, real Ice/Held save/immunity/zero/lethal rules
+BESTIARY_B6_LIFE_PASS: exact source/primary Hero incarnation and state/graph/progression/campaign/seed boundaries, displacement, interruption, Held/Mute and fixed arm deadline
+BESTIARY_B6_BUDGET_PASS: max16 commitments; safe/objective/stair/gate/cover/escape rejection
+BESTIARY_B6_MULTIPLAYER_PASS: one hit each; lethal-primary order independent; no late join, revival, progression replacement or disconnect inheritance
+BESTIARY_B6_SUPPORT_PASS: missing/removed native floors reject/cancel and support/LOS work is bounded

@@ -1,0 +1,1 @@
+BESTIARY_B18_VISUAL_PASS: native Draw/bounds, CEASE FIRE/RETALIATION and REFUGE / LEAVE RING; exact frozen outer/refuge/escape geometry; countdowns, full/reduced/late-join parity; malformed, expiry, death, drift and culling; render/NW doubles, not Source QA

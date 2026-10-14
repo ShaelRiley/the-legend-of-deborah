@@ -1,0 +1,13 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B17_SHOT_PASS: actual Tick/Think, fallback, native faction+mitigation+HP and fixed recovery
+BESTIARY_B17_INTERPOSER_PASS: real MotionV2 route, arrival, finite hold, no damage or defense buff
+BESTIARY_B17_MOURNER_PASS: production Seal/Open/CorpseLive, full new warning, one original-Hero shot, no corpse/reward consumption
+BESTIARY_B17_LIFECYCLE_PASS: exact participants/scopes, drift/visibility, legitimate current armed receipts only, finite oath and service gap
+BESTIARY_B17_OWNERSHIP_PASS: cross-mode reservations, stale removal, cap, deterministic selection, excluded wards and real endpoint hull
+BESTIARY_B17_COUNTERPLAY_PASS: first body/world, off-lane/late Hero, actual lateral hull/support, native callback and post-defense lane revalidation
+BESTIARY_B17_CALLBACK_PASS: motion/replication/preflight replacement, native reentry/replay/error and exact newer-attack preservation
+BESTIARY_B17_STATUS_CAP_PASS: Held/Muted/attack prohibition, original-Hero retaliation and callback-safe sixteen-commitment cap
+BESTIARY_B17_PASS: production behavior with native boundaries doubled; no native Source acceptance implied

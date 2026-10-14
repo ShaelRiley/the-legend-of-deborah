@@ -15,6 +15,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - run: sudo apt-get update && sudo apt-get install -y liblua5.4-0
       - run: python3 tools/run_lua54.py tools/test_hostile_route_cache.lua
+      - run: python3 tools/run_lua54.py tools/test_consult_wall_pool.lua
+      - run: python3 tools/run_lua54.py tools/test_consult_trace_scratch.lua
+      - run: python3 tools/run_lua54.py tools/test_consult_ghost_budget.lua
+      - run: python3 tools/run_lua54.py tools/test_boss_presentation.lua --native
+      - run: python3 tools/run_lua54.py tools/test_loop_audio.lua
       - run: python3 tools/run_lua54.py tools/test_wall_batch.lua
       - run: python3 tools/run_lua54.py tools/test_performance_capture.lua
       - run: python3 tools/run_lua54.py tools/test_performance_profile.lua

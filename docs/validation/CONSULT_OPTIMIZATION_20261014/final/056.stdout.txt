@@ -1,0 +1,1 @@
+BESTIARY_B14_VISUAL_PASS: native Draw/culling, distinct full/reduced drain/attack/recharge glyphs, frozen marks/countdowns, bounded finite expiry, late snapshots, death/interruption/distance cleanup

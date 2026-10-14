@@ -1,0 +1,10 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B15_LINE_PASS: production Tick/service, native first-body interception, excluded/replaced blockers, physical mitigation, packet-only faction exception, single release/recovery
+BESTIARY_B15_BLAST_PASS: shared roll and simultaneous admission, bait, no body cover, target/source cover, late arrivals, primary death
+BESTIARY_B15_LIFETIME_PASS: early/deadline identity matrix, physical Held/Muted policy, stall/expiry, safe/objective/gates/transitions, native/current/diagonal hull, roster and commitment caps
+BESTIARY_B15_CALLBACK_PASS: real roll/resolve/GM mitigation/native callback identity gates, reentry, failure retirement, fixed recovery and preserving newer attacks
+BESTIARY_B15_PACKET_IDENTITY_PASS: wrong recipient/attacker/inflictor and same-info Hero/ally GM reentry denied
+BESTIARY_B15_REWARD_PASS: actual native death, enemy attribution, no synthetic Hero killing blow, existing contribution pool only, one canonical loot handoff and XP settlement

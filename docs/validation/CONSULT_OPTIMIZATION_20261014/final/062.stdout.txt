@@ -1,0 +1,10 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B5_BANK_PASS: production AI warning; one frozen reflected leg; exact replicated path; changed/missing/second cover; no homing; finite swept work
+BESTIARY_B5_RETURN_PASS: fixed outbound endpoint; 0.75s pause; exact reverse to original source point; no tracking; cover and bounded lifetime
+BESTIARY_B5_SPLIT_PASS: two parallel lanes, actual safe gap, swept side hit, canonical roll/mitigation/HP once; shared atomic capacity and covered offsets
+BESTIARY_B5_LIFECYCLE_PASS: full cohort charge and released source/Hero progression/status-life; exact same-seed state/graph/progression/campaign; freeze/failure/death/disconnect; warning grace, interruption, Held/Muted and finite expiry
+BESTIARY_B5_BUDGET_PASS: single existing active service, no scans/RNG/native bodies; <=64 shots; <=one sweep per shot per tick
+BESTIARY_B5_VISUAL_PASS: actual frozen polylines and open center; full/reduced geometry; death/cancel/expiry; existing two-bit snapshot and paused-return diamond

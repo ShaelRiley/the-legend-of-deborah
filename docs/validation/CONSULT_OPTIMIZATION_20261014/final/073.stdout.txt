@@ -1,0 +1,9 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B12_EXACTOR_CONDITION_PASS: real production warning/combat/status, all three ailments, deterministic single removal, remedy/expiry/reapplication/refresh and fixed recovery
+BESTIARY_B12_EXACTOR_GEOMETRY_PASS: frozen single-Hero mark, radius/height/room constraints, support/hull/cover, legal room and sampled lateral escape routes
+BESTIARY_B12_EXACTOR_LIFETIME_PASS: exact source/Hero/run/graph/progression/campaign lifetimes, interruption/displacement/acquisition, Held/Muted/morale and finite service/deadline
+BESTIARY_B12_EXACTOR_SETTLEMENT_PASS: positive surviving HP loss only, real single-roll Block, callback replacement and reentrancy, no extra roll/damage/heal
+BESTIARY_B12_EXACTOR_PASS: cached16-mark bound, budget release, canonical finite warned fallback and exact fallback life

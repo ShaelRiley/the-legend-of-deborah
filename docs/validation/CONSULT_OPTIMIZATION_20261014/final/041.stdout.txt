@@ -1,0 +1,1 @@
+BESTIARY_B19_VISUAL_PASS: actual native Draw; relay remote shot, moving radius18 ribbon and source fallback; labels, countdowns, full/reduced/late observer parity, native bounds, malformed timelines/vectors, identity, expiry, death, interruption, drift and culling. Render/NW doubles; not Source QA.

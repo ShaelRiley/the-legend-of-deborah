@@ -1,0 +1,8 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B11_PASS: real footstep event/FactionManager acquisition, quiet/crouch/invisible denial, frozen receipts, co-op sight/no-camera rule, real MotionV2 harmless investigations, separate canonical melee, exact lifecycle matrix, finite service/recovery, interruption, full geometry/support and work caps
+BESTIARY_B11_CLOAK_PASS: real shared invisibility source and forget dispatch
+BESTIARY_B11_MORALE_PASS: preserved canonical flee dispatch
+BESTIARY_B27_SENSORY_PATROL_PASS: actual no-cue patrol dispatch and poll continuity; Shy witness stop, recovery and encounter-only rules retained

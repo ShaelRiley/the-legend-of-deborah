@@ -1,0 +1,9 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B8_BURST_PASS: actual lethal/deferred corpse path; one packet/reward; living gate preserved; finite escape/cover/support and exact lifetimes
+BESTIARY_B8_FEED_PASS: event-driven single claims; ordinary AI hold; capped healing; consumption suppresses burst; exact lives; interruption/Held/Muted; loot unchanged
+BESTIARY_B8_OWNERSHIP_PASS: bare hooks/cleanup cannot arm; 128 candidates/96 receipts; late presentation forfeits
+BESTIARY_B8_PARTY_PASS: physical fallback; frozen participants; no revival/late join inheritance; one contract; lethal-first order independence
+BESTIARY_B8_REWARD_PASS: actual native kill/XP and scheduled canonical loot; consumed/ordinary one settlement; same-seed and actor replacement guards

@@ -150,17 +150,31 @@ function E:MeleeSupported(e,g,c,pos)
     if N:WorldToCell(g,pos)~=c or not self:MeleeCellLegal(g,c) then return false end
     local floor=N:CellCenter(c).z
     if math.abs(pos.z-(floor+2))>4 then return false end
-    local tr=util.TraceLine({start=pos+Vector(0,0,16),endpos=pos-Vector(0,0,12),mask=MASK_SOLID,
-        filter=function(v) return v~=e and not v.LODHostile and not v:IsPlayer() end})
-    return tr.Hit and not tr.StartSolid and not tr.AllSolid and tr.HitNormal and tr.HitNormal.z>=.7
+    local row=self:AcquireTrace(e,true)
+    local start,finish=row.supportStart,row.supportEnd
+    start.x,start.y,start.z=pos.x,pos.y,pos.z+16
+    finish.x,finish.y,finish.z=pos.x,pos.y,pos.z-12
+    row.start,row.endpos,row.mask=start,finish,MASK_SOLID
+    local ok,tr=pcall(util.TraceLine,row)
+    if not ok then self:ReleaseTrace(row);error(tr,0) end
+    tr=tr or row.output
+    local supported=tr.Hit and not tr.StartSolid and not tr.AllSolid and tr.HitNormal and tr.HitNormal.z>=.7
         and math.abs(tr.HitPos.z-floor)<=4
+    self:ReleaseTrace(row)
+    return supported
 end
 function E:MeleeRouteClear(e,from,to)
     local size=math.Clamp(e:GetNW2Float("LOD_SizeScale",1),.33,1.33)
-    local tr=util.TraceHull({start=from,endpos=to,mins=Vector(-16*size,-16*size,0),
-        maxs=Vector(16*size,16*size,72*size),mask=MASK_NPCSOLID,
-        filter=function(v) return v~=e and not v.LODHostile and not v:IsPlayer() end})
-    return not tr.Hit and not tr.StartSolid and not tr.AllSolid
+    local row=self:AcquireTrace(e,true)
+    row.hullMins.x,row.hullMins.y,row.hullMins.z=-16*size,-16*size,0
+    row.hullMaxs.x,row.hullMaxs.y,row.hullMaxs.z=16*size,16*size,72*size
+    row.start,row.endpos,row.mins,row.maxs,row.mask=from,to,row.hullMins,row.hullMaxs,MASK_NPCSOLID
+    local ok,tr=pcall(util.TraceHull,row)
+    if not ok then self:ReleaseTrace(row);error(tr,0) end
+    tr=tr or row.output
+    local clear=not tr.Hit and not tr.StartSolid and not tr.AllSolid
+    self:ReleaseTrace(row)
+    return clear
 end
 function E:BeginMelee(e,p,now,spacing)
     if e.LODRosterAttack or not self:AcquireTarget(p) or not self:CanCast(e)

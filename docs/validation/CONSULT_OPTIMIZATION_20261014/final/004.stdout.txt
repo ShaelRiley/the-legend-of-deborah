@@ -1,0 +1,1 @@
+CONSULT_GHOST_BUDGET_PASS 12 simultaneous throws retain full-path sparse samples; global 16/8 draw ceiling across views; depth/sky suppression; expiry and native pool cleanup; native FPS unmeasured

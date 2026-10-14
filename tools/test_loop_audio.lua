@@ -10,7 +10,7 @@ local function entity(distance)
  GetNW2Bool=function(_,k,d) if k=='LOD_RosterAlive' then return true end return d end,
  GetNW2Float=function(_,_,d) return d end,GetNW2Int=function(_,_,d) return d end}
 end
-hook={Add=function(_,id,fn) hooks[id]=fn end}
+hook={Add=function(_,id,fn) hooks[id]=fn end,Remove=function(_,id) hooks[id]=nil end}
 function CreateSound()
  created=created+1;local patch={}
  function patch:SetSoundLevel() end
@@ -21,11 +21,12 @@ end
 local path='gamemodes/legend_of_deborah/gamemode/lod/cl_loop_audio.lua'
 dofile(path);local a,b,c=entity(100),entity(200),entity(300)
 local A=LOD.LoopAudio
+assert(hooks.LOD_LoopAudioLeases==nil,'idle audio registered a Think hook')
 for i=1,1000 do A:Touch('gas',a,'gas',.2,100,60,.3) end
-assert(created==1)
+assert(created==1 and hooks.LOD_LoopAudioLeases)
 A:Touch('gas',b,'gas',.2,100,60,.3);A:Touch('gas',c,'gas',.2,100,60,.3);assert(created==2)
 local close=entity(1);A:Touch('gas',close,'gas',.2,100,60,.3);assert(created==3 and stopped==1)
-now=.31;hooks.LOD_LoopAudioLeases();assert(stopped==3)
+now=.31;hooks.LOD_LoopAudioLeases();assert(stopped==3 and hooks.LOD_LoopAudioLeases==nil)
 A:Touch('fuse',a,'fuse',.2,100,60);hooks.LOD_LoopAudioEntityRemoved(a);assert(stopped==4)
 a=entity(100) -- a genuinely new native owner; removed bodies cannot renew
 A:Touch('watcher',b,'watcher',.2,100,60);b.valid=false;hooks.LOD_LoopAudioLeases();assert(stopped==5)

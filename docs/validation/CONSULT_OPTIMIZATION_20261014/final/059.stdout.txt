@@ -1,0 +1,9 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B3_PRODUCTION_PASS: own nonmagical class/feat/HP identities; seeded replay; capability eligibility; shared XP once; cap; real spawn/variance/progression; idempotence; complementary templates
+BESTIARY_B3_ROUTE_PASS: alternate/retreat/junction counterplay; bounded deterministic routes; LOS and cover; native-clear legal steps; gates/safes/floors; warning/hold/expiry; exact source/Hero/run/campaign identities; no hidden retarget or teleport
+BESTIARY_B3_ROSTER_PASS: real Tick/Begin/service/Release; warning before projectile; emitted-shot-only retreat; cap/idempotence; Hero-life cancellation; hidden-target fallback; synchronous interruption and displacement
+BESTIARY_B3_MOTION_PASS: real Motion V2 completed four-edge and local two-leg routes within finite deadlines; graph cells crossed in order; no teleport or corner cutting; native traces still require Source acceptance
+BESTIARY_B27_PURSUIT_PATROL_PASS: actual roster dispatch consumes target-free patrols; encounter-only behavior unchanged

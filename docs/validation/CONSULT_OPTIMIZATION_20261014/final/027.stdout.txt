@@ -1,0 +1,2 @@
+HOSTILE_SCALE_WORK scenarios=14862 draws=13920 formats=58 getters=125338 matrices=58 bounds=58 trace_lines=270134
+HOSTILE_SCALE_WORK_PASS: original rounding, all visual branches, native callbacks, roll/recoil, death/hidden/boss, custom fallback and lifecycle; not native FPS

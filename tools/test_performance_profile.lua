@@ -50,6 +50,13 @@ paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/lod/sh_gps_voice.lua'
 paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/lod/sh_gps_praise.lua'
 paths[#paths+1]='gamemodes/legend_of_deborah/gamemode/lod/cl_rpg_gps.lua'
 paths[#paths+1]='gamemodes/legend_of_deborah/content/sound/lod/gps_praise_bank.mp3'
+for _,path in ipairs({root..'sh_progression_props.lua','gamemodes/legend_of_deborah/gamemode/shared.lua',
+    'gamemodes/legend_of_deborah/entities/entities/lod_keycard/shared.lua',
+    'gamemodes/legend_of_deborah/entities/entities/lod_keycard/cl_init.lua'}) do paths[#paths+1]=path end
+for _,path in ipairs({root..'cl_combat_roll_feed.lua',root..'cl_entry_safety.lua',root..'sh_die_logger.lua',root..'sh_feedback_language.lua',
+    'gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua',
+    'gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/cl_init.lua'}) do paths[#paths+1]=path end
+for _,path in ipairs({root..'cl_pushback_fx.lua',root..'cl_loop_audio.lua',root..'cl_boss_encounter.lua'}) do paths[#paths+1]=path end
 local manifest={};for _,path in ipairs(paths) do manifest[#manifest+1]=string.rep('a',64)..'  '..path end
 for _,f in pairs(files) do
     f.dev_build='profile-test clean';f['legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')

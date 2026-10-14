@@ -1,0 +1,1 @@
+BESTIARY_B12_VISUAL_PASS: native Draw/cull, full/reduced condition/cleanse glyphs, frozen geometry/countdowns, fallback, death/interruption/distance/expiry

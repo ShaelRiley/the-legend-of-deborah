@@ -1,0 +1,1 @@
+PASS special boss module outcomes: 160 assertions

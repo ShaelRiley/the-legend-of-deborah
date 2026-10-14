@@ -1,0 +1,1 @@
+BESTIARY_B10_VISUAL_PASS: native Draw/bounds; full/reduced frozen capsule, actual moving ring, dashed plans, independent patch arming/live countdowns, finite deadlines, source death/interruption/cancel/cull and no stale ghosts

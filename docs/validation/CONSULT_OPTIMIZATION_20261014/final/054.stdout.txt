@@ -1,0 +1,11 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B14_DRAIN_PASS: canonical damage and Magic, warning/escape, capped fractional loss, no zero/lethal rider, Arcane Shield order
+BESTIARY_B14_RECHARGE_PASS: paid casts, Quantum, depleted release, harmless channel, cap100, denial, natural cycle
+BESTIARY_B14_LIFETIME_PASS: all3 modes, early/deadline source/target/resource/dungeon identity matrix, status and stall gates
+BESTIARY_B14_BOUNDARIES_PASS: actual Hero hull, support/cover/progression exclusions, parties1–4, pool/native reentry/replacement, cap16
+BESTIARY_B14_MAGIC_INTEGRATION_PASS: real shared regeneration/suppression, Quantum, retired continuation refund inert, full-Magic snapshot and single discrete-spend dispatch
+BESTIARY_B14_NATIVE_FAILURE_PASS: spent callback failure retires at fixed deadline
+BESTIARY_B14_AURA_PASS: production Aura Burst hook/preparation/resolution, supplemental escaped/bystander hits, one paid activation, no drain/recharge activation, attack/source/target replacement suppresses stale mark

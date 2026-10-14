@@ -1,0 +1,1 @@
+BESTIARY_B8_VISUAL_PASS: actual native corpse Draw; full/reduced burst circle/countdown, feeding tether/jaws, fallback melee, fixed expiry and culling

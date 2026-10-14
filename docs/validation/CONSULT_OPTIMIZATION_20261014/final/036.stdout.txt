@@ -1,0 +1,1 @@
+PASS boss companions: 118 authored behavioral/render assertions; no native-runtime acceptance claim

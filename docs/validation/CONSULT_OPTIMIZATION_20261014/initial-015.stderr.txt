@@ -1,0 +1,1 @@
+/workspace/scratch/24d8d722135d/deborah-optimized/tools/test_great_crate_render.lua: ...modes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua:14: attempt to call a nil value (global 'CreateClientConVar')

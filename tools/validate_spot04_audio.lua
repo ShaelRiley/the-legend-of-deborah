@@ -52,7 +52,7 @@ local function client()
     end
     dofile(source(root..'cl_loop_audio.lua'));c.A=LOD.LoopAudio
     function c:touch(e,group) return self.A:Touch(group or 'gas',e,'test-loop',.2,100,60,.35) end
-    function c:tick() self.hooks.LOD_LoopAudioLeases() end
+    function c:tick() if self.hooks.LOD_LoopAudioLeases then self.hooks.LOD_LoopAudioLeases() end end
     function c:watch(e)
         if not self.packets.LOD_RPGSixthSenseSnapshot then dofile(source(root..'cl_rpg_sixth_sense.lua')) end
         local stream=e and {0,0,1,e} or {0,0,0};local index=0

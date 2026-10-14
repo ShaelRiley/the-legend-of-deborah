@@ -1,0 +1,1 @@
+CONSULT_WALL_POOL_PASS 40 models reused without creation; exact transforms/material reset; 48-count and 3.5ms admission; disable/map/shutdown cleanup; native FPS unmeasured

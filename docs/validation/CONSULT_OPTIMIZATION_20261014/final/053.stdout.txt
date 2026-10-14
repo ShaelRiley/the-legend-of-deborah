@@ -1,0 +1,1 @@
+BESTIARY_B15_VISUAL_PASS: native Draw/bounds, first-body brackets and blast fragments, full/reduced parity, fixed marks/countdowns, finite expiry/drift/culling, death/interruption; render/trace/NW doubles, not Source QA

@@ -1,0 +1,30 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 114
+[AUDIT] Implementation Feats Count: 114
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 1 ready. campaign=41 levelSeed=107922 layoutAttempt=1 cells=699 entities=402 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 1 ready. campaign=41 levelSeed=115841 layoutAttempt=4 cells=681 entities=421 vertical=4 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=3 maxPerFloor=1 collision=unchanged
+[LOD] Level 1 ready. campaign=41 levelSeed=123760 layoutAttempt=1 cells=610 entities=369 vertical=4 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 1 ready. campaign=41 levelSeed=131679 layoutAttempt=1 cells=663 entities=419 vertical=4 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 20 ready. campaign=41 levelSeed=2007979 layoutAttempt=1 cells=539 entities=275 vertical=5 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 20 ready. campaign=41 levelSeed=2015898 layoutAttempt=1 cells=678 entities=397 vertical=4 mazeAttempt=7 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=3 maxPerFloor=1 collision=unchanged
+[LOD] Level 20 ready. campaign=41 levelSeed=2023817 layoutAttempt=1 cells=646 entities=413 vertical=4 mazeAttempt=3 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 20 ready. campaign=41 levelSeed=2031736 layoutAttempt=2 cells=540 entities=269 vertical=6 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 21 ready. campaign=41 levelSeed=2107982 layoutAttempt=2 cells=517 entities=240 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 21 ready. campaign=41 levelSeed=2115901 layoutAttempt=1 cells=598 entities=349 vertical=6 mazeAttempt=4 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 21 ready. campaign=41 levelSeed=2123820 layoutAttempt=3 cells=650 entities=396 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 21 ready. campaign=41 levelSeed=2131739 layoutAttempt=2 cells=665 entities=407 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s
+FLOOR_MAPS_INTEGRATION_PASS: 12 full builds / 35 reserved floor paths; 28-event catalog and real SQLite; unchanged 1d4 counts; native-boundary floors and maps; Dungeons 1/20/21

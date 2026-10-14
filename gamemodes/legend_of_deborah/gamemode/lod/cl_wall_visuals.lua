@@ -8,7 +8,12 @@ local MESSAGE = "LOD_WallVisuals"
 local PROTOCOL = 2
 local CONTAINER_VISUAL_EMBED = 16
 local STACK_VISUAL_GAP = 4
-local MODEL_BATCH_SIZE = 128
+local MODEL_BATCH_SIZE = 48
+local MODEL_FRAME_BUDGET = 0.0035
+local MAX_POOLED_MODELS = 2048
+local poolPreference = CreateClientConVar("lod_container_model_pool", "1", false, false,
+    "Reuse native cargo models across dungeon transitions", 0, 1)
+Wall.modelPool = Wall.modelPool or {}
 local RETRY_BATCH_SIZE = 16
 local MODEL_RETRY_LIMIT = 8
 
@@ -69,10 +74,19 @@ local function resetRetries()
     Wall.failedModels = 0
 end
 
-local function removeModels()
+local function removeModels(dispose)
     if Wall.ClearBatches then Wall:ClearBatches() end
     for _, model in pairs(Wall.models or {}) do
-        if IsValid(model) then model:Remove() end
+        if IsValid(model) then
+            if not dispose and poolPreference:GetBool() and #Wall.modelPool < MAX_POOLED_MODELS then
+                model:SetNoDraw(true)
+                Wall.modelPool[#Wall.modelPool + 1] = model
+            else model:Remove() end
+        end
+    end
+    if dispose or not poolPreference:GetBool() then
+        for _, model in ipairs(Wall.modelPool) do if IsValid(model) then model:Remove() end end
+        Wall.modelPool = {}
     end
     Wall.models = {}
     Wall.nextModel = 1
@@ -373,7 +387,17 @@ local function rebuildWorldCache()
 end
 
 local function spawnModel(instance)
-    local model = ClientsideModel(GC.ContainerModel, RENDERGROUP_OPAQUE)
+    local model
+    if poolPreference:GetBool() then
+        while #Wall.modelPool > 0 do
+            local candidate = table.remove(Wall.modelPool)
+            if IsValid(candidate) then
+                if candidate:GetModel()==GC.ContainerModel then model = candidate; break end
+                candidate:Remove()
+            end
+        end
+    end
+    if not IsValid(model) then model = ClientsideModel(GC.ContainerModel, RENDERGROUP_OPAQUE) end
     if not IsValid(model) then return nil end
 
     -- Keep construction invisible until the transform is complete. Authoritative
@@ -382,6 +406,8 @@ local function spawnModel(instance)
     model:SetNoDraw(true)
     model:SetPos(instance.pos)
     model:SetAngles(instance.ang)
+    -- Reused models cannot retain the preceding dungeon's material islands.
+    model:SetSubMaterial()
     model:SetSkin(GC.Skin or 0)
     model:SetMaterial(CONTAINER_BODY_MATERIAL)
     model:SetColor(CONTAINER_BODY_COLOR)
@@ -405,7 +431,7 @@ local function queueRetry(index)
     Wall.retryQueue[#Wall.retryQueue + 1] = index
 end
 
-local function buildModelBatch()
+local function buildModelBatch(deadline)
     rebuildWorldCache()
     local total = #(Wall.world or {})
     local first = Wall.nextModel or 1
@@ -413,19 +439,20 @@ local function buildModelBatch()
 
     local last = math.min(total, first + MODEL_BATCH_SIZE - 1)
     for index = first, last do
+        if index > first and SysTime() >= deadline then break end
         local model = spawnModel(Wall.world[index])
         Wall.models[index] = model
         if not IsValid(model) then queueRetry(index) end
+        Wall.nextModel = index + 1
     end
-    Wall.nextModel = last + 1
 end
 
-local function retryFailedModels()
+local function retryFailedModels(deadline)
     if (Wall.nextModel or 1) <= #(Wall.world or {}) then return end
     if not Wall.retryQueue or #Wall.retryQueue == 0 then return end
 
     local processed = 0
-    while processed < RETRY_BATCH_SIZE and #Wall.retryQueue > 0 do
+    while processed < RETRY_BATCH_SIZE and #Wall.retryQueue > 0 and SysTime() < deadline do
         local index = table.remove(Wall.retryQueue, 1)
         local instance = Wall.world and Wall.world[index]
         if instance and not IsValid(Wall.models[index]) then
@@ -455,8 +482,11 @@ end
 
 hook.Add("Think", "LOD_BuildProceduralContainerWalls", function()
     if not Wall.logical or #Wall.logical == 0 then return end
-    buildModelBatch()
-    retryFailedModels()
+    local start = SysTime()
+    local deadline = start + MODEL_FRAME_BUDGET
+    buildModelBatch(deadline)
+    retryFailedModels(deadline)
+    Wall.modelBuildMilliseconds = (SysTime() - start) * 1000
 end)
 
 local function gridPosition(pos)
@@ -537,8 +567,14 @@ hook.Add("PostDrawOpaqueRenderables", "LOD_DrawContainerWayfinding", function()
     end
 end)
 
-hook.Add("ShutDown", "LOD_WallVisualsClientCleanup", removeModels)
-hook.Add("PostCleanupMap", "LOD_WallVisualsMapCleanup", removeModels)
+hook.Add("ShutDown", "LOD_WallVisualsClientCleanup", function() removeModels(true) end)
+hook.Add("PostCleanupMap", "LOD_WallVisualsMapCleanup", function() removeModels(true) end)
+cvars.AddChangeCallback("lod_container_model_pool", function()
+    if not poolPreference:GetBool() then
+        for _, model in ipairs(Wall.modelPool) do if IsValid(model) then model:Remove() end end
+        Wall.modelPool = {}
+    end
+end, "LOD_ContainerPoolPreference")
 
 concommand.Add("lod_wall_visuals_status", function()
     rebuildWorldCache()

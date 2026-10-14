@@ -26,6 +26,11 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("Consult Cargo Pool & Elapsed Construction Budget", ["python3", "tools/run_lua54.py", "tools/test_consult_wall_pool.lua"]),
+    ("Consult Trace Scratch & Native Reentry", ["python3", "tools/run_lua54.py", "tools/test_consult_trace_scratch.lua"]),
+    ("Consult Global Ghost Draw Budget", ["python3", "tools/run_lua54.py", "tools/test_consult_ghost_budget.lua"]),
+    ("Consult Native Boss Snapshot Full Keyframes", ["python3", "tools/run_lua54.py", "tools/test_boss_presentation.lua", "--native"]),
+
     ("Ordinary Feat Duplicate & Rank Guard", ["python3", "tools/run_lua54.py", "tools/test_feat_repeat_guard.lua"]),
     ("Neil Release Native Prop", ["python3", "tools/run_lua54.py", "tools/test_neil_release_prop.lua"]),
     ("Invisible Sanctuary & Nullified Combat", ["python3", "tools/run_lua54.py", "tools/test_invisible_sanctuary.lua"]),

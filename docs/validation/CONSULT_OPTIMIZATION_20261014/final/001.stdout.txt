@@ -1,0 +1,2 @@
+HOSTILE_ROUTE_CACHE_PASS exact_path_cases=9072 requests=1920 legacy_filter_visits=749190 cached_filter_visits=24973 legacy_lua_seconds=2.368545 cached_lua_seconds=0.042631 general_tree_limit=72 completed_path_limit=72 native_fps_measured=false
+MIXED_HOSTILE_ROUTE_CACHE_PASS requests=1920 legacy_filter_visits=514200 cached_filter_visits=17140 legacy_home_trees=64 cached_home_trees=64 legacy_lua_seconds=1.690486 cached_lua_seconds=0.085946 native_fps_measured=false

@@ -1,0 +1,2 @@
+MONSTER_AURA_ORBIT_WORK scenarios=218 draws=13920 trig=232 getters=167040 vectors=97440 colors=13920 sprites=27840 trace_rows=255405 native_fps_measured=false
+MONSTER_AURA_ORBIT_PASS exact native input/sprite traces; boundaries/statuses/preferences/custom helpers/nested callbacks/refresh/retry/weak retirement; not hardware FPS

@@ -1,0 +1,8 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+BESTIARY_B16_VERDICT_PASS: actual Tick/Think and FinishMove qualification; STOP/GO threshold, grace, sustained final window, one canonical HP hit or harmless obedience, finite recovery
+BESTIARY_B16_LIFECYCLE_PASS: exact lives/scopes, support/cover/hull, cloak, force/Held/nonwalk, real motion qualifications, stale observations and missed coverage fail closed
+BESTIARY_B16_OWNERSHIP_PASS: exclusive Hero token, conditional release, removed-owner recovery and bounded cap
+BESTIARY_B16_CALLBACK_PASS: every canonical motion observation, force-expiry, exact authorization/replay/reentry, native mitigation replacements, changed hulls, newer-attack preservation and fixed error expiry

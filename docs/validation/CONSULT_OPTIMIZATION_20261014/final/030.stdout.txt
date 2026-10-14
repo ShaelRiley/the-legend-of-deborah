@@ -1,0 +1,19 @@
+BOSS_PRESENTATION_PASS chonker snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS felon snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS melf snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS ollie snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS crystal_bepis snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS daryl snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS sofa snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS marion snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS button snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS ray snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS cornette snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS moshi snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS chuck snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS rank_and_file snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS flightmeister snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS conan snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS joilette snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_PASS little_mooky snapshot retained properties native removal client ghost exact lifetime
+BOSS_PRESENTATION_SUMMARY passed=18 failed=0 native_transport=false

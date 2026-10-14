@@ -1,0 +1,1 @@
+BESTIARY_B13_VISUAL_PASS: native Draw/culling, full/reduced spacing glyphs, frozen geometry/countdowns, finite expiry, fallback, death/interruption/distance cleanup

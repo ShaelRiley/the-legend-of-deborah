@@ -116,10 +116,40 @@ function E:Safe(graph,c)
     local tag=graph and c and (graph.CellTags or {})[key(c)]
     return not c or (tag and (tag.safe or tag.entryApron or tag.role=="boss" or tag.role=="resupply"))
 end
+-- Borrow scratch records by nesting depth. A native filter can reenter Lua;
+-- nested traces must not overwrite the outer request, result or actor filter.
+-- These records never escape a predicate or retain native entity ownership.
+local traceRows, traceDepth = {}, 0
+function E:AcquireTrace(e,ignorePlayers)
+    traceDepth = traceDepth + 1
+    local row = traceRows[traceDepth]
+    if not row then
+        row = {output={}, supportStart=Vector(), supportEnd=Vector(),
+            hullMins=Vector(), hullMaxs=Vector()}
+        row.filter = function(v)
+            return v~=row.owner and not v.LODHostile and (not row.ignorePlayers or not v:IsPlayer())
+        end
+        traceRows[traceDepth] = row
+    end
+    row.owner, row.ignorePlayers = e, ignorePlayers
+    -- Native output APIs can omit fields. Never borrow a previous trace's Hit.
+    for k in pairs(row.output) do row.output[k]=nil end
+    return row
+end
+function E:ReleaseTrace(row)
+    row.owner, row.start, row.endpos, row.mins, row.maxs = nil, nil, nil, nil, nil
+    for k in pairs(row.output) do row.output[k]=nil end
+    traceDepth = traceDepth - 1
+end
 function E:Visible(e,p,origin)
-    local tr=util.TraceLine({start=origin or e:WorldSpaceCenter(),endpos=p:WorldSpaceCenter(),mask=MASK_SOLID,
-        filter=function(v) return v~=e and not v.LODHostile end})
-    return not tr.Hit or tr.Entity==p
+    local row=self:AcquireTrace(e,false)
+    row.start=origin or e:WorldSpaceCenter();row.endpos=p:WorldSpaceCenter();row.mask=MASK_SOLID
+    local ok,tr=pcall(util.TraceLine,row)
+    if not ok then self:ReleaseTrace(row);error(tr,0) end
+    tr=tr or row.output
+    local clear=not tr.Hit or tr.Entity==p
+    self:ReleaseTrace(row)
+    return clear
 end
 function E:Origin(e)
     if e.LODArchetypeId=="lurker" then return e:GetPos()+Vector(0,0,-22) end

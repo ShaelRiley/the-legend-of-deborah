@@ -1,4 +1,19 @@
-# Current checkpoint — ordinary feat repeat guard and stock Neil console
+# Current checkpoint — consultant-guided low-end optimization
+
+User authorizes selectively adopting useful consulting advice. Preserve native
+progression props and cargo rendering. Implement bounded/time-sliced cargo reuse,
+frame-wide pushback cosmetic limits, reusable reentrant trace predicates,
+bounded native modular-boss keyframes with legacy rollback, idle audio hook
+retirement, and repaired performance-source fixtures/coverage. Exact scoped
+static gate and native limitations: [evidence](validation/CONSULT_OPTIMIZATION_20261014.md).
+
+Next: fully quit/update/install main, restart gm_flatgrass, run `lod_perf_start 180`
+and play through combat/map/gates/boss/transition. Return console_latest.txt and
+performance_client_latest.txt. ≥40 FPS and native appearance/bandwidth remain
+unaccepted; no Workshop/VPS operation. The feat-repeat/Neil-console and physical
+map/key visibility gates below remain regression constraints.
+
+# Previous checkpoint — ordinary feat repeat guard and stock Neil console
 
 On main d8ca361, human/automatic commits now enforce current eligibility and
 highest replacement ranks. Invalid next-hand cards repair deterministically;

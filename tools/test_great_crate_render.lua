@@ -121,10 +121,13 @@ function ClientsideModel(path)
  function m:SetNoDraw() end
  function m:SetPos(p) self.pos=p end
  function m:SetAngles(a) self.yaw=math.rad(a.y) end
- m.SetSkin=noop;m.SetMaterial=noop;m.SetColor=noop;m.DrawShadow=noop
+ m.SetSkin=noop;m.SetMaterial=noop;m.SetSubMaterial=noop;m.SetColor=noop;m.DrawShadow=noop
  function m:Remove() self.valid=false end
  return m
 end
+CreateClientConVar=function() return {GetBool=function() return false end} end
+cvars={AddChangeCallback=noop}
+SysTime=CurTime
 dofile(root..'cl_wall_visuals.lua')
 w.logical={};w.seed=725;w.origin=Vector();w.dirty=true
 for x=2,20 do w.logical[#w.logical+1]={x,10,0,1} end

@@ -339,8 +339,12 @@ if CLIENT then
     local settingsNames={"fps_max","mat_vsync","mat_dxlevel","mat_queue_mode",
         "mat_antialias","mat_aaquality","mat_hdr_level","mat_picmip","mat_viewportscale",
         "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects","lod_wall_batches",
-        "lod_third_person","lod_map_scale","lod_map_opacity"}
+        "lod_third_person","lod_map_scale","lod_map_opacity","lod_container_model_pool","lod_boss_binary_snapshots"}
     local renderSources={
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_pushback_fx.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_loop_audio.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_boss_encounter.lua",
+
         "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/cl_init.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed.lua",

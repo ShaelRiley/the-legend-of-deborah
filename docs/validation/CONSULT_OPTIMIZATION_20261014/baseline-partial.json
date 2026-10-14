@@ -1,0 +1,174 @@
+{
+  "base_commit": "25bf66d319c6d9c691e2114891b7e65f37b7fa37",
+  "complete": false,
+  "completed_suites": 329,
+  "failures": [
+    {
+      "index": 18,
+      "name": "Opt-in Rendered Frame Evidence & Lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_performance_capture.lua"
+      ],
+      "returncode": 1,
+      "seconds": 0.063,
+      "log_prefix": "018-opt-in-rendered-frame-evidence-lifecycle",
+      "stdout_sha256": "f84198faab54ebddba6d350d98cecceea89fa9cdf56e7b38201eec4419caf49a",
+      "stderr_sha256": "7fecdd906aa1ef5b6651dccbeb2a59e9dcb5758c663e8f81ccd76f1ebc2191db"
+    },
+    {
+      "index": 19,
+      "name": "Opt-in Client/Server CPU Attribution & Transparent Lifetimes",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_performance_profile.lua"
+      ],
+      "returncode": 1,
+      "seconds": 0.071,
+      "log_prefix": "019-opt-in-client-server-cpu-attribution-transparent-lifetimes",
+      "stdout_sha256": "b23763b24c374d46a8688754dbe9cf1dfeece0578195af86753871fc68aed1b6",
+      "stderr_sha256": "7949026c9231f1a37a6ec73b3e653b8b8c8f5693fceb373dde6f085cd4a913ea"
+    },
+    {
+      "index": 58,
+      "name": "Bestiary B29 Bilateral Combat Seams",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b29_combat.lua"
+      ],
+      "returncode": 1,
+      "seconds": 0.137,
+      "log_prefix": "058-bestiary-b29-bilateral-combat-seams",
+      "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+      "stderr_sha256": "bdf978afc82f55aa1d3927d5d7339c23279c9c6ff3b1eaa92f36d1bee9f6f7bc"
+    },
+    {
+      "index": 72,
+      "name": "Bestiary B23 Campaign Wandering Ecology",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b23_campaign.lua"
+      ],
+      "returncode": 124,
+      "seconds": 600.007,
+      "log_prefix": "072-bestiary-b23-campaign-wandering-ecology",
+      "stdout_sha256": "c44f5bf0433d1e5b31dd19936c8594fc42d0bcd618b9cf4004ac08bffca1ee8f",
+      "stderr_sha256": "716705f13c1b7ae52811c895f4514d206d057b7d9aa31f976caf6a90290852c4"
+    },
+    {
+      "index": 103,
+      "name": "Active Event Catalog, Bribe Removal & Quiz Placement",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_quiz_generation.lua"
+      ],
+      "returncode": 1,
+      "seconds": 2.968,
+      "log_prefix": "103-active-event-catalog-bribe-removal-quiz-placement",
+      "stdout_sha256": "715459e784b93f89b518b8f9cf5f47cef6427ae37db5bd237d609caa15d3e116",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "index": 104,
+      "name": "Minigame Shell & Equipment UI Restrictions",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_minigame_ui.lua"
+      ],
+      "returncode": 1,
+      "seconds": 0.438,
+      "log_prefix": "104-minigame-shell-equipment-ui-restrictions",
+      "stdout_sha256": "285d0e7838ebaa49ab500a57005a662b2cde1fd520e2186892b3e623da6bb722",
+      "stderr_sha256": "8b8b20da093d24ca561fcc3f5670941612db528767ddf6fa0756b3c87e68d32d"
+    },
+    {
+      "index": 137,
+      "name": "Client Geometry Full-Update Recovery",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_geometry_fullupdate.lua"
+      ],
+      "returncode": 1,
+      "seconds": 0.053,
+      "log_prefix": "137-client-geometry-full-update-recovery",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "12412b79d00285483c632bccdcf7d492f8de792d6fe3d27ea01352358bb5ff72"
+    },
+    {
+      "index": 145,
+      "name": "Shared Native DamageInfo Lifetime",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_shared_damage_lifetime.lua"
+      ],
+      "returncode": 1,
+      "seconds": 0.107,
+      "log_prefix": "145-shared-native-damageinfo-lifetime",
+      "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+      "stderr_sha256": "a1f3b097fe9ed20c6dc36fb2774e03f667bffa55cdb01c0a05055b9bd7ba0d85"
+    },
+    {
+      "index": 148,
+      "name": "Shotgun Native Bullet Aggregation",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_shotgun_native_path.lua"
+      ],
+      "returncode": 1,
+      "seconds": 0.113,
+      "log_prefix": "148-shotgun-native-bullet-aggregation",
+      "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+      "stderr_sha256": "0090e635d2e8dae77b8042e830c03da5a86b636027c8130f7ee364e2224b26a7"
+    },
+    {
+      "index": 270,
+      "name": "Feat: rebalance_20261002",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_d_rebalance_20261002.lua"
+      ],
+      "returncode": 1,
+      "seconds": 0.139,
+      "log_prefix": "270-feat-rebalance-20261002",
+      "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+      "stderr_sha256": "4b4e89fb97b5cfb30875447f77efda9fc0b2b105a97ccb8a522b8a1667df7f88"
+    },
+    {
+      "index": 296,
+      "name": "Retired Cross Feats & Shared Dodge",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_cross_feats_dodge.lua"
+      ],
+      "returncode": 1,
+      "seconds": 0.135,
+      "log_prefix": "296-retired-cross-feats-shared-dodge",
+      "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+      "stderr_sha256": "0d440e229032116d2770da731013e9ccd9597747f0402c628844ad9194250e4b"
+    },
+    {
+      "index": 297,
+      "name": "Live-GDD Feat Release Gate",
+      "command": [
+        "python3",
+        "tools/audit_live_gdd_feats.py"
+      ],
+      "returncode": 1,
+      "seconds": 0.221,
+      "log_prefix": "297-live-gdd-feat-release-gate",
+      "stdout_sha256": "1c86d4caf21b50a179ff38be0ef4f08dfea9d261e5c0de1554addb2facc3db69",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
