@@ -38,7 +38,13 @@ Bounded MotionV2/entry/animation profiling identifies repeated server Lua update
 Native movement suppression and allocation-free entry sweep prototypes gave no
 useful gain and were restored. A longer normal-input first-sector diagnostic reached83.95 active seconds before
 normal death:27.11FPS, p9571.04ms, p99115.30ms. It fails duration and performance
-and remains partial coverage. Next profile real combat/encounter/update spikes. Same-Deck dedicated hosting is a pending
+and remains partial coverage. A separate combat profile confirms continued entry/close-defense/native behavior
+cost and combat-feed drawing; normal death leaves only16.4 active seconds, so it
+is diagnostic only. No further source shortcut was retained. Resume the measured
+loop after the pending hosting decision; arrange three additional real clients
+for the required multiplayer gate. Exact failure/profile/controller receipts are
+in the iteration record. Temporary controllers are removed and processes stopped
+while awaiting that information. Same-Deck dedicated hosting is a pending
 explicit criterion decision. The public server currently has zero actual players,
 so four-player native coverage remains unavailable.
 Full40FPS acceptance remains **unmet/unverified**. See the

@@ -510,6 +510,42 @@ This reveals much worse gameplay tails than the stationary profile. Next isolate
 combat/encounter/update spikes in a separately labelled diagnostic before making
 any further performance change. Do not infer sustained40FPS from arrival views.
 
+
+### Combat attribution follow-up and current checkpoint
+
+A fresh publicWin64/P10 listen host repeated the same ordinary first-sector
+input route. A separate60-second CPU profile started25s after playback dispatch;
+the Hero died at41.132s of route playback, leaving only16.412 active seconds.
+Profiled22.118FPS/p9597.689ms/p99148.948ms are not an equivalent unprofiled
+performance comparison. Profile rows span59.97s including post-death simulation:
+EntrySafety.BeforeAI54.85ms/s, TickCloseDefense52.72ms/s, native runner behavior
+32.27ms/s, shambler27.38ms/s (max49.96ms), bioblaster23.04ms/s and deadcrab22.74ms/s.
+Client combat-feed drawing33.76ms/s (mean0.964ms, max4.74ms) and persistent HUD
+17.40ms/s add cost. Existing production text/layout caches already cover these
+paths; no duplicate cache or timing-changing AI shortcut was introduced.
+
+The temporary route's1Hz logger hit Clip1 on an invalid native weapon during the
+death transition. Its original input and error are preserved beside this capture;
+the external logger now guards that transition. This is a diagnostic error, not
+a production source regression. Neither this mixed active/dead profile nor its
+FPS certifies any acceptance scenario. Raw/script/full console:
+`/home/deck/deborah-benchmarks/gameplay-profile/df106dc1/listen-first-sector/`.
+A host sample during this diagnostic shows CPU cores up to3.5GHz, GPU200MHz/68°C
+and APU10.1W under its unchanged15W caps; this does not establish GPU saturation.
+
+Current source changes remain the three retained measured candidates above.
+No further source optimization was retained from the movement/combat follow-up.
+The frozen solo listen-host condition still fails. Same-Deck dedicated hosting
+remains a separately measured alternative awaiting the explicit hosting choice;
+three additional real clients are required for the four-player gate, and no
+server SSH configuration/key is available on this Deck. The existing public
+server is reachable but reports zero players. No public deployment occurred.
+Temporary benchmark-controller files are archived and removed from client/server
+autorun while waiting; game/test processes are stopped. Resume from the clean
+published perf/deck-20261021 checkpoint, reinstall only after full quit, restore
+the archived finite controller only for diagnostics, then continue the measured
+loop under the confirmed hosting condition. Do not merge a completed40FPS claim.
+
 ## Remaining acceptance
 
 All six required scenarios in `docs/STEAM_DECK_BENCHMARK.md` remain unverified.
