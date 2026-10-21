@@ -311,6 +311,70 @@ Fresh installed Deck
 comparison and retain/revert decision are pending. This is a hypothesis, not a
 measured performance improvement.
 
+### Candidate3 installed measurements and follow-up diagnostics
+
+Clean source `da4e9597cbc80823dfbbd7dfe2aca3ad09b78994` was installed after a
+full quit. Proton10/no-HUD/fullscreen1280×800 and the normal seed/60-roamer
+arrival fixture match the fresh control condition above. All capture source
+checks pass, including111 server and51 client authorities. These remain short
+stationary diagnostics, never required scenario acceptance.
+
+| Candidate3 / repeat | Average FPS | Median ms | p95 ms | p99 ms | 1% low FPS |
+| --- | ---: | ---: | ---: | ---: | ---: |
+|1 |33.49|28.902|36.495|42.340|21.15|
+|2 |33.31|29.233|35.966|44.679|19.12|
+|3 |33.21|29.053|36.695|44.382|16.90|
+
+The mean is1.58% above the fresh controls; the repeat ranges do not overlap.
+The same bounded1-in64-call instrumentation estimates Soldier StateFor cost at
+13.10ms/s versus25.68ms/s previously, with similar call counts. Inclusive sampled
+timers overlap and cannot be added. These observations support less query work,
+but a later restored-source control at about25minutes reached only32.06FPS.
+Ordinary AI positions and session age vary. Retain the candidate provisionally;
+a fresh alternating comparison is needed to separate a small FPS effect from
+this larger session variation. Every run fails the40FPS frame budget.
+
+Normal200-unit input playback completed the frozen17-node red-card route in
+34.55s, with ordinary combat reducing health100→96. All65 live actor queries
+(including newly encountered actors) retained their own progression state and
+returned no human-Soldier incarnation. Standing idle afterward led to normal
+enemy death. A subsequent client full update recovered1209 registered/bounds-ready
+boxes,591 renderable/618 NoDraw, and1736 cargo models; this was a recovery check,
+not an active gameplay performance run. Raw captures, query observations and the
+full engine console are under
+`/home/deck/deborah-benchmarks/soldier-lookup-comparison/candidate-da4e9597/`.
+
+Separate mechanism diagnostics, all outside production and restored:
+
+- Engine fullscreen at the same viewport:32.96FPS, no benefit; restored the
+  prior windowed-engine/KWin-fullscreen mode.
+- Temporarily hiding1736 client cargo models:37.64FPS/p9532.582ms. This isolates
+  rendering cost, removes required visuals and still fails; it is neither an
+  optimization result nor acceptance. All models restored by the finite timer.
+- Combining existing slab submissions:26.79FPS with incorrect per-frame cache
+  invalidation; corrected mounted-material identity yielded31.64FPS. Even the
+  one-build cache was slower; rejected, exact methods/resources restored.
+- Native GetRenderMesh submission for423 ordinary slabs:32.64FPS, rejected;
+  restored each Draw/GetRenderMesh/registry owner. Screenshot is limited view
+  evidence, not whole-game visual acceptance.
+- Compiler-cache reset in both Proton realms:31.59FPS versus the later32.06
+  control; no benefit. No compiler setting or rendering prototype is shipped.
+
+Raw mechanism records: `presentation-mode-diagnostic/`, `render-isolation/`,
+`floor-submit-diagnostic/`, `native-floor-mesh-diagnostic/` and
+`proton-jit-diagnostic/` beneath `/home/deck/deborah-benchmarks/`.
+The main-thread native sample, mapped to PE modules, attributes about40.6% of
+samples to Lua shared,19.8% client,10.7% engine,9.8% server and10.8% unmapped
+(including generated code); these are CPU samples, not additive frame durations.
+The Proton syscall trace does not show the native-Linux compiler mapping loop.
+Artifacts: `cpu-da4e9597/`. During the floor diagnostic AC was online, CPU sensor
+77°C, GPU68°C and both power caps15W; raw host telemetry is retained.
+
+Next: fresh alternating Soldier-provider comparison and continued simulation
+profiling. A separately labelled local dedicated-server diagnostic is being
+prepared to isolate hosting cost; it does not replace the frozen listen-host
+requirements or the still-unverified four-actual-player condition.
+
 ## Remaining acceptance
 
 All six required scenarios in `docs/STEAM_DECK_BENCHMARK.md` remain unverified.

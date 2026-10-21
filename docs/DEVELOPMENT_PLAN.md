@@ -21,8 +21,13 @@ only31.24–31.40FPS. Larger compiler caches/traces gave no measurable gain. Res
 the faster Proton10 condition: fresh fullscreen1280×800 controls reach32.68–32.93FPS.
 The next focused candidate rejects ordinary NPC kinds before redundant native
 lookups in the Player-only human-Soldier provider. Soldier/AI/status regressions
-pass; source fingerprint coverage is expanded. Equivalent installed measurements
-and the retain/revert decision are pending.
+pass; source fingerprint coverage is expanded. Fresh installed repeats reach33.21–33.49FPS with reduced sampled query cost,
+but later32.06FPS controls show session variation larger than the small gain.
+The retain decision is provisional pending a fresh alternating comparison.
+Slab batching, native mesh submission, engine fullscreen and compiler-cache
+reset prototypes gave no useful gain and were restored; no such prototype ships.
+A separate local dedicated-server diagnostic will isolate hosting cost while
+preserving the original listen-host acceptance requirements.
 Full40FPS acceptance remains **unmet/unverified**. See the
 [iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for raw locations,
 focus/environment corrections, regressions and interpretation. Next: isolate
