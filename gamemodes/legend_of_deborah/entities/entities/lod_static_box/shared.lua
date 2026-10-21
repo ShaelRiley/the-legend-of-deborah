@@ -11,12 +11,26 @@ local function invalidateVisualKind(ent, _, _, value)
     if record then record.kind = nil; record.pending = value end
 end
 
+local function invalidateVisualBounds(ent, name, _, value)
+    local record = ent._LODVisualKindRecord
+    if record then
+        record.boundsReady = nil
+        if value then
+            record[name=="BoxMins" and "pendingMins" or "pendingMaxs"]={value.x,value.y,value.z}
+        end
+    end
+    ent._LODNextBoundsRefresh = 0
+    if ent.SetNextClientThink then ent:SetNextClientThink(CurTime()) end
+end
+
 function ENT:SetupDataTables()
     self:NetworkVar("Vector", 0, "BoxMins")
     self:NetworkVar("Vector", 1, "BoxMaxs")
     self:NetworkVar("Int", 0, "BoxKind")
     if CLIENT and self.NetworkVarNotify then
         self:NetworkVarNotify("BoxKind", invalidateVisualKind)
+        self:NetworkVarNotify("BoxMins", invalidateVisualBounds)
+        self:NetworkVarNotify("BoxMaxs", invalidateVisualBounds)
         -- Only this declared native accessor pair can borrow the notification.
         -- Legacy/custom entities retain the renderer's ordinary polling path.
         self._LODVisualKindGetter = self.GetBoxKind
@@ -25,6 +39,7 @@ function ENT:SetupDataTables()
         -- The registry must not retain a removed entity through its bound DT
         -- closures. Borrow the live Lua table weakly, never its getter objects.
         self._LODVisualKindRecord = type(data)=="table"
-            and {lua=setmetatable({data},{__mode="v"})} or nil
+            and {lua=setmetatable({data},{__mode="v"}),
+                boundsAccessors=setmetatable({self.GetBoxMins,self.GetBoxMaxs},{__mode="v"})} or nil
     end
 end

@@ -1,4 +1,15 @@
-# Current checkpoint — Steam Deck baseline access and pacing evidence
+# Current checkpoint — measured Deck baseline and first candidate
+
+Host access and the complete checkout are restored. Clean cec10dc5 on the actual
+Deck measured23.4FPS in an entry-wall diagnostic; full40FPS acceptance remains
+**unmet/unverified**. Native walls are retained after the experimental batch
+renderer failed appearance. Source-selected floor candidates now await a fresh
+hardware comparison; focused geometry and profiler regressions pass. See the
+[iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for exact evidence,
+known inherited fixture failures, conditions and next measurement. Required
+representative scenarios, three warm repeats and capped verification remain open.
+
+# Previous checkpoint — Steam Deck baseline access and pacing evidence
 
 The October21 optimization request requires measured native Steam Deck≥40FPS
 and verified publication, including three warm uncapped repeats per required

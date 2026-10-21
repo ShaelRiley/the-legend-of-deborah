@@ -150,7 +150,7 @@ function Audit:StartCPUProfile()
             row.calls=row.calls+1
             return row.finish(SysTime(),fn(...))
         end
-        bindings[key]={original=original,wrapper=wrapper}
+        bindings[key]={original=original,wrapper=wrapper,callback=fn}
         target[key]=wrapper
     end
     for event,callbacks in pairs(hook.GetTable and hook.GetTable() or {}) do
