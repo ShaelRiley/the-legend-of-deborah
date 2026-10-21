@@ -203,6 +203,78 @@ Nested query sample:
 `/home/deck/deborah-recovery/evidence/sampled-ai-cost-b8.json`.
 No browser video was paused, and no paused media/process requires restoration.
 
+## Native Linux runtime investigation
+
+The standard native32 depot4003/5169228716831564971 was downloaded using the
+authorized Steam client and assembled in a separate full game copy. Soldier
+alone lacked libgconf; the bundled legacy scout runtime resolved that dependency,
+but native32 then hung before the world/console initialized. Those processes were
+terminated. There is no native32 FPS result. The full copy preserves the previous
+Windows public binaries and assets at
+`/home/deck/deborah-recovery/GarrysMod-native/`.
+
+Steam's normal public-branch selector then installed x86-64 build25936581,
+GMod2026.10.14, common depot4001/2716471719602828132 and Linux
+depot4003/7620157547366035543. The actual process was ELF64/x86_64 under
+scout-on-soldier (soldier2.0.20260928.262391 and scout1.0.20260714.251828).
+The unchanged source was reinstalled with clean documentation commit962be884;
+its runtime bytes match b8d2af54. Native captures have no MangoHUD overlay.
+
+This runtime retains integer convar seeds that the previous Windows build had
+rounded. Setup explicitly used the baseline's **actual** campaign654759232 and
+roster2084084480, reproducing layout236920976/population1463751064,60 roamers,
+1209 boxes,1736 walls, the same Wizard/feat/equipment and identical starting
+ability roll (STR11/DEX6/CON13/INT17/WIS9/CHA15). The first wrong-seed trial and a
+capture with lost input focus are excluded. Graphics were applied through the
+normal startup cfg after several Lua graphics commands proved API-blocked;
+a full restart cleared those diagnostic errors. Native settings retain
+1280×800, native walls, shadows/shadow textures/water1, HDR2, picmip0, AA0,
+vsync0, fps_max300, mcore1/queue2/bone1. Its OpenGL backend reports DXlevel92
+despite requesting95; this is a recorded runtime difference from Windows95.
+Corridor/portrait screenshots appear intact; full visual/controls acceptance
+for this runtime is still unverified. The hull-material/stock-gate fallback
+diagnostic flags also occur in the Windows baseline and are not new Linux proof.
+
+| Native stationary diagnostic | Average FPS | Median ms | p95 ms | p99 ms |
+| --- | ---: | ---: | ---: | ---: |
+| Default allocator /1 |13.24|65.300|148.391|195.388|
+| Default allocator /2 |9.60|103.419|157.634|176.496|
+| One compiler-cache reset |9.47|98.304|180.374|214.429|
+| Larger code arena, rejected |0.94|1050.783|1158.646|1162.710|
+| Compilation disabled, diagnostic only |30.55|31.666|39.601|47.717|
+| Fresh MALLOC_ARENA_MAX=2 /1 |31.24|30.988|39.064|48.688|
+| Fresh MALLOC_ARENA_MAX=2 /2 |31.40|30.779|37.281|49.001|
+| Allocator2 +16MiB code capacity |31.50|30.724|38.199|47.145|
+| Also4096 traces |31.30|31.046|39.103|47.115|
+
+All are30s diagnostics, not acceptance scenarios. The larger-arena attempt had
+only28.86 active seconds and major actual stalls; it is a failed experiment.
+Every result fails40FPS. Native CPU samples placed46.6% of user samples in
+lua_shared_client.so. A bounded syscall trace found approximately16000 mmap /
+munmap pairs per second: the LuaJIT code allocator requested64KiB at addresses
+in its jump range, received the same unsuitable address and immediately freed
+it. Stacks identify the Lua shared library. Compiler-cache reset did not help;
+increasing arena size to1MiB made the rejected-allocation loop worse. Temporarily
+disabling compilation improved FPS, supporting that diagnosis. All such compiler
+changes were outside production and removed by a fresh process.
+
+Many neighboring64MiB allocator reservations motivated a fresh launch with the
+standard glibc `MALLOC_ARENA_MAX=2` setting. This eliminated the failed mapping
+loop while retaining normal compilation, and produced the31.24/31.40 results.
+The observations agree with [LuaJIT's code-allocation implementation](https://github.com/LuaJIT/LuaJIT/blob/v2.1/src/lj_mcode.c);
+they do not prove the interpreter/runtime is otherwise optimal. Raising code
+capacity and trace count afterward produced no gain beyond repeat noise and is
+rejected. No security protections were changed. The equipment generator's
+existing interpreter-only crash workaround remained in place throughout.
+
+The native alternative does not beat the measured Proton10 condition. Restore
+Steam's Default Public Version and Proton10, then continue the source loop.
+Artifacts: `/home/deck/deborah-benchmarks/native64-diagnostic/` contains captures,
+excluded attempts, source/configuration receipts, native CPU data and syscall
+stacks. Task-local launch/controller scripts and cfg are under
+`/home/deck/deborah-recovery/` and the game's cfg/DATA directories; these are
+diagnostic preparation, not a shipped optimization preset.
+
 ## Remaining acceptance
 
 All six required scenarios in `docs/STEAM_DECK_BENCHMARK.md` remain unverified.

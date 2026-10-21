@@ -15,6 +15,11 @@ still pending. Separate stable-Proton10/threaded-rendering diagnostics reach
 Native CPU samples and bounded query timing point to remaining main-thread Lua /
 simulation cost; GPU telemetry does not establish saturation. The static-wall
 native Think experiment produced no measurable benefit and was rejected.
+The separate native Linux64 investigation found and isolated a compiler code
+allocation loop; a bounded allocator setting removed it, but native still reaches
+only31.24–31.40FPS. Larger compiler caches/traces gave no measurable gain. Restore
+the faster Proton10 condition and investigate the measured repeated ordinary-NPC
+queries through the human-Soldier progression provider before the next source pass.
 Full40FPS acceptance remains **unmet/unverified**. See the
 [iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for raw locations,
 focus/environment corrections, regressions and interpretation. Next: isolate
