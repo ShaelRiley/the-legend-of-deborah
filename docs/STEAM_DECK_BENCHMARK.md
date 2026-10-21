@@ -1,6 +1,8 @@
 # Steam Deck acceptance protocol — frozen 2026-10-21
 
-Status: **unverified**. No current-build hardware baseline has been obtained.
+Status: **unverified**. Focused stationary Deck baselines exist in
+`docs/validation/STEAM_DECK_20261021_ITERATIONS.md`; required gameplay coverage
+and final acceptance remain open.
 This protocol precedes further performance changes. The October 14 consultant
 changes remain source-validated, not native-performance accepted. Do not adjust
 scenarios, thresholds, counts, graphics or resolution in response to poor results.

@@ -1,13 +1,18 @@
-# Current checkpoint — measured Deck baseline and first candidate
+# Current checkpoint — focused Deck comparison; target unmet
 
-Host access and the complete checkout are restored. Clean cec10dc5 on the actual
-Deck measured23.4FPS in an entry-wall diagnostic; full40FPS acceptance remains
-**unmet/unverified**. Native walls are retained after the experimental batch
-renderer failed appearance. Source-selected floor candidates now await a fresh
-hardware comparison; focused geometry and profiler regressions pass. See the
-[iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for exact evidence,
-known inherited fixture failures, conditions and next measurement. Required
-representative scenarios, three warm repeats and capped verification remain open.
+The floor candidate48740b24 improved mean FPS5.70% in three matched30-second
+stationary Deck diagnostics: baseline21.68–21.81FPS, candidate22.67–23.13FPS.
+Separate profiles agree on lower floor-rendering cost. Native walls, normal
+population, graphics and collision remain. The first normal17-node route and
+red-card pickup completed; later visibility/cleanup coverage is still required.
+The distinct multicore1 diagnostic reached26.77FPS and was restored to0.
+Full40FPS acceptance remains **unmet/unverified**. See the
+[iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for raw locations,
+focus/environment corrections, regressions and interpretation. Next: isolate
+remaining simulation/rendering cost, finish frozen gameplay checkpoints, and
+continue equivalent measurements. All required scenarios, three warm repeats
+and capped verification remain open; no completed40FPS claim is authorized by
+these stationary results.
 
 # Previous checkpoint — Steam Deck baseline access and pacing evidence
 
