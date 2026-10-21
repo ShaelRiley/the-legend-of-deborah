@@ -451,6 +451,65 @@ criteria; a different accepted hosting requirement would need an explicit decisi
 The remaining simulation profile should include MotionV2 and target/route helpers,
 which have not yet been deeply attributed. All six required scenarios remain open.
 
+
+### Windows32 and focused movement probes
+
+Public Windows32 under Proton10, on the same Deck, graphics and normal seeded
+listen-host population, measured29.77FPS warm and29.60FPS repeat (p9539.862/
+39.519ms, p9950.334/48.641ms). This was slower than Windows64 and was rejected.
+The client is restored to public Windows64/Proton10, installed cleanff166895.
+Raw: `/home/deck/deborah-benchmarks/windows32-listen-diagnostic/ff166895/`.
+
+A separate bounded1-in64 sampled profile on that restored build attributes about
+95.2ms/s inclusive to MotionV2.MoveToward,46.9ms/s to EntrySafety.BeforeAI,
+26.9ms/s to ExactCell,25.8ms/s to Rules.ProgressionState,23.1ms/s to _SetActivity,
+19.6ms/s to MovementAllowed and18.9ms/s to Animation.Apply. These overlap; do not
+sum them or interpret them as FPS. Every wrapper restored its original binding.
+Raw/script: `/home/deck/deborah-benchmarks/motion-cost-diagnostic/ff166895/`.
+
+Two external finite mechanism probes were rejected; neither changes source:
+
+| Mechanism diagnostic | Control FPS | Prototype FPS | Prototype p95/p99 ms | Decision |
+| --- | ---: | ---: | --- | --- |
+| Temporarily suppress native movement on53 active ordinary non-boss/non-deadcrab actors |33.194|33.552|36.009/47.510| No useful gain; original53 move types restored |
+| Allocation-free scalar sanctuary segment clipping |33.194 before /32.675 nearby after|32.967|36.212/47.445| Within session variation; original function restored |
+
+The first probe retained ordinary AI calls/travel (85,101 MoveToward calls and
+357,623 aggregate travel units over45.03s,48 actors moving). This does not prove
+native collision/interpolation equivalence, and no such change is retained.
+Original native type was11/MOVETYPE_CUSTOM. Exact scripts, restoration receipts,
+conditions and failed raw captures are retained under
+`/home/deck/deborah-benchmarks/native-motion-diagnostic/ff166895/` and
+`/home/deck/deborah-benchmarks/entry-sweep-diagnostic/ff166895/`.
+
+The existing public dedicated server answers the normal Source query but has
+zero actual players. Four-player native acceptance remains unavailable. A pending
+explicit hosting decision separates the frozen solo listen-host criterion from
+the faster same-Deck dedicated diagnostic; no acceptance condition was changed.
+
+A longer partial first-sector route is frozen before further source edits in
+`/home/deck/deborah-benchmarks/frozen-scenarios/d1-first-sector-180.json` with its
+input script and SHA256 receipt. It uses normal movement/aim/fire/reload/Magic,
+real AI/resources/collision and timed map toggles. It does not cover stairs,
+later sectors/objectives or the full required traversal scenario. Retain its
+result with that limited scope, including any death, stall or input failure.
+
+
+The first180-second attempt on the restored listen host completed only83.951
+active seconds:27.111FPS, median31.026ms, p9571.044ms, p99115.296ms,1%low7.292FPS,
+max207.967ms,81.806 active seconds below40 and nine drops lasting at least2s
+(longest14.916s). The controller reached33 complete waypoints, then was blocked
+by normal combat and died at84.534s (waypoint34); a later environment-only hull
+trace found no surviving static blocker at that location. Ordinary ammo was
+spent, loot collected and enemies killed/replaced. No health/AI override occurred.
+The incomplete capture fails both performance and duration and cannot be accepted
+as any required scenario. Exact route/input, gameplay receipt, full engine log,
+raw performance and failed analyzer result:
+`/home/deck/deborah-benchmarks/gameplay-first-sector-diagnostic/ff166895/listen-1/`.
+This reveals much worse gameplay tails than the stationary profile. Next isolate
+combat/encounter/update spikes in a separately labelled diagnostic before making
+any further performance change. Do not infer sustained40FPS from arrival views.
+
 ## Remaining acceptance
 
 All six required scenarios in `docs/STEAM_DECK_BENCHMARK.md` remain unverified.

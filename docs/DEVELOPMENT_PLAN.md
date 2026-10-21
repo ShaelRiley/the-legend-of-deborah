@@ -33,8 +33,14 @@ A separate same-Deck nativeLinux32 dedicated server with publicWin64/P10 client
 reaches53.29–54.23FPS in four30s stationary diagnostics, p9521.54–22.55ms and
 p9926.52–26.89ms. This changes hosting/server VM together and does NOT satisfy
 the frozen listen-host or full gameplay gates. Windows beta64/P10 was slower
-(31.63–31.83FPS) and public is restored. Next test publicWindows32/P10 listen
-host and profile MotionV2/target/route helpers for remaining simulation cost.
+(31.63–31.83FPS) and public is restored. PublicWindows32/P10 listen host was slower (29.60–29.77FPS); restored public64.
+Bounded MotionV2/entry/animation profiling identifies repeated server Lua updates.
+Native movement suppression and allocation-free entry sweep prototypes gave no
+useful gain and were restored. A longer normal-input first-sector diagnostic reached83.95 active seconds before
+normal death:27.11FPS, p9571.04ms, p99115.30ms. It fails duration and performance
+and remains partial coverage. Next profile real combat/encounter/update spikes. Same-Deck dedicated hosting is a pending
+explicit criterion decision. The public server currently has zero actual players,
+so four-player native coverage remains unavailable.
 Full40FPS acceptance remains **unmet/unverified**. See the
 [iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for raw locations,
 focus/environment corrections, regressions and interpretation. Next: isolate
