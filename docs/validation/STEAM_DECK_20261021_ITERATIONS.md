@@ -406,6 +406,51 @@ process or token was changed. The next runtime comparison is Windows x86-64
 beta under Proton10; this Windows combination was not covered by the earlier
 native-Linux beta investigation. Resolution, workload and quality remain fixed.
 
+### Windows beta and local dedicated comparison
+
+Windows x86-64 beta build25936581/GMod2026.10.14 under the same Proton10 prefix
+was slower:31.63/31.83/31.65FPS, p9537.800/37.721/38.606ms,
+p9952.344/45.027/46.141ms. Capture configuration differs from public only in
+engine/branch. Same normal seed,60 roamers,1280×800, native walls and source
+fingerprints. Rejected; restored Default Public Version/build25375506. The beta
+uses `bin/win64/gmod.exe`; public uses `gmod_win64.exe`. An automatically launched
+beta instance and the explicit instance briefly overlapped before measurement;
+both were stopped, then one fresh verified64-bit instance produced these captures.
+Raw: `/home/deck/deborah-benchmarks/windows-beta64-diagnostic/b5295459/`.
+
+A separate process on the **same Deck** then hosted a native Linux32 dedicated
+server, GMod2026.09.17/network2026.04.29/protocol24, LuaJIT2.0.4, tick interval
+0.015s. The client remained public Windows64/Proton10, LuaJIT2.1.0-beta3.
+Four available server slots, **one actual player**,60 ordinary roamers,
+identical seeds/arrival view/equipment/graphics; all51 client/111 server source
+checks pass. Both processes share the device and15W budget. The local server uses
+its own task directory, sv_lan1 and no persistent GSLT. It ultimately connected
+through the Deck's private LAN address; loopback query/connection attempts failed.
+One-slot dedicated startup was invalid and was replaced with four available slots.
+Packet tracing was removed before captures. No public-server process was modified.
+
+| Separate dedicated diagnostic | Average FPS | Median ms | p95 ms | p99 ms | 1% low FPS |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Warmup |53.29|18.234|22.548|26.662|30.94|
+| Repeat1 |53.79|18.118|22.071|26.893|30.69|
+| Repeat2 |53.96|18.025|22.116|26.515|30.38|
+| Repeat3 |54.23|17.907|21.540|26.644|29.98|
+
+All are30s stationary diagnostics; numeric short thresholds pass with no prolonged
+drop. **They do not satisfy the frozen listen-host condition or any required
+180-second gameplay scenario.** This comparison changes process topology and
+server OS/VM together, so it does not isolate either contribution. Frame/resource
+receipts confirm1736 native cargo models/3131 client entities, no batches,
+idle non-VR and zero Lua errors. Player health100, Wizard, AR2 clip20, measured
+ping5ms; no HP/AI/resources override. Raw captures and fixture:
+`/home/deck/deborah-benchmarks/dedicated-local-diagnostic/b5295459/`.
+
+Next compare the public32-bit Windows listen host under Proton10. It may reduce
+VM/lookup cost while preserving the original hosting condition. Retain all frozen
+criteria; a different accepted hosting requirement would need an explicit decision.
+The remaining simulation profile should include MotionV2 and target/route helpers,
+which have not yet been deeply attributed. All six required scenarios remain open.
+
 ## Remaining acceptance
 
 All six required scenarios in `docs/STEAM_DECK_BENCHMARK.md` remain unverified.

@@ -29,8 +29,12 @@ Retain the guarded provider; tail latency still fails and is not consistently
 improved. These short mechanism comparisons are not acceptance scenarios.
 Slab batching, native mesh submission, engine fullscreen and compiler-cache
 reset prototypes gave no useful gain and were restored; no such prototype ships.
-A separate local dedicated-server diagnostic will isolate hosting cost while
-preserving the original listen-host acceptance requirements.
+A separate same-Deck nativeLinux32 dedicated server with publicWin64/P10 client
+reaches53.29–54.23FPS in four30s stationary diagnostics, p9521.54–22.55ms and
+p9926.52–26.89ms. This changes hosting/server VM together and does NOT satisfy
+the frozen listen-host or full gameplay gates. Windows beta64/P10 was slower
+(31.63–31.83FPS) and public is restored. Next test publicWindows32/P10 listen
+host and profile MotionV2/target/route helpers for remaining simulation cost.
 Full40FPS acceptance remains **unmet/unverified**. See the
 [iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for raw locations,
 focus/environment corrections, regressions and interpretation. Next: isolate
