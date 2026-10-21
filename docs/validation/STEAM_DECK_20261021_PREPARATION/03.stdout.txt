@@ -1,0 +1,252 @@
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=1 active_seconds=0.03 fps=34.48 median_ms=29.000 p95_ms=29.000 p99_ms=29.000 max_ms=29.000 over25=1 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=partial server_rows=11; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=1 active_seconds=0.03 fps=34.48 median_ms=29.000 p95_ms=29.000 p99_ms=29.000 max_ms=29.000 over25=1 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=11; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=compression-test renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=partial server_rows=10; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=compression-test renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=769 active_seconds=29.99 fps=25.64 median_ms=39.000 p95_ms=39.000 p99_ms=39.000 max_ms=39.000 over25=769 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=25.64 profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=468 active_seconds=29.95 fps=15.62 median_ms=64.000 p95_ms=64.000 p99_ms=64.000 max_ms=64.000 over25=468 over50=468 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=partial server_rows=10; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=complete unprofiled_fps=25.64 profiled_fps=15.62; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=468 active_seconds=29.95 fps=15.62 median_ms=64.000 p95_ms=64.000 p99_ms=64.000 max_ms=64.000 over25=468 over50=468 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=complete unprofiled_fps=25.64 profiled_fps=15.62; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=awaiting-reply server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=10; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=restarted renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=sample-limit renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=shutdown renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=map-cleanup renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=lua-refresh renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=restarted renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=sample-limit renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=0 server_status=unavailable server_rows=0; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Same-scene diagnostic: phase=profiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=restarted renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Save failed: ...borah-recovery/source/tools/test_performance_profile.lua:413: pair disk failure
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=snapshot-failed unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Same-scene diagnostic ended: baseline snapshot could not be frozen.
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=snapshot-failed unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Same-scene diagnostic ended: baseline snapshot could not be frozen.
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=awaiting-profile unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=complete renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=snapshot-failed unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Same-scene diagnostic ended: baseline snapshot could not be frozen.
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 60s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 60s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 300s after up to 30s wall preparation and 3s warmup; Stay still in the arrival sanctuary, keep the same view and leave menus closed through BOTH phases. Population evidence is requested automatically.
+[LOD:PERF] Same-scene diagnostic: unprofiled then profiled, with a separate warmup for each. Both reports will be in performance_client_latest.txt; keep GMod open through the final server reply.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=true reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] Same-scene diagnostic: phase=unprofiled state=interrupted unprofiled_fps=unmeasured profiled_fps=unmeasured; stationary sample, not gameplay acceptance
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+PERFORMANCE_PAIR_PASS baseline_frames=769 profiled_frames=468; complete same-file native transport; no baseline instrumentation or per-frame I/O; scalar view evidence; stale callbacks/replies; 12 interruption cases and 3 active-profile native lifecycle events; restart/save/default/duration/idle bounds; synthetic clocks, not native FPS
+PERFORMANCE_PROFILE_PASS: opt-in/post-warmup; client/server real observer; exact inclusive timings; vararg/nil/self/error preservation; existing/new native instances; Watcher direct service; weak ownership and guarded restores; partial/final same-file transport; complete compressed reports and bounded malformed/oversized codecs; stale/admin/lease bounds; finite deadline; cleanup/reload/shutdown; no native FPS/GPU measurement

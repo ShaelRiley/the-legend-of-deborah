@@ -471,21 +471,45 @@ if CLIENT then
         out.verified=out.checked==#renderSources and out.missing==0 and out.mismatches==0
         return out
     end
-    local function statistics(samples)
-        local out={frames=#samples,seconds=0,over25=0,over50=0,over100=0}
-        for _,ms in ipairs(samples) do
-            out.seconds=out.seconds+ms/1000
-            if ms>25 then out.over25=out.over25+1 end
-            if ms>50 then out.over50=out.over50+1 end
-            if ms>100 then out.over100=out.over100+1 end
+    local function statistics(samples,ranges)
+        local out={frames=0,seconds=0,over25=0,over50=0,over100=0,
+            below40_seconds=0,longest_below40_seconds=0,below40_runs_ge2s=0}
+        local sorted,drop={},0
+        local function endDrop()
+            out.longest_below40_seconds=math.max(out.longest_below40_seconds,drop)
+            if drop>=2-1e-9 then out.below40_runs_ge2s=out.below40_runs_ge2s+1 end
+            drop=0
         end
-        if #samples==0 then return out end
-        table.sort(samples)
-        out.fps=#samples/out.seconds
-        out.median_ms=samples[math.ceil(#samples*.5)]
-        out.p95_ms=samples[math.ceil(#samples*.95)]
-        out.p99_ms=samples[math.ceil(#samples*.99)]
-        out.max_ms=samples[#samples]
+        local function add(first,last)
+            for i=first,last do
+                local ms=samples[i]
+                sorted[#sorted+1]=ms;out.seconds=out.seconds+ms/1000
+                if ms>25 then
+                    out.over25=out.over25+1;drop=drop+ms/1000
+                    out.below40_seconds=out.below40_seconds+ms/1000
+                else endDrop() end
+                if ms>50 then out.over50=out.over50+1 end
+                if ms>100 then out.over100=out.over100+1 end
+            end
+            -- Menus/death/staging must not join two separate gameplay drops.
+            endDrop()
+        end
+        if ranges then
+            for _,range in ipairs(ranges) do add(range.first,range.last) end
+        else add(1,#samples) end
+        out.frames=#sorted
+        if #sorted==0 then return out end
+        -- Sort a finite copy only when saving; retain chronological evidence.
+        table.sort(sorted)
+        out.fps=#sorted/out.seconds
+        out.median_ms=sorted[math.ceil(#sorted*.5)]
+        out.p95_ms=sorted[math.ceil(#sorted*.95)]
+        out.p99_ms=sorted[math.ceil(#sorted*.99)]
+        out.max_ms=sorted[#sorted]
+        local count=math.max(1,math.ceil(#sorted*.01))
+        local tail=0
+        for i=#sorted-count+1,#sorted do tail=tail+sorted[i] end
+        out.one_percent_low_fps=1000*count/tail
         return out
     end
     local function comparisonView()
@@ -501,7 +525,7 @@ if CLIENT then
         hook.Remove("PreRender","LOD_PerformanceFrames")
         hook.Remove("Think","LOD_PerformanceDeadline")
         local now=SysTime()
-        local out={version="steam-deck-vr-idle-20261007",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
+        local out={version="steam-deck-pacing-20261021",reason=reason or "manual",requested_seconds=capture.duration,sample_precision_ms=.001,
             elapsed_seconds=capture.ready and math.max(0,now-capture.start) or 0,
             total_seconds=math.max(0,now-capture.created),
             renderer_wait_seconds=capture.preparation_wait or math.max(0,now-capture.created),
@@ -510,8 +534,11 @@ if CLIENT then
             population=self.LastPopulationEvidence,population_status=self.PopulationEvidenceStatus,
             start_configuration=capture.config,
             end_configuration=configuration(),start_resources=capture.resources,end_resources=self:Snapshot(true),
-            source=capture.source,all=statistics(capture.all),active=statistics(capture.active),
+            source=capture.source,all=statistics(capture.all),active=statistics(capture.all,capture.active_ranges),
             other_frames=#capture.all-#capture.active,windows=capture.windows,
+            frame_timeline={version="ordered-pre-render-20261021",samples_ms=capture.all,
+                active_ranges=capture.active_ranges,
+                trailing_unrendered_ms=capture.last and math.max(0,now-capture.last)*1000 or 0},
             wall_batches=LOD.WallVisualsClient and LOD.WallVisualsClient.batchStats}
         if capture.profile_requested then
             out.cpu_profile={token=capture.token,client=self:StopCPUProfile(reason),server=capture.server_profile,
@@ -605,7 +632,7 @@ if CLIENT then
         local windows={}
         for i=1,math.ceil(seconds/5) do windows[i]={active_seconds=0,active_frames=0,over25=0,over50=0,over100=0} end
         self.PerformanceSerial=(self.PerformanceSerial or 0)%4294967295+1
-        local capture={created=created,start=start,duration=seconds,finish=start+seconds,all={},active={},windows=windows,
+        local capture={created=created,start=start,duration=seconds,finish=start+seconds,all={},active={},active_ranges={},windows=windows,
             token=self.PerformanceSerial,profile_requested=profileRequested==true,
             comparison=comparison,
             config=configuration(),source=sourceIdentity(),resources=self:Snapshot(true)}
@@ -657,12 +684,16 @@ if CLIENT then
                 and not (LOD.UI and LOD.UI.ActivePage)
                 and not (LOD.CampaignTimeout and LOD.CampaignTimeout:IsCinematic())
             if active then
+                local range=capture.active_ranges[#capture.active_ranges]
+                if capture.last_active then range.last=#capture.all
+                else capture.active_ranges[#capture.active_ranges+1]={first=#capture.all,last=#capture.all} end
                 capture.active[#capture.active+1]=ms
                 w.active_seconds=w.active_seconds+dt;w.active_frames=w.active_frames+1
                 if ms>25 then w.over25=w.over25+1 end
                 if ms>50 then w.over50=w.over50+1 end
                 if ms>100 then w.over100=w.over100+1 end
             end
+            capture.last_active=active
             if #capture.all>=65536 then self:StopPerformanceCapture("sample-limit") end
         end)
         hook.Add("Think","LOD_PerformanceDeadline",function()

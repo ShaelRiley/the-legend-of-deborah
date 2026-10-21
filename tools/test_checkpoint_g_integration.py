@@ -48,6 +48,7 @@ SUITES = [
     ("Hostile Sanctuary Route Cache & Exact Paths", ["python3", "tools/run_lua54.py", "tools/test_hostile_route_cache.lua"]),
     ("Entrance Spatial Query & Source Allocation Equivalence", ["python3", "tools/run_lua54.py", "tools/test_entry_safety_hotpath.lua"]),
     ("Reduced Container Batching & Exact Hulls", ["python3", "tools/run_lua54.py", "tools/test_wall_batch.lua"]),
+    ("Steam Deck Ordered Capture Acceptance Negatives", ["python3", "tools/test_deck_capture_analysis.py"]),
     ("Opt-in Rendered Frame Evidence & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_performance_capture.lua"]),
     ("Opt-in Client/Server CPU Attribution & Transparent Lifetimes", ["python3", "tools/run_lua54.py", "tools/test_performance_profile.lua"]),
     ("Bounded Server Population Evidence Client Mirror", ["python3", "tools/run_lua54.py", "tools/test_population_transport.lua"]),
@@ -419,4 +420,5 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
 

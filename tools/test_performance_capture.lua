@@ -121,6 +121,16 @@ assert(out.reason=='complete' and out.source.verified and out.renderer_wait_seco
 assert(out.start_resources.vr.idle and out.end_resources.vr.idle
     and out.windows[1].vr.source.verified,'finite capture omitted VR idle/source evidence')
 assert(out.all.frames==#oracle and out.active.frames==active and out.other_frames==#oracle-active)
+assert(out.frame_timeline.version=='ordered-pre-render-20261021')
+for i,ms in ipairs(oracle) do
+    assert(math.abs(out.frame_timeline.samples_ms[i]-ms)<1e-7,'saving sorted the chronological evidence')
+end
+local ranged=0
+for _,range in ipairs(out.frame_timeline.active_ranges) do ranged=ranged+range.last-range.first+1 end
+assert(ranged==active and #out.frame_timeline.active_ranges==3,'active range evidence lost menu/death/staging boundaries')
+assert(math.abs(out.active.one_percent_low_fps-1000/120)<1e-7,'1% low is not the reciprocal slowest-1%-mean')
+assert(math.abs(out.active.below40_seconds-out.active.over100*.12)<1e-7)
+assert(out.active.longest_below40_seconds==.12 and out.active.below40_runs_ge2s==0)
 assert(math.abs(out.active.median_ms-25)<1e-7 and math.abs(out.active.p99_ms-120)<1e-7)
 assert(out.active.over100>80 and out.active.fps<40 and out.active.seconds>120)
 assert(out.active.over25==out.active.over100,'floating-point noise misclassified 25ms frames')
@@ -198,4 +208,31 @@ A:StartPerformanceCapture(30)
 out=A:StopPerformanceCapture('manual')
 assert(not out.saved and out.save_error:find('did not persist',1,true),'silent disk failure claimed saved')
 file.Write=oldWrite
+-- Percentiles alone can hide a two-second stall inside a long fast run.
+-- Replay actual sampler transitions, including an inactive gap between drops.
+local function pacing(rows,tail)
+    A:StartPerformanceCapture(30);fire('PreRender')
+    now=A.PerformanceCapture.start;fire('PreRender')
+    for _,row in ipairs(rows) do
+        now=now+row[1];ply.deployed=row[2];fire('PreRender')
+    end
+    now=now+(tail or 0)
+    return A:StopPerformanceCapture('manual')
+end
+local rows={}
+for _=1,20 do rows[#rows+1]={.1,true} end
+out=pacing(rows,.25)
+assert(math.abs(out.active.longest_below40_seconds-2)<1e-7 and out.active.below40_runs_ge2s==1)
+assert(math.abs(out.frame_timeline.trailing_unrendered_ms-250)<1e-7,'terminal unrendered gap hidden')
+out=pacing({{.9,true},{.1,false},{1.1,true},{.025,true}})
+assert(math.abs(out.active.longest_below40_seconds-1.1)<1e-7 and out.active.below40_runs_ge2s==0,
+    'inactive interval joined independent slow episodes')
+assert(#out.frame_timeline.active_ranges==2 and out.frame_timeline.samples_ms[1]==900
+    and out.frame_timeline.samples_ms[2]==100 and out.frame_timeline.samples_ms[3]==1100)
+assert(math.abs(out.active.one_percent_low_fps-1000/1100)<1e-7)
+local timeline=out.frame_timeline.samples_ms
+A:SavePerformanceCapture(out)
+assert(timeline[1]==900 and timeline[3]==1100,'repeat save changed raw evidence')
 print('PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows with live renderer history; native/default route without batch-preparation delay; build/settings/resource evidence including experimental preference; preparation excluded or explicitly timed out; stalled renderer still measured; true no-render wait; 65536 limit; reset/refresh/shutdown/throwing and silent I/O cleanup')
+print('PERFORMANCE_PACING_PASS: ordered bounded timeline; exact active ranges; slowest-1%-mean FPS; elapsed time below40; contiguous two-second drop; inactive gaps; terminal unrendered gap; repeat-save chronology. Synthetic clocks only.')
+

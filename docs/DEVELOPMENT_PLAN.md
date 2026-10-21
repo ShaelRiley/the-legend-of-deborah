@@ -1,4 +1,23 @@
-# Current checkpoint — consultant-guided low-end optimization
+# Current checkpoint — Steam Deck baseline access and pacing evidence
+
+The October21 optimization request requires measured native Steam Deck≥40FPS
+and verified publication, including three warm uncapped repeats per required
+scenario and separate40FPS-cap verification. This target remains **unverified**.
+Canonical source base1335a3c8b16c5ff0cbf00f1baebdb8b8aeb7fd20 has no fresh
+native baseline. The missing local checkout, denied sandbox escalation and
+inaccessible GPU prevent installing and measuring its complete build here.
+
+Ordered bounded frame evidence, 1%low/time-below40/continuous-drop summaries,
+terminal-gap evidence and conservative offline analysis are source-validated.
+The [benchmark protocol](STEAM_DECK_BENCHMARK.md) fixes settings, workloads,
+thresholds and repeat requirements; physical routes/checkpoints still require
+the first native baseline before performance edits. The [preparation record](validation/STEAM_DECK_20261021_PREPARATION.md)
+separates this diagnostic publication from the unfinished optimization task.
+Next: restore authorized host execution/full checkout, capture the current-build
+baseline and profiler overhead, then repeat measured optimization/regression
+cycles. Preserve all prior gameplay, visibility, sound and multiplayer gates.
+
+# Previous checkpoint — consultant-guided low-end optimization
 
 User authorizes selectively adopting useful consulting advice. Preserve native
 progression props and cargo rendering. Implement bounded/time-sliced cargo reuse,
@@ -2311,3 +2330,4 @@ Crate constraints, detailed roadmap and checkpoint policies, is retained byte fo
 byte as [the B29 plan archive](history/DEVELOPMENT_PLAN_B29_20f6ecc.md). Only its
 old active-queue precedence is superseded by the new author request. Historical
 relative paths in that verbatim archive retain their original `docs/` context.
+
