@@ -118,6 +118,32 @@ and focus logs. Frozen graph and first normal route:
 `/home/deck/deborah-benchmarks/frozen-scenarios/`.
 
 
+## Candidate2: remove invisible collision boxes from the client draw queue
+
+Hypothesis: known invisible collision walls/rails still incur Source render-queue
+work even though their Draw callback submits nothing. A bounded runtime prototype
+hid only618 nonvisual client entities, retaining transmission, solidity, normal
+AI and the identical floor/wall models. In alternating30s stationary runs after
+a normal red pickup/respawn and full-update check, original/prototype FPS was
+21.773→22.565 and21.700→22.621; p95 was64.118→61.813ms and65.772→62.681ms.
+All samples were focused, mcore0, same view/settings; all still failed40FPS.
+Raw captures: `/home/deck/deborah-benchmarks/invisible-collision-diagnostic/`.
+
+The source prototype applies NoDraw **only on the client** to declared kinds3/4/7
+at initialization or the existing one-second bounds refresh. It releases its own
+flag immediately before a newly visible kind commits, including reentrant native
+notifications, and invalidates the old native Draw ownership until the new view
+actually observes it. Unknown/custom kind accessors use the original path;
+preexisting external NoDraw flags retain their ownership. Native NoDraw also
+forces the manual-floor fallback rather than pretending missing ENT:Draw proves
+a frustum rejection. No server collision/transmission/AI/resource change.
+Focused tests pass for those transitions, same-pass visibility, full update,
+custom kinds, external flags and weak native-closure cleanup. The renderer gate
+passes28/29 plus all923 Lua syntax checks; its sole failure is the same inherited
+keycard hook stub recorded above. Client/server profiler regressions pass. Fresh installed
+source comparison, collision/visibility regressions and final retain decision
+are pending; the runtime flag experiment is not a validated source-build result.
+
 ## Remaining acceptance
 
 All six required scenarios in `docs/STEAM_DECK_BENCHMARK.md` remain unverified.

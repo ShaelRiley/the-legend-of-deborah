@@ -6,6 +6,9 @@ Separate profiles agree on lower floor-rendering cost. Native walls, normal
 population, graphics and collision remain. The first normal17-node route and
 red-card pickup completed; later visibility/cleanup coverage is still required.
 The distinct multicore1 diagnostic reached26.77FPS and was restored to0.
+A second candidate now removes known invisible collision boxes from the client
+render queue after alternating prototype measurements improved about4%; focused
+regressions and923-file syntax pass, installed-build comparison is pending.
 Full40FPS acceptance remains **unmet/unverified**. See the
 [iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for raw locations,
 focus/environment corrections, regressions and interpretation. Next: isolate

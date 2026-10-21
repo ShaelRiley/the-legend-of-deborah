@@ -8,7 +8,18 @@ local function invalidateVisualKind(ent, _, _, value)
     -- Proxies run before the native value changes. A reentrant render must not
     -- cache the old value while the corresponding update is still pending.
     local record = ent._LODVisualKindRecord
-    if record then record.kind = nil; record.pending = value end
+    if record then
+        record.kind = nil; record.pending = value; record.drawOwner=nil
+        -- Proxies run before the write. Releasing our invisible-only flag is
+        -- safe immediately and lets a newly visible floor enter this frame's
+        -- native render selection; hiding waits for the committed native kind.
+        if record.clientNoDrawOwned and value~=3 and value~=4 and value~=7 then
+            if ent.SetNoDraw then ent:SetNoDraw(false) end
+            record.clientNoDrawOwned=nil
+        end
+        ent._LODNextBoundsRefresh=0
+        if ent.SetNextClientThink then ent:SetNextClientThink(CurTime()) end
+    end
 end
 
 local function invalidateVisualBounds(ent, name, _, value)

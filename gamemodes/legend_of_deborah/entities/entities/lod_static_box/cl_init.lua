@@ -91,7 +91,7 @@ local function currentKind(ent, record)
         and data.GetBoxKind==data._LODVisualKindGetter and data.SetBoxKind==data._LODVisualKindSetter
     local cached = observed and record.kind
     if type(record)=="table" and not observed then record.kind = nil end
-    if cached and not visibleKind(cached) then return cached end
+    if cached and not visibleKind(cached) then return cached, data end
     -- Only the verified live table may replace native entity indexing. Keep
     -- validity and current accessors live; copied/expired tables fail over.
     data = observed and data or nil
@@ -109,6 +109,26 @@ local function currentKind(ent, record)
         record.pending = nil
     end
     return kind, data
+end
+
+-- Invisible collision surrogates need neither a native model draw nor its
+-- render-queue work. Keep them transmitted and solid; only the client flag is
+-- owned here. Unknown/custom kind accessors retain the previous native path.
+local function syncNativeDrawQueue(ent)
+    if not ent.SetNoDraw or not ent.GetNoDraw then return end
+    local record=ent._LODVisualKindRecord
+    if type(record)~="table" then return end
+    local kind,data=currentKind(ent,record)
+    local hide=data and record.pending==nil and (kind==3 or kind==4 or kind==7)
+    if hide then
+        if not ent:GetNoDraw() then
+            ent:SetNoDraw(true)
+            record.clientNoDrawOwned=true
+        end
+    elseif record.clientNoDrawOwned then
+        ent:SetNoDraw(false)
+        record.clientNoDrawOwned=nil
+    end
 end
 
 local function refreshRenderBounds(ent)
@@ -153,6 +173,7 @@ function ENT:Initialize()
         if not draw or draw==nativeDraw then record.drawOwner=nativeDrawOwner end
     end
     refreshRenderBounds(self)
+    syncNativeDrawQueue(self)
     self._LODNextBoundsRefresh = 0
 end
 
@@ -160,6 +181,7 @@ function ENT:Think()
     registerVisualBox(self)
     local now = CurTime()
     if now >= (self._LODNextBoundsRefresh or 0) and refreshRenderBounds(self) then
+        syncNativeDrawQueue(self)
         self._LODNextBoundsRefresh = now + 1
     end
     -- Bounds already refresh once per second. Let Source sleep until that
@@ -212,6 +234,9 @@ local function nativeRejected(ent, record, data, pass)
         local binding=bindings and bindings.Draw
         if not binding or binding.wrapper~=draw or binding.callback~=nativeDraw then return false end
     end
+    -- A client NoDraw flag can suppress native Draw independently of bounds.
+    -- The original manual renderer still owns such a floor's visibility.
+    if ent.GetNoDraw and ent:GetNoDraw() then return false end
     return true
 end
 

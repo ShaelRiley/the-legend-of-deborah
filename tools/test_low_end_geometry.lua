@@ -31,6 +31,7 @@ local function box(x,kind,mins,maxs)
  function e:GetPos() return self.pos end;function e:GetAngles() return self.ang end
  function e:GetBoxKind() return self.kind end;function e:GetBoxMins() return self.mins end
  function e:GetBoxMaxs() return self.maxs end;function e:SetRenderBounds() end
+ function e:SetNoDraw(value) self.noDraw=value end;function e:GetNoDraw() return self.noDraw or false end
  function e:GetClass() return 'lod_static_box' end
  function e:GetNW2Bool(k,d) local v=self.nw[k];if v==nil then return d end;return v end
  e.GetNW2String=e.GetNW2Bool;e:Initialize();entities[#entities+1]=e;return e
@@ -139,6 +140,34 @@ assert(nativeFrame(true)==1,'native-visible floor disappeared')
 local count,reads=nativeFrame(false)
 assert(count==0 and reads==0,'native rejection still reads native pose or draws offscreen floor')
 assert(nativeFrame(true)==1,'moving into native visibility did not recover immediately')
+-- Native NoDraw can suppress ENT:Draw without changing the manual floor.
+native:SetNoDraw(true)
+assert(nativeFrame(false)==1,'native NoDraw incorrectly hid a manually rendered floor')
+native:SetNoDraw(false)
+-- Invisible collision-only kinds leave the native render queue, then a proxy
+-- must release that flag before a late same-pass kind transition is rendered.
+native:SetBoxKind(3);native:Think()
+assert(native:GetNoDraw() and native._LODVisualKindRecord.clientNoDrawOwned,'invisible collision surrogate stayed in native render queue')
+local kindNotify=notifications.BoxKind
+notifications.BoxKind=function(...)
+ kindNotify(...);native:Think()
+ assert(not native:GetNoDraw(),'reentrant Think re-hid a newly visible kind before native write')
+end
+assert(nativeFrame(false,function() native:SetBoxKind(1) end)==1,'same-pass visible kind borrowed stale native omission')
+notifications.BoxKind=kindNotify
+native:Think();assert(nativeFrame(true)==1 and nativeFrame(false)==0,'visible kind did not recover native selection')
+-- Unknown/custom kind accessors and externally owned flags stay conservative.
+native:SetBoxKind(4);native:Think();assert(native:GetNoDraw())
+local kindGetter=native.GetBoxKind
+native.GetBoxKind=function() return 1 end
+native._LODNextBoundsRefresh=0;native:Think()
+assert(not native:GetNoDraw() and nativeFrame(false)==1,'custom kind retained owned invisible flag')
+native.GetBoxKind=kindGetter
+native:SetNoDraw(true);native:SetBoxKind(3);native:Think()
+assert(not native._LODVisualKindRecord.clientNoDrawOwned,'claimed an externally owned NoDraw flag')
+native:SetBoxKind(1);native:Think()
+assert(native:GetNoDraw() and nativeFrame(false)==1,'changed external NoDraw ownership or hid manual floor')
+native:SetNoDraw(false);assert(nativeFrame(true)==1)
 native:SetBoxMaxs(Vector(15,10,10))
 assert(native.nextThink==CurTime() and nativeFrame(false)==1,'pending bounds notification hid changed geometry')
 native:Think();assert(nativeFrame(false)==0,'updated native bounds did not regain conservative selection')
@@ -175,6 +204,6 @@ native:OnRemove(false);assert(nativeFrame(true)==0,'removed entity was resurrect
 native:Initialize();native:OnRemove(true)
 local retained=native._LODVisualKindRecord
 local weak=setmetatable({native},{__mode='v'})
-native=nil;getter=nil;entities={};collectgarbage('collect');collectgarbage('collect')
+native=nil;getter=nil;kindGetter=nil;entities={};collectgarbage('collect');collectgarbage('collect')
 assert(weak[1]==nil and retained.lua[1]==nil,'retained bounds cache owns removed entity through native accessor closures')
 print('NATIVE_GEOMETRY_VISIBILITY_PASS: native selection avoids offscreen pose reads; newly seen/custom/pending/reentrant/full-update views fail open; exact view ownership, CPU wrappers, hidden state and removal')
