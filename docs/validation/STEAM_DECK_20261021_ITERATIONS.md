@@ -141,8 +141,67 @@ Focused tests pass for those transitions, same-pass visibility, full update,
 custom kinds, external flags and weak native-closure cleanup. The renderer gate
 passes28/29 plus all923 Lua syntax checks; its sole failure is the same inherited
 keycard hook stub recorded above. Client/server profiler regressions pass. Fresh installed
-source comparison, collision/visibility regressions and final retain decision
-are pending; the runtime flag experiment is not a validated source-build result.
+source comparison and final retain decision remain pending; the runtime flag
+experiment is not a validated source-build result.
+
+The fresh installed b8d2af54 build retained1209 collision entities and1736 native
+wall models. Its618 invisible boxes had client NoDraw, while591 boxes remained
+renderable. Normal movement into a closed wall stopped after111.97 units.
+`cl_fullupdate` recovered all1209 boxes with ready bounds and the same618 NoDraw
+flags. The17-node red-card route completed in34.72s with ordinary enemy damage
+(100→85HP) and normal pickup. These are finite collision/lifecycle observations;
+they do not cover all later geometry or certify performance.
+
+## Runtime comparison and next CPU investigation
+
+All following runs use b8d2af54, the same frozen Dungeon1 arrival camera,
+1280×800,60 ordinary roamers, one-player Deck listen hosting, uncapped gameplay,
+native walls, unchanged quality and no background browser/MPRIS playback.
+MangoHUD/DXVK telemetry was enabled in this diagnostic series. These conditions
+differ from the earlier source-only comparison; do not attribute their full gain
+to candidate2. The original Proton prefix and Windows installation are preserved.
+
+| Runtime / settings | Average FPS | Median ms | p95 ms | p99 ms |
+| --- | ---: | ---: | ---: | ---: |
+| Experimental11, mcore0/queue−2/bone0 |23.85|40.304|57.144|64.922|
+| Proton10.0-4b, mcore0/queue−2/bone0 |28.54|34.030|41.046|52.218|
+| Proton10.0-4b, mcore1/queue2/bone1 |33.31|29.094|36.180|43.555|
+| Fresh Proton10 threaded / repeat1 |33.28|29.142|36.495|43.584|
+| Fresh Proton10 threaded / repeat2 |33.40|28.983|36.399|43.009|
+| Fresh Proton10 threaded / repeat3 |33.61|28.682|36.002|46.444|
+
+Proton10 uses SteamLinuxRuntime_sniper and FSYNC with an isolated cloned prefix;
+Experimental uses SteamLinuxRuntime_4 and NTSYNC. All repeats remain below40 for
+recurring episodes longer than2s and fail acceptance. They are stationary30s
+diagnostics, not the three repeats of each required gameplay scenario. The
+threaded corridor screenshot retains floor/container colors, branding, HUD and
+fonts; full visual/input/campaign regressions for that mode remain unverified.
+
+Independent telemetry reports approximately20–26% GPU use, not GPU saturation.
+A30s native CPU sample attributes30.6% of user CPU samples to main-thread
+lua_shared.dll,14.2% to client.dll,8.7% to engine.dll and7.9% to server.dll.
+These are CPU sample proportions, not additive frame timers. The existing
+instrumented profile places close-defense eligibility and arrival safety among
+the largest server scopes; a bounded1-in64 nested sample further identifies
+frequent progression/life/status queries. Preserve status expiry, ownership and
+fresh reads after callbacks when investigating them. `jit.status()` reports on,
+but the runtime disables the JIT event API and does not expose usable trace
+reflection; no JIT-cache conclusion or tuning change follows from those probes.
+The two unsupported diagnostic probes produced errors; they are excluded from
+performance captures and cleared by a full restart.
+
+A runtime experiment disabling native client Think on1736 static wall models
+measured33.47→33.28FPS, within repeat noise. Rejected; no production change was
+made, and a full restart restored native defaults. A brief Xalia pause was also
+diagnostic only; the process was resumed before the old game session ended.
+
+Raw captures, console excerpts, runtime receipts and native samples:
+`/home/deck/deborah-benchmarks/mangohud-diagnostic/b8d2af54/`,
+`/home/deck/deborah-benchmarks/wall-model-think-diagnostic/`, and
+`/home/deck/deborah-benchmarks/ai-lookup-diagnostic/b8d2af54/`.
+Nested query sample:
+`/home/deck/deborah-recovery/evidence/sampled-ai-cost-b8.json`.
+No browser video was paused, and no paused media/process requires restoration.
 
 ## Remaining acceptance
 

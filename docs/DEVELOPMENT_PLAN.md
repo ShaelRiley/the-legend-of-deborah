@@ -8,7 +8,13 @@ red-card pickup completed; later visibility/cleanup coverage is still required.
 The distinct multicore1 diagnostic reached26.77FPS and was restored to0.
 A second candidate now removes known invisible collision boxes from the client
 render queue after alternating prototype measurements improved about4%; focused
-regressions and923-file syntax pass, installed-build comparison is pending.
+regressions and923-file syntax pass; installed collision, full-update recovery
+and the normal red-card route were observed. A source-only repeat comparison is
+still pending. Separate stable-Proton10/threaded-rendering diagnostics reach
+33.28–33.61FPS in three fresh stationary repeats, still failing the frame budget.
+Native CPU samples and bounded query timing point to remaining main-thread Lua /
+simulation cost; GPU telemetry does not establish saturation. The static-wall
+native Think experiment produced no measurable benefit and was rejected.
 Full40FPS acceptance remains **unmet/unverified**. See the
 [iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for raw locations,
 focus/environment corrections, regressions and interpretation. Next: isolate
