@@ -275,6 +275,42 @@ stacks. Task-local launch/controller scripts and cfg are under
 `/home/deck/deborah-recovery/` and the game's cfg/DATA directories; these are
 diagnostic preparation, not a shipped optimization preset.
 
+## Candidate3: ordinary NPC queries through Soldier progression
+
+Restored Windows public x64 build25375506/GMod2026.09.17 under Proton10.0-4b,
+SRT sniper and the isolated task prefix. Fresh controls have no MangoHUD/DXVK
+HUD. KWin fullscreen removes window-border clipping while preserving the actual
+1280×800 engine viewport. This is a separate presentation condition from the
+older windowed/Mango measurements; compare only within this new control group.
+Same seed, position/view, equipment,60 normal roamers, quality,15W and threaded
+rendering settings; all focus samples true, clean92cc64bc source (runtime b8).
+
+| Stationary control / repeat | Average FPS | Median ms | p95 ms | p99 ms | 1% low FPS |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Fullscreen /1 |32.84|29.409|37.436|44.197|20.28|
+| Fullscreen /2 |32.93|29.417|36.810|46.307|19.09|
+| Fullscreen /3 |32.68|29.566|37.451|44.327|20.35|
+
+These30s stationary controls all fail; they do not satisfy any frozen scenario.
+Raw: `/home/deck/deborah-benchmarks/soldier-lookup-comparison/baseline-92cc64bc/`.
+
+Bounded prior query timing observed about20k Soldier StateFor calls/second,
+including queries for ordinary NPCs that cannot own the Player-only incarnation.
+Hypothesis: reject those native kinds before IsValid/optional human-state field
+lookups. Preserve plain profile tables, Player admission, retirement and normal
+NPC progression authority. No cross-tick cache or timing/count changes. The
+provider is now covered by the server source fingerprint/installer; client-only
+render-source coverage stays separate.
+
+Fourteen targeted checks including Soldier lifecycle, AI, statuses and full923-file
+Lua syntax passed before instrumentation changes. Seven expanded source coverage,
+transport/installer/capture/profiler and syntax checks pass; exact receipts are
+`/home/deck/deborah-recovery/evidence/soldier-provider-gate/receipt.json` and
+`/home/deck/deborah-recovery/evidence/soldier-source-manifest-gate-final/receipt.json`.
+Fresh installed Deck
+comparison and retain/revert decision are pending. This is a hypothesis, not a
+measured performance improvement.
+
 ## Remaining acceptance
 
 All six required scenarios in `docs/STEAM_DECK_BENCHMARK.md` remain unverified.

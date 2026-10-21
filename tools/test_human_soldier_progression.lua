@@ -116,6 +116,30 @@ check(lumpSoldier.soldierXP == 450, "soldierXP recorded as 450")
 check(lumpSoldier.soldierEarnedLevels == 3, "soldierEarnedLevels recorded as 3")
 check(lumpSoldier.level == 4, "Incarnation level advanced from 1 to 4")
 
+-- Ordinary native AI keeps its own progression authority. Querying optional
+-- human-incarnation fields here can invoke an unrelated entity lookup; the
+-- controller provider must not touch them for a non-Player engine type.
+local aiProfile = {actorType = "ai", level = 1}
+local nativeAI = setmetatable({
+    _isValid = true, _isEntity = true,
+    IsPlayer = function() return false end,
+    LODProgressionState = aiProfile
+}, {__index = function(_, name)
+    if name == "LODHumanSoldierProgressionState" or name == "actorType" then
+        error("ordinary AI queried human-Soldier incarnation fields")
+    end
+end})
+check(System:StateFor(nativeAI) == nil, "Native NPC has no human Soldier incarnation")
+check(Rules:ProgressionState(nativeAI) == aiProfile, "Native AI retains its exact progression state")
+check(System:StateFor(lumpSoldier) == lumpSoldier, "Plain generated incarnation remains queryable")
+local invalidController = setmetatable({
+    _isValid = false, _isEntity = true, IsPlayer = function() return true end
+}, {__index = function(_, name)
+    if name == "LODHumanSoldierProgressionState" then error("removed controller queried incarnation") end
+end})
+check(System:StateFor(invalidController) == nil, "Removed Player cannot resolve a stale incarnation")
+check(System:StateFor(nil) == nil, "Absent actor has no human Soldier incarnation")
+
 -- 9. Automatic advancement does not enter Hero feat/class choice flow
 local unresolvedChoice = false
 for _, draft in ipairs(lumpSoldier.pendingFeatSlots or {}) do

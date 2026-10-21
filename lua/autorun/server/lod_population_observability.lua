@@ -16,6 +16,7 @@ local watched={
         "gamemodes/legend_of_deborah/gamemode/lod/sv_staging_lore.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_character_progression.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_e_feats.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_feat_card_text.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua",
