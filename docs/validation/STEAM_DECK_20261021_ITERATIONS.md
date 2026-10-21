@@ -375,6 +375,37 @@ profiling. A separately labelled local dedicated-server diagnostic is being
 prepared to isolate hosting cost; it does not replace the frozen listen-host
 requirements or the still-unverified four-actual-player condition.
 
+### Candidate3 alternating confirmation
+
+A fresh public-Windows/P10 single-instance session alternated candidate / old /
+old / candidate / candidate / old logic, using the same viewport, settings,
+normal60-roamer seed and arrival position. The old arms injected the exact
+previous StateFor function; candidate arms restored the original installed
+function identity. All six are30s mechanism diagnostics, explicitly marked as
+external function comparisons, not final source-build acceptance.
+
+| Arm sequence | Average FPS | p95 ms | p99 ms |
+| --- | ---: | ---: | ---: |
+| Candidate1 |32.873|36.695|43.332|
+| Old1 |32.195|37.154|46.135|
+| Old2 |32.298|37.468|46.129|
+| Candidate2 |33.102|36.801|50.060|
+| Candidate3 |33.318|36.271|44.215|
+| Old3 |32.754|36.617|44.132|
+
+Candidate mean33.098 versus old32.416FPS, +2.104%; FPS ranges do not overlap.
+Together with reduced sampled query cost, this supports retaining candidate3.
+Tail latency is not consistently improved and all40FPS gates still fail. The
+original source function was restored before quitting the game. Raw comparison,
+exact injected scripts, per-arm metadata/ACKs, captures and full console:
+`/home/deck/deborah-benchmarks/soldier-alternating-comparison/b5295459/`.
+
+An isolated local dedicated test server (app4020) is installed and stopped,
+prepared for a separately labelled hosting-cost comparison. No public-server
+process or token was changed. The next runtime comparison is Windows x86-64
+beta under Proton10; this Windows combination was not covered by the earlier
+native-Linux beta investigation. Resolution, workload and quality remain fixed.
+
 ## Remaining acceptance
 
 All six required scenarios in `docs/STEAM_DECK_BENCHMARK.md` remain unverified.

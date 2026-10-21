@@ -23,7 +23,10 @@ The next focused candidate rejects ordinary NPC kinds before redundant native
 lookups in the Player-only human-Soldier provider. Soldier/AI/status regressions
 pass; source fingerprint coverage is expanded. Fresh installed repeats reach33.21–33.49FPS with reduced sampled query cost,
 but later32.06FPS controls show session variation larger than the small gain.
-The retain decision is provisional pending a fresh alternating comparison.
+A subsequent fresh alternating candidate/old/old/candidate/candidate/old
+comparison confirms33.098 versus32.416FPS mean (+2.104%), disjoint FPS ranges.
+Retain the guarded provider; tail latency still fails and is not consistently
+improved. These short mechanism comparisons are not acceptance scenarios.
 Slab batching, native mesh submission, engine fullscreen and compiler-cache
 reset prototypes gave no useful gain and were restored; no such prototype ships.
 A separate local dedicated-server diagnostic will isolate hosting cost while
