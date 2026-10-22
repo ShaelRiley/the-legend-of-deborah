@@ -1,3 +1,9 @@
+# Current checkpoint — typed component batching candidate; native timing pending
+
+The raw bounds-notification probe proves native Vector copies and typed setter notifications, but direct SetDTVector does not notify. Cross-frame bounds caching is rejected. This narrower candidate retains every fresh bounds/pose getter and batches components only for proven native return types. Declared Vector getters are verified against their captured native GetDTVector reader; native GetPos/GetAngles method identities verify pose types. Unknown/replaced APIs retain scalar reads. Unlike rejected b04e1224, no per-value native type check is added to the hot path. No cross-frame values, selection, counts, collision or timing are cached/changed.
+
+Existing renderer/geometry regressions pass. Complete scoped gate and native mutation/override/raw-datatable/restore proof precede any gain claim. Compare equivalent actual Deck runs and retain only a repeatable benefit. Current acceptance baseline and all full gates below remain failed/unverified; target UNMET, PR7 draft.
+
 # Current checkpoint — complete physical baseline fails; broad Lua profiling
 
 Current source68a6a9d3 exactly restores runtime4d0a6d80 after rejecting component-read candidate b04e1224. Native use is available in persistent user service `lod-deck-movement-profile-20261022`; no device-access blocker. No production source candidate is active.

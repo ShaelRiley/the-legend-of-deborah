@@ -368,13 +368,32 @@ end
 -- A refresh can retain entities and snapshots from the previous implementation.
 -- Resolve their basis again before borrowing fields owned by this file instance.
 local snapshotOwner = {}
+local function nativeMethod(metaName, name)
+    local meta = FindMetaTable and FindMetaTable(metaName)
+    local fn = meta and meta[name]
+    if fn and debug and debug.getinfo and debug.getinfo(fn,"S").what=="C" then return fn end
+end
+local unpackVector, unpackAngle = nativeMethod("Vector","Unpack"), nativeMethod("Angle","Unpack")
+local nativeGetPos, nativeGetAngles = nativeMethod("Entity","GetPos"), nativeMethod("Entity","GetAngles")
 local function visualSnapshot(ent, data)
     local fields = data or ent
     local mins, maxs = fields.GetBoxMins(ent), fields.GetBoxMaxs(ent)
-    local pos, angles = ent:GetPos(), ent:GetAngles()
-    local x0,y0,z0,x1,y1,z1 = mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z
-    local px,py,pz = pos.x,pos.y,pos.z
-    local pitch, yaw, roll = angles and angles.p, angles and angles.y, angles and angles.r
+    local getPos, getAngles = ent.GetPos, ent.GetAngles
+    local pos, angles = getPos(ent), getAngles(ent)
+    local record = data and data._LODVisualKindRecord
+    local x0,y0,z0,x1,y1,z1
+    if unpackVector and record and record.boundsNative and record.boundsAccessors
+        and data.GetBoxMins==record.boundsAccessors[1] and data.GetBoxMaxs==record.boundsAccessors[2] then
+        x0,y0,z0=unpackVector(mins);x1,y1,z1=unpackVector(maxs)
+    else
+        x0,y0,z0,x1,y1,z1=mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z
+    end
+    local px,py,pz
+    if unpackVector and getPos==nativeGetPos then px,py,pz=unpackVector(pos)
+    else px,py,pz=pos.x,pos.y,pos.z end
+    local pitch,yaw,roll
+    if unpackAngle and angles and getAngles==nativeGetAngles then pitch,yaw,roll=unpackAngle(angles)
+    else pitch,yaw,roll=angles and angles.p,angles and angles.y,angles and angles.r end
     local cached = fields._LODVisualBox
     -- Snapshot once per pass; reuse identical geometry/pose across passes.
     -- Scalars observe in-place native vector/angle mutations immediately.
