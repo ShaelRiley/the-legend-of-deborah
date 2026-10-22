@@ -775,3 +775,63 @@ comparisons do not accept later gameplay or full multiplayer.
 Raw captures, reconstructed control source, exact arm conditions, restoration,
 native boundary readback and comparison.json:
 `/home/deck/deborah-benchmarks/state-lookup-source/4a6b4aa2/`.
+
+
+### Rejected runtime and accessor experiments after 5969f57e
+
+All results below are actual Deck diagnostics, not acceptance scenarios. Source
+remains 5969f57e (runtime code 4a6b4aa2). Normal native cargo rendering, population,
+AI and the frozen thresholds remain required. No experiment in this section is
+retained in production.
+
+| Condition / finite comparison | Measured result | Decision |
+| --- | --- | --- |
+| Public native Linux32 listen host | 30.649 / 30.474 FPS; p95 38.156 / 38.325 ms | Slower; reject runtime switch |
+| Live-table NextBot LOD-field index wrapper, three arms each | 32.592 vs 33.118 FPS mean (−1.590%) | Reject |
+| Close-defense adjacent field borrowing, two arms each | 33.287 vs 33.056 FPS (+0.699%); p95 worse | Useful gain not established; reject |
+| Cached-table index mechanism, two arms each | 32.306 vs 32.329 FPS (−0.069%) | Reject; whole lifecycle correctness also unverified |
+| Native progression lookup before duplicate validity check | One pair 32.158 vs 31.893 FPS | Incomplete after host ACK-reader failure; no gain accepted |
+| One hardware thread per physical core, two arms each | 31.138 vs 31.166 FPS (−0.091%) | Reject; all original thread affinities restored |
+| Proton10 Xalia paused, two arms each | 30.554 vs 30.582 FPS (−0.090%) | Reject; process resumed |
+| Existing experimental wall batches enabled | 32.540 FPS, p95 38.932 ms, p99 50.299 ms | Reject: large missing faces and native bump lighting omitted |
+
+The accessor prototypes reached the real native NextBot path: a separate two-second
+coverage sample observed 1,008,392 lookups, including 569,719 LOD fields, all matching
+cached actor rows. This confirms hot-path coverage, not a performance gain. The
+native progression removal probe observed validity/table identity through deferred
+OnRemove/EntityRemoved and nil after removal completed. The production validity
+check is unchanged. All prototype function/metatable/setter bindings were restored.
+
+Native32's startup hang was an SDL locale-warning modal behind its main window.
+A task-local child debugger identified that modal without changing security or
+ASLR; acknowledging it allowed gameplay. A private generated locale did not remove
+the warning. This runtime uses OpenGL dxlevel92 versus Windows95; fallback glyph
+coverage and full visual parity remain unverified. The second capture directory
+is named netgraph-off, but that requested Lua console change was blocked: net_graph3
+remained active. Three helper errors preceded that second capture; none accrued
+during it. Native shutdown returned139; the cause is unverified. Native32 is not
+accepted or recommended. Its copied stale Windows console was preserved and replaced
+with a link to actual native stdout; no stale console is treated as fresh evidence.
+
+The progression guard comparison ended after a host command-reader failure despite
+a true engine ACK; a partial JSON read is suspected, not proven. The local reader
+now retries transient partial reads within its existing deadline; explicit failed
+ACKs still fail. This helper repair is outside production source. All prototype
+scripts remain inert outside explicit task-local dispatch. The final wall-batch
+capture is separately labelled and fails both performance and visual constraints;
+the ordinary lod_wall_batches0 path was restored before quitting.
+
+Across the long Windows session stationary FPS drifted from33–34 toward30–31.
+Available temperatures/clocks do not establish thermal throttling. Small late
+signals cannot be compared to fresh early controls; restart before the next baseline.
+All six full scenarios, warmed180s triplicates, capped play and four actual players
+remain unverified. Same-Deck dedicated hosting is still a separate diagnostic;
+it does not silently replace the frozen listen-host scenario.
+
+Raw captures, scripts, conditions and restoration receipts are under
+`/home/deck/deborah-benchmarks/`, respectively:
+`native32-listen-diagnostic/5969f57e/`, `lod-index-diagnostic/5969f57e/`,
+`close-fields-diagnostic/5969f57e/`, `cached-index-mechanism/5969f57e/`,
+`native-accessor-coverage/5969f57e/`, `profile-native-guard-diagnostic/5969f57e/`,
+`physical-core-affinity/5969f57e/`, `xalia-paused-p10/5969f57e/`, and
+`experimental-wall-batches/5969f57e/`.

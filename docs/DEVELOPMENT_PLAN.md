@@ -1,4 +1,24 @@
-# Current checkpoint — live NextBot state lookup candidate; target unmet
+# Current checkpoint — fresh broader profile required; target unmet
+
+The retained live NextBot progression lookup4a6b4aa2 remains the latest source
+optimization (+2.458% in the recorded fresh six-arm comparison, all failing40FPS).
+Subsequent native32, entity-index, close-defense, affinity and Xalia experiments
+showed no reliable useful gain; all were restored. The existing experimental
+wall-batch path also misses the budget and visibly omits wall faces; rejected.
+Native32's hidden locale-warning modal was diagnosed, allowing actual30.649/30.474FPS
+measurements; runtime/visual/shutdown limitations prevent recommending it.
+See the current iteration record for exact comparisons and raw locations.
+
+No production change follows4a6b4aa2. Restart the long-lived Windows64/Proton10
+process, verify normal native renderer/source/settings/counts, establish a fresh
+baseline, and profile broader simulation/rendering cost before another candidate.
+Preserve frozen listen-host conditions; the local dedicated candidate remains
+separate. All six complete scenarios, three warmed180s repetitions each, capped
+verification and four actual players remain unverified. Do not merge as completed
+40FPS acceptance. Hosting and four-player access questions remain pending while
+independent profiling and scenario preparation continue.
+
+# Previous checkpoint — live NextBot state lookup candidate; target unmet
 
 Clean685 native readback verified111server/51client source hashes and authoritative
 cadence/topology metadata. A fresh native32 startup with+nb_update_frequency0.015
