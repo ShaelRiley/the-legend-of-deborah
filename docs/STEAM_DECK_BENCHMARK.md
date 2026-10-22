@@ -83,6 +83,34 @@ git rev-parse HEAD
 Launch the installed Windows x64 GMod through Steam/Proton with
 `-windowed -w 1280 -h 800 -condebug -conclearlog +gamemode legend_of_deborah +map gm_flatgrass`.
 Retain the existing verified VR dependency; confirm idle non-VR work in captures.
+
+
+For the separately recorded public-Windows64/Proton10, multicore1 condition,
+copy the checked-in settings file after installation:
+
+```bash
+cp tools/steam_deck_benchmark.cfg "$HOME/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/cfg/lod_deck_benchmark.cfg"
+```
+
+Append `+exec lod_deck_benchmark.cfg` **after** `+map gm_flatgrass` in the x64
+launch arguments. A fresh actual Deck launch verified this order restores
+multicore1 without a later console command. Confirm the running process is x64;
+a generic Steam launch/selector previously selected32bit. This opt-in file uses
+the recorded unchanged graphics, fps300/vsync0, multicore1, queue2 and threaded
+bones1; it does not select a different hosting condition. It is not automatically
+installed or applied to ordinary players. Initial Experimental/multicore0
+measurements retain their original conditions and are separate comparisons.
+
+`gmod_mcore_test` resets to0 on a normal restart; do not assume its previous
+value persisted. The task-local capture harness now verifies multicore, queue,
+threaded bones, FPS limit, vsync,1280×800 and focus before starting a capture.
+A deliberately mismatched expected multicore value was rejected before any
+performance capture. Exact harness/launcher snapshots and receipts:
+`~/deborah-benchmarks/auto-settings-launch/31a09219/` and
+`~/deborah-benchmarks/preflight-guard/31a09219/`.
+For capped verification, apply `fps_max 40` after the uncapped launch config and
+use the declared capped analyzer mode; never rerun the uncapped config during
+a capped capture.
 Use the installed developer marker for controlled unranked setup. In the GMod
 console, before starting the baseline campaign:
 

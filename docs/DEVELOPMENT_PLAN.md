@@ -47,6 +47,13 @@ in the iteration record. Temporary controllers are removed and processes stopped
 while awaiting that information. Same-Deck dedicated hosting is a pending
 explicit criterion decision. The public server currently has zero actual players,
 so four-player native coverage remains unavailable.
+The independent follow-up rejected native-validity and collector-pause probes.
+It also corrected a restart setting mismatch: df106dc1's combat profile and the
+first31a09219 control used multicore0, while all earlier source comparisons and
+unprofiled gameplay used1. Optional checked-in benchmark settings and a validated
+post-map launch order preserve1 on restart; a preflight rejects mismatches.
+The complete31a09219 matrix is325/334, all nine failure anchors matching parent;
+no additional production Lua change is retained. Exact receipts are in the record.
 Full40FPS acceptance remains **unmet/unverified**. See the
 [iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for raw locations,
 focus/environment corrections, regressions and interpretation. Next: isolate

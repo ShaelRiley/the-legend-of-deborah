@@ -546,6 +546,62 @@ published perf/deck-20261021 checkpoint, reinstall only after full quit, restore
 the archived finite controller only for diagnostics, then continue the measured
 loop under the confirmed hosting condition. Do not merge a completed40FPS claim.
 
+
+### Native-call, validity and collector follow-up; launch guard correction
+
+The31a09219 follow-up found that stock restart resets multicore to0. Its native
+call/index samples and28.502FPS control used **multicore0**, unlike the previous
+multicore1 series. The earlier df106dc1 combat profile likewise used0. These are
+condition corrections, not equivalent performance comparisons. A direct audit
+of archived runtime markers verifies all Soldier alternating/source comparisons,
+the ff166895 unprofiled27.111FPS gameplay run, dedicated comparisons, Windows32
+and Windows beta comparisons used multicore1 as recorded. Their evidence remains
+unchanged; no poor result is discarded.
+
+The finite native-call sampler restored737/737 bindings. Locomotion desired-speed
+and velocity setter samples total about2.77ms/s including timing overhead, too
+small to justify changing movement suppression. Per-instance overrides did not
+intercept native entity methods, so their zero counts are a coverage limitation,
+not evidence those methods are free. A separate20s NextBot metamethod sampler
+restored2/2 bindings and counted9.88million reads/760,373 writes. Its per-call
+sampling/lookup wrappers perturb a very hot path; timing estimates are not
+a calibrated native CPU budget or FPS evidence. Exact scripts and receipts:
+`~/deborah-benchmarks/native-index-diagnostic/31a09219/`.
+
+Restoring multicore1 produced33.213FPS, p9536.328ms, p9945.344ms. A finite cached
+native-validity mechanism probe measured33.288FPS, p9537.015ms, p9949.435ms:
+within noise with worse tails; rejected. The original global predicate restored
+after50.00s (5,354,389 fast calls,2,164,018 fallback calls,61 known native actors).
+No such global replacement is production code. Raw/script/restoration receipts:
+`~/deborah-benchmarks/validity-diagnostic/31a09219/`.
+
+A separate bounded pause of both Lua collectors measured32.621FPS,
+p9534.187ms/p9939.366ms: no average gain and still far below target. Server Lua
+memory grew29,156→294,011KiB before the256MiB growth guard restarted its
+collector at38.50s; client53,047→267,361KiB by its45.04s restart. Both restored before
+further work; no collector pause/tuning is retained. Raw/script/receipts:
+`~/deborah-benchmarks/gc-cost-diagnostic/31a09219/`.
+
+The task-local launcher now executes the13-setting benchmark config after map
+load. Its fresh restart passed runtime preflight with no manual multicore command:
+x64, Windows/P10,1280×800, multicore1, queue2, threaded bones1, fps300/vsync0,
+focus true. That early-session30s configuration check measured32.284FPS,
+p9537.593ms/p9945.703ms; it is not thermal/gameplay acceptance. Exact config bytes
+are published as `tools/steam_deck_benchmark.cfg`, optional copy/launch instructions
+in the protocol. A deliberately wrong expected-multicore value was rejected
+before capture. Harness/launcher snapshot, byte hash and failed/successful guards:
+`~/deborah-benchmarks/auto-settings-launch/31a09219/` and
+`~/deborah-benchmarks/preflight-guard/31a09219/`.
+
+GitHub's complete31a09219 matrix finished325/334; all nine failure anchors,
+not only suite names, match the previously reproduced parent1335/cec10 failures.
+Source bytes stayed unchanged during the gate. Low-end source, native-boundary,
+full Lua syntax, VR and audio gates pass. Full receipt, every suite log and exact
+comparison: `~/deborah-recovery/evidence/checkpoint31-ci/`; workflow
+https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39696097231 .
+The nine failures remain unresolved; no green full-matrix or40FPS claim is made.
+No additional production Lua optimization was retained from this follow-up.
+
 ## Remaining acceptance
 
 All six required scenarios in `docs/STEAM_DECK_BENCHMARK.md` remain unverified.
