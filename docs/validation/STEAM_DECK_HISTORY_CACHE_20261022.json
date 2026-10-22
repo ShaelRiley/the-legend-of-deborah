@@ -173,5 +173,13 @@
       "total_ms": 85.24470000020301
     }
   },
-  "server_io_raw": "/home/deck/deborah-benchmarks/history-cache-source/c11c3567/listen-server-io-profile60-run1"
+  "server_io_raw": "/home/deck/deborah-benchmarks/history-cache-source/c11c3567/listen-server-io-profile60-run1",
+  "ci_regression_repair": {
+    "failed_heads": "c11c3567 and docs-only10848012",
+    "cause": "Both synthetic capture/profiler manifests omitted newly watched cl_feedback_language.lua, so exact source verification correctly failed before full matrix execution.",
+    "repair": "Add same canonical source to both fixture manifests; preserve verification assertions.",
+    "local": "tools/test_performance_capture.lua and tools/test_performance_profile.lua PASS; no runtime code change",
+    "native": "actual clean c11 capture verifies52clientfiles,0mismatch/missing,0client/serverLuaerrors; input180.028seconds/node198",
+    "ci": "new push rerun pending; full matrix not yet reached on c11, do not claim325/334 for that head"
+  }
 }
