@@ -1222,3 +1222,11 @@ Installed73bcd0c0 passes1007native value/state-transition checks with all defaul
 afff7087 fullCI returns325/334FAIL with the same nine names AND allfivefile/lineanchors asf889. The seven sharedB28fixture failures are cleared. Source/VR/audio pass. Current73bcd0c0 CI remains a separate pending gate. [Evidence](STEAM_DECK_PLAYER_QUERY_20261022.json).
 
 Next: frozen freshoriginalsourceP,C,C,P,P,C gameplay comparison with BOTHdisplaysONalways, internal1280×800@60/external1080p75. Preserve normalsource/seed/counts/AI/input/graphics andfailedattempts. No profiler or in-window device sampler. TargetUNMET; allsixfullacceptancegatesUNVERIFIED; PR7draft/maincec10 unchanged.
+
+## 2026-10-22: player-query candidate rejected after six complete native arms
+
+All six original-source D20 attempts complete with native source/function receipts, normal resources/counts/AI, structured60s+ input endings and BOTHdisplaysON. Controls21.943/22.025/21.671FPS average21.880; candidates21.397/21.046/21.030 average21.158 (arithmetic−3.30%). Every candidate is slower than its adjacent control, tails vary and allcapturesFAIL. No statistical significance or CPUcause is inferred from three pairs. Reject the candidate; restore RunManager and Staging runtime files exactly toafff7087. Keep15behavior-only query cases/55assertions; existingSharedEnemyAIWork/syntax/diff pass.
+
+The native1007case/value/guard/microtiming proof remains valid historical evidence, not a gameplaygain. No private counters, debughooks, provider replacements or device samplers ran in the FPS windows. The manual-stop metadata change only exposes/invokes the existing stop callback afterFPS; CreateMove body is byte-identical. [Raw results/conditions/decision](STEAM_DECK_PLAYER_QUERY_20261022.json).
+
+TargetUNMET; allsixfullacceptancegatesUNVERIFIED; PR7draft/maincec10 unchanged. Allownedgames stopped. Next: native collision callback/broad-phase attribution, then a focused measured change if warranted. BothmonitorsONalways/internal1280×800@60/external1080p75. No unvalidated query/animation candidate remains.

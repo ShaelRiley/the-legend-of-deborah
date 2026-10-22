@@ -590,36 +590,7 @@ end
 if not RunManager.LODStagingActiveSemanticsInstalled then
     RunManager.LODStagingActiveSemanticsInstalled = true
     RunManager.IsSlotActivePlayer = RunManager.IsSlotActivePlayer or RunManager.IsActivePlayer
-    local defaults = RunManager.PlayerQueryDefaults
-    local defaultValidity = defaults and defaults.IsValid
-    local defaultIdentity = defaults and defaults.IdentityOf
-    local defaultState = defaults and defaults.GetPlayerState
-    local defaultSlot = defaults and defaults.IsSlotActivePlayer
-    local deployedQuery = Staging.IsDeployed
-    local playerMeta = FindMetaTable and FindMetaTable("Player")
-    local entityMeta = FindMetaTable and FindMetaTable("Entity")
-    local steamID = playerMeta and playerMeta.SteamID64
-    local entIndex = entityMeta and entityMeta.EntIndex
-    local entityValidity = entityMeta and entityMeta.IsValid
     function RunManager:IsActivePlayer(ply)
-        -- The ordinary path resolves the same identity in slot, deployment and
-        -- profile queries. Combine only those original pure providers. Keep
-        -- custom API/provider callbacks and their order on the path below.
-        if defaults and self == RunManager and self.PlayerQueryDefaults == defaults
-            and self.IdentityOf == defaultIdentity and self.GetPlayerState == defaultState
-            and self.IsSlotActivePlayer == defaultSlot and Staging.IsDeployed == deployedQuery
-            and steamID and entIndex and entityValidity and IsValid == defaultValidity
-            and IsValid(ply) and type(ply) == "Player" and ply.IsValid == entityValidity
-            and ply.SteamID64 == steamID and ply.EntIndex == entIndex then
-            local current = self.State
-            if type(current) == "table" and getmetatable(current) == nil
-                and type(current.ActiveIdentity) == "table" and getmetatable(current.ActiveIdentity) == nil
-                and type(current.PlayerState) == "table" and getmetatable(current.PlayerState) == nil then
-                local id = self:IdentityOf(ply)
-                local ps = id and current.PlayerState[id]
-                return id and current.ActiveIdentity[id] == true and (ps and ps.deploymentComplete == true or false)
-            end
-        end
         return self:IsSlotActivePlayer(ply) and Staging:IsDeployed(ply)
     end
 end

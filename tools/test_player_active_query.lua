@@ -1,3 +1,4 @@
+-- Retained behavior contracts after rejecting the player-query optimization.
 -- Execute the production providers and staging wrapper with native-shaped
 -- Player APIs. This is query/lifecycle parity, not Steam Deck FPS evidence.
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
@@ -24,8 +25,7 @@ local function fixture()
   assert(load('local RunManager=...\n'..fn))(R)
  end
  local defaults=runSource:match('RunManager.PlayerQueryDefaults%s*=%s*(%b{})')
- check(defaults~=nil,'missing shared original-provider identities')
- assert(load('local RunManager=...\nRunManager.PlayerQueryDefaults='..defaults))(R)
+ if defaults then assert(load('local RunManager=...\nRunManager.PlayerQueryDefaults='..defaults))(R) end
  local helpers=assert(stageSource:match('(local function identityOf%b()%s.-)\nlocal function starterSpec'))
  local deployed=assert(stageSource:match('(function Staging:IsDeployed%b()%s.-\nend)'))
  local block=assert(stageSource:match('(%-%- RunManager owns campaign slots.-)\nlocal function buildStarterOrder'))
@@ -34,8 +34,8 @@ local function fixture()
 end
 local function test(name,fn)steamCalls,indexCalls=0,0;fn();cases=cases+1;print('PASS '..name)end
 
-test('native deployed query resolves identity once',function()
- local R,S,p=fixture();check(R:IsActivePlayer(p)==true);check(steamCalls==1,'duplicate native identity queries remain')
+test('native deployed query retains slot and deployment semantics',function()
+ local R,S,p=fixture();check(R:IsActivePlayer(p)==true)
  check(S:IsDeployed(p)==true,'public deployment provider changed')
 end)
 test('slot/deployment/profile changes remain fresh',function()
@@ -67,7 +67,7 @@ test('role flags add no new eligibility rule',function()
 end)
 test('bot identity retains native index and live membership',function()
  local R,S,p=fixture();p.id='0';R.State.ActiveIdentity['bot:1']=true;R.State.PlayerState['bot:1']={deploymentComplete=true}
- check(R:IsActivePlayer(p)==true);check(steamCalls==1 and indexCalls==1)
+ check(R:IsActivePlayer(p)==true);check(indexCalls>0,'bot identity did not query native index')
  p.index=2;check(R:IsActivePlayer(p)==false,'bot index retained across calls')
 end)
 test('custom slot callback remains before deployment',function()
@@ -123,14 +123,5 @@ test('non-native controllers and absent engine metadata fall back',function()
  local R,S,p=fixture();p.nativePlayer=false;check(R:IsActivePlayer(p)==true);check(steamCalls==3)
  metaAvailable=false;R,S,p=fixture();steamCalls=0;check(R:IsActivePlayer(p)==true);check(steamCalls==3);metaAvailable=true
 end)
-test('mutated registry cannot bless a custom provider',function()
- local R,S,p=fixture();local called=0
- R.IdentityOf=function()called=called+1;return 'A'end
- R.PlayerQueryDefaults.IdentityOf=R.IdentityOf
- check(R:IsActivePlayer(p)==true);check(called==3,'mutable registry bypassed custom identity callback')
-end)
-test('changed default registry cannot reuse old handles',function()
- local R,S,p=fixture();R.PlayerQueryDefaults={};check(R:IsActivePlayer(p)==true);check(steamCalls==3)
-end)
 _G.type=luaType
-print('PLAYER_ACTIVE_QUERY_PASS '..cases..' cases '..assertions..' assertions; per-call native query, live lifecycle and provider/native-API fallbacks')
+print('PLAYER_ACTIVE_QUERY_PASS '..cases..' cases '..assertions..' assertions; live slot/deployment/lifecycle and provider/native-API callbacks; optimization rejected')
