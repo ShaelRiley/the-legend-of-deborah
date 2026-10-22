@@ -33,7 +33,7 @@ end
 local production=readBytes('lua/autorun/server/lod_population_observability.lua')
 local watched=assert(production:match('local watched=(%b{})'));local manifest={}
 for path in watched:gmatch('"([^"]+)"') do manifest[#manifest+1]=string.rep('a',64)..'  '..path end
-assert(#manifest==111,'installer/runtime source coverage changed without transport review')
+assert(#manifest==112,'installer/runtime source coverage changed without transport review')
 for _,name in ipairs({'server','client'}) do
     files[name]['legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
     files[name]['legend_of_deborah/dev_build.txt']='test-checkout clean'
@@ -138,11 +138,11 @@ realm('client',function() Audit:StartPerformanceCapture(30) end)
 assert(requestCount==1 and #requests==1 and Audit.PopulationEvidenceStatus.state=='requested')
 request(nonAdmin);request(nil);assert(censusCalls==0 and writes.server==0)
 request(admin);receive()
-assert(censusCalls==1 and hashes.server==111 and A.LastWrite.ok)
+assert(censusCalls==1 and hashes.server==112 and A.LastWrite.ok)
 assert(Audit.LastPopulationEvidence.live==64 and Audit.LastPopulationEvidence.entry.heroes[1].depth==23)
 assert(Audit.PopulationEvidenceStatus.state=='received' and Audit.PopulationEvidenceStatus.client_write)
-assert(Audit.LastPopulationEvidence.server_write.ok and Audit.LastPopulationEvidence.source.checked==111)
-assert(#Audit.LastPopulationEvidence.source.modules==111,'full source manifest lost in transport')
+assert(Audit.LastPopulationEvidence.server_write.ok and Audit.LastPopulationEvidence.source.checked==112)
+assert(#Audit.LastPopulationEvidence.source.modules==112,'full source manifest lost in transport')
 local runtime=Audit.LastPopulationEvidence.server_runtime
 assert(runtime.dedicated==true and runtime.singleplayer==false and runtime.max_players==4 and runtime.human_players==1,
     'available slots stood in for actual human players')
@@ -160,7 +160,7 @@ for _,line in ipairs(printed) do
         checkedConsole=checkedConsole+1
     end
 end
-assert(checkedConsole==1 and #A.Source.modules==111,'console compaction mutated cached identity')
+assert(checkedConsole==1 and #A.Source.modules==112,'console compaction mutated cached identity')
 request(admin);assert(censusCalls==1 and writes.server==1,'request rate bound failed')
 local out=realm('client',function() return Audit:StopPerformanceCapture('manual') end)
 assert(out.population.live==64 and out.population_status.client_write and out.saved)
@@ -187,7 +187,7 @@ map='gm_flatgrass';local run=serverLOD.RunManager;serverLOD.RunManager=nil
 request(admin);assert(censusCalls==3);serverLOD.RunManager=run
 now=108;tooLarge=true;request(admin);assert(#responses==0 and censusCalls==4)
 tooLarge=false
-assert(hashes.server==111,'transport rehashed gameplay on every request')
+assert(hashes.server==112,'transport rehashed gameplay on every request')
 -- Throwing DATA failure is contained as well as a silent failure.
 local oldWrite=file.Write
 file.Write=function(path,text) if SERVER then error('injected disk failure') end;return oldWrite(path,text) end
