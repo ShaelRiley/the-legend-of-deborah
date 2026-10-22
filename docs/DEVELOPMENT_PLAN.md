@@ -1,3 +1,13 @@
+# Current checkpoint — native boss draw repair proved; performance still fails
+
+Installed77db9cfe normal Chuck/Jane DrawActor returns complete51times. Both actual render bounds match the native-model/scale expansion, the beaver marker remains, the finite probe restores in0.97s, and both realms report zeroLuaerrors. This passes the finite native API/draw-bounds repair gate; full appearance/phase/performance acceptance remains unverified. Its60s orbit is37.533FPS,p9538.551,p9959.781,max1197.560,longest2.659s: FAIL. No FPSgain is attributed to the correctness repair.
+
+A separate75s bounded boss-method profile restores everybinding. BossService7.594inclusive ms/s, routevalidation only7calls/0.471ms/s/max12.590ms; nestedrows overlap. No route rewrite is warranted. The first-entry~1.2s stall is absent in the warmed repeat, but asset loading is not yet proved as cause. Next: a fresh-process native VProf capture of firstentry, then normal later/finale baseline preparation.
+
+Private ordinary behavior dispatch also fails to demonstrate a repeatable gain: parent33.869/36.720FPS versus direct36.989/36.019, overlappingranges. Everydirectcallback runs exactly1canonicalstep (94585/94137), zeroerrors, all34ordinaryactor overrides restore. Watchers/newactors retaincoroutines; cadence/counts unchanged. Rejecttheprototype; no productionAIchange. A separatePlayer-onlylookup microprototype is also leftunadopted: only~0.3ms/10kactualqueries, no wholeFPSclaim.
+
+Current target UNMET, all six complete acceptance gates UNVERIFIED, PR7draft/maincec10 unchanged. Preserve the frozen scenario thresholds/routes and actualfailedcaptures. ExternalDP1 stilltask60Hz, restore75afterbenchmarks. Fouractualplayers remainmissing. Currentgame explicitlyquit17:43UTC beforefresh nativecold-encounterdiagnostic.
+
 # Current checkpoint — native boss draw API repair; source gate passed
 
 The first normal-resource Dungeon14 orbit exposes a production client error at cl_boss_encounter.lua:91: util.GetModelBounds is absent. Native Entity:GetModelBounds is present for both Chuck and Jane. The old code marks the model/size signature before throwing, leaving its intended RenderMultiply and expanded bounds unapplied. Use the native Entity method and publish the signature only after setup completes; preserve scale, origin arithmetic, module drawing and server gameplay.

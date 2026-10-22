@@ -1065,3 +1065,22 @@ A fresh canonical NewCampaign→D1starter/three-item checkpoint→D10XP/feats→
 The first60s original-hook diagnostic averages37.585FPS,median24.165ms,p9539.403,p9956.940,max1227.957,1%low7.653FPS,below4029.596s,longest3.702s. It fails. Input advances multiple ordinary circuits and logs normal wood projectiles/shooting/Jane damage, but onlyphase1 is observed. The raw capture also records two production client errors: util.GetModelBounds is absent at cl_boss_encounter.lua:91. Its visual signature was written before the error, so bounds/matrix setup was left incomplete. This is no clean or full boss acceptance. Raw `/home/deck/deborah-benchmarks/boss-baseline/cb90f2e7/d14-route60-run1/` includes native API receipt confirming Entity:GetModelBounds C method for citizen and propane models.
 
 Repair uses Entity:GetModelBounds, the native unscaled model-bounds API ([Facepunch reference](https://wiki.facepunch.com/gmod/Entity%3AGetModelBounds)), and marks the signature only after matrix/render bounds apply. All18bosses pass both snapshot presentation transports; the new draw seam check covers absent util API, negative model-origin offset, scale/expanded bounds, unchanged reuse and live model/size invalidation. Exact parent source fails this new gate; candidate bytes are restored. This is a correctness repair, not an FPS improvement claim. Native restart/appearance/bounds proof and clean repeated boss profiling remain pending. All full acceptance criteria and workloads remain unchanged.
+
+### Native boss repair confirmation and measured encounter scope
+
+Fresh77db9cfe actual Dungeon14 reproduces normal source/settings/54roamers/1748models and identical320point court input. Its60s is37.533FPS,median24.077ms,p9538.551,p9959.781,max1197.560,1%low7.577FPS,below4029.714s,longest2.659s: FAIL. Both realms subsequently report zeroLuaerrors. A finite read-only wrapper observes51successful normal DrawActor returns, records Chuck/Jane exact expanded native render bounds and proper beaver flag, then restores in0.970s. The postcapture scene shows native court geometry/HUD and distant bodies; close face/tail and all phases remain unverified. Raw `/home/deck/deborah-benchmarks/boss-bounds-source/77db9cfe/d14-unprofiled60-run1/`. This accepts only the finite native bounds/API repair gate, never the whole scenario or a performance gain.
+
+A separate75.026s method profile with allbindings restored attributes7.594inclusive ms/s to BossEncounter.Service,2.608ServiceMoves,1.320ServiceObjects,0.926Chuck.Think,0.662Targets. ValidateRoutes has7calls,0.471ms/s,max12.590ms. Nestedrows overlap. This phase1scope does not justify optimizing route validation. Its60s capture is37.715FPS,p9539.260,p9957.080,max122.870,longest4.055s and is diagnostic, not acceptance. Firstentry~1.2s stall disappears in thisrepeat; native coldscope is stillneeded toprove cause. Raw `boss-bounds-source/77db9cfe/d14-profile60-run1/`.
+
+### Ordinary behavior dispatch prototype: rejected after four comparisons
+
+Mounted base_nextbot code and actual suspended threads are inspected read-only. Of57actors,54suspend in the exact native non-yielding ordinary loop,3in the special Watcher loop. A finite per-instance prototype replaces only verified ordinary BehaveUpdate callbacks with pcall of the identical BeforeAI→TickCloseDefense→_BehaviourTick step at the existing engine callback. Watchers/newactors keep original coroutines. Matchingcontrolwrappers/counters, canonicalD10reset/warmVM/315pointalignedinput, source/settings/counts/focus remain. No native cadence cvar ischanged and no protectedAPI bypass isused.
+
+| Arm | Mode | FPS | p95 ms | p99 ms | Longest below40 s |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 1 | parent | 33.869 | 49.402 | 81.521 | 8.633 |
+| 2 | direct | 36.989 | 37.404 | 70.843 | 4.206 |
+| 3 | direct | 36.019 | 44.361 | 80.940 | 2.749 |
+| 4 | parent | 36.720 | 38.419 | 71.316 | 5.248 |
+
+Directmean36.504versusparent35.295 (+3.427%arithmetic) is notseparated fromobservedvariation; finalcontrol overlapsbothdirectruns. Allfail. The34directordinaryactors produce94585/94137callbacks andexactlythesamecompletedstepcounts,zeroerrors, andallbindingsrestore. Reject; no productionAIchange or gainclaim. Raw `/home/deck/deborah-benchmarks/behaviour-dispatch-probe/77db9cfe/`, compact [comparisonJSON](STEAM_DECK_BEHAVIOUR_DISPATCH_20261022.json). An earlier nativePlayer-onlydispatchmicroprototype preserves59actor/NULL/profile-replacement cases but savesonly~0.3ms/10kqueries; italso remainsprivate/unadopted, withno whole-gameFPSclaim.
