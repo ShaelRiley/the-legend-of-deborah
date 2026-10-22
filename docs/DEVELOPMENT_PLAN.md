@@ -1,3 +1,27 @@
+# Current checkpoint — live NextBot state lookup candidate; target unmet
+
+Clean685 native readback verified111server/51client source hashes and authoritative
+cadence/topology metadata. A fresh native32 startup with+nb_update_frequency0.015
+before+map retains one tick withsv_cheats0 after a real client joins, despite a
+startup protected-cvar warning. A20s counter confirms71,868movement calls and
+194,051travel units, then restores its wrapper. The separate local-dedicated
+candidate remains outside frozen listen-host acceptance:48.456FPS stationary
+misses tails; ordinary first-sector input reaches46.856FPS over80.886active seconds,
+p9533.534ms/p9951.083ms and a3.454s slow episode before normal death. It fails.
+
+A finite control/candidate/candidate/control Deck listen-host probe of direct live
+NextBot progression lookup measured32.646/32.729 versus33.352/33.217FPS. The small
+signal justifies a source candidate, not a completed gain or40FPS acceptance.
+The canonical lookup now borrows the live native instance table per call, after
+validity; Player incarnation handling and absent/inherited/API-missing fallbacks
+remain. Replacement/removal, ordinary AI and human Soldier/Hero lifecycle checks
+pass. Eight selected checks pass; the dodge migration assertion at177 reproduces
+on parent1335 and matches the prior known matrix failure. No full-green claim.
+Next: clean-install this checkpoint, observe native lifecycle behavior, compare
+installed source under equivalent listen-host conditions, retain/revert from those
+measurements, and resume heavier gameplay profiling. All six scenario gates,
+three warmed repeats, capped play and four actual players remain unverified.
+
 # Current checkpoint — server cadence evidence; target unmet
 
 The local native-server candidate now connects through127.0.0.1 with documented

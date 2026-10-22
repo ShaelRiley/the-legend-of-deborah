@@ -671,3 +671,78 @@ Freeze physical routes/checkpoints before accepting comparative scenario runs.
 Next: isolate the remaining simulation/rendering cost, inspect stair/false-floor/
 full-update visibility, finish physical gameplay checkpoints, and repeat the
 focused optimization loop. Do not publish a completed40FPS claim.
+
+
+### Normal-cadence native startup and representative gameplay failure
+
+Clean68597112 native readback confirms111server/51client files, no mismatches,
+normal60roamers,1736cargo models,1280×800, Windows64/Proton10 client and native
+Linux32 dedicated server on this Deck. A startup argument+nb_update_frequency0.015
+before+map emits a protected-cvar warning but the post-map, post-join native
+readback and engine report show one tick withsv_cheats0. No protected flag, engine
+API or gameplay resource was altered. A20s movement counter recorded71,868calls,
+194,051travel units,57moving/61valid actors and restored its original function.
+The different timing/path state prevents interpreting travel totals as exact
+parity with a different run; this corroborates active one-tick behavior.
+Socket-loopback1 is set at both ends. Settled server status reports one actual
+human, four available slots,40ms ping and0loss. The native metadata survives the
+full client capture and valid JSON in the physical console file.
+
+| Separate local-dedicated diagnostic | Active seconds | FPS | Median ms | p95 ms | p99 ms | 1%low FPS | Below40 seconds | Longest slow seconds |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| normal cadence, stationary30s |29.965|48.456|19.717|25.897|33.160|25.268|2.706|0.151|
+| same frozen first-sector input, unprofiled |80.886|46.856|19.146|33.534|51.083|13.295|31.174|3.454|
+| first-sector profile after map reload |50.472|44.342|21.593|33.661|50.635|14.657|20.616|2.601|
+
+Every row fails an acceptance condition. The180s unprofiled request ended with
+ordinary death at80.463s, route node34; only80.886active seconds were captured.
+The profiled repeat died earlier and includes post-death time in its60s inclusive
+profile rows. Startup/staging dwell and patrol phase differ, so its FPS is not a
+matched comparison. Rendering submission, floor geometry, feed text, hostile
+bodies and server entry/close-defense queries remain costly. No enemy, AI,
+collision, damage, HP, resource or effect reduction is retained. These are partial
+first-sector hosting diagnostics; they cannot replace the frozen listen-host or
+full six-scenario acceptance. Full raw captures, analysis, normal-input receipts,
+console files, native movement counters and launch arguments:
+`/home/deck/deborah-benchmarks/dedicated-startup-cadence/68597112/`.
+
+### Direct live NextBot progression lookup candidate
+
+The profile and prior bounded samples identify repeated progression lookup in
+AI/status/movement. A finite external prototype borrows the documented native
+Entity.GetTable result only for NextBots with a nonnil instance progression field;
+all other cases call the original resolver. It stores no profile across calls.
+It uses the same unchanged production68597112 source and a controlled external
+runtime substitution, not a claimed installed-source improvement.
+Four sequential30s listen-host arrival arms use1280×800/P10/multicore1/queue2/bones1,
+normal60roamers/1736models, HP100/Wizard/AR2 and the same yaw90 view.
+
+| Ordered arm | FPS | p95 ms | p99 ms |
+| --- | ---: | ---: | ---: |
+| control1 |32.646|37.530|44.384|
+| prototype1 |33.352|36.226|43.822|
+| prototype2 |33.217|36.277|45.213|
+| control2 |32.729|36.956|45.574|
+
+Mean prototype FPS is1.827% higher with disjoint short-run FPS ranges. All fail40FPS.
+The wrapper restored the original after all four arms; its240s guard also bounds
+unexpected interruption. Native sanity checks cover61NextBots plus the real Player
+andNULL; all61live NextBots own the exact original profile in their Lua table.
+An immediate Remove probe still reported the temporary entity valid because native
+removal is deferred; it is not proof of post-removal behavior. The source candidate
+therefore retains the existing IsValid check before any native table access.
+Do not equate the outer runtime prototype with the source candidate: the latter
+preserves the human-Soldier provider and optimizes only the base canonical lookup.
+It requires fresh installed-source measurements before a retain decision.
+Raw scripts, restoration receipt and captures:
+`/home/deck/deborah-benchmarks/state-lookup-diagnostic/68597112/`.
+
+The source uses one live native table per call, retaining ordinary fallback for
+missing/inherited fields or missing API and all Player/Hero/Soldier semantics.
+Expanded existing progression tests verify in-place and whole-table replacement,
+false/nil/inherited values, invalid-actor rejection before the native boundary,
+and an API-unavailable run. Lifecycle, AI/sanctuary, profile, manifest and syntax
+checks pass. The selected dodge test fails at its existing177migration assertion,
+reproduced on parent1335 and matching the prior325/334 matrix record; it is not a
+new failure or a green full matrix. Static receipt/logs:
+`/home/deck/deborah-recovery/evidence/nextbot-live-state-gate/`.

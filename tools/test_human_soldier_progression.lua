@@ -1,8 +1,12 @@
 -- Human Soldier Progression Authority Deterministic Validator (AG-006)
 local root = "."
 local luaType = type
+local engineKinds, entityFields = {}, {}
+local nativeTableCalls = 0
+local nativeTableAvailable = arg[1] ~= "--without-native-table"
 -- Engine boundary fidelity: GMod entities are not ordinary Lua tables.
 type = function(value)
+    if engineKinds[value] then return engineKinds[value] end
     if luaType(value) == "table" and value._isEntity then
         return value.IsPlayer and value:IsPlayer() and "Player" or "Entity"
     end
@@ -23,6 +27,13 @@ local function mockGMod()
     concommand = {Add = function() end}
     GetConVar = function() return {GetBool = function() return true end} end
     IsValid = function(v) return luaType(v) == "table" and v._isValid == true end
+    FindMetaTable = nativeTableAvailable and function(name)
+        if name == "Entity" then return {GetTable = function(actor)
+            nativeTableCalls = nativeTableCalls + 1
+            assert(IsValid(actor), "removed entity reached native table lookup")
+            return entityFields[actor]
+        end} end
+    end or nil
     isentity = function(v) return luaType(v) == "table" and v._isEntity == true end
     isfunction = function(v) return type(v) == "function" end
     istable = function(v) return type(v) == "table" end
@@ -139,6 +150,42 @@ local invalidController = setmetatable({
 end})
 check(System:StateFor(invalidController) == nil, "Removed Player cannot resolve a stale incarnation")
 check(System:StateFor(nil) == nil, "Absent actor has no human Soldier incarnation")
+
+-- The shared AI/status resolver must observe profile replacement, inherited
+-- fallback and removal immediately. No instance table or profile survives a
+-- call. Real Player/Hero/Soldier checks below use the same wrapped resolver.
+local playerQueries, inherited = 0, nil
+local bot
+bot = setmetatable({_isValid=true, _isEntity=true,
+    IsPlayer=function() playerQueries=playerQueries+1;return false end}, {
+    __index=function(_,field)
+        if field=="LODProgressionState" then
+            local fields=entityFields[bot]
+            if fields and fields[field]~=nil then return fields[field] end
+            return inherited
+        end
+    end})
+engineKinds[bot]="NextBot"
+entityFields[bot]={LODProgressionState=aiProfile}
+local initialQueries, initialTables=playerQueries,nativeTableCalls
+check(Rules:ProgressionState(bot)==aiProfile,"NextBot uses its owned progression")
+if nativeTableAvailable then
+    check(playerQueries==initialQueries and nativeTableCalls==initialTables+1,
+        "owned NextBot progression repeats native kind/field work")
+end
+local replacement={actorType="ai",level=2}
+entityFields[bot].LODProgressionState=replacement
+check(Rules:ProgressionState(bot)==replacement,"NextBot in-place profile replacement is fresh")
+entityFields[bot]={LODProgressionState=false}
+check(Rules:ProgressionState(bot)==false,"NextBot false field retains ordinary lookup semantics")
+entityFields[bot]={};inherited=replacement
+check(Rules:ProgressionState(bot)==replacement,"NextBot inherited field retains ordinary lookup")
+inherited=nil;entityFields[bot]=nil
+check(Rules:ProgressionState(bot)==nil,"NextBot absent table retains ordinary lookup")
+entityFields[bot]={LODProgressionState=replacement};bot._isValid=false
+local beforeRemoved=nativeTableCalls
+check(Rules:ProgressionState(bot)==nil and nativeTableCalls==beforeRemoved,
+    "removed NextBot resolved stale state or crossed native table boundary")
 
 -- 9. Automatic advancement does not enter Hero feat/class choice flow
 local unresolvedChoice = false
