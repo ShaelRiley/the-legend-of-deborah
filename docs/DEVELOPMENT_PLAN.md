@@ -1,3 +1,13 @@
+# Current checkpoint — native boss draw API repair; source gate passed
+
+The first normal-resource Dungeon14 orbit exposes a production client error at cl_boss_encounter.lua:91: util.GetModelBounds is absent. Native Entity:GetModelBounds is present for both Chuck and Jane. The old code marks the model/size signature before throwing, leaving its intended RenderMultiply and expanded bounds unapplied. Use the native Entity method and publish the signature only after setup completes; preserve scale, origin arithmetic, module drawing and server gameplay.
+
+Both presentation transports pass all18modular bosses. A new existing-harness draw gate verifies native Entity bounds with util API absent, exact scale/origin/render bounds, unchanged setup reuse and model/size invalidation. It fails on the exact parent and passes the repair. Fresh installed native bounds/appearance/no-error verification and equivalent boss profiling follow. This is a rendering correctness repair, not a measured FPS gain.
+
+Normal preparation now proves Wizard17/HP180/AR2clip20/3canonicalitems, Dungeon14 seed1217158876/layout1761773386,54roamers/1748models. A320point radius700 court circuit passes native PlayerHull sweeps before boss commit; dynamic hazards remain. The first60s, sourcecb90f2e7, averages37.585FPS,p9539.403ms,p9956.940ms,max1227.957ms,longest3.702s. FAIL timing and clean runtime; onlyphase1 observed. Raw `/home/deck/deborah-benchmarks/boss-baseline/cb90f2e7/d14-route60-run1/`. This is an iteration, not warmed full acceptance.
+
+Target UNMET; all six complete gates UNVERIFIED. PR7 stays draft/maincec10 unchanged. Previous candidate rejection/evidence below remains authoritative history.
+
 # Current checkpoint — typed component candidate rejected; retained runtime restored
 
 Six matched60-second actual Deck comparisons of a76ef534 complete with fresh native installation/restoration receipts. Current37.985/37.420/37.012FPS averages37.472 versus parent35.589/37.491/35.719 averaging36.266. The positive arithmetic difference3.325% is not separated from observed variation; ranges overlap and one adjacent pair is slightly slower. Tails are inconsistent and all six fail the budget. Do not claim a gain or proven slowdown. Restore both static-box source files exactly to5889d8bf/runtime4d0a6d80; preserve candidate history and evidence.

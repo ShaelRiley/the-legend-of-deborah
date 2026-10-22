@@ -87,12 +87,12 @@ function V:DrawActor(e,force)
     local size=math.Clamp(e:GetNW2Float('LOD_SizeScale',s.size or 1),.1,8)
     local model=e:GetModel();local signature=model..':'..size
     if e.LODBossVisualSignature~=signature then
-        e.LODBossVisualSignature=signature
-        local mins,maxs=util.GetModelBounds(model)
+        local mins,maxs=e:GetModelBounds()
         mins,maxs=mins or Vector(-16,-16,0),maxs or Vector(16,16,72)
         local matrix=Matrix();matrix:Scale(Vector(size,size,size));matrix:SetTranslation(Vector(0,0,-mins.z*size))
         e:EnableMatrix('RenderMultiply',matrix)
         local lo,hi=mins*size,maxs*size;e:SetRenderBounds(Vector(lo.x-80,lo.y-80,-80),Vector(hi.x+80,hi.y+80,(maxs.z-mins.z)*size+120))
+        e.LODBossVisualSignature=signature
     end
     local m=self.Modules[s.id];local pose=m and m.Pose and m:Pose(e,size,s)
     if pose then if pose.angles then e:SetRenderAngles(pose.angles) end;if pose.offset then e:SetRenderOrigin(e:GetPos()+pose.offset) end end
