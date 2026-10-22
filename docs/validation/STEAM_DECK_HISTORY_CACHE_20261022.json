@@ -1,6 +1,6 @@
 {
-  "recorded_utc": "2026-10-22T18:58:03.687945+00:00",
-  "state": "source candidate, native source timing and round-trip pending; target UNMET",
+  "recorded_utc": "2026-10-22T19:12:40.655741+00:00",
+  "state": "RETAINED recurring serialization hitch improvement; full target UNMET and all six gates UNVERIFIED",
   "parent": "04e6b0d90bf9747d258b85415605f85afb5e805a",
   "baseline_context": "Separate local native32 dedicated diagnostic on same LCD Steam Deck; original frozen solo listen-host acceptance unchanged",
   "source_io_raw": "/home/deck/deborah-benchmarks/current-dedicated-d10/04e6b0d9/client-io-profile60-run1",
@@ -43,5 +43,135 @@
   "native_paired_profile": "/home/deck/deborah-benchmarks/current-dedicated-d10/04e6b0d9/paired-native-profile60-run1",
   "hypothesis": "Avoid recurring ~50ms full-history JSON conversion by caching canonical row encodings, validating scalar and nested semantic fields, warming existing rows at loading; keep same JSON array,1000limit,2s batching,shutdown save and all audio/ACK behavior. Weak row keys allow old entries to be collected.",
   "static": "feedback existing+new native-shaped cache contract PASS;76spot05assertions PASS; exact parent fails new gate; source-watch/transport/117manifest/syntax/diff PASS",
-  "next": "Fresh native listen-host exact JSON round-trip and 60s I/O-source test, then comparable uninstrumented captures; retain only with native evidence."
+  "next": "Narrow current normal AI phase cost; preserve cadence, condition expiry, reactions and all frozen workloads. No whole-FPS gain claimed.",
+  "source": "c11c3567261e457935c6ab8b28e52406adb61366",
+  "native_json_proof": {
+    "writer_restored": true,
+    "original_history_restored": true,
+    "checks": 320452,
+    "passed": true,
+    "scope": "isolated history copies; preferred disk writes intercepted, no real history mutation or replay",
+    "source": "c11c3567 original installed closure",
+    "encoder_restored": true,
+    "initial_rows": 1000,
+    "native_json_roundtrip": true
+  },
+  "native_pairs": {
+    "diagnostic": true,
+    "rows": [
+      {
+        "order": "parent,current",
+        "parent_bytes": 769174,
+        "identical_decoded_data": true,
+        "cached_bytes": 769174,
+        "cached_ms": 5.599599999982274,
+        "parent_ms": 50.332799999978306,
+        "history_rows": 1000
+      },
+      {
+        "order": "current,parent",
+        "parent_bytes": 768699,
+        "identical_decoded_data": true,
+        "cached_bytes": 768699,
+        "cached_ms": 4.593400000032943,
+        "parent_ms": 45.094399999982215,
+        "history_rows": 1000
+      },
+      {
+        "order": "parent,current",
+        "parent_bytes": 768402,
+        "identical_decoded_data": true,
+        "cached_bytes": 768402,
+        "cached_ms": 3.899999999987358,
+        "parent_ms": 44.00360000005321,
+        "history_rows": 1000
+      },
+      {
+        "order": "current,parent",
+        "parent_bytes": 769723,
+        "identical_decoded_data": true,
+        "cached_bytes": 769723,
+        "cached_ms": 4.858900000044741,
+        "parent_ms": 44.80510000001914,
+        "history_rows": 1000
+      },
+      {
+        "order": "parent,current",
+        "parent_bytes": 769447,
+        "identical_decoded_data": true,
+        "cached_bytes": 769447,
+        "cached_ms": 4.546800000014173,
+        "parent_ms": 44.88730000002761,
+        "history_rows": 1000
+      },
+      {
+        "order": "current,parent",
+        "parent_bytes": 768972,
+        "identical_decoded_data": true,
+        "cached_bytes": 768972,
+        "cached_ms": 4.177900000001955,
+        "parent_ms": 47.28690000001734,
+        "history_rows": 1000
+      }
+    ],
+    "source": "c11c3567 original installed save hook; same live history and process; disk interception only inside synchronous measured cached call",
+    "seconds": 6.191124800000011,
+    "restored": true
+  },
+  "native_source_io": {
+    "util.TableToJSON": {
+      "calls": 151,
+      "max_ms": 5.251299999997627,
+      "bytes": 0,
+      "total_ms": 10.751299999654407
+    },
+    "file.Append": {
+      "calls": 0,
+      "max_ms": 0,
+      "bytes": 0,
+      "total_ms": 0
+    },
+    "file.Write": {
+      "calls": 27,
+      "max_ms": 2.027299999980414,
+      "bytes": 13999295,
+      "total_ms": 36.47069999989583
+    }
+  },
+  "native_source_io_raw": "/home/deck/deborah-benchmarks/history-cache-source/c11c3567/listen-io-profile60-run1",
+  "native_uninstrumented180": {
+    "frames": 6541,
+    "seconds": 179.979751,
+    "fps": 36.34297727192655,
+    "median_ms": 26.121,
+    "p95_ms": 39.632,
+    "p99_ms": 62.382,
+    "max_ms": 168.912,
+    "one_percent_low_fps": 12.738086415178241,
+    "below_budget_seconds": 119.92741899999996,
+    "longest_below_budget_seconds": 9.489336999999995,
+    "below_budget_runs_ge2s": 13
+  },
+  "native_uninstrumented180_raw": "/home/deck/deborah-benchmarks/history-cache-source/c11c3567/listen-gameplay180-run1",
+  "server_io": {
+    "util.TableToJSON": {
+      "calls": 233,
+      "max_ms": 1.1074000000235174,
+      "bytes": 0,
+      "total_ms": 19.23249999890686
+    },
+    "file.Append": {
+      "calls": 1122,
+      "max_ms": 33.36669999998776,
+      "bytes": 305866,
+      "total_ms": 1039.7571000032713
+    },
+    "file.Write": {
+      "calls": 36,
+      "max_ms": 35.429300000032526,
+      "bytes": 30893695,
+      "total_ms": 85.24470000020301
+    }
+  },
+  "server_io_raw": "/home/deck/deborah-benchmarks/history-cache-source/c11c3567/listen-server-io-profile60-run1"
 }
