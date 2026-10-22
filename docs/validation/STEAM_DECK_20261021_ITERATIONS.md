@@ -1188,4 +1188,3 @@ Explicit user requirement: keep BOTH monitors ON at all times and achieve40FPS i
 f889bf95 full CI completes325/334FAIL. All nine failing suite names AND exact file/line anchors match bc95; the new8d boss-framework fixture failure is cleared. Source/VR/audio checks pass. No full green matrix or performance acceptance is claimed. [Display/CI evidence](STEAM_DECK_BOTH_DISPLAYS_20261022.json).
 
 No game/server remains active. Next: bounded before/after process/thread CPU and scheduler accounting around the same ordinary gameplay route, preserving both displaysON and all workload/settings. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged. Continue measured optimization and missing gameplay/multiplayer coverage.
-
