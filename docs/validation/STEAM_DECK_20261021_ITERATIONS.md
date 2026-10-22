@@ -835,3 +835,32 @@ Raw captures, scripts, conditions and restoration receipts are under
 `native-accessor-coverage/5969f57e/`, `profile-native-guard-diagnostic/5969f57e/`,
 `physical-core-affinity/5969f57e/`, `xalia-paused-p10/5969f57e/`, and
 `experimental-wall-batches/5969f57e/`.
+
+
+### Missing-target close-defense candidate
+
+Fresh Windows64/P10 source8a012398 listen-host arrival baseline is32.431FPS,
+p9537.459ms/p9944.027ms. The separate full profile reaches29.172FPS, so its
+inclusive timings are diagnostic only. A separate15s one-in64 service sample
+restored all29bindings; movement, entry admission and close-defense calls remain
+prominent. Raw baseline/profile/sample:
+`/home/deck/deborah-benchmarks/fresh-broader-profile/8a012398/`.
+A two-second target counter observes2,880 BeginCloseDefense calls, all with invalid
+targets. TickCloseDefense already services actor status/life before this second
+permission/geometry pass. A finite early-invalid-target wrapper comparison gives
+controls32.602/32.434FPS versus candidate33.303/32.809FPS; mean33.056versus32.518
+(+1.655%), disjoint short ranges. It restored the original. No valid-target combat
+path or timing changes; no source performance acceptance yet.
+Raw scripts, captures and comparison:
+`/home/deck/deborah-benchmarks/close-target-diagnostic/8a012398/`.
+
+The source candidate rejects native-invalid targets at the start of the canonical
+BeginCloseDefense; valid targets follow the existing commitment path. The existing
+AI harness verifies nil/NULL/removed targets do not repeat permissions or query
+body geometry, while retaining first-pass status expiry/callback behavior. Seven
+selected checks pass: close-defense commitments/Watcher router, AI work, entry
+hotpath, B7 visuals, status/element matrix, changed-file syntax and diff check.
+Receipt: `/home/deck/deborah-recovery/evidence/close-target-gate/receipt.json`.
+Live GDD00→01→03 B7/status rules retain canonical combat, exact lives, fixed warning,
+interruption, defenses and multiplayer authority. Fresh installed-source/control
+Deck comparison is the next gate; target remains unmet.

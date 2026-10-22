@@ -1,4 +1,22 @@
-# Current checkpoint — fresh broader profile required; target unmet
+# Current checkpoint — missing-target admission candidate; target unmet
+
+Fresh uninstrumented8a012398 arrival is32.431FPS, p9537.459ms/p9944.027ms;
+the separate full profile is29.172FPS and materially perturbs performance. A finite
+one-in64 service sample restored all29bindings. A two-second target counter found
+2,880 close-defense admission calls, all with invalid targets. Rejecting that
+impossible admission before repeated permissions/geometry gives33.056versus
+32.518FPS mean in four short wrapper arms (+1.655%), all failing40FPS.
+
+The source candidate adds only the early native-invalid-target return to canonical
+BeginCloseDefense. TickCloseDefense still services status/life; valid-target
+commitment/timing remains unchanged. Seven scoped checks pass, including actual
+close-defense/Watcher dispatch, status expiry/callbacks and B7 visibility. Next:
+fresh installed-source six-arm comparison with exact old function reconstructed
+from8a012398; retain only a reproducible gain. No production performance claim yet.
+All six full scenarios, warmed180s triplicates, capped play and four actual players
+remain unverified. Keep frozen listen-host criteria and normal population/graphics.
+
+# Previous checkpoint — fresh broader profile required; target unmet
 
 The retained live NextBot progression lookup4a6b4aa2 remains the latest source
 optimization (+2.458% in the recorded fresh six-arm comparison, all failing40FPS).
