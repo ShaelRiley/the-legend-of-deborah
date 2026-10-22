@@ -316,6 +316,14 @@
     "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39850111135",
     "raw": "/home/deck/deborah-recovery/evidence/8d478035-ci/full-failures.log",
     "cause": "twointegrationtests fake floors onlyforTraceLine; actualnativeunitverticalhullSupport thereforeseesnocollisioninmock",
-    "repair": "testfixtureonlysuppliesfloorhittonarrowverticalsupporthulls;allcomposition/rollback/Hector/rescueassertionsretained;76/76localPASS;newfullCIpending;no runtimechange"
-  }
+    "repair": "f889 fixture-only repair;76/76localPASS;full325/334FAIL same9names AND exactanchor sets as bc95. Runtimeunchanged."
+  },
+  "ci_current": {
+    "source": "f889bf95",
+    "full": "325/334FAIL; all9 names AND exact file/line anchors match bc95 parent. New8d bossfixture failure repaired;76/76boss casesPASS.",
+    "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39852357677",
+    "comparison": "/home/deck/deborah-recovery/evidence/f889bf95-ci/comparison.json",
+    "source_vr_audio": "PASS"
+  },
+  "both_monitors_requirement": "Both monitors ON at all times; 40FPS must be achieved with both ON. No further OFF arms."
 }

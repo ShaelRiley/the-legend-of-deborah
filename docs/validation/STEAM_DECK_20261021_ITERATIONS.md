@@ -1180,3 +1180,12 @@ Native profiling attributes25.000ms/frame inclusive to server simulation,11.320m
 The8d478035 full CI run is324/334: one NEW boss-framework fixture failure plus the nine known parent failures. The two finale integration fixtures supplied floors only to ray queries. They now provide native-style point-width vertical hull support; every composition, rollback, exactly-once handoff and rescue assertion remains. All76boss-framework cases pass locally. This is test-only repair; runtime/source8b remains unchanged. New full CI is pending, not claimed green. [Raw evidence and results](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
 
 Both local game/server processes are explicitly stopped after the diagnostic. Next: continue measured shared CPU/client-cost investigation and required coverage. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged. Restore externalDP1to75Hzafterbenchmarks.
+
+## 2026-10-22: both displays required and broad CI comparison complete
+
+Explicit user requirement: keep BOTH monitors ON at all times and achieve40FPS in that configuration. Session idle inhibition is held; external1920×1080@75 is restored and internal1280×800@60 retained. No future monitor-off arm is allowed. Historical off data remains diagnostic only. The final both-on short Dungeon20 arm is21.129FPS,p9587.416ms,p99120.272ms,longest drop15.186s: FAIL. No source improvement is inferred from the display series.
+
+f889bf95 full CI completes325/334FAIL. All nine failing suite names AND exact file/line anchors match bc95; the new8d boss-framework fixture failure is cleared. Source/VR/audio checks pass. No full green matrix or performance acceptance is claimed. [Display/CI evidence](STEAM_DECK_BOTH_DISPLAYS_20261022.json).
+
+No game/server remains active. Next: bounded before/after process/thread CPU and scheduler accounting around the same ordinary gameplay route, preserving both displaysON and all workload/settings. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged. Continue measured optimization and missing gameplay/multiplayer coverage.
+

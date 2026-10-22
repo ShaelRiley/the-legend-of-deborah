@@ -19,7 +19,10 @@ scenarios, thresholds, counts, graphics or resolution in response to poor result
 - Target device: SteamOS3.8.28, kernel6.18.50-valve2-1-neptune-618-gc7289a96b14d,
   Steam GMod build25375506. Installed files indicate Windows x64 under Proton
   Experimental11.0-100; confirm the actual running process before accepting it.
-- Fix display60Hz, power15W, GPU automatic, AC connected; verify these on device
+- Keep **both monitors on at all times**, as explicitly required on2026-10-22.
+  Internal1280×800@60; external1920×1080@75 restored after historical diagnostics.
+  No monitor-off result qualifies. Preserve display layout and record both states.
+- Fix internal display60Hz, power15W, GPU automatic, AC connected; verify these on device
   rather than assuming them from installation files. Record fan/temperature,
   CPU/GPU clocks/utilization, memory and network observations where accessible.
   Keep background workload identical. Initial loading and compilation get their

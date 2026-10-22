@@ -1,3 +1,11 @@
+# Current checkpoint — both displays stay on; frame budget still fails
+
+Explicit user requirement: keep BOTH monitors ON at all times and achieve40FPS in that configuration. Session idle inhibition is held; external1920×1080@75 is restored and internal1280×800@60 retained. No future monitor-off arm is allowed. Historical off data remains diagnostic only. The final both-on short Dungeon20 arm is21.129FPS,p9587.416ms,p99120.272ms,longest drop15.186s: FAIL. No source improvement is inferred from the display series.
+
+f889bf95 full CI completes325/334FAIL. All nine failing suite names AND exact file/line anchors match bc95; the new8d boss-framework fixture failure is cleared. Source/VR/audio checks pass. No full green matrix or performance acceptance is claimed. [Display/CI evidence](validation/STEAM_DECK_BOTH_DISPLAYS_20261022.json).
+
+No game/server remains active. Next: bounded before/after process/thread CPU and scheduler accounting around the same ordinary gameplay route, preserving both displaysON and all workload/settings. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged. Continue measured optimization and missing gameplay/multiplayer coverage.
+
 # Current checkpoint — dedicated finale still fails tails; integration fixture repaired
 
 A separate same-Deck dedicated Dungeon20 diagnostic averages42.003FPS, median19.822ms, p9543.540ms, p9955.264ms, max275.124ms, longest drop4.619s/four episodes>=2s: FAIL. Preserve the frozen listen-host failure at22.934FPS; this variant does not replace it. Exact source,1820clientmodels,normalWizard20/seeds/resources,one human/four slots,66HznativeAI,57roamers and allninebossactors are verified. Native ownership/support passes; one commit and zero retries. Full phases, upper floor, Hector/rescue and four actual humans remain unverified.
