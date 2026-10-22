@@ -746,3 +746,32 @@ checks pass. The selected dodge test fails at its existing177migration assertion
 reproduced on parent1335 and matching the prior325/334 matrix record; it is not a
 new failure or a green full matrix. Static receipt/logs:
 `/home/deck/deborah-recovery/evidence/nextbot-live-state-gate/`.
+
+
+The fresh installed4a6b4aa2 source comparison completed in one uninterrupted
+Deck listen-host session. New arms use the actual unmodified production binding;
+old arms reconstruct the exact68597112 base function plus the unchanged human
+Soldier wrapper from git. The finite330s guard and final restoration preserve the
+production binding. No source file changed while running.
+
+| Ordered installed-source comparison | FPS | p95 ms | p99 ms |
+| --- | ---: | ---: | ---: |
+| current1 |33.159|36.586|45.454|
+| old1 |32.907|36.806|43.103|
+| old2 |32.655|36.650|45.075|
+| current2 |33.754|36.316|43.404|
+| current3 |34.034|35.187|42.351|
+| old3 |32.963|36.809|43.670|
+
+Current mean33.649 versus old32.842FPS, +2.458%, with disjoint FPS ranges.
+Retain the focused live lookup; tail latency is not consistently improved and all
+six short diagnostics fail40FPS. Every capture confirms matching51client/111server
+fingerprints, unchanged settings, normal60roamers,1736cargo models and focus.
+A separate native check confirms61owned NextBot profiles and a temporary native
+NextBot's live identity. After0.2s its deferred removal completes; native GetTable
+returns nil and the production authority returns no stale state. The production
+validity check remains. These finite lifecycle observations and short arrival
+comparisons do not accept later gameplay or full multiplayer.
+Raw captures, reconstructed control source, exact arm conditions, restoration,
+native boundary readback and comparison.json:
+`/home/deck/deborah-benchmarks/state-lookup-source/4a6b4aa2/`.

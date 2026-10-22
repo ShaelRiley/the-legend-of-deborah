@@ -17,9 +17,13 @@ validity; Player incarnation handling and absent/inherited/API-missing fallbacks
 remain. Replacement/removal, ordinary AI and human Soldier/Hero lifecycle checks
 pass. Eight selected checks pass; the dodge migration assertion at177 reproduces
 on parent1335 and matches the prior known matrix failure. No full-green claim.
-Next: clean-install this checkpoint, observe native lifecycle behavior, compare
-installed source under equivalent listen-host conditions, retain/revert from those
-measurements, and resume heavier gameplay profiling. All six scenario gates,
+Fresh installed4a6b4aa2 native checks confirm61NextBots own the expected profile,
+the real Player matches, and deferred native removal returns no stale state. Six
+alternating30s listen-host arms measure33.649FPS current source versus32.842FPS
+old authority (+2.458%), with disjoint FPS ranges; retain the focused change.
+Tail latency is not consistently improved and every arm fails40FPS. Next: diagnose
+the previously unmeasured native Linux32 startup hang while preserving the frozen
+listen-host condition, then resume heavier gameplay profiling. All six scenario gates,
 three warmed repeats, capped play and four actual players remain unverified.
 
 # Current checkpoint — server cadence evidence; target unmet
