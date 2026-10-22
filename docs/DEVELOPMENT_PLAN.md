@@ -1,3 +1,11 @@
+# Current checkpoint — typed component candidate rejected; retained runtime restored
+
+Six matched60-second actual Deck comparisons of a76ef534 complete with fresh native installation/restoration receipts. Current37.985/37.420/37.012FPS averages37.472 versus parent35.589/37.491/35.719 averaging36.266. The positive arithmetic difference3.325% is not separated from observed variation; ranges overlap and one adjacent pair is slightly slower. Tails are inconsistent and all six fail the budget. Do not claim a gain or proven slowdown. Restore both static-box source files exactly to5889d8bf/runtime4d0a6d80; preserve candidate history and evidence.
+
+Native correctness passed1209boxes, raw SetDTVector and custom bounds/pose/angle methods, with synchronous restoration. Candidate scoped checks28/29 retain the exact existing keycard hook.Remove test-double failure. These facts do not establish performance. Raw `/home/deck/deborah-benchmarks/typed-components-source/a76ef534/`; compact receipts accompany the iteration record. Original installed-hook full acceptance was never claimed for the diagnostic clones.
+
+Next: establish the remaining normal boss/later-level baselines and inspect the measured AI/context work for a focused same-call improvement. No across-frame actor/cache shortcut or altered tick/AI cadence is authorized. Target UNMET, all six complete gates UNVERIFIED, PR7 draft, maincec10dc54. Current game was explicitly quit17:00UTC before restoration; start a fresh independently owned unit for next native work.
+
 # Current checkpoint — typed component batching candidate; native timing pending
 
 The raw bounds-notification probe proves native Vector copies and typed setter notifications, but direct SetDTVector does not notify. Cross-frame bounds caching is rejected. This narrower candidate retains every fresh bounds/pose getter and batches components only for proven native return types. Declared Vector getters are verified against their captured native GetDTVector reader; native GetPos/GetAngles method identities verify pose types. Unknown/replaced APIs retain scalar reads. Unlike rejected b04e1224, no per-value native type check is added to the hot path. No cross-frame values, selection, counts, collision or timing are cached/changed.

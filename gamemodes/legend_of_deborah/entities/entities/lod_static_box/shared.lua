@@ -4,25 +4,6 @@ ENT.PrintName = "LOD Static Box"
 ENT.Spawnable = false
 ENT.AdminOnly = false
 
-local nativeDTVector
-if CLIENT and FindMetaTable and debug and debug.getinfo and debug.getupvalue then
-    local meta = FindMetaTable("Entity")
-    local getter = meta and meta.GetDTVector
-    if getter and debug.getinfo(getter, "S").what == "C" then nativeDTVector = getter end
-end
-local function nativeVectorAccessor(getter)
-    if not nativeDTVector or type(getter) ~= "function" then return false end
-    -- NetworkVar captures its typed native reader in a private descriptor.
-    -- Unknown implementations retain scalar reads; no returned value is cached.
-    local index = 1
-    while true do
-        local name, value = debug.getupvalue(getter, index)
-        if not name then return false end
-        if type(value) == "table" and value.GetFunc == nativeDTVector then return true end
-        index = index + 1
-    end
-end
-
 local function invalidateVisualKind(ent, _, _, value)
     -- Proxies run before the native value changes. A reentrant render must not
     -- cache the old value while the corresponding update is still pending.
@@ -70,7 +51,6 @@ function ENT:SetupDataTables()
         -- closures. Borrow the live Lua table weakly, never its getter objects.
         self._LODVisualKindRecord = type(data)=="table"
             and {lua=setmetatable({data},{__mode="v"}),
-                boundsNative=nativeVectorAccessor(self.GetBoxMins) and nativeVectorAccessor(self.GetBoxMaxs),
                 boundsAccessors=setmetatable({self.GetBoxMins,self.GetBoxMaxs},{__mode="v"})} or nil
     end
 end

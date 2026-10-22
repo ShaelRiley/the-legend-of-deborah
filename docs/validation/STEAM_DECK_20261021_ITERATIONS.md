@@ -1040,3 +1040,20 @@ A30s one-in64 diagnostic records355711BindActorLife calls/5557samples, estimated
 The actual native floor probe confirms GetBoxMins returns copies and SetBoxMins notifies, while raw SetDTVector is available and does NOT fire that proxy. Original bounds are restored synchronously. A cache of bounds across frames is therefore rejected. Receipt `data/legend_of_deborah/bench_bounds_notifications.json` under the live game; copy into final candidate evidence. The exact mounted core NetworkVar source captures its typed native reader in the getter descriptor.
 
 The next candidate retains every getter on every selected pass. It batches Vector components only when the declared getter descriptor proves the native GetDTVector return type, and pose components only for exact native GetPos/GetAngles function identities. Missing/custom/replaced methods use the previous scalar path. This avoids b04e1224's added per-value type checks while preserving raw writes, in-place custom values and current cache invalidation. Existing renderer/geometry checks pass; native branch/mutation proof and equivalent Deck source timing are pending. No gain or acceptance claim.
+
+### Typed component candidate: six native comparisons, rejected
+
+Candidate a76ef534 proves native NetworkVar reader and pose method identities while retaining live getter calls. Native parity passes1209boxes, plus raw SetDTVector writes, custom bounds and Entity metatable GetPos/GetAngles overrides; original methods/bounds are restored synchronously. The first private instance-GetPos override assertion was invalid because native method dispatch ignores that instance field; it was corrected to an actual metatable provider and passed. This is a tooling assertion, not a production regression. Scoped gate28/29 matches the known parent keycard hook.Remove test-double failure; existing renderer/geometry checks and923-file syntax pass.
+
+Both comparison arms use the same reconstructed draw/paint kernels and public hook.Add, with only the snapshot function exchanged. Read-only upvalue inspection verifies bindings. Each installation has a fresh receipt, a120-second restoration lease and explicit restoration after60seconds. No restricted debug.setupvalue is used. Same warmedVM, canonical fixture reset, v5 aligned normal input, source/seeds/counts/settings and focus are verified. These short isolated diagnostic hooks do not replace full acceptance of the unmodified installed renderer.
+
+| Arm | Snapshot | FPS | Median ms | p95 ms | p99 ms | Longest below40 s |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | candidate | 37.985 | 23.842 | 41.883 | 83.676 | 2.411 |
+| 2 | parent | 35.589 | 26.996 | 39.132 | 60.830 | 6.144 |
+| 3 | parent | 37.491 | 24.461 | 39.684 | 81.119 | 4.584 |
+| 4 | candidate | 37.420 | 25.500 | 36.524 | 64.329 | 3.502 |
+| 5 | candidate | 37.012 | 25.965 | 38.437 | 73.954 | 3.018 |
+| 6 | parent | 35.719 | 26.135 | 40.843 | 75.320 | 4.540 |
+
+Candidate mean37.472FPS versus parent36.266 (+3.325% arithmetic), but observed ranges overlap and the middle adjacent pair is slightly slower. Tails do not improve consistently and all arms fail. There is no demonstrated repeatable gain, so both changed runtime files are restored exactly to5889d8bf/runtime4d0a6d80 after quitting GMod. No proven slowdown is asserted. Compact records: [comparison JSON](STEAM_DECK_TYPED_COMPONENTS_20261022.json). Raw captures, exact private hook/script copies, installation and restoration proofs remain under `/home/deck/deborah-benchmarks/typed-components-source/a76ef534/`. Target and every full scenario remain unmet/unverified; no main promotion.
