@@ -958,3 +958,28 @@ reduction is prepared. Files are in `frozen-scenarios/d10-normal-13/`,
 The exact operational resume instructions are in
 `/home/deck/deborah-recovery/RESUME.md`. All six scenario gates remain unverified;
 canonical main is not promoted as completed40FPS work.
+
+
+### October22: native Dungeon10 gameplay, coverage and current baseline
+
+After an overnight OS reboot, a persistent user service runs the actual Windows64/Proton10 game independently of tool sessions. A180s capture completed; the earlier unexplained exits remain historical, not a current access blocker. No media session survived reboot. For matched conditions external DP1 was changed from75 to60Hz; restore75 after benchmarks. Internal1280x800@60,15W/autoGPU/AC remain fixed. Actual runtime remains SteamOS3.8.28/Jupiter LCD512GB/GMod2026.09.17/build25375506/public/P10.0-4b/sniper/LuaJIT2.1.
+
+Fresh canonical Dungeon1 class/feat/starter/deploy followed by normal Dungeon10 XP/feat/starter/deploy produces Wizard13,HP164/164,AR2clip20, exactly3 canonical equipment items. No direct HP/Magic/ammo or timer override. Campaign654759232/level1217158872/layout306806046;36roamers,18planned groups,59planned bodies,1348native cargo models. Native Navigator output initially matched the prepared89point route exactly. Return-path cycles extend ordinary movement beyond180s (303waypoints), frozen before first combat input. The old six-item/Magnum fixture contains unexplained extra equipment; its normal-resource provenance is UNVERIFIED. Do not compare across those fixtures as a source gain or restore those extras.
+
+| Installed label/runtime | Measurement | Avg FPS | Median ms | p95 ms | p99 ms | Max ms | 1% low FPS | Time below40 s | Longest drop s | >=2s episodes |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|282451f5/4d0a6d80|30s stationary arrival diagnostic|56.004|17.088|21.837|27.759|62.572|27.309|0.911|0.124|0|
+|same|180s initial normal-input combat, coverage FAILED|42.899|21.841|31.420|50.403|139.567|14.105|49.367|2.721|4|
+|same|30s corrected-route gameplay diagnostic|40.120|23.584|33.413|68.715|176.489|11.794|14.159|2.782|1|
+|same|60s corrected-route gameplay baseline|39.251|24.349|34.561|53.708|95.298|14.045|32.293|1.957|0|
+|same|60s separate full profile, instrumentation overhead included|33.502|26.724|53.553|86.708|200.887|8.983|43.356|4.404|6|
+
+These are different diagnostic conditions, not a before/after source comparison. All gameplay runs fail timing thresholds. Hardware was under normal load for at least10min before the initial180s capture. The first180s playback hit an authored thin stair guard at waypoint60 after65s and then stalled; it also fails scenario coverage. Actual PlayerHull trace identifies lod_static_box kind3. Private playback replaces six upper-stair cell centers across the three cycles with existing Navigator-authored upper landings. Two actual hull sweeps are clear; ordinary input traverses the local guard/landing/corridor in2.612s with HP164. Production collision and AI are unchanged. No performance improvement is attributed to this route preparation. Later playback stalls at waypoint90, so complete physical coverage remains unverified; the first60s supports short iteration only.
+
+The full profile reports inclusive, overlapping client costs of349.395ms/s PreRender-to-PostRender,70.987ms/s generated geometry,35.319ms/s combat feed,25.927ms/s branding and14.300ms/s status portrait. Server entry safety is45.477ms/s/160673calls, close defense24.169ms/s/79829calls. Profile overhead is material and its FPS is not acceptance. Further bounded detail is required before a focused optimization. A mid-profile hardware observation is66C/APU9.061W with15W caps; one sysfs GPU-busy sample is0%, insufficient alone to attribute the bottleneck. The native process loads RADV/Vulkan and the Proton d3d9 DLL; no software-rendering claim is made.
+
+A desktop Spectacle capture selected the external wallpaper and is unusable for scene evidence. An engine JPEG includes the open console and an unexpected stock “Menu Failed” dialog; clean scene visibility and menu-runtime status require investigation. Zero tracked client/server Lua errors does not certify the separate menu realm.
+
+Raw captures: `/home/deck/deborah-benchmarks/dungeon10-diagnostic/282451f5/session1/` and `session2/`. Normal fixture/playback freeze: `/home/deck/deborah-benchmarks/frozen-scenarios/d10-normal-13-verified-20261022/`. Guard traces/walk receipt: `session1/landing-correction/`. Private finite controller: `/home/deck/deborah-recovery/run-dense-arm.py`; its source snapshots accompany captures. ACKtrue only proves dispatch: actual receipts and assertions are separately checked.
+
+No production runtime source changes follow4d0a6d80. Target UNMET, all six complete scenarios UNVERIFIED; PR7 stays draft, main remainscec10dc54. Next: isolate the measured heavy cost, focused source change/regressions and equivalent uninstrumented repeats. Preserve complete routes/content/normal AI, then complete the frozen triplicates/capped checks and actual four-player coverage before final integration.

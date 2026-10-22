@@ -1,30 +1,14 @@
-# Current checkpoint — device-state answer needed; 40FPS target unmet
+# Current checkpoint — actual Dungeon10 gameplay misses frame budget
 
-Retained source4d0a6d80 rejects missing close-defense targets before redundant
-permission/geometry work. Six actual Deck installed-source/control arms confirm
-33.979versus33.310FPS mean (+2.007%), disjoint ranges. Seven scoped checks and
-native nil/NULL/Player dispatch checks pass. All captures still fail40FPS. Latest
-ea19fbeb full matrix325/334 has the exact same nine failures as parent1335/cec10;
-source, VR and audio CI pass. No green full-matrix or whole-game acceptance claim.
+The Deck rebooted overnight. A persistent user service now keeps the Windows64/Proton10 game alive across tool calls; native captures work. The older unexplained closures are historical evidence, not a current access blocker. No media session survived reboot. External DP1 is temporarily60Hz for matched measurements and must return to75Hz afterward.
 
-Dungeon10 normal-resource Wizard13 checkpoint is archived (HP164/164, Magnumclip6,
-36roamers/18groups/1348models, fixed seeds). Its first30s capture was interrupted
-when all Steam/GMod processes disappeared with Steam assertion dumps. After Steam
-restart, a new exact-source game quit orderly atCurTime6.36 before any task command.
-Cause unverified. User question asks whether these closures were external or
-spontaneous; do not repeatedly relaunch/refocus before that answer. No game runs;
-YouTube playback is currently Playing and no paused-video restoration remains.
+Installed282451f5 has runtime source4d0a6d80. Fresh normal Dungeon10 is Wizard13/HP164/164/AR2clip20 with exactly3 canonical equipment items, campaign654759232/level1217158872/layout306806046,36roamers/18planned groups/59planned bodies/1348native models. The earlier six-item/Magnum checkpoint has unexplained equipment provenance; its normal-resource claim is unverified. Do not grant those extra weapons.
 
-Unaffected preparation is saved: Dungeon10's89waypoints/two stairs, partial Dungeon1
-key/gate/Neil routes and syntax-only normal Dungeon14/20 setup scripts. These are
-not native-validated or accepted. Resume instructions and durable checkpoint:
-`/home/deck/deborah-recovery/RESUME.md` and `CHECKPOINT.json`.
-When the Deck is available, reproduce/verify the archived normal fixture, compare
-native Navigator output with the prepared route, then profile actual heavy gameplay.
-If it closes by itself, diagnose that reproducibly first. Preserve frozen hosting,
-graphics/counts, three warmed180s repeats, capped control verification and four
-actual players. All six full scenario gates remain unverified; no main promotion
-as completed40FPS work. Source iteration record supplies the current evidence.
+The first warmed180s gameplay capture averaged42.899FPS but failed p9531.420ms, p9950.403ms, longest slow episode2.721s/four episodes>=2s. Coverage also failed: the NPC-derived route hit an authored stair guard at waypoint60 after65s. Private playback now uses the existing Navigator upper landings at six points; actual normal input clears that guard in2.612s and hull sweeps are clear. No production collision/AI/source change or source gain is attributed to this preparation fix. Later playback stalls at waypoint90, so full route coverage remains incomplete.
+
+The first60s corrected-route unprofiled baseline is39.251FPS, p9534.561ms/p9953.708ms, longest below40 1.957s: FAIL. Separate full profiling costs material FPS (33.502) and identifies generated geometry, combat-feed drawing and repeated entry-safety checks; those inclusive rows overlap and are not acceptance timing. Next: use a bounded detailed profile to isolate a focused canonical improvement, regression-check it, then compare equivalent uninstrumented source builds. Raw records: `/home/deck/deborah-benchmarks/dungeon10-diagnostic/282451f5/`; resumable private state: `/home/deck/deborah-recovery/CHECKPOINT.json` and `RESUME.md`.
+
+The last retained optimization4d0a6d80 remains validated only for its matched arrival gain (+2.007%,33.979vs33.310FPS). Seven scoped checks/native dispatch pass; full matrix325/334 has nine exact baseline failures. All six complete scenarios, three warmed180s repeats each, separate40cap verification and four actual players remain UNVERIFIED. Target UNMET; keep PR7 draft and do not promote to main as completed40FPS work.
 
 # Previous checkpoint — missing-target admission candidate; target unmet
 
