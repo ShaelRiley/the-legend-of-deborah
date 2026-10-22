@@ -1,0 +1,58 @@
+{
+  "status": "Sourcecandidate static gatesPASS; installednativequery/freshsourceFPS PENDING; targetUNMET/sixfullgatesUNVERIFIED",
+  "parent": "afff7087a7e814c2014775c613686110df36e461",
+  "device": "ActualLCDDeck/SteamOS3.8.28/Windows64Gmod25375506/Proton10.0-4b;1280x800internal60/external1080p75,BOTHONALWAYS;15WACautoGPU",
+  "observed_bottleneck": "EarlierCPUboundarymeasurementmain96.17%onecore; broadsharedqueryprofilepointsatRunManager.IsActivePlayer. Nativecounterconfirms3IdentityOf+1GetPlayerState percurrentdeployedquery.",
+  "prototype": {
+    "unguarded_raw": "/home/deck/deborah-benchmarks/player-query-cost/afff7087/native-query-probe-run1",
+    "unguarded_ms_per100k": {
+      "parent": [
+        150.8564,
+        148.6555,
+        149.3116
+      ],
+      "prototype": [
+        46.7724,
+        46.9517,
+        47.6382
+      ]
+    },
+    "guarded_raw": "/home/deck/deborah-benchmarks/player-query-cost/afff7087/native-guarded-probe-run1",
+    "guarded_ms_per100k": {
+      "parent": [
+        188.8515,
+        189.4386,
+        192.2192
+      ],
+      "prototype": [
+        78.7492,
+        80.5365,
+        79.4101
+      ]
+    },
+    "assertions_each": 1006,
+    "restored": true,
+    "scope": "PrivateprototypeONLYcurrentnormaldeployedHero pluscustomIdentity/GetPlayerState fallback. No wholeFPSgain or finalacceptance."
+  },
+  "change": "Within one IsActivePlayer call resolve live identity/slot/deployment once ONLY originalcapturedproviders/nativePlayerAPIs/ordinarytables. Capturedfunctionidentitymetadata only; no persisted playeridentity/state/profile cache. All customproviders/validity/SteamID/index/metatable/registry changes retain original callback path/order/results. Staging.IsDeployed and role rules unchanged.",
+  "gdd": {
+    "id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "tab": "06 \u2014 MULTIPLAYER, LIFECYCLE & UI",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "preserved": "4Hero+6Soldieractivecap;actual20srespawn;currentrole/life/deployment/identity/state/owner/sync;no GDD edits/tuning"
+  },
+  "regressions": [
+    "productionquery17cases78assertionsPASS; existingSharedEnemyAIWorkgateincludescontract",
+    "devIngressPASS",
+    "DungeonTransitioninventoryPASS",
+    "DamselStagingPASS",
+    "SoldierQueue196PASS",
+    "TimeManagementPASS",
+    "StagingEventSpawn/SQLitePASS",
+    "CryptoRuntime/SQLitePASS",
+    "syntax/diffPASS"
+  ],
+  "sourcewatch": "Same119total/115server/52client;bothchangedauthoritiesalreadywatched",
+  "next": "Installedoriginalsource nativepath/counter/transition proof then freshoriginal-source matchedD20andD10gameplay; retain/rejectfromevidence, do notclaimmicrotimingasFPS.",
+  "updated_utc": "2026-10-22T22:16:48.688757+00:00"
+}

@@ -146,3 +146,7 @@ end
 if tracePath then local f=assert(io.open(tracePath,'w'));f:write(table.concat(trace,'\n'));f:close() end
 print(string.format('ENEMY_AI_WORK_PASS close_lua_field_reads=%d status_queries=%d ticks=3600 admission_decisions=%d cell_queries=%d position_queries=%d trace_rows=%d; callback/expiry/primary/fresh-position/lifecycle parity; not native FPS',
     closeReads,statusCalls,decisions,cellQueries,positionQueries,#trace))
+
+-- Keep the current native-shaped player/deployment query contract in this
+-- existing shared-AI integration gate; trace/probe modes retain their old scope.
+if not probe and not tracePath then dofile("tools/test_player_active_query.lua") end

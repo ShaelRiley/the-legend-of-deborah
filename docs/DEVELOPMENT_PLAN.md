@@ -1,3 +1,11 @@
+# Current checkpoint — per-call active-player query candidate; native source timing pending
+
+Both monitors stay ON at all times, external1080p75/internal1280×800@60. The native deployed-Hero probe confirms3identity lookups/1profile query per IsActivePlayer call. Private within-call prototype100kqueries150→47ms; guardedprototype189–192→79–81ms in a separate process. Both pass1006checks andrestoreproviders; this is microevidence only, not gameplayFPS or wholeacceptance.
+
+Candidate shares only original function identities from RunManager, then reads current identity/slot/profile/deployment once per call. It caches no identity, PlayerState or eligibility across calls. Custom provider/validity/nativeAPI/tablemetatable/registry changes retain the existing path, order and results. Staging.IsDeployed and role/life/progression rules remain. LiveGDD06 revision is unchanged;4Hero+6Soldiercap and20srespawn remain. No tuning/GDD edits.
+
+The production-query contract passes17cases/78assertions including removal/reconnect, same-seed state/map replacement, staging, roles, bots, mutable-registry tampering, custom callbacks and native/globalvalidity. Existing SharedEnemyAIWork includes this gate. Deployment, inventory transition, Damsel staging,196Soldierqueue assertions, TimeManagement, stagingevent/SQLite, Crypto/SQLite and syntax/diff gates pass. Next: fresh installed-source nativepath/transition/counter proof, then matched original-source gameplay comparisons. [Evidence](validation/STEAM_DECK_PLAYER_QUERY_20261022.json). TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged. Prior animation candidate remains rejected.
+
 # Current checkpoint — animation candidate rejected; shared fixture repaired
 
 Keep BOTH displays ON always: internal1280×800@60/external1080p75; session blanking inhibition remains held. Six original-source attempts preserve the frozen P,C,C,P,P,C order. Valid controls21.247/22.322/21.942FPS average21.837; valid candidates21.113/21.352 average21.232. Ranges overlap, tails are inconsistent and every run fails. Candidate03 dies ordinarily at47.315s/node157 and has only47.275active seconds; retain it as failed/incomplete with no replacement. This is three valid controls/two valid candidates/one failure, not three complete pairs. No statistically established slowdown is claimed.

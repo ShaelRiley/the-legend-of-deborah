@@ -288,6 +288,15 @@ function RunManager:IsActivePlayer(ply)
     return id and self.State.ActiveIdentity[id] == true
 end
 
+-- Function identities only: staging can combine the original read-only queries
+-- inside one call. Replaced providers retain their ordinary dispatch/callbacks.
+RunManager.PlayerQueryDefaults = {
+    IsValid = IsValid,
+    IdentityOf = RunManager.IdentityOf,
+    GetPlayerState = RunManager.GetPlayerState,
+    IsSlotActivePlayer = RunManager.IsActivePlayer
+}
+
 function RunManager:_FindLivingSpectateTarget(ply)
     for _, candidate in ipairs(player.GetAll()) do
         if candidate ~= ply and self:IsActivePlayer(candidate) and candidate:Alive() then return candidate end
