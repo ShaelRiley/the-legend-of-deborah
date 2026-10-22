@@ -1117,4 +1117,3 @@ Current runtime b19bccfb (label 0070179c changes tests/docs only) completes the 
 Model-preload framework76cases and companion118assertions pass. Source-watch and population transport pass after updating their manifest expectation to112server/116total sources. Bootstrap recovers its skeleton timeout in isolation; known quiz164/dodge177 failures remain. No full green matrix is claimed. Native bounds proof and ordinary incoming damage are observed; V1 coverage correction below remains binding.
 
 Next: measure a separate same-Deck dedicated configuration with identical normal AI cadence and source, while retaining the frozen listen-host acceptance. Continue later-level/full-phase preparation. Target UNMET; all six complete gates UNVERIFIED; PR7 remains draft and canonical maincec10dc54 is unchanged. Four actual players remain missing. ExternalDP1 must return to75Hz after benchmarks. [Compact measurements](validation/STEAM_DECK_BOSS_PRECACHE_20261022.json).
-

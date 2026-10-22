@@ -1949,5 +1949,14 @@
       "duration": 180.04110717773438,
       "node": 198
     }
+  },
+  "ci": {
+    "head": "0070179cf0e30305ea886816c88137ed474001bd",
+    "matrix": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39830523555",
+    "passed": 325,
+    "total": 334,
+    "status": "failure; nine exact known parent suite/anchor signatures",
+    "raw_failed_log": "/home/deck/deborah-recovery/evidence/0070179c-full-matrix-failures.log",
+    "source_vr_audio": "success"
   }
 }
