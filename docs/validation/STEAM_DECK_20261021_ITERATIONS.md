@@ -864,3 +864,54 @@ Receipt: `/home/deck/deborah-recovery/evidence/close-target-gate/receipt.json`.
 Live GDD00→01→03 B7/status rules retain canonical combat, exact lives, fixed warning,
 interruption, defenses and multiplayer authority. Fresh installed-source/control
 Deck comparison is the next gate; target remains unmet.
+
+
+Fresh installed4d0a6d80 source comparison completed all six30s arms. The candidate
+is the actual unmodified production function; controls reconstruct the exact old
+8a012398 function with the same local copy/flat helpers. No source files changed
+while the game ran. A330s guard and final restoration bound the substitutions.
+
+| Ordered arm | FPS | p95 ms | p99 ms |
+| --- | ---: | ---: | ---: |
+| candidate-1 | 33.734 | 35.883 | 42.227 |
+| control-1 | 33.152 | 36.370 | 47.079 |
+| control-2 | 33.327 | 36.260 | 43.682 |
+| candidate-2 | 33.972 | 35.118 | 46.245 |
+| candidate-3 | 34.230 | 35.243 | 44.438 |
+| control-3 | 33.452 | 36.724 | 44.218 |
+
+Current mean33.979 versus old33.310FPS (+2.007%); FPS ranges are disjoint. Retain
+the focused early-invalid-target check. All captures fail40FPS; tail latency is
+not consistently improved. All retain51client/111server source matches, normal
+60roamers/1736cargo models, unchanged graphics/focus, zero Lua errors and idle VR.
+Native NextBot sanity confirms nil/NULL perform zero repeated actor checks; a
+valid distant Player still performs the existing permission check and cannot
+commit an out-of-range strike. Raw captures, source reconstruction, restoration,
+comparison, fingerprints and native sanity:
+`/home/deck/deborah-benchmarks/close-target-source/4d0a6d80/`.
+
+A separate actual readback found net_graph1 in this fresh process, rather than an
+assumed screenshot-derived value3. A four-arm console/readback comparison gives
+net_graph1:34.100/34.534FPS; net_graph0:34.332/34.244FPS. Mean34.288vs34.317
+(−0.086%), overlapping ranges: no useful gain established. Original1 restored.
+No frozen setting change is adopted. Source comparisons retain identical native
+settings within each comparison; do not infer historical net_graph values from
+this fresh readback. Raw:
+`/home/deck/deborah-benchmarks/network-overlay-overhead/4d0a6d80/`.
+
+Dungeon10 preparation uses the existing admin dungeon command, canonical XP13
+threshold, first legal offered feat at each ordinary slot, ordinary starter and
+normal deployment. No direct HP/Magic/ammo grants: Wizard13 has164/164HP and a
+normal Magnum/clip6. Campaign654759232, levelSeed1217158872, layout306806046;
+normal generation selects36roamers,59planned bodies/18groups and1348cargo models.
+These differ legitimately from Dungeon1 and cannot be presented as an isolated
+source gain. Exact initial profile/equipment/choices, graph/actor/encounter snapshot
+and preparation scripts are preserved before further optimization under
+`/home/deck/deborah-benchmarks/frozen-scenarios/d10-normal-13/`.
+The first arrival30s capture was interrupted before saving: all Steam/GMod/Wine
+processes disappeared around03:38:42UTC and Steam assertion dumps were written.
+No completed capture or FPS is accepted; cause is unverified. The inspected kernel
+interval has no OOM/GPU reset. Logs, queued-command preservation and failure record:
+`/home/deck/deborah-benchmarks/dungeon10-diagnostic/4d0a6d80/interrupted-arrival/`.
+Restart Steam, reproduce the normal fixture, finish/freeze physical combat inputs,
+then profile heavier gameplay. All six complete scenario gates remain unverified.

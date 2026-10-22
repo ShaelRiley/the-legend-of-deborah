@@ -1,4 +1,24 @@
-# Current checkpoint — missing-target admission candidate; target unmet
+# Current checkpoint — retain missing-target admission; recover Dungeon10 capture
+
+Fresh six-arm installed4d0a6d80/control comparison confirms33.979versus33.310FPS
+mean (+2.007%), disjoint FPS ranges; retain the focused invalid-target admission
+return. Seven scoped checks and actual nil/NULL/valid-Player dispatch checks pass.
+All51client/111server fingerprints,60roamers1736models,zeroerrorsandidleVR match.
+Every diagnostic still fails40FPS; all six complete acceptance scenarios remain
+unverified. A separate net_graph1/0 comparison shows no useful gain; original1
+restored. Do not infer historical overlay settings from the fresh readback.
+
+Dungeon10 normal-resource checkpoint is prepared and archived: Wizard13,HP164/164,
+normal Magnumclip6,36ordinaryroamers/18plannedgroups/1348cargo models, fixed seeds,
+legal offered feats and normal deployment. No direct resource grant or boss testkit.
+The first30s arrival capture was interrupted before saving; all Steam/GMod/Wine
+processes disappeared while Steam assertion dumps were written. Cause unverified;
+failed evidence preserved. Steam restart is in progress. Next: recover login/runtime,
+reproduce the fixture, finish/freeze its physical combat input route, and measure
+heavy gameplay before further optimization. Preserve frozen listen-host workload,
+three warmed180s repeats, capped verification and four actual-player requirements.
+
+# Previous checkpoint — missing-target admission candidate; target unmet
 
 Fresh uninstrumented8a012398 arrival is32.431FPS, p9537.459ms/p9944.027ms;
 the separate full profile is29.172FPS and materially perturbs performance. A finite
