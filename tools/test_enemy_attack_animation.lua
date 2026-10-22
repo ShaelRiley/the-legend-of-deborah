@@ -54,7 +54,7 @@ assert(not cls._MeleeAttack(h,p) and p.damage==5,'animation repair bypassed cool
 print('ENEMY_ATTACK_ANIMATION_PASS named stock melee/ranged, activity-idle rejection, bounded caches/model swaps, safe device pose, actual native melee request')
 
 -- Native NextBots expose their owned Lua table separately from entity indexing.
--- Exercise the production fast path and its inherited/missing-table fallbacks.
+-- Keep value/invalidation coverage after rejecting the native-table fast path.
 local originalType,originalFindMetaTable=type,FindMetaTable
 local nativeTables=setmetatable({},{__mode="k"})
 local signatureReads=0
@@ -70,7 +70,7 @@ FindMetaTable=function(name) if name=='Entity' then return {GetTable=function(ac
 dofile(root..'sv_hostile_animation.lua')
 assert(A:Resolve(proxy,ACT_WALK)==3,'native cache did not populate')
 signatureReads=0
-assert(A:Resolve(proxy,ACT_WALK)==3 and signatureReads==0,'owned cache hit repeated native signature field queries')
+assert(A:Resolve(proxy,ACT_WALK)==3,'owned animation cache changed its sequence')
 native.LODAnimationCache[ACT_WALK]=false
 assert(A:Resolve(proxy,ACT_WALK)==nil,'cached unsupported animation was retried')
 native.LODAnimationCache={[ACT_WALK]=2}
@@ -88,8 +88,8 @@ native.LODFallenHero={weaponClass='weapon_pistol'};A:Resolve(proxy,ACT_IDLE)
 assert(native.LODAnimationHold=='_PISTOL','live copied weapon hold was missed')
 native.LODSkeletonHero=nil;native.model='native inherited fallback';A:Resolve(proxy,ACT_WALK)
 native.LODAnimationCache[ACT_WALK]=2;nativeTables[proxy]={};signatureReads=0
-assert(A:Resolve(proxy,ACT_WALK)==2 and signatureReads>0,'inherited cache did not retain original entity lookup')
+assert(A:Resolve(proxy,ACT_WALK)==2 ,'inherited cache did not retain original entity lookup')
 nativeTables[proxy]=nil
 assert(A:Resolve(proxy,ACT_WALK)==2,'missing native table did not retain original resolver')
 _G.type,FindMetaTable=originalType,originalFindMetaTable
-print('ANIMATION_INSTANCE_CACHE_PASS owned hit, false/replaced cache, model/razor/skeleton/copied hold, inherited/missing fallback')
+print('ANIMATION_CACHE_INVALIDATION_PASS owned hit, false/replaced cache, model/razor/skeleton/copied hold, inherited/missing fallback')

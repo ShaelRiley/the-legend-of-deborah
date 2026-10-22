@@ -1,8 +1,6 @@
 -- One model-aware activity resolver for every hostile, including retreat.
 LOD.HostileAnimation = LOD.HostileAnimation or {}
 local A = LOD.HostileAnimation
-local entityMeta = FindMetaTable and FindMetaTable("Entity")
-local nativeEntityTable = entityMeta and entityMeta.GetTable
 local rejected = {reference=true, ragdoll=true, bindpose=true, bind_pose=true, tpose=true, t_pose=true}
 local weaponHolds = {
     weapon_crowbar="_MELEE", weapon_lod_crowbar="_MELEE", weapon_lod_wand="_MAGIC",
@@ -31,17 +29,6 @@ function A:Resolve(e, activity)
     local model=e:GetModel()
     local razor=e.LODArchetypeId=="razor" and model=="models/manhack.mdl"
     local hold=self:PlayerHold(e,model)
-    -- Borrow the current instance table only for an already-owned cache hit.
-    -- Model/razor/hold remain fresh, and missing/inherited cache fields retain
-    -- the original resolver below. Never retain an actor table across calls.
-    if nativeEntityTable and type(e)=="NextBot" then
-        local fields=nativeEntityTable(e)
-        local cache=fields and fields.LODAnimationCache
-        if cache and fields.LODAnimationModel==model and fields.LODAnimationRazor==razor
-            and fields.LODAnimationHold==hold and cache[activity]~=nil then
-            return cache[activity] or nil
-        end
-    end
     if e.LODAnimationModel~=model or e.LODAnimationRazor~=razor or e.LODAnimationHold~=hold then
         e.LODAnimationModel=model;e.LODAnimationRazor=razor;e.LODAnimationHold=hold;e.LODAnimationCache={}
     end

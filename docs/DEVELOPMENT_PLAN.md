@@ -1,3 +1,13 @@
+# Current checkpoint — animation candidate rejected; shared fixture repaired
+
+Keep BOTH displays ON always: internal1280×800@60/external1080p75; session blanking inhibition remains held. Six original-source attempts preserve the frozen P,C,C,P,P,C order. Valid controls21.247/22.322/21.942FPS average21.837; valid candidates21.113/21.352 average21.232. Ranges overlap, tails are inconsistent and every run fails. Candidate03 dies ordinarily at47.315s/node157 and has only47.275active seconds; retain it as failed/incomplete with no replacement. This is three valid controls/two valid candidates/one failure, not three complete pairs. No statistically established slowdown is claimed.
+
+The installed native resolver microprobe passes5763checks across57realactors and reduces114000queries from183.576–184.547ms to96.994–99.490ms with equal results and restored cache fields. That narrow cost reduction does not supply a whole-game FPS gain. Reject the candidate and restore sv_hostile_animation.lua exactly to62d587cb. Retain behavior-only cache invalidation tests and source coverage119total/115server/52client. The five completed FPS runs verify actual function/filehashes, normal resources/1820models andbothON. Console ticks>=60s andmanualhookstop corroborate physical input; manual stop produces no structured end receipt. Fullphases remainunverified.
+
+eb1 fullCI is318/334FAIL: seven NEW sharedB28fixture count failures plus nine known parent failures. Repair the fixture to115 and explicitly require the animation source; keep all gameplay assertions. All seven affected gates pass locally, plus animation/skeleton/manifest/transport/syntax/diff checks. NewCI pending; no fullgreen claim. [Complete decision and raw paths](validation/STEAM_DECK_ANIMATION_CACHE_20261022.json).
+
+All owned game processes are stopped. Next: finite native measurement of repeated per-call player/deployment queries; no persistent identity/state cache or skipped callback checks. TargetUNMET; allsixfullacceptancegatesUNVERIFIED; PR7draft/maincec10 unchanged. Continue required ordinary gameplay/fullphase/fourhuman coverage.
+
 # Current checkpoint — animation cache candidate; native timing pending
 
 Both displays remain ON at all times, external1080p75/internal1280×800@60. The normal60s Deck D20 route is22.329FPS,p9577.102ms,p99116.449ms,longest drop25.236s: FAIL. Boundary counters show the main task96.17%ofonecore and0.420srunqueuewait in64.917s; gameGPUgraphicsengine6.28%busy. This points to main-thread CPU work without changing monitor power or graphics.
