@@ -1,0 +1,17 @@
+{
+  "recorded_utc": "2026-10-22T19:30:49.117317+00:00",
+  "state": "source candidate; no FPS improvement claimed; target UNMET",
+  "parent": "32d82a82b542eef5365fc62c4d0f7a2ec982d2d3",
+  "profile": "/home/deck/deborah-benchmarks/brain-phase-profile/c11c3567/normal-d10-60-run1/bench_brain_phase.json",
+  "profile_scope": "one-in64 inclusive estimates;103bindings restored; MoveToward67.431ms/s,BeforeAI53.293ms/s,EnemyRosterTick56.685ms/s; scopes overlap, instrumentedFPS34.973 not acceptance",
+  "hypothesis": "Reuse only call-owned temporary native vectors inside MoveToward, keep exact native float operation order, all speed/dt/waypoint/trace/status/animation/ownership paths. No shared scratch vectors or across-frame caching. Preserve old arithmetic fallback if in-place APIs absent.",
+  "native_math": {
+    "scope": "native Vector math correctness only; not a gameplay FPS benchmark",
+    "cases": 12000,
+    "mismatches": 0,
+    "alias_errors": 0
+  },
+  "native_scope": "Windows64/P10 actualDeck native Vector components,12000ground/stair/facing/velocity/travel cases; math-only proof, not gameplayFPS",
+  "static": "B7 andproduction/B29dispatch/magicwall/entrysafety/bossframework/companions/physical all PASS; native-shaped mutable branch/input/velocityownership gate passes and exactparent fails that new gate; syntax/diff PASS",
+  "next": "Fresh original-source candidate and exactparent worktree alternating60s native Deck runs, preserving all3existing Motion wrappers; retain/revert based actual measurements."
+}

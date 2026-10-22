@@ -29,6 +29,11 @@ local FLOOR_LIFT = 2
 local MAX_STEP_DT = 0.050
 local CELL_INTERIOR_MARGIN = (LOD.Config.Geometry.ContainerWidth or 128)*.5 + 24
 local MIN_FACE_DELTA_SQR = 0.25
+local vectorDivide = vector_origin and vector_origin.Div
+local vectorMultiply = vector_origin and vector_origin.Mul
+local vectorAdd = vector_origin and vector_origin.Add
+local mutableVectors = type(vectorDivide) == "function" and type(vectorMultiply) == "function"
+    and type(vectorAdd) == "function"
 
 Motion.Version = 2
 Motion.FloorLift = FLOOR_LIFT
@@ -244,8 +249,18 @@ function Motion:MoveToward(hostile, waypoint)
     local dexMultiplier = rules and rules.HostileDexMovementMultiplier and rules:HostileDexMovementMultiplier(hostile) or 1
     local speed = math.max(1, (cfg.speed or 90) * statusMultiplier * rogueMultiplier * dexMultiplier)
     local step = math.min(distance, speed * dt)
-    local direction = delta / distance
-    local nextPos = pos + direction * step
+    local direction, nextPos
+    if mutableVectors then
+        -- Only this call owns delta. Retain native float operations and their
+        -- order while avoiding throwaway direction and translated vectors.
+        vectorDivide(delta, distance)
+        direction = delta
+        nextPos = direction * step
+        vectorAdd(nextPos, pos)
+    else
+        direction = delta / distance
+        nextPos = pos + direction * step
+    end
 
     if not waypoint.stair then nextPos.z = goal.z end
 
@@ -272,15 +287,28 @@ function Motion:MoveToward(hostile, waypoint)
         self:Stop(hostile);return false
     end
     hostile:SetPos(nextPos)
-    self:FaceToward(hostile, nextPos + direction * 32)
+    if mutableVectors then
+        vectorMultiply(direction, 32)
+        vectorAdd(direction, nextPos)
+        self:FaceToward(hostile, direction)
+    else
+        self:FaceToward(hostile, nextPos + direction * 32)
+    end
 
     local moved = nextPos - pos
-    hostile.LODMotionVelocity = dt > 0 and (moved / dt) or vector_origin
-    hostile.LODMotionSpeed = dt > 0 and (moved:Length2D() / dt) or 0
+    local travelled = moved:Length()
+    local movementSpeed = dt > 0 and (moved:Length2D() / dt) or 0
+    if mutableVectors and dt > 0 then
+        vectorDivide(moved, dt)
+        hostile.LODMotionVelocity = moved
+    else
+        hostile.LODMotionVelocity = dt > 0 and (moved / dt) or vector_origin
+    end
+    hostile.LODMotionSpeed = movementSpeed
     hostile.LODMotionMode = wallBlocked and "magic-wall" or waypoint.stair and "stair" or "ground"
     hostile.LODMotionLastPos = nextPos
-    hostile.LODMotionTravel = (hostile.LODMotionTravel or 0) + moved:Length()
-    advanceStrideVariance(hostile, moved:Length())
+    hostile.LODMotionTravel = (hostile.LODMotionTravel or 0) + travelled
+    advanceStrideVariance(hostile, travelled)
     if statusElements then statusElements:ObserveCell(hostile) end
     return not wallBlocked and step >= distance - 0.05
 end
