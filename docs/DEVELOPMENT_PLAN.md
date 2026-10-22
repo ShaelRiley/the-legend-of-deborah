@@ -1,10 +1,8 @@
-# Current checkpoint — native component-read candidate; Deck timing pending
+# Current checkpoint — component candidate reverted; next movement profile
 
-The heavy Dungeon10 profile attributes65.318ms/s to generated geometry, but only4.809ms/s to slab calls and3.285ms/s to full-box calls. The candidate reads each live native Vector/Angle through its native Unpack API, retaining the scalar fallback for custom values/missing APIs. Native C methods and component order were observed on the actual Deck. No membership, culling, pose lifetime, collision, counts or visuals change. Existing renderer mutations/nested views/lifetime checks also execute through the simulated native API path. Native source FPS comparison is next; no gain is claimed yet.
+Candidate b04e1224 passes scoped static checks but its first actual60s corrected Dungeon10 source capture is38.458FPS/p9534.995/p9964.834, with a3.460s slow episode. The prior unmodified baseline is39.251/p9534.561/p9953.708; this supplies no useful gain and does not establish a statistical slowdown. Retain no added complexity without evidence: restore the exact parent renderer/test source. The attempted parent-function control stopped before capture because GMod exposes no debug.setupvalue; no restriction was bypassed and no parent FPS was fabricated. Failed setup and native scalar parity on968actual boxes remain archived.
 
-A private opaque combat-feed render-target cache preserved sample text (bright-background maximum5channel levels of rounding, fade sample identical) but its first60s gameplay run is38.513FPS/p9535.754/p9969.856, compared with39.251/p9534.561/p9953.708 baseline. It does not pass the initial performance gate and was restored (25219hits/313builds/821fallbacks in193.75s); no production HUD cache is adopted. Raw `/home/deck/deborah-benchmarks/hud-cache-probe/`.
-
-Target remains UNMET; all full acceptance scenarios remain UNVERIFIED. Follow the baseline and coverage constraints below; keep PR7 draft.
+Next: profile HostileMotionV2.MoveToward and EntrySafety.MovementAllowed during the same normal first60s. The latter currently allocates bound/axis tables per sanctuary cell; optimize only if the native profile supports that cost, preserving the exact swept collision/admission decisions. Target UNMET; all full scenarios UNVERIFIED; PR7 stays draft.
 
 # Current checkpoint — actual Dungeon10 gameplay misses frame budget
 
