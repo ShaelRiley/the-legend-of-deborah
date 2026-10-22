@@ -1,22 +1,30 @@
-# Current checkpoint — retain missing-target admission; recover Dungeon10 capture
+# Current checkpoint — device-state answer needed; 40FPS target unmet
 
-Fresh six-arm installed4d0a6d80/control comparison confirms33.979versus33.310FPS
-mean (+2.007%), disjoint FPS ranges; retain the focused invalid-target admission
-return. Seven scoped checks and actual nil/NULL/valid-Player dispatch checks pass.
-All51client/111server fingerprints,60roamers1736models,zeroerrorsandidleVR match.
-Every diagnostic still fails40FPS; all six complete acceptance scenarios remain
-unverified. A separate net_graph1/0 comparison shows no useful gain; original1
-restored. Do not infer historical overlay settings from the fresh readback.
+Retained source4d0a6d80 rejects missing close-defense targets before redundant
+permission/geometry work. Six actual Deck installed-source/control arms confirm
+33.979versus33.310FPS mean (+2.007%), disjoint ranges. Seven scoped checks and
+native nil/NULL/Player dispatch checks pass. All captures still fail40FPS. Latest
+ea19fbeb full matrix325/334 has the exact same nine failures as parent1335/cec10;
+source, VR and audio CI pass. No green full-matrix or whole-game acceptance claim.
 
-Dungeon10 normal-resource checkpoint is prepared and archived: Wizard13,HP164/164,
-normal Magnumclip6,36ordinaryroamers/18plannedgroups/1348cargo models, fixed seeds,
-legal offered feats and normal deployment. No direct resource grant or boss testkit.
-The first30s arrival capture was interrupted before saving; all Steam/GMod/Wine
-processes disappeared while Steam assertion dumps were written. Cause unverified;
-failed evidence preserved. Steam restart is in progress. Next: recover login/runtime,
-reproduce the fixture, finish/freeze its physical combat input route, and measure
-heavy gameplay before further optimization. Preserve frozen listen-host workload,
-three warmed180s repeats, capped verification and four actual-player requirements.
+Dungeon10 normal-resource Wizard13 checkpoint is archived (HP164/164, Magnumclip6,
+36roamers/18groups/1348models, fixed seeds). Its first30s capture was interrupted
+when all Steam/GMod processes disappeared with Steam assertion dumps. After Steam
+restart, a new exact-source game quit orderly atCurTime6.36 before any task command.
+Cause unverified. User question asks whether these closures were external or
+spontaneous; do not repeatedly relaunch/refocus before that answer. No game runs;
+YouTube playback is currently Playing and no paused-video restoration remains.
+
+Unaffected preparation is saved: Dungeon10's89waypoints/two stairs, partial Dungeon1
+key/gate/Neil routes and syntax-only normal Dungeon14/20 setup scripts. These are
+not native-validated or accepted. Resume instructions and durable checkpoint:
+`/home/deck/deborah-recovery/RESUME.md` and `CHECKPOINT.json`.
+When the Deck is available, reproduce/verify the archived normal fixture, compare
+native Navigator output with the prepared route, then profile actual heavy gameplay.
+If it closes by itself, diagnose that reproducibly first. Preserve frozen hosting,
+graphics/counts, three warmed180s repeats, capped control verification and four
+actual players. All six full scenario gates remain unverified; no main promotion
+as completed40FPS work. Source iteration record supplies the current evidence.
 
 # Previous checkpoint — missing-target admission candidate; target unmet
 

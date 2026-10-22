@@ -915,3 +915,46 @@ interval has no OOM/GPU reset. Logs, queued-command preservation and failure rec
 `/home/deck/deborah-benchmarks/dungeon10-diagnostic/4d0a6d80/interrupted-arrival/`.
 Restart Steam, reproduce the normal fixture, finish/freeze physical combat inputs,
 then profile heavier gameplay. All six complete scenario gates remain unverified.
+
+
+### Current recovery and coverage checkpoint
+
+Latest complete GitHub matrix on ea19fbeb finishes325/334 with source_changed0.
+All nine failing suite names and exact assertion anchors match the previously
+reproduced parent1335/cec10/31a09219 record; no green full-matrix claim. Low-end
+source, VR and audio workflows pass. Full downloaded334-suite artifact and exact
+comparison: `/home/deck/deborah-recovery/evidence/ea19-complete-matrix/`,
+workflow39718368154. The seven selected close-defense checks and native dispatch
+observations remain the relevant passing gates for the focused change.
+
+The recovery launch loads the exact ea19fbeb fingerprints (same runtime code as
+4d0a6d80), then records an orderly server shutdown atCurTime6.36 before any task
+bridge ACK. Steam remains alive. The inspected task autorun and launch config
+contain no automatic exit. Its cause is unverified; the user has been asked whether
+the exits were external or spontaneous. No game is currently running; do not
+restart/refocus repeatedly while that device-state question is unresolved.
+Recovery console and observations:
+`/home/deck/deborah-benchmarks/dungeon10-diagnostic/ea19fbeb/recovery-exit/`.
+A newly present YouTube session was paused with existing authorization and verified
+Paused before this launch. It was already Playing on the later restoration check,
+with the same track identity; no additional Play was needed. Current playback is
+unpaused. The capture helper now records actual task-paused media evidence rather
+than the earlier no-MPRIS condition. These later conditions must remain separate
+from the completed source comparisons made before Chrome appeared.
+
+Unaffected preparation uses the archived native graph and actual production
+Navigator with float32 Vector boundary doubles: Dungeon10's proposed four-destination
+route has89waypoints,52on two stair traversals. Native compilation/equality, actual
+combat inputs, loot and phase coverage remain unverified. Dungeon1's partial
+progression plan has101cell edges and three vertical transitions toward the three
+keys/gates and Neil console. One snapshot-blocked non-gate edge requires ordinary
+clearance; no runtime gate/event flag is changed by these offline plans. Normal
+Dungeon14/20 XP/feat/starter/deployment and boss-entrance preparation scripts pass
+syntax only and have not executed. No HP/Magic/ammo boost, forced phase or AI
+reduction is prepared. Files are in `frozen-scenarios/d10-normal-13/`,
+`frozen-scenarios/d1-progression-route-PREPARATION.json` and
+`frozen-scenarios/preparation-only-later-levels/` under
+`/home/deck/deborah-benchmarks/`. These are preparation, not accepted scenarios.
+The exact operational resume instructions are in
+`/home/deck/deborah-recovery/RESUME.md`. All six scenario gates remain unverified;
+canonical main is not promoted as completed40FPS work.
