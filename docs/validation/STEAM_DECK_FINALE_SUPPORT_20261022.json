@@ -188,6 +188,134 @@
   ],
   "optional_os_variant": "GameMode1.8.2 CPUgovernortest denied by OS pkexecpolicy; no bypass/no CPU policychange/no gainclaim",
   "primary_api_reference": "https://wiki.facepunch.com/gmod/util.TraceHull",
-  "updated_utc": "2026-10-22T20:32:28.762554+00:00",
-  "source": "8b0b531e7d8cd5dfdbae36801f604537d4e147b7"
+  "updated_utc": "2026-10-22T20:50:46.616680+00:00",
+  "source": "8b0b531e7d8cd5dfdbae36801f604537d4e147b7",
+  "separate_dedicated_diagnostic": {
+    "source": "8b0b531e7d8cd5dfdbae36801f604537d4e147b7",
+    "raw": "/home/deck/deborah-benchmarks/current-dedicated-d20/8b0b531e/normal60-run1",
+    "analysis": {
+      "mode": "uncapped",
+      "limiter_tolerance_ms": 0,
+      "active": {
+        "frames": 2519,
+        "seconds": 59.971271,
+        "fps": 42.00344528299225,
+        "median_ms": 19.822,
+        "p95_ms": 43.54,
+        "p99_ms": 55.264,
+        "max_ms": 275.124,
+        "one_percent_low_fps": 13.444710695681042,
+        "below_budget_seconds": 28.65180799999999,
+        "longest_below_budget_seconds": 4.619353000000001,
+        "below_budget_runs_ge2s": 4
+      },
+      "pacing_at_tolerated_budget": {
+        "frames": 2519,
+        "seconds": 59.971271,
+        "fps": 42.00344528299225,
+        "median_ms": 19.822,
+        "p95_ms": 43.54,
+        "p99_ms": 55.264,
+        "max_ms": 275.124,
+        "one_percent_low_fps": 13.444710695681042,
+        "below_budget_seconds": 28.65180799999999,
+        "longest_below_budget_seconds": 4.619353000000001,
+        "below_budget_runs_ge2s": 4
+      },
+      "capture_checks_passed": false,
+      "issues": [
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+    },
+    "coverage": {
+      "status": "SEPARATEconfigurationFAILtails;only1human/fourslots,not4humanacceptance;phase1lowercourt",
+      "events": {
+        "WARDEN_COMMIT": 1,
+        "WARDEN_COMPOSITION_RETRY": 0,
+        "WARDEN_TURRETS_ADMITTED": 1,
+        "WARDEN_PHASE": 0
+      },
+      "native_gate": {
+        "phase": 1,
+        "composition": 9,
+        "health": 1570,
+        "maximum": 1667,
+        "turrets": 4,
+        "skipped": 0,
+        "player_health": 46,
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua",
+        "scope": "read-only native composition/lifetime/support after active FPS capture; no phase/HP/resources overrides",
+        "slots": [
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 1,
+            "health": 403,
+            "position": "5480.000000 1048.000000 -11501.968750",
+            "maximum": 483,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 2,
+            "health": 224,
+            "position": "4504.000000 2024.000000 -11501.968750",
+            "maximum": 262,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 3,
+            "health": 556,
+            "position": "4504.000000 1048.000000 -11501.968750",
+            "maximum": 556,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 4,
+            "health": 235,
+            "position": "5480.000000 2024.000000 -11501.968750",
+            "maximum": 279,
+            "admitted": true
+          }
+        ],
+        "clones": 4,
+        "seconds": 222.56336975097656
+      },
+      "frozen_listen_host": "stillFAIL22.934FPS; no criterion/scenario replacement",
+      "one_tick_ai": "nativeactualservernb_update_frequency.015,tick.0151515,nb_stop0,ai_disabled0,scale1,sv_cheats0;114serverhashesmatch",
+      "player_end": "normalincomingdamage duringrun; postcaptureprobe mayfindordinarydeath; no survival/phaseoverride"
+    },
+    "runtime": "sameDeckLinux32GMod2026.09.17/LuaJIT2.0.4dedicated127.0.0.1:27018 plusWindows64P10client;sv_lan1/cheats0/net_usesocketsforloopback1both;native66Hztick andnb_update_frequency.015;1human/fourslots;114serverhashesmatch;1820clientmodels;9actualbossactors",
+    "interpretation": "42.003average passes averageonly;FAILp9543.54,p9955.264,longest4.619s/4episodes>=2s. Notfrozenlistenhostacceptanceandnotfourhumanproof."
+  },
+  "detailed_profiling": {
+    "engine_raw": "/home/deck/deborah-benchmarks/finale-support-source/8b0b531e/d20-native-profile60-run1/native-summary.json",
+    "inclusive_ms_per_frame": {
+      "server": 25.0,
+      "nextbot_lua": 11.32,
+      "render": 12.772
+    },
+    "scope": "includespreparation;overlappingtimers;diagnosticnotacceptance",
+    "sparse_raw": "/home/deck/deborah-benchmarks/finale-support-source/8b0b531e/d20-sparse-profile60-run1",
+    "sparse_restored_bindings": 173,
+    "entry_raw": "/home/deck/deborah-benchmarks/finale-support-source/8b0b531e/d20-entry-sparse60-run1",
+    "entry_restored_bindings": 162,
+    "conclusion": "movement/entryworkdominatesmeasuredbossmethods;nocallbackspanningentrymemoizationornewsourcecandidateimplemented"
+  },
+  "ci_new_fixture_failure": {
+    "commit": "8d478035b83aa1cacab164ef77781c1f6f805986",
+    "matrix": "324/334;oneNEWbossframeworkfixturefailure+9knownparentfailures;source_changed0",
+    "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39850111135",
+    "raw": "/home/deck/deborah-recovery/evidence/8d478035-ci/full-failures.log",
+    "cause": "twointegrationtests fake floors onlyforTraceLine; actualnativeunitverticalhullSupport thereforeseesnocollisioninmock",
+    "repair": "testfixtureonlysuppliesfloorhittonarrowverticalsupporthulls;allcomposition/rollback/Hector/rescueassertionsretained;76/76localPASS;newfullCIpending;no runtimechange"
+  }
 }

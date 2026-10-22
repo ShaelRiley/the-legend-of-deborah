@@ -522,18 +522,24 @@ for _,case in ipairs({{level=2,id='chonker',create=function(c,p) return c.def:Pl
   end)
  end
 end
+-- Mirror the native generated-floor boundary: rays miss SOLID_BBOX support,
+-- while point-width vertical hulls hit it. Keep all composition, rollback,
+-- exactly-once handoff and rescue assertions below unchanged.
+local function nativeFloorSupport(t)
+ if t.mins and t.maxs and t.mins.x==0 and t.mins.y==0 and t.maxs.x==0 and t.maxs.y==0
+  and t.maxs.z>t.mins.z and math.abs(t.start.x-t.endpos.x)<.01
+  and math.abs(t.start.y-t.endpos.y)<.01 and t.start.z>t.endpos.z and t.start.z-t.endpos.z<=12.1 then
+  return {Hit=true,HitPos=t.start-Vector(0,0,6),HitNormal=Vector(0,0,1),Entity=NULL,StartSolid=false,AllSolid=false}
+ end
+ return F.clearTrace(t)
+end
 test('production Gordon level one composition and level twenty Hector handoff',function()
  dofile(F.root..'sv_entry_safety.lua')
  local W,H=LOD.Warden,LOD.Hector
  for _,level in ipairs({1,20}) do
   local s,_,g,a=F.setup(level,false)
   for _,p in ipairs(F.players) do p:SetPos(N:CellCenter(a.entry)) end
-  util.TraceLine=function(t)
-   if math.abs(t.start.x-t.endpos.x)<.01 and math.abs(t.start.y-t.endpos.y)<.01 and t.start.z>t.endpos.z and t.start.z-t.endpos.z<=12.1 then
-    return {Hit=true,HitPos=t.start-Vector(0,0,6),HitNormal=Vector(0,0,1),Entity=NULL,StartSolid=false,AllSolid=false}
-   end
-   return F.clearTrace(t)
-  end
+  util.TraceHull=nativeFloorSupport
   check(W:Prepare() and W:Commit(),'legacy Gordon prepare/commit rejected '..level);local w=s.Warden
   check(not s.Boss and w and w.actor.LODArchetypeId=='warden','replacement framework hijacked Gordon level '..level)
   check(#w.clones==(level==20 and 4 or 0),'actual clone composition wrong at level '..level)
@@ -546,14 +552,14 @@ test('production Gordon level one composition and level twenty Hector handoff',f
    local h=s.Hector;F.clock=F.clock+3.1;H:Step(F.clock);check(h.actor and h.stage==2,'native Hector handoff did not reveal live core')
    F.kill(h.actor);F.flush();F.clock=F.clock+.01;LOD.HostileDeathPresentation:_RunDue();check(IsValid(s.JailKeyEntity) and H:RescueAllowed(s),'legitimate Hector defeat did not authorize sole finale key')
   end
-  util.TraceLine=F.clearTrace
+  util.TraceHull=F.clearTrace
  end
 end)
 test('Gordon twenty failed clone and turret allocations roll back complete group and retry',function()
  local W,H=LOD.Warden,LOD.Hector
  for _,failureAt in ipairs({3,8}) do
   local s,_,g,a=F.setup(20,false);for _,p in ipairs(F.players) do p:SetPos(N:CellCenter(a.entry)) end;a.lock.entity:OpenGate()
-  util.TraceLine=function(t) if math.abs(t.start.x-t.endpos.x)<.01 and math.abs(t.start.y-t.endpos.y)<.01 and t.start.z>t.endpos.z and t.start.z-t.endpos.z<=12.1 then return {Hit=true,HitPos=t.start-Vector(0,0,6),HitNormal=Vector(0,0,1),Entity=NULL,StartSolid=false,AllSolid=false} end;return F.clearTrace(t) end
+  util.TraceHull=nativeFloorSupport
   check(W:Prepare(),'prepare before Gordon allocation failure');local w=s.Warden;local oldCreated=#F.created;F.hostileAttempts=0;F.failHostileAt=failureAt
   local committed=W:Commit();F.failHostileAt=nil
   check(not committed and not w.started and not s.WardenStarted and not w.actor and #w.clones==0 and not w.turrets,'incomplete Gordon composition was committed')
@@ -562,7 +568,7 @@ test('Gordon twenty failed clone and turret allocations roll back complete group
   check(W:Commit() and #w.clones==4 and w.turrets.admitted==4 and LOD.EncounterDirector:GetActiveCount()==9,'retry did not create exact one plus four plus four composition')
   if stale then F.kill(stale);F.flush();check(not w.dead and not s.Hector and not s.JailKeyEntity,'stale rolled-back native death produced reward or handoff') end
   local core=w.actor;F.kill(core);F.flush();local h=s.Hector;check(h and not s.JailKeyEntity,'retry Gordon failed sole Hector handoff');W:Killed(core);F.flush();check(s.Hector==h and not s.JailKeyEntity,'duplicate retry death created extra handoff')
-  H:Cleanup(h);util.TraceLine=F.clearTrace
+  H:Cleanup(h);util.TraceHull=F.clearTrace
  end
 end)
 print(string.format('BOSS_FRAMEWORK_SUMMARY passed=%d failed=%d',passed,#failed))

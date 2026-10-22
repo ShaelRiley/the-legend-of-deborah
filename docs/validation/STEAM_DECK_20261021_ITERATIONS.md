@@ -1170,3 +1170,13 @@ Retain 8b0b531e's native floor-support repair. The same frozen Deck route now co
 The functioning fight still FAILS: 22.934 FPS, median36.877ms, p9576.116ms, p9998.104ms, max468.224ms, longest drop25.195s. Only phase1/lower-court coverage is observed. The later native ownership probe finds the player dead after the capture; that is not hidden or used as performance acceptance. Next: same-route native VProf diagnostic on the functioning fight, preserving source, resources, counts, AI and graphics. [Raw results and coverage](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
 
 Target UNMET; all six full gates UNVERIFIED. PR7 stays draft and canonical main remains cec10dc54. Continue measured optimizations and missing upper-floor, full-phase, Hector/rescue and real four-player coverage. Restore external DP1 to75Hz after benchmarks.
+
+### Separate dedicated finale and native floor fixture follow-up
+
+A separate same-Deck dedicated Dungeon20 diagnostic averages42.003FPS, median19.822ms, p9543.540ms, p9955.264ms, max275.124ms, longest drop4.619s/four episodes>=2s: FAIL. Preserve the frozen listen-host failure at22.934FPS; this variant does not replace it. Exact source,1820clientmodels,normalWizard20/seeds/resources,one human/four slots,66HznativeAI,57roamers and allninebossactors are verified. Native ownership/support passes; one commit and zero retries. Full phases, upper floor, Hector/rescue and four actual humans remain unverified.
+
+Native profiling attributes25.000ms/frame inclusive to server simulation,11.320ms to NextBotLua and12.772ms to rendering; preparation and overlapping scopes are included, so these are diagnostic only. Sparse samples restore173bindings, then detailed entry samples restore162. Movement and entry checks are the larger measured shared costs. Do not cache across callback-bearing admission paths or change cadence without proof. No further runtime candidate follows8b0b531e yet.
+
+The8d478035 full CI run is324/334: one NEW boss-framework fixture failure plus the nine known parent failures. The two finale integration fixtures supplied floors only to ray queries. They now provide native-style point-width vertical hull support; every composition, rollback, exactly-once handoff and rescue assertion remains. All76boss-framework cases pass locally. This is test-only repair; runtime/source8b remains unchanged. New full CI is pending, not claimed green. [Raw evidence and results](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
+
+Both local game/server processes are explicitly stopped after the diagnostic. Next: continue measured shared CPU/client-cost investigation and required coverage. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged. Restore externalDP1to75Hzafterbenchmarks.
