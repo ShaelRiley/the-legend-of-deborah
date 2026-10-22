@@ -35,7 +35,8 @@ with tempfile.TemporaryDirectory() as tmp:
                 stdout, stderr = process.communicate()
                 assert process.returncode == 0, stdout + stderr
             rows = (data / 'dev_population_sources.txt').read_text().splitlines()
-            assert len(rows) == 117
+            assert len(rows) == 118
+            assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua') for row in rows)
             assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_chuck.lua') for row in rows)
             assert any(row.endswith(' gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua') for row in rows)
             for name in ('cl_pushback_fx.lua', 'cl_loop_audio.lua', 'cl_boss_encounter.lua', 'sv_boss_encounter.lua'):
@@ -91,5 +92,5 @@ with tempfile.TemporaryDirectory() as tmp:
             if remaining:
                 assert time.monotonic() < deadline, 'owned installer children failed to retire'
                 time.sleep(0.01)
-print('DEV_POPULATION_MANIFEST_PASS exact 117-source hashes including feedback-history cache and Chuck preload, Soldier progression and optimized cargo/ghost/audio/trace/boss authorities; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup')
+print('DEV_POPULATION_MANIFEST_PASS exact 118-source hashes including native Sentry support, feedback-history cache and Chuck preload, Soldier progression and optimized cargo/ghost/audio/trace/boss authorities; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup')
 

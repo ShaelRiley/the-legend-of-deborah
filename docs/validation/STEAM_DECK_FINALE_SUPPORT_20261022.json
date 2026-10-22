@@ -1,0 +1,88 @@
+{
+  "status": "SOURCE CANDIDATE; actual Deck final acceptance UNVERIFIED; target UNMET",
+  "parent": "bc95bed0b590da75622d0edefdd1fa7e1d2efe1f",
+  "device": "Actual LCD/Jupiter512GB Deck SteamOS3.8.28 GMod2026.09.17/public25375506 Windows64 Proton10.0-4b/sniper;1280x800@60 AC15W GPUauto uncapped300 vsync0 mcore1 queue2 bones1; solo listen host",
+  "scenario": "Frozen D20 lowercourt-v1 before first FPS result;640points radius288 normal input; HP211 AR2clip20 canonical3items; campaign654759232 level1217159003 layout899898795 roster588052291;57normalroamers53planned1820models",
+  "freeze": "/home/deck/deborah-benchmarks/frozen-scenarios/d20-normal-20-20261022/lower-court-v1",
+  "preparation_failures": "d20-normal60-run1 no timing started: private fixture assumed512-unit cells, actual384;352/320circles hit authored stairs,288clear; no source collision change",
+  "baseline": {
+    "mode": "uncapped",
+    "limiter_tolerance_ms": 0,
+    "active": {
+      "frames": 326,
+      "seconds": 59.846835,
+      "fps": 5.447238772108834,
+      "median_ms": 196.041,
+      "p95_ms": 305.864,
+      "p99_ms": 334.24,
+      "max_ms": 387.357,
+      "one_percent_low_fps": 2.789886660854403,
+      "below_budget_seconds": 59.013464000000006,
+      "longest_below_budget_seconds": 58.817505,
+      "below_budget_runs_ge2s": 1
+    },
+    "pacing_at_tolerated_budget": {
+      "frames": 326,
+      "seconds": 59.846835,
+      "fps": 5.447238772108834,
+      "median_ms": 196.041,
+      "p95_ms": 305.864,
+      "p99_ms": 334.24,
+      "max_ms": 387.357,
+      "one_percent_low_fps": 2.789886660854403,
+      "below_budget_seconds": 59.013464000000006,
+      "longest_below_budget_seconds": 58.817505,
+      "below_budget_runs_ge2s": 1
+    },
+    "capture_checks_passed": false,
+    "issues": [
+      "unrendered terminal interval exceeds spike budget or is unknown",
+      "average FPS below budget",
+      "p95 exceeds frame budget",
+      "p99 exceeds spike budget",
+      "continuous drop lasting at least two seconds"
+    ],
+    "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+  },
+  "baseline_raw": "/home/deck/deborah-benchmarks/finale-baseline/bc95bed0/d20-normal60-run2",
+  "baseline_coverage": {
+    "status": "FAILED timing and encounter commit; traversal only, normal combat UNVERIFIED",
+    "events": {
+      "WARDEN_COMPOSITION_RETRY": 263,
+      "WARDEN_TURRETS_ADMITTED": 263,
+      "WARDEN_COMMIT": 0,
+      "WARDEN_PHASE": 0
+    },
+    "input_progress": "reached node187 by60.388s, normal physical lower court circuits; no HP/phase/ammo writes",
+    "client_lua_errors": 0,
+    "server_lua_errors": 0,
+    "bounded_probe": "/home/deck/deborah-recovery/evidence/finale-support-gate",
+    "hypothesis": "all4requiredSentries fail native TraceLine support while one-unitvertical zeroXYextent TraceHull hitsall20samples; compositionrollback/retry repeatedly initializes5actors"
+  },
+  "hypothesis": "Required four Sentries all reject support because native TraceLine misses generated SOLID_BBOX floors. Existing complete-group rollback recreates Gordon+4clones roughly5Hz. Repair support only; no retry throttling/removal of actors.",
+  "native_probe": {
+    "admission": "44/44Placement calls reject support;4slots skip;boundedmethodbindingsrestored;14.178msoneAdmit",
+    "line": "12/12native support probes miss floors across3masks4corners",
+    "hull": "20/20five-point samples hit generatedfloor,0StartSolid/AllSolid,maxheight error0.03125",
+    "raw": "/home/deck/deborah-recovery/evidence/finale-support-gate"
+  },
+  "change": "T:Supported uses zeroXY-extent one-unitvertical TraceHull at exact existing5points and4\u2192-8range. Same mask/filter/normal/height tolerance/nonactor rules. Existing occupancy/route/stair checks remain.",
+  "regressions": {
+    "spot08": "262focusedproductionassertionsPASS; exactparent failsnewnativeBBoxgate",
+    "gordon": "Warden24arenas/clone/resupply/lifetimePASS;SPOT06116PASS;SPOT07130PASS",
+    "hector": "encounterhandoff/cleanup/rescue/Level21andfinalePASS",
+    "source": "manifest118total/114server/52client; installandpopulationtransport/B28PASS;changedLuaSyntaxPASS"
+  },
+  "native_candidate": "PENDING fresh installed-source same frozen route; no gain or encounteracceptanceclaimed",
+  "ci_parent": "bc95lowend/VR/audioPASS;fullmatrix325/334FAIL run39845300211",
+  "coverage_gaps": [
+    "D20upperfloor",
+    "allGordonandHectorphases/core/rescue",
+    "sixscenarios3x180warmed",
+    "separate40capverification",
+    "fouractualconnectedplayers"
+  ],
+  "optional_os_variant": "GameMode1.8.2 CPUgovernortest denied by OS pkexecpolicy; no bypass/no CPU policychange/no gainclaim",
+  "primary_api_reference": "https://wiki.facepunch.com/gmod/util.TraceHull",
+  "updated_utc": "2026-10-22T20:27:44.645107+00:00"
+}

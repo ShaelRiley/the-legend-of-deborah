@@ -1,3 +1,13 @@
+# Current checkpoint — native finale support defect; same-route source validation next
+
+The first clean Deck Dungeon 20 lower-court run fails: 5.447 FPS, median 196.041 ms, p95 305.864 ms, p99 334.240 ms, maximum 387.357 ms, longest drop 58.818 seconds. Input reaches waypoint 187 with zero Lua errors. No encounter commits: 263 complete-group retries each reject all four required Sentries. Combat and phase coverage remain unverified. The private route's incorrect cell-size assumption was corrected before its first timing capture; the clear 640-point, 288-unit-radius route is now frozen.
+
+A bounded native admission probe records 44 support refusals and restores both methods. Native rays miss the generated floors; zero-width, one-unit-tall hulls hit all 20 footprint samples within 0.03125 units of the expected height. Change only T:Supported's query. Preserve its five points, mask, filter, range, normal, height tolerance and non-actor support checks, plus full route, stair and occupancy checks. Preserve the complete composition and existing retry cadence.
+
+SPOT-08 passes 262 assertions; the exact parent fails the new native BBOX floor case. Warden, SPOT-06 (116), SPOT-07 (130), Hector/finale lifecycle, manifest/transport, B28 and syntax checks pass. The manifest now covers 118 total / 114 server / 52 client files. Next: install the committed candidate and repeat the same Deck route. No source FPS gain or encounter acceptance is claimed yet. [Evidence](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
+
+bc95 CI source/VR/audio checks pass; the full matrix remains failed at 325/334 (run 39845300211). SteamOS authorization policy denies the optional GameMode governor test; CPU settings remain unchanged. Continue unaffected work. Target UNMET; all six full gates UNVERIFIED; PR 7 stays draft and main remains cec10dc54. Four actual players remain unavailable. Restore external DP1 to 75 Hz after benchmarks.
+
 # Current checkpoint — vector candidate rejected; retained runtime restored
 
 Six frozen fresh-process actualDeck source comparisons finish with no repeatable benefit. Current39.014/36.561/35.921FPS averages37.166; parent37.469/37.877/36.318 averages37.221. Ranges overlap, two adjacent pairs are slower, tails are inconsistent and every run fails the budget. Revert51d8a5a0 movement/B7test changes exactly to32d82a82; no gain or proven slowdown is claimed. Native12000case exact math/input proof and all focused correctness gates remain valid historical evidence, not FPS acceptance.

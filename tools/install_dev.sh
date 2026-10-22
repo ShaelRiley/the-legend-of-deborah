@@ -120,6 +120,7 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_e_feats.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_feat_card_text.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_gps_feat.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_gps_voice.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_gps_praise.lua \
