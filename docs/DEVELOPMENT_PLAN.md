@@ -1,4 +1,24 @@
-# Current checkpoint — focused Deck comparison; target unmet
+# Current checkpoint — server cadence evidence; target unmet
+
+The local native-server candidate now connects through127.0.0.1 with documented
+socket-loopback mode. A material correction: native default NextBot updates were
+seven ticks, versus one in the listen-host log. Controlled20s counters show
+10,756 movement calls/98,691 travel units at the default, versus67,066/217,258 at
+one tick. Earlier53–54FPS dedicated results are **not comparable AI workloads**.
+A new one-tick30s diagnostic reaches51.566FPS, p9523.887ms/p9928.753ms, but uses
+sv_cheats1 solely to set the protected cadence cvar; normal production hosting,
+full gameplay coverage and frozen listen-host acceptance remain unverified.
+
+Capture support now records authoritative server topology/human count, tick/time
+scale, NextBot cadence/budget and cheat/AI/transport settings; client capture also
+records multicore, threaded bones and socket-loopback mode. Five targeted suites
+and changed-file syntax pass. This is source-validated diagnostic support, not a
+performance gain. Next: install the exact clean checkpoint, verify native metadata
+readback, then investigate a cadence-preserving production candidate without
+quietly slowing AI. Keep required workloads/thresholds fixed. Hosting and actual
+four-player session questions remain pending; independent preparation continues.
+
+# Previous checkpoint — focused Deck comparison; target unmet
 
 The floor candidate48740b24 improved mean FPS5.70% in three matched30-second
 stationary Deck diagnostics: baseline21.68–21.81FPS, candidate22.67–23.13FPS.

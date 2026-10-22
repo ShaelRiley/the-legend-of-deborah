@@ -100,9 +100,19 @@ end,Remove=function(event,id)
 end,GetTable=function() return hooks[side()] end}
 timer={Create=function(id,seconds,reps,fn) timers[side()][id]={seconds=seconds,reps=reps,fn=fn} end,Simple=noop}
 concommand={Add=noop};local map='gm_flatgrass'
-game={GetMap=function() return map end,SinglePlayer=function() return true end}
+game={GetMap=function() return map end,SinglePlayer=function() return CLIENT end,
+    IsDedicated=function() return SERVER end,MaxPlayers=function() return 4 end,
+    GetTimeScale=function() return 1 end}
+engine={TickInterval=function() return SERVER and .015 or .020 end}
+player={GetHumans=function() return {admin} end}
+local serverSettings={nb_update_frequency='0.015',nb_update_framelimit='15',sv_cheats='0',host_timescale='1',sv_lan='1'}
 GetConVar=function(name)
     if name=='lod_reduced_effects' then return {GetBool=function() return true end,GetString=function() return '1' end} end
+    if SERVER and serverSettings[name] then return {GetString=function() return serverSettings[name] end} end
+    -- Deliberately different client-local values must never stand in for the
+    -- server's cheat/cadence settings in a received population snapshot.
+    if CLIENT and name=='nb_update_frequency' then return {GetString=function() return '0.1' end} end
+    if CLIENT and name=='sv_cheats' then return {GetString=function() return '1' end} end
     return {GetBool=function() return false end,GetString=function() return '0' end}
 end
 ScrW=function() return 1280 end;ScrH=function() return 800 end
@@ -133,6 +143,11 @@ assert(Audit.LastPopulationEvidence.live==64 and Audit.LastPopulationEvidence.en
 assert(Audit.PopulationEvidenceStatus.state=='received' and Audit.PopulationEvidenceStatus.client_write)
 assert(Audit.LastPopulationEvidence.server_write.ok and Audit.LastPopulationEvidence.source.checked==111)
 assert(#Audit.LastPopulationEvidence.source.modules==111,'full source manifest lost in transport')
+local runtime=Audit.LastPopulationEvidence.server_runtime
+assert(runtime.dedicated==true and runtime.singleplayer==false and runtime.max_players==4 and runtime.human_players==1,
+    'available slots stood in for actual human players')
+assert(runtime.tick_interval==.015 and runtime.time_scale==1 and runtime.convars.nb_update_frequency=='0.015'
+    and runtime.convars.sv_cheats=='0','server runtime replaced with client-local defaults')
 local saved=assert(files.client['legend_of_deborah/population_latest.txt'])
 assert(saved:sub(1,17)=='[LOD:POPULATION] ' and #saved>4095,'full client record unexpectedly compacted')
 local checkedConsole=0
@@ -150,7 +165,9 @@ request(admin);assert(censusCalls==1 and writes.server==1,'request rate bound fa
 local out=realm('client',function() return Audit:StopPerformanceCapture('manual') end)
 assert(out.population.live==64 and out.population_status.client_write and out.saved)
 -- Server DATA silently dropping a write does not lose the client mirror.
-now=102;drop.server=true;request(admin);receive()
+now=102;drop.server=true;serverSettings.nb_update_frequency='0.1';request(admin);receive()
+assert(Audit.LastPopulationEvidence.server_runtime.convars.nb_update_frequency=='0.1'
+    and runtime.convars.nb_update_frequency=='0.015','cadence evidence stale or previous capture mutated')
 assert(not A.LastWrite.ok and A.LastWrite.error:find('did not persist',1,true))
 assert(Audit.PopulationEvidenceStatus.client_write and not Audit.LastPopulationEvidence.server_write.ok)
 drop.server=false;now=104;drop.client=true;request(admin);receive()
@@ -178,6 +195,21 @@ now=110;request(admin);receive()
 assert(not A.LastWrite.ok and A.LastWrite.error:find('injected',1,true))
 assert(Audit.PopulationEvidenceStatus.client_write and #A.Records<=64)
 file.Write=oldWrite
+local oldEngine,oldDedicated,oldGetConVar=engine,game.IsDedicated,GetConVar
+engine=nil;game.IsDedicated=nil;GetConVar=function() return nil end
+local missing=realm('server',function() return A:Snapshot('missing-runtime-boundaries') end).server_runtime
+assert(missing.tick_interval=='unavailable' and missing.dedicated=='unavailable'
+    and missing.convars.nb_update_frequency=='unavailable','missing native APIs falsely reported a normal runtime')
+engine,game.IsDedicated,GetConVar=oldEngine,oldDedicated,oldGetConVar
+local bounded=realm('server',function() return A:Snapshot('runtime-console-bounds') end)
+bounded.bulk={text=string.rep('x',6000)}
+local encoded=A:ConsoleSummary(bounded)
+assert(#encoded<=3800 and codec[encoded].server_runtime.convars.nb_update_frequency=='0.1',
+    'compact console discarded the authoritative server cadence')
+bounded.oversized=string.rep('x',6000)
+encoded=A:ConsoleSummary(bounded)
+assert(#encoded<=3800 and codec[encoded].server_runtime.convars.nb_update_frequency=='0.1',
+    'last-resort console discarded the authoritative server cadence')
 print=nativePrint
 print('POPULATION_TRANSPORT_PASS: one automatic opt-in request; existing census/source cache; admin/rate/map/payload bounds; complete client mirror and performance embedding; valid bounded console; native DATA silent/throwing failures; malformed packets; no second census or timer')
 

@@ -2,6 +2,10 @@
 
 Target: **unmet / full acceptance unverified**. This record does not certify40FPS.
 
+**Cadence correction:** the earlier53–54FPS dedicated diagnostics used a slower
+native NextBot cadence and cannot prove equal-workload performance. See the
+server-cadence section below before citing those results.
+
 ## Recovered hardware baseline
 
 Full host access is now available. Complete clean checkout and installed source:
@@ -601,6 +605,62 @@ comparison: `~/deborah-recovery/evidence/checkpoint31-ci/`; workflow
 https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39696097231 .
 The nine failures remain unresolved; no green full-matrix or40FPS claim is made.
 No additional production Lua optimization was retained from this follow-up.
+
+
+### Local loopback and server-cadence correction
+
+Both client/server installed cleancd484ffa. A fresh four-slot native server on
+127.0.0.1 and fresh publicWin64/P10 client could not connect with default socket
+mode, including a client explicitly bound to127.0.0.1. Both processes use the same
+network namespace. A PTY and file logging made server readiness observable; no
+cause is inferred from the earlier closed-stdin launch. Two client startup
+attempts briefly overlapped before any FPS capture and were stopped. The helper
+now locks launches and refuses an existing GMod client. Failed logs/screenshot:
+`~/deborah-recovery/local-candidate-loopback/`.
+
+Setting net_usesocketsforloopback1 on both ends allowed the clean loopback pair to
+connect: actual localhost endpoint, four available slots, one real authenticated
+player, normal frozen Wizard/equipment/seed and60 roamers. This removes the LAN
+address dependency for that tested combination. Source query packets still time
+out; a launcher must not treat A2S silence as proof that this local server is dead.
+The setting is documented in the official Facepunch CVar reference:
+https://wiki.facepunch.com/gmod/ConVars_In_Garrysmod .
+
+A new workload mismatch was then identified: native default nb_update_frequency
+0.1 gives seven ticks/0.105s, while the prior listen-host log gives one tick/0.015s.
+The cheat-protected variable refused a normal console change. For a separately
+labelled unranked mechanism test, sv_cheats1 permitted0.015; no godmode, HP,
+damage, resource or enemy-count change was used. This is not a validated normal
+production hosting configuration.
+
+| Server cadence counter | Movement calls | Aggregate travel | Wall / simulation seconds | Moving / valid bodies |
+| --- | ---: | ---: | --- | --- |
+| One tick, configured0.015 |67,066|217,257.52|20.0125 /20.0100|56 /61|
+| Stock0.1, seven ticks |10,756|98,691.11|20.0087 /20.0100|56 /61|
+
+The stock cadence produced only45.4% of the one-tick travel; unchanged actor
+counts/profile fields did not prove equivalent AI execution. Earlier dedicated
+53.79–54.23FPS results must not be used as same-workload improvement evidence.
+With one-tick cadence, a new30s uncapped actual-Deck diagnostic measured51.566FPS,
+median18.590ms, p9523.887ms, p9928.753ms,1%low27.800FPS, max49.750ms,1.639s below40,
+no two-second drop (longest0.056871s). Source51client/111server hashes match;
+1280×800, P10, multicore1/queue2/bones1, native walls and normal60 roamers remain.
+This passes only short numeric thresholds, not any required gameplay/thermal/
+three-repeat/capped/multiplayer gate. Raw scripts, counters, exact conditions and
+full client/server console:
+`~/deborah-benchmarks/dedicated-loopback-cadence/cd484ffa/`.
+
+The new diagnostic support records server_runtime from the server's own APIs:
+engine/OS/VM, dedicated/singleplayer, configured slots versus actual humans,
+tick interval/time scale and an allowlist of cheat, hibernation, NextBot,
+AI-disable and socket-loopback cvars. Unknown native APIs remain unavailable;
+server values are never synthesized from a client's nonreplicated defaults.
+Runtime metadata survives bounded console summaries and full DATA/net/performance
+transport. The client capture now tracks multicore, threaded bones and socket
+mode, including changes during a capture. No per-frame work or gameplay mutation
+is added. Targeted capture, transport, profile, installer-manifest and B28 suites
+pass, with changed-file syntax/diff checks. Native readback of these new fields is
+pending the clean-source install; no diagnostic-support code is a40FPS claim.
 
 ## Remaining acceptance
 

@@ -337,6 +337,7 @@ if CLIENT then
         end)
     end
     local settingsNames={"fps_max","mat_vsync","mat_dxlevel","mat_queue_mode",
+        "gmod_mcore_test","cl_threaded_bone_setup","net_usesocketsforloopback",
         "mat_antialias","mat_aaquality","mat_hdr_level","mat_picmip","mat_viewportscale",
         "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects","lod_wall_batches",
         "lod_third_person","lod_map_scale","lod_map_opacity","lod_container_model_pool","lod_boss_binary_snapshots"}

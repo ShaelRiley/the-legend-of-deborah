@@ -33,6 +33,17 @@ scenarios, thresholds, counts, graphics or resolution in response to poor result
   same Hero, party, inventory, map, progression and world checkpoint between
   builds. Custom seeds mark the session unranked; they do not alter gameplay.
   Record actual layout/population seeds, counts and boss phase from the logs.
+- Match actual AI execution cadence, not only actor counts or stored profiles.
+  The listen-host baseline reports one NextBot tick. Native dedicated defaults
+  were later found to move actors at less than half that travel rate; those
+  earlier short results are not equivalent workloads. Current captures include
+  authoritative `population.server_runtime` settings/human counts. Record
+  nb_update_frequency, nb_update_framelimit, tick interval, time scale, sv_cheats,
+  nb_stop and ai_disabled, and corroborate cadence with actual movement/behavior.
+  A client-local cvar is not proof of a nonreplicated server value. Missing
+  metadata or unexplained cadence differences leave acceptance unverified.
+  The one-tick sv_cheats1 mechanism diagnostic does not establish a normal
+  production configuration or waive any frozen hosting/gameplay criterion.
 
 ## Required scenarios
 
