@@ -1,8 +1,14 @@
-# Current checkpoint — component candidate reverted; next movement profile
+# Current checkpoint — complete physical baseline fails; broad Lua profiling
 
-Candidate b04e1224 passes scoped static checks but its first actual60s corrected Dungeon10 source capture is38.458FPS/p9534.995/p9964.834, with a3.460s slow episode. The prior unmodified baseline is39.251/p9534.561/p9953.708; this supplies no useful gain and does not establish a statistical slowdown. Retain no added complexity without evidence: restore the exact parent renderer/test source. The attempted parent-function control stopped before capture because GMod exposes no debug.setupvalue; no restriction was bypassed and no parent FPS was fabricated. Failed setup and native scalar parity on968actual boxes remain archived.
+Current source68a6a9d3 exactly restores runtime4d0a6d80 after rejecting component-read candidate b04e1224. Native use is available in persistent user service `lod-deck-movement-profile-20261022`; no device-access blocker. No production source candidate is active.
 
-Next: profile HostileMotionV2.MoveToward and EntrySafety.MovementAllowed during the same normal first60s. The latter currently allocates bound/axis tables per sanctuary cell; optimize only if the native profile supports that cost, preserving the exact swept collision/admission decisions. Target UNMET; all full scenarios UNVERIFIED; PR7 stays draft.
+The physical Dungeon10 route is now315points. Existing authored upper landings, north-side lower returns and hull-validated corner clearance support ordinary player movement; no collision/AI changes. Native input completed180s alive, health164→102, and cleared both prior stalls. Canonical NewCampaign resets fixtures while retaining the warmed VM/JIT. A strict preflight waits for1348models/materials; playback starts with audit sampling. These preparation corrections are frozen before further performance changes; old failed routes/captures remain.
+
+The first aligned warmed180s baseline is36.460FPS, median25.276ms, p9541.771ms, p9980.233ms, longest below40 5.788s/13episodes>=2s: FAIL. This is one baseline, not complete scenario acceptance. Raw `/home/deck/deborah-benchmarks/dungeon10-physical-v5/68a6a9d3/baseline180-run1/`. Source checks and idleVR hold. Normal Magic casts, shooting, damage/reloads and pickups are logged; exact coverage enumeration remains.
+
+A scalar swept-entry prototype matches2916native cases per arm but supplies no reliable gain in four matched60s arms: parent35.436/37.145FPS vs scalar35.862/33.319 (means36.290vs34.591, overlapping ranges). Every public-method lease restores the original; no production change. The native engine profile instead attributes15.561ms/frame inclusive to Lua calls, including4.711ms NextBot behavior; server10.964ms/render9.454ms overlap these costs. Scope averages include preparation, not acceptance FPS. Next: short bounded FProfiler call trace to identify expensive Lua functions and peaks outside current coverage, restore the debug hook, then optimize the measured larger cost and repeat.
+
+Target UNMET; all six complete acceptance scenarios UNVERIFIED. Keep PR7 draft and maincec10dc54. Four actual players remain unavailable. Preserve all workload/settings/timing criteria and restore external DP1 from task-set60Hz to original75Hz after benchmarks.
 
 # Current checkpoint — actual Dungeon10 gameplay misses frame budget
 
