@@ -1,3 +1,11 @@
+# Current checkpoint — native collision alternatives rejected before source changes
+
+Both monitors remain ON: internal 1280×800@60, external 1920×1080@75. Sparse callback classification restored both bindings after 68.02 seconds. Separation ran 3,573 calls/s and latch handling 3,068 calls/s; most sampled pairs involved static geometry. Callback-body estimates total 13.2 ms/s and do not measure native bridge or broadphase overhead. The diagnostic capture still fails at 22.43 FPS.
+
+The predefined native trace gate rejects group 19 with custom checks disabled: all four NPC-pair traces change, although four player shots, four movement hulls and floor support match. Exact groups, flags, health and positions were restored; no production change follows. Native constraint.NoCollide is unavailable because both actual actors lack the required physics bodies. No constraint was created and state was restored. [Evidence](validation/STEAM_DECK_COLLISION_20261022.json).
+
+Next: sample the main thread at 99 Hz with native user cpu-clock events and no Lua wrappers to separate execution, GC and engine costs. Sampling is diagnostic only. Source 3cf2e875 retains no animation or player-query candidate. Target UNMET; all six full acceptance gates UNVERIFIED. PR 7 remains draft and canonical main remains cec10dc54. CI is 325/334 with the same nine failing names and five leaf anchors as the preceding runs; source, VR and audio checks pass.
+
 # Current checkpoint — player-query candidate rejected after six Deck runs
 
 All six original-source D20 attempts complete with native source/function receipts, normal resources/counts/AI, structured60s+ input endings and BOTHdisplaysON. Controls21.943/22.025/21.671FPS average21.880; candidates21.397/21.046/21.030 average21.158 (arithmetic−3.30%). Every candidate is slower than its adjacent control, tails vary and allcapturesFAIL. No statistical significance or CPUcause is inferred from three pairs. Reject the candidate; restore RunManager and Staging runtime files exactly toafff7087. Keep15behavior-only query cases/55assertions; existingSharedEnemyAIWork/syntax/diff pass.
