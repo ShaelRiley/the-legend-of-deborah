@@ -88,6 +88,7 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/gamemode/lod/cl_loop_audio.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_boss_encounter.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_boss_encounter.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_chuck.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \

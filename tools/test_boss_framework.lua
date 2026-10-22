@@ -19,6 +19,37 @@ test('exact canonical registry 1 through 20 and subordinate Jane',function()
  end
  check(not LOD.BossRegistry.Primary.jane_propane and B.Support.jane_propane,'Jane must be support only')
 end)
+test('loading precache preserves Chuck identity and encounter RNG without actors',function()
+ local _,control=F.setup(14)
+ local expectedModel=control.data.citizenModel
+ local expectedNext=B:Random(control,'chuck_citizen',1,1000000)
+ local s=F.setup(14,false);check(B:Prepare(),'prepare loading fixture')
+ local c=s.Boss;local created=#F.created;local models={}
+ local previous=util.PrecacheModel
+ s.BuildReady=false
+ util.PrecacheModel=function(model)
+  check(not s.BuildReady,'precache escaped the held loading state')
+  models[#models+1]=model
+ end
+ local warmed=B:PrecacheLevel(14,s.LevelSeed)
+ util.PrecacheModel=previous
+ check(warmed and #models==8,'bounded Chuck/Jane asset vocabulary not warmed')
+ check(models[2]==expectedModel,'preload chose a different citizen')
+ check(#F.created==created and not c.started and not c.rng,'precache spawned actors or consumed encounter state/RNG')
+ check(not B:PrecacheLevel(2,s.LevelSeed),'unaffected module acquired preload work')
+ util.PrecacheModel=nil
+ local unavailable=B:PrecacheLevel(14,s.LevelSeed)
+ util.PrecacheModel=previous
+ check(not unavailable,'missing optional engine API did not fall back')
+ local precache,report=c.def.Precache,ErrorNoHalt;local message
+ c.def.Precache=function() error('injected unavailable asset cache') end
+ ErrorNoHalt=function(text) message=text end
+ local failedWarm=B:PrecacheLevel(14,s.LevelSeed)
+ c.def.Precache=precache;ErrorNoHalt=report
+ check(not failedWarm and message and message:find('Model precache failed',1,true),'optional preload error escaped or disappeared')
+ s.BuildReady=true;check(B:Commit(c),'ordinary commitment failed after loading')
+ check(c.data.citizenModel==expectedModel and B:Random(c,'chuck_citizen',1,1000000)==expectedNext,'preload changed citizen identity or subsequent stream')
+end)
 for level=2,19 do
  local id=order[level]
  test('actual Start Think and phases '..id,function()
