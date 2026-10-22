@@ -1,3 +1,11 @@
+# Current checkpoint — installed active-player query gate passed; source FPS next
+
+Installed73bcd0c0 passes1007native value/state-transition checks with all default/nativeAPI/table guards true. Slot, deployment, missing-profile and same-seed State replacement remain fresh; originals restore. Six100kquery microarms preserve results: parent155.155–158.439ms versus installedcandidate55.448–58.131ms. This is narrow query timing, not gameplayFPS. The first debugcallhook counter undercounts eventheknownparent; retain it as an INVALIDdiagnostic with full restoration/gameStop, neveractualcallcount evidence.
+
+afff7087 fullCI returns325/334FAIL with the same nine names AND allfivefile/lineanchors asf889. The seven sharedB28fixture failures are cleared. Source/VR/audio pass. Current73bcd0c0 CI remains a separate pending gate. [Evidence](validation/STEAM_DECK_PLAYER_QUERY_20261022.json).
+
+Next: frozen freshoriginalsourceP,C,C,P,P,C gameplay comparison with BOTHdisplaysONalways, internal1280×800@60/external1080p75. Preserve normalsource/seed/counts/AI/input/graphics andfailedattempts. No profiler or in-window device sampler. TargetUNMET; allsixfullacceptancegatesUNVERIFIED; PR7draft/maincec10 unchanged.
+
 # Current checkpoint — per-call active-player query candidate; native source timing pending
 
 Both monitors stay ON at all times, external1080p75/internal1280×800@60. The native deployed-Hero probe confirms3identity lookups/1profile query per IsActivePlayer call. Private within-call prototype100kqueries150→47ms; guardedprototype189–192→79–81ms in a separate process. Both pass1006checks andrestoreproviders; this is microevidence only, not gameplayFPS or wholeacceptance.

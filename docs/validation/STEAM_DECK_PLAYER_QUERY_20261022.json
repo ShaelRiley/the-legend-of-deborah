@@ -1,5 +1,5 @@
 {
-  "status": "Sourcecandidate static gatesPASS; installednativequery/freshsourceFPS PENDING; targetUNMET/sixfullgatesUNVERIFIED",
+  "status": "Installedsource nativeguard/valuegatePASS; originalsourceFPS comparisonPENDING; targetUNMET/sixfullgatesUNVERIFIED",
   "parent": "afff7087a7e814c2014775c613686110df36e461",
   "device": "ActualLCDDeck/SteamOS3.8.28/Windows64Gmod25375506/Proton10.0-4b;1280x800internal60/external1080p75,BOTHONALWAYS;15WACautoGPU",
   "observed_bottleneck": "EarlierCPUboundarymeasurementmain96.17%onecore; broadsharedqueryprofilepointsatRunManager.IsActivePlayer. Nativecounterconfirms3IdentityOf+1GetPlayerState percurrentdeployedquery.",
@@ -54,5 +54,31 @@
   ],
   "sourcewatch": "Same119total/115server/52client;bothchangedauthoritiesalreadywatched",
   "next": "Installedoriginalsource nativepath/counter/transition proof then freshoriginal-source matchedD20andD10gameplay; retain/rejectfromevidence, do notclaimmicrotimingasFPS.",
-  "updated_utc": "2026-10-22T22:16:48.688757+00:00"
+  "updated_utc": "2026-10-22T22:23:10.226994+00:00",
+  "native_source": {
+    "commit": "73bcd0c001f10152d09b70f6506056e9c26c4648",
+    "raw": "/home/deck/deborah-benchmarks/player-query-cost/73bcd0c0/native-source-probe-run2",
+    "assertions": 1007,
+    "all_native_default_guards": true,
+    "state_restored": true,
+    "parent_ms_per100k": [
+      155.6509,
+      155.1555,
+      158.4392
+    ],
+    "candidate_ms_per100k": [
+      55.7734,
+      55.4477,
+      58.1311
+    ],
+    "scope": "Actualinstalledsource vsdetachedexactaffparentwrapper. Synchronousslot/deployment/profile/same-seedState replacementvalueparity; originalsrestored. No debughook/providerreplacementduringtiming; notFPSacceptance.",
+    "failed_counter_probe": "run1retained: hookundercountsevenknownparent(2instead3)andcandidate0,soinvalidcounterdiagnostic; allhooks/state restore/gameStop. Do nottreatasactualoperationcounts orcorrectnessfailure."
+  },
+  "ci_parent": {
+    "commit": "afff7087",
+    "full": "325/334FAIL,same9namesANDall5filelineanchorsasf889;7newB28fixturefailurescleared",
+    "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39861460964",
+    "comparison": "/home/deck/deborah-recovery/evidence/afff7087-ci/comparison.json",
+    "source_vr_audio": "PASS"
+  }
 }
