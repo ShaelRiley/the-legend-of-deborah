@@ -1,3 +1,11 @@
+# Current checkpoint — animation cache candidate; native timing pending
+
+Both displays remain ON at all times, external1080p75/internal1280×800@60. The normal60s Deck D20 route is22.329FPS,p9577.102ms,p99116.449ms,longest drop25.236s: FAIL. Boundary counters show the main task96.17%ofonecore and0.420srunqueuewait in64.917s; gameGPUgraphicsengine6.28%busy. This points to main-thread CPU work without changing monitor power or graphics.
+
+A bounded broad Lua diagnostic restores2244bindings after skipping68duplicatealiases. Inclusive estimates overlap; wrapping CellCenter changes its identity fallback, so that timing is excluded. The first alias lease failed restoration and its game was stopped; raw failure remains. Animation resolution is a frequent shared query. Candidate borrows the current native instance table only for an owned cache hit; currentmodel/razor/hold checks and original miss/inherited/missing fallback remain. No actor, animation, combat or AI timing changes.
+
+Focused animation/skeleton/fallen/entry/hurt/Razor/lifecycle gates pass; exact parent fails the new native-shaped owned-cache test. Native original-source timing remains PENDING. Next: finite native microdiagnostic, then matched fresh source gameplay measurements; retain only supported benefit. [Evidence](validation/STEAM_DECK_ANIMATION_CACHE_20261022.json). TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged.
+
 # Current checkpoint — both displays stay on; frame budget still fails
 
 Explicit user requirement: keep BOTH monitors ON at all times and achieve40FPS in that configuration. Session idle inhibition is held; external1920×1080@75 is restored and internal1280×800@60 retained. No future monitor-off arm is allowed. Historical off data remains diagnostic only. The final both-on short Dungeon20 arm is21.129FPS,p9587.416ms,p99120.272ms,longest drop15.186s: FAIL. No source improvement is inferred from the display series.

@@ -1188,3 +1188,11 @@ Explicit user requirement: keep BOTH monitors ON at all times and achieve40FPS i
 f889bf95 full CI completes325/334FAIL. All nine failing suite names AND exact file/line anchors match bc95; the new8d boss-framework fixture failure is cleared. Source/VR/audio checks pass. No full green matrix or performance acceptance is claimed. [Display/CI evidence](STEAM_DECK_BOTH_DISPLAYS_20261022.json).
 
 No game/server remains active. Next: bounded before/after process/thread CPU and scheduler accounting around the same ordinary gameplay route, preserving both displaysON and all workload/settings. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged. Continue measured optimization and missing gameplay/multiplayer coverage.
+
+## 2026-10-22: main CPU boundary counters and animation cache candidate
+
+Both displays remain ON at all times, external1080p75/internal1280×800@60. The normal60s Deck D20 route is22.329FPS,p9577.102ms,p99116.449ms,longest drop25.236s: FAIL. Boundary counters show the main task96.17%ofonecore and0.420srunqueuewait in64.917s; gameGPUgraphicsengine6.28%busy. This points to main-thread CPU work without changing monitor power or graphics.
+
+A bounded broad Lua diagnostic restores2244bindings after skipping68duplicatealiases. Inclusive estimates overlap; wrapping CellCenter changes its identity fallback, so that timing is excluded. The first alias lease failed restoration and its game was stopped; raw failure remains. Animation resolution is a frequent shared query. Candidate borrows the current native instance table only for an owned cache hit; currentmodel/razor/hold checks and original miss/inherited/missing fallback remain. No actor, animation, combat or AI timing changes.
+
+Focused animation/skeleton/fallen/entry/hurt/Razor/lifecycle gates pass; exact parent fails the new native-shaped owned-cache test. Native original-source timing remains PENDING. Next: finite native microdiagnostic, then matched fresh source gameplay measurements; retain only supported benefit. [Evidence](STEAM_DECK_ANIMATION_CACHE_20261022.json). TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged.
