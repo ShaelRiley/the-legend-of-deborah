@@ -1,3 +1,11 @@
+# Current checkpoint — native component-read candidate; Deck timing pending
+
+The heavy Dungeon10 profile attributes65.318ms/s to generated geometry, but only4.809ms/s to slab calls and3.285ms/s to full-box calls. The candidate reads each live native Vector/Angle through its native Unpack API, retaining the scalar fallback for custom values/missing APIs. Native C methods and component order were observed on the actual Deck. No membership, culling, pose lifetime, collision, counts or visuals change. Existing renderer mutations/nested views/lifetime checks also execute through the simulated native API path. Native source FPS comparison is next; no gain is claimed yet.
+
+A private opaque combat-feed render-target cache preserved sample text (bright-background maximum5channel levels of rounding, fade sample identical) but its first60s gameplay run is38.513FPS/p9535.754/p9969.856, compared with39.251/p9534.561/p9953.708 baseline. It does not pass the initial performance gate and was restored (25219hits/313builds/821fallbacks in193.75s); no production HUD cache is adopted. Raw `/home/deck/deborah-benchmarks/hud-cache-probe/`.
+
+Target remains UNMET; all full acceptance scenarios remain UNVERIFIED. Follow the baseline and coverage constraints below; keep PR7 draft.
+
 # Current checkpoint — actual Dungeon10 gameplay misses frame budget
 
 The Deck rebooted overnight. A persistent user service now keeps the Windows64/Proton10 game alive across tool calls; native captures work. The older unexplained closures are historical evidence, not a current access blocker. No media session survived reboot. External DP1 is temporarily60Hz for matched measurements and must return to75Hz afterward.

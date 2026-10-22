@@ -368,13 +368,30 @@ end
 -- A refresh can retain entities and snapshots from the previous implementation.
 -- Resolve their basis again before borrowing fields owned by this file instance.
 local snapshotOwner = {}
+local vectorMeta = FindMetaTable and FindMetaTable("Vector")
+local angleMeta = FindMetaTable and FindMetaTable("Angle")
+local unpackVector = vectorMeta and vectorMeta.Unpack
+local unpackAngle = angleMeta and angleMeta.Unpack
+local nativeVector, nativeAngle = isvector, isangle
+local function vectorComponents(value)
+    if unpackVector and nativeVector and nativeVector(value) then return unpackVector(value) end
+    return value.x, value.y, value.z
+end
+local function angleComponents(value)
+    if not value then return end
+    if unpackAngle and nativeAngle and nativeAngle(value) then return unpackAngle(value) end
+    return value.p, value.y, value.r
+end
 local function visualSnapshot(ent, data)
     local fields = data or ent
     local mins, maxs = fields.GetBoxMins(ent), fields.GetBoxMaxs(ent)
     local pos, angles = ent:GetPos(), ent:GetAngles()
-    local x0,y0,z0,x1,y1,z1 = mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z
-    local px,py,pz = pos.x,pos.y,pos.z
-    local pitch, yaw, roll = angles and angles.p, angles and angles.y, angles and angles.r
+    -- Native Unpack reads the same live components in one call. Retain the
+    -- component path for custom values and runtimes without these methods.
+    local x0,y0,z0 = vectorComponents(mins)
+    local x1,y1,z1 = vectorComponents(maxs)
+    local px,py,pz = vectorComponents(pos)
+    local pitch, yaw, roll = angleComponents(angles)
     local cached = fields._LODVisualBox
     -- Snapshot once per pass; reuse identical geometry/pose across passes.
     -- Scalars observe in-place native vector/angle mutations immediately.

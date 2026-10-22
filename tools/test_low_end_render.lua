@@ -9,6 +9,7 @@ local supportProbe = arg and arg[1] == '--support-probe'
 local supportGate = arg and arg[1] == '--support-gate'
 local viewProbe = arg and arg[1] == '--view-probe'
 local viewGate = arg and arg[1] == '--view-gate'
+local nativeComponents = arg and arg[1] == '--native-components'
 local override = baseline or parity or stateProbe or kindProbe or supportProbe or supportGate or viewProbe or viewGate or arg and arg[1] == '--source'
 local meshPath = override and assert(arg[2]) or 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
 local entityPath = override and assert(arg[3]) or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua'
@@ -64,6 +65,28 @@ local function nativeVector(v)
   if k=='x' or k=='y' or k=='z' then nativeVectorReads=nativeVectorReads+1;return o.value[k] end
   return V[k]
  end,__newindex=function(o,k,n) o.value[k]=n end,__add=V.__add,__sub=V.__sub})
+end
+local nativeUnpacks=0
+if nativeComponents then
+ -- Exercise the native-API route through the same mutation, nested-view and
+ -- lifetime assertions below. Other tests retain the missing-API fallback.
+ isvector=function(v)
+  local meta=getmetatable(v)
+  return meta==V or meta==AX or type(v)=='table' and rawget(v,'value')~=nil
+ end
+ isangle=function(v) return getmetatable(v)==A end
+ local vectorAPI={Unpack=function(v)
+  nativeUnpacks=nativeUnpacks+1
+  local values=rawget(v,'value') or rawget(v,'values') or v
+  return values.x,values.y,values.z
+ end}
+ local angleAPI={Unpack=function(v)
+  nativeUnpacks=nativeUnpacks+1
+  return v.p,v.y,v.r
+ end}
+ FindMetaTable=function(name)
+  if name=='Vector' then return vectorAPI elseif name=='Angle' then return angleAPI end
+ end
 end
 local absoluteValues=0
 local absolute=math.abs
@@ -391,13 +414,18 @@ if submissionSignature then
  submissionSignature=nil
 end
 formats,matrices,geometryReads,absoluteValues,axisReads,nativeVectorReads=0,0,0,0,0,0
+nativeUnpacks=0
 for _=1,120 do assert(frame()==120) end
 print(format('LOW_END_STATIC_WORK entities=120 frames=120 cache_key_formats=%d matrix_allocations=%d native_peak_meshes=%d',formats,matrices,peak))
 if not baseline then assert(formats==0 and matrices==0,'static drawing repeats compilation/transform allocation') end
 print(format('LOW_END_NATIVE_GETTERS entities=120 frames=120 reads=%d native_fps_measured=false',geometryReads))
 if not baseline then assert(geometryReads==4*120*120,'drawable boxes repeat native geometry reads within a pass') end
 print(format('LOW_END_DRAW_SNAPSHOT entities=120 passes=120 native_vector_components=%d native_fps_measured=false',nativeVectorReads))
-if not baseline and not parity and not stateProbe then assert(nativeVectorReads==9*120*120,'mesh cache repeats the renderer native scalar reads') end
+if nativeComponents then
+ assert(nativeVectorReads==0 and nativeUnpacks==4*120*120,'native snapshot repeats scalar reads or unpack calls')
+elseif not baseline and not parity and not stateProbe then
+ assert(nativeVectorReads==9*120*120,'mesh cache repeats the renderer native scalar reads')
+end
 print(format('LOW_END_PLANE_WORK entities=120 passes=120 absolute_values=%d basis_component_reads=%d native_fps_measured=false',absoluteValues,axisReads))
 if not baseline then
  assert(absoluteValues<=20*120,'identity-axis support repeats plane arithmetic per box')
@@ -611,7 +639,9 @@ nativeVectorReads=0;changing.mins.x=-12;assert(frame()==122);B.DrawSlab=slab
 assert(changing._LODVisualBox.x0==-12,'borrowed Lua table retained stale mutable bounds')
 -- Every observed box rechecks its native values on this pass. The changed
 -- box consumes each position/bounds component only once before snapshot rebuild.
-if not kindProbe then assert(snapshotReads==9,'snapshot rebuild repeated native vector components') end
+if not kindProbe then
+ assert(snapshotReads==(nativeComponents and 0 or 9),'snapshot rebuild repeated native vector components')
+end
 changing.pos.x=1135;changing.ang=Angle(0,5,0);assert(frame()==122)
 assert(changing._LODVisualBox.px==1135 and changing._LODVisualBox.yaw==5,'borrowed table retained stale pose')
 local currentMins=changing.GetBoxMins
@@ -677,7 +707,7 @@ for i,kind in ipairs({1,2,5,1}) do
 end
 assert(frame()==4)
 nativeVectorReads=0;assert(frame()==4)
-if not parity then assert(nativeVectorReads==36,'floor/stair/underdeck/grate repeated validated vector reads') end
+if not parity then assert(nativeVectorReads==(nativeComponents and 0 or 36),'floor/stair/underdeck/grate repeated validated vector reads') end
 local e=entities[1]
 local changedPos=Vector(1400,25,30)
 B:DrawSlab(changedPos,e.ang,e.mins,e.maxs,material,color_white,512,e,e._LODVisualBox)
@@ -860,5 +890,6 @@ dofile(meshPath);assert(live==0);check('slab')
 local weak=setmetatable({owner},{__mode='v'});owner=nil;collectgarbage('collect');assert(weak[1]==nil)
 B:DrawSlab(pos,ang,mins,maxs,material,color_white,512);assert(lastDraw.mesh and currentMatrix==nil)
 fire('ShutDown');assert(live==0 and peak<=256)
+if nativeComponents then assert(nativeUnpacks>1000,'native component path was not exercised') end
 print(format('LOW_END_RENDER_PASS: %d visible-corner and %d conservative plane cases (%d without an inside corner); native getter reuse and scheduled bounds; FOV/aspect/roll/pitch/yaw/nested views; mutations/kind/UV/material/eviction/cleanup/refresh/weak owners; ceiling=256',checked,conservative,crossing))
 if not override then supportCases(true) end
