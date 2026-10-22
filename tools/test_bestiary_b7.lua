@@ -4,15 +4,11 @@ local env=dofile('tools/test_enemy_update.lua')
 local root='gamemodes/legend_of_deborah/gamemode/lod/'
 local noop=function() end
 local v=getmetatable(Vector())
-local vectorMutations={divide=0,multiply=0,add=0}
 v.__div=function(a,b) return a*(1/b) end
 v.__unm=function(a) return a*-1 end
 function v:Dot(b) return self.x*b.x+self.y*b.y+self.z*b.z end
 function v:Length2D() return math.sqrt(self.x*self.x+self.y*self.y) end
 function v:Normalize() local n=self:GetNormalized();self.x,self.y,self.z=n.x,n.y,n.z end
-function v:Div(n) vectorMutations.divide=vectorMutations.divide+1;self.x,self.y,self.z=self.x/n,self.y/n,self.z/n end
-function v:Mul(n) vectorMutations.multiply=vectorMutations.multiply+1;self.x,self.y,self.z=self.x*n,self.y*n,self.z*n end
-function v:Add(b) vectorMutations.add=vectorMutations.add+1;self.x,self.y,self.z=self.x+b.x,self.y+b.y,self.z+b.z end
 local am={};am.__index=am
 function Angle(p,y,r) return setmetatable({p=p or 0,y=y or 0,r=r or 0},am) end
 function am:Forward() local y=math.rad(self.y);return Vector(math.cos(y),math.sin(y),0) end
@@ -339,19 +335,4 @@ LOD.CombatRolls.RollHostileAttack=function(self,...) contractCount=contractCount
 strike(e,a);service(time+.025);assert(contractCount==1 and hero.hits==1,'one roll and settlement per beat')
 LOD.CombatRolls.RollHostileAttack=realRoll
 print('BESTIARY_B7_MULTIPLAYER_PASS: captured lives, no unseen tell inheritance/rescans, lethal-primary order independence, canonical one-roll settlement')
--- Actual movement retains its input waypoints and earlier published velocity
--- objects. Local vector reuse must not become shared scratch state across ticks.
-reset()
-local mover=actor('runner');mover.LODActivated=true;mover.loco=nil;mover.SetAngles=noop
-local motion=LOD.HostileMotionV2
-local origin=mover:GetPos();local ox,oy,oz=origin.x,origin.y,origin.z
-local goal=origin+Vector(600,800,0);local gx,gy,gz=goal.x,goal.y,goal.z
-mover.LODMotionLastUpdate=time-.025
-motion:MoveToward(mover,{pos=goal})
-assert(origin.x==ox and origin.y==oy and origin.z==oz and goal.x==gx and goal.y==gy and goal.z==gz,'movement mutated input geometry')
-local velocity=mover.LODMotionVelocity;local vx,vy,vz=velocity.x,velocity.y,velocity.z
-assert(mover:GetPos():DistToSqr(origin)>0 and vectorMutations.divide>0 and vectorMutations.multiply>0 and vectorMutations.add>0,'native-shaped mutable vector movement path not exercised')
-at(time+.025);motion:MoveToward(mover,{pos=goal})
-assert(velocity~=mover.LODMotionVelocity and velocity.x==vx and velocity.y==vy and velocity.z==vz,'later step reused published velocity')
-print('MOTION_VECTOR_OWNERSHIP_PASS: native-shaped fast path, original input geometry, distinct per-tick velocity and full combat/status regressions')
 return {env=env,actor=actor,pair=pair,reset=reset,hero=hero,state=s,at=at,service=service,center=center}

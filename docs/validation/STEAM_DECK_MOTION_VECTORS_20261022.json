@@ -1,6 +1,6 @@
 {
-  "recorded_utc": "2026-10-22T19:30:49.117317+00:00",
-  "state": "source candidate; no FPS improvement claimed; target UNMET",
+  "recorded_utc": "2026-10-22T20:00:34.566073+00:00",
+  "state": "REJECTED; runtime/source restored exactly to32d82a82 for motion andB7fixture; targetUNMET",
   "parent": "32d82a82b542eef5365fc62c4d0f7a2ec982d2d3",
   "profile": "/home/deck/deborah-benchmarks/brain-phase-profile/c11c3567/normal-d10-60-run1/bench_brain_phase.json",
   "profile_scope": "one-in64 inclusive estimates;103bindings restored; MoveToward67.431ms/s,BeforeAI53.293ms/s,EnemyRosterTick56.685ms/s; scopes overlap, instrumentedFPS34.973 not acceptance",
@@ -13,5 +13,364 @@
   },
   "native_scope": "Windows64/P10 actualDeck native Vector components,12000ground/stair/facing/velocity/travel cases; math-only proof, not gameplayFPS",
   "static": "B7 andproduction/B29dispatch/magicwall/entrysafety/bossframework/companions/physical all PASS; native-shaped mutable branch/input/velocityownership gate passes and exactparent fails that new gate; syntax/diff PASS",
-  "next": "Fresh original-source candidate and exactparent worktree alternating60s native Deck runs, preserving all3existing Motion wrappers; retain/revert based actual measurements."
+  "next": "Investigate remainingCPU/render scheduling bottleneck under exact retainedruntime; all6fullgatesremainunverified.",
+  "comparison_plan": {
+    "frozen_utc": "2026-10-22T19:44:40.513129+00:00",
+    "purpose": "Source retention comparison only; final warmed180s acceptance still UNVERIFIED",
+    "current_sha": "51d8a5a09672b8f8144e666f1733f1268d140cb2",
+    "parent_sha": "32d82a82b542eef5365fc62c4d0f7a2ec982d2d3",
+    "observer": "No external1Hzsensor sampler in any source arm. Existing bounded in-game pacing recorder/control only. Earlieron/off exploratory captures retained; no observer-overhead claim from onepair.",
+    "conditions": "SameactualLCDDeck1280x800/P10/listenhost/15W/fps300/vsync0/mcore1/queue2/bones1; fixedD10v5 Wizard13/3items/315points/speed200, samecanonicalreset/native1348ready and input/capturealign. FreshVM60s perarm, not warmedfinalacceptance.",
+    "sequence": [
+      {
+        "mode": "parent",
+        "name": "none-v2-parent60-run1",
+        "run_id": "nonev2-parent1"
+      },
+      {
+        "mode": "current",
+        "name": "none-v2-current60-run1",
+        "run_id": "nonev2-current1"
+      },
+      {
+        "mode": "current",
+        "name": "none-v2-current60-run2",
+        "run_id": "nonev2-current2"
+      },
+      {
+        "mode": "parent",
+        "name": "none-v2-parent60-run2",
+        "run_id": "nonev2-parent2"
+      },
+      {
+        "mode": "parent",
+        "name": "none-v2-parent60-run3",
+        "run_id": "nonev2-parent3"
+      },
+      {
+        "mode": "current",
+        "name": "none-v2-current60-run3",
+        "run_id": "nonev2-current3"
+      }
+    ],
+    "decision": "No gains within observed variation. Check normal workload/source/error/ownership regressions. Reject inconsistent/no reliable gain or material pacing regression; preserve every failed capture."
+  },
+  "comparison": {
+    "plan": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/uniform-none-v2-plan.json",
+    "completed": [
+      {
+        "arm": {
+          "mode": "parent",
+          "name": "none-v2-parent60-run1",
+          "run_id": "nonev2-parent1"
+        },
+        "out": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/none-v2-parent60-run1",
+        "analysis": {
+          "mode": "uncapped",
+          "limiter_tolerance_ms": 0,
+          "active": {
+            "frames": 2247,
+            "seconds": 59.968999000000004,
+            "fps": 37.46935979371608,
+            "median_ms": 24.828,
+            "p95_ms": 36.625,
+            "p99_ms": 69.722,
+            "max_ms": 165.352,
+            "one_percent_low_fps": 10.203724004349448,
+            "below_budget_seconds": 35.055013000000045,
+            "longest_below_budget_seconds": 4.625236,
+            "below_budget_runs_ge2s": 3
+          },
+          "pacing_at_tolerated_budget": {
+            "frames": 2247,
+            "seconds": 59.968999000000004,
+            "fps": 37.46935979371608,
+            "median_ms": 24.828,
+            "p95_ms": 36.625,
+            "p99_ms": 69.722,
+            "max_ms": 165.352,
+            "one_percent_low_fps": 10.203724004349448,
+            "below_budget_seconds": 35.055013000000045,
+            "longest_below_budget_seconds": 4.625236,
+            "below_budget_runs_ge2s": 3
+          },
+          "capture_checks_passed": false,
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ],
+          "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+        }
+      },
+      {
+        "arm": {
+          "mode": "current",
+          "name": "none-v2-current60-run1",
+          "run_id": "nonev2-current1"
+        },
+        "out": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/none-v2-current60-run1",
+        "analysis": {
+          "mode": "uncapped",
+          "limiter_tolerance_ms": 0,
+          "active": {
+            "frames": 2340,
+            "seconds": 59.977938,
+            "fps": 39.014345574867875,
+            "median_ms": 24.515,
+            "p95_ms": 35.33,
+            "p99_ms": 59.402,
+            "max_ms": 128.167,
+            "one_percent_low_fps": 13.045186896762022,
+            "below_budget_seconds": 33.551969,
+            "longest_below_budget_seconds": 2.7692919999999996,
+            "below_budget_runs_ge2s": 3
+          },
+          "pacing_at_tolerated_budget": {
+            "frames": 2340,
+            "seconds": 59.977938,
+            "fps": 39.014345574867875,
+            "median_ms": 24.515,
+            "p95_ms": 35.33,
+            "p99_ms": 59.402,
+            "max_ms": 128.167,
+            "one_percent_low_fps": 13.045186896762022,
+            "below_budget_seconds": 33.551969,
+            "longest_below_budget_seconds": 2.7692919999999996,
+            "below_budget_runs_ge2s": 3
+          },
+          "capture_checks_passed": false,
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ],
+          "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+        }
+      },
+      {
+        "arm": {
+          "mode": "current",
+          "name": "none-v2-current60-run2",
+          "run_id": "nonev2-current2"
+        },
+        "out": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/none-v2-current60-run2",
+        "analysis": {
+          "mode": "uncapped",
+          "limiter_tolerance_ms": 0,
+          "active": {
+            "frames": 2193,
+            "seconds": 59.981342,
+            "fps": 36.56136936716088,
+            "median_ms": 25.686,
+            "p95_ms": 41.968,
+            "p99_ms": 71.577,
+            "max_ms": 120.157,
+            "one_percent_low_fps": 11.39374504113142,
+            "below_budget_seconds": 38.98611099999997,
+            "longest_below_budget_seconds": 2.7206269999999995,
+            "below_budget_runs_ge2s": 3
+          },
+          "pacing_at_tolerated_budget": {
+            "frames": 2193,
+            "seconds": 59.981342,
+            "fps": 36.56136936716088,
+            "median_ms": 25.686,
+            "p95_ms": 41.968,
+            "p99_ms": 71.577,
+            "max_ms": 120.157,
+            "one_percent_low_fps": 11.39374504113142,
+            "below_budget_seconds": 38.98611099999997,
+            "longest_below_budget_seconds": 2.7206269999999995,
+            "below_budget_runs_ge2s": 3
+          },
+          "capture_checks_passed": false,
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ],
+          "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+        }
+      },
+      {
+        "arm": {
+          "mode": "parent",
+          "name": "none-v2-parent60-run2",
+          "run_id": "nonev2-parent2"
+        },
+        "out": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/none-v2-parent60-run2",
+        "analysis": {
+          "mode": "uncapped",
+          "limiter_tolerance_ms": 0,
+          "active": {
+            "frames": 2272,
+            "seconds": 59.98314499999999,
+            "fps": 37.87730703350083,
+            "median_ms": 24.482,
+            "p95_ms": 37.391,
+            "p99_ms": 76.441,
+            "max_ms": 184.69,
+            "one_percent_low_fps": 9.412889437837688,
+            "below_budget_seconds": 33.924707000000005,
+            "longest_below_budget_seconds": 2.332096000000001,
+            "below_budget_runs_ge2s": 5
+          },
+          "pacing_at_tolerated_budget": {
+            "frames": 2272,
+            "seconds": 59.98314499999999,
+            "fps": 37.87730703350083,
+            "median_ms": 24.482,
+            "p95_ms": 37.391,
+            "p99_ms": 76.441,
+            "max_ms": 184.69,
+            "one_percent_low_fps": 9.412889437837688,
+            "below_budget_seconds": 33.924707000000005,
+            "longest_below_budget_seconds": 2.332096000000001,
+            "below_budget_runs_ge2s": 5
+          },
+          "capture_checks_passed": false,
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ],
+          "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+        }
+      },
+      {
+        "arm": {
+          "mode": "parent",
+          "name": "none-v2-parent60-run3",
+          "run_id": "nonev2-parent3"
+        },
+        "out": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/none-v2-parent60-run3",
+        "analysis": {
+          "mode": "uncapped",
+          "limiter_tolerance_ms": 0,
+          "active": {
+            "frames": 2178,
+            "seconds": 59.970893,
+            "fps": 36.3176182819222,
+            "median_ms": 26.36,
+            "p95_ms": 37.627,
+            "p99_ms": 64.138,
+            "max_ms": 126.89,
+            "one_percent_low_fps": 11.600707854101062,
+            "below_budget_seconds": 40.724993999999946,
+            "longest_below_budget_seconds": 4.037293999999999,
+            "below_budget_runs_ge2s": 6
+          },
+          "pacing_at_tolerated_budget": {
+            "frames": 2178,
+            "seconds": 59.970893,
+            "fps": 36.3176182819222,
+            "median_ms": 26.36,
+            "p95_ms": 37.627,
+            "p99_ms": 64.138,
+            "max_ms": 126.89,
+            "one_percent_low_fps": 11.600707854101062,
+            "below_budget_seconds": 40.724993999999946,
+            "longest_below_budget_seconds": 4.037293999999999,
+            "below_budget_runs_ge2s": 6
+          },
+          "capture_checks_passed": false,
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ],
+          "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+        }
+      },
+      {
+        "arm": {
+          "mode": "current",
+          "name": "none-v2-current60-run3",
+          "run_id": "nonev2-current3"
+        },
+        "out": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/none-v2-current60-run3",
+        "analysis": {
+          "mode": "uncapped",
+          "limiter_tolerance_ms": 0,
+          "active": {
+            "frames": 2154,
+            "seconds": 59.965204,
+            "fps": 35.92083168765673,
+            "median_ms": 25.606,
+            "p95_ms": 40.881,
+            "p99_ms": 84.115,
+            "max_ms": 160.302,
+            "one_percent_low_fps": 9.001378847578014,
+            "below_budget_seconds": 38.66221500000002,
+            "longest_below_budget_seconds": 5.549292,
+            "below_budget_runs_ge2s": 4
+          },
+          "pacing_at_tolerated_budget": {
+            "frames": 2154,
+            "seconds": 59.965204,
+            "fps": 35.92083168765673,
+            "median_ms": 25.606,
+            "p95_ms": 40.881,
+            "p99_ms": 84.115,
+            "max_ms": 160.302,
+            "one_percent_low_fps": 9.001378847578014,
+            "below_budget_seconds": 38.66221500000002,
+            "longest_below_budget_seconds": 5.549292,
+            "below_budget_runs_ge2s": 4
+          },
+          "capture_checks_passed": false,
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ],
+          "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+        }
+      }
+    ],
+    "status": "complete",
+    "index": 5,
+    "active": null,
+    "active_out": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/none-v2-current60-run3",
+    "updated_utc": "2026-10-22T19:58:16.926615+00:00"
+  },
+  "summary": {
+    "current": {
+      "fps": [
+        39.014345574867875,
+        36.56136936716088,
+        35.92083168765673
+      ],
+      "mean_fps": 37.165515543228494,
+      "range": [
+        35.92083168765673,
+        39.014345574867875
+      ]
+    },
+    "parent": {
+      "fps": [
+        37.46935979371608,
+        37.87730703350083,
+        36.3176182819222
+      ],
+      "mean_fps": 37.22142836971304,
+      "range": [
+        36.3176182819222,
+        37.87730703350083
+      ]
+    }
+  },
+  "decision": "Means37.1655current/37.2214parent; rangesoverlap, two adjacentpairsworse, tailsinconsistent, allfailbudget. No repeatable benefit or proven slowdown. Revertcandidate, preserve allnativecorrectness andfailedtiming evidence.",
+  "observer_exploration": {
+    "on_current_raw": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/current60-run1",
+    "off_current_raw": "/home/deck/deborah-benchmarks/motion-vectors-source/51d8a5a0/observer-off-current60-run1",
+    "status": "Bothpreserved; oneon/offpairdoesnotestablishoverhead. Externalmonitoruniformlyoff in sixsourcearms; no workload/thresholdchange."
+  }
 }
