@@ -1,3 +1,13 @@
+# Current checkpoint — native CPU samples; callback comparison in progress
+
+Both displays stay ON at internal 1280×800@60 and external 1920×1080@75. A native 99 Hz main-thread diagnostic saves 5,890 samples with zero loss. Saved PE image ranges map 42.65% to lua_shared.dll, 15.84% to client.dll, 10.66% to server.dll and 9.95% to engine.dll. These are module shares, not exact Lua-function, realm or GC attribution. Instrumented gameplay still fails: 21.212 FPS, p95 83.325 ms, p99 123.191 ms, longest drop 23.338 seconds. Sampling overhead is unmeasured.
+
+The collector rejected the requested profiler SIGINT after flushing. Intact raw FPS was recovered before another launch; no post-capture CPU snapshot or display check is fabricated. The standard public jit.profile module is unavailable in both realms. No disabled API or native-module workaround was used. Failed startup harness attempts are preserved; their private bridge and stock menu edits are restored exactly. Native launcher command forwarding now resumes the paused failed-menu overlay, with actual client ACK and readiness gates.
+
+A combined collision-callback prototype passes 6,400 return comparisons over 80 cases with zero mismatches and unchanged registrations. A predeclared fresh-game parent/candidate/candidate/parent 60-second screening comparison is running with no profiling or device sampler. Native collision flags/groups, AI, counts, normal resources and frozen actions remain. No source candidate or performance gain follows the value gate alone. [Raw evidence and limitations](validation/STEAM_DECK_NATIVE_CPU_20261022.json).
+
+Target UNMET; all six full acceptance scenarios UNVERIFIED. PR 7 remains draft; main remains cec10dc54. Finish the comparison, check complete receipts and restoration, then retain or reject on measured evidence before the next focused change.
+
 # Current checkpoint — native collision alternatives rejected before source changes
 
 Both monitors remain ON: internal 1280×800@60, external 1920×1080@75. Sparse callback classification restored both bindings after 68.02 seconds. Separation ran 3,573 calls/s and latch handling 3,068 calls/s; most sampled pairs involved static geometry. Callback-body estimates total 13.2 ms/s and do not measure native bridge or broadphase overhead. The diagnostic capture still fails at 22.43 FPS.
