@@ -1,3 +1,11 @@
+# Current checkpoint — finale composition repaired; functioning fight still fails
+
+Retain 8b0b531e's native floor-support repair. The same frozen Deck route now commits one Gordon, four clones and all four Sentries exactly once, with zero composition retries and zero Lua errors. All four real Sentries pass the post-capture ownership and five-point support gate. Ordinary incoming damage reduces HP211 to192 during the run. The baseline could not commit combat, so its 5.447→22.934 FPS change measures the repaired retry pathology, not identical functioning-fight workloads or acceptance.
+
+The functioning fight still FAILS: 22.934 FPS, median36.877ms, p9576.116ms, p9998.104ms, max468.224ms, longest drop25.195s. Only phase1/lower-court coverage is observed. The later native ownership probe finds the player dead after the capture; that is not hidden or used as performance acceptance. Next: same-route native VProf diagnostic on the functioning fight, preserving source, resources, counts, AI and graphics. [Raw results and coverage](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
+
+Target UNMET; all six full gates UNVERIFIED. PR7 stays draft and canonical main remains cec10dc54. Continue measured optimizations and missing upper-floor, full-phase, Hector/rescue and real four-player coverage. Restore external DP1 to75Hz after benchmarks.
+
 # Current checkpoint — native finale support defect; same-route source validation next
 
 The first clean Deck Dungeon 20 lower-court run fails: 5.447 FPS, median 196.041 ms, p95 305.864 ms, p99 334.240 ms, maximum 387.357 ms, longest drop 58.818 seconds. Input reaches waypoint 187 with zero Lua errors. No encounter commits: 263 complete-group retries each reject all four required Sentries. Combat and phase coverage remain unverified. The private route's incorrect cell-size assumption was corrected before its first timing capture; the clear 640-point, 288-unit-radius route is now frozen.

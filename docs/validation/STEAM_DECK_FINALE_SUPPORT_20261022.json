@@ -1,5 +1,5 @@
 {
-  "status": "SOURCE CANDIDATE; actual Deck final acceptance UNVERIFIED; target UNMET",
+  "status": "RETAIN native floor support repair; target UNMET, complete acceptance UNVERIFIED",
   "parent": "bc95bed0b590da75622d0edefdd1fa7e1d2efe1f",
   "device": "Actual LCD/Jupiter512GB Deck SteamOS3.8.28 GMod2026.09.17/public25375506 Windows64 Proton10.0-4b/sniper;1280x800@60 AC15W GPUauto uncapped300 vsync0 mcore1 queue2 bones1; solo listen host",
   "scenario": "Frozen D20 lowercourt-v1 before first FPS result;640points radius288 normal input; HP211 AR2clip20 canonical3items; campaign654759232 level1217159003 layout899898795 roster588052291;57normalroamers53planned1820models",
@@ -73,7 +73,111 @@
     "hector": "encounterhandoff/cleanup/rescue/Level21andfinalePASS",
     "source": "manifest118total/114server/52client; installandpopulationtransport/B28PASS;changedLuaSyntaxPASS"
   },
-  "native_candidate": "PENDING fresh installed-source same frozen route; no gain or encounteracceptanceclaimed",
+  "native_candidate": {
+    "raw": "/home/deck/deborah-benchmarks/finale-support-source/8b0b531e/d20-normal60-run1",
+    "analysis": {
+      "mode": "uncapped",
+      "limiter_tolerance_ms": 0,
+      "active": {
+        "frames": 1374,
+        "seconds": 59.910873,
+        "fps": 22.93406741043483,
+        "median_ms": 36.877,
+        "p95_ms": 76.116,
+        "p99_ms": 98.104,
+        "max_ms": 468.224,
+        "one_percent_low_fps": 6.688311316049463,
+        "below_budget_seconds": 59.39311299999999,
+        "longest_below_budget_seconds": 25.195458000000006,
+        "below_budget_runs_ge2s": 3
+      },
+      "pacing_at_tolerated_budget": {
+        "frames": 1374,
+        "seconds": 59.910873,
+        "fps": 22.93406741043483,
+        "median_ms": 36.877,
+        "p95_ms": 76.116,
+        "p99_ms": 98.104,
+        "max_ms": 468.224,
+        "one_percent_low_fps": 6.688311316049463,
+        "below_budget_seconds": 59.39311299999999,
+        "longest_below_budget_seconds": 25.195458000000006,
+        "below_budget_runs_ge2s": 3
+      },
+      "capture_checks_passed": false,
+      "issues": [
+        "unrendered terminal interval exceeds spike budget or is unknown",
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+    },
+    "coverage": {
+      "status": "nine-actorcommit/normalcombat observed;FAILframebudget;fullphasesunverified",
+      "events": {
+        "WARDEN_COMMIT": 1,
+        "WARDEN_COMPOSITION_RETRY": 0,
+        "WARDEN_TURRETS_ADMITTED": 1,
+        "WARDEN_PHASE": 0
+      },
+      "native_gate": {
+        "phase": 1,
+        "composition": 9,
+        "health": 1667,
+        "maximum": 1667,
+        "turrets": 4,
+        "skipped": 0,
+        "player_health": -3,
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua",
+        "scope": "read-only native composition/lifetime/support after active FPS capture; no phase/HP/resources overrides",
+        "slots": [
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 1,
+            "health": 483,
+            "position": "5480.000000 1048.000000 -11501.968750",
+            "maximum": 483,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 2,
+            "health": 262,
+            "position": "4504.000000 2024.000000 -11501.968750",
+            "maximum": 262,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 3,
+            "health": 556,
+            "position": "4504.000000 1048.000000 -11501.968750",
+            "maximum": 556,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 4,
+            "health": 279,
+            "position": "5480.000000 2024.000000 -11501.968750",
+            "maximum": 279,
+            "admitted": true
+          }
+        ],
+        "clones": 4,
+        "seconds": 159.2929229736328
+      },
+      "baseline_comparison_limit": "parent failscombatcomposition, so5.447\u219222.934FPS is a repaired retry pathology, not identical functioningfight performance nor40FPSacceptance"
+    },
+    "interpretation": "Full9actor group now commits1time with0compositionretries; all4actualSentries remaincanonicalownedand5sample-supported. Nativegateat159saftercapture findslaterplayerdeath; active60sendswithordinaryHP192. This is a correctness/retry-pathology repair; baselinehadnofunctioningcombat, so notsamefightFPSgain oracceptance.",
+    "next": "samefrozenroute nativeVProf60 to identify functioningfight bottleneck; fullphase/upperfloor/Hector/rescue stillunverified"
+  },
   "ci_parent": "bc95lowend/VR/audioPASS;fullmatrix325/334FAIL run39845300211",
   "coverage_gaps": [
     "D20upperfloor",
@@ -84,5 +188,6 @@
   ],
   "optional_os_variant": "GameMode1.8.2 CPUgovernortest denied by OS pkexecpolicy; no bypass/no CPU policychange/no gainclaim",
   "primary_api_reference": "https://wiki.facepunch.com/gmod/util.TraceHull",
-  "updated_utc": "2026-10-22T20:27:44.645107+00:00"
+  "updated_utc": "2026-10-22T20:32:28.762554+00:00",
+  "source": "8b0b531e7d8cd5dfdbae36801f604537d4e147b7"
 }

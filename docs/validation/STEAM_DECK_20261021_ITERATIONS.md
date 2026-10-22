@@ -1162,3 +1162,11 @@ A bounded native admission probe records 44 support refusals and restores both m
 SPOT-08 passes 262 assertions; the exact parent fails the new native BBOX floor case. Warden, SPOT-06 (116), SPOT-07 (130), Hector/finale lifecycle, manifest/transport, B28 and syntax checks pass. The manifest now covers 118 total / 114 server / 52 client files. Next: install the committed candidate and repeat the same Deck route. No source FPS gain or encounter acceptance is claimed yet. [Evidence](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
 
 bc95 CI source/VR/audio checks pass; the full matrix remains failed at 325/334 (run 39845300211). SteamOS authorization policy denies the optional GameMode governor test; CPU settings remain unchanged. Continue unaffected work. Target UNMET; all six full gates UNVERIFIED; PR 7 stays draft and main remains cec10dc54. Four actual players remain unavailable. Restore external DP1 to 75 Hz after benchmarks.
+
+### Installed native finale floor-support repair
+
+Retain 8b0b531e's native floor-support repair. The same frozen Deck route now commits one Gordon, four clones and all four Sentries exactly once, with zero composition retries and zero Lua errors. All four real Sentries pass the post-capture ownership and five-point support gate. Ordinary incoming damage reduces HP211 to192 during the run. The baseline could not commit combat, so its 5.447→22.934 FPS change measures the repaired retry pathology, not identical functioning-fight workloads or acceptance.
+
+The functioning fight still FAILS: 22.934 FPS, median36.877ms, p9576.116ms, p9998.104ms, max468.224ms, longest drop25.195s. Only phase1/lower-court coverage is observed. The later native ownership probe finds the player dead after the capture; that is not hidden or used as performance acceptance. Next: same-route native VProf diagnostic on the functioning fight, preserving source, resources, counts, AI and graphics. [Raw results and coverage](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
+
+Target UNMET; all six full gates UNVERIFIED. PR7 stays draft and canonical main remains cec10dc54. Continue measured optimizations and missing upper-floor, full-phase, Hector/rescue and real four-player coverage. Restore external DP1 to75Hz after benchmarks.
