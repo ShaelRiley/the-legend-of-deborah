@@ -154,7 +154,7 @@ local sourceFile=assert(io.open('lua/autorun/server/lod_population_observability
 local sourceBytes=sourceFile:read('*a');sourceFile:close()
 local declaration=assert(sourceBytes:match('local watched=(%b{})'))
 local watched={};for path in declaration:gmatch('"([^"]+)"') do watched[#watched+1]=path end
-assert(#watched==112,'source coverage changed without fixture review')
+assert(#watched==113,'source coverage changed without fixture review')
 local manifest={};for _,p in ipairs(watched) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;memory['GAME:'..p]='exact' end
 memory['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
 memory['DATA:legend_of_deborah/dev_build.txt']='test-checkout clean'

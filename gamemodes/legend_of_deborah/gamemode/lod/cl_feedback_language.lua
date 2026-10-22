@@ -4,6 +4,51 @@ local FALLBACK_HISTORY = "legend_of_deborah/dialogger_history.json"
 local MAX_HISTORY = 1000
 Feed.history = Feed.history or {}
 
+-- History rows have stable persisted fields; opening the history page adds
+-- disposable layout data to those same rows. Keep encodings outside the rows
+-- so neither layout state nor the cache itself is written back to disk.
+local historyFields = {"text", "stamp", "family", "category", "cue", "cueVariant", "serial"}
+local historyJSON = setmetatable({}, {__mode = "k"})
+local function sameHistoryRow(row, saved)
+    for _, key in ipairs(historyFields) do
+        if row[key] ~= saved[key] then return false end
+    end
+    local spans, previous = row.segments, saved.segments
+    if spans == nil or previous == nil then return spans == previous end
+    if #spans ~= #previous then return false end
+    for i, span in ipairs(spans) do
+        local old = previous[i]
+        if span.text ~= old.text or span.role ~= old.role then return false end
+    end
+    return true
+end
+local function encodedHistoryRow(row)
+    local cached = historyJSON[row]
+    if cached and sameHistoryRow(row, cached.saved) then return cached.json end
+    local saved = {}
+    for _, key in ipairs(historyFields) do saved[key] = row[key] end
+    if row.segments then
+        saved.segments = {}
+        for i, span in ipairs(row.segments) do
+            saved.segments[i] = {text = span.text, role = span.role}
+        end
+    end
+    local json = util.TableToJSON(saved)
+    if isstring(json) then historyJSON[row] = {saved = saved, json = json} end
+    return json
+end
+local function encodeHistory()
+    local rows = {}
+    for i, row in ipairs(Feed.history) do
+        local json = encodedHistoryRow(row)
+        -- Preserve the old encoder's failure/fallback behavior instead of
+        -- writing a partial array if an encoder cannot produce a row string.
+        if not isstring(json) then return util.TableToJSON(Feed.history) end
+        rows[i] = json
+    end
+    return "[" .. table.concat(rows, ",") .. "]"
+end
+
 if not Feed.historyLoaded then
     local loadedPath
     if file.Exists(PREFERRED_HISTORY, "DATA") then
@@ -44,10 +89,12 @@ if not Feed.historyLoaded then
 end
 Feed.historyLoaded = true
 while #Feed.history > MAX_HISTORY do table.remove(Feed.history, 1) end
+-- Initial serialization belongs to loading, before ordinary gameplay saves.
+for _, row in ipairs(Feed.history) do encodedHistoryRow(row) end
 
 local function saveHistory()
     file.CreateDir("legend_of_deborah")
-    file.Write(PREFERRED_HISTORY, util.TableToJSON(Feed.history))
+    file.Write(PREFERRED_HISTORY, encodeHistory())
 end
 hook.Add("ShutDown", "LOD_DieLoggerSave", saveHistory)
 

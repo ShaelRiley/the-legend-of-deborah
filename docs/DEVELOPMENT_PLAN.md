@@ -1,3 +1,13 @@
+# Current checkpoint — recurring history JSON hitch candidate; native validation pending
+
+A separate same-Deck dedicated diagnostic preserves normal one-tick AI (41,831 movement calls/20s, wrapper restored), source hashes, counts and Dungeon10 v5 inputs. Its180s result is51.925FPS,p9528.629ms,p9940.791ms,longest5.428s: FAIL. This does not replace frozen listen-host acceptance or establish a delivered configuration.
+
+Paired native profiles isolate a client timer spike, but exact-call measurement corrects the apparent file-I/O diagnosis:27writes total41.679ms/max1.919ms, whereas39JSON encodes total1028.736ms/max53.799ms, with21slow calls. Rewriting1000feedback rows every2seconds is a recurring serialization hitch. Source candidate caches canonical per-row JSON outside the rows, compares all persisted scalar fields and nested semantic text/roles, and rebuilds the ordered JSON array from live history at the same save cadence. Existing rows warm during loading; weak keys release evicted rows. History-page layout is not persisted. No combat, delivery, retention limit, audio or gameplay schedule changes.
+
+Existing feedback/audio/ACK tests and76spot05assertions pass. A new native-shaped string contract covers loading/unchanged rows, scalar/in-place span mutation, replacement/order/eviction, transient layout and reload; exact parent fails it. Source-watch, transport,117source manifest (113server/52client expected), changed-file syntax and diff pass. Native JSON round-trip/source performance is PENDING. Both processes were explicitly stopped before edits; next fresh runtime returns to the original Deck listen-host configuration.
+
+Target UNMET; all six complete acceptance gates UNVERIFIED; PR7draft/maincec10dc54 unchanged. [Candidate evidence](validation/STEAM_DECK_HISTORY_CACHE_20261022.json). Prior retained asset-stall result and failed full listen-host reference remain below.
+
 # Current checkpoint — encounter-entry stall reduced; steady frame budget still fails
 
 Retain b19bccfb as an asset-stall improvement, with no steady FPS claim. Two fresh native source runs (no private precache or extra profiling) move the same eight Chuck/Jane models into the existing held loading period. Loading records 1.196/1.164 seconds of boss asset work; maximum gameplay frames are 117.762/134.200 ms, versus the 1,218.346 ms baseline with the cold commitment measured at 1,175.624 ms. The selected citizen, real encounter RNG, canonical checkpoint, actor counts and render bounds remain correct. Both short runs still fail steady timing: 38.156/37.015 FPS, p95 39.502/40.467 ms, p99 62.301/66.257 ms. Full phases and warmed acceptance remain unverified.

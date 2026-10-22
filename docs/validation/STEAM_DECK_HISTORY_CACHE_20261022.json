@@ -1,0 +1,47 @@
+{
+  "recorded_utc": "2026-10-22T18:58:03.687945+00:00",
+  "state": "source candidate, native source timing and round-trip pending; target UNMET",
+  "parent": "04e6b0d90bf9747d258b85415605f85afb5e805a",
+  "baseline_context": "Separate local native32 dedicated diagnostic on same LCD Steam Deck; original frozen solo listen-host acceptance unchanged",
+  "source_io_raw": "/home/deck/deborah-benchmarks/current-dedicated-d10/04e6b0d9/client-io-profile60-run1",
+  "io_summary": {
+    "util.TableToJSON": {
+      "calls": 39,
+      "max_ms": 53.79870000001574,
+      "bytes": 0,
+      "total_ms": 1028.7361000002875
+    },
+    "file.Append": {
+      "calls": 0,
+      "max_ms": 0,
+      "bytes": 0,
+      "total_ms": 0
+    },
+    "file.Write": {
+      "calls": 27,
+      "max_ms": 1.9192000000884946,
+      "bytes": 15786885,
+      "total_ms": 41.6786000000684
+    }
+  },
+  "slow_json_calls": 21,
+  "io_lease_restored": true,
+  "dedicated_180_raw": "/home/deck/deborah-benchmarks/current-dedicated-d10/04e6b0d9/v5-gameplay180-run1",
+  "dedicated_180": {
+    "frames": 9346,
+    "seconds": 179.989463,
+    "fps": 51.92526186935732,
+    "median_ms": 17.888,
+    "p95_ms": 28.629,
+    "p99_ms": 40.791,
+    "max_ms": 114.517,
+    "one_percent_low_fps": 15.212714203917047,
+    "below_budget_seconds": 37.56703300000005,
+    "longest_below_budget_seconds": 5.428471000000003,
+    "below_budget_runs_ge2s": 1
+  },
+  "native_paired_profile": "/home/deck/deborah-benchmarks/current-dedicated-d10/04e6b0d9/paired-native-profile60-run1",
+  "hypothesis": "Avoid recurring ~50ms full-history JSON conversion by caching canonical row encodings, validating scalar and nested semantic fields, warming existing rows at loading; keep same JSON array,1000limit,2s batching,shutdown save and all audio/ACK behavior. Weak row keys allow old entries to be collected.",
+  "static": "feedback existing+new native-shaped cache contract PASS;76spot05assertions PASS; exact parent fails new gate; source-watch/transport/117manifest/syntax/diff PASS",
+  "next": "Fresh native listen-host exact JSON round-trip and 60s I/O-source test, then comparable uninstrumented captures; retain only with native evidence."
+}

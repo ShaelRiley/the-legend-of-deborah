@@ -9,6 +9,7 @@ local watched={
         "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/init.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_feedback_language.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_die_logger.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_feedback_language.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sv_combat_feed_semantics.lua",
