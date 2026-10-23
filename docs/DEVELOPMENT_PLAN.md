@@ -1,3 +1,9 @@
+# Current checkpoint — first validity source comparison finds no gain
+
+SixP22.699/C22.879/C22.934/P22.066/P23.130/C21.967FPS; meansP22.6316/C22.5932(−0.170%),p9578.375/78.788,p99122.356/109.621,longest11.532/13.868s. Rangesoverlap/mixedpairs; allFAIL40. Prototypegainnotconfirmed; no sourceimprovementretained. Allnativecorrectness/source/provider/HUD/renderer/resource/input/displaywatch checks pass/allownedStop/rootinstallrestore. [Allsix/raw/limits](validation/STEAM_DECK_NATIVE_VALIDITY_20261023.json).
+
+Candidate-onlypreFPSgatechangesmethodownershipthroughreload/foreignowner/reinstallation. PotentialwarmJIT-stateeffectisunmeasured, notclaimedcause. Nativecorrectnessgatealreadyverified; nextfixed6same-game-codeP,C,C,P,P,Cusesreadonlysource/function/Ccallee/result/identitychecksforbothvariants, noreload/reinstallation beforeFPS. Newcomparisongroupkeptseparate; no count/gameplay/setting/FPScriterionchange. Rejectifnogain, confirmifrepeatable. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — native validity forwarding source ready for FPS
 
 Freshprivate4C21.588/P23.729/P23.711/C22.221FPS; meansC21.904/P23.720(+8.289%),p9583.547/75.436ms,p99109.944/105.9415ms,longest13.463/9.853s. Bothcandidatesbeatbothcontrols/allmeanpacingbetter; promisingONLY/all4FAIL40/noformalclaim. Freshnativeparity/owner/retirement/watchchecks pass/allownedStop. EarlierincompletesequenceexcludedaftermissingDPMSline; noactualOFFproven/nooldcapturesalvaged. Newstrictcompleteness+DRMwatchconditionsidenticalallfour; originalinhibitoractive/bothON. [Allrows/raw/limits](validation/STEAM_DECK_NATIVE_VALIDITY_20261023.json).
