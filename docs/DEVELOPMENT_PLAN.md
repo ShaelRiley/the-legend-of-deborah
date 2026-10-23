@@ -1,3 +1,11 @@
+# Current checkpoint — typed Warden dispatch ready for measured comparison
+
+Four managerobserver runs21.290/20.915/22.413/22.988FPS; controlsmean22.139/profiled21.664, rangesoverlap/allFAIL. Repeated Warden.Tick16.48/26.60ms/s standsaboveotheremptyguards, alongside larger usefulroster/close-defense/movementcosts. All31providers restore/independentinspection andownedprocessStop pass. Inclusive sampledrows overlap/canalias, no additiveCPU/FPSgain claim. [Profile/raw](validation/STEAM_DECK_MANAGER_CPU_20261023.json).
+
+Focused candidate puts Warden-only core/dance behindthepubliccurrenttype guard, withcore-before-dance, late typechanges, reload andforeign-owner fallbacks. Existing21phase/dance checks+foreign/reload andWarden24graphs/clones/fuses/commitment/resupply/boss-feedback gates pass;120-source/repeatinstaller/syntax/diff pass. [Contracts/frozen6run gate](validation/STEAM_DECK_WARDEN_DISPATCH_20261023.json).
+
+Next fixedfresh originalsourceP,C,C,P,P,C60s unchangedD20stress, before/afteractualfile/function/capturedcore/dispatchproof plusretainedHUD/renderer/source/normalresource/input/bothON checks. No observer/JIT/GC/settings changes. Rejectnoise/correctness/pacingregression. Staticchecks are notDeckgain. BothmonitorsONalways; SP40UNMET/fivefullSPgates/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — broad behavior router ruled out; manager attribution next
 
 Actual native census finds55ordinaryactors with onlyvariance→MotionV2, twoWatcherswithsevenlexicallayers. No broad wrapper router is justified. Read-only source/upvalue census makesno callfrequency/CPU/FPS claim; allownedprocesses stopped. [Evidence and limits](validation/STEAM_DECK_BEHAVIOUR_CENSUS_20261023.json).

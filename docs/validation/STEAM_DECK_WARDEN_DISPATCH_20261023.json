@@ -1,0 +1,13 @@
+{
+  "status": "Candidate statically validated; actual sourceDeckFPS UNVERIFIED",
+  "parent": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+  "changed": [
+    "sv_warden.lua",
+    "sv_warden_dancefloor.lua"
+  ],
+  "hypothesis": "Put canonical Warden-only core/dance work behind one shared public archetype dispatch. Preserve live per-call kinds, Warden core-before-dance callbacks, same timing, reload and foreign-owner fallbacks. Tiny dispatch cost needs actual-sourceFPS comparison; no predicted gain retained.",
+  "change": "Existing Warden core becomes TickWarden. Public Tick checks the current archetype once; canonical dance wrapper extends TickWarden. Warden post-core type guard remains current. Re-inclusion does not stack wrappers. Initial foreign public providers retain legacy wrapping; later foreign public owners remain untouched. No across-call actor/result/profile cache, tunable, timing, content or AI cadence change.",
+  "static": "21 focused phase/dance checks plus foreign-owner preinstall/reload and postinstall preservation; existing Warden24graphs/clones/commitment/resupply/fuses/boss-feedback underLua5.4/LuaJIT pass; exact120-source manifest/repeatinstaller/syntax/diff gates pass. Engine boundaries mocked.",
+  "comparison": "Freeze6freshP,C,C,P,P,C60s D20 lowercourt against14364f8c, no active profiling. Before/after native actual file/function/source/line/captured-core/type dispatch checks; retained HUD and renderer proof, source manifest, frozen config/resources/input, bothdisplaysON. Reject noise/pacing/correctness regression. If promising, additional unchanged confirmation and affected nativeWarden gameplay needed before retention.",
+  "acceptance": "40FPS remainsUNMET; five complete SP scenarios/releaseordinary/40capUNVERIFIED. Multiplayer deferred; no mainmerge."
+}
