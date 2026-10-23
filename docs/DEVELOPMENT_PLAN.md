@@ -1,3 +1,9 @@
+# Current checkpoint — classification guard rejected; actual behavior ancestry next
+
+Nativeparitypasses57bots/64cases and publictypeerror-restoration; no method everinstalled. Parentflatloopmeans0.233ms/candidate0.276ms per57000calls, order/JIT effects large and pureloop maybeoptimizedaway. No costbenefit; discard without productionchange orFPSclaim. [Rawproof/times/limits](validation/STEAM_DECK_STATEFOR_KIND_20261023.json). ActualsourceHUDgainretained, SP40stillUNMET.
+
+Next readonlyactual_BehaviourTickfunctionancestry/sourcecensus. FreshnativeprofileNextBotLua10.948ms/engineframe motivatesfinding repeated pure archetype-guardwrappers; distinguish mandatory generic/sideeffect work. No functions invoked/replaced oractorfields changed; exactsource/function/upvalue links andeligible guard groups only. Useevidence to decidewhethercanonicaldispatchcanremove redundantguardcalls while preservingcallbackorder/mutabletypeandtable/providerchanges; operationcounts alone are notFPSproof. BothmonitorsON, SPscope/fivefullacceptance/releaseordinary/40capUNVERIFIED, multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — remaining CPU is server/NextBot Lua
 
 Fresh retainedHUD nativeprofile completes903hierarchyrows/1688engineframes/twoENDmarkers. Serverinclusive24.468ms/engineframe, largestNextBotprotectedLua self10.948ms, servergamemodeLua3.047ms, opaqueLua2.814ms, leafclassification1.108ms. HUDtextself0.624ms versus earlier1.24crosscapture (notadditivegain/isolatedcomparison). Instrumented20.937FPS/allFAIL isdiagnosticonly. AllownedgamesStop; currentHUDsourceproofpasses. [Raw/scopes/limits](validation/STEAM_DECK_RETAINED_HUD_CPU_20261023.json).
