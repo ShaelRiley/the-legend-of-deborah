@@ -1,10 +1,957 @@
 {
-  "status": "Implemented/staticcandidate; actualsourceFPS UNVERIFIED",
+  "status": "Rejected after six actual-source Deck captures; parent runtime restored",
   "parent": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
   "file": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
   "hypothesis": "Replace only known inherited method-name lookup with live raw NextBot/Entity metadata. Native field/newkey/metametadata/foreignAPI fallback remains. Remove native C methodindexcrossings andpermitJITinlining; actualFPSrequired. PriorrejectedLODfieldindexcachesdidnotcovermethoddispatch.",
   "safety": "No entity/LuaTable/profile/resolvedfunction/resultcache. Valuesreadliveincludingfalse/deletion. Foreignindexownerspreserved; ownreloadrestoresnativeanddoesnotstack. Changedrawget/getmetatableprovidersfallbackwithoutcallingthem. RuntimegateWindows/x64/VERSIONSTR2026.09.17 only, matching actualnativeprecedence/removeduserdata proof; unvalidatedengineABIs staynative.",
   "static": "New productioninstaller unitLua5.4/LuaJIT: metadata priority/currentreplacementfalse/deletion/newkey/fallback/foreignAPI/weaklifetime/reload/foreignowner/unsupportedruntime; existingAI/B1/entry/B29dispatch andlifecontext Lua5.4/LuaJIT;120manifest/repeatinstaller/syntax/diff pass. NativeCmetadata simulated inunit; nativeprobes are separate. Matrix336afternewtest, notfullgreenclaim.",
   "frozen_comparison": "6freshP,C,C,P,P,C60s samefrozenD20lowercourt againstb05b; no CPUobserver/sampler/JIT/GC/affinity/AI/content/settings changes. Before/afteractualfilehash/currentindex/Ccore/methodandfieldparity; candidatebefore ownedreload/foreignowner/globalAPI fallbackandrestoration; retainedHUD/renderer/source/frozenresources/input/bothON. Rejectnoise/pacing/correctnessregression. Promisingresultneedsunchangedconfirmation/affectedordinarycoverage.",
-  "acceptance": "40FPSUNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged."
+  "acceptance": "40FPSUNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.",
+  "results": {
+    "decision": "REJECT; averageFPS/p95/p99worse with overlappingranges/inconsistentpairs. Longestdropmeanimproves, insufficientforretention. Original runtime restored byte-exactb05b. Native correctness/microtimes did not predict gameplayFPS.",
+    "raw": "/home/deck/deborah-benchmarks/native-method-source/657a4377/original-source-series",
+    "rows": [
+      {
+        "index": 1,
+        "variant": "parent",
+        "tested": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+        "metrics": {
+          "frames": 1391,
+          "seconds": 59.967036,
+          "fps": 23.196077258178978,
+          "median_ms": 35.581,
+          "p95_ms": 77.73,
+          "p99_ms": 106.205,
+          "max_ms": 334.663,
+          "one_percent_low_fps": 7.125722688250142,
+          "below_budget_seconds": 58.706478000000075,
+          "longest_below_budget_seconds": 9.052387999999997,
+          "below_budget_runs_ge2s": 7
+        },
+        "directory": "/home/deck/deborah-benchmarks/native-method-source/657a4377/original-source-series/arm01-parent",
+        "bench_native_method_before": {
+          "phase": "before",
+          "parity_cases": 38654,
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "passed": true,
+          "method_keys": 0,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 0,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "parent",
+          "actors": 57,
+          "actual_sha256": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed"
+        },
+        "bench_native_method_after": {
+          "phase": "after",
+          "parity_cases": 44758,
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "passed": true,
+          "method_keys": 0,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 0,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "parent",
+          "actors": 66,
+          "actual_sha256": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed"
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3791,
+            "builds": 292
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3791,
+            "builds": 292
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 2,
+        "variant": "candidate",
+        "tested": "657a43770ee2a72433010d2c0d55b928aabfb193",
+        "metrics": {
+          "frames": 1322,
+          "seconds": 59.973103,
+          "fps": 22.04321493920366,
+          "median_ms": 37.416,
+          "p95_ms": 82.554,
+          "p99_ms": 117.326,
+          "max_ms": 344.353,
+          "one_percent_low_fps": 6.479903504979807,
+          "below_budget_seconds": 57.94304699999994,
+          "longest_below_budget_seconds": 8.57000099999999,
+          "below_budget_runs_ge2s": 7
+        },
+        "directory": "/home/deck/deborah-benchmarks/native-method-source/657a4377/original-source-series/arm02-candidate",
+        "bench_native_method_before": {
+          "phase": "before",
+          "parity_cases": 38658,
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "passed": true,
+          "method_keys": 519,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 4,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "candidate",
+          "actors": 57,
+          "actual_sha256": "609b654f703e2f8a6f5a3400859368499ead093a14d6f26e647c51c212a1c1ac"
+        },
+        "bench_native_method_after": {
+          "phase": "after",
+          "parity_cases": 44739,
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "passed": true,
+          "method_keys": 519,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 0,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "candidate",
+          "actors": 66,
+          "actual_sha256": "609b654f703e2f8a6f5a3400859368499ead093a14d6f26e647c51c212a1c1ac"
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3493,
+            "builds": 312
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3493,
+            "builds": 312
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 3,
+        "variant": "candidate",
+        "tested": "657a43770ee2a72433010d2c0d55b928aabfb193",
+        "metrics": {
+          "frames": 1369,
+          "seconds": 59.94198,
+          "fps": 22.83875173959886,
+          "median_ms": 34.906,
+          "p95_ms": 82.534,
+          "p99_ms": 125.843,
+          "max_ms": 330.413,
+          "one_percent_low_fps": 5.728475967611197,
+          "below_budget_seconds": 57.538935999999914,
+          "longest_below_budget_seconds": 8.913275000000006,
+          "below_budget_runs_ge2s": 8
+        },
+        "directory": "/home/deck/deborah-benchmarks/native-method-source/657a4377/original-source-series/arm03-candidate",
+        "bench_native_method_before": {
+          "phase": "before",
+          "parity_cases": 38659,
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "passed": true,
+          "method_keys": 519,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 4,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "candidate",
+          "actors": 57,
+          "actual_sha256": "609b654f703e2f8a6f5a3400859368499ead093a14d6f26e647c51c212a1c1ac"
+        },
+        "bench_native_method_after": {
+          "phase": "after",
+          "parity_cases": 44734,
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "passed": true,
+          "method_keys": 519,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 0,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "candidate",
+          "actors": 66,
+          "actual_sha256": "609b654f703e2f8a6f5a3400859368499ead093a14d6f26e647c51c212a1c1ac"
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3652,
+            "builds": 320
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3652,
+            "builds": 320
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 4,
+        "variant": "parent",
+        "tested": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+        "metrics": {
+          "frames": 1335,
+          "seconds": 59.957055,
+          "fps": 22.265936844296306,
+          "median_ms": 37.361,
+          "p95_ms": 82.155,
+          "p99_ms": 128.005,
+          "max_ms": 339.361,
+          "one_percent_low_fps": 5.636744812080994,
+          "below_budget_seconds": 58.60273800000004,
+          "longest_below_budget_seconds": 13.346303000000008,
+          "below_budget_runs_ge2s": 7
+        },
+        "directory": "/home/deck/deborah-benchmarks/native-method-source/657a4377/original-source-series/arm04-parent",
+        "bench_native_method_before": {
+          "phase": "before",
+          "parity_cases": 38657,
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "passed": true,
+          "method_keys": 0,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 0,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "parent",
+          "actors": 57,
+          "actual_sha256": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed"
+        },
+        "bench_native_method_after": {
+          "phase": "after",
+          "parity_cases": 44747,
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "passed": true,
+          "method_keys": 0,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 0,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "parent",
+          "actors": 66,
+          "actual_sha256": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed"
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3571,
+            "builds": 339
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3571,
+            "builds": 339
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 5,
+        "variant": "parent",
+        "tested": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+        "metrics": {
+          "frames": 1335,
+          "seconds": 59.929372,
+          "fps": 22.27622208355529,
+          "median_ms": 36.184,
+          "p95_ms": 83.959,
+          "p99_ms": 116.39,
+          "max_ms": 347.925,
+          "one_percent_low_fps": 6.599356374200476,
+          "below_budget_seconds": 58.37743300000015,
+          "longest_below_budget_seconds": 9.306584999999998,
+          "below_budget_runs_ge2s": 9
+        },
+        "directory": "/home/deck/deborah-benchmarks/native-method-source/657a4377/original-source-series/arm05-parent",
+        "bench_native_method_before": {
+          "phase": "before",
+          "parity_cases": 38649,
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "passed": true,
+          "method_keys": 0,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 0,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "parent",
+          "actors": 57,
+          "actual_sha256": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed"
+        },
+        "bench_native_method_after": {
+          "phase": "after",
+          "parity_cases": 44742,
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "passed": true,
+          "method_keys": 0,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 0,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "parent",
+          "actors": 66,
+          "actual_sha256": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed"
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3568,
+            "builds": 299
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3568,
+            "builds": 299
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 6,
+        "variant": "candidate",
+        "tested": "657a43770ee2a72433010d2c0d55b928aabfb193",
+        "metrics": {
+          "frames": 1269,
+          "seconds": 59.990798000000005,
+          "fps": 21.153244202552532,
+          "median_ms": 37.002,
+          "p95_ms": 91.989,
+          "p99_ms": 136.843,
+          "max_ms": 352.055,
+          "one_percent_low_fps": 5.609451840051227,
+          "below_budget_seconds": 58.78820800000001,
+          "longest_below_budget_seconds": 10.43249,
+          "below_budget_runs_ge2s": 7
+        },
+        "directory": "/home/deck/deborah-benchmarks/native-method-source/657a4377/original-source-series/arm06-candidate",
+        "bench_native_method_before": {
+          "phase": "before",
+          "parity_cases": 38653,
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "passed": true,
+          "method_keys": 519,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 4,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "candidate",
+          "actors": 57,
+          "actual_sha256": "609b654f703e2f8a6f5a3400859368499ead093a14d6f26e647c51c212a1c1ac"
+        },
+        "bench_native_method_after": {
+          "phase": "after",
+          "parity_cases": 44747,
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "passed": true,
+          "method_keys": 519,
+          "scope": "Actual source SHA/loaded current index/core C provider and current method+instance-field equality. Candidatebefore tests owned reload, foreignowner preservation and fallbackwithoutcallingforeign getmetatable/rawget; all providers restored synchronously. No per-frame observer or actor/profile/table cache. Boundaryqueries are not timedFPS; microbenchmark and native removedentity safety gates are separate.",
+          "callback_checks": 0,
+          "providers_restored": true,
+          "profiler_absent": true,
+          "owner_current": true,
+          "mode": "candidate",
+          "actors": 66,
+          "actual_sha256": "609b654f703e2f8a6f5a3400859368499ead093a14d6f26e647c51c212a1c1ac"
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "657a43770ee2a72433010d2c0d55b928aabfb193",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3411,
+            "builds": 332
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3411,
+            "builds": 332
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      }
+    ],
+    "means": {
+      "parent": {
+        "fps": 22.579412062010192,
+        "median_ms": 36.37533333333333,
+        "p95_ms": 81.28133333333334,
+        "p99_ms": 116.86666666666666,
+        "longest_below_budget_seconds": 10.568425333333334
+      },
+      "candidate": {
+        "fps": 22.011736960451685,
+        "median_ms": 36.44133333333333,
+        "p95_ms": 85.69233333333334,
+        "p99_ms": 126.67066666666666,
+        "longest_below_budget_seconds": 9.305255333333331
+      }
+    },
+    "fps_change_percent": -2.514127028637825,
+    "limits": "Shortthreepervariant stresscaptures, overlappingFPSranges/inconsistentadjacentpairs, noformalstatisticalcausalityclaim. All6FAIL40; fivefullSP/releaseordinary/40capUNVERIFIED. BothdisplaysON/content/settings/AI/cadence unchanged.",
+    "retirement": {
+      "all_owned_games_stopped": true,
+      "root_install_restored": true,
+      "root_sha": "657a43770ee2a72433010d2c0d55b928aabfb193"
+    }
+  }
 }

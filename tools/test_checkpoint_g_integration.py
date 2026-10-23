@@ -26,7 +26,6 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
-    ("Native NextBot Method Lookup Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_native_method_lookup.lua"]),
     ("Consult Cargo Pool & Elapsed Construction Budget", ["python3", "tools/run_lua54.py", "tools/test_consult_wall_pool.lua"]),
     ("Consult Trace Scratch & Native Reentry", ["python3", "tools/run_lua54.py", "tools/test_consult_trace_scratch.lua"]),
     ("Consult Global Ghost Draw Budget", ["python3", "tools/run_lua54.py", "tools/test_consult_ghost_budget.lua"]),

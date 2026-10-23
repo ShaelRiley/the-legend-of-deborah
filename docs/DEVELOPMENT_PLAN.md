@@ -1,3 +1,9 @@
+# Current checkpoint — native method fast path rejected after six source captures
+
+P,C,C,P,P,C23.196/22.043/22.839/22.266/22.276/21.153FPS; candidate meansFPSandpacingworse/inconsistentpairs/overlappingranges. Reject andrestore MotionV2 byte-exactb05b; removeunusedimplementation-specificunit/matrixrow. Native519key/currentmethod+field/reload/foreignowner/API fallbackandrestoration atbothboundaries pass. Micro~2x doesnotpredictgameplaygain; all6FAIL40. AllownedgamesStopped/rootinstallrestore. [Allsix/raw/limits](validation/STEAM_DECK_NATIVE_METHOD_SOURCE_20261023.json).
+
+Next fixedcontrol/profiled/profiled/control60s D20onretainedHUDsource: bounded sparsepublicnativeEntity/locomotion/trace methodobserver, timingactualC work insideopaqueLua scopes. Existing service profileMoveToward108-113ms/s includesitsnativeC callees; measureSetPos/SetAngles/GetPos/trace/locomotion beforeanotherfocusedsourcechange. Nativewrapperreturn/error/ownerrestorationandobservereffectcontrolsrequired; inclusivecostsoverlap. No gameplay/settings/AI/cadence/countchange; allownedprocessStop. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — native method lookup candidate; actual source FPS next
 
 Native519methodprecedence keys/57actors/29868currentcasespass; safety38658method+fieldcases/13metadatamutations/5removedNextBotlookups pass. Temporarymetadatarestored/candidatefunctionneverinstalled. Mixed74100lookup loopsPmean10.333ms/C5.011ms motivatesmechanismonly, noFPSclaim. PriorLODfieldindexcachesrejected a differentpath. Base recorder1267samplesmean.0264ms/max.5268ms, terminalsave9.4243ms separately; callbackcostcannotexplainframe deficit. [Diagnostics/raw/limits](validation/STEAM_DECK_METHOD_LOOKUP_DIAGNOSTICS_20261023.json).
