@@ -1306,3 +1306,13 @@ BeforeAI currently services entry ownership, then Claim repeats Service and Cont
 Next: verify actual source/function locations, native clock and metadata, then fixed fresh source P,C,C,P,P,C60s D20 runs. Both monitors remain ON at1280×800@60/external1920×1080@75; same normal resources, counts, AI, actions, graphics and power. No private wrappers/profilers/samplers during FPS. Keep or revert only on supported performance and regression evidence.
 
 Target UNMET; all six full scenarios UNVERIFIED. PR7 stays draft; main remainscec10dc54. Both JIT settings, affinity, key-cache, animation and per-call player-query candidates remain rejected.
+
+## 2026-10-23: first entry-source comparison mixed
+
+Six fresh source runs complete: controls20.954/20.624/21.109FPS average20.896; candidates21.107/22.298/22.450 average21.952 (+5.053% arithmetic). Two candidates exceed the control range and one overlaps. Every capture fails. All three candidate longest drops below40 are longer than their paired controls; average p99 is similar. Do not retain a validated gain from this mixed first series. [All metrics/receipts](STEAM_DECK_ENTRY_CONTEXT_20261023.json).
+
+Actual file CRC, four public function locations, nativeCclock/plain metadata, normal seeds/resources/population, physical input, focus and both-display gates pass. End health211/168/211/160/211/211 varies without a demonstrated cause. All owned games stop and the candidate is reinstalled while quit. CI74e8ec47 is325/334/source_changed0, with the same nine failing names and five file/line anchors as9d2/438/3cf; source, VR and audio pass.
+
+Next: unchanged source/conditions in another fixed fresh P,C,C,P,P,C60s comparison to check repeatability and the pacing concern. Both monitors stay ON1280×800@60/external1920×1080@75; normal AI/resources/counts/actions/graphics/power remain. No active profiler/wrappers/device sampler/JIT setting/affinity. No source gain or full-scenario acceptance is claimed.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; main stayscec10dc54.

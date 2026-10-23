@@ -1,5 +1,5 @@
 {
-  "status": "SOURCE CANDIDATE; targeted static gates PASS; native source/FPS PENDING;40FPSUNMET/all6fullscenariosUNVERIFIED",
+  "status": "MIXED first6sourcearms; candidate gainNOTretainedpendingunchangedconfirmation.40FPSUNMET/all6fullscenariosUNVERIFIED",
   "parent": "f6772638cd3de8e214ccc38f023015dccc4b17f3",
   "hypothesis": "Bounded69sD20 diagnostic reports256683BeforeAIcalls/97.74ms/s,513698Servicecalls/38.03ms/s and1139328Contextcalls/34.33ms/s. Inclusive/wrapped/preparation scopes overlap; do not add or infer gameplay gain. BeforeAI callsService and Claim then repeatsService+Context. Avoid only proven redundant work.",
   "change": "Extract unchanged claimcore. BeforeAI may enter it only with originalClaim/Service/Context/nativeC-clock identities,plain system/LOD/manager/state/graph/owner,currentowner state/graph/seed/level/epoch/run and futuredeadline. PublicClaim unchanged semantics; custom/mutable/expired cases usecurrentpublicpath. No cross-call actor/admission/position/result cache; no servicecadence/AI/gameplayvaluechange.",
@@ -15,5 +15,444 @@
   "limits": "Static and operation proofs are not DeckFPS. Retainonlymeasuredbenefit beyondnoise withbehavior/tails preserved. Fullscenarios/180striplicates/capped/multiplayer/allbossphasesstillunverified.",
   "live_design": "ExactGDD1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY normalized05/06 reviewed; no game-law/tuning/GDD change.",
   "raw_preparation": "/home/deck/deborah-recovery/entry-context-*.log",
-  "next": "Native actualsource proof plusfixed6arm comparison; retainorreject."
+  "next": "Repeatunchanged source andfrozenP,C,C,P,P,C60s benchmark. Meanfirstseries+5.053%arithmetic butlongestdropsworseall3pairs. Decideusingrepeatedgain/tails/regressionevidence.",
+  "first_source_series": {
+    "status": "MIXED first6sourcearms; no retained gain yet; repeat unchanged source/benchmark beforedecision.40FPSUNMET/all6fullscenariosUNVERIFIED",
+    "plan": {
+      "revisions": {
+        "parent": "09af263f6d78b4cde83bb923eff095064cf761f4",
+        "candidate": "74e8ec47ea9f3666ea4d95c4410f745b9d89927c"
+      },
+      "sequence": [
+        "parent",
+        "candidate",
+        "candidate",
+        "parent",
+        "parent",
+        "candidate"
+      ],
+      "seconds_each": 60,
+      "frozen_utc": "2026-10-23T01:40:07.645184+00:00",
+      "display": "BOTHONALWAYS;internal1280x800@60,external1920x1080@75;sessionidleblankinginhibited",
+      "conditions": "Exact D20lowercourt-v1 normalWizard20/211HP/3items/1820models/57roamers+normalbosscommit;same66HzAI,input,graphics/power/runtime;freshprocess each. Same120total/116server/52client sourcewatch manifest; onlyentryruntimefile differs. Inputstopmetadatarevisionv2;CreateMove bodyexactlyunchanged;structuredmanualendreceiptaddedafterFPS. No Lua function wrappers or device sampler.",
+      "interpretation": "Short iteration only; compare mean/ranges/tails, no FPS gain if indistinguishable from noise. No active profiler, timing microloop, replacement or sampler. ActualEntryfileCRC/all4publicfunctionlines/nativeC-clock/plainmetadata mustmatch; all six full scenario acceptance gates remain unverified."
+    },
+    "rows": [
+      {
+        "arm": "01-parent",
+        "sha": "09af263f6d78b4cde83bb923eff095064cf761f4",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/74e8ec47/original-source-series/01-parent",
+        "active": {
+          "frames": 1256,
+          "seconds": 59.939716,
+          "fps": 20.95438690433568,
+          "median_ms": 38.818,
+          "p95_ms": 85.732,
+          "p99_ms": 114.388,
+          "max_ms": 380.463,
+          "one_percent_low_fps": 6.620911078108415,
+          "below_budget_seconds": 59.494722999999986,
+          "longest_below_budget_seconds": 21.520481000000025,
+          "below_budget_runs_ge2s": 4
+        },
+        "source": {
+          "plain": {
+            "manager": true,
+            "global": true,
+            "system": true,
+            "state": true,
+            "graph": true
+          },
+          "guarded_source": false,
+          "passed": true,
+          "crc": "595722230",
+          "scope": "Actual source/functions/clock/plain metadata only; no timing or FPS proof, function replacement or per-frame observer.",
+          "clock_what": "C",
+          "functions": {
+            "BeforeAI": {
+              "what": "Lua",
+              "linedefined": 496,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Service": {
+              "what": "Lua",
+              "linedefined": 234,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Context": {
+              "what": "Lua",
+              "linedefined": 72,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Claim": {
+              "what": "Lua",
+              "linedefined": 323,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            }
+          },
+          "mode": "parent",
+          "sha": "09af263f6d78b4cde83bb923eff095064cf761f4"
+        },
+        "normal_resource_source_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.41341781616211,
+          "node": 210
+        },
+        "end_health": 211
+      },
+      {
+        "arm": "02-candidate",
+        "sha": "74e8ec47ea9f3666ea4d95c4410f745b9d89927c",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/74e8ec47/original-source-series/02-candidate",
+        "active": {
+          "frames": 1265,
+          "seconds": 59.933288999999995,
+          "fps": 21.106800929947298,
+          "median_ms": 38.031,
+          "p95_ms": 85.967,
+          "p99_ms": 138.827,
+          "max_ms": 347.974,
+          "one_percent_low_fps": 5.788222303356278,
+          "below_budget_seconds": 59.36180800000013,
+          "longest_below_budget_seconds": 33.07380400000002,
+          "below_budget_runs_ge2s": 3
+        },
+        "source": {
+          "plain": {
+            "manager": true,
+            "global": true,
+            "system": true,
+            "state": true,
+            "graph": true
+          },
+          "guarded_source": true,
+          "passed": true,
+          "crc": "1179728139",
+          "scope": "Actual source/functions/clock/plain metadata only; no timing or FPS proof, function replacement or per-frame observer.",
+          "clock_what": "C",
+          "functions": {
+            "BeforeAI": {
+              "what": "Lua",
+              "linedefined": 529,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Service": {
+              "what": "Lua",
+              "linedefined": 239,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Context": {
+              "what": "Lua",
+              "linedefined": 72,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Claim": {
+              "what": "Lua",
+              "linedefined": 388,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            }
+          },
+          "mode": "candidate",
+          "sha": "74e8ec47ea9f3666ea4d95c4410f745b9d89927c"
+        },
+        "normal_resource_source_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 60.484920501708984,
+          "node": 207
+        },
+        "end_health": 168
+      },
+      {
+        "arm": "03-candidate",
+        "sha": "74e8ec47ea9f3666ea4d95c4410f745b9d89927c",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/74e8ec47/original-source-series/03-candidate",
+        "active": {
+          "frames": 1337,
+          "seconds": 59.959223,
+          "fps": 22.298487757254627,
+          "median_ms": 37.542,
+          "p95_ms": 82.48,
+          "p99_ms": 108.359,
+          "max_ms": 364.867,
+          "one_percent_low_fps": 6.713395093371338,
+          "below_budget_seconds": 59.53146199999997,
+          "longest_below_budget_seconds": 31.895219999999977,
+          "below_budget_runs_ge2s": 4
+        },
+        "source": {
+          "plain": {
+            "manager": true,
+            "global": true,
+            "system": true,
+            "state": true,
+            "graph": true
+          },
+          "guarded_source": true,
+          "passed": true,
+          "crc": "1179728139",
+          "scope": "Actual source/functions/clock/plain metadata only; no timing or FPS proof, function replacement or per-frame observer.",
+          "clock_what": "C",
+          "functions": {
+            "BeforeAI": {
+              "what": "Lua",
+              "linedefined": 529,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Service": {
+              "what": "Lua",
+              "linedefined": 239,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Context": {
+              "what": "Lua",
+              "linedefined": 72,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Claim": {
+              "what": "Lua",
+              "linedefined": 388,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            }
+          },
+          "mode": "candidate",
+          "sha": "74e8ec47ea9f3666ea4d95c4410f745b9d89927c"
+        },
+        "normal_resource_source_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.4047966003418,
+          "node": 210
+        },
+        "end_health": 211
+      },
+      {
+        "arm": "04-parent",
+        "sha": "09af263f6d78b4cde83bb923eff095064cf761f4",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/74e8ec47/original-source-series/04-parent",
+        "active": {
+          "frames": 1236,
+          "seconds": 59.929749,
+          "fps": 20.62414778343223,
+          "median_ms": 39.434,
+          "p95_ms": 84.935,
+          "p99_ms": 136.243,
+          "max_ms": 367.947,
+          "one_percent_low_fps": 5.498423644236764,
+          "below_budget_seconds": 59.272187000000116,
+          "longest_below_budget_seconds": 15.847095999999985,
+          "below_budget_runs_ge2s": 5
+        },
+        "source": {
+          "plain": {
+            "manager": true,
+            "global": true,
+            "system": true,
+            "state": true,
+            "graph": true
+          },
+          "guarded_source": false,
+          "passed": true,
+          "crc": "595722230",
+          "scope": "Actual source/functions/clock/plain metadata only; no timing or FPS proof, function replacement or per-frame observer.",
+          "clock_what": "C",
+          "functions": {
+            "BeforeAI": {
+              "what": "Lua",
+              "linedefined": 496,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Service": {
+              "what": "Lua",
+              "linedefined": 234,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Context": {
+              "what": "Lua",
+              "linedefined": 72,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Claim": {
+              "what": "Lua",
+              "linedefined": 323,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            }
+          },
+          "mode": "parent",
+          "sha": "09af263f6d78b4cde83bb923eff095064cf761f4"
+        },
+        "normal_resource_source_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.44390106201172,
+          "node": 210
+        },
+        "end_health": 160
+      },
+      {
+        "arm": "05-parent",
+        "sha": "09af263f6d78b4cde83bb923eff095064cf761f4",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/74e8ec47/original-source-series/05-parent",
+        "active": {
+          "frames": 1265,
+          "seconds": 59.927468999999995,
+          "fps": 21.10885076758373,
+          "median_ms": 39.333,
+          "p95_ms": 83.654,
+          "p99_ms": 111.227,
+          "max_ms": 374.217,
+          "one_percent_low_fps": 6.240393394399583,
+          "below_budget_seconds": 59.38816299999994,
+          "longest_below_budget_seconds": 19.68987099999999,
+          "below_budget_runs_ge2s": 5
+        },
+        "source": {
+          "plain": {
+            "manager": true,
+            "global": true,
+            "system": true,
+            "state": true,
+            "graph": true
+          },
+          "guarded_source": false,
+          "passed": true,
+          "crc": "595722230",
+          "scope": "Actual source/functions/clock/plain metadata only; no timing or FPS proof, function replacement or per-frame observer.",
+          "clock_what": "C",
+          "functions": {
+            "BeforeAI": {
+              "what": "Lua",
+              "linedefined": 496,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Service": {
+              "what": "Lua",
+              "linedefined": 234,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Context": {
+              "what": "Lua",
+              "linedefined": 72,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Claim": {
+              "what": "Lua",
+              "linedefined": 323,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            }
+          },
+          "mode": "parent",
+          "sha": "09af263f6d78b4cde83bb923eff095064cf761f4"
+        },
+        "normal_resource_source_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.459197998046875,
+          "node": 211
+        },
+        "end_health": 211
+      },
+      {
+        "arm": "06-candidate",
+        "sha": "74e8ec47ea9f3666ea4d95c4410f745b9d89927c",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/74e8ec47/original-source-series/06-candidate",
+        "active": {
+          "frames": 1346,
+          "seconds": 59.956159,
+          "fps": 22.449736981983786,
+          "median_ms": 37.009,
+          "p95_ms": 79.621,
+          "p99_ms": 113.619,
+          "max_ms": 333.976,
+          "one_percent_low_fps": 6.318296839903836,
+          "below_budget_seconds": 59.30022999999997,
+          "longest_below_budget_seconds": 25.666582999999992,
+          "below_budget_runs_ge2s": 6
+        },
+        "source": {
+          "plain": {
+            "manager": true,
+            "global": true,
+            "system": true,
+            "state": true,
+            "graph": true
+          },
+          "guarded_source": true,
+          "passed": true,
+          "crc": "1179728139",
+          "scope": "Actual source/functions/clock/plain metadata only; no timing or FPS proof, function replacement or per-frame observer.",
+          "clock_what": "C",
+          "functions": {
+            "BeforeAI": {
+              "what": "Lua",
+              "linedefined": 529,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Service": {
+              "what": "Lua",
+              "linedefined": 239,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Context": {
+              "what": "Lua",
+              "linedefined": 72,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            },
+            "Claim": {
+              "what": "Lua",
+              "linedefined": 388,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "passed": true
+            }
+          },
+          "mode": "candidate",
+          "sha": "74e8ec47ea9f3666ea4d95c4410f745b9d89927c"
+        },
+        "normal_resource_source_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.40840530395508,
+          "node": 209
+        },
+        "end_health": 211
+      }
+    ],
+    "means_fps": {
+      "parent": 20.89579515178388,
+      "candidate": 21.951675223061905
+    },
+    "arithmetic_percent": 5.053074379837064,
+    "decision": "Candidate meanhigher about5%; two candidates clearlyabovecontrolrange,oneoverlaps. Allcandidate longest-below40 episodes exceed their paired controls. Tails/regressions/confidence unresolved; do not claimvalidatedgain. Repeatunchanged P,C,C,P,P,C withfreshprocesses/normalconditions.",
+    "cleanup": "All6ownedgamesStop;candidate reinstalledonlyafterquit. BothmonitorsON throughout.",
+    "limits": "Normalsetup/source/functions/clock/input/focus/displays gatesPASS. Endhealthvarieswithoutcausalattribution. Onlylowercourt/phase1;fullfight/otherfrozenallscenarios/180striplicates/capped/multiplayerunverified."
+  },
+  "ci": {
+    "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39885182195",
+    "result": "325/334/source_changed0;all9failednames/all5anchorssame9d2/438/3cf. Source/VR/audioPASS; nofullgreenclaim.",
+    "raw": "/home/deck/deborah-recovery/evidence/74e8ec47-ci-failures.log"
+  }
 }
