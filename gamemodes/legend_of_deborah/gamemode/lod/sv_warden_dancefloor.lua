@@ -119,7 +119,8 @@ function W:DanceAcrossCourt(w,e,work,a,now)
         motion:MoveToward(e,waypoint)
     else motion:Stop(e) end
 end
-local function afterTick(self,e,result)
+function W:Tick(e)
+    local result=base.tick(self,e)
     if e.LODArchetypeId~="warden" then return result end
     local s,root,a=self:State()
     local w=root and (root.cloneStates and root.cloneStates[e] or root)
@@ -137,20 +138,4 @@ local function afterTick(self,e,result)
         or LOD.HostileMotionV2:HoldHitStun(e,now) then return result end
     self:DanceAcrossCourt(w,e,work,a,now)
     return result
-end
-if W.CanonicalTick and W.Tick==W.CanonicalTick then
-    -- Re-inclusion must not stack this wrapper. A newly installed core (or a
-    -- replaced core provider) is still borrowed live at installation time.
-    if W.TickWarden~=base.wardenWrapper then base.wardenTick=W.TickWarden end
-    local function tickWarden(self,e)
-        return afterTick(self,e,base.wardenTick(self,e))
-    end
-    base.wardenWrapper=tickWarden
-    W.TickWarden=tickWarden
-elseif not base.wardenWrapper then
-    -- Preserve the previous extension contract for foreign public Tick owners
-    -- and installations that have not loaded the canonical typed dispatcher.
-    function W:Tick(e)
-        return afterTick(self,e,base.tick(self,e))
-    end
 end

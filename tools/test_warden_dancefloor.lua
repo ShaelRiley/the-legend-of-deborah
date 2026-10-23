@@ -244,21 +244,12 @@ check("dance cleanup preserves phase-two seating and hides expired captions",fun
     local count=draw.count;hook.handlers.LOD_WardenDanceCaptions();assert(draw.count==count)
     hook.handlers.LOD_WardenDanceCleanup()
 end)
-check("typed dispatch skips core and dance for ordinary actors and reads live kinds",function()
-    local core=W.TickWarden;local calls=0
-    W.TickWarden=function(self,e) calls=calls+1;return "core" end
-    local e=actor();e.LODArchetypeId="soldier"
-    assert(W:Tick(e)==false and calls==0)
-    e.LODArchetypeId="warden";assert(W:Tick(e)=="core" and calls==1)
-    e.LODArchetypeId="runner";assert(W:Tick(e)==false and calls==1)
-    W.TickWarden=core
-end)
-check("core callback changing the archetype still prevents post-tick dance",function()
-    local core,base=W.TickWarden,W.DancefloorBase.wardenTick
+check("core callback changing the archetype prevents post-tick dance",function()
+    local base=W.DancefloorBase.tick
     local state=W.State;local reads=0
     W.State=function(...) reads=reads+1;return state(...) end
-    W.DancefloorBase.wardenTick=function(self,e) e.LODArchetypeId="soldier";return "changed" end
+    W.DancefloorBase.tick=function(self,e) e.LODArchetypeId="soldier";return "changed" end
     local e=actor();assert(W:Tick(e)=="changed" and reads==0)
-    W.State=state;W.DancefloorBase.wardenTick=base;assert(W.TickWarden==core)
+    W.State=state;W.DancefloorBase.tick=base
 end)
 print(string.format("PASS: %d focused dancefloor behavior checks (mocked engine boundaries)",PASSED))

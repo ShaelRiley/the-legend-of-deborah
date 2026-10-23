@@ -452,7 +452,8 @@ function W:Cues(now)
     end
     return out
 end
-function W:TickWarden(e)
+function W:Tick(e)
+    if e.LODArchetypeId~="warden" then return false end
     local s,w,a=self:State();w=w and (w.cloneStates and w.cloneStates[e] or w)
     local now=CurTime();local motion=LOD.HostileMotionV2
     if not s or not w or e~=w.actor or not alive(e) or w.dead or not s.BuildReady or s.Failed or s.LevelCleared then motion:Stop(e);return true end
@@ -530,13 +531,6 @@ function W:TickWarden(e)
     end
     return true
 end
--- Keep Warden-only extensions behind the shared archetype dispatch. Ordinary
--- hostiles reach this manager too; they do not need its phase/dance wrappers.
-function W:Tick(e)
-    if e.LODArchetypeId~="warden" then return false end
-    return self:TickWarden(e)
-end
-W.CanonicalTick=W.Tick
 function W:EnsureKey()
     local s,w,a=self:State()
     if not s or not w.dead or s.Failed or s.LevelCleared or s.JailKey then return end

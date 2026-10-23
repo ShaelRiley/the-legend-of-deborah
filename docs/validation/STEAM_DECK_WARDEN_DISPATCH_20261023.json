@@ -1,5 +1,5 @@
 {
-  "status": "Candidate statically validated; actual sourceDeckFPS UNVERIFIED",
+  "status": "Rejected after six actual-source Deck comparisons; parent runtime restored",
   "parent": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
   "changed": [
     "sv_warden.lua",
@@ -9,5 +9,1168 @@
   "change": "Existing Warden core becomes TickWarden. Public Tick checks the current archetype once; canonical dance wrapper extends TickWarden. Warden post-core type guard remains current. Re-inclusion does not stack wrappers. Initial foreign public providers retain legacy wrapping; later foreign public owners remain untouched. No across-call actor/result/profile cache, tunable, timing, content or AI cadence change.",
   "static": "21 focused phase/dance checks plus foreign-owner preinstall/reload and postinstall preservation; existing Warden24graphs/clones/commitment/resupply/fuses/boss-feedback underLua5.4/LuaJIT pass; exact120-source manifest/repeatinstaller/syntax/diff gates pass. Engine boundaries mocked.",
   "comparison": "Freeze6freshP,C,C,P,P,C60s D20 lowercourt against14364f8c, no active profiling. Before/after native actual file/function/source/line/captured-core/type dispatch checks; retained HUD and renderer proof, source manifest, frozen config/resources/input, bothdisplaysON. Reject noise/pacing/correctness regression. If promising, additional unchanged confirmation and affected nativeWarden gameplay needed before retention.",
-  "acceptance": "40FPS remainsUNMET; five complete SP scenarios/releaseordinary/40capUNVERIFIED. Multiplayer deferred; no mainmerge."
+  "acceptance": "40FPS remainsUNMET; five complete SP scenarios/releaseordinary/40capUNVERIFIED. Multiplayer deferred; no mainmerge.",
+  "results": {
+    "decision": "REJECT candidate; all candidate FPS averages below all parent averages. Restore both runtime files exactly14364f8c. Static/source proof does not prove performance.",
+    "raw": "/home/deck/deborah-benchmarks/warden-dispatch-source/2bed788f/original-source-series",
+    "rows": [
+      {
+        "index": 1,
+        "variant": "parent",
+        "tested": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+        "metrics": {
+          "frames": 1496,
+          "seconds": 59.950742,
+          "fps": 24.95381958742062,
+          "median_ms": 35.262,
+          "p95_ms": 71.024,
+          "p99_ms": 91.792,
+          "max_ms": 360.932,
+          "one_percent_low_fps": 7.465093224084183,
+          "below_budget_seconds": 58.647818000000015,
+          "longest_below_budget_seconds": 22.312671999999996,
+          "below_budget_runs_ge2s": 5
+        },
+        "directory": "/home/deck/deborah-benchmarks/warden-dispatch-source/2bed788f/original-source-series/arm01-parent",
+        "bench_warden_dispatch_before": {
+          "phase": "before",
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "ordinary_actor_results": 57,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "parent",
+          "functions": [
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "80e64f54af67bcae4832ccfa91bb7c5708ec382f3a29e6378620fb4e22151b33"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_warden_dispatch_after": {
+          "phase": "after",
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "ordinary_actor_results": 61,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "parent",
+          "functions": [
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "80e64f54af67bcae4832ccfa91bb7c5708ec382f3a29e6378620fb4e22151b33"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 4033,
+            "builds": 266
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 4033,
+            "builds": 266
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 2,
+        "variant": "candidate",
+        "tested": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+        "metrics": {
+          "frames": 1322,
+          "seconds": 59.951634,
+          "fps": 22.051108732082266,
+          "median_ms": 36.333,
+          "p95_ms": 83.218,
+          "p99_ms": 120.13,
+          "max_ms": 341.565,
+          "one_percent_low_fps": 6.319754287953285,
+          "below_budget_seconds": 58.36961899999998,
+          "longest_below_budget_seconds": 9.292673000000006,
+          "below_budget_runs_ge2s": 7
+        },
+        "directory": "/home/deck/deborah-benchmarks/warden-dispatch-source/2bed788f/original-source-series/arm02-candidate",
+        "bench_warden_dispatch_before": {
+          "phase": "before",
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "ordinary_actor_results": 57,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "candidate",
+          "functions": [
+            {
+              "line": 145,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "a0d889776691b2f00dd1094cade511dad82a1bd156efc9eb1f471d70a88144db"
+            },
+            {
+              "line": 535,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_warden_dispatch_after": {
+          "phase": "after",
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "ordinary_actor_results": 61,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "candidate",
+          "functions": [
+            {
+              "line": 145,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "a0d889776691b2f00dd1094cade511dad82a1bd156efc9eb1f471d70a88144db"
+            },
+            {
+              "line": 535,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3500,
+            "builds": 302
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3500,
+            "builds": 302
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 3,
+        "variant": "candidate",
+        "tested": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+        "metrics": {
+          "frames": 1286,
+          "seconds": 59.922208,
+          "fps": 21.46115844062355,
+          "median_ms": 37.599,
+          "p95_ms": 85.992,
+          "p99_ms": 111.285,
+          "max_ms": 417.103,
+          "one_percent_low_fps": 6.345809520276326,
+          "below_budget_seconds": 58.86686000000002,
+          "longest_below_budget_seconds": 15.309428999999994,
+          "below_budget_runs_ge2s": 5
+        },
+        "directory": "/home/deck/deborah-benchmarks/warden-dispatch-source/2bed788f/original-source-series/arm03-candidate",
+        "bench_warden_dispatch_before": {
+          "phase": "before",
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "ordinary_actor_results": 57,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "candidate",
+          "functions": [
+            {
+              "line": 145,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "a0d889776691b2f00dd1094cade511dad82a1bd156efc9eb1f471d70a88144db"
+            },
+            {
+              "line": 535,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_warden_dispatch_after": {
+          "phase": "after",
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "ordinary_actor_results": 61,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "candidate",
+          "functions": [
+            {
+              "line": 145,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "a0d889776691b2f00dd1094cade511dad82a1bd156efc9eb1f471d70a88144db"
+            },
+            {
+              "line": 535,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3498,
+            "builds": 315
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3498,
+            "builds": 315
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 4,
+        "variant": "parent",
+        "tested": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+        "metrics": {
+          "frames": 1356,
+          "seconds": 59.95942899999999,
+          "fps": 22.615292083585388,
+          "median_ms": 35.315,
+          "p95_ms": 86.203,
+          "p99_ms": 114.015,
+          "max_ms": 347.646,
+          "one_percent_low_fps": 6.8456745360955304,
+          "below_budget_seconds": 58.31399299999997,
+          "longest_below_budget_seconds": 10.237838000000007,
+          "below_budget_runs_ge2s": 7
+        },
+        "directory": "/home/deck/deborah-benchmarks/warden-dispatch-source/2bed788f/original-source-series/arm04-parent",
+        "bench_warden_dispatch_before": {
+          "phase": "before",
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "ordinary_actor_results": 57,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "parent",
+          "functions": [
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "80e64f54af67bcae4832ccfa91bb7c5708ec382f3a29e6378620fb4e22151b33"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_warden_dispatch_after": {
+          "phase": "after",
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "ordinary_actor_results": 61,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "parent",
+          "functions": [
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "80e64f54af67bcae4832ccfa91bb7c5708ec382f3a29e6378620fb4e22151b33"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3568,
+            "builds": 345
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3568,
+            "builds": 345
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 5,
+        "variant": "parent",
+        "tested": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+        "metrics": {
+          "frames": 1310,
+          "seconds": 59.958002,
+          "fps": 21.848626643696367,
+          "median_ms": 36.38,
+          "p95_ms": 88.336,
+          "p99_ms": 121.024,
+          "max_ms": 349.762,
+          "one_percent_low_fps": 6.384810717725694,
+          "below_budget_seconds": 58.67108399999998,
+          "longest_below_budget_seconds": 12.969507999999996,
+          "below_budget_runs_ge2s": 7
+        },
+        "directory": "/home/deck/deborah-benchmarks/warden-dispatch-source/2bed788f/original-source-series/arm05-parent",
+        "bench_warden_dispatch_before": {
+          "phase": "before",
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "ordinary_actor_results": 57,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "parent",
+          "functions": [
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "80e64f54af67bcae4832ccfa91bb7c5708ec382f3a29e6378620fb4e22151b33"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_warden_dispatch_after": {
+          "phase": "after",
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "ordinary_actor_results": 61,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "parent",
+          "functions": [
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 122,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "3912845935abeb580794cbc8d2df44d26613f911d04208ac25ff258634b7685b"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "80e64f54af67bcae4832ccfa91bb7c5708ec382f3a29e6378620fb4e22151b33"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "14364f8c09bdeccac1ddd79b640ebd1a578bf83d",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3460,
+            "builds": 386
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3460,
+            "builds": 386
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "index": 6,
+        "variant": "candidate",
+        "tested": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+        "metrics": {
+          "frames": 1284,
+          "seconds": 59.961645,
+          "fps": 21.413688700501798,
+          "median_ms": 37.73,
+          "p95_ms": 87.388,
+          "p99_ms": 125.615,
+          "max_ms": 425.338,
+          "one_percent_low_fps": 5.5579616303981165,
+          "below_budget_seconds": 58.91871999999999,
+          "longest_below_budget_seconds": 21.365212,
+          "below_budget_runs_ge2s": 6
+        },
+        "directory": "/home/deck/deborah-benchmarks/warden-dispatch-source/2bed788f/original-source-series/arm06-candidate",
+        "bench_warden_dispatch_before": {
+          "phase": "before",
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "ordinary_actor_results": 57,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "candidate",
+          "functions": [
+            {
+              "line": 145,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "a0d889776691b2f00dd1094cade511dad82a1bd156efc9eb1f471d70a88144db"
+            },
+            {
+              "line": 535,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_warden_dispatch_after": {
+          "phase": "after",
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "ordinary_actor_results": 61,
+          "scope": "Read-only actual file SHA/function/source/line/captured core/extension identity and current non-Warden false results. No methods or actor fields replaced; no across-call cache. Boundary calls are not timed FPS. Full actual Warden phases are not covered by this D20 subset.",
+          "passed": true,
+          "mode": "candidate",
+          "functions": [
+            {
+              "line": 145,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_dancefloor.lua",
+              "passed": true,
+              "name": "extension",
+              "sha256": "a0d889776691b2f00dd1094cade511dad82a1bd156efc9eb1f471d70a88144db"
+            },
+            {
+              "line": 535,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "tick",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            },
+            {
+              "line": 455,
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+              "passed": true,
+              "name": "core",
+              "sha256": "d68f64a64ea0c4674b39f9dc743aaddb7e9c19fab02a936375362012f4045437"
+            }
+          ],
+          "providers_unchanged": true,
+          "profiler_absent": true
+        },
+        "bench_hud_raster_source_before": {
+          "phase": "before",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 0,
+            "builds": 0
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3452,
+            "builds": 326
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3452,
+            "builds": 326
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      }
+    ],
+    "means": {
+      "parent": {
+        "fps": 23.139246104900792,
+        "median_ms": 35.65233333333333,
+        "p95_ms": 81.85433333333333,
+        "p99_ms": 108.94366666666667,
+        "longest_below_budget_seconds": 15.173339333333333
+      },
+      "candidate": {
+        "fps": 21.641985291069204,
+        "median_ms": 37.220666666666666,
+        "p95_ms": 85.53266666666667,
+        "p99_ms": 119.00999999999999,
+        "longest_below_budget_seconds": 15.322438
+      }
+    },
+    "fps_change_percent": -6.470655124388324,
+    "limits": "Three pervariant short stress runs, no formal significance claim. AllsixFAIL40; fivefullSPgates/releaseordinary/40cap remainUNVERIFIED. Paired tail effects can differ; preserveeveryrow. No benchmark/settings/count/cadence changes.",
+    "retirement": {
+      "all_owned_games_stopped": true,
+      "root_install_restored": true,
+      "root_sha": "2bed788fdc3c86f38c3842dcd3426a8c0e729400"
+    }
+  }
 }

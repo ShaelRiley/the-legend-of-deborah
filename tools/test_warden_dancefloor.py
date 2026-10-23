@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 GAME = ROOT / 'gamemodes/legend_of_deborah/gamemode'
 METHODS = ('State','SetPhase','ActorOwner','PhaseOwner','RetirePhaseOne',
            'RetirePhaseRoot','PhaseCue','BeginHidden','PhaseTargets','TauntCaption',
-           'StartArrival','ServicePhaseOne','HitStunDeadline','Interrupt','TickWarden','Tick')
+           'StartArrival','ServicePhaseOne','HitStunDeadline','Interrupt','Tick')
 
 
 def phase_source(text: str) -> str:
@@ -33,7 +33,6 @@ def phase_source(text: str) -> str:
         segment = match.group()
         end = segment.rfind('\nend')
         pieces.append(segment[:end+4])
-    pieces.append('W.CanonicalTick=W.Tick')
     return '\n'.join(pieces)
 
 
@@ -82,12 +81,6 @@ def main() -> None:
         run(server,'idempotent server reload')
         run((GAME/'lod/cl_warden_dancefloor.lua').read_text(),'client dancefloor')
         run(checks,'dancefloor checks')
-        run('local W=LOD.Warden; W.Tick=function() return "foreign" end; '
-            'W.TestForeignTick=W.Tick','replace public provider after canonical extension')
-        run(server,'reload preserves foreign public owner')
-        run('assert(LOD.Warden.Tick==LOD.Warden.TestForeignTick); '
-            'assert(LOD.Warden:Tick({LODArchetypeId="soldier"})=="foreign")',
-            'foreign public owner preserved')
         run(setup,'fresh foreign-provider setup')
         run(phase_source(args.phase_source.read_text()),'fresh production methods')
         run('LOD.Warden.Tick=function(self,e) self.foreignCalls=(self.foreignCalls or 0)+1; '

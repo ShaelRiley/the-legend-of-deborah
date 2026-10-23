@@ -1,3 +1,9 @@
+# Current checkpoint — typed Warden dispatch rejected after six source captures
+
+P,C,C,P,P,C24.954/22.051/21.461/22.615/21.849/21.414FPS. Everycandidatebelow everyparent; reject andrestorebothruntimefiles byte-exact14364f8c. Static21phase/dance+foreign/reload andnativefile/function/core/extension/57ordinaryresults checks allpass, butdonotprovea performancegain. Keepusefulpost-coretype-mutation andinitialforeign-providerreloadregressions. AllownedgamesStopped/rootinstallrestored. [Allsixmetrics/proofs/raw](validation/STEAM_DECK_WARDEN_DISPATCH_20261023.json).
+
+RetainedHUD remains partialvalidatedD20gain; noothernewruntimechange retained. Next inspectactualnativeentity-field access shape for scopedcurrentLua-tableborrowing inmeasuredmovementpath; avoidwholeentityindexwrappers/cross-framecaches andmeasurebeforeanyFPSclaim. BothmonitorsONalways; SP40UNMET/fivefullSPgates/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — typed Warden dispatch ready for measured comparison
 
 Four managerobserver runs21.290/20.915/22.413/22.988FPS; controlsmean22.139/profiled21.664, rangesoverlap/allFAIL. Repeated Warden.Tick16.48/26.60ms/s standsaboveotheremptyguards, alongside larger usefulroster/close-defense/movementcosts. All31providers restore/independentinspection andownedprocessStop pass. Inclusive sampledrows overlap/canalias, no additiveCPU/FPSgain claim. [Profile/raw](validation/STEAM_DECK_MANAGER_CPU_20261023.json).
