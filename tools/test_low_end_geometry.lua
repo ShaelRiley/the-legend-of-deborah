@@ -140,6 +140,14 @@ assert(nativeFrame(true)==1,'native-visible floor disappeared')
 local count,reads=nativeFrame(false)
 assert(count==0 and reads==0,'native rejection still reads native pose or draws offscreen floor')
 assert(nativeFrame(true)==1,'moving into native visibility did not recover immediately')
+-- Native selection belongs to the entity and current view even if a refresh
+-- replaces its Lua registration between Source's Draw and the manual pass.
+assert(nativeFrame(true,function()
+ local previous=native._LODVisualKindRecord
+ native:SetupDataTables();native:Initialize()
+ assert(native._LODVisualKindRecord~=previous)
+end)==1,'same-pass registration replacement lost an actual native selection')
+assert(nativeFrame(false)==0,'registration replacement retained selection into next view')
 -- Native NoDraw can suppress ENT:Draw without changing the manual floor.
 native:SetNoDraw(true)
 assert(nativeFrame(false)==1,'native NoDraw incorrectly hid a manually rendered floor')

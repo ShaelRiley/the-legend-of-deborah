@@ -27,6 +27,11 @@ local nativeDrawOwner = {}
 local nativeDefinition = ENT
 local nativePass
 local nativeDraw
+-- One exact pass token per entity replaces a freshly grown selection table on
+-- every view. Values contain only view scalars, never their weak entity keys.
+-- A new/nested pass still needs its own native selection; no visibility result
+-- or entity pose is borrowed across passes.
+local nativeSelections=setmetatable({}, {__mode="k"})
 
 -- Source already culls these entities using their live pose and render bounds.
 -- Borrow that selection only for the exact opaque view that submitted it.
@@ -50,7 +55,7 @@ hook.Add("PreDrawOpaqueRenderables", "LOD_StaticBoxNativeVisibility", function(d
     nativePass=nil
     if depth or sky or sky3d then return end
     local view=nativeView()
-    if view then nativePass={view=view,entities={}} end
+    if view then nativePass={view=view} end
 end)
 
 local function currentNativePass()
@@ -215,14 +220,14 @@ end)
 function ENT:Draw()
     local pass=nativePass
     if not pass then return end
-    pass.entities[self]=true
+    nativeSelections[self]=pass
     local record=visualBoxes[self]
     if type(record)=="table" then record.drawOwner=nativeDrawOwner end
 end
 nativeDraw=ENT.Draw
 
 local function nativeRejected(ent, record, data, pass)
-    if not pass or pass.entities[ent] or not data or not record.boundsReady
+    if not pass or nativeSelections[ent]==pass or not data or not record.boundsReady
         or nativeDefinition.Draw~=nativeDraw
         or record.drawOwner~=nativeDrawOwner
         or not record.boundsAccessors or data.GetBoxMins~=record.boundsAccessors[1]

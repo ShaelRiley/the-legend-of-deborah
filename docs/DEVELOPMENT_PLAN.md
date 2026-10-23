@@ -1,3 +1,9 @@
+# Current checkpoint — native visibility selection bookkeeping candidate
+
+The sampled allocation profile completes inbothrealms; currentmethodinspections1511server/4137clientfindnoprofilingwrappersandoptionalheapsamplingiscleared. Instrumented17.241FPSisnotnormalperformance. Every64samplescanaliasrenderpasses; do notextrapolateallocationtotals. Geometrydrawhaslargesampledheapgrowth. [Nativeattributionandlimits](validation/STEAM_DECK_ALLOCATION_PROFILE_20261023.json).
+
+Candidate replacesperviewgrownentityselectiontableswithaweakentity->exactpasstokenmap. Valuescontainviewscalarsonly; new/nestedviewsstillneedtheirownselection. Draws/bounds/camera/NoDraw/fallbacksremain. Nativevisibility,300drawparity,weakcleanup,samepassregistrationreplacement,manifest/syntax/diffpass. NextfixedP,C,C,P,P,C60snormalD20comparisonwithactualfile/functions/source/workload/GC200/200/bothONproof; noactiveprofiling/sampler. [Frozencomparison](validation/STEAM_DECK_NATIVE_SELECTION_20261023.json). NoFPSgainclaimed. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged.
+
 # Current checkpoint — GC step change rejected; sampled allocation attribution next
 
 Four fresh stock/candidate/candidate/stock60s Deck D20 captures measure20.906/20.886/20.728/19.934FPS. Means20.420stock/20.807candidate overlap; p95means89.834/90.230ms and p99means132.657/142.798ms do not improve. AllfourFAIL. Reject publicstepmul100; actualpause200/stepmul200restoredinbothrealmsandallownedgamesstop. NativeAPI/source116server52client/normalresources/input/focus/bothONgatespass. No statistical/causal slowdown claim. [Fullrawmeasurements/restoration](validation/STEAM_DECK_GC_STEP_20261023.json).

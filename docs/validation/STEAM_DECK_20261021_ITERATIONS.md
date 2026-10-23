@@ -1382,3 +1382,9 @@ Four fresh stock/candidate/candidate/stock60s Deck D20 captures measure20.906/20
 The existing opt-in CPU profiler now supports sampled inclusive net heap changes, using two count queries every configured16–4096calls. Default profiling and ordinary gameplay leave this disabled. Positive/negative samples can includeGC and nested scopes; they are not gross allocations or GC CPU time. No result tables are added percall. Cadence, signed deltas, nil/vararg returns, sampled errors, callbackrestoration and invalidoptions pass; capture/profile/5analysis/120manifest/syntax/diff pass. Exactoldsourcefailsnewgate. Nativeattribution remainsUNVERIFIED; next normalD20profile samples every64calls, with normalGC200/200 and bothmonitorsON. Observercost is diagnostic; final ordinary acceptance must disable profiling.
 
 TargetUNMET; allsixfullscenariosUNVERIFIED; PR7draft/maincec10unchanged.
+
+## 2026-10-23: native visibility selection bookkeeping candidate
+
+The sampled allocation profile completes inbothrealms; currentmethodinspections1511server/4137clientfindnoprofilingwrappersandoptionalheapsamplingiscleared. Instrumented17.241FPSisnotnormalperformance. Every64samplescanaliasrenderpasses; do notextrapolateallocationtotals. Geometrydrawhaslargesampledheapgrowth. [Nativeattributionandlimits](STEAM_DECK_ALLOCATION_PROFILE_20261023.json).
+
+Candidate replacesperviewgrownentityselectiontableswithaweakentity->exactpasstokenmap. Valuescontainviewscalarsonly; new/nestedviewsstillneedtheirownselection. Draws/bounds/camera/NoDraw/fallbacksremain. Nativevisibility,300drawparity,weakcleanup,samepassregistrationreplacement,manifest/syntax/diffpass. NextfixedP,C,C,P,P,C60snormalD20comparisonwithactualfile/functions/source/workload/GC200/200/bothONproof; noactiveprofiling/sampler. [Frozencomparison](STEAM_DECK_NATIVE_SELECTION_20261023.json). NoFPSgainclaimed. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged.

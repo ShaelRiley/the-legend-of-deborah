@@ -1,0 +1,16 @@
+{
+  "state": "candidate implemented/staticvalidated; nativegainUNVERIFIED",
+  "hypothesis": "Geometryscope sampledheapgrowth motivates removing perviewnativeentityselectiontable growth. Weakentity->uniqueviewpass token stores exactmembership; passvaluescontainviewscalarsonly,notentitykeys. No acrosspassvisibility/pose/resultreuse. One retainedpasstokenperliveentity boundsretention; weakkeysreleaseentities.",
+  "parent": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
+  "sequence": [
+    "parent",
+    "candidate",
+    "candidate",
+    "parent",
+    "parent",
+    "candidate"
+  ],
+  "seconds_each": 60,
+  "conditions": "FrozenD20lowercourt-v1 normalresources,seeds,AI,count,physicalactions,graphics/power unchanged; bothmonitorsON1280x800@60/external1920x1080@75. Noactiveprofiler/memorytrace/sampler/GC/JIT/affinitychange. GC200/200.",
+  "gates": "ActualclientfileSHA256/Draw+Pre/Postfunctionlines,120manifest116server52client,normalresources/geometry/input/focus/bothON. Existingnativevisibility/300drawparity/weakcleanup+samepassrecordreplacement/manifest/syntax/diffPASS. Retainonlysupportedgain/pacing; do notreplacefailedarms."
+}
