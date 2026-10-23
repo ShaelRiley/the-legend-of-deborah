@@ -1,3 +1,9 @@
+# Current checkpoint — timer attribution complete; native hierarchy next
+
+Four fresh normal D20 runs, unprofiled/profiled/profiled/unprofiled, measure22.263/19.375/18.710/21.378FPS. Control mean21.820FPS versus observed19.042FPS: material instrumentation effect; no profiled FPS acceptance. Both profiles receive22timer groups, inclusive sum24.453/23.780ms per second. Weapon-special timer9–10ms/s leads; these rows cannot explain the frame deficit. No timer optimization retained. [Measurements, coverage and retirement](validation/STEAM_DECK_TIMER_PROFILE_20261023.json).
+
+Provider restoration passes; queued wrappers require owned process stop. All four owned games stopped, task autorun and flag removed. Both monitors remain ON. Next: fresh normal D20 native VProf hierarchy without Lua CPU observation, separating simulation/Lua/render costs before another focused change. TargetUNMET; all six full acceptance scenarios UNVERIFIED; PR7draft/maincec10 unchanged.
+
 # Current checkpoint — visibility bookkeeping rejected after twelve runs
 
 Firstseriesmeans19.586parent/20.279candidateFPS(+3.54%); confirmation22.305parent/22.109candidate(−0.88%). Rangesoverlap;averagegaindoesnotrepeat. Confirmationp99improves121.590→104.290ms,butlongestslowepisodeaveragesworseinbothseriesandall12FAIL. Rejectthecandidate; restore rendererbyte-exacte07177e2/SHA2567bec9bbd. Keepusefulregistration/GC/removalregressions,passingLua5.4andLuaJIT. [All12measurements/limits](validation/STEAM_DECK_NATIVE_SELECTION_20261023.json).
