@@ -1288,3 +1288,11 @@ Both monitors stay ON at internal1280×800@60/external1920×1080@75. Four fresh 
 Next: public jit.opt.start maxrecord16000 versus untouched stock, four fresh stock/candidate/candidate/stock60s arms. Native Lua module CPU/table-lookup evidence motivates a trace-length hypothesis; trace aborts and native default numeric limits are not observed. The prior maxtrace cache-count change had no benefit and stays rejected. Require both-realm API/unchanged-flag receipts, source proof and ordinary workload; no disabled API, JIT on/off/flush, profiling wrapper, affinity or active sampler. Boundary counters are uniform. No JIT setting is retained without measured benefit and regressions.
 
 Cell-key runtime remains restored exactly to1ce30e75, with useful28062case tests and120/116/52sourcewatch coverage retained. Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; canonical main stayscec10dc54.
+
+## 2026-10-23: reject recorded-trace length setting
+
+Four fresh D20 arms finish at22.073stock/22.252candidate/20.755candidate/20.883stockFPS. Means21.478stock and21.504candidate (+0.122% arithmetic) overlap without useful benefit. All captures fail. Public maxrecord16000 requests succeed in both realms with identical optimization flags; no JIT on/off/flush, disabled API, affinity, profiler or active sampler is used. Source, normal seeds/resources/population, physical input, focus and both-display gates pass. Both monitors stay ON at1280×800@60/external1920×1080@75. All four owned games stop, clearing the setting. Reject it. [Evidence](STEAM_DECK_JIT_RECORD_20261023.json).
+
+Next: guarded reuse of the context already serviced by BeforeAI, with current owner/state/graph/seed/level/epoch/run, deadline, original-function and plain-table checks. The isolated candidate passes19cases/65assertions plus existing shared AI/B29 contracts; the exact parent fails its redundant-work gate. This is source preparation and operation evidence only, not a Deck gain. Keep public callbacks, admission decisions, fresh positions and normal service cadence. Native source verification and matched source FPS remain required.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR7 stays draft; canonical main remainscec10dc54. No JIT setting or affinity remains.

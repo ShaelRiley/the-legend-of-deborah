@@ -1,3 +1,11 @@
+# Current checkpoint — trace-length setting rejected; guarded entry candidate next
+
+Four fresh D20 arms finish at22.073stock/22.252candidate/20.755candidate/20.883stockFPS. Means21.478stock and21.504candidate (+0.122% arithmetic) overlap without useful benefit. All captures fail. Public maxrecord16000 requests succeed in both realms with identical optimization flags; no JIT on/off/flush, disabled API, affinity, profiler or active sampler is used. Source, normal seeds/resources/population, physical input, focus and both-display gates pass. Both monitors stay ON at1280×800@60/external1920×1080@75. All four owned games stop, clearing the setting. Reject it. [Evidence](validation/STEAM_DECK_JIT_RECORD_20261023.json).
+
+Next: guarded reuse of the context already serviced by BeforeAI, with current owner/state/graph/seed/level/epoch/run, deadline, original-function and plain-table checks. The isolated candidate passes19cases/65assertions plus existing shared AI/B29 contracts; the exact parent fails its redundant-work gate. This is source preparation and operation evidence only, not a Deck gain. Keep public callbacks, admission decisions, fresh positions and normal service cadence. Native source verification and matched source FPS remain required.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR7 stays draft; canonical main remainscec10dc54. No JIT setting or affinity remains.
+
 # Current checkpoint — thread placement rejected; trace-length comparison next
 
 Both monitors stay ON at internal1280×800@60/external1920×1080@75. Four fresh D20 arms complete: stock21.344, separated22.525, separated20.065, stock21.398FPS. Stock mean21.371 versus candidate21.295 (−0.355% arithmetic) supplies no supported gain; reject the masks. Main CPU2 and worker0,1,4,5,6,7 masks remain exact over both candidate captures; actual siblings2–3 are verified. All owned games stop, clearing masks. Source/function, normal seeds/resources/population, physical input, focus and display gates pass. All four captures fail; end health153/211/154/163 varies without a demonstrated cause. [Full measurements](validation/STEAM_DECK_THREAD_PLACEMENT_20261023.json).
