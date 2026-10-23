@@ -1,3 +1,9 @@
+# Current checkpoint — canonical HUD raster reuse statically validated
+
+Implement onlyownHUDHook rasterreuse; publicDrawLines remainsnativeauthority. SixfixedRTnames, text/font/layout/palette/cleanup invalidation, width/height bounds, fades/nonHUD/foreignprovider fallback, sameframe/reentrantpool safeguards, protectednative-error cleanup and exacttextendstate. No per-callclosureallocation. Lua5.4/LuaJIT cache24command/state comparisons plus saturation/secondview/weakcleanup/provider/reload tests pass; old750text/1200aligned tests,120manifest/installer/syntax/diff pass. NewCItest makes335matrix entries, not a fullgreenclaim. [Sourceplan/contracts/staticlimits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next freshactual-source4background visual/stategate acrossseparateframes; requireactualopaquehit/build and fadefallback so a fallback cannot fakepixelproof. Then original-sourceP,C,C,P,P,C60s sameD20stress, nativeactualfile/function/upvalue/pool/counter/renderer/normalresource/input/cadence/bothON gates. No privateprototype/CPUprofiler/sampler/JIT/GC changes. Prototype+5.365% does not certify changedsource. SP40UNMET/allfivefullSPgates/releasecorroborationUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — opaque HUD prototype promising; canonical implementation next
 
 Four freshcontrol/candidate/candidate/controlD20 captures21.260/22.415/21.979/20.873FPS. Means21.066/22.197(+5.365% arithmetic); bothcandidates abovebothcontrols. Meanp9587.657/83.263ms,p99131.245/130.828ms,longestdrop13.817/11.258s. Onecandidatep99147.733ms; no significance/finalacceptanceclaim. AllfourFAIL. Candidate5719/5660hits,331/313builds,12/13fallbacks; exactfunction/owner/lease restoration and wholeprocessStop pass. [Rawfour/visual/parity/limits](validation/STEAM_DECK_HUD_CACHE_20261023.json).

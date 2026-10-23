@@ -275,5 +275,24 @@
     "retirement": {
       "all_owned_games_stopped": true
     }
+  },
+  "source_candidate": {
+    "status": "Implemented/staticvalidated; native visual/state/FPS UNVERIFIED.",
+    "parent": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+    "file": "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua",
+    "implementation": "Public DrawLines unchanged; only ownHUD hook calls6fixed1024x256RGBA cache. Fades/oversize/negativeposition/foreignDrawLines/UI/nativeproviders fall back. Palette/text/role/range/fraction/epoch invalidate. Sameframepool exhaustion/secondview uses native path, never grows pool. Reload/screen/cleanup clear owners; nativeRTnames reused. BuildprotectsDrawText/getter errors and balancesRT/cam/blend/alpha/clipping; native textendcursor/RGBA/font translatedbackexactly. No per-call fallbackclosure.",
+    "static": [
+      "Lua5.4+LuaJIT cache24comparisons plus pool saturation/secondview/foreign nativeprovider/error cleanup/weakownership/reload fixedtexture bound PASS",
+      "Existing750text/1200aligned command/state parity and boundedwork PASS (renderAPIdoubles absent=>native fallback)",
+      "120source/atomicinstaller/fullsymlink manifest PASS",
+      "Lua5.4syntax/diff PASS",
+      "Added raster suite to frozenCI; next matrix335, knownbaseline9failures separatelyclassified"
+    ],
+    "native_plan": "Fresh source4background originalpublicDrawLines vs cacheDraw across separatePostRenderframes. Same fixedmaxchannel8/Over5<=20/background/fade exact; assertopaqueactualhit/build, fadefallback, native cursor/RGBA match, no probe hookleftover. Then fixedfreshsourceP,C,C,P,P,C60s sameD20stress; require actualfile/function/upvalue/pool/counter/native-source/input/graphics/cadence/display gates, no privateprototype oractiveprofile. Repeatability/pacing/regressions decide retention. AllfivefullSPacceptance/ordinaryrelease/40cap stillunverified.",
+    "primary_contracts": [
+      "https://wiki.facepunch.com/gmod/surface",
+      "https://wiki.facepunch.com/gmod/render.GetRenderTarget",
+      "https://wiki.facepunch.com/gmod/Global.DisableClipping"
+    ]
   }
 }
