@@ -7,6 +7,16 @@ This protocol precedes further performance changes. The October 14 consultant
 changes remain source-validated, not native-performance accepted. Do not adjust
 scenarios, thresholds, counts, graphics or resolution in response to poor results.
 
+## Current user scope — 2026-10-23
+
+The user explicitly narrowed the current goal to **singleplayer on Steam Deck**.
+The five singleplayer scenarios below remain required, with their existing
+resolution, both-monitors-ON condition, gameplay, pacing, warmup, three-repeat
+and capped/uncapped criteria. Multiplayer testing is deferred and cannot block
+this current goal. The historical coop row is retained as future coverage,
+not part of current singleplayer acceptance. No performance threshold or
+singleplayer workload was relaxed by this scope clarification.
+
 ## Conditions and evidence
 
 - Steam Deck LCD/Jupiter, 1280×800 actual viewport. Record SteamOS/kernel, GMod
