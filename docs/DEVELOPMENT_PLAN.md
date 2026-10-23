@@ -1,3 +1,9 @@
+# Current checkpoint — broad behavior router ruled out; manager attribution next
+
+Actual native census finds55ordinaryactors with onlyvariance→MotionV2, twoWatcherswithsevenlexicallayers. No broad wrapper router is justified. Read-only source/upvalue census makesno callfrequency/CPU/FPS claim; allownedprocesses stopped. [Evidence and limits](validation/STEAM_DECK_BEHAVIOUR_CENSUS_20261023.json).
+
+Next fixedcontrol/profiled/profiled/control60s sameD20stress, extendingexistingone-in128public-method observer toboss/archetype managers andmovement authorities. Inclusive estimatesoverlap/samplingcanalias/providerwrappersaffectJIT; controls measureobservereffect. Exactproviderrestoration plusindependentinspection andwholeprocessretirement required. No gamecodecandidate or predictedgain. RetainedHUDsource unchanged; bothmonitorsONalways. SP40UNMET/fivefullSPgates/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — classification guard rejected; actual behavior ancestry next
 
 Nativeparitypasses57bots/64cases and publictypeerror-restoration; no method everinstalled. Parentflatloopmeans0.233ms/candidate0.276ms per57000calls, order/JIT effects large and pureloop maybeoptimizedaway. No costbenefit; discard without productionchange orFPSclaim. [Rawproof/times/limits](validation/STEAM_DECK_STATEFOR_KIND_20261023.json). ActualsourceHUDgainretained, SP40stillUNMET.
