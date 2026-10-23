@@ -1,5 +1,5 @@
 {
-  "status": "Native attribution expanded; hash-capacity experiment prepared, no gain claimed; SP40FPS UNMET",
+  "status": "Completed; capacity request REJECTED. No source performance change retained; singleplayer target UNMET.",
   "current_source": "eefe7fd69659674264c2878338b681ca50e37755",
   "binary_sha256": "c4d093ab2ec74877459fec06ce238510ebc2001d60508632d78a2b659ce1395d",
   "pdb": [
@@ -54,5 +54,176 @@
   "primary_references": [
     "https://raw.githubusercontent.com/LuaJIT/LuaJIT/v2.1/src/lj_tab.c",
     "https://raw.githubusercontent.com/LuaJIT/LuaJIT/v2.1/src/lj_api.c"
-  ]
+  ],
+  "results": {
+    "raw": "/home/deck/deborah-benchmarks/hash-reserve/5d5c36b1/observer-series-v1",
+    "rows": [
+      {
+        "arm": 1,
+        "variant": "control",
+        "raw": "/home/deck/deborah-benchmarks/hash-reserve/5d5c36b1/observer-series-v1/arm01-control",
+        "metrics": {
+          "frames": 1343,
+          "seconds": 59.990790999999994,
+          "fps": 22.38676932931256,
+          "median_ms": 37.372,
+          "p95_ms": 78.402,
+          "p99_ms": 116.312,
+          "max_ms": 408.172,
+          "one_percent_low_fps": 6.472111900965593,
+          "below_budget_seconds": 59.044296000000024,
+          "longest_below_budget_seconds": 11.397776999999998,
+          "below_budget_runs_ge2s": 6
+        },
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "proof": {
+          "passed": true,
+          "tables": 60,
+          "actors": 57,
+          "applied": 0,
+          "seconds": 0.002490899999997964,
+          "net_heap_kb": 459.8359375,
+          "jit_flags_unchanged": true
+        },
+        "all_rows_parity": true
+      },
+      {
+        "arm": 2,
+        "variant": "candidate",
+        "raw": "/home/deck/deborah-benchmarks/hash-reserve/5d5c36b1/observer-series-v1/arm02-candidate",
+        "metrics": {
+          "frames": 1267,
+          "seconds": 59.921,
+          "fps": 21.14450693412994,
+          "median_ms": 38.074,
+          "p95_ms": 91.405,
+          "p99_ms": 133.917,
+          "max_ms": 344.01,
+          "one_percent_low_fps": 5.628151494252575,
+          "below_budget_seconds": 59.32137400000005,
+          "longest_below_budget_seconds": 19.669579000000006,
+          "below_budget_runs_ge2s": 5
+        },
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "proof": {
+          "passed": true,
+          "tables": 60,
+          "actors": 57,
+          "applied": 60,
+          "seconds": 0.00988089999999886,
+          "net_heap_kb": 2988.3203125,
+          "jit_flags_unchanged": true
+        },
+        "all_rows_parity": true
+      },
+      {
+        "arm": 3,
+        "variant": "candidate",
+        "raw": "/home/deck/deborah-benchmarks/hash-reserve/5d5c36b1/observer-series-v1/arm03-candidate",
+        "metrics": {
+          "frames": 1285,
+          "seconds": 59.965221,
+          "fps": 21.429088037547633,
+          "median_ms": 37.469,
+          "p95_ms": 79.706,
+          "p99_ms": 115.03,
+          "max_ms": 425.206,
+          "one_percent_low_fps": 5.804988986149743,
+          "below_budget_seconds": 59.396045999999984,
+          "longest_below_budget_seconds": 32.23283100000001,
+          "below_budget_runs_ge2s": 3
+        },
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "proof": {
+          "passed": true,
+          "tables": 60,
+          "actors": 57,
+          "applied": 60,
+          "seconds": 0.010227099999994493,
+          "net_heap_kb": 2986.98828125,
+          "jit_flags_unchanged": true
+        },
+        "all_rows_parity": true
+      },
+      {
+        "arm": 4,
+        "variant": "control",
+        "raw": "/home/deck/deborah-benchmarks/hash-reserve/5d5c36b1/observer-series-v1/arm04-control",
+        "metrics": {
+          "frames": 1244,
+          "seconds": 59.925569,
+          "fps": 20.75908532466333,
+          "median_ms": 39.014,
+          "p95_ms": 83.28,
+          "p99_ms": 120.275,
+          "max_ms": 343.419,
+          "one_percent_low_fps": 5.740026262827854,
+          "below_budget_seconds": 59.011141000000066,
+          "longest_below_budget_seconds": 30.006642,
+          "below_budget_runs_ge2s": 4
+        },
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "proof": {
+          "passed": true,
+          "tables": 60,
+          "actors": 57,
+          "applied": 0,
+          "seconds": 0.008806399999997438,
+          "net_heap_kb": -6668.5986328125,
+          "jit_flags_unchanged": true
+        },
+        "all_rows_parity": true
+      }
+    ],
+    "arithmetic_means": {
+      "control": {
+        "fps": 21.572927326987944,
+        "median_ms": 38.193,
+        "p95_ms": 80.84100000000001,
+        "p99_ms": 118.2935,
+        "max_ms": 375.7955,
+        "one_percent_low_fps": 6.106069081896724,
+        "below_budget_seconds": 59.02771850000005,
+        "longest_below_budget_seconds": 20.7022095
+      },
+      "candidate": {
+        "fps": 21.286797485838786,
+        "median_ms": 37.7715,
+        "p95_ms": 85.5555,
+        "p99_ms": 124.4735,
+        "max_ms": 384.608,
+        "one_percent_low_fps": 5.716570240201159,
+        "below_budget_seconds": 59.358710000000016,
+        "longest_below_budget_seconds": 25.95120500000001
+      }
+    },
+    "decision": "Reject: candidate FPS mean below control; ranges overlap and tails/prolonged drops worsen on average. No statistical significance or causal slowdown claim. All four fail40FPS. Actual hash bucket count is unqueried. Candidate net heap deltas are inclusive ~2987/2988KB, controls460/-6669KB with possible GC; not gross allocations or owned memory.",
+    "process_retirement": {
+      "all_owned_games_stopped": true
+    },
+    "scope": "Short D20lowercourt screen only. No final scenario acceptance; all five full singleplayer gates unverified. Multiplayer deferred by user. Both monitors ON."
+  }
 }

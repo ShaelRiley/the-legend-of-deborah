@@ -1,3 +1,9 @@
+# Current checkpoint — table-capacity request rejected
+
+Four fresh controls/candidate/candidate/control normal D20 captures measure22.387/21.145/21.429/20.759FPS. Means21.573control/21.287candidate; ranges overlap. Mean p9580.841/85.556ms, p99118.294/124.474ms and longest drop20.702/25.951s all worsen. Reject; no source performance change retained, no significance/causal slowdown claim. Each native proof preserves60tables/57actors, all raw fields/metatables/functions/references, unchanged JIT flags. Candidate setup~10ms with inclusive net heap~2.9MiB; actual capacity and owned allocation are not queried. All owned games stopped, resetting layout. [Exact four runs, receipts and limits](validation/STEAM_DECK_HASH_CAPACITY_20261023.json).
+
+Next: use existing CPU/native evidence to isolate redundant lifecycle work before another focused source candidate. Keep live progression/provider/life transitions authoritative; no per-tick stale-state shortcut. Both monitors stayON. Singleplayer40FPS target UNMET; all five fullSP gates UNVERIFIED; multiplayer deferred; PR7draft/maincec10 unchanged.
+
 # Current checkpoint — native hash-lookup evidence; table-capacity screen
 
 Existing5890CPU samples include2512Lua-module leaves; only270match exact export starts. Current DLL SHA/inode/timestamps and PE unwind ranges improve attribution without disabled APIs. A330sample anonymous interval has reference-compatible table-get branches/node traversal; this is an inference, not a PDB-confirmed symbol. The exact PDB is absent locally and Microsoft returns404; no complete GC/realm/VM-op attribution is claimed. [Metadata, limits and frozen experiment](validation/STEAM_DECK_HASH_CAPACITY_20261023.json).
