@@ -1,3 +1,9 @@
+# Current checkpoint — canonical HUD first source series promising; unchanged confirmation next
+
+SixsourceP,C,C,P,P,C runs22.391/22.798/23.776/21.634/22.764/22.921FPS. Means22.263parent/23.165candidate(+4.052% arithmetic), p9582.072/78.369ms,p99117.183/114.056ms,longestdrop22.519/8.951s. All3adjacent FPS/p95 effects favorcandidate; thirdFPSmarginonly0.69% and ranks nearlytouch, so run unchanged6freshconfirmation before retaining. AllsixFAIL40. Nativebefore/afterfile/function/cache/pool/usage/publicprovider checks and input/endhealth pass, allownedgamesStop/rootinstallrestored. CIcd326/335/source_changed0/same9andfiveanchors/newcachegatepass; sourceVRaudiopass. [Sixrawresults/native/CI limits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next unchangedP,C,C,P,P,C60s samefrozenD20stress againsta135. No further code/setting/instrumentation changes. Confirmation separates variance from usefulgain; no statistical/finalclaim or mainmerge. BothmonitorsON, SP40UNMET/allfivefullSPgates/releaseordinarycorroborationUNVERIFIED; multiplayerdeferred.
+
 # Current checkpoint — canonical HUD native visual/state pass; source FPS next
 
 Freshcd37397f sourcevisual pass: opaque2builds/1hit,fade1nativefallback; exactnativecursor/RGBAallfourframes, hookremoved. Fixedpixelbounds pass: darkmax6/oneOver5,brightmax5/noneOver5,black/fadeexact,backgroundsunchanged. OwnedgameStopped. [RawPNG/state/path proof](validation/STEAM_DECK_HUD_CACHE_20261023.json). No sourceFPSgain claimed. This documentation checkpoint changes no testedgamecode.
