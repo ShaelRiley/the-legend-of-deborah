@@ -1,3 +1,11 @@
+# Current checkpoint — visibility bookkeeping rejected after twelve runs
+
+Firstseriesmeans19.586parent/20.279candidateFPS(+3.54%); confirmation22.305parent/22.109candidate(−0.88%). Rangesoverlap;averagegaindoesnotrepeat. Confirmationp99improves121.590→104.290ms,butlongestslowepisodeaveragesworseinbothseriesandall12FAIL. Rejectthecandidate; restore rendererbyte-exacte07177e2/SHA2567bec9bbd. Keepusefulregistration/GC/removalregressions,passingLua5.4andLuaJIT. [All12measurements/limits](validation/STEAM_DECK_NATIVE_SELECTION_20261023.json).
+
+Allnativefunction/file/source52client116server/1820models/normalroutechecks pass. Confirmationfreshnativeone-ticklogsarepreserved; exposedfrequency`.1`wasnotchanged. Rebootanddifferentbackgroundloadseparatesessions—nopooledcausalFPSclaim. Allownedgamesstopped. BothmonitorsON/persistentdisplayinhibitionactive. e327CI325/334/source_changed0/sameninefailuresandfiveanchors; source/VR/audiopass.
+
+Next: boundedtimer-callbackCPUattributionusingexistingAuditprofiler. Earlierprofileexcludestimers. Comparefreshunprofiled/profiled/profiled/unprofiled60srunsontheunchangednormalD20route; measureobserveroverheadandcollecttimerrowswithoutclaimingprofiledFPSasacceptance. Preparedproviderproxykeepsregistrationarguments,return/nil/error/yieldsemantics; queuedwrappersrequirewholeownedprocessretirement. No timer instrumentationisinstalledduringcurrentcomparison. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged.
+
 # Current checkpoint — unchanged confirmation resumes after reboot warm-up
 
 Firstsixnative-selectionrunscomplete: parentmean19.586FPS/candidatemean20.279(+3.540% arithmetic), overlappingranges. Meanp9592.286/91.554ms,p99138.672/136.701ms; longestbelow40episode35.850/42.391s. AllsixFAIL. No validatedgainretained. Exactnativefile/functions/source/resources/input/focus/bothONpass. RepeatunchangedP,C,C,P,P,Cusingpinnedsourcee07177e2/e3271bb8. Userpause/rebootinterruptedconfirmationbeforeFPS; rawstartupretained. Ten-minuteordinaryD20devicewarm-upthenfreshprocesses; no content/AI/graphics/hostingchanges.
