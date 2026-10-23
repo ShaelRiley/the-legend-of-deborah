@@ -1,3 +1,11 @@
+# Current checkpoint — complete native hierarchy; code-byte capacity screen
+
+Fresh native engine diagnostic contains both completed reports:1589profiled frames, NextBot protected Lua self11.09ms/frame, server inclusive25.469ms/frame; rendering opaqueLua2.8ms, text1.24ms and leafclassification1.19ms. Inclusive scopes overlap and include capture preparation/IPC. Actual active20.543FPS/p9590.791ms/p99132.141ms FAIL is instrumented, not acceptance. Earlier partial hierarchy/21.744FPS is preserved; the collector now waits for both completion markers. Both owned games stopped. [Complete hierarchy/raw paths/limits](validation/STEAM_DECK_NATIVE_HIERARCHY_20261023.json).
+
+No new production optimization is retained. Adjacent movement-field borrowing requires a better correctness/mechanism gate; changing static render group does not bypass the reference leaf pass. Existing incomplete/unlit batches stay excluded. Next: fixed four fresh stock/maxmcode16384/maxmcode16384/stock60s runs, using only the documented public JIT code-byte capacity option. This is independent of previously rejected trace-count/length requests; saturation and unknown native defaults are not assumed. No JIT on/off/flush, flags, GC, AI, content, graphics or source changes. Both realms require fresh option/flag receipts; all game processes retire before next arm. Reject noise/tail regression; no predicted gain claim.
+
+Both monitors stay ON always. Required dedicated-host/four-human access request is pending while local work continues. TargetUNMET; all six full acceptance gates UNVERIFIED; PR7draft/maincec10 unchanged.
+
 # Current checkpoint — timer attribution complete; native hierarchy next
 
 Four fresh normal D20 runs, unprofiled/profiled/profiled/unprofiled, measure22.263/19.375/18.710/21.378FPS. Control mean21.820FPS versus observed19.042FPS: material instrumentation effect; no profiled FPS acceptance. Both profiles receive22timer groups, inclusive sum24.453/23.780ms per second. Weapon-special timer9–10ms/s leads; these rows cannot explain the frame deficit. No timer optimization retained. [Measurements, coverage and retirement](validation/STEAM_DECK_TIMER_PROFILE_20261023.json).
