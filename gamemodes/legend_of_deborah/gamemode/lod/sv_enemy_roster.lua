@@ -1,4 +1,5 @@
 -- Complete ordinary roster. Native models only; attacks share RPG authorities.
+local LOD = LOD
 LOD.EnemyRoster = LOD.EnemyRoster or {}
 local E=LOD.EnemyRoster
 local EC=LOD.Config.Encounter

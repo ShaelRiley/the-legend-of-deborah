@@ -1,4 +1,6 @@
 LOD = LOD or {}
+-- Keep the namespace local; child services and actor lifetimes remain live.
+local LOD = LOD
 LOD.RPGStatusElements = LOD.RPGStatusElements or {}
 
 local System = LOD.RPGStatusElements

@@ -1,4 +1,5 @@
 LOD = LOD or {}
+local LOD = LOD
 LOD.HostileMotionV2 = LOD.HostileMotionV2 or {}
 
 local Motion = LOD.HostileMotionV2

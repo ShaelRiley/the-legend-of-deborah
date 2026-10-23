@@ -180,6 +180,11 @@ bleeding(a)
 LOD.RunManager.State.Graph = {} -- Same-seed rebuild is still a new world.
 assert(not System:Has(a, "bleeding"), "Same-seed topology replacement clears stale statuses")
 bleeding(a)
+local previousRunManager = LOD.RunManager
+LOD.RunManager = {State={CampaignEpoch=2,LevelSeed=1,Graph=previousRunManager.State.Graph}}
+assert(not System:Has(a, "bleeding"), "Replacing the child RunManager still retires the previous actor life")
+LOD.RunManager = previousRunManager
+bleeding(a)
 System:BindActorLife(b)
 b.LODMoraleCooldownUntil = clock + 10
 hooks.PreCleanupMap.LOD_RPG_CombatLifeCleanup()

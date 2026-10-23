@@ -1,6 +1,7 @@
 -- B29: one graph-owned spatial and opening-engagement authority. This is not
 -- another population director: existing directors still own actors and rewards.
 LOD = LOD or {}
+local LOD = LOD
 LOD.EntrySafety = LOD.EntrySafety or {}
 local S = LOD.EntrySafety
 S.Version = "b29-entry-safety"
