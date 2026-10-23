@@ -1,0 +1,19 @@
+{
+  "status": "SOURCE CANDIDATE; targeted static gates PASS; native source/FPS PENDING;40FPSUNMET/all6fullscenariosUNVERIFIED",
+  "parent": "f6772638cd3de8e214ccc38f023015dccc4b17f3",
+  "hypothesis": "Bounded69sD20 diagnostic reports256683BeforeAIcalls/97.74ms/s,513698Servicecalls/38.03ms/s and1139328Contextcalls/34.33ms/s. Inclusive/wrapped/preparation scopes overlap; do not add or infer gameplay gain. BeforeAI callsService and Claim then repeatsService+Context. Avoid only proven redundant work.",
+  "change": "Extract unchanged claimcore. BeforeAI may enter it only with originalClaim/Service/Context/nativeC-clock identities,plain system/LOD/manager/state/graph/owner,currentowner state/graph/seed/level/epoch/run and futuredeadline. PublicClaim unchanged semantics; custom/mutable/expired cases usecurrentpublicpath. No cross-call actor/admission/position/result cache; no servicecadence/AI/gameplayvaluechange.",
+  "static_gates": [
+    "21cases71assertions: core returns/lifecycle/customservice/context/claim/clock/inheritedlookup/deadline/same-seedstate/graph/owner/metatable fallbackPASS; exactparentfailsredundant-work gate",
+    "ExistingsharedEnemyAIWorkincludingB29life/quotas/player15cases55assertions/key28062PASS",
+    "ProductionB29Initialize/RunBehaviour/Motionwithdrawal/cachedroutes/closedgates/freeze/UIcleanupPASS",
+    "Entryspatial5145boundaries/50000directsources/10000nativequeries+cell/config/origin/customresolver/mutablevector/lifetime/refreshPASS",
+    "SelectedB29checkpoint38/42 initially:3knownbaseline leaf failures +missingNode environment. Manualreader rerunPASS withprivateofficialchecksum-verifiedNode24.22.1. Fullregatedmatrixnotclaimed.",
+    "9d2a5d5bfullCI325/334/source_changed0 exactsame9names5anchorsas438/3cf;source/VR/audioPASS. CurrentcandidateCIseparatepending."
+  ],
+  "native_gate_plan": "VerifyfullentryfileCRC andactualBeforeAI/Claim/Service/Contextsource/definitionlines, nativeCclock/plainmetadata; freshsourceP,C,C,P,P,C60sD20comparison. Same120total/116server/52clientmanifest. BothmonitorsONalways1280x800@60/external1920x1080@75;normalresources/seeds/counts/AI/actions/settings; noperformancehooks/wrappers/samplers.",
+  "limits": "Static and operation proofs are not DeckFPS. Retainonlymeasuredbenefit beyondnoise withbehavior/tails preserved. Fullscenarios/180striplicates/capped/multiplayer/allbossphasesstillunverified.",
+  "live_design": "ExactGDD1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY normalized05/06 reviewed; no game-law/tuning/GDD change.",
+  "raw_preparation": "/home/deck/deborah-recovery/entry-context-*.log",
+  "next": "Native actualsource proof plusfixed6arm comparison; retainorreject."
+}

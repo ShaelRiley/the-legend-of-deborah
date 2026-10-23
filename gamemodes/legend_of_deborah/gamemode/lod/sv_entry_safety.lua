@@ -83,6 +83,11 @@ function S:Context()
     return s,s.Graph,s.Graph.EntrySafety
 end
 
+local nativeContext = S.Context
+local engineTime = CurTime
+local timeInfo = type(engineTime)=="function" and debug and debug.getinfo and debug.getinfo(engineTime,"S")
+local nativeClock = timeInfo and timeInfo.what=="C"
+
 -- Deliberately NOT WorldToCell's nearest/clamped fallback. A staging hut above
 -- the maze, or a different deck, must never count as actual dungeon deployment.
 function S:ExactCell(graph,pos)
@@ -293,6 +298,8 @@ function S:Service()
         end
     end
 end
+local nativeService = S.Service
+
 function S:WaveAllows(r,id,e)
     if not r.limited then return true end
     if CurTime()<(r.restUntil or 0) then return false end
@@ -320,8 +327,7 @@ function S:AddMember(r,e)
 end
 -- A single actor is reserved against EVERY nearby opening Hero, not one quota
 -- per director/player. Safe Heroes never participate in these reservations.
-function S:Claim(e)
-    self:Service();local s,g=self:Context();if not s then return nil,false end
+local function claim(self,e,g)
     -- Service has already observed deployment/freeze/owner changes. With no
     -- active records, both admission loops are empty and cannot claim an actor.
     if not self.Active[1] then return nil,false end
@@ -379,6 +385,33 @@ function S:Claim(e)
     for _,r in ipairs(nearby) do self:AddMember(r,e) end
     return target,limited
 end
+function S:Claim(e)
+    self:Service();local s,g=self:Context();if not s then return nil,false end
+    return claim(self,e,g)
+end
+local nativeClaim = S.Claim
+
+-- BeforeAI has just serviced the owner. Borrow that work only when repeating
+-- Service would perform the same plain-table context checks and return before
+-- its next deadline. No admission decision, actor position or record is cached.
+local function claimAfterService(self,e,s,g)
+    if not nativeClock or CurTime~=engineTime or getmetatable(self)~=nil
+        or getmetatable(LOD)~=nil or getmetatable(s)~=nil or getmetatable(g)~=nil then
+        return self:Claim(e)
+    end
+    local manager=LOD.RunManager
+    local owner=self.Owner
+    if manager and getmetatable(manager)==nil and owner and getmetatable(owner)==nil
+        and self.Claim==nativeClaim and self.Service==nativeService and self.Context==nativeContext
+        and manager.State==s and s.Graph==g and g.EntrySafety
+        and owner.state==s and owner.graph==g and owner.seed==s.LevelSeed
+        and owner.level==s.Level and owner.epoch==s.CampaignEpoch and owner.run==s.RunId
+        and engineTime()<(self.NextService or 0) then
+        return claim(self,e,g)
+    end
+    return self:Claim(e)
+end
+
 function S:Permit(e,target)
     self:Service()
     if self:Protected(target) or self:Protected(e) then return false end
@@ -470,7 +503,7 @@ local function beforeAI(self,e)
     end
     e.LODEntryLastOutside=e:GetPos()
     if e.LODBossEncounter or e.LODHector or e.LODWarden or e.LODNeilBrute then return false end
-    local target,limited=self:Claim(e)
+    local target,limited=claimAfterService(self,e,s,g)
     if target then
         e.LODEntrySuppressed=nil;e.LODEntryTarget=target;e.LODEntryPermitUntil=CurTime()+self.Config.ServiceSeconds*2
         -- Admission is necessary, not sufficient: the native archetype still

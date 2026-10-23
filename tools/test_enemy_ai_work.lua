@@ -152,3 +152,5 @@ print(string.format('ENEMY_AI_WORK_PASS close_lua_field_reads=%d status_queries=
 if not probe and not tracePath then dofile("tools/test_player_active_query.lua") end
 
 if not probe and not tracePath then dofile("tools/test_cell_key_strings.lua") end
+
+if not probe and not tracePath then dofile("tools/test_entry_context_reuse.lua") end

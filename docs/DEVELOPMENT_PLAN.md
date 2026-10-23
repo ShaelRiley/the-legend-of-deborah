@@ -1,3 +1,13 @@
+# Current checkpoint — guarded reuse of already-serviced admission context
+
+BeforeAI currently services entry ownership, then Claim repeats Service and Context. Candidate extracts the same admission core and borrows the serviced context only while native function/C-clock identities, plain tables, current owner/state/graph/seed/level/epoch/run and future deadline match. Custom providers, metatables, inherited methods, clock changes and lifecycle/deadline changes keep public Claim. Admission results and actor positions are never cached; service cadence, quotas, movement and combat remain.
+
+21cases/71assertions pass; the exact parent fails the redundant-work gate. Existing shared AI, B29 quotas/lifecycle/production coroutine/withdrawal/routes/freeze/UI and spatial/config/refresh gates pass. The selected42check checkpoint has38initial passes, three known parent failures and one missingNode failure; that manual-reader check passes after installing official checksum-verified Node24.22.1. No full green matrix is claimed. [Candidate scope and gates](validation/STEAM_DECK_ENTRY_CONTEXT_20261023.json).
+
+Next: verify actual source/function locations, native clock and metadata, then fixed fresh source P,C,C,P,P,C60s D20 runs. Both monitors remain ON at1280×800@60/external1920×1080@75; same normal resources, counts, AI, actions, graphics and power. No private wrappers/profilers/samplers during FPS. Keep or revert only on supported performance and regression evidence.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR7 stays draft; main remainscec10dc54. Both JIT settings, affinity, key-cache, animation and per-call player-query candidates remain rejected.
+
 # Current checkpoint — trace-length setting rejected; guarded entry candidate next
 
 Four fresh D20 arms finish at22.073stock/22.252candidate/20.755candidate/20.883stockFPS. Means21.478stock and21.504candidate (+0.122% arithmetic) overlap without useful benefit. All captures fail. Public maxrecord16000 requests succeed in both realms with identical optimization flags; no JIT on/off/flush, disabled API, affinity, profiler or active sampler is used. Source, normal seeds/resources/population, physical input, focus and both-display gates pass. Both monitors stay ON at1280×800@60/external1920×1080@75. All four owned games stop, clearing the setting. Reject it. [Evidence](validation/STEAM_DECK_JIT_RECORD_20261023.json).
