@@ -1,3 +1,11 @@
+# Current checkpoint — namespace binding rejected after six Deck captures
+
+P,C,C,P,P,C60s captures21.604/22.718/20.814/21.489/21.800/22.127FPS. Parentmean21.631/candidatemean21.886(+1.179% arithmetic), overlapping ranges and inconsistent paired effects. Meanp9582.622/82.380ms,p99118.298/112.571ms; longestdrop18.123/19.816s. Reject; restore all four modules byte-exact2ea66fbf. Keep childRunManager regression. Native4function/source/line/upvalue checks pass eachrun; all owned games stopped. [All six results and limits](validation/STEAM_DECK_NAMESPACE_BINDING_20261023.json).
+
+Benchmark qualification: developer fixture doubles discretionary encounter-planning budgets and changes caps/spacing viaM3DenseTesting. Normal-resource records do not establish release-density equivalence. Preserve current stress workload; do not remove counts or revise gates after poor results. Ordinary release-mode corroboration remains separately required/unverified. Both monitors remainON; singleplayer40UNMET/allfivefullSPgatesUNVERIFIED; multiplayerdeferred; maincec10unchanged.
+
+Next: revisit existing opaque-HUD render-target prototype only through fresh visual/lifecycle/bounded-cache gates, then a fixed matched D20 comparison if those pass. Native text CPU is measured; older single candidate38.513FPS atD10 and mixed screenshot evidence do not establish gain or current visual parity. Reuse existing helper; fades retain original native drawing. No HUD change is retained without valid visual/correctness/FPS evidence.
+
 # Current checkpoint — namespace binding candidate ready for measured comparison
 
 Four source modules bind only the existing LOD namespace as a local upvalue. Every child service/actor/profile/provider/lifecycle/graph/result remains live. Status matrix and new child RunManager replacement regression passLua5.4/LuaJIT; entry lifecycle/hotpath with float32 CLI compatibility, sharedAI/B29/roster, Soldier lifecycle, actor progression, routecache,120manifest/installer/syntax/diff pass. Initial CLI harness issues are preserved separately; no fullmatrixgreenclaim. [Candidate, regression receipts and frozen6run gate](validation/STEAM_DECK_NAMESPACE_BINDING_20261023.json).

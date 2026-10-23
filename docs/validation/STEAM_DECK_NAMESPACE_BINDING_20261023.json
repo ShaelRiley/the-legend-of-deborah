@@ -1,5 +1,5 @@
 {
-  "status": "Source candidate; native mechanism/FPS unverified. Singleplayer40targetUNMET.",
+  "status": "REJECTED after six source captures; exact parent runtime restored. Singleplayer40targetUNMET.",
   "parent": "2ea66fbf66ba9d57167943a1a9a5477bee7e3a07",
   "hypothesis": "Four measured hot service modules bind existing LOD namespace as one local upvalue. Remove repeated global namespace resolution only. Current source never replaces LOD root during play; child services, state/profile/lifecycle and providers still resolve every query. Reload binds current root. No actor/result cache or gameplay/AI/graphics/count/cadence change. Source table-lookup evidence does not quantify global lookup cost or predict gain.",
   "modules": [
@@ -41,5 +41,539 @@
       "Initial unshimmed LuaJIT entryharness lacksstring.pack; preserved failure. First compatibilitywrapper passed its own scriptname as optional parent, causing recursion; owned CLI process terminated and wrapper corrected by shiftingargs. Corrected finite gatepasses; shimneverinstalledinthegame.",
       "No full334matrixgreenclaim; knownbaselinefailuresremainseparate. No nativeFPSgainbeforecomparison."
     ]
+  },
+  "results": {
+    "rows": [
+      {
+        "arm": 1,
+        "variant": "parent",
+        "tested": "2ea66fbf66ba9d57167943a1a9a5477bee7e3a07",
+        "raw": "/home/deck/deborah-benchmarks/namespace-binding/700145b6/original-source-series/arm01-parent",
+        "metrics": {
+          "frames": 1295,
+          "seconds": 59.941865,
+          "fps": 21.604266066796555,
+          "median_ms": 38.233,
+          "p95_ms": 80.929,
+          "p99_ms": 121.129,
+          "max_ms": 392,
+          "one_percent_low_fps": 6.0120666802940175,
+          "below_budget_seconds": 58.923065999999984,
+          "longest_below_budget_seconds": 16.394948000000003,
+          "below_budget_runs_ge2s": 5
+        },
+        "native_proof": {
+          "scope": "Read-only exact installed file SHA/source/line/function and lexical namespace identity proof. Child services, actors/profiles/graphs/lives/providers/results are not cached. No methods/fields/hooks/settings changed, no pointers/addresses serialized; no disabled API or heap/process memory reads. No performance inference from source identity.",
+          "profiler_absent": true,
+          "rows": [
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 332,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "c095ab3b586553cd56be7d338a8a37176a7cd18182ce0d2b976be59be576144d",
+              "name": "status",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua"
+            },
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 107,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "bbad71968d86f8a122e6239b8ecab223f824262822aad7cd014100b40387588c",
+              "name": "roster",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua"
+            },
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 194,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 4,
+              "actual_sha256": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed",
+              "name": "motion",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua"
+            },
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 459,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 2,
+              "actual_sha256": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+              "name": "entry",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua"
+            }
+          ],
+          "sha": "2ea66fbf66ba9d57167943a1a9a5477bee7e3a07",
+          "mode": "parent",
+          "passed": true
+        },
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ]
+      },
+      {
+        "arm": 2,
+        "variant": "candidate",
+        "tested": "700145b65646d051c460ea25d8c6f827407450ec",
+        "raw": "/home/deck/deborah-benchmarks/namespace-binding/700145b6/original-source-series/arm02-candidate",
+        "metrics": {
+          "frames": 1362,
+          "seconds": 59.953103000000006,
+          "fps": 22.71775657716999,
+          "median_ms": 36.189,
+          "p95_ms": 79.533,
+          "p99_ms": 108.801,
+          "max_ms": 378.878,
+          "one_percent_low_fps": 6.686813079215332,
+          "below_budget_seconds": 59.2251850000001,
+          "longest_below_budget_seconds": 25.039260000000002,
+          "below_budget_runs_ge2s": 4
+        },
+        "native_proof": {
+          "scope": "Read-only exact installed file SHA/source/line/function and lexical namespace identity proof. Child services, actors/profiles/graphs/lives/providers/results are not cached. No methods/fields/hooks/settings changed, no pointers/addresses serialized; no disabled API or heap/process memory reads. No performance inference from source identity.",
+          "profiler_absent": true,
+          "rows": [
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 334,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "414490383b79113bf85bc2b562ef3976d5f1f2853be120a5fd06c2f9a5855b1c",
+              "name": "status",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua"
+            },
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 108,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "d4f2cafc5dbaff5222de06cb284a9a6464edb69d6b0dd7059a76c8009cce0781",
+              "name": "roster",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua"
+            },
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 195,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 4,
+              "actual_sha256": "6ee86087487c28de94267f7763815450f4bc0a738c9346b3795675c4cd72581b",
+              "name": "motion",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua"
+            },
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 460,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 2,
+              "actual_sha256": "5294d7a4a1208021af5ef7651167652d39023c56b12f109e39017485709386e9",
+              "name": "entry",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua"
+            }
+          ],
+          "sha": "700145b65646d051c460ea25d8c6f827407450ec",
+          "mode": "candidate",
+          "passed": true
+        },
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ]
+      },
+      {
+        "arm": 3,
+        "variant": "candidate",
+        "tested": "700145b65646d051c460ea25d8c6f827407450ec",
+        "raw": "/home/deck/deborah-benchmarks/namespace-binding/700145b6/original-source-series/arm03-candidate",
+        "metrics": {
+          "frames": 1248,
+          "seconds": 59.959224,
+          "fps": 20.81414529314122,
+          "median_ms": 38.811,
+          "p95_ms": 85.236,
+          "p99_ms": 108.973,
+          "max_ms": 349.52,
+          "one_percent_low_fps": 6.855932596689745,
+          "below_budget_seconds": 59.07254700000009,
+          "longest_below_budget_seconds": 19.070207999999997,
+          "below_budget_runs_ge2s": 6
+        },
+        "native_proof": {
+          "scope": "Read-only exact installed file SHA/source/line/function and lexical namespace identity proof. Child services, actors/profiles/graphs/lives/providers/results are not cached. No methods/fields/hooks/settings changed, no pointers/addresses serialized; no disabled API or heap/process memory reads. No performance inference from source identity.",
+          "profiler_absent": true,
+          "rows": [
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 334,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "414490383b79113bf85bc2b562ef3976d5f1f2853be120a5fd06c2f9a5855b1c",
+              "name": "status",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua"
+            },
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 108,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "d4f2cafc5dbaff5222de06cb284a9a6464edb69d6b0dd7059a76c8009cce0781",
+              "name": "roster",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua"
+            },
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 195,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 4,
+              "actual_sha256": "6ee86087487c28de94267f7763815450f4bc0a738c9346b3795675c4cd72581b",
+              "name": "motion",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua"
+            },
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 460,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 2,
+              "actual_sha256": "5294d7a4a1208021af5ef7651167652d39023c56b12f109e39017485709386e9",
+              "name": "entry",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua"
+            }
+          ],
+          "sha": "700145b65646d051c460ea25d8c6f827407450ec",
+          "mode": "candidate",
+          "passed": true
+        },
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ]
+      },
+      {
+        "arm": 4,
+        "variant": "parent",
+        "tested": "2ea66fbf66ba9d57167943a1a9a5477bee7e3a07",
+        "raw": "/home/deck/deborah-benchmarks/namespace-binding/700145b6/original-source-series/arm04-parent",
+        "metrics": {
+          "frames": 1288,
+          "seconds": 59.937642,
+          "fps": 21.489000184558478,
+          "median_ms": 37.999,
+          "p95_ms": 84.28,
+          "p99_ms": 115.615,
+          "max_ms": 374.126,
+          "one_percent_low_fps": 6.47522578614222,
+          "below_budget_seconds": 59.14737299999999,
+          "longest_below_budget_seconds": 22.60173900000001,
+          "below_budget_runs_ge2s": 4
+        },
+        "native_proof": {
+          "scope": "Read-only exact installed file SHA/source/line/function and lexical namespace identity proof. Child services, actors/profiles/graphs/lives/providers/results are not cached. No methods/fields/hooks/settings changed, no pointers/addresses serialized; no disabled API or heap/process memory reads. No performance inference from source identity.",
+          "profiler_absent": true,
+          "rows": [
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 332,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "c095ab3b586553cd56be7d338a8a37176a7cd18182ce0d2b976be59be576144d",
+              "name": "status",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua"
+            },
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 107,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "bbad71968d86f8a122e6239b8ecab223f824262822aad7cd014100b40387588c",
+              "name": "roster",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua"
+            },
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 194,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 4,
+              "actual_sha256": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed",
+              "name": "motion",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua"
+            },
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 459,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 2,
+              "actual_sha256": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+              "name": "entry",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua"
+            }
+          ],
+          "sha": "2ea66fbf66ba9d57167943a1a9a5477bee7e3a07",
+          "mode": "parent",
+          "passed": true
+        },
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ]
+      },
+      {
+        "arm": 5,
+        "variant": "parent",
+        "tested": "2ea66fbf66ba9d57167943a1a9a5477bee7e3a07",
+        "raw": "/home/deck/deborah-benchmarks/namespace-binding/700145b6/original-source-series/arm05-parent",
+        "metrics": {
+          "frames": 1307,
+          "seconds": 59.953277,
+          "fps": 21.800309597755597,
+          "median_ms": 37.848,
+          "p95_ms": 82.658,
+          "p99_ms": 118.15,
+          "max_ms": 372.955,
+          "one_percent_low_fps": 6.321734756265517,
+          "below_budget_seconds": 59.14929400000001,
+          "longest_below_budget_seconds": 15.373703999999993,
+          "below_budget_runs_ge2s": 5
+        },
+        "native_proof": {
+          "scope": "Read-only exact installed file SHA/source/line/function and lexical namespace identity proof. Child services, actors/profiles/graphs/lives/providers/results are not cached. No methods/fields/hooks/settings changed, no pointers/addresses serialized; no disabled API or heap/process memory reads. No performance inference from source identity.",
+          "profiler_absent": true,
+          "rows": [
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 332,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "c095ab3b586553cd56be7d338a8a37176a7cd18182ce0d2b976be59be576144d",
+              "name": "status",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua"
+            },
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 107,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "bbad71968d86f8a122e6239b8ecab223f824262822aad7cd014100b40387588c",
+              "name": "roster",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua"
+            },
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 194,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 4,
+              "actual_sha256": "f6629297345db00d8305fe0df5c337b0769141d5eaa5bcbaa4190ccdf537a8ed",
+              "name": "motion",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua"
+            },
+            {
+              "has_namespace_upvalue": false,
+              "passed": true,
+              "line": 459,
+              "namespace_matches": false,
+              "found": true,
+              "inspected_functions": 2,
+              "actual_sha256": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+              "name": "entry",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua"
+            }
+          ],
+          "sha": "2ea66fbf66ba9d57167943a1a9a5477bee7e3a07",
+          "mode": "parent",
+          "passed": true
+        },
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ]
+      },
+      {
+        "arm": 6,
+        "variant": "candidate",
+        "tested": "700145b65646d051c460ea25d8c6f827407450ec",
+        "raw": "/home/deck/deborah-benchmarks/namespace-binding/700145b6/original-source-series/arm06-candidate",
+        "metrics": {
+          "frames": 1327,
+          "seconds": 59.973067,
+          "fps": 22.126598928148862,
+          "median_ms": 37.563,
+          "p95_ms": 82.371,
+          "p99_ms": 119.938,
+          "max_ms": 355.307,
+          "one_percent_low_fps": 6.600899702629468,
+          "below_budget_seconds": 59.35885600000001,
+          "longest_below_budget_seconds": 15.338145000000004,
+          "below_budget_runs_ge2s": 5
+        },
+        "native_proof": {
+          "scope": "Read-only exact installed file SHA/source/line/function and lexical namespace identity proof. Child services, actors/profiles/graphs/lives/providers/results are not cached. No methods/fields/hooks/settings changed, no pointers/addresses serialized; no disabled API or heap/process memory reads. No performance inference from source identity.",
+          "profiler_absent": true,
+          "rows": [
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 334,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "414490383b79113bf85bc2b562ef3976d5f1f2853be120a5fd06c2f9a5855b1c",
+              "name": "status",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua"
+            },
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 108,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 1,
+              "actual_sha256": "d4f2cafc5dbaff5222de06cb284a9a6464edb69d6b0dd7059a76c8009cce0781",
+              "name": "roster",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua"
+            },
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 195,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 4,
+              "actual_sha256": "6ee86087487c28de94267f7763815450f4bc0a738c9346b3795675c4cd72581b",
+              "name": "motion",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua"
+            },
+            {
+              "has_namespace_upvalue": true,
+              "passed": true,
+              "line": 460,
+              "namespace_matches": true,
+              "found": true,
+              "inspected_functions": 2,
+              "actual_sha256": "5294d7a4a1208021af5ef7651167652d39023c56b12f109e39017485709386e9",
+              "name": "entry",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua"
+            }
+          ],
+          "sha": "700145b65646d051c460ea25d8c6f827407450ec",
+          "mode": "candidate",
+          "passed": true
+        },
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ]
+      }
+    ],
+    "arithmetic_means": {
+      "parent": {
+        "fps": 21.631191949703542,
+        "median_ms": 38.026666666666664,
+        "p95_ms": 82.62233333333333,
+        "p99_ms": 118.298,
+        "one_percent_low_fps": 6.269675740900585,
+        "below_budget_seconds": 59.07324433333333,
+        "longest_below_budget_seconds": 18.12346366666667
+      },
+      "candidate": {
+        "fps": 21.886166932820025,
+        "median_ms": 37.521,
+        "p95_ms": 82.38,
+        "p99_ms": 112.57066666666667,
+        "one_percent_low_fps": 6.714548459511515,
+        "below_budget_seconds": 59.21886266666674,
+        "longest_below_budget_seconds": 19.815871
+      }
+    },
+    "adjacent_fps_percent": [
+      5.154030722130165,
+      -3.1404666835183614,
+      1.496718791676499
+    ],
+    "decision": "Reject: mean+1.179% arithmetic, overlapping ranges/inconsistent adjacent deltas. p99 improves on average; mean prolonged drop worsens. No statistical significance or repeatable gain claim. All sixFAIL. Native proof4functions each passes. Preserve childRunManager replacement regression.",
+    "retirement": {
+      "all_owned_games_stopped": true,
+      "root_install_restored": true,
+      "root_sha": "700145b65646d051c460ea25d8c6f827407450ec"
+    },
+    "qualification": "Current fixture uses developer mode; M3DenseTesting doubles discretionary planning budgets/changes spacing and caps. Historical normal-resource means HP/XP/equipment/inputs, not release-density equivalence. Frozen stress counts retained, not relaxed after results. All five full acceptance scenarios and ordinary release-mode corroboration remain UNVERIFIED. Multiplayer deferred."
+  },
+  "candidate_ci": {
+    "sha": "700145b65646d051c460ea25d8c6f827407450ec",
+    "run_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40001176186",
+    "total": 334,
+    "passed": 325,
+    "source_changed": [],
+    "failing_names": [
+      "Bestiary B29 Bilateral Combat Seams",
+      "Active Event Catalog, Bribe Removal & Quiz Placement",
+      "Minigame Shell & Equipment UI Restrictions",
+      "Client Geometry Full-Update Recovery",
+      "Shared Native DamageInfo Lifetime",
+      "Shotgun Native Bullet Aggregation",
+      "Feat: rebalance_20261002",
+      "Retired Cross Feats & Shared Dodge",
+      "Live-GDD Feat Release Gate"
+    ],
+    "same_names_as_256": true,
+    "same_known_leaf_anchors": {
+      "test_cross_feats_dodge.lua:177": true,
+      "test_event_quiz_generation.lua:164": true,
+      "test_minigame_ui.lua:106": true,
+      "lod_keycard/cl_init.lua:6": true,
+      "test_checkpoint_d_rebalance_20261002.lua:6": true
+    },
+    "scope": "CI static only; native40FPSUNMET. Source/VR/audio separate workflows pass."
   }
 }

@@ -17,6 +17,19 @@ this current goal. The historical coop row is retained as future coverage,
 not part of current singleplayer acceptance. No performance threshold or
 singleplayer workload was relaxed by this scope clarification.
 
+## Developer-fixture qualification — 2026-10-23
+
+Existing short D20/D10 developer fixtures use `lod_developer_mode 1`.
+`sv_m3_dense_testing.lua` doubles discretionary encounter-planning threat budgets,
+sets developer caps3/4/4/4 and spacing2; the plan reports `developerDense=true`.
+“Normal resources” in those records means canonical XP/feats/starter/deployment
+and unchanged active gameplay; it does **not** prove release-density equivalence.
+Preserve these frozen stress conditions and all prior results. Do not quietly
+remove enemies, change planning or relax any acceptance requirement. Record
+ordinary release-mode corroboration separately; it remains unverified, alongside
+all five full singleplayer acceptance scenarios. Current short stress captures
+are not final acceptance.
+
 ## Conditions and evidence
 
 - Steam Deck LCD/Jupiter, 1280×800 actual viewport. Record SteamOS/kernel, GMod
