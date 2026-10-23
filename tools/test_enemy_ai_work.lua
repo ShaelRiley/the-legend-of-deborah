@@ -153,4 +153,4 @@ if not probe and not tracePath then dofile("tools/test_player_active_query.lua")
 
 if not probe and not tracePath then dofile("tools/test_cell_key_strings.lua") end
 
-if not probe and not tracePath then dofile("tools/test_entry_context_reuse.lua") end
+if not probe and not tracePath then dofile("tools/test_entry_context_lifecycle.lua") end

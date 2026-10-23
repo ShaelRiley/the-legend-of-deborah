@@ -1,12 +1,6 @@
 -- Exercise real admission/lifecycle work; operation counts are not FPS evidence.
 local oldarg=arg[1];arg[1]='--runtime'
 local H=dofile('tools/test_bestiary_b29.lua');arg[1]=oldarg
--- Supply the native C-clock metadata missing from this table-only engine fixture.
-local originalInfo=debug.getinfo
-local fixtureClock=CurTime
-debug.getinfo=function(f,...)if f==fixtureClock then return {what='C'}end;return originalInfo(f,...)end
-dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua')
-debug.getinfo=originalInfo
 local S,R,g=H.S,H.X.R,H.graph
 local service,context,claim=S.Service,S.Context,S.Claim
 local originalTime=CurTime
@@ -38,7 +32,7 @@ local function run(e)
     cases=cases+1;return counts
 end
 local e=setup();local c=run(e)
-expect(c.service==1 and c.context==2 and c.claim==0,'already-serviced native admission repeated service/context')
+expect(e.LODEntryLastOutside and e.LODEntryLastOutside:DistToSqr(e:GetPos())==0 and e.LODEntryTarget==nil,'ordinary admission position or target changed')
 local customCalls=0
 e=setup();S.Service=function(self)customCalls=customCalls+1;return service(self)end;c=run(e)
 expect(customCalls==2 and c.claim==1,'custom service was skipped')
@@ -85,4 +79,4 @@ dofile('gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua')
 service,context,claim=S.Service,S.Context,S.Claim
 e=setup();c=run(e)
 expect(c.service==2 and c.context==4 and c.claim==1,'preexisting Lua clock used native shortcut')
-print('ENTRY_CONTEXT_REUSE_PASS '..cases..' cases '..checks..' assertions; native service reuse, custom providers, clock/deadline and same-seed owner/state/graph mutations; no FPS inference')
+print('ENTRY_CONTEXT_LIFECYCLE_PASS '..cases..' cases '..checks..' assertions; current admission, custom providers, clock/deadline and same-seed owner/state/graph mutations; reuse optimization rejected, no FPS inference')

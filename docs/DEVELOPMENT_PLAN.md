@@ -1,3 +1,13 @@
+# Current checkpoint — entry-context reuse rejected after pacing review
+
+Twelve timed Deck captures complete. Candidate average21.970FPS versus21.043control (+4.402% arithmetic) repeats a positive average direction. Pacing remains unsuitable: combined longest below40 episode averages31.952s versus23.181s; confirmation p99 averages120.270ms versus113.456ms. All12fail. Reject the change for this pacing task and restore EntrySafety byte-exactly to f6772638. This is not a causal regression or statistical-significance claim. Keep21behavior/lifecycle cases/71assertions. [Complete evidence/limitations](validation/STEAM_DECK_ENTRY_CONTEXT_20261023.json).
+
+The confirmation helper accidentally renamed its opt-in environment flag, so its extra actual-function/clock receipts are missing. The first six have complete receipts. Every confirmation still has116server/52client verified source hashes, including the correct installed/mounted entryfile, plus normal seeds/resources/input/focus/bothON. Do not fabricate retrospective function proof. The helper is corrected. A fourth-arm startup failure has noFPS and is archived; that unchanged arm succeeds on retry. All owned games stop.
+
+Next: read actual public host-threading ConVars/defaults/flags without changing settings. Native evidence places substantial server and render work on the main thread; current benchmark enables mcore1/queue2/bone1 but has not recorded host_thread_mode. Availability, effect and correctness are unverified. No threading setting is applied yet.
+
+Both monitors remain ON1280×800@60/external1920×1080@75. Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; main stayscec10dc54. No entry reuse, JIT, affinity, key, query or animation candidate remains.
+
 # Current checkpoint — entry source comparison mixed; unchanged confirmation next
 
 Six fresh source runs complete: controls20.954/20.624/21.109FPS average20.896; candidates21.107/22.298/22.450 average21.952 (+5.053% arithmetic). Two candidates exceed the control range and one overlaps. Every capture fails. All three candidate longest drops below40 are longer than their paired controls; average p99 is similar. Do not retain a validated gain from this mixed first series. [All metrics/receipts](validation/STEAM_DECK_ENTRY_CONTEXT_20261023.json).

@@ -1316,3 +1316,13 @@ Actual file CRC, four public function locations, nativeCclock/plain metadata, no
 Next: unchanged source/conditions in another fixed fresh P,C,C,P,P,C60s comparison to check repeatability and the pacing concern. Both monitors stay ON1280×800@60/external1920×1080@75; normal AI/resources/counts/actions/graphics/power remain. No active profiler/wrappers/device sampler/JIT setting/affinity. No source gain or full-scenario acceptance is claimed.
 
 Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; main stayscec10dc54.
+
+## 2026-10-23: reject entry-context candidate after12captures
+
+Twelve timed Deck captures complete. Candidate average21.970FPS versus21.043control (+4.402% arithmetic) repeats a positive average direction. Pacing remains unsuitable: combined longest below40 episode averages31.952s versus23.181s; confirmation p99 averages120.270ms versus113.456ms. All12fail. Reject the change for this pacing task and restore EntrySafety byte-exactly to f6772638. This is not a causal regression or statistical-significance claim. Keep21behavior/lifecycle cases/71assertions. [Complete evidence/limitations](STEAM_DECK_ENTRY_CONTEXT_20261023.json).
+
+The confirmation helper accidentally renamed its opt-in environment flag, so its extra actual-function/clock receipts are missing. The first six have complete receipts. Every confirmation still has116server/52client verified source hashes, including the correct installed/mounted entryfile, plus normal seeds/resources/input/focus/bothON. Do not fabricate retrospective function proof. The helper is corrected. A fourth-arm startup failure has noFPS and is archived; that unchanged arm succeeds on retry. All owned games stop.
+
+Next: read actual public host-threading ConVars/defaults/flags without changing settings. Native evidence places substantial server and render work on the main thread; current benchmark enables mcore1/queue2/bone1 but has not recorded host_thread_mode. Availability, effect and correctness are unverified. No threading setting is applied yet.
+
+Both monitors remain ON1280×800@60/external1920×1080@75. Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; main stayscec10dc54. No entry reuse, JIT, affinity, key, query or animation candidate remains.

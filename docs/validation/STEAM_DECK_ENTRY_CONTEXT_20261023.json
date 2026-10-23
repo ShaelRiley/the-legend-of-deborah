@@ -1,5 +1,5 @@
 {
-  "status": "MIXED first6sourcearms; candidate gainNOTretainedpendingunchangedconfirmation.40FPSUNMET/all6fullscenariosUNVERIFIED",
+  "status": "REJECTED after12timedcaptures; runtime restoredbyteexactf677.40FPSUNMET/all6fullscenariosUNVERIFIED",
   "parent": "f6772638cd3de8e214ccc38f023015dccc4b17f3",
   "hypothesis": "Bounded69sD20 diagnostic reports256683BeforeAIcalls/97.74ms/s,513698Servicecalls/38.03ms/s and1139328Contextcalls/34.33ms/s. Inclusive/wrapped/preparation scopes overlap; do not add or infer gameplay gain. BeforeAI callsService and Claim then repeatsService+Context. Avoid only proven redundant work.",
   "change": "Extract unchanged claimcore. BeforeAI may enter it only with originalClaim/Service/Context/nativeC-clock identities,plain system/LOD/manager/state/graph/owner,currentowner state/graph/seed/level/epoch/run and futuredeadline. PublicClaim unchanged semantics; custom/mutable/expired cases usecurrentpublicpath. No cross-call actor/admission/position/result cache; no servicecadence/AI/gameplayvaluechange.",
@@ -15,7 +15,7 @@
   "limits": "Static and operation proofs are not DeckFPS. Retainonlymeasuredbenefit beyondnoise withbehavior/tails preserved. Fullscenarios/180striplicates/capped/multiplayer/allbossphasesstillunverified.",
   "live_design": "ExactGDD1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY normalized05/06 reviewed; no game-law/tuning/GDD change.",
   "raw_preparation": "/home/deck/deborah-recovery/entry-context-*.log",
-  "next": "Repeatunchanged source andfrozenP,C,C,P,P,C60s benchmark. Meanfirstseries+5.053%arithmetic butlongestdropsworseall3pairs. Decideusingrepeatedgain/tails/regressionevidence.",
+  "next": "Read-only actualhost_thread_mode capability/default/flags inbothrealms,then considerboundedthreadingdiagnostic onlyifpubliclyavailable. Preserve normal66HzAI/graphics/resources/counts/controls/bothON; no disabledAPI bypass.",
   "first_source_series": {
     "status": "MIXED first6sourcearms; no retained gain yet; repeat unchanged source/benchmark beforedecision.40FPSUNMET/all6fullscenariosUNVERIFIED",
     "plan": {
@@ -454,5 +454,336 @@
     "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39885182195",
     "result": "325/334/source_changed0;all9failednames/all5anchorssame9d2/438/3cf. Source/VR/audioPASS; nofullgreenclaim.",
     "raw": "/home/deck/deborah-recovery/evidence/74e8ec47-ci-failures.log"
-  }
+  },
+  "confirmation": {
+    "rows": [
+      {
+        "arm": "01-parent",
+        "sha": "6e4ac37d4210b1ac0d166842b66f20233bdb9f52",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/c3a0bc4a/confirmation-source-series/01-parent",
+        "active": {
+          "frames": 1308,
+          "seconds": 59.952871,
+          "fps": 21.817136997492582,
+          "median_ms": 38.206,
+          "p95_ms": 80.382,
+          "p99_ms": 99.719,
+          "max_ms": 369.94,
+          "one_percent_low_fps": 7.212368181092262,
+          "below_budget_seconds": 59.68790299999998,
+          "longest_below_budget_seconds": 23.788076000000014,
+          "below_budget_runs_ge2s": 4
+        },
+        "extra_function_clock_receipt": "MISSING: confirmation helper envflag inadvertently renamed; do not fabricate",
+        "setup_resource_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.41199493408203,
+          "node": 210
+        },
+        "end_health": 211,
+        "standard_source_receipt": {
+          "server_checked": 116,
+          "client_checked": 52,
+          "verified": true,
+          "manifest_entry_sha256": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+          "expected_git_sha": "6e4ac37d4210b1ac0d166842b66f20233bdb9f52",
+          "explicit_entry_modules": [
+            {
+              "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "installed": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+              "mounted": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26"
+            }
+          ]
+        }
+      },
+      {
+        "arm": "02-candidate",
+        "sha": "c3a0bc4a30de3bac1d5b135f0039476ba1106a71",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/c3a0bc4a/confirmation-source-series/02-candidate",
+        "active": {
+          "frames": 1283,
+          "seconds": 59.939681,
+          "fps": 21.404851987784188,
+          "median_ms": 37.85,
+          "p95_ms": 83.906,
+          "p99_ms": 128.317,
+          "max_ms": 367.533,
+          "one_percent_low_fps": 6.039511412818259,
+          "below_budget_seconds": 59.23987399999993,
+          "longest_below_budget_seconds": 33.73016399999999,
+          "below_budget_runs_ge2s": 2
+        },
+        "extra_function_clock_receipt": "MISSING: confirmation helper envflag inadvertently renamed; do not fabricate",
+        "setup_resource_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.41646194458008,
+          "node": 210
+        },
+        "end_health": 206,
+        "standard_source_receipt": {
+          "server_checked": 116,
+          "client_checked": 52,
+          "verified": true,
+          "manifest_entry_sha256": "55fa6bef50124a56b882b100995e4023ddf4470e146d501b3472279e2d07561f",
+          "expected_git_sha": "c3a0bc4a30de3bac1d5b135f0039476ba1106a71",
+          "explicit_entry_modules": [
+            {
+              "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "installed": "55fa6bef50124a56b882b100995e4023ddf4470e146d501b3472279e2d07561f",
+              "mounted": "55fa6bef50124a56b882b100995e4023ddf4470e146d501b3472279e2d07561f"
+            }
+          ]
+        }
+      },
+      {
+        "arm": "03-candidate",
+        "sha": "c3a0bc4a30de3bac1d5b135f0039476ba1106a71",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/c3a0bc4a/confirmation-source-series/03-candidate",
+        "active": {
+          "frames": 1345,
+          "seconds": 59.968374000000004,
+          "fps": 22.428488723072597,
+          "median_ms": 36.436,
+          "p95_ms": 87.496,
+          "p99_ms": 118.259,
+          "max_ms": 361.02,
+          "one_percent_low_fps": 6.539156233987825,
+          "below_budget_seconds": 59.297601000000036,
+          "longest_below_budget_seconds": 35.558089000000024,
+          "below_budget_runs_ge2s": 2
+        },
+        "extra_function_clock_receipt": "MISSING: confirmation helper envflag inadvertently renamed; do not fabricate",
+        "setup_resource_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.42546463012695,
+          "node": 210
+        },
+        "end_health": 211,
+        "standard_source_receipt": {
+          "server_checked": 116,
+          "client_checked": 52,
+          "verified": true,
+          "manifest_entry_sha256": "55fa6bef50124a56b882b100995e4023ddf4470e146d501b3472279e2d07561f",
+          "expected_git_sha": "c3a0bc4a30de3bac1d5b135f0039476ba1106a71",
+          "explicit_entry_modules": [
+            {
+              "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "installed": "55fa6bef50124a56b882b100995e4023ddf4470e146d501b3472279e2d07561f",
+              "mounted": "55fa6bef50124a56b882b100995e4023ddf4470e146d501b3472279e2d07561f"
+            }
+          ]
+        }
+      },
+      {
+        "arm": "04-parent",
+        "sha": "6e4ac37d4210b1ac0d166842b66f20233bdb9f52",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/c3a0bc4a/confirmation-source-series/04-parent",
+        "active": {
+          "frames": 1248,
+          "seconds": 59.906392,
+          "fps": 20.832501479975626,
+          "median_ms": 38.715,
+          "p95_ms": 86.685,
+          "p99_ms": 131.643,
+          "max_ms": 357.522,
+          "one_percent_low_fps": 5.845923053262655,
+          "below_budget_seconds": 59.41832200000006,
+          "longest_below_budget_seconds": 24.767156999999973,
+          "below_budget_runs_ge2s": 4
+        },
+        "extra_function_clock_receipt": "MISSING: confirmation helper envflag inadvertently renamed; do not fabricate",
+        "setup_resource_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.40665817260742,
+          "node": 210
+        },
+        "end_health": 172,
+        "standard_source_receipt": {
+          "server_checked": 116,
+          "client_checked": 52,
+          "verified": true,
+          "manifest_entry_sha256": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+          "expected_git_sha": "6e4ac37d4210b1ac0d166842b66f20233bdb9f52",
+          "explicit_entry_modules": [
+            {
+              "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "installed": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+              "mounted": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26"
+            }
+          ]
+        }
+      },
+      {
+        "arm": "05-parent",
+        "sha": "6e4ac37d4210b1ac0d166842b66f20233bdb9f52",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/c3a0bc4a/confirmation-source-series/05-parent",
+        "active": {
+          "frames": 1254,
+          "seconds": 59.933886,
+          "fps": 20.923055114430593,
+          "median_ms": 39.409,
+          "p95_ms": 83.479,
+          "p99_ms": 109.007,
+          "max_ms": 350.314,
+          "one_percent_low_fps": 6.862573792464155,
+          "below_budget_seconds": 59.56703700000006,
+          "longest_below_budget_seconds": 33.47189900000006,
+          "below_budget_runs_ge2s": 2
+        },
+        "extra_function_clock_receipt": "MISSING: confirmation helper envflag inadvertently renamed; do not fabricate",
+        "setup_resource_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 60.42369842529297,
+          "node": 207
+        },
+        "end_health": 211,
+        "standard_source_receipt": {
+          "server_checked": 116,
+          "client_checked": 52,
+          "verified": true,
+          "manifest_entry_sha256": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+          "expected_git_sha": "6e4ac37d4210b1ac0d166842b66f20233bdb9f52",
+          "explicit_entry_modules": [
+            {
+              "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "installed": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+              "mounted": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26"
+            }
+          ]
+        }
+      },
+      {
+        "arm": "06-candidate",
+        "sha": "c3a0bc4a30de3bac1d5b135f0039476ba1106a71",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/c3a0bc4a/confirmation-source-series/06-candidate",
+        "active": {
+          "frames": 1326,
+          "seconds": 59.919791,
+          "fps": 22.129583195642322,
+          "median_ms": 37.505,
+          "p95_ms": 82.217,
+          "p99_ms": 114.234,
+          "max_ms": 342.917,
+          "one_percent_low_fps": 6.450611126290525,
+          "below_budget_seconds": 59.30566199999995,
+          "longest_below_budget_seconds": 31.789368999999976,
+          "below_budget_runs_ge2s": 3
+        },
+        "extra_function_clock_receipt": "MISSING: confirmation helper envflag inadvertently renamed; do not fabricate",
+        "setup_resource_input_focus_display_gates": true,
+        "input_end": {
+          "reason": "external stop",
+          "duration": 61.4337272644043,
+          "node": 211
+        },
+        "end_health": 206,
+        "standard_source_receipt": {
+          "server_checked": 116,
+          "client_checked": 52,
+          "verified": true,
+          "manifest_entry_sha256": "55fa6bef50124a56b882b100995e4023ddf4470e146d501b3472279e2d07561f",
+          "expected_git_sha": "c3a0bc4a30de3bac1d5b135f0039476ba1106a71",
+          "explicit_entry_modules": [
+            {
+              "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+              "installed": "55fa6bef50124a56b882b100995e4023ddf4470e146d501b3472279e2d07561f",
+              "mounted": "55fa6bef50124a56b882b100995e4023ddf4470e146d501b3472279e2d07561f"
+            }
+          ]
+        }
+      }
+    ],
+    "failed_setups": [
+      {
+        "arm": "04-parent",
+        "raw": "/home/deck/deborah-benchmarks/entry-context/c3a0bc4a/confirmation-source-series/04-parent-startup-failed-20261023T021056Z",
+        "reason": "Exact fresh native source/readiness absent at120s; no FPS started. Console shows Steam context disconnect/reconnect and no map-ready marker; cause not established. All owned processStop confirmed. Retry same frozen arm after preserving setup failure.",
+        "original_error": "Command '['python3', '/home/deck/deborah-recovery/run-ready-finale.py', '6e4ac37d4210b1ac0d166842b66f20233bdb9f52', '/home/deck/deborah-benchmarks/entry-context/c3a0bc4a/confirmation-source-series/04-parent', '--seconds', '60']' returned non-zero exit status 1.",
+        "original_utc": "2026-10-23T02:10:56.914563+00:00"
+      }
+    ],
+    "summary": {
+      "confirmation": {
+        "parent": {
+          "n": 3,
+          "fps_mean": 21.190897863966267,
+          "fps_range": [
+            20.832501479975626,
+            21.817136997492582
+          ],
+          "p95_mean_ms": 83.51533333333333,
+          "p99_mean_ms": 113.45633333333333,
+          "max_frame_mean_ms": 359.25866666666667,
+          "below40_mean_s": 59.55775400000003,
+          "longest_drop_mean_s": 27.34237733333335,
+          "episodes_ge2s_total": 10
+        },
+        "candidate": {
+          "n": 3,
+          "fps_mean": 21.98764130216637,
+          "fps_range": [
+            21.404851987784188,
+            22.428488723072597
+          ],
+          "p95_mean_ms": 84.53966666666666,
+          "p99_mean_ms": 120.27,
+          "max_frame_mean_ms": 357.15666666666664,
+          "below40_mean_s": 59.281045666666635,
+          "longest_drop_mean_s": 33.69254066666666,
+          "episodes_ge2s_total": 7
+        },
+        "arithmetic_percent": 3.7598380366643758
+      },
+      "combined": {
+        "parent": {
+          "n": 6,
+          "fps_mean": 21.043346507875075,
+          "fps_range": [
+            20.62414778343223,
+            21.817136997492582
+          ],
+          "p95_mean_ms": 84.1445,
+          "p99_mean_ms": 117.03783333333334,
+          "max_frame_mean_ms": 366.73383333333334,
+          "below40_mean_s": 59.47138916666669,
+          "longest_drop_mean_s": 23.180763333333342,
+          "episodes_ge2s_total": 24
+        },
+        "candidate": {
+          "n": 6,
+          "fps_mean": 21.969658262614136,
+          "fps_range": [
+            21.106800929947298,
+            22.449736981983786
+          ],
+          "p95_mean_ms": 83.61449999999999,
+          "p99_mean_ms": 120.26916666666666,
+          "max_frame_mean_ms": 353.0478333333333,
+          "below40_mean_s": 59.3394395,
+          "longest_drop_mean_s": 31.95220483333333,
+          "episodes_ge2s_total": 20
+        },
+        "arithmetic_percent": 4.401922262661051
+      }
+    },
+    "status": "All12timedcapturescompleteFAIL; meanFPSpositivebothseriesbutpacingconcern; confirmationextra-function/clockreceiptMISSING",
+    "validation_gap": "Copying runner replaced LOD_ENTRY_CONTEXT_SOURCE_PROOF with LOD_ENTRY_CONTEXT_CONFIRM_PROOF. run-ready recognizesonlyoriginalflag; noextra actualfunction/clock JSON collected forconfirmation. First6receiptsallPASS; standardruntime source capturesretainentry-filehashes. No retrospectiveprooforcompletegateclaim.",
+    "cleanup": "AllownedgamesStop/candidateinstalledwhilequit;onepreserved04startupfailure(noFPS)thenunchangedarmresumed.",
+    "decision": "REJECT candidate for this pacing task: FPS mean+4.402% over12captures, butlongestbelow40mean31.952svs23.181s andconfirmationp99mean120.270v113.456ms. All12FAIL; no validatedpacingimprovement. Restoreentryruntimebyteexactf677;retainbehavior/lifecyclechecks/evidence. No causalsource-regressionorstatisticalsignificanceclaim."
+  },
+  "decision": "REJECT candidate for this pacing task: FPS mean+4.402% over12captures, butlongestbelow40mean31.952svs23.181s andconfirmationp99mean120.270v113.456ms. All12FAIL; no validatedpacingimprovement. Restoreentryruntimebyteexactf677;retainbehavior/lifecyclechecks/evidence. No causalsource-regressionorstatisticalsignificanceclaim.",
+  "retained_tests": "21cases71assertions in tools/test_entry_context_lifecycle.lua; behavior/lifecycle/callback/deadline/state/graph/inheritedlookup contracts retained. No required native-work reduction assertion remains.",
+  "validation_gap": "Copying runner replaced LOD_ENTRY_CONTEXT_SOURCE_PROOF with LOD_ENTRY_CONTEXT_CONFIRM_PROOF. run-ready recognizesonlyoriginalflag; noextra actualfunction/clock JSON collected forconfirmation. First6receiptsallPASS; standardruntime source capturesretainentry-filehashes. No retrospectiveprooforcompletegateclaim.",
+  "revert_validation": [
+    "EntrySafetybyteexactf677PASS",
+    "21cases71assertionsPASS",
+    "120-source manifestPASS",
+    "luacsyntax/diffPASS",
+    "SharedAI/B29/lifecycle/playerquery/key contractsPASS"
+  ]
 }
