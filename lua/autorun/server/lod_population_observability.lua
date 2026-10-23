@@ -101,6 +101,7 @@ local watched={
     "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_no_progress_recovery.lua",

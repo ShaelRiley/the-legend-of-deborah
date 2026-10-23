@@ -1,3 +1,15 @@
+# Current checkpoint — cell-key source candidate; native source/FPS validation next
+
+A pure native prototype passes 12,864 key comparisons, including all 690 actual graph cells, signed zero, non-integers, strings, invalid inputs and concatenation metamethods. Six alternating 100,000-call measurements average 12.740 ms for the parent and 5.792 ms for the fixed component lookup. This is narrow prototype evidence, not installed-source or gameplay FPS proof.
+
+The generator now borrows 255 fixed positive integer strings when the runtime uses unified numeric string representations. It retains original operands for zero and all uncached inputs; it stores no graph or actor state. The source manifest now covers the generator: 120 total / 116 server / 52 client. All affected count fixtures explicitly cover the new authority. Key contracts pass 28,062 cases on both Lua and standalone LuaJIT; existing transport, B28 replay/source, shared AI, route and entrance-safety gates pass. [Evidence and limitations](validation/STEAM_DECK_CELL_KEYS_20261023.json).
+
+Next: installed-source value/function receipt, then a fresh original-source parent/candidate/candidate/parent/parent/candidate D20 comparison with matching manifests. Both monitors remain ON at internal 1280×800@60 and external 1920×1080@75; normal graphics, AI, resources, population and frozen physical actions remain.
+
+The JIT-capacity screen is complete with no useful effect (stock mean 20.930 FPS, requested32768 mean 20.913); reject the setting. The later instruction-hook diagnostic severely perturbs gameplay to about 1 FPS and misses capture-duration tolerance. Its hook interval was requested but not independently verified, and no sample/restoration file was collected before the owned process stopped. Do not use it for timing or coverage attribution; no hook survives process cleanup. No callback-coalescing or JIT candidate is retained.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR 7 remains draft; canonical main remains cec10dc54. Source candidate is pending native source/FPS verification and is not a completed performance claim.
+
 # Current checkpoint — callback screen inconclusive; public JIT-capacity comparison
 
 Both displays remain ON at internal 1280×800@60 and external 1920×1080@75. Four fresh-game private callback arms complete: parent 21.559, candidate 22.881, candidate 22.914, parent 22.812 FPS. The arithmetic mean difference is +3.209%, but the final control nearly matches both candidates and control spread exceeds the mean difference. Do not retain a source gain from this screen. All captures fail the budget. Both leases restore original callbacks; all source, normal resource, physical-input, focus and display receipts complete. [Measurements and limits](validation/STEAM_DECK_COLLISION_COALESCE_20261023.json).

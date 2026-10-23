@@ -1,0 +1,75 @@
+{
+  "status": "SOURCE CANDIDATE; prototype native values/microtiming PASS; installed source gate and gameplayFPS comparisons PENDING; target UNMET/six full scenarios UNVERIFIED",
+  "parent": "1ce30e750ba5478a6a7efb5e72a5ab6f8cc76f51",
+  "hypothesis": "Earlier bounded profile records1450926publicCellKeycalls/69s (~21000/s) and19.13ms/s inclusive. Reuse255fixedpositiveintegercomponentstrings to avoid repeatednumericconversion. Profile includes preparation/wrapping; no wholeFPSgain inferred.",
+  "runtime_change": "Private fixed255-entry table inside generator; enabled only when integer/floatnumeric strings coincide. Zero, signedzero, uncachedvalues, strings, invalid inputs andmetamethod concatenation retainoriginaloperands. No graph/entity/state references or changing cache; no lifecycleinvalidation needed. Public signature and complete key bytes remain.",
+  "prototype_native_raw": "/home/deck/deborah-benchmarks/cell-key-cost/1ce30e75/native-value-cost-probe-run1",
+  "prototype_native": {
+    "actual_graph_cells": 690,
+    "rows": [
+      {
+        "variant": "parent",
+        "checksum": 587446,
+        "ms": 12.714299999998957,
+        "calls": 100000
+      },
+      {
+        "variant": "candidate",
+        "checksum": 587446,
+        "ms": 5.958500000005529,
+        "calls": 100000
+      },
+      {
+        "variant": "candidate",
+        "checksum": 587446,
+        "ms": 5.775499999998601,
+        "calls": 100000
+      },
+      {
+        "variant": "parent",
+        "checksum": 587446,
+        "ms": 12.814900000009288,
+        "calls": 100000
+      },
+      {
+        "variant": "parent",
+        "checksum": 587446,
+        "ms": 12.690599999999108,
+        "calls": 100000
+      },
+      {
+        "variant": "candidate",
+        "checksum": 587446,
+        "ms": 5.642599999987397,
+        "calls": 100000
+      }
+    ],
+    "checks": 12864,
+    "parent_function_unchanged": true,
+    "scope": "Pure native function values/timings only. No provider replacement, hook, graph/RNG/entity/physics/resource or JIT option mutation. Fixed255-entry candidate part table; uncached inputs retain original concatenation. Microtimings are not gameplay FPS or40FPS proof.",
+    "numeric_representations_unified": true,
+    "zero_not_cached": true,
+    "ok": true,
+    "fixed_parts": 255
+  },
+  "prototype_mean_ms_per100k": {
+    "parent": 12.739933333335784,
+    "candidate": 5.792199999997176
+  },
+  "static_regressions": [
+    "28062exact keyvalue/error cases onLua5.4andstandaloneLuaJIT2.1.1753364724 PASS; standaloneLuaJIT notGModFPS",
+    "devmanifest120total/116server/52client withgenerator explicit inclusionPASS",
+    "populationtransport/servermanifest116PASS",
+    "B28compiledreplay/census/sourcewatchPASS",
+    "sharedEnemyAIwork/playerquery15cases55assertions/newkeycontractPASS",
+    "9072hostileroutecachepaths/mixedroutesPASS",
+    "entrancespatial/nativecomponent/config/mutation/callback/lifetimegatePASS",
+    "Lua syntax/diff checksPASS"
+  ],
+  "limits": [
+    "Native prototype is not installed-source proof. No accepted gameplayFPSgain or40FPSpass.",
+    "Fixedcurrentgraphics/normalcounts/AI/actions/bothdisplays mustremain in sourcecomparison.",
+    "Fullscenarios/phases/ordinarygameplay/fouractualplayers andtriplicate180s/cappedplay stillpending."
+  ],
+  "next": "Commit/pushcandidatecheckpoint; add matchingwatchcoverage to original-source control; installednative function/value proof then fresh original-source P,C,C,P,P,C D20FPS comparisons. Retainorreject usingmeasuredgain/regressions."
+}

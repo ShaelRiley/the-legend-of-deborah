@@ -1258,3 +1258,15 @@ End health differs (parents 188/191, candidates 211/211), without an established
 The public jit.opt.start API accepts maxtrace=32768 in both realms while reported optimization flags remain identical. No jit.on/off/flush or disabled reflection/profiler workaround is used. Stock numeric capacity is not publicly exposed; saturation or eviction is a hypothesis, not an observed cause. A predeclared fresh-process stock/32768/32768/stock D20 comparison is running with normal gameplay/settings and boundary-only counters. The first stock arm is 21.117 FPS, p95 85.610 ms: FAIL. No JIT configuration or gain is retained yet.
 
 Target UNMET; all six full scenarios UNVERIFIED. PR 7 remains draft; canonical main remains cec10dc54. Finish the capacity comparison, inspect complete source/resource/input/display/flag and memory evidence, then retain or reject on measured effect and continue.
+
+## 2026-10-23: cell-key component source candidate
+
+A pure native prototype passes 12,864 key comparisons, including all 690 actual graph cells, signed zero, non-integers, strings, invalid inputs and concatenation metamethods. Six alternating 100,000-call measurements average 12.740 ms for the parent and 5.792 ms for the fixed component lookup. This is narrow prototype evidence, not installed-source or gameplay FPS proof.
+
+The generator now borrows 255 fixed positive integer strings when the runtime uses unified numeric string representations. It retains original operands for zero and all uncached inputs; it stores no graph or actor state. The source manifest now covers the generator: 120 total / 116 server / 52 client. All affected count fixtures explicitly cover the new authority. Key contracts pass 28,062 cases on both Lua and standalone LuaJIT; existing transport, B28 replay/source, shared AI, route and entrance-safety gates pass. [Evidence and limitations](STEAM_DECK_CELL_KEYS_20261023.json).
+
+Next: installed-source value/function receipt, then a fresh original-source parent/candidate/candidate/parent/parent/candidate D20 comparison with matching manifests. Both monitors remain ON at internal 1280×800@60 and external 1920×1080@75; normal graphics, AI, resources, population and frozen physical actions remain.
+
+The JIT-capacity screen is complete with no useful effect (stock mean 20.930 FPS, requested32768 mean 20.913); reject the setting. The later instruction-hook diagnostic severely perturbs gameplay to about 1 FPS and misses capture-duration tolerance. Its hook interval was requested but not independently verified, and no sample/restoration file was collected before the owned process stopped. Do not use it for timing or coverage attribution; no hook survives process cleanup. No callback-coalescing or JIT candidate is retained.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR 7 remains draft; canonical main remains cec10dc54. Source candidate is pending native source/FPS verification and is not a completed performance claim.
