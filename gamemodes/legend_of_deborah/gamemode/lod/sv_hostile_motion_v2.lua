@@ -6,31 +6,6 @@ local Navigator = LOD.MazeNavigator
 local MC = LOD.Config.Maze
 local cellKey = LOD.MazeGenerator.CellKey
 
--- The measured prototype forwards through a stable C callee on this runtime.
--- Keep every query fresh; never retain a validity result or an entity.
-local function installValidityForwarder()
-    local previous=Motion.NativeValidityForwarder
-    if previous then
-        if previous.meta.IsValid~=previous.wrapper then
-            Motion.NativeValidityForwarder=nil
-            return
-        end
-        previous.meta.IsValid=previous.original
-        Motion.NativeValidityForwarder=nil
-    end
-    if not jit or jit.os~="Windows" or jit.arch~="x64" or VERSIONSTR~="2026.09.17"
-        or not FindMetaTable or not debug or not debug.getinfo then return end
-    local meta=FindMetaTable("Entity")
-    if not meta or not getmetatable or getmetatable(meta)~=nil then return end
-    local original=meta.IsValid
-    if type(original)~="function" or debug.getinfo(original,"S").what~="C" then return end
-    local function forward(...) return original(...) end
-    Motion.NativeValidityForwarder={meta=meta,original=original,wrapper=forward}
-    meta.IsValid=forward
-end
-installValidityForwarder()
-hook.Add("OnReloaded","LOD_HostileNativeValidityForwarder",installValidityForwarder)
-
 -- Milestone-3 locomotion v2
 --
 -- The original hostile architecture correctly used the canonical maze graph for

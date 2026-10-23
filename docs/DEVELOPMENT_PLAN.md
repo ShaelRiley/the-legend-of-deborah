@@ -1,3 +1,9 @@
+# Current checkpoint — validity forwarding rejected after twelve source captures
+
+Readonlysource6P24.384/C21.646/C22.954/P21.929/P21.574/C22.333FPS. MeansP22.6289/C22.3107(−1.406%),p9581.342/81.034,p99116.030/114.295,longest13.771/11.209s. Firstsource6means22.632/22.593(−0.170%). BothactualsourceseriesfailtoshowavgFPSgain; reject/restoreMotionV2byte-exact92290/removeobsoleteunit/matrixrowback335. Earlierprototype+8.289%wasnotconfirmed. All12actualsource/nativeCcallee/owner/result/HUD/renderer/resource/input/displaychecks pass/allownedStop/rootinstallrestore; allFAIL40. No causalclaimaboutreloadinstrumentation: readonlygatesdidnotestablishbenefit. [All12/raw/limits](validation/STEAM_DECK_NATIVE_VALIDITY_20261023.json).
+
+Next boundedpublicEntity.IsValidcaller-sourcecensus usingone-in2048observeddebug.getinfoframes, cappedsitecounts/nolocals/entityrefs/pointers. Native17providerprofilefindsmanyvalidityqueriesbutnotwhichgamecallers. IdentifyrepeatedworkatcanonicalcallersbeforeanotherAPIshim. Preserveargs/results/errors/providers; control/profile/profile/controlmeasureobservereffects; exactrestore/independentinspection/ownedprocessStop. No debug.sethook/jitAPIrestoration, validitycache or gameplay/cadence/content/settingschange. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — first validity source comparison finds no gain
 
 SixP22.699/C22.879/C22.934/P22.066/P23.130/C21.967FPS; meansP22.6316/C22.5932(−0.170%),p9578.375/78.788,p99122.356/109.621,longest11.532/13.868s. Rangesoverlap/mixedpairs; allFAIL40. Prototypegainnotconfirmed; no sourceimprovementretained. Allnativecorrectness/source/provider/HUD/renderer/resource/input/displaywatch checks pass/allownedStop/rootinstallrestore. [Allsix/raw/limits](validation/STEAM_DECK_NATIVE_VALIDITY_20261023.json).
