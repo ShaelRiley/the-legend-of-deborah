@@ -1,0 +1,376 @@
+{
+  "classification": "Servercleanupcheckerfalsepositive: two expectedpermanentlifecyclehooks, confirmedsource sh_runtime_audit.lua298-299. OriginalfailedJSONpreserved.",
+  "server_evidence": "A.CPUProfileabsent/captureabsent/1511currententitymethodchecks/noentitywrappers;onlypermanentPostCleanupMapandShutDownhooksflagged.",
+  "client_limit": "Collectorassertedserverresultbeforeclientpostcheck;clientretirementreceiptNOTcollected. Completedclientprofileexists;wholeownedprocessStopclearsallobservers. Do notclaimindependentclientbindingretirement.",
+  "scope": "Profilescompleted/received/inclusiveinstrumenteddiagnostic;actual18.394831FPS notacceptance.",
+  "client_top": [
+    {
+      "calls": 1103,
+      "milliseconds": 15375.439900000401,
+      "completed": 1102,
+      "ms_per_second": 256.29747682195534,
+      "mean_ms": 13.95230480943775,
+      "name": "phase/PreRender-to-PostRender",
+      "maximum_ms": 58.29009999999357
+    },
+    {
+      "calls": 2206,
+      "milliseconds": 2872.2032000004133,
+      "completed": 2206,
+      "ms_per_second": 47.877552633797016,
+      "mean_ms": 1.3019960108796071,
+      "name": "hook/PostDrawOpaqueRenderables/LOD.DrawGeneratedStaticGeometry",
+      "maximum_ms": 36.48019999999974
+    },
+    {
+      "calls": 18877,
+      "milliseconds": 1809.2765000013173,
+      "completed": 18877,
+      "ms_per_second": 30.159332340376423,
+      "mean_ms": 0.09584555278917822,
+      "name": "entity/lod_hostile.Draw",
+      "maximum_ms": 30.39530000000923
+    },
+    {
+      "calls": 1103,
+      "milliseconds": 1225.3231999993943,
+      "completed": 1103,
+      "ms_per_second": 20.42525264277094,
+      "mean_ms": 1.1109004533086078,
+      "name": "hook/HUDPaint/LOD_CombatRollFeed",
+      "maximum_ms": 3.715099999993754
+    },
+    {
+      "calls": 5070,
+      "milliseconds": 584.4271999993964,
+      "completed": 5070,
+      "ms_per_second": 9.741979268245954,
+      "mean_ms": 0.11527163708074879,
+      "name": "entity/lod_hostile.DrawTranslucent",
+      "maximum_ms": 0.946599999991804
+    },
+    {
+      "calls": 1103,
+      "milliseconds": 537.4711000001895,
+      "completed": 1103,
+      "ms_per_second": 8.959254999576684,
+      "mean_ms": 0.4872811423392471,
+      "name": "hook/HUDPaint/LOD_StatusPortrait",
+      "maximum_ms": 0.8285000000114451
+    },
+    {
+      "calls": 2206,
+      "milliseconds": 495.3374999999056,
+      "completed": 2206,
+      "ms_per_second": 8.256918322399855,
+      "mean_ms": 0.22454102447865168,
+      "name": "hook/PostDrawOpaqueRenderables/LOD_DrawContainerBranding",
+      "maximum_ms": 4.167400000000043
+    },
+    {
+      "calls": 72674,
+      "milliseconds": 441.6932999984198,
+      "completed": 72674,
+      "ms_per_second": 7.3627082577816205,
+      "mean_ms": 0.006077734815730795,
+      "name": "entity/lod_static_box.Think",
+      "maximum_ms": 0.2986000000078093
+    },
+    {
+      "calls": 4412,
+      "milliseconds": 363.02079999977366,
+      "completed": 4412,
+      "ms_per_second": 6.051294511178653,
+      "mean_ms": 0.08228032638254162,
+      "name": "hook/PreDrawViewModel/LOD_ProceduralWeaponSurface",
+      "maximum_ms": 0.8411000000023705
+    },
+    {
+      "calls": 1103,
+      "milliseconds": 303.35619999966923,
+      "completed": 1103,
+      "ms_per_second": 5.056728727365365,
+      "mean_ms": 0.27502828649108724,
+      "name": "hook/HUDPaint/LOD_PersistentHUD",
+      "maximum_ms": 0.586100000020906
+    },
+    {
+      "calls": 2206,
+      "milliseconds": 229.69139999989352,
+      "completed": 2206,
+      "ms_per_second": 3.8287897224764054,
+      "mean_ms": 0.10412121486849207,
+      "name": "hook/PostDrawTranslucentRenderables/LOD_DrawContainerWayfinding",
+      "maximum_ms": 0.595799999999258
+    },
+    {
+      "calls": 1103,
+      "milliseconds": 211.4987999998732,
+      "completed": 1103,
+      "ms_per_second": 3.5255322217374383,
+      "mean_ms": 0.19174868540333018,
+      "name": "hook/HUDPaint/LOD_StagingInteractionPrompt",
+      "maximum_ms": 0.4325000000022783
+    },
+    {
+      "calls": 2206,
+      "milliseconds": 200.80330000001823,
+      "completed": 2206,
+      "ms_per_second": 3.3472459625383126,
+      "mean_ms": 0.09102597461469548,
+      "name": "hook/PostDrawOpaqueRenderables/LOD_DrawSecurityGates",
+      "maximum_ms": 1.9931999999869277
+    },
+    {
+      "calls": 2206,
+      "milliseconds": 169.1161999993227,
+      "completed": 2206,
+      "ms_per_second": 2.8190448944190822,
+      "mean_ms": 0.076661922030518,
+      "name": "hook/PostDrawTranslucentRenderables/LOD_DrawSecurityGateLabels",
+      "maximum_ms": 0.4256999999938671
+    },
+    {
+      "calls": 5099,
+      "milliseconds": 149.73860000020522,
+      "completed": 5099,
+      "ms_per_second": 2.4960342996692826,
+      "mean_ms": 0.029366267895706066,
+      "name": "hook/CreateMove/LOD_MagicPredictedInput",
+      "maximum_ms": 0.5041999999946256
+    },
+    {
+      "calls": 146282,
+      "milliseconds": 137.74319999963325,
+      "completed": 146282,
+      "ms_per_second": 2.296079646429306,
+      "mean_ms": 0.0009416278147662273,
+      "name": "entity/lod_static_box.Draw",
+      "maximum_ms": 0.07360000000744549
+    },
+    {
+      "calls": 1103,
+      "milliseconds": 109.89000000023452,
+      "completed": 1103,
+      "ms_per_second": 1.831786921948428,
+      "mean_ms": 0.09962828649159974,
+      "name": "hook/HUDPaint/LOD_TimeoutHUD",
+      "maximum_ms": 0.3804999999914571
+    },
+    {
+      "calls": 2206,
+      "milliseconds": 106.45139999982689,
+      "completed": 2206,
+      "ms_per_second": 1.7744679437834894,
+      "mean_ms": 0.048255394378887984,
+      "name": "hook/PostDrawTranslucentRenderables/LOD_PlayerAR2TargetingLaser",
+      "maximum_ms": 0.44790000001171393
+    },
+    {
+      "calls": 1103,
+      "milliseconds": 90.0476999994737,
+      "completed": 1103,
+      "ms_per_second": 1.5010301138431101,
+      "mean_ms": 0.08163889392518014,
+      "name": "hook/HUDPaint/LOD_MagicHUD",
+      "maximum_ms": 0.43999999999755346
+    },
+    {
+      "calls": 1103,
+      "milliseconds": 87.11249999984716,
+      "completed": 1103,
+      "ms_per_second": 1.4521024500647186,
+      "mean_ms": 0.07897778785117603,
+      "name": "hook/HUDPaint/LOD_MonsterElementCaption",
+      "maximum_ms": 0.4844999999988886
+    }
+  ],
+  "server_top": [
+    {
+      "calls": 219586,
+      "milliseconds": 3433.7188999992068,
+      "completed": 219586,
+      "ms_per_second": 57.273892226310245,
+      "mean_ms": 0.01563723962365181,
+      "name": "service/EntrySafety.BeforeAI",
+      "maximum_ms": 18.65799999998785
+    },
+    {
+      "calls": 109056,
+      "milliseconds": 2310.7667000029437,
+      "completed": 109056,
+      "ms_per_second": 38.54322581156708,
+      "mean_ms": 0.021188808502080984,
+      "name": "service/EnemyRoster.TickCloseDefense",
+      "maximum_ms": 7.195700000011129
+    },
+    {
+      "calls": 18244,
+      "milliseconds": 1631.3215000011924,
+      "completed": 18244,
+      "ms_per_second": 27.210186534941062,
+      "mean_ms": 0.08941687678147295,
+      "name": "entity/lod_hostile/soldier._BehaviourTick",
+      "maximum_ms": 17.84680000000094
+    },
+    {
+      "calls": 16584,
+      "milliseconds": 1502.497699999324,
+      "completed": 16584,
+      "ms_per_second": 25.061425773688168,
+      "mean_ms": 0.09059923420159938,
+      "name": "entity/lod_hostile/bioblaster._BehaviourTick",
+      "maximum_ms": 16.25980000000027
+    },
+    {
+      "calls": 6446,
+      "milliseconds": 1221.4687999994285,
+      "completed": 6446,
+      "ms_per_second": 20.373907837646207,
+      "mean_ms": 0.1894925224944816,
+      "name": "entity/lod_hostile/sentry._BehaviourTick",
+      "maximum_ms": 1.7830000000031987
+    },
+    {
+      "calls": 3996,
+      "milliseconds": 1047.2454999996046,
+      "completed": 3996,
+      "ms_per_second": 17.46789054324732,
+      "mean_ms": 0.2620734484483495,
+      "name": "hook/Think/LOD_EnemyVariancePhysicalFootsteps",
+      "maximum_ms": 17.833600000017213
+    },
+    {
+      "calls": 8085,
+      "milliseconds": 1033.74269999928,
+      "completed": 8085,
+      "ms_per_second": 17.242665958913353,
+      "mean_ms": 0.1278593320963859,
+      "name": "entity/lod_hostile/warden._BehaviourTick",
+      "maximum_ms": 17.111300000010488
+    },
+    {
+      "calls": 3996,
+      "milliseconds": 975.324399999522,
+      "completed": 3996,
+      "ms_per_second": 16.26825788543035,
+      "mean_ms": 0.24407517517505556,
+      "name": "hook/Think/LOD_EnemyRosterAttacks",
+      "maximum_ms": 17.90080000000671
+    },
+    {
+      "calls": 3996,
+      "milliseconds": 920.3100999995542,
+      "completed": 3996,
+      "ms_per_second": 15.35062799758345,
+      "mean_ms": 0.23030783283272127,
+      "name": "hook/Think/LOD_WardenOrdnance",
+      "maximum_ms": 36.80980000001455
+    },
+    {
+      "calls": 3996,
+      "milliseconds": 655.9672000002621,
+      "completed": 3996,
+      "ms_per_second": 10.94142992218093,
+      "mean_ms": 0.16415595595602153,
+      "name": "hook/SetupMove/LOD_RPG_GateD_Movement",
+      "maximum_ms": 1.0565999999982978
+    },
+    {
+      "calls": 6634,
+      "milliseconds": 598.8835000008521,
+      "completed": 6634,
+      "ms_per_second": 9.989282767198036,
+      "mean_ms": 0.0902748718723021,
+      "name": "entity/lod_hostile/seeker._BehaviourTick",
+      "maximum_ms": 1.1666000000047916
+    },
+    {
+      "calls": 6631,
+      "milliseconds": 579.4597000011805,
+      "completed": 6631,
+      "ms_per_second": 9.665296832354374,
+      "mean_ms": 0.08738647262874084,
+      "name": "entity/lod_hostile/runner._BehaviourTick",
+      "maximum_ms": 16.055699999995454
+    },
+    {
+      "calls": 6629,
+      "milliseconds": 572.9101000007546,
+      "completed": 6629,
+      "ms_per_second": 9.5560505325044,
+      "mean_ms": 0.08642481520602724,
+      "name": "entity/lod_hostile/deadcrab._BehaviourTick",
+      "maximum_ms": 1.2889999999856627
+    },
+    {
+      "calls": 6635,
+      "milliseconds": 520.6037000008195,
+      "completed": 6635,
+      "ms_per_second": 8.683587991571521,
+      "mean_ms": 0.0784632554635749,
+      "name": "entity/lod_hostile/shambler._BehaviourTick",
+      "maximum_ms": 3.437499999989768
+    },
+    {
+      "calls": 202906,
+      "milliseconds": 390.3035000069366,
+      "completed": 202906,
+      "ms_per_second": 6.5102011102173005,
+      "mean_ms": 0.0019235680561784107,
+      "name": "hook/ShouldCollide/LOD_HostilesDoNotDeadlockEachOther",
+      "maximum_ms": 0.6649000000038541
+    },
+    {
+      "calls": 3996,
+      "milliseconds": 363.9533000001194,
+      "completed": 3996,
+      "ms_per_second": 6.070683910561698,
+      "mean_ms": 0.09107940440443428,
+      "name": "hook/Think/LOD_WardenService",
+      "maximum_ms": 260.4797999999988
+    },
+    {
+      "calls": 175490,
+      "milliseconds": 315.44870000179515,
+      "completed": 175490,
+      "ms_per_second": 5.261634796848589,
+      "mean_ms": 0.0017975309134525908,
+      "name": "hook/ShouldCollide/LOD_ClimberLatchNoPush",
+      "maximum_ms": 0.10840000001621776
+    },
+    {
+      "calls": 3318,
+      "milliseconds": 310.60229999988564,
+      "completed": 3318,
+      "ms_per_second": 5.180797605605293,
+      "mean_ms": 0.09361130198911564,
+      "name": "entity/lod_hostile/caromer._BehaviourTick",
+      "maximum_ms": 16.21829999999136
+    },
+    {
+      "calls": 3996,
+      "milliseconds": 293.6572999992251,
+      "completed": 3996,
+      "ms_per_second": 4.898157665622762,
+      "mean_ms": 0.07348781281261889,
+      "name": "hook/SetupMove/LOD_PlayerScaleLegalHull",
+      "maximum_ms": 0.5445999999977857
+    },
+    {
+      "calls": 3318,
+      "milliseconds": 283.1059999994352,
+      "completed": 3318,
+      "ms_per_second": 4.7221636379708265,
+      "mean_ms": 0.08532429174184304,
+      "name": "entity/lod_hostile/reaper._BehaviourTick",
+      "maximum_ms": 1.0398999999949865
+    }
+  ],
+  "status": "COMPLETEDclient/serverprofile; collectorpostcheckfalsepositive; clientpost-retirementreceiptunverified. Instrumented18.394831FPSFAIL/notacceptance.40FPSUNMET/all6fullscenariosUNVERIFIED",
+  "source": "f519f56b1129789ddb2504341ba0e579be8a1684",
+  "raw": "/home/deck/deborah-benchmarks/client-render-cpu/f519f56b/client-server-profile60-run1",
+  "conditions": "NormalfrozenD20lowercourt-v1/57roamers+9boss/1820models/normalWizard20resources/66HzAI/actions/settings/netgraph1/AC15W/bothmonitorsON1280x800@60/external1080p75. Existingopt-inAuditCPUProfile plusboundarycounters; no nativesampler/JIT/affinity/instructionhook.",
+  "vr": "Actualclientstate_start resources: activefalse,idletrue,0players/runtimehooks/recurringtimers/methodoverrides/native-resources, adapterThinkfalse,139VRsources+2bridgesverified.",
+  "next": "SeparateisolatedsameDeckLinux64dedicatedserver diagnostic: olddedicated42.003FPS/p9543.540ms usedLinux32/LuaJIT2.0.4, not64. Matchnormal66HzAI/content/source/resources/settings. Doesnotreplacefrozenlistenhostfailureorfinalacceptance."
+}

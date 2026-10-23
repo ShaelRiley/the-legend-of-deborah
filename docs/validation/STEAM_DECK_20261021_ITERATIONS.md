@@ -1348,3 +1348,13 @@ Four fresh D20 captures finish at22.007on/21.249off/20.434off/20.961onFPS. Means
 Keep the useful four start/end diagnostic fields; no per-frame work or normal preference change is retained. Next: same frozen D20 with the existing opt-in bounded client/server CPU profiler. Its FPS is instrumented diagnostic only; inspect hook/entity cost and restoration rather than treating it as acceptance. Preserve normal native visuals, counts, AI and both monitors ON1280×800@60/external1920×1080@75.
 
 Target UNMET; all six full scenarios UNVERIFIED. PR7draft/maincec10 unchanged.
+
+## 2026-10-23: bounded client/server profiling
+
+Existing bounded client/server CPU profiling completes on normalD20. Instrumented18.395FPS/p9596.628ms/p99126.531ms fails and is not normal performance. Client render phase averages13.95ms/frame; generated-geometry hook2.60ms/frame, hostile Draw1.64ms/frame and combat-feedHUD1.11ms/frame are larger measured rows. Scopes overlap and exclude unwrapped engine/timer work. Server BeforeAI57.27ms/s and CloseDefense38.54ms/s remain substantial. Actual non-VR runtime reports idle with zero active hooks/timers/native resources. [Raw rows/limits](STEAM_DECK_CLIENT_PROFILE_20261023.json).
+
+The post-check flags two permanent server lifecycle callbacks as leftovers; source confirms these are expected static hooks. Server profile/capture state is absent and1511current entity-method checks find no profiling wrappers. Original failed JSON is preserved; the checker is corrected. It halted before client post-inspection, so that receipt remains unverified. The owned process stopped, clearing all observers; no independent client-binding retirement claim is made.
+
+Earlier same-Deck dedicated42.003FPS/p9543.540ms used a32-bit Linux/LuaJIT2.0.4 server. Prepare an isolated64-bit server to compare architecture with normal66HzAI/content/graphics/source. This is a separate hosting diagnostic, never a replacement for the frozen listen-host failure. The first anonymous installer reports Missing configuration; metadata refresh plus explicitLinux retry downloads the64-bit branch. No client/oldserver files are changed.
+
+Both monitors stay ON. Target UNMET; all six full scenarios UNVERIFIED. PR7draft/maincec10 unchanged.

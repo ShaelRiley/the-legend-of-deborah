@@ -1,3 +1,13 @@
+# Current checkpoint — client profile captured; dedicated runtime comparison preparation
+
+Existing bounded client/server CPU profiling completes on normalD20. Instrumented18.395FPS/p9596.628ms/p99126.531ms fails and is not normal performance. Client render phase averages13.95ms/frame; generated-geometry hook2.60ms/frame, hostile Draw1.64ms/frame and combat-feedHUD1.11ms/frame are larger measured rows. Scopes overlap and exclude unwrapped engine/timer work. Server BeforeAI57.27ms/s and CloseDefense38.54ms/s remain substantial. Actual non-VR runtime reports idle with zero active hooks/timers/native resources. [Raw rows/limits](validation/STEAM_DECK_CLIENT_PROFILE_20261023.json).
+
+The post-check flags two permanent server lifecycle callbacks as leftovers; source confirms these are expected static hooks. Server profile/capture state is absent and1511current entity-method checks find no profiling wrappers. Original failed JSON is preserved; the checker is corrected. It halted before client post-inspection, so that receipt remains unverified. The owned process stopped, clearing all observers; no independent client-binding retirement claim is made.
+
+Earlier same-Deck dedicated42.003FPS/p9543.540ms used a32-bit Linux/LuaJIT2.0.4 server. Prepare an isolated64-bit server to compare architecture with normal66HzAI/content/graphics/source. This is a separate hosting diagnostic, never a replacement for the frozen listen-host failure. The first anonymous installer reports Missing configuration; metadata refresh plus explicitLinux retry downloads the64-bit branch. No client/oldserver files are changed.
+
+Both monitors stay ON. Target UNMET; all six full scenarios UNVERIFIED. PR7draft/maincec10 unchanged.
+
 # Current checkpoint — diagnostic overlay does not explain the deficit
 
 Four fresh D20 captures finish at22.007on/21.249off/20.434off/20.961onFPS. Means21.484on versus20.841off (−2.991% arithmetic) provide no supported benefit from disabling Source net_graph. All four fail and ranges overlap; no statistical slowdown cause is claimed. Native preflight/start/end values match1/0/0/1; every other recorded setting is identical. cl_showfps0/cl_showpos0/developer0 remain. Source/resources/input/focus/both-display gates pass. All owned games stop and originalnet_graph1 is restored. [Raw metrics and restoration](validation/STEAM_DECK_OVERLAY_COST_20261023.json).
