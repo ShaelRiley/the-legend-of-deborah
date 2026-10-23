@@ -1,0 +1,198 @@
+{
+  "source": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+  "scope": "Actual LCD Deck singleplayer, Win64GMod2026.09.17/P10.0, both displaysON, sameD20preparation. No acceptedFPSgain from these diagnostics.",
+  "entity_field_shape": {
+    "raw": "/home/deck/deborah-benchmarks/entity-field-shape/b05b262f/native-readonly-v2",
+    "actors": 57,
+    "plain_tables": true,
+    "providers": {
+      "entity_index": {
+        "what": "Lua",
+        "source": "@lua/includes/extensions/entity.lua",
+        "line": 30
+      },
+      "entity_newindex": {
+        "what": "C",
+        "source": "=[C]",
+        "line": -1
+      },
+      "nextbot_gettable": {
+        "type": "nil"
+      },
+      "entity_gettable": {
+        "what": "C",
+        "source": "=[C]",
+        "line": -1
+      },
+      "isvalid": {
+        "what": "Lua",
+        "source": "@lua/includes/util.lua",
+        "line": 314
+      },
+      "nextbot_newindex": {
+        "what": "C",
+        "source": "=[C]",
+        "line": -1
+      },
+      "nextbot_index": {
+        "what": "C",
+        "source": "=[C]",
+        "line": -1
+      }
+    },
+    "meta": {
+      "entity_metatable": false,
+      "newindex_same": true,
+      "index_same": false,
+      "nextbot_metatable": false
+    },
+    "locomotion": {
+      "methods": {
+        "SetJumpHeight": {
+          "what": "C",
+          "line": -1,
+          "source": "=[C]",
+          "same_meta": true
+        },
+        "SetClimbAllowed": {
+          "what": "C",
+          "line": -1,
+          "source": "=[C]",
+          "same_meta": true
+        },
+        "SetDesiredSpeed": {
+          "what": "C",
+          "line": -1,
+          "source": "=[C]",
+          "same_meta": true
+        },
+        "SetJumpGapsAllowed": {
+          "what": "C",
+          "line": -1,
+          "source": "=[C]",
+          "same_meta": true
+        },
+        "SetVelocity": {
+          "what": "C",
+          "line": -1,
+          "source": "=[C]",
+          "same_meta": true
+        },
+        "SetGravity": {
+          "what": "C",
+          "line": -1,
+          "source": "=[C]",
+          "same_meta": true
+        }
+      },
+      "kind": "CLuaLocomotion",
+      "same_named_meta": true,
+      "index": {
+        "type": "table"
+      },
+      "metatable_type": "table"
+    },
+    "limits": "Read-only current metadata/field equality. v1 helper was edited after execution and its archive mismatch is explicitly noted there; use immutablebefore/afterv2. No setter/type/profile/result cache implemented."
+  },
+  "base_recorder": {
+    "raw": "/home/deck/deborah-benchmarks/recorder-cpu/b05b262f/base-recorder-cost60-run1",
+    "result": {
+      "original": {
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+        "line": 683
+      },
+      "total_ms": 33.45880000017587,
+      "wrapper_retired": true,
+      "mean_ms": 0.026407892659965168,
+      "passed": true,
+      "maximum_ms": 0.5267999999887252,
+      "scope": "Inclusive original base PreRender recorder callback wall time plus one finishing timestamp and Lua return helper; two timestamps/counter wrapper add observer effect. Warmup excluded; capture-stop terminal serialization reported separately. One actual D20diagnostic; instrumentedFPS is not acceptance or a comparison. No full profiler/native sampler/JIT/GC changes.",
+      "reason": "explicit",
+      "terminal_samples": 1,
+      "hook_removed_by_capture": true,
+      "samples": 1267,
+      "restored_current": false,
+      "terminal_total_ms": 9.424299999977848,
+      "terminal_maximum_ms": 9.424299999977848
+    },
+    "limits": "Direct callback timing adds wrapper/timestamp overhead. Terminalsave separated. No controlledFPSoverhead comparison; does not measure allbridge/input/controllerwork. Mean.0264ms/max.5268ms callback cannot explain thelargeframe deficit. AllownedprocessStop/observerretired."
+  },
+  "method_precedence": {
+    "raw": "/home/deck/deborah-benchmarks/method-index-precedence/b05b262f/native-readonly-v1",
+    "actors": 57,
+    "keys": 519,
+    "parity_cases": 29868,
+    "common": {
+      "GetTable": true,
+      "SetPos": true,
+      "GetPos": true,
+      "Health": true,
+      "IsValid": true
+    },
+    "methods_unchanged": true,
+    "limits": "Five temporary field shadowvaluesperknownmethod restored underpcall; native methodlookup only, no shadowfninvoked. Currentmethodsallmetapriority; no metamethodreplacement installed."
+  },
+  "method_safety": {
+    "raw": "/home/deck/deborah-benchmarks/method-index-safety/b05b262f/native-readonly-v2",
+    "result": {
+      "providers_restored": true,
+      "parity_cases": 38658,
+      "passed": true,
+      "method_keys": 519,
+      "times": [
+        {
+          "lookups": 74100,
+          "milliseconds": 9.89729999999156,
+          "found": 74100,
+          "index": 1,
+          "mode": "parent"
+        },
+        {
+          "lookups": 74100,
+          "milliseconds": 4.956099999986918,
+          "found": 74100,
+          "index": 2,
+          "mode": "candidate"
+        },
+        {
+          "lookups": 74100,
+          "milliseconds": 5.011999999993577,
+          "found": 74100,
+          "index": 3,
+          "mode": "candidate"
+        },
+        {
+          "lookups": 74100,
+          "milliseconds": 10.847599999991075,
+          "found": 74100,
+          "index": 4,
+          "mode": "parent"
+        },
+        {
+          "lookups": 74100,
+          "milliseconds": 10.254000000003316,
+          "found": 74100,
+          "index": 5,
+          "mode": "parent"
+        },
+        {
+          "lookups": 74100,
+          "milliseconds": 5.065500000000611,
+          "found": 74100,
+          "index": 6,
+          "mode": "candidate"
+        }
+      ],
+      "metamethod_never_installed": true,
+      "removed": {
+        "same_nextbot_meta": true,
+        "valid": false,
+        "cases": 5
+      },
+      "scope": "Candidate function never installed. Current method/instance fields, live metadata changes/removal/metatable fallbacks and unspawned removed disposable NextBot lookups compared. All temporary metadata restored synchronously underpcall. Synthetic mixed-key microtiming has JIT/callshape/order/hoisting effects and is not FPS. No behavior/native methods invoked except disposable create/remove. No gameplay/cadence/settings change.",
+      "actors": 57,
+      "metadata_mutations": 13
+    },
+    "limits": "Candidatefunctionneverinstalled. Mixed-key microloops canalias/hoist/reflectcallshape/JIT/order; no extrapolatedFPS. v1harnesswronglyassumedRemoveimmediate; v2boundedtimerwaitsactualinvalid beforelookup. Alltemporarymetadata restored underpcall; disposableunspawnedNextBotremoved; ownedgameStopped."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "status": "Implemented/staticcandidate; actualsourceFPS UNVERIFIED",
+  "parent": "b05b262ff3a8937fdb82c871d8a187ef53b18eef",
+  "file": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+  "hypothesis": "Replace only known inherited method-name lookup with live raw NextBot/Entity metadata. Native field/newkey/metametadata/foreignAPI fallback remains. Remove native C methodindexcrossings andpermitJITinlining; actualFPSrequired. PriorrejectedLODfieldindexcachesdidnotcovermethoddispatch.",
+  "safety": "No entity/LuaTable/profile/resolvedfunction/resultcache. Valuesreadliveincludingfalse/deletion. Foreignindexownerspreserved; ownreloadrestoresnativeanddoesnotstack. Changedrawget/getmetatableprovidersfallbackwithoutcallingthem. RuntimegateWindows/x64/VERSIONSTR2026.09.17 only, matching actualnativeprecedence/removeduserdata proof; unvalidatedengineABIs staynative.",
+  "static": "New productioninstaller unitLua5.4/LuaJIT: metadata priority/currentreplacementfalse/deletion/newkey/fallback/foreignAPI/weaklifetime/reload/foreignowner/unsupportedruntime; existingAI/B1/entry/B29dispatch andlifecontext Lua5.4/LuaJIT;120manifest/repeatinstaller/syntax/diff pass. NativeCmetadata simulated inunit; nativeprobes are separate. Matrix336afternewtest, notfullgreenclaim.",
+  "frozen_comparison": "6freshP,C,C,P,P,C60s samefrozenD20lowercourt againstb05b; no CPUobserver/sampler/JIT/GC/affinity/AI/content/settings changes. Before/afteractualfilehash/currentindex/Ccore/methodandfieldparity; candidatebefore ownedreload/foreignowner/globalAPI fallbackandrestoration; retainedHUD/renderer/source/frozenresources/input/bothON. Rejectnoise/pacing/correctnessregression. Promisingresultneedsunchangedconfirmation/affectedordinarycoverage.",
+  "acceptance": "40FPSUNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged."
+}

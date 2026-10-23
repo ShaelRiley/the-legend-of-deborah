@@ -1,3 +1,11 @@
+# Current checkpoint — native method lookup candidate; actual source FPS next
+
+Native519methodprecedence keys/57actors/29868currentcasespass; safety38658method+fieldcases/13metadatamutations/5removedNextBotlookups pass. Temporarymetadatarestored/candidatefunctionneverinstalled. Mixed74100lookup loopsPmean10.333ms/C5.011ms motivatesmechanismonly, noFPSclaim. PriorLODfieldindexcachesrejected a differentpath. Base recorder1267samplesmean.0264ms/max.5268ms, terminalsave9.4243ms separately; callbackcostcannotexplainframe deficit. [Diagnostics/raw/limits](validation/STEAM_DECK_METHOD_LOOKUP_DIAGNOSTICS_20261023.json).
+
+Sourcecandidateusescurrentrawmetatablemethods/fallbacks, noactor/table/profile/functionvaluecache; ownreload/foreignowners respected. Onlynative-testedWindowsx64engine2026.09.17 enabled; allotherABIskeepnative. Newproductioninstallerunit+AI/B1/entry/B29dispatch/lifecycle/manifest/syntaxpass; matrix336notfullgreenclaim. [Contracts/frozen6run gate](validation/STEAM_DECK_NATIVE_METHOD_SOURCE_20261023.json).
+
+NextsixfreshoriginalsourceP,C,C,P,P,C60s sameD20stress, exactsource/index/core/liveparity/ownedreload/foreignowner/API-restoration atboundaries plusretainedHUD/renderer/resources/input/bothON. No observers/JIT/GC/settingschanges. Rejectnoise/pacing/correctnessregression; confirmifpromising. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — typed Warden dispatch rejected after six source captures
 
 P,C,C,P,P,C24.954/22.051/21.461/22.615/21.849/21.414FPS. Everycandidatebelow everyparent; reject andrestorebothruntimefiles byte-exact14364f8c. Static21phase/dance+foreign/reload andnativefile/function/core/extension/57ordinaryresults checks allpass, butdonotprovea performancegain. Keepusefulpost-coretype-mutation andinitialforeign-providerreloadregressions. AllownedgamesStopped/rootinstallrestored. [Allsixmetrics/proofs/raw](validation/STEAM_DECK_WARDEN_DISPATCH_20261023.json).
