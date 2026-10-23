@@ -1,5 +1,5 @@
 {
-  "status": "Prototype screen promising; no production gain/source retained yet. AllfourFAIL40FPS; fivefullSPgatesUNVERIFIED.",
+  "status": "RETAIN source HUD raster reuse: two independent six-run D20 source comparisons repeat throughput/p95 gains with visual/state/lifecycle/source checks. LIMITED iteration validation; NOT40FPS acceptance. TargetUNMET/allfivefullSPgates/releaseordinarycorroborationUNVERIFIED.",
   "tested_source": "fb291ab05b83b6e02307af680d2e7b72369f3d26",
   "visual_raw": "/home/deck/deborah-benchmarks/native-perf-d20/fb291ab0/visual-gate-v1",
   "visual_results": {
@@ -1156,6 +1156,664 @@
         }
       ],
       "scope": "StaticCIonly; source/VR/audio pass; native40FPSUNMET."
-    }
+    },
+    "confirmation_source_series": {
+      "raw": "/home/deck/deborah-benchmarks/hud-raster-source/efa67401/confirmation-source-series",
+      "rows": [
+        {
+          "arm": 1,
+          "variant": "parent",
+          "tested": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+          "raw": "/home/deck/deborah-benchmarks/hud-raster-source/efa67401/confirmation-source-series/arm01-parent",
+          "metrics": {
+            "frames": 1287,
+            "seconds": 59.9585,
+            "fps": 21.4648465188422,
+            "median_ms": 38.426,
+            "p95_ms": 85.734,
+            "p99_ms": 117.159,
+            "max_ms": 422.921,
+            "one_percent_low_fps": 6.010212738414737,
+            "below_budget_seconds": 58.944936,
+            "longest_below_budget_seconds": 23.303136999999975,
+            "below_budget_runs_ge2s": 5
+          },
+          "before": {
+            "phase": "before",
+            "slots": [],
+            "sha": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+            "passed": true,
+            "cache_matches_lexical": false,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "hud_line": 142,
+            "public_line": 59,
+            "mode": "parent",
+            "actual_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2"
+          },
+          "after": {
+            "phase": "after",
+            "slots": [],
+            "sha": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+            "probe_owner_cleared": true,
+            "passed": true,
+            "cache_matches_lexical": false,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "hud_line": 142,
+            "public_line": 59,
+            "mode": "parent",
+            "actual_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2"
+          },
+          "input_ending": {
+            "detail": {
+              "health": 162,
+              "reason": "external stop",
+              "node": 214,
+              "position": "5182.389648 1752.735352 -11503.937500"
+            },
+            "seconds": 62.466453552246094,
+            "kind": "end"
+          },
+          "duration": 62.466453552246094,
+          "node": 214,
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": 2,
+          "variant": "candidate",
+          "tested": "efa67401560ff279de8e10fb53f599a68e6fc77e",
+          "raw": "/home/deck/deborah-benchmarks/hud-raster-source/efa67401/confirmation-source-series/arm02-candidate",
+          "metrics": {
+            "frames": 1498,
+            "seconds": 59.954723,
+            "fps": 24.98552115735736,
+            "median_ms": 35.53,
+            "p95_ms": 70.257,
+            "p99_ms": 88.319,
+            "max_ms": 361.323,
+            "one_percent_low_fps": 7.859830919317263,
+            "below_budget_seconds": 58.43448499999994,
+            "longest_below_budget_seconds": 13.755718,
+            "below_budget_runs_ge2s": 7
+          },
+          "before": {
+            "phase": "before",
+            "slots": [
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              }
+            ],
+            "sha": "efa67401560ff279de8e10fb53f599a68e6fc77e",
+            "passed": true,
+            "cache_matches_lexical": true,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "hud_line": 309,
+            "public_line": 63,
+            "counters": {
+              "fallbacks": 0,
+              "hits": 0,
+              "builds": 0
+            },
+            "mode": "candidate",
+            "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+          },
+          "after": {
+            "phase": "after",
+            "slots": [
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              }
+            ],
+            "sha": "efa67401560ff279de8e10fb53f599a68e6fc77e",
+            "probe_owner_cleared": true,
+            "passed": true,
+            "cache_matches_lexical": true,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "delta": {
+              "fallbacks": 0,
+              "hits": 3944,
+              "builds": 266
+            },
+            "hud_line": 309,
+            "public_line": 63,
+            "counters": {
+              "fallbacks": 0,
+              "hits": 3944,
+              "builds": 266
+            },
+            "mode": "candidate",
+            "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+          },
+          "input_ending": {
+            "detail": {
+              "health": 211,
+              "reason": "external stop",
+              "node": 211,
+              "position": "5275.168945 1590.471436 -11503.937500"
+            },
+            "seconds": 61.4342041015625,
+            "kind": "end"
+          },
+          "duration": 61.4342041015625,
+          "node": 211,
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": 3,
+          "variant": "candidate",
+          "tested": "efa67401560ff279de8e10fb53f599a68e6fc77e",
+          "raw": "/home/deck/deborah-benchmarks/hud-raster-source/efa67401/confirmation-source-series/arm03-candidate",
+          "metrics": {
+            "frames": 1401,
+            "seconds": 59.978874000000005,
+            "fps": 23.35822443082209,
+            "median_ms": 35.866,
+            "p95_ms": 76.914,
+            "p99_ms": 96.655,
+            "max_ms": 334.497,
+            "one_percent_low_fps": 7.657702730022074,
+            "below_budget_seconds": 58.92186299999996,
+            "longest_below_budget_seconds": 25.334807000000005,
+            "below_budget_runs_ge2s": 6
+          },
+          "before": {
+            "phase": "before",
+            "slots": [
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              }
+            ],
+            "sha": "efa67401560ff279de8e10fb53f599a68e6fc77e",
+            "passed": true,
+            "cache_matches_lexical": true,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "hud_line": 309,
+            "public_line": 63,
+            "counters": {
+              "fallbacks": 0,
+              "hits": 0,
+              "builds": 0
+            },
+            "mode": "candidate",
+            "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+          },
+          "after": {
+            "phase": "after",
+            "slots": [
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              }
+            ],
+            "sha": "efa67401560ff279de8e10fb53f599a68e6fc77e",
+            "probe_owner_cleared": true,
+            "passed": true,
+            "cache_matches_lexical": true,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "delta": {
+              "fallbacks": 0,
+              "hits": 3762,
+              "builds": 297
+            },
+            "hud_line": 309,
+            "public_line": 63,
+            "counters": {
+              "fallbacks": 0,
+              "hits": 3762,
+              "builds": 297
+            },
+            "mode": "candidate",
+            "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+          },
+          "input_ending": {
+            "detail": {
+              "health": 211,
+              "reason": "external stop",
+              "node": 211,
+              "position": "5276.787598 1584.874146 -11503.937500"
+            },
+            "seconds": 61.43383026123047,
+            "kind": "end"
+          },
+          "duration": 61.43383026123047,
+          "node": 211,
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": 4,
+          "variant": "parent",
+          "tested": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+          "raw": "/home/deck/deborah-benchmarks/hud-raster-source/efa67401/confirmation-source-series/arm04-parent",
+          "metrics": {
+            "frames": 1309,
+            "seconds": 59.954709,
+            "fps": 21.83314741799514,
+            "median_ms": 36.662,
+            "p95_ms": 87.567,
+            "p99_ms": 116.33,
+            "max_ms": 348.928,
+            "one_percent_low_fps": 6.559278779187034,
+            "below_budget_seconds": 59.28915199999997,
+            "longest_below_budget_seconds": 22.59948599999997,
+            "below_budget_runs_ge2s": 5
+          },
+          "before": {
+            "phase": "before",
+            "slots": [],
+            "sha": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+            "passed": true,
+            "cache_matches_lexical": false,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "hud_line": 142,
+            "public_line": 59,
+            "mode": "parent",
+            "actual_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2"
+          },
+          "after": {
+            "phase": "after",
+            "slots": [],
+            "sha": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+            "probe_owner_cleared": true,
+            "passed": true,
+            "cache_matches_lexical": false,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "hud_line": 142,
+            "public_line": 59,
+            "mode": "parent",
+            "actual_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2"
+          },
+          "input_ending": {
+            "detail": {
+              "health": 206,
+              "reason": "external stop",
+              "node": 209,
+              "position": "5278.107910 1494.565430 -11503.937500"
+            },
+            "seconds": 62.413230895996094,
+            "kind": "end"
+          },
+          "duration": 62.413230895996094,
+          "node": 209,
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": 5,
+          "variant": "parent",
+          "tested": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+          "raw": "/home/deck/deborah-benchmarks/hud-raster-source/efa67401/confirmation-source-series/arm05-parent",
+          "metrics": {
+            "frames": 1346,
+            "seconds": 59.938572,
+            "fps": 22.456324117965305,
+            "median_ms": 37.172,
+            "p95_ms": 82.159,
+            "p99_ms": 104.053,
+            "max_ms": 339.048,
+            "one_percent_low_fps": 7.18450896703696,
+            "below_budget_seconds": 59.069843999999954,
+            "longest_below_budget_seconds": 16.059793,
+            "below_budget_runs_ge2s": 5
+          },
+          "before": {
+            "phase": "before",
+            "slots": [],
+            "sha": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+            "passed": true,
+            "cache_matches_lexical": false,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "hud_line": 142,
+            "public_line": 59,
+            "mode": "parent",
+            "actual_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2"
+          },
+          "after": {
+            "phase": "after",
+            "slots": [],
+            "sha": "a135fef3c874cabf9f02ba0b6b272a561ca2245a",
+            "probe_owner_cleared": true,
+            "passed": true,
+            "cache_matches_lexical": false,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "hud_line": 142,
+            "public_line": 59,
+            "mode": "parent",
+            "actual_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2"
+          },
+          "input_ending": {
+            "detail": {
+              "health": 211,
+              "reason": "external stop",
+              "node": 214,
+              "position": "5178.866699 1755.330444 -11503.937500"
+            },
+            "seconds": 62.431549072265625,
+            "kind": "end"
+          },
+          "duration": 62.431549072265625,
+          "node": 214,
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": 6,
+          "variant": "candidate",
+          "tested": "efa67401560ff279de8e10fb53f599a68e6fc77e",
+          "raw": "/home/deck/deborah-benchmarks/hud-raster-source/efa67401/confirmation-source-series/arm06-candidate",
+          "metrics": {
+            "frames": 1414,
+            "seconds": 59.952487,
+            "fps": 23.58534350710088,
+            "median_ms": 34.716,
+            "p95_ms": 77.613,
+            "p99_ms": 117.218,
+            "max_ms": 346.797,
+            "one_percent_low_fps": 6.6978847633391725,
+            "below_budget_seconds": 58.27272300000008,
+            "longest_below_budget_seconds": 9.156891000000003,
+            "below_budget_runs_ge2s": 8
+          },
+          "before": {
+            "phase": "before",
+            "slots": [
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              }
+            ],
+            "sha": "efa67401560ff279de8e10fb53f599a68e6fc77e",
+            "passed": true,
+            "cache_matches_lexical": true,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "hud_line": 309,
+            "public_line": 63,
+            "counters": {
+              "fallbacks": 0,
+              "hits": 0,
+              "builds": 0
+            },
+            "mode": "candidate",
+            "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+          },
+          "after": {
+            "phase": "after",
+            "slots": [
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              },
+              {
+                "width": 1024,
+                "height": 256,
+                "building": false
+              }
+            ],
+            "sha": "efa67401560ff279de8e10fb53f599a68e6fc77e",
+            "probe_owner_cleared": true,
+            "passed": true,
+            "cache_matches_lexical": true,
+            "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+            "public_provider_unchanged": true,
+            "delta": {
+              "fallbacks": 0,
+              "hits": 3835,
+              "builds": 244
+            },
+            "hud_line": 309,
+            "public_line": 63,
+            "counters": {
+              "fallbacks": 0,
+              "hits": 3835,
+              "builds": 244
+            },
+            "mode": "candidate",
+            "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+          },
+          "input_ending": {
+            "detail": {
+              "health": 211,
+              "reason": "external stop",
+              "node": 214,
+              "position": "5182.773926 1751.993042 -11503.937500"
+            },
+            "seconds": 62.40782928466797,
+            "kind": "end"
+          },
+          "duration": 62.40782928466797,
+          "node": 214,
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        }
+      ],
+      "means": {
+        "parent": {
+          "fps": 21.918106018267547,
+          "median_ms": 37.42,
+          "p95_ms": 85.15333333333334,
+          "p99_ms": 112.514,
+          "one_percent_low_fps": 6.58466682821291,
+          "below_budget_seconds": 59.10131066666664,
+          "longest_below_budget_seconds": 20.654138666666647
+        },
+        "candidate": {
+          "fps": 23.976363031760112,
+          "median_ms": 35.370666666666665,
+          "p95_ms": 74.928,
+          "p99_ms": 100.73066666666666,
+          "one_percent_low_fps": 7.405139470892837,
+          "below_budget_seconds": 58.543023666666656,
+          "longest_below_budget_seconds": 16.082472000000003
+        }
+      },
+      "mean_fps_percent": 9.390670032242387,
+      "adjacent_fps_percent": [
+        16.40204897540103,
+        6.985145034883811,
+        5.027623324301533
+      ],
+      "retirement": {
+        "all_owned_games_stopped": true,
+        "root_install_restored": true,
+        "root_sha": "efa67401560ff279de8e10fb53f599a68e6fc77e"
+      }
+    },
+    "retention_decision": "Retain: firstseries+4.052%meanFPS/confirmation+9.391%, all6paired FPS andp95directions favorcandidate. Bothseriesp99/prolongeddrop means improve, but individualtails mixed (confirmationC2 longest25.335vs pairedP22.599, C3p99117.218vs pairedP104.053). No formalstatistical significance, universalregressionfree or finalacceptanceclaim. Bothsource builds fail40. No additional gameplay/graphics/AI changes. Next freshnativeCPU/VProf attribution of remaining budget.",
+    "retention_scope": "ActualLCDDeck1280x800/P10.0-4b/listenhostsingleplayer, bothmonitorsON, samefrozenD20developer-density stress. No pooled effect percentage across sessions, no final fullboss/otherlevel/40cap acceptance."
   }
 }

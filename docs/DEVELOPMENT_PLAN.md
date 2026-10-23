@@ -1,3 +1,9 @@
+# Current checkpoint — retain measured HUD reuse; remaining CPU attribution next
+
+Unchanged6confirmationP,C,C,P,P,C21.465/24.986/23.358/21.833/22.456/23.585FPS. Means21.918/23.976(+9.391% arithmetic),p9585.153/74.928ms,p99112.514/100.731ms,longest20.654/16.082s. First6means22.263/23.165(+4.052%). All6pairedFPS/p95directionsfavorcandidate; bothseriesp99/dropmeansimprove, individualtailsmixed. Retain canonicalHUDreuse with limitedD20validation, not universal/noise-free/final40claim. All12FAIL40. Nativevisual/state/lifecycle/provider/source/pool/usage/input/endhealth checks pass, allgamesStop/rootinstallrestored. [All12/raw/CI/limits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next fresh60s nativeVProf flat+completehierarchy on retainedsource, noLuaCPUobserver/sampler. Separateclientrender/text, serverNextBotLua/simulation and othernativecosts; collectorwaits2ENDmarkers. Existing reports includeprep/IPC and perframeinclusiveoverlap; newdiagnosticwillretainthoselimits. Use freshmeasuredremainingbottleneck for nextfocusedchange. BothmonitorsON; SP40UNMET/allfivefullSPgates/releaseordinarycorroboration/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — canonical HUD first source series promising; unchanged confirmation next
 
 SixsourceP,C,C,P,P,C runs22.391/22.798/23.776/21.634/22.764/22.921FPS. Means22.263parent/23.165candidate(+4.052% arithmetic), p9582.072/78.369ms,p99117.183/114.056ms,longestdrop22.519/8.951s. All3adjacent FPS/p95 effects favorcandidate; thirdFPSmarginonly0.69% and ranks nearlytouch, so run unchanged6freshconfirmation before retaining. AllsixFAIL40. Nativebefore/afterfile/function/cache/pool/usage/publicprovider checks and input/endhealth pass, allownedgamesStop/rootinstallrestored. CIcd326/335/source_changed0/same9andfiveanchors/newcachegatepass; sourceVRaudiopass. [Sixrawresults/native/CI limits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
