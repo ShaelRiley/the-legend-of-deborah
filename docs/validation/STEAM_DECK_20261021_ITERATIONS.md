@@ -1248,3 +1248,13 @@ The collector rejected the requested profiler SIGINT after flushing. Intact raw 
 A combined collision-callback prototype passes 6,400 return comparisons over 80 cases with zero mismatches and unchanged registrations. A predeclared fresh-game parent/candidate/candidate/parent 60-second screening comparison is running with no profiling or device sampler. Native collision flags/groups, AI, counts, normal resources and frozen actions remain. No source candidate or performance gain follows the value gate alone. [Raw evidence and limitations](STEAM_DECK_NATIVE_CPU_20261022.json).
 
 Target UNMET; all six full acceptance scenarios UNVERIFIED. PR 7 remains draft; main remains cec10dc54. Finish the comparison, check complete receipts and restoration, then retain or reject on measured evidence before the next focused change.
+
+## 2026-10-23: callback screening inconclusive; JIT capacity under measurement
+
+Both displays remain ON at internal 1280×800@60 and external 1920×1080@75. Four fresh-game private callback arms complete: parent 21.559, candidate 22.881, candidate 22.914, parent 22.812 FPS. The arithmetic mean difference is +3.209%, but the final control nearly matches both candidates and control spread exceeds the mean difference. Do not retain a source gain from this screen. All captures fail the budget. Both leases restore original callbacks; all source, normal resource, physical-input, focus and display receipts complete. [Measurements and limits](STEAM_DECK_COLLISION_COALESCE_20261023.json).
+
+End health differs (parents 188/191, candidates 211/211), without an established cause. The direct return matrix does not prove complete hook precedence, physical contacts or multiplayer correctness. The prepared source edits were never installed or committed; they are archived privately and the isolated worktree is clean. Mounted gameplay remains unchanged from 3cf2e875.
+
+The public jit.opt.start API accepts maxtrace=32768 in both realms while reported optimization flags remain identical. No jit.on/off/flush or disabled reflection/profiler workaround is used. Stock numeric capacity is not publicly exposed; saturation or eviction is a hypothesis, not an observed cause. A predeclared fresh-process stock/32768/32768/stock D20 comparison is running with normal gameplay/settings and boundary-only counters. The first stock arm is 21.117 FPS, p95 85.610 ms: FAIL. No JIT configuration or gain is retained yet.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR 7 remains draft; canonical main remains cec10dc54. Finish the capacity comparison, inspect complete source/resource/input/display/flag and memory evidence, then retain or reject on measured effect and continue.

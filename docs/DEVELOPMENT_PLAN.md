@@ -1,3 +1,13 @@
+# Current checkpoint — callback screen inconclusive; public JIT-capacity comparison
+
+Both displays remain ON at internal 1280×800@60 and external 1920×1080@75. Four fresh-game private callback arms complete: parent 21.559, candidate 22.881, candidate 22.914, parent 22.812 FPS. The arithmetic mean difference is +3.209%, but the final control nearly matches both candidates and control spread exceeds the mean difference. Do not retain a source gain from this screen. All captures fail the budget. Both leases restore original callbacks; all source, normal resource, physical-input, focus and display receipts complete. [Measurements and limits](validation/STEAM_DECK_COLLISION_COALESCE_20261023.json).
+
+End health differs (parents 188/191, candidates 211/211), without an established cause. The direct return matrix does not prove complete hook precedence, physical contacts or multiplayer correctness. The prepared source edits were never installed or committed; they are archived privately and the isolated worktree is clean. Mounted gameplay remains unchanged from 3cf2e875.
+
+The public jit.opt.start API accepts maxtrace=32768 in both realms while reported optimization flags remain identical. No jit.on/off/flush or disabled reflection/profiler workaround is used. Stock numeric capacity is not publicly exposed; saturation or eviction is a hypothesis, not an observed cause. A predeclared fresh-process stock/32768/32768/stock D20 comparison is running with normal gameplay/settings and boundary-only counters. The first stock arm is 21.117 FPS, p95 85.610 ms: FAIL. No JIT configuration or gain is retained yet.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR 7 remains draft; canonical main remains cec10dc54. Finish the capacity comparison, inspect complete source/resource/input/display/flag and memory evidence, then retain or reject on measured effect and continue.
+
 # Current checkpoint — native CPU samples; callback comparison in progress
 
 Both displays stay ON at internal 1280×800@60 and external 1920×1080@75. A native 99 Hz main-thread diagnostic saves 5,890 samples with zero loss. Saved PE image ranges map 42.65% to lua_shared.dll, 15.84% to client.dll, 10.66% to server.dll and 9.95% to engine.dll. These are module shares, not exact Lua-function, realm or GC attribution. Instrumented gameplay still fails: 21.212 FPS, p95 83.325 ms, p99 123.191 ms, longest drop 23.338 seconds. Sampling overhead is unmeasured.

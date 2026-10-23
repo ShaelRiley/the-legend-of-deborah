@@ -1,0 +1,211 @@
+{
+  "decision": "INCONCLUSIVE; no production candidate retained/installed. Prepared isolated worktree remains uncommitted/unvalidated. All target gatesFAIL.",
+  "sequence": [
+    "parent",
+    "candidate",
+    "candidate",
+    "parent"
+  ],
+  "source": "890fc13f docs-only/runtime3cf",
+  "parent_mean_fps": 22.185670090264317,
+  "candidate_mean_fps": 22.89755789287501,
+  "parent_range_fps": 1.2528695459592356,
+  "arithmetic_mean_gain_percent": 3.208773049064173,
+  "reason": "Finalcontrol22.812 closelymatches22.881/22.914candidates; meanFPSdifference is smaller thanparentrange1.253FPS. Tailsimprove butallFAIL. Fourprivatearms cannotestablishsourcegain or exclude drift/noise.",
+  "raw_rows": [
+    {
+      "index": 1,
+      "variant": "parent",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/collision-coalesce/890fc13f/private-series-v1/arm01-parent",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1292,
+          "seconds": 59.927913999999994,
+          "fps": 21.5592353172847,
+          "median_ms": 36.72,
+          "p95_ms": 87.004,
+          "p99_ms": 120.428,
+          "max_ms": 376.041,
+          "one_percent_low_fps": 6.054495113323848,
+          "below_budget_seconds": 59.267080000000064,
+          "longest_below_budget_seconds": 25.621802999999986,
+          "below_budget_runs_ge2s": 4
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1292,
+          "seconds": 59.927913999999994,
+          "fps": 21.5592353172847,
+          "median_ms": 36.72,
+          "p95_ms": 87.004,
+          "p99_ms": 120.428,
+          "max_ms": 376.041,
+          "one_percent_low_fps": 6.054495113323848,
+          "below_budget_seconds": 59.267080000000064,
+          "longest_below_budget_seconds": 25.621802999999986,
+          "below_budget_runs_ge2s": 4
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    },
+    {
+      "index": 2,
+      "variant": "candidate",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/collision-coalesce/890fc13f/private-series-v1/arm02-candidate",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1370,
+          "seconds": 59.874371,
+          "fps": 22.88124246015044,
+          "median_ms": 36.501,
+          "p95_ms": 79.779,
+          "p99_ms": 115.053,
+          "max_ms": 348.032,
+          "one_percent_low_fps": 6.504240300087064,
+          "below_budget_seconds": 59.049279,
+          "longest_below_budget_seconds": 13.329555999999991,
+          "below_budget_runs_ge2s": 6
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1370,
+          "seconds": 59.874371,
+          "fps": 22.88124246015044,
+          "median_ms": 36.501,
+          "p95_ms": 79.779,
+          "p99_ms": 115.053,
+          "max_ms": 348.032,
+          "one_percent_low_fps": 6.504240300087064,
+          "below_budget_seconds": 59.049279,
+          "longest_below_budget_seconds": 13.329555999999991,
+          "below_budget_runs_ge2s": 6
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    },
+    {
+      "index": 3,
+      "variant": "candidate",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/collision-coalesce/890fc13f/private-series-v1/arm03-candidate",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1373,
+          "seconds": 59.920031,
+          "fps": 22.91387332559958,
+          "median_ms": 36.295,
+          "p95_ms": 78.65,
+          "p99_ms": 113.594,
+          "max_ms": 331.198,
+          "one_percent_low_fps": 6.754324938993972,
+          "below_budget_seconds": 58.91858899999998,
+          "longest_below_budget_seconds": 12.517523000000006,
+          "below_budget_runs_ge2s": 8
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1373,
+          "seconds": 59.920031,
+          "fps": 22.91387332559958,
+          "median_ms": 36.295,
+          "p95_ms": 78.65,
+          "p99_ms": 113.594,
+          "max_ms": 331.198,
+          "one_percent_low_fps": 6.754324938993972,
+          "below_budget_seconds": 58.91858899999998,
+          "longest_below_budget_seconds": 12.517523000000006,
+          "below_budget_runs_ge2s": 8
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    },
+    {
+      "index": 4,
+      "variant": "parent",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/collision-coalesce/890fc13f/private-series-v1/arm04-parent",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1368,
+          "seconds": 59.968162,
+          "fps": 22.812104863243935,
+          "median_ms": 37.591,
+          "p95_ms": 80.135,
+          "p99_ms": 121.108,
+          "max_ms": 394.972,
+          "one_percent_low_fps": 6.004723143661286,
+          "below_budget_seconds": 59.020746999999915,
+          "longest_below_budget_seconds": 22.607177000000007,
+          "below_budget_runs_ge2s": 5
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1368,
+          "seconds": 59.968162,
+          "fps": 22.812104863243935,
+          "median_ms": 37.591,
+          "p95_ms": 80.135,
+          "p99_ms": 121.108,
+          "max_ms": 394.972,
+          "one_percent_low_fps": 6.004723143661286,
+          "below_budget_seconds": 59.020746999999915,
+          "longest_below_budget_seconds": 22.607177000000007,
+          "below_budget_runs_ge2s": 5
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    }
+  ],
+  "cleanup": "Allfourownedgamesstopped;bothcandidatesoriginalbindingsrestored afterFPS; bothdisplaysON before/after allarms.",
+  "source_preparation": "Own unvalidated/uncommitted edits archived as patch/test; isolated worktree restoredclean. Neverinstalled/published.",
+  "next": "Investigate publicJITtrace-capacity request; runtimecacheconstrainthypothesisnotyetmeasured.",
+  "prepared_source_archived": "/home/deck/deborah-recovery/collision-coalesce-unvalidated-preparation",
+  "regression_limits": {
+    "ending_health": {
+      "parent01": 188,
+      "candidate02": 211,
+      "candidate03": 211,
+      "parent04": 191
+    },
+    "interpretation": "Different normal enddamage/exposure observed; no causeattributed. Directtwo-callback returnmatrixdoesnot establishcompleteShouldCollidehookprecedence/nativephysicalcontact/multiplayer equivalence. No gameplayregressionpass orsourcegain claim.",
+    "input_receipts": "Allfour external-stop structuredends60.419-61.407seconds;nodes204/207/207/205;alive. Fullphasecoverageunverified."
+  }
+}
