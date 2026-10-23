@@ -1340,3 +1340,11 @@ Existing capture configuration now records net_graph,cl_showfps,cl_showpos and d
 Next: fresh net_graph1/0/0/1 D20 diagnostics with actual start/end values, all other settings/resources/counts/AI/actions fixed and both monitors ON. Preserve the gameplay HUD and native visuals. This tests instrumentation overhead; no FPS gain or full acceptance follows source inspection/tests. Restore prior overlay preference afterward.
 
 Public host-threading controls remain unavailable. Entry reuse and all other unvalidated candidates remain reverted. Target UNMET; all six full scenarios UNVERIFIED; PR7draft/maincec10 unchanged.
+
+## 2026-10-23: diagnostic netgraph comparison has no supported gain
+
+Four fresh D20 captures finish at22.007on/21.249off/20.434off/20.961onFPS. Means21.484on versus20.841off (−2.991% arithmetic) provide no supported benefit from disabling Source net_graph. All four fail and ranges overlap; no statistical slowdown cause is claimed. Native preflight/start/end values match1/0/0/1; every other recorded setting is identical. cl_showfps0/cl_showpos0/developer0 remain. Source/resources/input/focus/both-display gates pass. All owned games stop and originalnet_graph1 is restored. [Raw metrics and restoration](STEAM_DECK_OVERLAY_COST_20261023.json).
+
+Keep the useful four start/end diagnostic fields; no per-frame work or normal preference change is retained. Next: same frozen D20 with the existing opt-in bounded client/server CPU profiler. Its FPS is instrumented diagnostic only; inspect hook/entity cost and restoration rather than treating it as acceptance. Preserve normal native visuals, counts, AI and both monitors ON1280×800@60/external1920×1080@75.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR7draft/maincec10 unchanged.

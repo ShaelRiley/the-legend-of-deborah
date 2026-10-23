@@ -1,5 +1,5 @@
 {
-  "status": "DIAGNOSTICPREPARATION; actualoverlaycostnotmeasured/40FPSUNMET/all6fullscenariosUNVERIFIED",
+  "status": "NOsupportedoverlayoffgain; all4FAIL;40FPSUNMET/all6fullscenariosUNVERIFIED",
   "parent": "3eaab2b0eb9af7f6d2d239aa0d05401f1d45093c",
   "hypothesis": "NativeVProf D20 includes2.395ms/frameHUD and1.276surfaceDrawText; scopesoverlapanddonotisolateanoverlay. SavedWindowsclientconfig net_graph1; actualruntimevaluestillmustbeverified. MeasureonlydiagnosticnetgraphwithoutremovinggameHUD/visuals/content.",
   "source_change": "Existingstart/endconfigurationrecordnowincludes net_graph,cl_showfps,cl_showpos,developer. configuration()calledonlyatcapturestart/end; noperframeworkorchangedgameplay/settings.",
@@ -11,5 +11,126 @@
     "luacsyntax/diffPASS"
   ],
   "plan": "Fresh4x60s net_graph1,0,0,1 withsamecurrentruntime/source/seeds/resources/57roamers+9boss/1820models/66HzAI/physicalD20lowercourt-v1actions/graphics/15WAC. BothmonitorsONalways1280x800@60/external1920x1080@75. NativeCLI requestbeforemap;actualstart/endnet_graphmustmatch;allotherdiagnosticsettingsmuststayidentical. No profiler/sampler/JIT/affinity. Recordrawcapturesandrestorepriornetgraphpreference aftermeasurement.",
-  "limits": "Nocostgainpredictedoraccepted. OnlyD20phase1diagnostic;finalfullscenarios/3x180swarm/capped/ordinaryplay/multiplayerunverified."
+  "limits": "Nocostgainpredictedoraccepted. OnlyD20phase1diagnostic;finalfullscenarios/3x180swarm/capped/ordinaryplay/multiplayerunverified.",
+  "comparison": {
+    "status": "NOsupportedoverlayoffgain; all4FAIL;40FPSUNMET/all6fullscenariosUNVERIFIED",
+    "rows": [
+      {
+        "net_graph": "1",
+        "raw": "/home/deck/deborah-benchmarks/jit-record-length/ac51b6b3/overlay-on-off-series-v1/arm01-1",
+        "active": {
+          "frames": 1319,
+          "seconds": 59.936121,
+          "fps": 22.006762833383895,
+          "median_ms": 38.122,
+          "p95_ms": 80.477,
+          "p99_ms": 113.215,
+          "max_ms": 330.904,
+          "one_percent_low_fps": 6.603424724731523,
+          "below_budget_seconds": 59.01602799999997,
+          "longest_below_budget_seconds": 31.35652999999995,
+          "below_budget_runs_ge2s": 3
+        },
+        "diagnostic_values": {
+          "net_graph": "1",
+          "cl_showfps": "0",
+          "cl_showpos": "0",
+          "developer": "0"
+        },
+        "other_settings_equal": true,
+        "source_resources_input_focus_displays_passed": true,
+        "end_health": 211
+      },
+      {
+        "net_graph": "0",
+        "raw": "/home/deck/deborah-benchmarks/jit-record-length/ac51b6b3/overlay-on-off-series-v1/arm02-0",
+        "active": {
+          "frames": 1274,
+          "seconds": 59.955541,
+          "fps": 21.249078546384897,
+          "median_ms": 38.781,
+          "p95_ms": 81.896,
+          "p99_ms": 128.12,
+          "max_ms": 348.243,
+          "one_percent_low_fps": 5.856011488593616,
+          "below_budget_seconds": 59.25715299999994,
+          "longest_below_budget_seconds": 22.710214999999998,
+          "below_budget_runs_ge2s": 3
+        },
+        "diagnostic_values": {
+          "net_graph": "0",
+          "cl_showfps": "0",
+          "cl_showpos": "0",
+          "developer": "0"
+        },
+        "other_settings_equal": true,
+        "source_resources_input_focus_displays_passed": true,
+        "end_health": 211
+      },
+      {
+        "net_graph": "0",
+        "raw": "/home/deck/deborah-benchmarks/jit-record-length/ac51b6b3/overlay-on-off-series-v1/arm03-0",
+        "active": {
+          "frames": 1225,
+          "seconds": 59.950059,
+          "fps": 20.433674635749732,
+          "median_ms": 39.297,
+          "p95_ms": 88.53,
+          "p99_ms": 130.754,
+          "max_ms": 349.071,
+          "one_percent_low_fps": 5.311718181480163,
+          "below_budget_seconds": 59.20399400000003,
+          "longest_below_budget_seconds": 31.962267999999977,
+          "below_budget_runs_ge2s": 3
+        },
+        "diagnostic_values": {
+          "net_graph": "0",
+          "cl_showfps": "0",
+          "cl_showpos": "0",
+          "developer": "0"
+        },
+        "other_settings_equal": true,
+        "source_resources_input_focus_displays_passed": true,
+        "end_health": 127
+      },
+      {
+        "net_graph": "1",
+        "raw": "/home/deck/deborah-benchmarks/jit-record-length/ac51b6b3/overlay-on-off-series-v1/arm04-1",
+        "active": {
+          "frames": 1257,
+          "seconds": 59.968540000000004,
+          "fps": 20.960990546042975,
+          "median_ms": 39.131,
+          "p95_ms": 85.106,
+          "p99_ms": 141.267,
+          "max_ms": 372.62,
+          "one_percent_low_fps": 5.73202601987073,
+          "below_budget_seconds": 59.773381000000036,
+          "longest_below_budget_seconds": 23.571328000000026,
+          "below_budget_runs_ge2s": 4
+        },
+        "diagnostic_values": {
+          "net_graph": "1",
+          "cl_showfps": "0",
+          "cl_showpos": "0",
+          "developer": "0"
+        },
+        "other_settings_equal": true,
+        "source_resources_input_focus_displays_passed": true,
+        "end_health": 142
+      }
+    ],
+    "means_fps": {
+      "1": 21.483876689713433,
+      "0": 20.841376591067316
+    },
+    "arithmetic_off_percent": -2.9906152782646966,
+    "restoration": {
+      "restored_net_graph": "1",
+      "owned_game_stopped": true
+    },
+    "decision": "No materialpositiveoverheadeffect supported; rangesoverlap, twoarms/conditionnotstatisticalproof. Restoreusernet_graph1;retain4start/endcapturefields. No gameplay/visual/AI/counts/settingsotherthannet_graphchange.",
+    "next": "FreshsameD20diagnosticusingexistingboundedCPUprofile; FPSinstrumented/notacceptance, inspectclienthotspotsandrestoration."
+  },
+  "next": "FreshsameD20diagnosticusingexistingboundedCPUprofile; FPSinstrumented/notacceptance, inspectclienthotspotsandrestoration."
 }
