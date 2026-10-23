@@ -1,8 +1,8 @@
 {
-  "status": "SOURCE CANDIDATE; prototype native values/microtiming PASS; installed source gate and gameplayFPS comparisons PENDING; target UNMET/six full scenarios UNVERIFIED",
+  "status": "REJECTED after6original-source Deck runs; generator runtime restored exactly to1ce30e75; targetUNMET/all6fullscenariosUNVERIFIED",
   "parent": "1ce30e750ba5478a6a7efb5e72a5ab6f8cc76f51",
   "hypothesis": "Earlier bounded profile records1450926publicCellKeycalls/69s (~21000/s) and19.13ms/s inclusive. Reuse255fixedpositiveintegercomponentstrings to avoid repeatednumericconversion. Profile includes preparation/wrapping; no wholeFPSgain inferred.",
-  "runtime_change": "Private fixed255-entry table inside generator; enabled only when integer/floatnumeric strings coincide. Zero, signedzero, uncachedvalues, strings, invalid inputs andmetamethod concatenation retainoriginaloperands. No graph/entity/state references or changing cache; no lifecycleinvalidation needed. Public signature and complete key bytes remain.",
+  "runtime_change": "REVERTED: generator restored byte-exactly to1ce30e75. Retain28062behavior cases and generator sourcewatch coverage120total/116server/52client; no fixedcomponentcache remains.",
   "prototype_native_raw": "/home/deck/deborah-benchmarks/cell-key-cost/1ce30e75/native-value-cost-probe-run1",
   "prototype_native": {
     "actual_graph_cells": 690,
@@ -67,9 +67,280 @@
     "Lua syntax/diff checksPASS"
   ],
   "limits": [
-    "Native prototype is not installed-source proof. No accepted gameplayFPSgain or40FPSpass.",
-    "Fixedcurrentgraphics/normalcounts/AI/actions/bothdisplays mustremain in sourcecomparison.",
-    "Fullscenarios/phases/ordinarygameplay/fouractualplayers andtriplicate180s/cappedplay stillpending."
+    "All6short60soriginal-source attempts complete; rangesoverlap, arithmetic-5.05%notproofgeneral slowdown mechanism. No supportedwholeFPSgain; reject.",
+    "Endinghealth156/201/160/206/211/211 differs withoutcausalattribution. Structuredends60.452-61.420s/nodes207-210 include timeafterFPS; alive. No completecombat/multiplayerregressionclaim.",
+    "Normal source/resources/seeds/scene/focus/input/bothdisplaysgatespass; no activeprofilers/samplers. BothmonitorsONalways internal1280x800@60/external1920x1080@75.",
+    "Allfullscenarios/ordinarygameplay/completebossphases/three180srepeats/cappedplay/fouractualhumans UNVERIFIED."
   ],
-  "next": "Commit/pushcandidatecheckpoint; add matchingwatchcoverage to original-source control; installednative function/value proof then fresh original-source P,C,C,P,P,C D20FPS comparisons. Retainorreject usingmeasuredgain/regressions."
+  "next": "Measure thread-placement hypothesis: isolate main from its ownworkers usingactualSMTtopology; freshstock/candidate/candidate/stock D20diagnostic. Priorallthreadsphysical-maskD1experimenthadnogain; distinctplacementhypothesisnotproved.",
+  "installed_source_gate_raw": "/home/deck/deborah-benchmarks/cell-key-cost/43821d1a/native-installed-source-probe-run1",
+  "installed_source_gate": {
+    "checks": 12864,
+    "actual_graph_cells": 690,
+    "passed": true,
+    "parent_100k_ms": [
+      11.8788,
+      11.6225,
+      11.681
+    ],
+    "candidate_100k_ms": [
+      5.5121,
+      5.2724,
+      5.2614
+    ],
+    "scope": "Actual installedfunction source/line/CRC confirmed. Narrow value/microcost evidence only; not gameplayFPS."
+  },
+  "source_comparison": {
+    "rows": [
+      {
+        "arm": "01-parent",
+        "sha": "e34fa7c849fc8536ae2e193ec7a44d4a0eb7cb05",
+        "raw": "/home/deck/deborah-benchmarks/cell-key-cost/43821d1a/original-source-series/01-parent",
+        "active": {
+          "frames": 1291,
+          "seconds": 59.938181,
+          "fps": 21.538858511572116,
+          "median_ms": 37.454,
+          "p95_ms": 84.118,
+          "p99_ms": 112.264,
+          "max_ms": 370.071,
+          "one_percent_low_fps": 6.46964764805913,
+          "below_budget_seconds": 59.10706800000012,
+          "longest_below_budget_seconds": 24.958945999999997,
+          "below_budget_runs_ge2s": 3
+        },
+        "source": {
+          "linedefined": 474,
+          "sha": "e34fa7c849fc8536ae2e193ec7a44d4a0eb7cb05",
+          "numeric_strings_unified": true,
+          "mode": "parent",
+          "crc": "399835040",
+          "expected_crc": "399835040",
+          "expected_line": 474,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua",
+          "what": "Lua",
+          "passed": true,
+          "cached_parts_source": false
+        },
+        "ending": {
+          "reason": "external stop",
+          "duration": 61.42026901245117,
+          "node": 210,
+          "health": 156
+        },
+        "normal_source_resource_input_focus_display_gates": true
+      },
+      {
+        "arm": "02-candidate",
+        "sha": "43821d1aaf562cf0ca3d0027427883319ed16dd2",
+        "raw": "/home/deck/deborah-benchmarks/cell-key-cost/43821d1a/original-source-series/02-candidate",
+        "active": {
+          "frames": 1286,
+          "seconds": 59.963473,
+          "fps": 21.446389537844148,
+          "median_ms": 37.615,
+          "p95_ms": 86.276,
+          "p99_ms": 130.281,
+          "max_ms": 334.13,
+          "one_percent_low_fps": 5.859941977559126,
+          "below_budget_seconds": 59.569957999999964,
+          "longest_below_budget_seconds": 25.272988000000005,
+          "below_budget_runs_ge2s": 4
+        },
+        "source": {
+          "linedefined": 482,
+          "sha": "43821d1aaf562cf0ca3d0027427883319ed16dd2",
+          "numeric_strings_unified": true,
+          "mode": "candidate",
+          "crc": "563632744",
+          "expected_crc": "563632744",
+          "expected_line": 482,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua",
+          "what": "Lua",
+          "passed": true,
+          "cached_parts_source": true
+        },
+        "ending": {
+          "reason": "external stop",
+          "duration": 61.390384674072266,
+          "node": 210,
+          "health": 201
+        },
+        "normal_source_resource_input_focus_display_gates": true
+      },
+      {
+        "arm": "03-candidate",
+        "sha": "43821d1aaf562cf0ca3d0027427883319ed16dd2",
+        "raw": "/home/deck/deborah-benchmarks/cell-key-cost/43821d1a/original-source-series/03-candidate",
+        "active": {
+          "frames": 1239,
+          "seconds": 59.959265,
+          "fps": 20.664029153792995,
+          "median_ms": 39.649,
+          "p95_ms": 89.115,
+          "p99_ms": 135.6,
+          "max_ms": 338.285,
+          "one_percent_low_fps": 5.985785141623677,
+          "below_budget_seconds": 59.4796289999999,
+          "longest_below_budget_seconds": 15.682310999999993,
+          "below_budget_runs_ge2s": 5
+        },
+        "source": {
+          "linedefined": 482,
+          "sha": "43821d1aaf562cf0ca3d0027427883319ed16dd2",
+          "numeric_strings_unified": true,
+          "mode": "candidate",
+          "crc": "563632744",
+          "expected_crc": "563632744",
+          "expected_line": 482,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua",
+          "what": "Lua",
+          "passed": true,
+          "cached_parts_source": true
+        },
+        "ending": {
+          "reason": "external stop",
+          "duration": 61.382164001464844,
+          "node": 210,
+          "health": 160
+        },
+        "normal_source_resource_input_focus_display_gates": true
+      },
+      {
+        "arm": "04-parent",
+        "sha": "e34fa7c849fc8536ae2e193ec7a44d4a0eb7cb05",
+        "raw": "/home/deck/deborah-benchmarks/cell-key-cost/43821d1a/original-source-series/04-parent",
+        "active": {
+          "frames": 1260,
+          "seconds": 59.90533,
+          "fps": 21.033186863339203,
+          "median_ms": 38.656,
+          "p95_ms": 83.139,
+          "p99_ms": 117.694,
+          "max_ms": 353.107,
+          "one_percent_low_fps": 6.128066213284044,
+          "below_budget_seconds": 59.0445469999999,
+          "longest_below_budget_seconds": 22.77585099999997,
+          "below_budget_runs_ge2s": 4
+        },
+        "source": {
+          "linedefined": 474,
+          "sha": "e34fa7c849fc8536ae2e193ec7a44d4a0eb7cb05",
+          "numeric_strings_unified": true,
+          "mode": "parent",
+          "crc": "399835040",
+          "expected_crc": "399835040",
+          "expected_line": 474,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua",
+          "what": "Lua",
+          "passed": true,
+          "cached_parts_source": false
+        },
+        "ending": {
+          "reason": "external stop",
+          "duration": 60.463661193847656,
+          "node": 207,
+          "health": 206
+        },
+        "normal_source_resource_input_focus_display_gates": true
+      },
+      {
+        "arm": "05-parent",
+        "sha": "e34fa7c849fc8536ae2e193ec7a44d4a0eb7cb05",
+        "raw": "/home/deck/deborah-benchmarks/cell-key-cost/43821d1a/original-source-series/05-parent",
+        "active": {
+          "frames": 1350,
+          "seconds": 59.923610999999994,
+          "fps": 22.52868239198736,
+          "median_ms": 36.394,
+          "p95_ms": 78.246,
+          "p99_ms": 113.197,
+          "max_ms": 424.323,
+          "one_percent_low_fps": 6.495844515465677,
+          "below_budget_seconds": 59.166281000000076,
+          "longest_below_budget_seconds": 25.245800000000028,
+          "below_budget_runs_ge2s": 4
+        },
+        "source": {
+          "linedefined": 474,
+          "sha": "e34fa7c849fc8536ae2e193ec7a44d4a0eb7cb05",
+          "numeric_strings_unified": true,
+          "mode": "parent",
+          "crc": "399835040",
+          "expected_crc": "399835040",
+          "expected_line": 474,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua",
+          "what": "Lua",
+          "passed": true,
+          "cached_parts_source": false
+        },
+        "ending": {
+          "reason": "external stop",
+          "duration": 60.451629638671875,
+          "node": 207,
+          "health": 211
+        },
+        "normal_source_resource_input_focus_display_gates": true
+      },
+      {
+        "arm": "06-candidate",
+        "sha": "43821d1aaf562cf0ca3d0027427883319ed16dd2",
+        "raw": "/home/deck/deborah-benchmarks/cell-key-cost/43821d1a/original-source-series/06-candidate",
+        "active": {
+          "frames": 1180,
+          "seconds": 59.890592,
+          "fps": 19.702593689506358,
+          "median_ms": 43.378,
+          "p95_ms": 85.649,
+          "p99_ms": 119.456,
+          "max_ms": 348.62,
+          "one_percent_low_fps": 6.261381365085494,
+          "below_budget_seconds": 59.26049999999997,
+          "longest_below_budget_seconds": 33.43576800000002,
+          "below_budget_runs_ge2s": 2
+        },
+        "source": {
+          "linedefined": 482,
+          "sha": "43821d1aaf562cf0ca3d0027427883319ed16dd2",
+          "numeric_strings_unified": true,
+          "mode": "candidate",
+          "crc": "563632744",
+          "expected_crc": "563632744",
+          "expected_line": 482,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua",
+          "what": "Lua",
+          "passed": true,
+          "cached_parts_source": true
+        },
+        "ending": {
+          "reason": "external stop",
+          "duration": 60.459861755371094,
+          "node": 207,
+          "health": 211
+        },
+        "normal_source_resource_input_focus_display_gates": true
+      }
+    ],
+    "means_fps": {
+      "parent": 21.700242588966226,
+      "candidate": 20.604337460381167
+    },
+    "arithmetic_percent": -5.050197591534234,
+    "decision": "REJECT no supported whole-game performance improvement. Revert generator runtime exactly to1ce30e75; retain behavior test and expanded source coverage. All six FPS captures fail; ranges overlap and 3armspervariant do not establish a general slowdown cause. Native key microtiming remains narrow valid evidence, not FPS proof.",
+    "cleanup": "All6ownedgames stopped by driver; candidate reinstalled whilequitbefore decision.",
+    "scope": "D20lowercourt-v1only; fullphases/otherfrozen scenarios/cappedplay/fouractualplayers remainUNVERIFIED; sustained40targetUNMET."
+  },
+  "ci": {
+    "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39879711152",
+    "matrix": "325/334;source_changed=0",
+    "comparison": "All9failedsuite names and5leaf file/lineanchors exactmatch3cf39867453761. Source/VR/audio checks PASS. No fullgreen claim.",
+    "raw": "/home/deck/deborah-recovery/evidence/43821d1a-ci-failures.log"
+  },
+  "revert_validation": [
+    "Generatorbyte-exact1ce30e75PASS",
+    "LuaJIT28062exactkeycasesPASS",
+    "SharedEnemyAIWorkincludingB29entry/lifecycleand15playerquerycases55assertionsand28062keysPASS",
+    "Devmanifest120total/116server/52clientPASS",
+    "luacsyntax/diffcheckPASS"
+  ]
 }

@@ -11,16 +11,8 @@ local DIRS = {
     {dx = 0, dy = -1, dz = 0, name = "S"}
 }
 
--- Native LuaJIT uses one numeric representation. Reuse common positive integer
--- components without changing concatenation for zero, other values or runtimes
--- that distinguish integer and floating-point string representations. This fixed
--- table never retains graph state and needs no campaign/lifecycle invalidation.
-local keyParts = {}
-if (1 .. "") == (1.0 .. "") then
-    for n = 1, 255 do keyParts[n] = n .. "" end
-end
 local function key(x, y, z)
-    return (keyParts[x] or x) .. ":" .. (keyParts[y] or y) .. ":" .. (keyParts[z] or z)
+    return x .. ":" .. y .. ":" .. z
 end
 
 local function sortedKeys(t)

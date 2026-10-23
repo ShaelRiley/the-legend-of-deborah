@@ -1,3 +1,13 @@
+# Current checkpoint — cell-key cache rejected after six original-source Deck runs
+
+Both monitors remain ON at internal 1280×800@60 and external 1920×1080@75. Controls21.539/21.033/22.529FPS average21.700; candidates21.446/20.664/19.703 average20.604 (arithmetic−5.05%). All six60s captures complete and fail. Ranges overlap; no general slowdown cause or statistical significance is claimed. The installed key function passes12,864 native comparisons and halves100k-call microcost, but that does not supply a gameplay gain. Reject the cache and restore the generator byte-exactly to1ce30e75. Keep28,062 behavior cases and source coverage120total/116server/52client. [Measurements and decision](validation/STEAM_DECK_CELL_KEYS_20261023.json).
+
+All source/function, normal resources/seeds/population, physical input, focus and display gates pass. End health156/201/160/206/211/211 varies without a demonstrated cause; structured ends60.452–61.420s include post-FPS time. Full fight phases and multiplayer behavior remain unverified. All owned games stop. Candidate43821d1a CI is325/334 with the same nine failing suite names and five file/line anchors as3cf; source, VR and audio pass. No full green claim.
+
+Next: compare stock thread placement with mainCPU2/workers0,1,4,5,6,7, using actual2–3 SMT siblings and boundary-only counters. Earlier D1 all-threads-four-core masking had no benefit; this distinct experiment tests separating the main thread from its own workers, not a measured SMT cause. Preserve normal gameplay, graphics, power and both monitors.
+
+Target UNMET; all six full acceptance scenarios UNVERIFIED. PR7 stays draft; canonical main remainscec10dc54. No key-cache, callback-coalescing, animation, player-query or JIT-setting candidate remains.
+
 # Current checkpoint — cell-key source candidate; native source/FPS validation next
 
 A pure native prototype passes 12,864 key comparisons, including all 690 actual graph cells, signed zero, non-integers, strings, invalid inputs and concatenation metamethods. Six alternating 100,000-call measurements average 12.740 ms for the parent and 5.792 ms for the fixed component lookup. This is narrow prototype evidence, not installed-source or gameplay FPS proof.
