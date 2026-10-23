@@ -1,0 +1,212 @@
+{
+  "status": "Prototype promising; actual-source FPS UNVERIFIED",
+  "source_parent": "922904d0d128205f4732ed0db39af2f55b223d9d",
+  "raw": "/home/deck/deborah-benchmarks/validity-shim/922904d0/prototype-series-v2",
+  "rows": [
+    {
+      "variant": "control",
+      "metrics": {
+        "frames": 1293,
+        "seconds": 59.895419000000004,
+        "fps": 21.58762759469134,
+        "median_ms": 37.603,
+        "p95_ms": 85.701,
+        "p99_ms": 112.179,
+        "max_ms": 344.691,
+        "one_percent_low_fps": 6.494937196455363,
+        "below_budget_seconds": 58.851557000000035,
+        "longest_below_budget_seconds": 12.142523999999995,
+        "below_budget_runs_ge2s": 6
+      },
+      "directory": "/home/deck/deborah-benchmarks/validity-shim/922904d0/prototype-series-v2/arm01-control",
+      "bench_validity_shim_started": {
+        "variant": "control",
+        "parity_cases": 1469,
+        "scope": "Native direct checker result/error-status cases plus globalIsValidbefore/afterforeachcurrententity. Wrapperreturnsnativechecker(...)directly, preservingvarargs/returns; nativeerrorwording/callstackcannameforwardinglocal. No actors/validity/profile/life statecached acrosscalls. No CPUobserver/JIT/GC/settingschange. PrototypeFPS notsource acceptance.",
+        "wrapper": false,
+        "passed": true,
+        "originalC": true
+      },
+      "bench_validity_shim_state": {
+        "variant": "control",
+        "profiler_absent": true,
+        "passed": true,
+        "wrapper_current": false
+      },
+      "bench_validity_shim_stop": {
+        "variant": "control",
+        "reason": "explicit",
+        "scope": "No validity result cache. One-line nativeCcallee forwarding only; allqueries fresh. Currentowner restored; queuedforwarder references require ownedprocessStop.",
+        "passed": true,
+        "restored": true
+      },
+      "bench_validity_shim_retirement": {
+        "originals_cleared": true,
+        "passed": true,
+        "lease_absent": true
+      },
+      "display_watch_bad_transitions": 0
+    },
+    {
+      "variant": "candidate",
+      "metrics": {
+        "frames": 1423,
+        "seconds": 59.968346,
+        "fps": 23.729185393907645,
+        "median_ms": 36.152,
+        "p95_ms": 75.907,
+        "p99_ms": 106.092,
+        "max_ms": 334.983,
+        "one_percent_low_fps": 6.878673498259467,
+        "below_budget_seconds": 58.83789000000002,
+        "longest_below_budget_seconds": 10.131691,
+        "below_budget_runs_ge2s": 7
+      },
+      "directory": "/home/deck/deborah-benchmarks/validity-shim/922904d0/prototype-series-v2/arm02-candidate",
+      "bench_validity_shim_started": {
+        "variant": "candidate",
+        "parity_cases": 1469,
+        "scope": "Native direct checker result/error-status cases plus globalIsValidbefore/afterforeachcurrententity. Wrapperreturnsnativechecker(...)directly, preservingvarargs/returns; nativeerrorwording/callstackcannameforwardinglocal. No actors/validity/profile/life statecached acrosscalls. No CPUobserver/JIT/GC/settingschange. PrototypeFPS notsource acceptance.",
+        "wrapper": true,
+        "passed": true,
+        "originalC": true
+      },
+      "bench_validity_shim_state": {
+        "variant": "candidate",
+        "profiler_absent": true,
+        "passed": true,
+        "wrapper_current": true
+      },
+      "bench_validity_shim_stop": {
+        "variant": "candidate",
+        "reason": "explicit",
+        "scope": "No validity result cache. One-line nativeCcallee forwarding only; allqueries fresh. Currentowner restored; queuedforwarder references require ownedprocessStop.",
+        "passed": true,
+        "restored": true
+      },
+      "bench_validity_shim_retirement": {
+        "originals_cleared": true,
+        "passed": true,
+        "lease_absent": true
+      },
+      "display_watch_bad_transitions": 0
+    },
+    {
+      "variant": "candidate",
+      "metrics": {
+        "frames": 1421,
+        "seconds": 59.929997,
+        "fps": 23.710997349123843,
+        "median_ms": 35.113,
+        "p95_ms": 74.965,
+        "p99_ms": 105.791,
+        "max_ms": 338.409,
+        "one_percent_low_fps": 7.2817230692754,
+        "below_budget_seconds": 58.46558699999992,
+        "longest_below_budget_seconds": 9.574732999999997,
+        "below_budget_runs_ge2s": 8
+      },
+      "directory": "/home/deck/deborah-benchmarks/validity-shim/922904d0/prototype-series-v2/arm03-candidate",
+      "bench_validity_shim_started": {
+        "variant": "candidate",
+        "parity_cases": 1469,
+        "scope": "Native direct checker result/error-status cases plus globalIsValidbefore/afterforeachcurrententity. Wrapperreturnsnativechecker(...)directly, preservingvarargs/returns; nativeerrorwording/callstackcannameforwardinglocal. No actors/validity/profile/life statecached acrosscalls. No CPUobserver/JIT/GC/settingschange. PrototypeFPS notsource acceptance.",
+        "wrapper": true,
+        "passed": true,
+        "originalC": true
+      },
+      "bench_validity_shim_state": {
+        "variant": "candidate",
+        "profiler_absent": true,
+        "passed": true,
+        "wrapper_current": true
+      },
+      "bench_validity_shim_stop": {
+        "variant": "candidate",
+        "reason": "explicit",
+        "scope": "No validity result cache. One-line nativeCcallee forwarding only; allqueries fresh. Currentowner restored; queuedforwarder references require ownedprocessStop.",
+        "passed": true,
+        "restored": true
+      },
+      "bench_validity_shim_retirement": {
+        "originals_cleared": true,
+        "passed": true,
+        "lease_absent": true
+      },
+      "display_watch_bad_transitions": 0
+    },
+    {
+      "variant": "control",
+      "metrics": {
+        "frames": 1333,
+        "seconds": 59.987341,
+        "fps": 22.221355002216217,
+        "median_ms": 36.433,
+        "p95_ms": 81.393,
+        "p99_ms": 107.708,
+        "max_ms": 444.331,
+        "one_percent_low_fps": 6.358676595891568,
+        "below_budget_seconds": 58.902138999999984,
+        "longest_below_budget_seconds": 14.783518999999998,
+        "below_budget_runs_ge2s": 6
+      },
+      "directory": "/home/deck/deborah-benchmarks/validity-shim/922904d0/prototype-series-v2/arm04-control",
+      "bench_validity_shim_started": {
+        "variant": "control",
+        "parity_cases": 1469,
+        "scope": "Native direct checker result/error-status cases plus globalIsValidbefore/afterforeachcurrententity. Wrapperreturnsnativechecker(...)directly, preservingvarargs/returns; nativeerrorwording/callstackcannameforwardinglocal. No actors/validity/profile/life statecached acrosscalls. No CPUobserver/JIT/GC/settingschange. PrototypeFPS notsource acceptance.",
+        "wrapper": false,
+        "passed": true,
+        "originalC": true
+      },
+      "bench_validity_shim_state": {
+        "variant": "control",
+        "profiler_absent": true,
+        "passed": true,
+        "wrapper_current": false
+      },
+      "bench_validity_shim_stop": {
+        "variant": "control",
+        "reason": "explicit",
+        "scope": "No validity result cache. One-line nativeCcallee forwarding only; allqueries fresh. Currentowner restored; queuedforwarder references require ownedprocessStop.",
+        "passed": true,
+        "restored": true
+      },
+      "bench_validity_shim_retirement": {
+        "originals_cleared": true,
+        "passed": true,
+        "lease_absent": true
+      },
+      "display_watch_bad_transitions": 0
+    }
+  ],
+  "means": {
+    "control": {
+      "fps": 21.904491298453777,
+      "median_ms": 37.018,
+      "p95_ms": 83.547,
+      "p99_ms": 109.9435,
+      "longest_below_budget_seconds": 13.463021499999996
+    },
+    "candidate": {
+      "fps": 23.720091371515743,
+      "median_ms": 35.6325,
+      "p95_ms": 75.436,
+      "p99_ms": 105.94149999999999,
+      "longest_below_budget_seconds": 9.853212
+    }
+  },
+  "fps_change_percent": 8.288711425999317,
+  "interpretation": "BothcandidatesFPSabovebothcontrols andp95/p99/longestdropbelowbothcontrols. Freshnativecheckerforwarding result/owner/retirement checks pass; no result/frame cache. Fourshortstressruns/noformalstatisticalclaim; all4FAIL40. Needcanonicalsource/newmatchedcomparison/confirmation before retention.",
+  "earlier_invalid_sequence": {
+    "raw": "/home/deck/deborah-benchmarks/validity-shim/922904d0/prototype-series-v1",
+    "control_fps": 22.597548321104725,
+    "candidate_fps": 23.23538470532887,
+    "status": "Incomplete/excluded; thirdcapturefailedendDPMScompletenessguard, fourthnotrun. EndtextonlyinternalONline(notexplicitOFF); bothoutputsONafterownedStop andindependentDRM/3desktopqueries. ActualOFFnotproven, oldcapturestillinvalid/notrescued."
+  },
+  "display_condition_repair": "Originalidle inhibition remainsactive; newprivate1HzDRMtransitionwatch+completepre/postdesktop/DRMsamples. RetryONLYincompletetextwhileDRMbothconnected/enabled/ON; anyexplicitOFF/disconnection/badwatchtransitionfails. PrivateASTtestsPASSwithoutchangingdisplays. Entire4freshrestartedwithsamewatchconditions; no workload/FPScriteriarelaxed.",
+  "source_implementation": "Native validity method forwardsallarguments/returnstooriginalCcalleeoneveryquery. Ownedreloadrestores/reinstallswithoutstacking; foreignproviderpreserved. Winx64GMod2026.09.17gateandplainmetatable/nativeprovider guard; unsupported/customprovidersstayunchanged. No actor/table/profile/resultcache or gameplay/cadence/content/settingschange.",
+  "static": "Productioninstaller unitLua5.4/LuaJITfresh true/false/nil,varargs/trailingnils/errors, reload/oldforwarderrefs/weakentitylifetime/foreignowner/unsupportedABI/custommeta pass. B29dispatchandentrylifecontext21cases71assertionsbothLua5.4/LuaJIT pass. Exact120manifest/repeatinstaller/syntax/diffpass. Cmetadata mocked inunit; nativeprototypeparityseparate. Newmatrix336notfullgreenclaim.",
+  "next": "6freshoriginalsourceP,C,C,P,P,C60s sameD20lowercourt against92290. Nativebefore/afteractualhash/loadedforwarderline/Ccalleeupvalue/allentitydirectcheckerresults+invalidtypes/errorstatus; beforeownedreload/foreignownerpreservation; retainedHUD/renderer/source/resources/input/bothON+watch. No profiler/counter/JIT/GC/affinity/settingschanges. Rejectnoise/regression; confirmunchangedifpromising.",
+  "acceptance": "SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED, multiplayerdeferred/mainunchanged."
+}

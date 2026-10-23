@@ -1,3 +1,9 @@
+# Current checkpoint — native validity forwarding source ready for FPS
+
+Freshprivate4C21.588/P23.729/P23.711/C22.221FPS; meansC21.904/P23.720(+8.289%),p9583.547/75.436ms,p99109.944/105.9415ms,longest13.463/9.853s. Bothcandidatesbeatbothcontrols/allmeanpacingbetter; promisingONLY/all4FAIL40/noformalclaim. Freshnativeparity/owner/retirement/watchchecks pass/allownedStop. EarlierincompletesequenceexcludedaftermissingDPMSline; noactualOFFproven/nooldcapturesalvaged. Newstrictcompleteness+DRMwatchconditionsidenticalallfour; originalinhibitoractive/bothON. [Allrows/raw/limits](validation/STEAM_DECK_NATIVE_VALIDITY_20261023.json).
+
+CanonicalsourceforwardsallvalidityqueriesfreshviaCcallee; noresultcache. Ownedreload/foreignowner/custommetatable/unsupportedruntime guards, no behavior/timing/content/settings changes. Productionunit/B29dispatch/entrylifecontext bothLua54/LJ/manifest/repeatinstaller/syntaxpass. NewCI336notfullgreenclaim. Next6freshactualsourceP,C,C,P,P,C60s against92290, nativehash/function/Cupvalue/owner/allentityparityatboundaries plusHUD/renderer/resources/input/bothON/watch. No observers/JIT/GC/settings changes. Rejectnoise/regression; confirmationifpromising. SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — native C call attribution complete
 
 FourcorrectedC/P/P/C21.772/22.013/22.614/21.738FPS; 17nativeCproviders/one-in128, allrestored/independentinspection/ownedprocessStop. BothprofilesrepeatNextBotvalidity~7.7million/~70sandposition~2.1millioncalls; movementsetters~117-120k/smalltimedrows. ExistingLuaLocalPos/LocalAngleslatchwrappersskipped/preserved; failedv1preFPSgateisqualifiedseparately. Inclusivecostsoverlap/clockhelperoverheadandaliaseslimitcoverage; profiledFPSnotacceptance/nocausalspeedupclaim. [Rows/raw/limits](validation/STEAM_DECK_NATIVE_CALLS_20261023.json).
