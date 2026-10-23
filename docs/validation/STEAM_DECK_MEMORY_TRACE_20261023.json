@@ -1,0 +1,5 @@
+{
+  "utc": "2026-10-23T03:57:00.898466+00:00",
+  "operation": "One60s normal frozen listen-host D20 with bounded read-only heapcount/interval trace; no GC setting changed. Clientgrowth64.6->92.9MB in latest separate dedicated hints allocations but does not proveGC stalls.",
+  "gates": "Existingnormalresources/source/focus/input/bothON; bothsamplersretire; measuredselfcost/count/heapdropcorrelation; noFPSacceptance or causalGCinference. Final allscenario requirements unchanged."
+}
