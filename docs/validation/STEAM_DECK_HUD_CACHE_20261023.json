@@ -1,0 +1,74 @@
+{
+  "status": "Fresh native visual gate PASSES predefined8maxchannel/20pixelsOver5/background/fade bounds; FPSgain UNVERIFIED, target singleplayer40UNMET.",
+  "tested_source": "fb291ab05b83b6e02307af680d2e7b72369f3d26",
+  "visual_raw": "/home/deck/deborah-benchmarks/native-perf-d20/fb291ab0/visual-gate-v1",
+  "visual_results": {
+    "dark": {
+      "max_channel_error": 6,
+      "changed_pixels": 43,
+      "pixels_over5": 1,
+      "bbox": [
+        53,
+        23,
+        239,
+        59
+      ],
+      "background_unchanged": true,
+      "passed": true
+    },
+    "bright": {
+      "max_channel_error": 5,
+      "changed_pixels": 1202,
+      "pixels_over5": 0,
+      "bbox": [
+        20,
+        23,
+        292,
+        61
+      ],
+      "background_unchanged": true,
+      "passed": true
+    },
+    "black": {
+      "max_channel_error": 0,
+      "changed_pixels": 0,
+      "pixels_over5": 0,
+      "bbox": null,
+      "background_unchanged": true,
+      "passed": true
+    },
+    "fade": {
+      "max_channel_error": 0,
+      "changed_pixels": 0,
+      "pixels_over5": 0,
+      "bbox": null,
+      "background_unchanged": true,
+      "passed": true
+    }
+  },
+  "visual_restore": {
+    "reason": "external visual end",
+    "hits": 148,
+    "seconds": 1.9909095764160156,
+    "fallbacks": 1,
+    "builds": 5,
+    "restored": true
+  },
+  "observer": "Existing private six1024x256RGBA8 slot prototype caches only opaque HUD lines. Original DrawLines used for fade/nonHUD/unsupported counts; no audio/gameplay/provider/AI/state changes. SixMiB nominalpixelpayload, not totalGPUallocation. Actual texture resources retire by owned processStop.",
+  "experiment": {
+    "sequence": [
+      "control",
+      "candidate",
+      "candidate",
+      "control"
+    ],
+    "seconds": 60,
+    "scenario": "Exact existing developer-density D20lowercourt-v1. ActualDeckLCD1280x800@60/external1920x1080@75, bothalwaysON; samegraphics/nativecargo/resources57roamers+boss/AI/cadence/input/hosting. No CPUprofiler/sampler/GC/JIT/affinity change.",
+    "gate": "Exact current DrawLines/source hash beforeinstallation; candidate bodyhash/6slots/nativeextent; controlidentityunchanged. Aftercapture independentlyrestore originalfunction,clearowner/proof/lease; allprocessesStop. Same renderer/native-source/input/cadence checks. Record hits/builds/fallbacks and misses; no gain from counters alone.",
+    "decision": "Retain no source change from prototype alone. Clear current matchedgain requires production bounds/fontreload/render-state/lifecycle regressions, canonical implementation and new source comparison. Reject noise or tails/correctnessregression. FullfiveSPgates,warmth,3x180s,ordinaryreleasecorroboration,40cap stillunverified."
+  },
+  "remaining_prototype_limits": [
+    "No production source edit retained. Oversized rows/linebounds/fontreload/generalizedsurface/alpha/scissor-state restoration need canonical review ifscreenbenefits.",
+    "Native text costs are measured, earlier D10single38.513FPSrun cannot provegain. FreshvisualpixelboundsallowtinyRGBA8rounding, not exactopaquecompositing."
+  ]
+}

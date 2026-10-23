@@ -1,3 +1,9 @@
+# Current checkpoint — opaque HUD prototype fresh visual pass; matched FPS next
+
+Fresh actual-native original/cached four-background comparisons pass predeclared maxchannel8/pixelsOver5<=20: darkmax6/onepixelOver5,brightmax5/noneOver5,black/fadeexact. Backgrounds unchanged. PublicDrawLinesrestored/leasecleared; ownedprocessstopped. No FPScapture/gain fromvisualtest. [Rawimages/metrics/bounds/frozen4armplan](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next fixedfreshcontrol/candidate/candidate/control60s unchangeddeveloper-densityD20 with existing6slotopaque-onlyprototype, fadeoriginalpath. Verify actualsource/helperhash/native1024x256slots and exact DrawLines/owner/lease restoration; record hits/builds/fallbacks. NoactiveCPUprofiler/sampler/JIT/GC/AI/graphics/countchanges. A measuredbenefitneedsproperproductionbounds/fontreload/state/lifecycleimplementation and newsourcecomparison before retention. BothmonitorsON; singleplayer40UNMET/fivefullSPgatesUNVERIFIED/ordinaryreleasecorroborationUNVERIFIED; multiplayerdeferred; mainunchanged.
+
 # Current checkpoint — namespace binding rejected after six Deck captures
 
 P,C,C,P,P,C60s captures21.604/22.718/20.814/21.489/21.800/22.127FPS. Parentmean21.631/candidatemean21.886(+1.179% arithmetic), overlapping ranges and inconsistent paired effects. Meanp9582.622/82.380ms,p99118.298/112.571ms; longestdrop18.123/19.816s. Reject; restore all four modules byte-exact2ea66fbf. Keep childRunManager regression. Native4function/source/line/upvalue checks pass eachrun; all owned games stopped. [All six results and limits](validation/STEAM_DECK_NAMESPACE_BINDING_20261023.json).
