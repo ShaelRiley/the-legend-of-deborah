@@ -1,3 +1,9 @@
+# Current checkpoint — remaining CPU is server/NextBot Lua
+
+Fresh retainedHUD nativeprofile completes903hierarchyrows/1688engineframes/twoENDmarkers. Serverinclusive24.468ms/engineframe, largestNextBotprotectedLua self10.948ms, servergamemodeLua3.047ms, opaqueLua2.814ms, leafclassification1.108ms. HUDtextself0.624ms versus earlier1.24crosscapture (notadditivegain/isolatedcomparison). Instrumented20.937FPS/allFAIL isdiagnosticonly. AllownedgamesStop; currentHUDsourceproofpasses. [Raw/scopes/limits](validation/STEAM_DECK_RETAINED_HUD_CPU_20261023.json).
+
+Next finite read-only nativeStateFor classification mechanism/cost probe, motivated by measured querycosts and actualinstalledtype wrapper. Compareoriginal against existingHostileRegistry membership plus liveNextBotmetatable/MetaName and unchangedpublictypeprovider, without cachingactor/profile/result or overridingmethods. Validateactualbots/player/world/NULL/plainprofiles and directmicrotimings before decidinga sourcecandidate. Microtime cannot proveDeckFPS. BothmonitorsON, SP40UNMET/fivefullSPgates/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — retain measured HUD reuse; remaining CPU attribution next
 
 Unchanged6confirmationP,C,C,P,P,C21.465/24.986/23.358/21.833/22.456/23.585FPS. Means21.918/23.976(+9.391% arithmetic),p9585.153/74.928ms,p99112.514/100.731ms,longest20.654/16.082s. First6means22.263/23.165(+4.052%). All6pairedFPS/p95directionsfavorcandidate; bothseriesp99/dropmeansimprove, individualtailsmixed. Retain canonicalHUDreuse with limitedD20validation, not universal/noise-free/final40claim. All12FAIL40. Nativevisual/state/lifecycle/provider/source/pool/usage/input/endhealth checks pass, allgamesStop/rootinstallrestored. [All12/raw/CI/limits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
