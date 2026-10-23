@@ -1,3 +1,9 @@
+# Current checkpoint — public host-thread mode unavailable
+
+Actual Windows64/P10 native read-only probes find neither host_thread_mode nor host_threaded_sound through GetConVar in either realm. mcore1, queue2 and threaded bones1 are already active. No setting, flag, API or game state was changed; no FPS is measured by this capability check. Both monitors remain ON. [Exact public capability receipts](validation/STEAM_DECK_HOST_THREADS_20261023.json).
+
+Next: client/render cost investigation with normal native walls and presentation intact; check actual diagnostic overlays before measuring their overhead. Existing wall hiding/batch visual-loss experiments remain ineligible. Entry reuse remains reverted. Target UNMET; all six full scenarios UNVERIFIED; PR7draft/maincec10 unchanged.
+
 # Current checkpoint — entry-context reuse rejected after pacing review
 
 Twelve timed Deck captures complete. Candidate average21.970FPS versus21.043control (+4.402% arithmetic) repeats a positive average direction. Pacing remains unsuitable: combined longest below40 episode averages31.952s versus23.181s; confirmation p99 averages120.270ms versus113.456ms. All12fail. Reject the change for this pacing task and restore EntrySafety byte-exactly to f6772638. This is not a causal regression or statistical-significance claim. Keep21behavior/lifecycle cases/71assertions. [Complete evidence/limitations](validation/STEAM_DECK_ENTRY_CONTEXT_20261023.json).

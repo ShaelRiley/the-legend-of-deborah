@@ -1326,3 +1326,9 @@ The confirmation helper accidentally renamed its opt-in environment flag, so its
 Next: read actual public host-threading ConVars/defaults/flags without changing settings. Native evidence places substantial server and render work on the main thread; current benchmark enables mcore1/queue2/bone1 but has not recorded host_thread_mode. Availability, effect and correctness are unverified. No threading setting is applied yet.
 
 Both monitors remain ON1280×800@60/external1920×1080@75. Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; main stayscec10dc54. No entry reuse, JIT, affinity, key, query or animation candidate remains.
+
+## 2026-10-23: public host-thread capability unavailable
+
+Actual Windows64/P10 native read-only probes find neither host_thread_mode nor host_threaded_sound through GetConVar in either realm. mcore1, queue2 and threaded bones1 are already active. No setting, flag, API or game state was changed; no FPS is measured by this capability check. Both monitors remain ON. [Exact public capability receipts](STEAM_DECK_HOST_THREADS_20261023.json).
+
+Next: client/render cost investigation with normal native walls and presentation intact; check actual diagnostic overlays before measuring their overhead. Existing wall hiding/batch visual-loss experiments remain ineligible. Entry reuse remains reverted. Target UNMET; all six full scenarios UNVERIFIED; PR7draft/maincec10 unchanged.
