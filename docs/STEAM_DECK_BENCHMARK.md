@@ -45,6 +45,12 @@ scenarios, thresholds, counts, graphics or resolution in response to poor result
   nb_stop and ai_disabled, and corroborate cadence with actual movement/behavior.
   A client-local cvar is not proof of a nonreplicated server value. Missing
   metadata or unexplained cadence differences leave acceptance unverified.
+  In the2026.09.17 listen-host runtime, the exposed frequency reads`.1` while
+  the native engine reports one-tick scheduling. Do not infer effective cadence
+  from that convar alone or equate the simulation tick rate with observed AI
+  callback rate. Preserve the fresh startup scheduling report and corroborate
+  actual callbacks/movement; the bounded three-actor observation and its limits
+  are recorded in `validation/STEAM_DECK_AI_CADENCE_20261023.json`.
   The one-tick sv_cheats1 mechanism diagnostic does not establish a normal
   production configuration or waive any frozen hosting/gameplay criterion.
 

@@ -1,3 +1,11 @@
+# Current checkpoint — unchanged confirmation resumes after reboot warm-up
+
+Firstsixnative-selectionrunscomplete: parentmean19.586FPS/candidatemean20.279(+3.540% arithmetic), overlappingranges. Meanp9592.286/91.554ms,p99138.672/136.701ms; longestbelow40episode35.850/42.391s. AllsixFAIL. No validatedgainretained. Exactnativefile/functions/source/resources/input/focus/bothONpass. RepeatunchangedP,C,C,P,P,Cusingpinnedsourcee07177e2/e3271bb8. Userpause/rebootinterruptedconfirmationbeforeFPS; rawstartupretained. Ten-minuteordinaryD20devicewarm-upthenfreshprocesses; no content/AI/graphics/hostingchanges.
+
+Cadenceclarification: exposedlisten-hostfrequencyis`.1`,whilefreshnativeengine reportsone-tickscheduling. ThreeordinaryD20BehaveUpdatecallbackseach447times/10.0068s,mostly1/2simulationticksapart. Theinitialliteral`.015`warm-upassertionwaswrongandstoppedbeforeFPS; noCVarwaschanged. Distinguish66Hzsimulation/requestedschedule/observedcallbackrate. Historicalpaireddataremainatmatchedsettings; donotfabricatehistoricalper-actorcadence. [Actualprobe,correctionandlimits](validation/STEAM_DECK_AI_CADENCE_20261023.json). Temporarybindingsrestore; allprofilingmustretirebeforeFPS. Bothdisplayinhibitionnowrestoredasagraphical-sessionuserunit.
+
+TargetUNMET; allsixfullacceptancegatesUNVERIFIED; PR7draft/maincec10unchanged. Next: finishwarm-upandunchangedconfirmation,comparecombinedevidence,thenretainorrevertthecandidateandcontinueoptimization.
+
 # Current checkpoint — native visibility selection bookkeeping candidate
 
 The sampled allocation profile completes inbothrealms; currentmethodinspections1511server/4137clientfindnoprofilingwrappersandoptionalheapsamplingiscleared. Instrumented17.241FPSisnotnormalperformance. Every64samplescanaliasrenderpasses; do notextrapolateallocationtotals. Geometrydrawhaslargesampledheapgrowth. [Nativeattributionandlimits](validation/STEAM_DECK_ALLOCATION_PROFILE_20261023.json).
