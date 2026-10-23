@@ -1,3 +1,9 @@
+# Current checkpoint — native C call attribution complete
+
+FourcorrectedC/P/P/C21.772/22.013/22.614/21.738FPS; 17nativeCproviders/one-in128, allrestored/independentinspection/ownedprocessStop. BothprofilesrepeatNextBotvalidity~7.7million/~70sandposition~2.1millioncalls; movementsetters~117-120k/smalltimedrows. ExistingLuaLocalPos/LocalAngleslatchwrappersskipped/preserved; failedv1preFPSgateisqualifiedseparately. Inclusivecostsoverlap/clockhelperoverheadandaliaseslimitcoverage; profiledFPSnotacceptance/nocausalspeedupclaim. [Rows/raw/limits](validation/STEAM_DECK_NATIVE_CALLS_20261023.json).
+
+Next isolateconstantnativeEntity.IsValidcallee forwarding inprivatefourfreshcontrol/candidate/candidate/control60s feasibility. ObserverFPSabovecontrolsdoesnotprovecauseorbenefit; everyquerymuststillcallnativecheckerfresh andpreserveproviders/arguments/results/errors. No frame-validitycache. Retainonlyactualrepeatablegainwithnativeparity/newsourceverification. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — native method fast path rejected after six source captures
 
 P,C,C,P,P,C23.196/22.043/22.839/22.266/22.276/21.153FPS; candidate meansFPSandpacingworse/inconsistentpairs/overlappingranges. Reject andrestore MotionV2 byte-exactb05b; removeunusedimplementation-specificunit/matrixrow. Native519key/currentmethod+field/reload/foreignowner/API fallbackandrestoration atbothboundaries pass. Micro~2x doesnotpredictgameplaygain; all6FAIL40. AllownedgamesStopped/rootinstallrestore. [Allsix/raw/limits](validation/STEAM_DECK_NATIVE_METHOD_SOURCE_20261023.json).
