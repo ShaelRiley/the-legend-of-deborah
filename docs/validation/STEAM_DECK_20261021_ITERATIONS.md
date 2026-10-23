@@ -1280,3 +1280,11 @@ All source/function, normal resources/seeds/population, physical input, focus an
 Next: compare stock thread placement with mainCPU2/workers0,1,4,5,6,7, using actual2–3 SMT siblings and boundary-only counters. Earlier D1 all-threads-four-core masking had no benefit; this distinct experiment tests separating the main thread from its own workers, not a measured SMT cause. Preserve normal gameplay, graphics, power and both monitors.
 
 Target UNMET; all six full acceptance scenarios UNVERIFIED. PR7 stays draft; canonical main remainscec10dc54. No key-cache, callback-coalescing, animation, player-query or JIT-setting candidate remains.
+
+## 2026-10-23: reject main/worker thread placement
+
+Both monitors stay ON at internal1280×800@60/external1920×1080@75. Four fresh D20 arms complete: stock21.344, separated22.525, separated20.065, stock21.398FPS. Stock mean21.371 versus candidate21.295 (−0.355% arithmetic) supplies no supported gain; reject the masks. Main CPU2 and worker0,1,4,5,6,7 masks remain exact over both candidate captures; actual siblings2–3 are verified. All owned games stop, clearing masks. Source/function, normal seeds/resources/population, physical input, focus and display gates pass. All four captures fail; end health153/211/154/163 varies without a demonstrated cause. [Full measurements](STEAM_DECK_THREAD_PLACEMENT_20261023.json).
+
+Next: public jit.opt.start maxrecord16000 versus untouched stock, four fresh stock/candidate/candidate/stock60s arms. Native Lua module CPU/table-lookup evidence motivates a trace-length hypothesis; trace aborts and native default numeric limits are not observed. The prior maxtrace cache-count change had no benefit and stays rejected. Require both-realm API/unchanged-flag receipts, source proof and ordinary workload; no disabled API, JIT on/off/flush, profiling wrapper, affinity or active sampler. Boundary counters are uniform. No JIT setting is retained without measured benefit and regressions.
+
+Cell-key runtime remains restored exactly to1ce30e75, with useful28062case tests and120/116/52sourcewatch coverage retained. Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; canonical main stayscec10dc54.

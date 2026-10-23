@@ -1,3 +1,11 @@
+# Current checkpoint — thread placement rejected; trace-length comparison next
+
+Both monitors stay ON at internal1280×800@60/external1920×1080@75. Four fresh D20 arms complete: stock21.344, separated22.525, separated20.065, stock21.398FPS. Stock mean21.371 versus candidate21.295 (−0.355% arithmetic) supplies no supported gain; reject the masks. Main CPU2 and worker0,1,4,5,6,7 masks remain exact over both candidate captures; actual siblings2–3 are verified. All owned games stop, clearing masks. Source/function, normal seeds/resources/population, physical input, focus and display gates pass. All four captures fail; end health153/211/154/163 varies without a demonstrated cause. [Full measurements](validation/STEAM_DECK_THREAD_PLACEMENT_20261023.json).
+
+Next: public jit.opt.start maxrecord16000 versus untouched stock, four fresh stock/candidate/candidate/stock60s arms. Native Lua module CPU/table-lookup evidence motivates a trace-length hypothesis; trace aborts and native default numeric limits are not observed. The prior maxtrace cache-count change had no benefit and stays rejected. Require both-realm API/unchanged-flag receipts, source proof and ordinary workload; no disabled API, JIT on/off/flush, profiling wrapper, affinity or active sampler. Boundary counters are uniform. No JIT setting is retained without measured benefit and regressions.
+
+Cell-key runtime remains restored exactly to1ce30e75, with useful28062case tests and120/116/52sourcewatch coverage retained. Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; canonical main stayscec10dc54.
+
 # Current checkpoint — cell-key cache rejected after six original-source Deck runs
 
 Both monitors remain ON at internal 1280×800@60 and external 1920×1080@75. Controls21.539/21.033/22.529FPS average21.700; candidates21.446/20.664/19.703 average20.604 (arithmetic−5.05%). All six60s captures complete and fail. Ranges overlap; no general slowdown cause or statistical significance is claimed. The installed key function passes12,864 native comparisons and halves100k-call microcost, but that does not supply a gameplay gain. Reject the cache and restore the generator byte-exactly to1ce30e75. Keep28,062 behavior cases and source coverage120total/116server/52client. [Measurements and decision](validation/STEAM_DECK_CELL_KEYS_20261023.json).
