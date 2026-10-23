@@ -293,6 +293,172 @@
       "https://wiki.facepunch.com/gmod/surface",
       "https://wiki.facepunch.com/gmod/render.GetRenderTarget",
       "https://wiki.facepunch.com/gmod/Global.DisableClipping"
-    ]
+    ],
+    "native_visual": {
+      "tested_sha": "cd37397f4890d9463c2aad7f5df14e09d950221d",
+      "raw": "/home/deck/deborah-benchmarks/hud-raster-source/cd37397f/visual-gate-v1",
+      "images": {
+        "dark": {
+          "max_channel_error": 6,
+          "changed_pixels": 43,
+          "pixels_over5": 1,
+          "background_unchanged": true,
+          "bbox": [
+            53,
+            23,
+            239,
+            59
+          ],
+          "passed": true
+        },
+        "bright": {
+          "max_channel_error": 5,
+          "changed_pixels": 1202,
+          "pixels_over5": 0,
+          "background_unchanged": true,
+          "bbox": [
+            20,
+            23,
+            292,
+            61
+          ],
+          "passed": true
+        },
+        "black": {
+          "max_channel_error": 0,
+          "changed_pixels": 0,
+          "pixels_over5": 0,
+          "background_unchanged": true,
+          "bbox": null,
+          "passed": true
+        },
+        "fade": {
+          "max_channel_error": 0,
+          "changed_pixels": 0,
+          "pixels_over5": 0,
+          "background_unchanged": true,
+          "bbox": null,
+          "passed": true
+        }
+      },
+      "state_path_proof": {
+        "scope": "Four separate actualPostRender frames; opaque must hit/build cache, fade must use native fallback. Cursor/RGBA equality checked percase. PNGcomparison still required; no FPS acceptance.",
+        "rows": [
+          {
+            "builds": 1,
+            "states": {
+              "original": [
+                286,
+                44,
+                165,
+                235,
+                165,
+                255
+              ],
+              "cached": [
+                286,
+                44,
+                165,
+                235,
+                165,
+                255
+              ]
+            },
+            "hits": 0,
+            "frame": 1829,
+            "state_equal": true,
+            "fallbacks": 0,
+            "name": "dark",
+            "actual_path_passed": true
+          },
+          {
+            "builds": 0,
+            "states": {
+              "original": [
+                286,
+                44,
+                165,
+                235,
+                165,
+                255
+              ],
+              "cached": [
+                286,
+                44,
+                165,
+                235,
+                165,
+                255
+              ]
+            },
+            "hits": 1,
+            "frame": 1830,
+            "state_equal": true,
+            "fallbacks": 0,
+            "name": "bright",
+            "actual_path_passed": true
+          },
+          {
+            "builds": 1,
+            "states": {
+              "original": [
+                286,
+                44,
+                165,
+                235,
+                165,
+                255
+              ],
+              "cached": [
+                286,
+                44,
+                165,
+                235,
+                165,
+                255
+              ]
+            },
+            "hits": 0,
+            "frame": 1831,
+            "state_equal": true,
+            "fallbacks": 0,
+            "name": "black",
+            "actual_path_passed": true
+          },
+          {
+            "builds": 0,
+            "states": {
+              "original": [
+                286,
+                44,
+                165,
+                235,
+                165,
+                127
+              ],
+              "cached": [
+                286,
+                44,
+                165,
+                235,
+                165,
+                127
+              ]
+            },
+            "hits": 0,
+            "frame": 1832,
+            "state_equal": true,
+            "fallbacks": 1,
+            "name": "fade",
+            "actual_path_passed": true
+          }
+        ],
+        "public_provider_unchanged": true,
+        "passed": true,
+        "probe_hook_removed": true
+      },
+      "owned_game_stopped": true,
+      "decision": "Same fixed8/20pixelbounds pass; twoactualbuilds/onehit and onefadefallback, cursorRGBAequalallfour, probehookremoved. Codeunchanged by following documentation commit. Source sixFPS comparison remainsunverified."
+    }
   }
 }

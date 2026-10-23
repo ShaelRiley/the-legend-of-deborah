@@ -1,3 +1,9 @@
+# Current checkpoint — canonical HUD native visual/state pass; source FPS next
+
+Freshcd37397f sourcevisual pass: opaque2builds/1hit,fade1nativefallback; exactnativecursor/RGBAallfourframes, hookremoved. Fixedpixelbounds pass: darkmax6/oneOver5,brightmax5/noneOver5,black/fadeexact,backgroundsunchanged. OwnedgameStopped. [RawPNG/state/path proof](validation/STEAM_DECK_HUD_CACHE_20261023.json). No sourceFPSgain claimed. This documentation checkpoint changes no testedgamecode.
+
+Next fixedfresh original-sourceP,C,C,P,P,C60s sameD20stress againsta135fef3. Actualsource/function/line/lexicalcache/6pool/counters checks atbothboundaries; publicDrawLinesunchanged/no privateprototype; normalrenderer/resources/AI/input/cadence/graphics/bothON. Reject noise/pacing/correctnessregression; allfivefullSPacceptance,releaseordinarycorroboration,warmth3x180s/40cap remainunverified. Multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — canonical HUD raster reuse statically validated
 
 Implement onlyownHUDHook rasterreuse; publicDrawLines remainsnativeauthority. SixfixedRTnames, text/font/layout/palette/cleanup invalidation, width/height bounds, fades/nonHUD/foreignprovider fallback, sameframe/reentrantpool safeguards, protectednative-error cleanup and exacttextendstate. No per-callclosureallocation. Lua5.4/LuaJIT cache24command/state comparisons plus saturation/secondview/weakcleanup/provider/reload tests pass; old750text/1200aligned tests,120manifest/installer/syntax/diff pass. NewCItest makes335matrix entries, not a fullgreenclaim. [Sourceplan/contracts/staticlimits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
