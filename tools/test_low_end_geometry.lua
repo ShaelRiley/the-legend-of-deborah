@@ -209,7 +209,14 @@ native:Think();assert(nativeFrame(true)==1 and nativeFrame(false)==0)
 native.nw.LOD_GeometryHidden=true;assert(nativeFrame(true)==0,'native handoff exposed hidden false floor')
 native.nw.LOD_GeometryHidden=false;assert(nativeFrame(true)==1)
 native:OnRemove(false);assert(nativeFrame(true)==0,'removed entity was resurrected by native Draw')
-native:Initialize();native:OnRemove(true)
+native:Initialize()
+-- An unknown view field may itself reference an entity. A completed pass must
+-- not retain that entity through a weak-key cache's strong value.
+local far=view.zfar;view.zfar=native
+assert(nativeFrame(true,function() collectgarbage('collect') end)==1,
+ 'collection lost selection while the active view still owns its pass')
+view.zfar=far
+native:OnRemove(true)
 local retained=native._LODVisualKindRecord
 local weak=setmetatable({native},{__mode='v'})
 native=nil;getter=nil;kindGetter=nil;entities={};collectgarbage('collect');collectgarbage('collect')

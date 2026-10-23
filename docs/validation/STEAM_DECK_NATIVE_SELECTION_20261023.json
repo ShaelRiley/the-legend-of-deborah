@@ -1,6 +1,6 @@
 {
   "state": "candidate implemented/staticvalidated; nativegainUNVERIFIED",
-  "hypothesis": "Geometryscope sampledheapgrowth motivates removing perviewnativeentityselectiontable growth. Weakentity->uniqueviewpass token stores exactmembership; passvaluescontainviewscalarsonly,notentitykeys. No acrosspassvisibility/pose/resultreuse. One retainedpasstokenperliveentity boundsretention; weakkeysreleaseentities.",
+  "hypothesis": "Weakentity/weakvalue map stores exact current native selection. Active render owns the pass token; map retains neither entity nor completed view, even if unknownviewfieldsreferenceentity. No acrosspassvisibility/pose reuse.",
   "parent": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
   "sequence": [
     "parent",
@@ -12,5 +12,11 @@
   ],
   "seconds_each": 60,
   "conditions": "FrozenD20lowercourt-v1 normalresources,seeds,AI,count,physicalactions,graphics/power unchanged; bothmonitorsON1280x800@60/external1920x1080@75. Noactiveprofiler/memorytrace/sampler/GC/JIT/affinitychange. GC200/200.",
-  "gates": "ActualclientfileSHA256/Draw+Pre/Postfunctionlines,120manifest116server52client,normalresources/geometry/input/focus/bothON. Existingnativevisibility/300drawparity/weakcleanup+samepassrecordreplacement/manifest/syntax/diffPASS. Retainonlysupportedgain/pacing; do notreplacefailedarms."
+  "gates": "ActualclientfileSHA256/Draw+Pre/Postfunctionlines,120manifest116server52client,normalresources/geometry/input/focus/bothON. Existingnativevisibility/300drawparity/weakcleanup+samepassrecordreplacement/manifest/syntax/diffPASS. Retainonlysupportedgain/pacing; do notreplacefailedarms.",
+  "ownership_regression": "Lua5.4 and LuaJITCLI correctedcasePASS; exact7132085d strongvaluecandidate fails removedentityownership underLuaJITCLI. Lua5.4ephemeronbehavior didnotexposeit. CLIgcfixturesnotactualGMod/FPSproof.",
+  "interrupted_startup": {
+    "raw": "/home/deck/deborah-benchmarks/native-selection/7132085d/original-source-series",
+    "reason": "OwnershipreviewinterruptedfirstparentstartupbeforeFPS; no candidateexecuted/no performance seen. Alllogsretained/ownedunitstopped; noFPSfiles.",
+    "next": "SameP,C,C,P,P,C60sbenchmark/seeds/conditions; correctedcandidate source"
+  }
 }

@@ -28,10 +28,10 @@ local nativeDefinition = ENT
 local nativePass
 local nativeDraw
 -- One exact pass token per entity replaces a freshly grown selection table on
--- every view. Values contain only view scalars, never their weak entity keys.
+-- every view. Both sides are weak: only the active render owns the pass token.
 -- A new/nested pass still needs its own native selection; no visibility result
 -- or entity pose is borrowed across passes.
-local nativeSelections=setmetatable({}, {__mode="k"})
+local nativeSelections=setmetatable({}, {__mode="kv"})
 
 -- Source already culls these entities using their live pose and render bounds.
 -- Borrow that selection only for the exact opaque view that submitted it.
