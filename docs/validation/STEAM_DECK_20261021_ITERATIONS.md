@@ -1358,3 +1358,12 @@ The post-check flags two permanent server lifecycle callbacks as leftovers; sour
 Earlier same-Deck dedicated42.003FPS/p9543.540ms used a32-bit Linux/LuaJIT2.0.4 server. Prepare an isolated64-bit server to compare architecture with normal66HzAI/content/graphics/source. This is a separate hosting diagnostic, never a replacement for the frozen listen-host failure. The first anonymous installer reports Missing configuration; metadata refresh plus explicitLinux retry downloads the64-bit branch. No client/oldserver files are changed.
 
 Both monitors stay ON. Target UNMET; all six full scenarios UNVERIFIED. PR7draft/maincec10 unchanged.
+
+## 2026-10-23: dedicated64 runtime still fails frame pacing
+
+A separate same-Deck Linux64 dedicated Dungeon20 diagnostic averages40.407FPS, median22.196ms, p9542.534ms, p9956.218ms and max313.020ms. Time below40 is30.694s; longest drop4.339s/five episodes>=2s. FAIL. BothmonitorsstayON1280×800@60/external1920×1080@75. This changes server architecture/JIT/engine branch and privatecheatflag configuration; it does not isolate bitness or replace the frozen listen-host benchmark. Earlier Linux32dedicated42.003FPS also failed tails. [Actual captures and limits](STEAM_DECK_DEDICATED64_20261023.json).
+
+Source52client/116server, normalWizard20/seeds/resources,1820models,57roamers+9bossactors,physicalroute,node207,normalAI66Hz/.015/hosttimescale1/no god/noclip and oneactualhuman/fourslots pass. Engine2026.10.22/x86-64/LuaJIT2.1beta3 requires standardsv_cheats1 for the intendedAIcadence; no gameplay cheats used. AllfourSentryslotsadmitted; the unfiltered postcombat20pointprobe hits17floors/3livehostilebodies, so clean20/20postcombatsupport is unverified. Bothownedprocessesstop. Three setup failures have noFPS and remain preserved. Current670CI325/334/source_changed0 matches previousninefailure names; source/VR/audio pass.
+
+Boundary counters showclient141.46%/server112.19%ofonecore and DRMgraphics17.49% busy. No activeprofiler/sampler/JIT/affinity orsourcechange was used. Next: investigate CPU pacing/allocation behavior before another focused runtime/source comparison. Allsixfullscenarios/threewarmed180sruns/capped40/fullboss/fouractualhumansremainUNVERIFIED. TargetUNMET; PR7draft/maincec10unchanged.
+

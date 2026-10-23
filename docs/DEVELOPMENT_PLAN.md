@@ -1,3 +1,11 @@
+# Current checkpoint — dedicated64 runtime still fails frame pacing
+
+A separate same-Deck Linux64 dedicated Dungeon20 diagnostic averages40.407FPS, median22.196ms, p9542.534ms, p9956.218ms and max313.020ms. Time below40 is30.694s; longest drop4.339s/five episodes>=2s. FAIL. BothmonitorsstayON1280×800@60/external1920×1080@75. This changes server architecture/JIT/engine branch and privatecheatflag configuration; it does not isolate bitness or replace the frozen listen-host benchmark. Earlier Linux32dedicated42.003FPS also failed tails. [Actual captures and limits](validation/STEAM_DECK_DEDICATED64_20261023.json).
+
+Source52client/116server, normalWizard20/seeds/resources,1820models,57roamers+9bossactors,physicalroute,node207,normalAI66Hz/.015/hosttimescale1/no god/noclip and oneactualhuman/fourslots pass. Engine2026.10.22/x86-64/LuaJIT2.1beta3 requires standardsv_cheats1 for the intendedAIcadence; no gameplay cheats used. AllfourSentryslotsadmitted; the unfiltered postcombat20pointprobe hits17floors/3livehostilebodies, so clean20/20postcombatsupport is unverified. Bothownedprocessesstop. Three setup failures have noFPS and remain preserved. Current670CI325/334/source_changed0 matches previousninefailure names; source/VR/audio pass.
+
+Boundary counters showclient141.46%/server112.19%ofonecore and DRMgraphics17.49% busy. No activeprofiler/sampler/JIT/affinity orsourcechange was used. Next: investigate CPU pacing/allocation behavior before another focused runtime/source comparison. Allsixfullscenarios/threewarmed180sruns/capped40/fullboss/fouractualhumansremainUNVERIFIED. TargetUNMET; PR7draft/maincec10unchanged.
+
 # Current checkpoint — client profile captured; dedicated runtime comparison preparation
 
 Existing bounded client/server CPU profiling completes on normalD20. Instrumented18.395FPS/p9596.628ms/p99126.531ms fails and is not normal performance. Client render phase averages13.95ms/frame; generated-geometry hook2.60ms/frame, hostile Draw1.64ms/frame and combat-feedHUD1.11ms/frame are larger measured rows. Scopes overlap and exclude unwrapped engine/timer work. Server BeforeAI57.27ms/s and CloseDefense38.54ms/s remain substantial. Actual non-VR runtime reports idle with zero active hooks/timers/native resources. [Raw rows/limits](validation/STEAM_DECK_CLIENT_PROFILE_20261023.json).
