@@ -1,5 +1,5 @@
 {
-  "status": "Fresh native visual gate PASSES predefined8maxchannel/20pixelsOver5/background/fade bounds; FPSgain UNVERIFIED, target singleplayer40UNMET.",
+  "status": "Prototype screen promising; no production gain/source retained yet. AllfourFAIL40FPS; fivefullSPgatesUNVERIFIED.",
   "tested_source": "fb291ab05b83b6e02307af680d2e7b72369f3d26",
   "visual_raw": "/home/deck/deborah-benchmarks/native-perf-d20/fb291ab0/visual-gate-v1",
   "visual_results": {
@@ -70,5 +70,210 @@
   "remaining_prototype_limits": [
     "No production source edit retained. Oversized rows/linebounds/fontreload/generalizedsurface/alpha/scissor-state restoration need canonical review ifscreenbenefits.",
     "Native text costs are measured, earlier D10single38.513FPSrun cannot provegain. FreshvisualpixelboundsallowtinyRGBA8rounding, not exactopaquecompositing."
-  ]
+  ],
+  "prototype_results": {
+    "raw": "/home/deck/deborah-benchmarks/hud-cache-current/c235f21d/observer-series-v1",
+    "rows": [
+      {
+        "arm": 1,
+        "variant": "control",
+        "raw": "/home/deck/deborah-benchmarks/hud-cache-current/c235f21d/observer-series-v1/arm01-control",
+        "metrics": {
+          "frames": 1275,
+          "seconds": 59.971661999999995,
+          "fps": 21.260041117419757,
+          "median_ms": 38.933,
+          "p95_ms": 84.747,
+          "p99_ms": 127.137,
+          "max_ms": 364.712,
+          "one_percent_low_fps": 6.015449525288488,
+          "below_budget_seconds": 59.30669999999997,
+          "longest_below_budget_seconds": 16.292051000000008,
+          "below_budget_runs_ge2s": 5
+        },
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "started": {
+          "variant": "control",
+          "profiler_absent": true,
+          "slots": 0,
+          "source_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2",
+          "passed": true,
+          "scope": "Private six-slot opaque-only prototype; source unchanged. Fades/non-HUD/unsupported rows use original DrawLines. Controlled diagnostic only; font reload/oversized text/generalized state restoration remain unverified for production. Pool nominal RGBA8 pixels6MiB, not total GPU/native allocation. Whole owned process stop retires render targets."
+        },
+        "retired": {
+          "original_function_restored": true,
+          "no_lease": true,
+          "variant": "control",
+          "hits": 0,
+          "scope": "Exact function/lease/owner inspection. Render targets stay engine-owned until whole process exits; no in-process GPU resource deletion claim.",
+          "passed": true,
+          "fallbacks": 0,
+          "builds": 0,
+          "no_live_owner": true
+        }
+      },
+      {
+        "arm": 2,
+        "variant": "candidate",
+        "raw": "/home/deck/deborah-benchmarks/hud-cache-current/c235f21d/observer-series-v1/arm02-candidate",
+        "metrics": {
+          "frames": 1344,
+          "seconds": 59.959742,
+          "fps": 22.415039744500568,
+          "median_ms": 35.623,
+          "p95_ms": 86.791,
+          "p99_ms": 147.733,
+          "max_ms": 344.093,
+          "one_percent_low_fps": 5.490329568797359,
+          "below_budget_seconds": 58.06289600000006,
+          "longest_below_budget_seconds": 9.354509,
+          "below_budget_runs_ge2s": 7
+        },
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "started": {
+          "variant": "candidate",
+          "profiler_absent": true,
+          "slots": 6,
+          "prototype_sha256": "3089827bb81592be71325ff850f00fba5460ddd7f4fab7a53046baf39c3ae1b1",
+          "source_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2",
+          "passed": true,
+          "scope": "Private six-slot opaque-only prototype; source unchanged. Fades/non-HUD/unsupported rows use original DrawLines. Controlled diagnostic only; font reload/oversized text/generalized state restoration remain unverified for production. Pool nominal RGBA8 pixels6MiB, not total GPU/native allocation. Whole owned process stop retires render targets."
+        },
+        "retired": {
+          "original_function_restored": true,
+          "no_lease": true,
+          "variant": "candidate",
+          "hits": 5719,
+          "scope": "Exact function/lease/owner inspection. Render targets stay engine-owned until whole process exits; no in-process GPU resource deletion claim.",
+          "passed": true,
+          "fallbacks": 12,
+          "builds": 331,
+          "no_live_owner": true
+        }
+      },
+      {
+        "arm": 3,
+        "variant": "candidate",
+        "raw": "/home/deck/deborah-benchmarks/hud-cache-current/c235f21d/observer-series-v1/arm03-candidate",
+        "metrics": {
+          "frames": 1317,
+          "seconds": 59.922066,
+          "fps": 21.97854793591396,
+          "median_ms": 36.881,
+          "p95_ms": 79.735,
+          "p99_ms": 113.923,
+          "max_ms": 343.414,
+          "one_percent_low_fps": 5.9971299449549145,
+          "below_budget_seconds": 58.75969099999991,
+          "longest_below_budget_seconds": 13.161169,
+          "below_budget_runs_ge2s": 7
+        },
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "started": {
+          "variant": "candidate",
+          "profiler_absent": true,
+          "slots": 6,
+          "prototype_sha256": "3089827bb81592be71325ff850f00fba5460ddd7f4fab7a53046baf39c3ae1b1",
+          "source_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2",
+          "passed": true,
+          "scope": "Private six-slot opaque-only prototype; source unchanged. Fades/non-HUD/unsupported rows use original DrawLines. Controlled diagnostic only; font reload/oversized text/generalized state restoration remain unverified for production. Pool nominal RGBA8 pixels6MiB, not total GPU/native allocation. Whole owned process stop retires render targets."
+        },
+        "retired": {
+          "original_function_restored": true,
+          "no_lease": true,
+          "variant": "candidate",
+          "hits": 5660,
+          "scope": "Exact function/lease/owner inspection. Render targets stay engine-owned until whole process exits; no in-process GPU resource deletion claim.",
+          "passed": true,
+          "fallbacks": 13,
+          "builds": 313,
+          "no_live_owner": true
+        }
+      },
+      {
+        "arm": 4,
+        "variant": "control",
+        "raw": "/home/deck/deborah-benchmarks/hud-cache-current/c235f21d/observer-series-v1/arm04-control",
+        "metrics": {
+          "frames": 1252,
+          "seconds": 59.982144,
+          "fps": 20.87287843528901,
+          "median_ms": 37.141,
+          "p95_ms": 90.567,
+          "p99_ms": 135.353,
+          "max_ms": 438.277,
+          "one_percent_low_fps": 5.404070678593312,
+          "below_budget_seconds": 58.746163999999965,
+          "longest_below_budget_seconds": 11.341449999999995,
+          "below_budget_runs_ge2s": 6
+        },
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "started": {
+          "variant": "control",
+          "profiler_absent": true,
+          "slots": 0,
+          "source_sha256": "d9a729872df14d80713158fe3a905d13944a25095eb953a4d99d479f4b1456d2",
+          "passed": true,
+          "scope": "Private six-slot opaque-only prototype; source unchanged. Fades/non-HUD/unsupported rows use original DrawLines. Controlled diagnostic only; font reload/oversized text/generalized state restoration remain unverified for production. Pool nominal RGBA8 pixels6MiB, not total GPU/native allocation. Whole owned process stop retires render targets."
+        },
+        "retired": {
+          "original_function_restored": true,
+          "no_lease": true,
+          "variant": "control",
+          "hits": 0,
+          "scope": "Exact function/lease/owner inspection. Render targets stay engine-owned until whole process exits; no in-process GPU resource deletion claim.",
+          "passed": true,
+          "fallbacks": 0,
+          "builds": 0,
+          "no_live_owner": true
+        }
+      }
+    ],
+    "means": {
+      "control": {
+        "fps": 21.066459776354385,
+        "median_ms": 38.037,
+        "p95_ms": 87.657,
+        "p99_ms": 131.245,
+        "one_percent_low_fps": 5.7097601019408994,
+        "below_budget_seconds": 59.02643199999997,
+        "longest_below_budget_seconds": 13.816750500000001
+      },
+      "candidate": {
+        "fps": 22.196793840207263,
+        "median_ms": 36.251999999999995,
+        "p95_ms": 83.263,
+        "p99_ms": 130.828,
+        "one_percent_low_fps": 5.743729756876137,
+        "below_budget_seconds": 58.411293499999985,
+        "longest_below_budget_seconds": 11.257839
+      }
+    },
+    "mean_fps_percent": 5.36556249057849,
+    "decision": "Proceed to a canonical implementation and new six-source comparison. Both candidateFPSvalues exceed both controls; mean+5.365% arithmetic, p95/prolonged-drop means improve, p99nearunchanged with one147.733ms candidate. Not statistical significance/final acceptance. Source implementation may alter costs and must be remeasured.",
+    "retirement": {
+      "all_owned_games_stopped": true
+    }
+  }
 }

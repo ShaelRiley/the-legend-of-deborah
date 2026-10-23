@@ -1,3 +1,9 @@
+# Current checkpoint — opaque HUD prototype promising; canonical implementation next
+
+Four freshcontrol/candidate/candidate/controlD20 captures21.260/22.415/21.979/20.873FPS. Means21.066/22.197(+5.365% arithmetic); bothcandidates abovebothcontrols. Meanp9587.657/83.263ms,p99131.245/130.828ms,longestdrop13.817/11.258s. Onecandidatep99147.733ms; no significance/finalacceptanceclaim. AllfourFAIL. Candidate5719/5660hits,331/313builds,12/13fallbacks; exactfunction/owner/lease restoration and wholeprocessStop pass. [Rawfour/visual/parity/limits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next canonical HUD-only rastercache, preserving publicDrawLines/foreignproviders/fades/nonHUD/oversize paths. Bound6textures, validate widths/heights/font/palette/reload/layout/cleanup, preserve RT/alpha/blend/clipping and surface-state contract at ownedHUDscope; nativevisual/regression checks before actualsourceP,C,C,P,P,Ccomparison. Prototypeperformance does not certify changedsource. No AI/graphics/content/count/cadence/hostingchange. BothmonitorsON, SP40UNMET/fivefullSPgatesUNVERIFIED/releaseordinarycorroborationUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — opaque HUD prototype fresh visual pass; matched FPS next
 
 Fresh actual-native original/cached four-background comparisons pass predeclared maxchannel8/pixelsOver5<=20: darkmax6/onepixelOver5,brightmax5/noneOver5,black/fadeexact. Backgrounds unchanged. PublicDrawLinesrestored/leasecleared; ownedprocessstopped. No FPScapture/gain fromvisualtest. [Rawimages/metrics/bounds/frozen4armplan](validation/STEAM_DECK_HUD_CACHE_20261023.json).
