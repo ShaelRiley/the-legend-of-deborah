@@ -1,3 +1,11 @@
+# Current checkpoint — NPC provider shortcut rejected after six native runs
+
+FreshP,C,C,P,P,C60s normalD20 runs measure21.172/21.414/22.785/20.651/22.425/21.447FPS. Parentmean21.416/candidatemean21.882(+2.176% arithmetic), overlapping ranges. Adjacent differences+1.142%/+10.337%/−4.362% are inconsistent. Meanp9585.291/85.545ms,p99123.440/123.097ms and longestdrop24.958/21.251s are mixed; allsixFAIL. Reject the shortcut and restore exact9b7runtime; keep foreign-provider mutation/removal/fallback regressions. No significance/CPU-cause or gain claim. [All metrics/native receipts/decision](validation/STEAM_DECK_NPC_DISPATCH_20261023.json).
+
+Native file/function/upvalue/provider/state parity passes57actors/60checks perrun; all57candidate predicates match, foreignprovider probes restore synchronously, no profiling inFPS. All owned games stop and root install restores. Both monitors ON. User's goal remains SINGLEPLAYER40FPS; allfivefullSPgatesUNVERIFIED, multiplayer deferred, PR7draft/maincec10 unchanged.
+
+Next: improve native attribution of the remaining Lua-module CPU cost using existing saved samples and the exact public binary's available debug/export symbols. No disabled Lua/JIT API is restored or bypassed. Check feasibility first; no public-symbol availability or function-level attribution is assumed. Preserve current source/settings and prepare the next focused change only from measured evidence.
+
 # Current checkpoint — measured query costs; guarded NPC dispatch candidate
 
 Four fresh controls/profile/profile/control normalD20 runs finish:21.502/21.820/21.169/21.822FPS. Controlmean21.662/profilemean21.494; ranges overlap, no calibrated overhead/significance claim. Both sparse profiles repeat ProgressionState~46.6/48.6ms/s, lifecycleBind~46.6/50.8ms/s and SoldierStateFor~34.8/40.7ms/s; inclusive nested samples overlap. Derived/reconciliation is much smaller. Both20provider identity inspections pass; all owned games stop. [Exact evidence and limits](validation/STEAM_DECK_QUERY_PROFILE_20261023.json).
