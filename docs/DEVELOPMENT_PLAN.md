@@ -1,3 +1,11 @@
+# Current checkpoint — native hash-lookup evidence; table-capacity screen
+
+Existing5890CPU samples include2512Lua-module leaves; only270match exact export starts. Current DLL SHA/inode/timestamps and PE unwind ranges improve attribution without disabled APIs. A330sample anonymous interval has reference-compatible table-get branches/node traversal; this is an inference, not a PDB-confirmed symbol. The exact PDB is absent locally and Microsoft returns404; no complete GC/realm/VM-op attribution is claimed. [Metadata, limits and frozen experiment](validation/STEAM_DECK_HASH_CAPACITY_20261023.json).
+
+Next fixed freshcontrol/candidate/candidate/control60s normalD20: one-shot server table reservation via1024private nonnumeric keys, all removed before play. Verify original raw fields/references/functions/metatables unchanged; numeric-key/oversized tables skip. Controls perform same semantic snapshots/key allocations without insertion. Larger memory/cache/GC traversal may offset lookup benefit; actual bucket count is not queried or claimed. No gameplay state cache, recurring instrumentation, forcedGC/JIT knob or count/graphics/cadence change. Private helper passesLua5.4/LuaJIT semantic/partial-cleanup gates; native parity/FPS unverified. Whole owned process retirement resets layout.
+
+Original NPC dispatch runtime is restored; no source gain retained. Both monitors stayON. Target singleplayer40FPS UNMET; five full SP gates UNVERIFIED; multiplayer deferred; PR7draft/maincec10 unchanged.
+
 # Current checkpoint — NPC provider shortcut rejected after six native runs
 
 FreshP,C,C,P,P,C60s normalD20 runs measure21.172/21.414/22.785/20.651/22.425/21.447FPS. Parentmean21.416/candidatemean21.882(+2.176% arithmetic), overlapping ranges. Adjacent differences+1.142%/+10.337%/−4.362% are inconsistent. Meanp9585.291/85.545ms,p99123.440/123.097ms and longestdrop24.958/21.251s are mixed; allsixFAIL. Reject the shortcut and restore exact9b7runtime; keep foreign-provider mutation/removal/fallback regressions. No significance/CPU-cause or gain claim. [All metrics/native receipts/decision](validation/STEAM_DECK_NPC_DISPATCH_20261023.json).

@@ -1,0 +1,58 @@
+{
+  "status": "Native attribution expanded; hash-capacity experiment prepared, no gain claimed; SP40FPS UNMET",
+  "current_source": "eefe7fd69659674264c2878338b681ca50e37755",
+  "binary_sha256": "c4d093ab2ec74877459fec06ce238510ebc2001d60508632d78a2b659ce1395d",
+  "pdb": [
+    {
+      "pdb": "lua_shared.pdb",
+      "guid": "fb3ce256-1d16-48c8-94dc-b17c59bae5a5",
+      "age": 3,
+      "symbol_key": "FB3CE2561D1648C894DCB17C59BAE5A53"
+    }
+  ],
+  "raw_samples": "/home/deck/deborah-benchmarks/native-perf-d20/3cf2e875/main-stack60-run2",
+  "analysis": "/home/deck/deborah-recovery/evidence/lua-shared-interval-samples-20261023.json",
+  "sample_count": 5890,
+  "lua_samples": 2512,
+  "named_export_start_samples": 270,
+  "limitations": "Leaf user-CPU IP samples only, not call stacks, per-frame wall times or Lua functions. PE exception intervals provide bounds, but an interval may contain shared assembly/export labels. Never assign unnamed interval work to a nearby export. No GC attribution without actual matching symbol. DLL saved mapping inode matches current file and ctime precedes capture; SHA recorded now, not fabricated historical hash.",
+  "public_symbol_request": {
+    "url": "https://msdl.microsoft.com/download/symbols/lua_shared.pdb/FB3CE2561D1648C894DCB17C59BAE5A53/lua_shared.pdb",
+    "requested_id": {
+      "pdb": "lua_shared.pdb",
+      "guid": "fb3ce256-1d16-48c8-94dc-b17c59bae5a5",
+      "age": 3,
+      "symbol_key": "FB3CE2561D1648C894DCB17C59BAE5A53"
+    },
+    "scope": "Anonymous public symbol endpoint; no credentials or disabled runtime API.",
+    "error": "HTTP Error 404: Not Found",
+    "status": 404
+  },
+  "hot_range": {
+    "start_rva": "0x20e80",
+    "end_rva": "0x20fb1",
+    "samples": 330,
+    "percent_of_lua_samples": 13.136942675159236,
+    "exact_start_export_names": [],
+    "contains_export_labels": []
+  },
+  "inference": "RVA0x20e80..0x20fb1 tagged string/number/generic key branches and node chains match table-get behavior in reference LuaJIT. This is an explicitly inferred role, not matching-PDB named-symbol attribution. Exact game fork/version is not established by current reference source. Shared anonymous assembly range remains unnamed; no total GC or realm attribution follows.",
+  "experiment": {
+    "sequence": [
+      "control",
+      "candidate",
+      "candidate",
+      "control"
+    ],
+    "seconds_each": 60,
+    "request": "One-shot server table reservation using1024private nonnumeric keys, then remove every temporary key before FPS. Target native Entity/NextBot metatables, stored hostile class and live hostile instance tables. Skip numeric-key tables to preserve array/length behavior, and tables>4096fields. Verify raw keys/values/references/metatable unchanged and native provider stillC. No persistent actor refs, state cache, recurring hook, disabled reflection, forced GC, JIT knob, gameplay/count/graphics change.",
+    "hypothesis": "More hash headroom may shorten repeated native table-lookup chains. Insertion/removal is a capacity request, not a queried bucket count. Larger cache footprint/memory/GC traversal can offset any gain.",
+    "conditions": "Fresh owned process each arm; same normal frozen singleplayerD20lowercourt-v1; both displaysON1280x800@60/external1920x1080@75; original source/settings/AI/cadence/input/resources. Standard source/renderer proof, native state parity and changed-table count required. Controls make same semantic snapshots/privatekey allocations without inserting. No perframe profiler/sampler.",
+    "retirement": "Whole owned process stop resets layout. No exact in-process capacity rollback claimed. No diagnostic actor/table references retained after start helper returns.",
+    "gates": "Lua5.4/LuaJIT raw values/functions/objectkeys/metatable/customfallback/numeric-skip/dedup/bounds/control/partial-cleanup PASS; native state/FPS remain unverified. Reject noise or pacing/correctness/memory regression; clear screen needs further actual source comparison. Five SP final3x180s/warm/40cap remain unchanged."
+  },
+  "primary_references": [
+    "https://raw.githubusercontent.com/LuaJIT/LuaJIT/v2.1/src/lj_tab.c",
+    "https://raw.githubusercontent.com/LuaJIT/LuaJIT/v2.1/src/lj_api.c"
+  ]
+}
