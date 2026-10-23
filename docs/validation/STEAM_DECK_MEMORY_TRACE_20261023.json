@@ -1,5 +1,143 @@
 {
   "utc": "2026-10-23T03:57:00.898466+00:00",
   "operation": "One60s normal frozen listen-host D20 with bounded read-only heapcount/interval trace; no GC setting changed. Clientgrowth64.6->92.9MB in latest separate dedicated hints allocations but does not proveGC stalls.",
-  "gates": "Existingnormalresources/source/focus/input/bothON; bothsamplersretire; measuredselfcost/count/heapdropcorrelation; noFPSacceptance or causalGCinference. Final allscenario requirements unchanged."
+  "gates": "Existingnormalresources/source/focus/input/bothON; bothsamplersretire; measuredselfcost/count/heapdropcorrelation; noFPSacceptance or causalGCinference. Final allscenario requirements unchanged.",
+  "recorded_utc": "2026-10-23T04:03:07.155329+00:00",
+  "tested_commit": "77dafdd1aefc84b4ab5b7c3e804357685c08ec82",
+  "raw_directory": "/home/deck/deborah-benchmarks/memory-trace/77dafdd1/listen-normal60-run1",
+  "result": "Bounded read-only traces complete/retirebothrealms. NoGCparameters/stop/restart/collect/step,methodwrappers,JITsetting,affinity or sampler used.",
+  "measurement": {
+    "mode": "uncapped",
+    "limiter_tolerance_ms": 0,
+    "active": {
+      "frames": 1211,
+      "seconds": 59.948008,
+      "fps": 20.200838032850065,
+      "median_ms": 40.336,
+      "p95_ms": 86.942,
+      "p99_ms": 122.945,
+      "max_ms": 338.942,
+      "one_percent_low_fps": 6.103123061965009,
+      "below_budget_seconds": 59.06674300000002,
+      "longest_below_budget_seconds": 21.45049399999998,
+      "below_budget_runs_ge2s": 4
+    },
+    "pacing_at_tolerated_budget": {
+      "frames": 1211,
+      "seconds": 59.948008,
+      "fps": 20.200838032850065,
+      "median_ms": 40.336,
+      "p95_ms": 86.942,
+      "p99_ms": 122.945,
+      "max_ms": 338.942,
+      "one_percent_low_fps": 6.103123061965009,
+      "below_budget_seconds": 59.06674300000002,
+      "longest_below_budget_seconds": 21.45049399999998,
+      "below_budget_runs_ge2s": 4
+    },
+    "capture_checks_passed": false,
+    "issues": [
+      "unrendered terminal interval exceeds spike budget or is unknown",
+      "average FPS below budget",
+      "p95 exceeds frame budget",
+      "p99 exceeds spike budget",
+      "continuous drop lasting at least two seconds"
+    ],
+    "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+  },
+  "memory_trace_summary": {
+    "client": {
+      "retired": true,
+      "calls": 1334,
+      "deadline_reached": false,
+      "limit_reached": false,
+      "direct_self_cost_total_ms": 5.386600000349517,
+      "direct_self_cost_mean_us": 4.037931034744766,
+      "direct_self_cost_max_ms": 0.09599999999920783,
+      "heap_first_last_min_max_kb": [
+        87015.412109375,
+        76723.384765625,
+        45271.6396484375,
+        106405.6748046875
+      ],
+      "long_intervals_over80ms": 91,
+      "long_intervals_within1sample_of_drop": 30,
+      "drop_count": 61,
+      "sum_observed_reclaimed_MiB": 267.3382263183594
+    },
+    "server": {
+      "retired": true,
+      "calls": 4667,
+      "deadline_reached": false,
+      "limit_reached": false,
+      "direct_self_cost_total_ms": 10.854099999363598,
+      "direct_self_cost_mean_us": 2.3257124489744156,
+      "direct_self_cost_max_ms": 0.1335999999980686,
+      "heap_first_last_min_max_kb": [
+        39661.4765625,
+        34906.287109375,
+        31404.3232421875,
+        71973.451171875
+      ],
+      "long_intervals_over80ms": 6,
+      "long_intervals_within1sample_of_drop": 1,
+      "drop_count": 278,
+      "sum_observed_reclaimed_MiB": 607.9918642044067
+    }
+  },
+  "interpretation": "Client30of91intervals>80msarewithinoneheapdropsample,mostnot. Supports testingGCpacing,butNOTcausalGCtime/functionattribution. ServerThinkhasdifferentcadence. Samplestartsvary/containprepandpostamble; do notpretendwholetraceequalactivewindow.",
+  "observer_limit": "Selftimingincludescount/storage/clockbutexcludesnativehookdispatchandGCfromstorage; no independentfullobservertogglecomparison. Flattracearraysgrowheap; FPSinstrumenteddiagnosticonly.",
+  "cleanup": "Freshbothretired=true/no deadlineorlimit. Ownedgameunitstopped,bothdisplaysON.",
+  "sources": {
+    "GMod_public_API": "https://wiki.facepunch.com/gmod/Global.collectgarbage",
+    "Lua_collector_parameter_semantics": "https://www.lua.org/manual/5.1/manual.html#2.10"
+  },
+  "next": "ActualpublicGCsetpause/setstepmulroundtripreadinbothrealms,restoreimmediatelyandverifyrunning,beforeselectingfocusedparametercomparison.NoGCdefaultassumption.",
+  "state": "UNMET/all6fullacceptanceUNVERIFIED",
+  "actual_public_parameters": {
+    "client": {
+      "running_after": true,
+      "source": "Standardpubliccollectgarbage setpause/setstepmul returnoldvalue,immediatelyrestored; no collect/step/stop/restart",
+      "realm": "client",
+      "passed": true,
+      "setstepmul": {
+        "original": 200,
+        "restored": true
+      },
+      "setpause": {
+        "original": 200,
+        "restored": true
+      },
+      "running_before": true
+    },
+    "server": {
+      "running_after": true,
+      "source": "Standardpubliccollectgarbage setpause/setstepmul returnoldvalue,immediatelyrestored; no collect/step/stop/restart",
+      "realm": "server",
+      "passed": true,
+      "setstepmul": {
+        "original": 200,
+        "restored": true
+      },
+      "setpause": {
+        "original": 200,
+        "restored": true
+      },
+      "running_before": true
+    }
+  },
+  "parameter_probe_raw": "/home/deck/deborah-benchmarks/memory-trace/77dafdd1/public-readback-run1",
+  "parameter_probe_scope": "NoFPS; values200/200bothrealms restoredimmediately;runningtruebefore/after;ownedprocessstoppedbothON.",
+  "next_comparison": {
+    "sequence": [
+      "stock",
+      "candidate",
+      "candidate",
+      "stock"
+    ],
+    "seconds_each": 60,
+    "only_change": "Public collectgarbage setstepmul100 vsactualstock200, bothrealms, pause200 unchanged. Setonlyaftercanonicalsetup/beforephysicalinput; no GC stop/restart/collect/forcedstep; no activeprofiler/memorytrace/sampler/affinity/JIT option.",
+    "hypothesis": "Smallerincrementalcollectorstepsmayboundlongframesassociatedwithheapdrops; lowerthroughput/highermemory/finalizerlifetime are risks. Mostlongframesarenotnearheapdrops,sothis cannotbeassumed sufficient.",
+    "gate": "FreshnativeAPIreadback/runningtrue/settingsafter+before,ordinarysource/resources/geometry/AI/physicalinput/bothON. Restore200aftercapture andfreshreceipt; wholeownedStopfinally. Rejectwithinnoiseorunsuitablepacing; fixedbenchmarkunchanged."
+  }
 }

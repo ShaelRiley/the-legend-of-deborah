@@ -1366,3 +1366,11 @@ A separate same-Deck Linux64 dedicated Dungeon20 diagnostic averages40.407FPS, m
 Source52client/116server, normalWizard20/seeds/resources,1820models,57roamers+9bossactors,physicalroute,node207,normalAI66Hz/.015/hosttimescale1/no god/noclip and oneactualhuman/fourslots pass. Engine2026.10.22/x86-64/LuaJIT2.1beta3 requires standardsv_cheats1 for the intendedAIcadence; no gameplay cheats used. AllfourSentryslotsadmitted; the unfiltered postcombat20pointprobe hits17floors/3livehostilebodies, so clean20/20postcombatsupport is unverified. Bothownedprocessesstop. Three setup failures have noFPS and remain preserved. Current670CI325/334/source_changed0 matches previousninefailure names; source/VR/audio pass.
 
 Boundary counters showclient141.46%/server112.19%ofonecore and DRMgraphics17.49% busy. No activeprofiler/sampler/JIT/affinity orsourcechange was used. Next: investigate CPU pacing/allocation behavior before another focused runtime/source comparison. Allsixfullscenarios/threewarmed180sruns/capped40/fullboss/fouractualhumansremainUNVERIFIED. TargetUNMET; PR7draft/maincec10unchanged.
+
+## 2026-10-23: bounded heap evidence; GC step comparison next
+
+Read-only heap/interval traces finish on normal frozen listen-hostD20 with20.201FPS/p9586.942ms/p99122.945ms: instrumenteddiagnosticFAIL. Bothsamplersretire; selftimed bodies average4.04us/client and2.33us/server, excluding hookdispatch/GCfromstorage. Client30of91intervals>80msarewithinonesampleofheapdrops; mostarenot. This is association, not causalGCcost/functionproof. Flattracestorageandprep/postamblesremainexplicitlimitations. [Rawtrace/parameterreceipts](STEAM_DECK_MEMORY_TRACE_20261023.json).
+
+A separatepublicAPIroundtripreadsandimmediatelyrestores pause200/stepmul200inbothrealms,withcollectionrunningbefore/after; noFPS. Next: fixedfreshstock/candidate/candidate/stock60sruns,onlypublicstepmul100versus200aftercanonicalsetup. Pause200remains; no collectorstop/restart/fullcollect/forcedstep,activeprofiler/memorytrace/sampler/JIT/affinity. Requireactualbefore/afterAPI/running/source/resources/input/geometry/bothONandrestorationreceipts. Throughput/memory/finalizerlifetime risks require measuredregressionreview. No gainisclaimed.
+
+BothmonitorsstayONalways. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged.

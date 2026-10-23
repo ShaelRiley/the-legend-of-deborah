@@ -1,3 +1,11 @@
+# Current checkpoint — bounded heap evidence; GC step comparison next
+
+Read-only heap/interval traces finish on normal frozen listen-hostD20 with20.201FPS/p9586.942ms/p99122.945ms: instrumenteddiagnosticFAIL. Bothsamplersretire; selftimed bodies average4.04us/client and2.33us/server, excluding hookdispatch/GCfromstorage. Client30of91intervals>80msarewithinonesampleofheapdrops; mostarenot. This is association, not causalGCcost/functionproof. Flattracestorageandprep/postamblesremainexplicitlimitations. [Rawtrace/parameterreceipts](validation/STEAM_DECK_MEMORY_TRACE_20261023.json).
+
+A separatepublicAPIroundtripreadsandimmediatelyrestores pause200/stepmul200inbothrealms,withcollectionrunningbefore/after; noFPS. Next: fixedfreshstock/candidate/candidate/stock60sruns,onlypublicstepmul100versus200aftercanonicalsetup. Pause200remains; no collectorstop/restart/fullcollect/forcedstep,activeprofiler/memorytrace/sampler/JIT/affinity. Requireactualbefore/afterAPI/running/source/resources/input/geometry/bothONandrestorationreceipts. Throughput/memory/finalizerlifetime risks require measuredregressionreview. No gainisclaimed.
+
+BothmonitorsstayONalways. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged.
+
 # Current checkpoint — dedicated64 runtime still fails frame pacing
 
 A separate same-Deck Linux64 dedicated Dungeon20 diagnostic averages40.407FPS, median22.196ms, p9542.534ms, p9956.218ms and max313.020ms. Time below40 is30.694s; longest drop4.339s/five episodes>=2s. FAIL. BothmonitorsstayON1280×800@60/external1920×1080@75. This changes server architecture/JIT/engine branch and privatecheatflag configuration; it does not isolate bitness or replace the frozen listen-host benchmark. Earlier Linux32dedicated42.003FPS also failed tails. [Actual captures and limits](validation/STEAM_DECK_DEDICATED64_20261023.json).
