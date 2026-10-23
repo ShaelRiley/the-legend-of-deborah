@@ -1332,3 +1332,11 @@ Both monitors remain ON1280×800@60/external1920×1080@75. Target UNMET; all six
 Actual Windows64/P10 native read-only probes find neither host_thread_mode nor host_threaded_sound through GetConVar in either realm. mcore1, queue2 and threaded bones1 are already active. No setting, flag, API or game state was changed; no FPS is measured by this capability check. Both monitors remain ON. [Exact public capability receipts](STEAM_DECK_HOST_THREADS_20261023.json).
 
 Next: client/render cost investigation with normal native walls and presentation intact; check actual diagnostic overlays before measuring their overhead. Existing wall hiding/batch visual-loss experiments remain ineligible. Entry reuse remains reverted. Target UNMET; all six full scenarios UNVERIFIED; PR7draft/maincec10 unchanged.
+
+## 2026-10-23: record diagnostic overlay conditions
+
+Existing capture configuration now records net_graph,cl_showfps,cl_showpos and developer at start/end only. No per-frame work, setting or gameplay changes. Current saved client config has net_graph1, but actual native values still require verification. Capture/profile/analysis,120-source manifest, syntax and diff checks pass. [Plan and scope](STEAM_DECK_OVERLAY_COST_20261023.json).
+
+Next: fresh net_graph1/0/0/1 D20 diagnostics with actual start/end values, all other settings/resources/counts/AI/actions fixed and both monitors ON. Preserve the gameplay HUD and native visuals. This tests instrumentation overhead; no FPS gain or full acceptance follows source inspection/tests. Restore prior overlay preference afterward.
+
+Public host-threading controls remain unavailable. Entry reuse and all other unvalidated candidates remain reverted. Target UNMET; all six full scenarios UNVERIFIED; PR7draft/maincec10 unchanged.

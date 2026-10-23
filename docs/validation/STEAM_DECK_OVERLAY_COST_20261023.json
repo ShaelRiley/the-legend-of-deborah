@@ -1,0 +1,15 @@
+{
+  "status": "DIAGNOSTICPREPARATION; actualoverlaycostnotmeasured/40FPSUNMET/all6fullscenariosUNVERIFIED",
+  "parent": "3eaab2b0eb9af7f6d2d239aa0d05401f1d45093c",
+  "hypothesis": "NativeVProf D20 includes2.395ms/frameHUD and1.276surfaceDrawText; scopesoverlapanddonotisolateanoverlay. SavedWindowsclientconfig net_graph1; actualruntimevaluestillmustbeverified. MeasureonlydiagnosticnetgraphwithoutremovinggameHUD/visuals/content.",
+  "source_change": "Existingstart/endconfigurationrecordnowincludes net_graph,cl_showfps,cl_showpos,developer. configuration()calledonlyatcapturestart/end; noperframeworkorchangedgameplay/settings.",
+  "static": [
+    "Existingperformancecapture/timeline/active-state/source/I/O/lifecyclecontractsPASS;newdiagnosticvalue+change-detectionassertionsPASS",
+    "CPUprofileobserver/lifecyclegatePASS",
+    "5Deckcaptureanalysis testsPASS",
+    "120-source manifestPASS",
+    "luacsyntax/diffPASS"
+  ],
+  "plan": "Fresh4x60s net_graph1,0,0,1 withsamecurrentruntime/source/seeds/resources/57roamers+9boss/1820models/66HzAI/physicalD20lowercourt-v1actions/graphics/15WAC. BothmonitorsONalways1280x800@60/external1920x1080@75. NativeCLI requestbeforemap;actualstart/endnet_graphmustmatch;allotherdiagnosticsettingsmuststayidentical. No profiler/sampler/JIT/affinity. Recordrawcapturesandrestorepriornetgraphpreference aftermeasurement.",
+  "limits": "Nocostgainpredictedoraccepted. OnlyD20phase1diagnostic;finalfullscenarios/3x180swarm/capped/ordinaryplay/multiplayerunverified."
+}

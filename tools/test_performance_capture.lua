@@ -23,7 +23,8 @@ ents={GetCount=function() return 3000 end}
 function ScrW() return 1280 end;function ScrH() return 800 end
 game={GetMap=function() return 'gm_flatgrass' end,SinglePlayer=function() return true end}
 local settings={lod_reduced_effects='1',lod_wall_batches='0',fps_max='300',mat_vsync='0',lod_third_person='0',lod_map_scale='1',lod_map_opacity='1',
-    gmod_mcore_test='1',cl_threaded_bone_setup='1',net_usesocketsforloopback='0'}
+    gmod_mcore_test='1',cl_threaded_bone_setup='1',net_usesocketsforloopback='0',
+    net_graph='1',cl_showfps='0',cl_showpos='0',developer='0'}
 GetConVar=function(name)
     if not settings[name] then return end
     return {GetString=function() return settings[name] end,GetBool=function() return settings[name]=='1' end}
@@ -237,10 +238,13 @@ local timeline=out.frame_timeline.samples_ms
 A:SavePerformanceCapture(out)
 assert(timeline[1]==900 and timeline[3]==1100,'repeat save changed raw evidence')
 A:StartPerformanceCapture(30)
-settings.gmod_mcore_test='0';settings.cl_threaded_bone_setup='0';settings.net_usesocketsforloopback='1'
+settings.gmod_mcore_test='0';settings.cl_threaded_bone_setup='0';settings.net_usesocketsforloopback='1';settings.net_graph='0'
 out=A:StopPerformanceCapture('manual')
 assert(out.start_configuration.gmod_mcore_test=='1' and out.end_configuration.gmod_mcore_test=='0')
-assert(table.concat(out.configuration_changes,',')=='cl_threaded_bone_setup,gmod_mcore_test,net_usesocketsforloopback',
+assert(out.start_configuration.net_graph=='1' and out.end_configuration.net_graph=='0'
+    and out.start_configuration.cl_showfps=='0' and out.start_configuration.cl_showpos=='0'
+    and out.start_configuration.developer=='0','diagnostic overlay condition not recorded')
+assert(table.concat(out.configuration_changes,',')=='cl_threaded_bone_setup,gmod_mcore_test,net_graph,net_usesocketsforloopback',
     'runtime setting change silently reused the starting condition')
 print('PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows with live renderer history; native/default route without batch-preparation delay; build/settings/resource evidence including experimental preference; preparation excluded or explicitly timed out; stalled renderer still measured; true no-render wait; 65536 limit; reset/refresh/shutdown/throwing and silent I/O cleanup')
 print('PERFORMANCE_PACING_PASS: ordered bounded timeline; exact active ranges; slowest-1%-mean FPS; elapsed time below40; contiguous two-second drop; inactive gaps; terminal unrendered gap; repeat-save chronology. Synthetic clocks only.')
