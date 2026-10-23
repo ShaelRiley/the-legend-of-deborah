@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-23T04:24:21.479580+00:00",
+  "state": "source/staticallyvalidated; nativeattributionUNVERIFIED",
+  "scope": "ExistingboundedCPUprofile only. Optional Audit.CPUProfileMemorySampleEvery integer16..4096;private diagnosticnext64. Ordinarygameplay/ordinarycaptures/defaultCPUprofileleaveunset.",
+  "meaning": "Sampled inclusive signed net heap deltas,notgrossallocationtotals; anydelta mayincludeGC; nestedscopesoverlap; uncompletedcallsnodata.",
+  "tests": [
+    "profile/capture/5analysis/120manifest/syntax/diffPASS",
+    "exactoldsourcefailsheapcadencegate",
+    "sampledreturns/errors/negativecollections/restoration/invalidoptionsPASS"
+  ],
+  "next": "NativeD20normal60s allocationprofile64bothrealms; actualsource/workload/GC200andretirementrequired. Nooptimizationgainor40FPSacceptance."
+}

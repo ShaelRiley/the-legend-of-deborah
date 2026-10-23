@@ -1,3 +1,11 @@
+# Current checkpoint — GC step change rejected; sampled allocation attribution next
+
+Four fresh stock/candidate/candidate/stock60s Deck D20 captures measure20.906/20.886/20.728/19.934FPS. Means20.420stock/20.807candidate overlap; p95means89.834/90.230ms and p99means132.657/142.798ms do not improve. AllfourFAIL. Reject publicstepmul100; actualpause200/stepmul200restoredinbothrealmsandallownedgamesstop. NativeAPI/source116server52client/normalresources/input/focus/bothONgatespass. No statistical/causal slowdown claim. [Fullrawmeasurements/restoration](validation/STEAM_DECK_GC_STEP_20261023.json).
+
+The existing opt-in CPU profiler now supports sampled inclusive net heap changes, using two count queries every configured16–4096calls. Default profiling and ordinary gameplay leave this disabled. Positive/negative samples can includeGC and nested scopes; they are not gross allocations or GC CPU time. No result tables are added percall. Cadence, signed deltas, nil/vararg returns, sampled errors, callbackrestoration and invalidoptions pass; capture/profile/5analysis/120manifest/syntax/diff pass. Exactoldsourcefailsnewgate. Nativeattribution remainsUNVERIFIED; next normalD20profile samples every64calls, with normalGC200/200 and bothmonitorsON. Observercost is diagnostic; final ordinary acceptance must disable profiling.
+
+TargetUNMET; allsixfullscenariosUNVERIFIED; PR7draft/maincec10unchanged.
+
 # Current checkpoint — bounded heap evidence; GC step comparison next
 
 Read-only heap/interval traces finish on normal frozen listen-hostD20 with20.201FPS/p9586.942ms/p99122.945ms: instrumenteddiagnosticFAIL. Bothsamplersretire; selftimed bodies average4.04us/client and2.33us/server, excluding hookdispatch/GCfromstorage. Client30of91intervals>80msarewithinonesampleofheapdrops; mostarenot. This is association, not causalGCcost/functionproof. Flattracestorageandprep/postamblesremainexplicitlimitations. [Rawtrace/parameterreceipts](validation/STEAM_DECK_MEMORY_TRACE_20261023.json).

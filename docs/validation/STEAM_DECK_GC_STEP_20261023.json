@@ -1,0 +1,662 @@
+{
+  "utc": "2026-10-23T04:22:37.511719+00:00",
+  "raw": "/home/deck/deborah-benchmarks/gc-step/344e8bad/public-stepmul-series-v1",
+  "tested_commit": "344e8bad",
+  "decision": "REJECT stepmul100; average within control range, p95/p99 not improved, all4FAIL. No causal/statistical slowdown inferred. Nativeparametersrestore200/200bothrealms;ownedprocessesstopbothON.",
+  "runs": [
+    {
+      "index": 1,
+      "variant": "stock",
+      "measurement": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1253,
+          "seconds": 59.935306,
+          "fps": 20.90587474434518,
+          "median_ms": 39.168,
+          "p95_ms": 87.816,
+          "p99_ms": 126.714,
+          "max_ms": 327.751,
+          "one_percent_low_fps": 6.024847397567167,
+          "below_budget_seconds": 59.052365000000044,
+          "longest_below_budget_seconds": 58.80800000000005,
+          "below_budget_runs_ge2s": 1
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1253,
+          "seconds": 59.935306,
+          "fps": 20.90587474434518,
+          "median_ms": 39.168,
+          "p95_ms": 87.816,
+          "p99_ms": 126.714,
+          "max_ms": 327.751,
+          "one_percent_low_fps": 6.024847397567167,
+          "below_budget_seconds": 59.052365000000044,
+          "longest_below_budget_seconds": 58.80800000000005,
+          "below_budget_runs_ge2s": 1
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      },
+      "GC": {
+        "client": {
+          "before": {
+            "original": 200,
+            "requested": 200,
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "actual": 200,
+            "passed": true,
+            "variant": "stock",
+            "memory_trace_absent": true,
+            "realm": "client",
+            "jit_enabled": true,
+            "running": true,
+            "heap_kb": 50206.9462890625
+          },
+          "after": {
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "passed": true,
+            "restored": 200,
+            "variant": "stock",
+            "jit_enabled": true,
+            "memory_trace_absent": true,
+            "realm": "client",
+            "heap_kb": 72866.5126953125,
+            "expected": 200,
+            "running": true,
+            "observed": 200
+          }
+        },
+        "server": {
+          "before": {
+            "original": 200,
+            "requested": 200,
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "actual": 200,
+            "passed": true,
+            "variant": "stock",
+            "memory_trace_absent": true,
+            "realm": "server",
+            "jit_enabled": true,
+            "running": true,
+            "heap_kb": 53104.1357421875
+          },
+          "after": {
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "passed": true,
+            "restored": 200,
+            "variant": "stock",
+            "jit_enabled": true,
+            "memory_trace_absent": true,
+            "realm": "server",
+            "heap_kb": 75840.12109375,
+            "expected": 200,
+            "running": true,
+            "observed": 200
+          }
+        }
+      },
+      "source_client": {
+        "verified": true,
+        "checked": 52,
+        "mismatches": 0,
+        "missing": 0
+      },
+      "source_server": {
+        "installLabel": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "missing": 0,
+        "mismatches": 0,
+        "checked": 116,
+        "verified": true
+      },
+      "resources_start": {
+        "install": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "lua_kb": 67325,
+        "lua_errors": 0,
+        "wall_models": 1820,
+        "entities": 3238,
+        "engine": "2026.09.17",
+        "architecture": "x64"
+      },
+      "resources_end": {
+        "install": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "lua_kb": 62765,
+        "lua_errors": 0,
+        "wall_models": 1820,
+        "entities": 3254,
+        "engine": "2026.09.17",
+        "architecture": "x64"
+      },
+      "route_node": 207,
+      "condition": {
+        "started_utc": "2026-10-23T04:12:17.799864+00:00",
+        "finished_utc": "2026-10-23T04:13:22.758943+00:00",
+        "profile": false,
+        "native_perf_sampling_diagnostic": false,
+        "runtime_preflight": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "netgraph": "1",
+          "focus": true,
+          "vsync": "0",
+          "mcore": "1",
+          "height": 800,
+          "width": 1280
+        },
+        "external_display_dpms": "on",
+        "scenario": "Dungeon20 normal Gordon-to-Hector lower court circuits with ordinary combat",
+        "focus_sampled_false": false
+      }
+    },
+    {
+      "index": 2,
+      "variant": "candidate",
+      "measurement": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1252,
+          "seconds": 59.945785,
+          "fps": 20.885538491154964,
+          "median_ms": 38.096,
+          "p95_ms": 91.118,
+          "p99_ms": 136.966,
+          "max_ms": 381.431,
+          "one_percent_low_fps": 5.400018858527399,
+          "below_budget_seconds": 58.62701199999992,
+          "longest_below_budget_seconds": 23.350021999999985,
+          "below_budget_runs_ge2s": 5
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1252,
+          "seconds": 59.945785,
+          "fps": 20.885538491154964,
+          "median_ms": 38.096,
+          "p95_ms": 91.118,
+          "p99_ms": 136.966,
+          "max_ms": 381.431,
+          "one_percent_low_fps": 5.400018858527399,
+          "below_budget_seconds": 58.62701199999992,
+          "longest_below_budget_seconds": 23.350021999999985,
+          "below_budget_runs_ge2s": 5
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      },
+      "GC": {
+        "client": {
+          "before": {
+            "original": 200,
+            "requested": 100,
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "actual": 100,
+            "passed": true,
+            "variant": "candidate",
+            "memory_trace_absent": true,
+            "realm": "client",
+            "jit_enabled": true,
+            "running": true,
+            "heap_kb": 77568.5810546875
+          },
+          "after": {
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "passed": true,
+            "restored": 200,
+            "variant": "candidate",
+            "jit_enabled": true,
+            "memory_trace_absent": true,
+            "realm": "client",
+            "heap_kb": 94553.6630859375,
+            "expected": 100,
+            "running": true,
+            "observed": 100
+          }
+        },
+        "server": {
+          "before": {
+            "original": 200,
+            "requested": 100,
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "actual": 100,
+            "passed": true,
+            "variant": "candidate",
+            "memory_trace_absent": true,
+            "realm": "server",
+            "jit_enabled": true,
+            "running": true,
+            "heap_kb": 53994.6435546875
+          },
+          "after": {
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "passed": true,
+            "restored": 200,
+            "variant": "candidate",
+            "jit_enabled": true,
+            "memory_trace_absent": true,
+            "realm": "server",
+            "heap_kb": 75824.8818359375,
+            "expected": 100,
+            "running": true,
+            "observed": 100
+          }
+        }
+      },
+      "source_client": {
+        "verified": true,
+        "checked": 52,
+        "mismatches": 0,
+        "missing": 0
+      },
+      "source_server": {
+        "installLabel": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "missing": 0,
+        "mismatches": 0,
+        "checked": 116,
+        "verified": true
+      },
+      "resources_start": {
+        "install": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "lua_kb": 95206,
+        "lua_errors": 0,
+        "wall_models": 1820,
+        "entities": 3236,
+        "engine": "2026.09.17",
+        "architecture": "x64"
+      },
+      "resources_end": {
+        "install": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "lua_kb": 85426,
+        "lua_errors": 0,
+        "wall_models": 1820,
+        "entities": 3252,
+        "engine": "2026.09.17",
+        "architecture": "x64"
+      },
+      "route_node": 210,
+      "condition": {
+        "started_utc": "2026-10-23T04:15:08.605881+00:00",
+        "finished_utc": "2026-10-23T04:16:13.572808+00:00",
+        "profile": false,
+        "native_perf_sampling_diagnostic": false,
+        "runtime_preflight": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "netgraph": "1",
+          "focus": true,
+          "vsync": "0",
+          "mcore": "1",
+          "height": 800,
+          "width": 1280
+        },
+        "external_display_dpms": "on",
+        "scenario": "Dungeon20 normal Gordon-to-Hector lower court circuits with ordinary combat",
+        "focus_sampled_false": false
+      }
+    },
+    {
+      "index": 3,
+      "variant": "candidate",
+      "measurement": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1243,
+          "seconds": 59.966381,
+          "fps": 20.72828106802043,
+          "median_ms": 38.28,
+          "p95_ms": 89.342,
+          "p99_ms": 148.629,
+          "max_ms": 351.041,
+          "one_percent_low_fps": 5.148225327526135,
+          "below_budget_seconds": 58.96947999999999,
+          "longest_below_budget_seconds": 16.149901999999997,
+          "below_budget_runs_ge2s": 5
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1243,
+          "seconds": 59.966381,
+          "fps": 20.72828106802043,
+          "median_ms": 38.28,
+          "p95_ms": 89.342,
+          "p99_ms": 148.629,
+          "max_ms": 351.041,
+          "one_percent_low_fps": 5.148225327526135,
+          "below_budget_seconds": 58.96947999999999,
+          "longest_below_budget_seconds": 16.149901999999997,
+          "below_budget_runs_ge2s": 5
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      },
+      "GC": {
+        "client": {
+          "before": {
+            "original": 200,
+            "requested": 100,
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "actual": 100,
+            "passed": true,
+            "variant": "candidate",
+            "memory_trace_absent": true,
+            "realm": "client",
+            "jit_enabled": true,
+            "running": true,
+            "heap_kb": 54396.044921875
+          },
+          "after": {
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "passed": true,
+            "restored": 200,
+            "variant": "candidate",
+            "jit_enabled": true,
+            "memory_trace_absent": true,
+            "realm": "client",
+            "heap_kb": 78340.3544921875,
+            "expected": 100,
+            "running": true,
+            "observed": 100
+          }
+        },
+        "server": {
+          "before": {
+            "original": 200,
+            "requested": 100,
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "actual": 100,
+            "passed": true,
+            "variant": "candidate",
+            "memory_trace_absent": true,
+            "realm": "server",
+            "jit_enabled": true,
+            "running": true,
+            "heap_kb": 61530.2783203125
+          },
+          "after": {
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "passed": true,
+            "restored": 200,
+            "variant": "candidate",
+            "jit_enabled": true,
+            "memory_trace_absent": true,
+            "realm": "server",
+            "heap_kb": 66343.7275390625,
+            "expected": 100,
+            "running": true,
+            "observed": 100
+          }
+        }
+      },
+      "source_client": {
+        "verified": true,
+        "checked": 52,
+        "mismatches": 0,
+        "missing": 0
+      },
+      "source_server": {
+        "installLabel": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "missing": 0,
+        "mismatches": 0,
+        "checked": 116,
+        "verified": true
+      },
+      "resources_start": {
+        "install": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "lua_kb": 71338,
+        "lua_errors": 0,
+        "wall_models": 1820,
+        "entities": 3236,
+        "engine": "2026.09.17",
+        "architecture": "x64"
+      },
+      "resources_end": {
+        "install": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "lua_kb": 71970,
+        "lua_errors": 0,
+        "wall_models": 1820,
+        "entities": 3252,
+        "engine": "2026.09.17",
+        "architecture": "x64"
+      },
+      "route_node": 207,
+      "condition": {
+        "started_utc": "2026-10-23T04:17:59.353137+00:00",
+        "finished_utc": "2026-10-23T04:19:03.823274+00:00",
+        "profile": false,
+        "native_perf_sampling_diagnostic": false,
+        "runtime_preflight": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "netgraph": "1",
+          "focus": true,
+          "vsync": "0",
+          "mcore": "1",
+          "height": 800,
+          "width": 1280
+        },
+        "external_display_dpms": "on",
+        "scenario": "Dungeon20 normal Gordon-to-Hector lower court circuits with ordinary combat",
+        "focus_sampled_false": false
+      }
+    },
+    {
+      "index": 4,
+      "variant": "stock",
+      "measurement": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1195,
+          "seconds": 59.948853,
+          "fps": 19.933659114378717,
+          "median_ms": 39.509,
+          "p95_ms": 91.851,
+          "p99_ms": 138.6,
+          "max_ms": 378.173,
+          "one_percent_low_fps": 5.0358151369049295,
+          "below_budget_seconds": 59.63924799999999,
+          "longest_below_budget_seconds": 25.17487,
+          "below_budget_runs_ge2s": 4
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1195,
+          "seconds": 59.948853,
+          "fps": 19.933659114378717,
+          "median_ms": 39.509,
+          "p95_ms": 91.851,
+          "p99_ms": 138.6,
+          "max_ms": 378.173,
+          "one_percent_low_fps": 5.0358151369049295,
+          "below_budget_seconds": 59.63924799999999,
+          "longest_below_budget_seconds": 25.17487,
+          "below_budget_runs_ge2s": 4
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      },
+      "GC": {
+        "client": {
+          "before": {
+            "original": 200,
+            "requested": 200,
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "actual": 200,
+            "passed": true,
+            "variant": "stock",
+            "memory_trace_absent": true,
+            "realm": "client",
+            "jit_enabled": true,
+            "running": true,
+            "heap_kb": 62690.1552734375
+          },
+          "after": {
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "passed": true,
+            "restored": 200,
+            "variant": "stock",
+            "jit_enabled": true,
+            "memory_trace_absent": true,
+            "realm": "client",
+            "heap_kb": 80759.337890625,
+            "expected": 200,
+            "running": true,
+            "observed": 200
+          }
+        },
+        "server": {
+          "before": {
+            "original": 200,
+            "requested": 200,
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "actual": 200,
+            "passed": true,
+            "variant": "stock",
+            "memory_trace_absent": true,
+            "realm": "server",
+            "jit_enabled": true,
+            "running": true,
+            "heap_kb": 62935.6708984375
+          },
+          "after": {
+            "sha": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2",
+            "pause": 200,
+            "passed": true,
+            "restored": 200,
+            "variant": "stock",
+            "jit_enabled": true,
+            "memory_trace_absent": true,
+            "realm": "server",
+            "heap_kb": 53122.599609375,
+            "expected": 200,
+            "running": true,
+            "observed": 200
+          }
+        }
+      },
+      "source_client": {
+        "verified": true,
+        "checked": 52,
+        "mismatches": 0,
+        "missing": 0
+      },
+      "source_server": {
+        "installLabel": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "missing": 0,
+        "mismatches": 0,
+        "checked": 116,
+        "verified": true
+      },
+      "resources_start": {
+        "install": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "lua_kb": 78239,
+        "lua_errors": 0,
+        "wall_models": 1820,
+        "entities": 3238,
+        "engine": "2026.09.17",
+        "architecture": "x64"
+      },
+      "resources_end": {
+        "install": "344e8badadb7ff3bbad6413c76fd39da1c6cc0f2 clean ",
+        "lua_kb": 67643,
+        "lua_errors": 0,
+        "wall_models": 1820,
+        "entities": 3254,
+        "engine": "2026.09.17",
+        "architecture": "x64"
+      },
+      "route_node": 205,
+      "condition": {
+        "started_utc": "2026-10-23T04:20:49.528553+00:00",
+        "finished_utc": "2026-10-23T04:21:54.396411+00:00",
+        "profile": false,
+        "native_perf_sampling_diagnostic": false,
+        "runtime_preflight": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "netgraph": "1",
+          "focus": true,
+          "vsync": "0",
+          "mcore": "1",
+          "height": 800,
+          "width": 1280
+        },
+        "external_display_dpms": "on",
+        "scenario": "Dungeon20 normal Gordon-to-Hector lower court circuits with ordinary combat",
+        "focus_sampled_false": false
+      }
+    }
+  ],
+  "means": {
+    "stock": {
+      "fps": 20.41976692936195,
+      "p95_ms": 89.8335,
+      "p99_ms": 132.65699999999998,
+      "longest_below_budget_seconds": 41.991435000000024
+    },
+    "candidate": {
+      "fps": 20.8069097795877,
+      "p95_ms": 90.22999999999999,
+      "p99_ms": 142.7975,
+      "longest_below_budget_seconds": 19.74996199999999
+    }
+  }
+}

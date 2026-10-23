@@ -437,4 +437,58 @@ for _,seconds in ipairs({'invalid',math.huge,0,10000}) do
     realm('client',function() A:StopPerformanceCapture('manual') end)
 end
 print(string.format('PERFORMANCE_PAIR_PASS baseline_frames=%d profiled_frames=%d; complete same-file native transport; no baseline instrumentation or per-frame I/O; scalar view evidence; stale callbacks/replies; 12 interruption cases and 3 active-profile native lifecycle events; restart/save/default/duration/idle bounds; synthetic clocks, not native FPS',baseline.active.frames,paired.active.frames))
-print('PERFORMANCE_PROFILE_PASS: opt-in/post-warmup; client/server real observer; exact inclusive timings; vararg/nil/self/error preservation; existing/new native instances; Watcher direct service; weak ownership and guarded restores; partial/final same-file transport; complete compressed reports and bounded malformed/oversized codecs; stale/admin/lease bounds; finite deadline; cleanup/reload/shutdown; no native FPS/GPU measurement')
+local nativeGC=collectgarbage
+local heap,reads=100,0
+collectgarbage=function(action) assert(action=='count');reads=reads+1;return heap end
+realm('client',function()
+    A.CPUProfileMemorySampleEvery=16
+    local function callback(delta,...)
+        heap=heap+delta;return false,nil,...
+    end
+    hook.Add('HUDPaint','LOD_AllocationTest',callback)
+    A:StartCPUProfile()
+    local before=reads
+    for i=1,32 do
+        local delta=i==16 and 32 or i==32 and -5 or 0
+        local result=table.pack(A:MeasureCPUCall('allocation-test',callback,delta,'kept',nil))
+        assert(result.n==4 and result[1]==false and result[2]==nil and result[3]=='kept')
+        local h=hooks.client.HUDPaint.LOD_AllocationTest
+        local wrapped=table.pack(h(delta,'hook',nil))
+        assert(wrapped.n==4 and wrapped[1]==false and wrapped[2]==nil and wrapped[3]=='hook')
+    end
+    assert(reads-before==8,'heap query ran on unsampled calls')
+    local report=A:StopCPUProfile('memory-test')
+    assert(report.memory_sampling.every==16)
+    local matched=0
+    for _,row in ipairs(report.rows) do
+        if row.name=='allocation-test' or row.name=='hook/HUDPaint/LOD_AllocationTest' then
+            local m=row.sampled_heap
+            assert(row.calls==32 and row.completed==32 and m.samples==2)
+            assert(m.positive_kb==32 and m.negative_kb==5 and m.maximum_kb==32)
+            matched=matched+1
+        end
+    end
+    assert(matched==2 and hooks.client.HUDPaint.LOD_AllocationTest==callback)
+    hook.Remove('HUDPaint','LOD_AllocationTest');A.CPUProfileMemorySampleEvery=nil
+    A.CPUProfileMemorySampleEvery=16;A:StartCPUProfile()
+    for i=1,15 do A:MeasureCPUCall('sampled-error',function() end) end
+    local readBeforeError=reads
+    local ok,err=pcall(function()
+        A:MeasureCPUCall('sampled-error',function() error('sampled sentinel') end)
+    end)
+    assert(not ok and tostring(err):find('sampled sentinel') and reads==readBeforeError+1)
+    local interrupted=A:StopCPUProfile('sampled-error')
+    for _,row in ipairs(interrupted.rows) do
+        if row.name=='sampled-error' then
+            assert(row.calls==16 and row.completed==15 and row.sampled_heap.samples==0)
+        end
+    end
+    for _,invalid in ipairs({0,15,16.5,4097,math.huge,'invalid'}) do
+        A.CPUProfileMemorySampleEvery=invalid;A:StartCPUProfile()
+        local plain=A:StopCPUProfile('invalid-memory-option')
+        assert(not plain.memory_sampling,'invalid sampling interval enabled observer')
+    end
+    A.CPUProfileMemorySampleEvery=nil
+end)
+collectgarbage=nativeGC
+print('PERFORMANCE_PROFILE_PASS: existing lifecycle/transport/return gates plus opt-in sampled heap deltas, negative collections, exact sample cadence and restored callbacks; synthetic heap/clocks, not native allocation/FPS attribution')
