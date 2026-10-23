@@ -1,0 +1,23 @@
+{
+  "status": "Candidate statically validated; native source/branch parity and FPS UNVERIFIED; no gain retained",
+  "basis": "STEAM_DECK_QUERY_PROFILE_20261023.json",
+  "hypothesis": {
+    "file": "gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+    "function": "Rules:ProgressionState",
+    "change": "Skip canonical StateFor empty NextBot dispatch only while provider identity is unchanged. Still call existing base resolver on every query. Foreign providers stay live, including callbacks mutating ordinary progression. No cross-call/profile/table/validity cache.",
+    "expected": "Remove one redundant Lua provider dispatch on frequent native NPC queries. Type/validity/base resolution remains, so the entire sampled StateFor row is not a predicted saving. Added guard costs must be measured.",
+    "risks": "Custom provider behavior, callback ordering, invalid/removed actors, false/nil/inherited profiles, Hero/Soldier incarnation and Lua-refresh fallback.",
+    "static_checks": "HumanSoldier progression15requirements underLua5.4/LuaJIT, nativeAPI available/unavailable variants; foreign-provider override/removal/callback replacement; actor progression/status elements/Soldier lifecycle/sharedAI B29/source120/syntax/diff pass. Native timing unverified.",
+    "comparison": "Freeze six fresh P,C,C,P,P,C60s normalD20 on exact original source. Native actual provider/upvalue/file/function/result parity proof before FPS, all source/runtime/normal resources/input/bothON, no profiler/sampler/JIT/GC/affinity changes. Retain only a repeatable measured gain without correctness/pacing regression; final five SP scenarios still3x180s+warmed+40cap."
+  },
+  "sequence": [
+    "parent",
+    "candidate",
+    "candidate",
+    "parent",
+    "parent",
+    "candidate"
+  ],
+  "seconds_each": 60,
+  "acceptance_scope": "Singleplayer40FPS with both monitors ON; user explicitly deferred multiplayer. Five full scenarios unchanged; targetUNMET."
+}

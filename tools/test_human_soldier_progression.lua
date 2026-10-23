@@ -187,6 +187,34 @@ local beforeRemoved=nativeTableCalls
 check(Rules:ProgressionState(bot)==nil and nativeTableCalls==beforeRemoved,
     "removed NextBot resolved stale state or crossed native table boundary")
 
+-- A foreign Soldier provider remains authoritative even for engine NextBots.
+-- It may also change ordinary progression before declining the incarnation.
+local canonicalStateFor, foreignCalls = System.StateFor, 0
+local foreignProfile = {actorType="ai",level=3}
+System.StateFor = function(self, actor)
+    if actor == bot then foreignCalls=foreignCalls+1;return foreignProfile end
+    return canonicalStateFor(self,actor)
+end
+check(Rules:ProgressionState(bot)==foreignProfile and foreignCalls==1,
+    "foreign provider was bypassed for removed NextBot")
+bot._isValid=true
+check(Rules:ProgressionState(bot)==foreignProfile and foreignCalls==2,
+    "foreign provider was bypassed for live NextBot")
+local changedDuringProvider={actorType="ai",level=4}
+System.StateFor = function(self, actor)
+    if actor == bot then
+        entityFields[bot]={LODProgressionState=changedDuringProvider}
+        return nil
+    end
+    return canonicalStateFor(self,actor)
+end
+check(Rules:ProgressionState(bot)==changedDuringProvider,
+    "ordinary progression was read before foreign provider callback")
+System.StateFor=canonicalStateFor
+entityFields[bot]={LODProgressionState=replacement}
+check(Rules:ProgressionState(bot)==replacement,
+    "restored canonical provider retained foreign or cached progression")
+
 -- 9. Automatic advancement does not enter Hero feat/class choice flow
 local unresolvedChoice = false
 for _, draft in ipairs(lumpSoldier.pendingFeatSlots or {}) do

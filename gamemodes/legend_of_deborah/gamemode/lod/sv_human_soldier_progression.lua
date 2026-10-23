@@ -149,7 +149,14 @@ end
 if not Rules.LODHumanSoldierStateWrapped then
     Rules.LODHumanSoldierStateWrapped = true
     local base = Rules.ProgressionState
+    local canonicalStateFor = System.StateFor
     function Rules:ProgressionState(actor)
+        -- The canonical provider rejects NextBots by type before reading any
+        -- incarnation data. Keep foreign providers live, but avoid dispatching
+        -- that empty branch for every ordinary AI/status/movement query.
+        if type(actor) == "NextBot" and System.StateFor == canonicalStateFor then
+            return base(self, actor)
+        end
         local soldier = System:StateFor(actor)
         return soldier or base(self, actor)
     end

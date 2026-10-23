@@ -1,3 +1,11 @@
+# Current checkpoint — measured query costs; guarded NPC dispatch candidate
+
+Four fresh controls/profile/profile/control normalD20 runs finish:21.502/21.820/21.169/21.822FPS. Controlmean21.662/profilemean21.494; ranges overlap, no calibrated overhead/significance claim. Both sparse profiles repeat ProgressionState~46.6/48.6ms/s, lifecycleBind~46.6/50.8ms/s and SoldierStateFor~34.8/40.7ms/s; inclusive nested samples overlap. Derived/reconciliation is much smaller. Both20provider identity inspections pass; all owned games stop. [Exact evidence and limits](validation/STEAM_DECK_QUERY_PROFILE_20261023.json).
+
+Candidate avoids the canonical human-Soldier provider's empty NextBot dispatch while its function identity is unchanged. Every query still uses the existing live base resolver. Foreign providers, return/error semantics and callback changes remain. No profile/table/validity cache. New foreign-provider transition tests plus existing Hero/Soldier/removed/inherited/nil/false cases, native-API available/unavailable, Lua5.4/LuaJIT, lifecycle/status/actor/sharedAI B29/120manifest/syntax/diff pass. This is not native performance evidence.
+
+Next fixed freshP,C,C,P,P,C60s original-source comparison, actual native source/provider/result parity before FPS and normal workload/input/settings/bothON proof. No CPU profiler/sampler/JIT/GC/affinity tuning. Reject noise or pacing/correctness regression; no predicted FPS gain. [Candidate finite gate](validation/STEAM_DECK_NPC_DISPATCH_20261023.json). TargetUNMET; all five full singleplayer scenario gates UNVERIFIED; multiplayer deferred; PR7draft/maincec10 unchanged.
+
 # Current checkpoint — singleplayer focus; targeted query attribution
 
 User clarification2026-10-23: current goal is singleplayer40FPS on the actual Deck with both monitors ON, followed by validated publication to main. Defer multiplayer and remote-host access; neither blocks this current scope. All five frozen singleplayer scenarios, normal gameplay/graphics/counts, three warmed180s uncapped repeats, pacing criteria and separate40cap remain required. The preceding six-scenario/access notes are historical; do not ask again for multiplayer access for this current goal.
