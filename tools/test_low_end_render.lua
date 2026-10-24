@@ -9,7 +9,8 @@ local supportProbe = arg and arg[1] == '--support-probe'
 local supportGate = arg and arg[1] == '--support-gate'
 local viewProbe = arg and arg[1] == '--view-probe'
 local viewGate = arg and arg[1] == '--view-gate'
-local override = baseline or parity or stateProbe or kindProbe or supportProbe or supportGate or viewProbe or viewGate or arg and arg[1] == '--source'
+local boundsPhaseGate = arg and arg[1] == '--bounds-phase-gate'
+local override = baseline or parity or stateProbe or kindProbe or supportProbe or supportGate or viewProbe or viewGate or boundsPhaseGate or arg and arg[1] == '--source'
 local meshPath = override and assert(arg[2]) or 'gamemodes/legend_of_deborah/gamemode/lod/cl_textured_box.lua'
 local entityPath = override and assert(arg[3]) or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua'
 local sharedPath = override and arg[5] or 'gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua'
@@ -667,6 +668,37 @@ if not baseline then
  e.GetBoxMins=getter;assert(e:Think()==true and e.thinkAt>now,'ready datatables did not reschedule')
 end
 resetScene()
+-- The one-second polling budget remains intact, with fixed phases preventing
+-- a complete generation cohort from waking on the same ordinary render frame.
+if not override or boundsPhaseGate then
+ local savedNow=now
+ for _,fps in ipairs({23,60,120}) do
+  resetScene();now=100;local cohort={}
+  for id=1,1280 do
+   local e=box(Vector(1000,0,0),1);e.EntIndex=function()return id end
+   assert(e:Think()==true and e.thinkAt>now and e.thinkAt<=now+1)
+   cohort[#cohort+1]=e
+  end
+  local maximum,total=0,0
+  for tick=1,5*fps do
+   now=100+tick/fps;local callbacks=0
+   for _,e in ipairs(cohort)do
+    if now>=e.thinkAt then
+     assert(e:Think()==true and e.thinkAt>now and e.thinkAt<=now+1)
+     callbacks=callbacks+1
+    end
+   end
+   if tick>fps then maximum=math.max(maximum,callbacks);total=total+callbacks end
+  end
+  assert(maximum<=80,'periodic bounds callbacks still wake a full cohort: '..maximum)
+  assert(total>=4*1280-80 and total<=4*1280+80,'polling cadence dropped work')
+  local e=cohort[1];fire('NotifyShouldTransmit',e,true)
+  assert(e.thinkAt==now and e._LODNextBoundsRefresh==0,'transmission notification delayed bounds')
+  assert(e:Think()==true and e.thinkAt>now and e.thinkAt<=now+1)
+  print('BOUNDS_PHASE_PASS fps='..fps..' entities=1280 peak_callbacks='..maximum..' maximum_interval=1 immediate_transmit_retry=true')
+ end
+ now=savedNow;resetScene()
+end
 -- Every generated drawing route borrows the same validated snapshot, including
 -- grates and the underdeck. A direct call with different arguments falls back
 -- to the raw API even when the owner carries a valid generated snapshot.

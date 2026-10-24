@@ -1,3 +1,9 @@
+# Current checkpoint — stagger static bounds polling within existing one-second budget
+
+Hostingdiagnostic L23.648/D32 42.042/D32 45.020/L23.014FPS; dedicatedp9543.578/39.377,longdrops6.665/4.183sFAIL. Differenthosting/runtime/tick/networkconfounds, notSPacceptance. [Rows/limits](validation/STEAM_DECK_HOSTING_HUD_20261024.json). NativeClientSimpeak38.63ms motivates3sThinkobserver:1253staticboxes3759calls/28.448ms, three1372callbackframes8.312–11.387msLua body; all1374providersrestored/ownedStop. Rolefalsefieldmicroonly~6.8%, no candidate. [Diagnostic](validation/STEAM_DECK_CLIENT_THINK_20261024.json).
+
+Focusedsource sets64fixedbinarypollphases perEntIndex, everydeadline0<delta<=1sec; DT/transmit immediate retries unchanged, incompletegettersstayawake. L54simulation1280actors23/60/120FPSpeaks60/40/20vsparent1280, samecadence; existingrenderer/120manifest/syntaxpass. LuaJITweakfixture andgeometryfullupdateerrorssameparent/current, notfullgreen. Next6freshP,C,C,P,P,C60s actualsourcecomparison, beforeafterfile/function/deadline/HUD/renderer/resources/input/bothON; AFTERFPSonly3sclientThinkmechanismprobe/restoreeacharm. No duringFPSobserver. Retainonlyrepeatablepacinggain/avgFPSmaintained, confirmifpromising. [Finitegate](validation/STEAM_DECK_BOUNDS_PHASES_20261024.json). SP40UNMET; fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — native collision groups provide no proven replacement
 
 Actual22group sweep restoredbothactors/allownedStop/bothON. InteractiveDebris3 andScriptedNPC19failfourNPCpairqueries. Traceequal0/5/7/8/9/17notphysicalcontactequivalence; no nativepair/player/loot/Climber/Lurkerbehavior proof or FPSgain. No newsourcecandidate. [Matrix/raw/limits](validation/STEAM_DECK_COLLISION_GROUPS_20261024.json).

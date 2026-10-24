@@ -1,0 +1,63 @@
+{
+  "status": "Source candidate only, measured sourceFPS pending; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED",
+  "parent": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+  "hypothesis": "NativeClientSimpeak38.63ms/protectedLua35.48ms andnew3sclassprofile show1253staticboxeswakeasoneperiodiccohort. Give64fixedbinaryphasepollingdeadlines keyedEntIndex withinoriginalmaximum1second. Avoidroundedframecohortmerging. Spreadwork, notremovebodyqueries ordelaynativeDT/transmit notification retries. No serverAI/timing/physics/content/graphics change.",
+  "static": {
+    "phase_simulation": "1280actors5s at23/60/120renderFPS peak60/40/20callbacks; totalcadence4x1280\u00b180 afterwarmup andallnextdeadlines0<delta<=1, immediateNotifyShouldTransmitretry. Parentfailsfullcohort1280negative. Existingrender/view/UV/material/state/weakowner L54 pass;120source/repeatinstaller/syntax/diff pass.",
+    "classified_failures": {
+      "old_source_phase_negative": {
+        "exit_code": 1,
+        "last_lines": [
+          "LOW_END_DRAWABLE_TABLE_WORK drawable=120 passes=120 submissions=14400 native_entity_field_reads=172800 native_fps_measured=false",
+          "LOW_END_KIND_LIFETIME_PASS: declared native proxies; same-pass transitions; pre-write reentrancy; missed initial replication; legacy/replaced accessors; weak/copy Lua-table fallback; invalid native guards; full update/transmission; missing datatables; removal",
+          "LOW_END_STATIC_THINK entities=120 frames=600 callbacks=1200 native_fps_measured=false",
+          "/home/deck/Downloads/the-legend-of-deborah/tools/test_low_end_render.lua: ...oads/the-legend-of-deborah/tools/test_low_end_render.lua:693: periodic bounds callbacks still wake a full cohort: 1280"
+        ]
+      },
+      "old_source_luajit": {
+        "exit_code": 1,
+        "last_lines": [
+          "stack traceback:",
+          "\t[C]: in function 'assert'",
+          "\ttools/test_low_end_render.lua:645: in main chunk",
+          "\t[C]: at 0x5649ee686e00"
+        ]
+      },
+      "current_source_luajit_interpreter": {
+        "exit_code": 1,
+        "last_lines": [
+          "stack traceback:",
+          "\t[C]: in function 'assert'",
+          "\ttools/test_low_end_render.lua:645: in main chunk",
+          "\t[C]: at 0x55c6e6ecae00"
+        ]
+      },
+      "current_fullupdate": {
+        "exit_code": 1,
+        "last_lines": [
+          "/home/deck/Downloads/the-legend-of-deborah/tools/test_geometry_fullupdate.lua: ...end_of_deborah/entities/entities/lod_keycard/cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+        ]
+      },
+      "parent_fullupdate": {
+        "exit_code": 1,
+        "last_lines": [
+          "/home/deck/deborah-recovery/exact-interior-control/tools/test_geometry_fullupdate.lua: ...end_of_deborah/entities/entities/lod_keycard/cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+        ]
+      }
+    },
+    "limitations": "Parent/currentLuaJIT both fail sameweak-ownerfixture (joffalso); fullupdateparent/currentsame lod_keycard/cl_init.lua6 missinghook.Remove. No fullgreen or nativevisualacceptance claim. Matrix336 unchangedcount; existinglowenddefaultnowincludesphasegate."
+  },
+  "frozen_comparison": {
+    "sequence": [
+      "parent",
+      "candidate",
+      "candidate",
+      "parent",
+      "parent",
+      "candidate"
+    ],
+    "seconds_each": 60,
+    "scope": "SamefrozenDeckWin64/P10singleplayerD20lowercourt-v1stress/57hostiles/1820models/seeds/Wizardresources/input/graphics/15WAC/bothON. Exactclstaticfile/hash/Thinkfunction/phase-deadline andretainedHUD/renderer/resource/input/displaybeforeafter. No duringFPSobservers. AfterFPSonly3sclientThinkprobe/independentretirementeacharmquantifiescohortmechanismwithoutchangingtimedcapture.",
+    "decision": "RetainonlyrepeatablepacingbenefitwithavgFPS/correctnesspreserved; rejectnoise/regression. Confirmunchangedifpromising. FullfiveSP3x180swarm+cap40+ordinaryrelease remain."
+  }
+}
