@@ -1,3 +1,9 @@
+# Current checkpoint — bounds polling phases rejected after six source captures
+
+P,C,C,P,P,C22.145/22.645/21.926/21.457/23.035/22.746FPS. Means22.212/22.439(+1.020%), p9583.128/82.669ms, p99118.773/116.457ms, 1%low6.549/6.291, longest10.495/17.727s. Reject: overlapping/mixed FPS and worse prolonged drops despite smaller callback cohorts. Restore runtime and implementation-specific phase test byte-exacteef47658. All native source/deadline/HUD/renderer/resources/input/bothON checks pass; postFPS observers independently restored/allownedStop. [All rows/raw/mechanism/limits](validation/STEAM_DECK_BOUNDS_PHASES_20261024.json).
+
+Next attribute dominant server NextBot Lua cost at current authority; reuse bounded diagnostics and avoid repeated tiny lookup/caching candidates already rejected. No AI cadence/content/collision/graphics changes. Both monitors ON always. SP40UNMET; fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — stagger static bounds polling within existing one-second budget
 
 Hostingdiagnostic L23.648/D32 42.042/D32 45.020/L23.014FPS; dedicatedp9543.578/39.377,longdrops6.665/4.183sFAIL. Differenthosting/runtime/tick/networkconfounds, notSPacceptance. [Rows/limits](validation/STEAM_DECK_HOSTING_HUD_20261024.json). NativeClientSimpeak38.63ms motivates3sThinkobserver:1253staticboxes3759calls/28.448ms, three1372callbackframes8.312–11.387msLua body; all1374providersrestored/ownedStop. Rolefalsefieldmicroonly~6.8%, no candidate. [Diagnostic](validation/STEAM_DECK_CLIENT_THINK_20261024.json).

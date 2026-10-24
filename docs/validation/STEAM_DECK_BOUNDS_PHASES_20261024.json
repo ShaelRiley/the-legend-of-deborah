@@ -1,5 +1,5 @@
 {
-  "status": "Source candidate only, measured sourceFPS pending; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED",
+  "status": "REJECTED after six native source comparisons; runtime and implementation-specific phase test restored byte-exact eef47658. SP40UNMET; fivefullSP/releaseordinary/40capUNVERIFIED.",
   "parent": "eef47658d0b64815395827834eb6cc72dd2b0d35",
   "hypothesis": "NativeClientSimpeak38.63ms/protectedLua35.48ms andnew3sclassprofile show1253staticboxeswakeasoneperiodiccohort. Give64fixedbinaryphasepollingdeadlines keyedEntIndex withinoriginalmaximum1second. Avoidroundedframecohortmerging. Spreadwork, notremovebodyqueries ordelaynativeDT/transmit notification retries. No serverAI/timing/physics/content/graphics change.",
   "static": {
@@ -59,5 +59,238 @@
     "seconds_each": 60,
     "scope": "SamefrozenDeckWin64/P10singleplayerD20lowercourt-v1stress/57hostiles/1820models/seeds/Wizardresources/input/graphics/15WAC/bothON. Exactclstaticfile/hash/Thinkfunction/phase-deadline andretainedHUD/renderer/resource/input/displaybeforeafter. No duringFPSobservers. AfterFPSonly3sclientThinkprobe/independentretirementeacharmquantifiescohortmechanismwithoutchangingtimedcapture.",
     "decision": "RetainonlyrepeatablepacingbenefitwithavgFPS/correctnesspreserved; rejectnoise/regression. Confirmunchangedifpromising. FullfiveSP3x180swarm+cap40+ordinaryrelease remain."
-  }
+  },
+  "candidate": "f6558d3588e004ca7269c482fc97bb3c150956ae",
+  "raw": "/home/deck/deborah-benchmarks/bounds-phases-source/f6558d35/original-source-series",
+  "runs": [
+    {
+      "index": 1,
+      "variant": "parent",
+      "tested": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/bounds-phases-source/f6558d35/original-source-series/arm01-parent",
+      "frames": 1327,
+      "seconds": 59.922326,
+      "fps": 22.14533527954172,
+      "median_ms": 35.398,
+      "p95_ms": 85.525,
+      "p99_ms": 132.91,
+      "max_ms": 332.059,
+      "one_percent_low_fps": 5.893501067986587,
+      "below_budget_seconds": 58.63439999999988,
+      "longest_below_budget_seconds": 13.432719000000002,
+      "below_budget_runs_ge2s": 7,
+      "acceptance_passed": false
+    },
+    {
+      "index": 2,
+      "variant": "candidate",
+      "tested": "f6558d3588e004ca7269c482fc97bb3c150956ae",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/bounds-phases-source/f6558d35/original-source-series/arm02-candidate",
+      "frames": 1358,
+      "seconds": 59.968559,
+      "fps": 22.645199795446143,
+      "median_ms": 35.764,
+      "p95_ms": 81.119,
+      "p99_ms": 104.483,
+      "max_ms": 344.885,
+      "one_percent_low_fps": 6.430885891279443,
+      "below_budget_seconds": 59.074655000000035,
+      "longest_below_budget_seconds": 15.922750999999998,
+      "below_budget_runs_ge2s": 5,
+      "acceptance_passed": false
+    },
+    {
+      "index": 3,
+      "variant": "candidate",
+      "tested": "f6558d3588e004ca7269c482fc97bb3c150956ae",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/bounds-phases-source/f6558d35/original-source-series/arm03-candidate",
+      "frames": 1314,
+      "seconds": 59.929883000000004,
+      "fps": 21.925622648053558,
+      "median_ms": 36.22,
+      "p95_ms": 80.38,
+      "p99_ms": 118.627,
+      "max_ms": 354.036,
+      "one_percent_low_fps": 6.231250611997829,
+      "below_budget_seconds": 58.759147999999925,
+      "longest_below_budget_seconds": 21.260167000000013,
+      "below_budget_runs_ge2s": 5,
+      "acceptance_passed": false
+    },
+    {
+      "index": 4,
+      "variant": "parent",
+      "tested": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/bounds-phases-source/f6558d35/original-source-series/arm04-parent",
+      "frames": 1286,
+      "seconds": 59.934591999999995,
+      "fps": 21.456724023415394,
+      "median_ms": 38.004,
+      "p95_ms": 85.335,
+      "p99_ms": 120.196,
+      "max_ms": 346.372,
+      "one_percent_low_fps": 6.583555190702805,
+      "below_budget_seconds": 58.42508900000001,
+      "longest_below_budget_seconds": 9.140219000000004,
+      "below_budget_runs_ge2s": 7,
+      "acceptance_passed": false
+    },
+    {
+      "index": 5,
+      "variant": "parent",
+      "tested": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/bounds-phases-source/f6558d35/original-source-series/arm05-parent",
+      "frames": 1381,
+      "seconds": 59.952492,
+      "fps": 23.03490570500389,
+      "median_ms": 36.213,
+      "p95_ms": 78.523,
+      "p99_ms": 103.214,
+      "max_ms": 350.243,
+      "one_percent_low_fps": 7.1701843249527535,
+      "below_budget_seconds": 58.61276799999995,
+      "longest_below_budget_seconds": 8.911962999999998,
+      "below_budget_runs_ge2s": 8,
+      "acceptance_passed": false
+    },
+    {
+      "index": 6,
+      "variant": "candidate",
+      "tested": "f6558d3588e004ca7269c482fc97bb3c150956ae",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/bounds-phases-source/f6558d35/original-source-series/arm06-candidate",
+      "frames": 1364,
+      "seconds": 59.966728,
+      "fps": 22.745946718987234,
+      "median_ms": 36.128,
+      "p95_ms": 86.508,
+      "p99_ms": 126.261,
+      "max_ms": 349.147,
+      "one_percent_low_fps": 6.211874619522679,
+      "below_budget_seconds": 58.93477999999994,
+      "longest_below_budget_seconds": 15.99826300000001,
+      "below_budget_runs_ge2s": 7,
+      "acceptance_passed": false
+    }
+  ],
+  "arithmetic_run_means": {
+    "parent": {
+      "fps": 22.212321669320335,
+      "median_ms": 36.538333333333334,
+      "p95_ms": 83.12766666666667,
+      "p99_ms": 118.77333333333333,
+      "one_percent_low_fps": 6.549080194547382,
+      "below_budget_seconds": 58.557418999999946,
+      "longest_below_budget_seconds": 10.494967
+    },
+    "candidate": {
+      "fps": 22.438923054162313,
+      "median_ms": 36.037333333333336,
+      "p95_ms": 82.669,
+      "p99_ms": 116.457,
+      "one_percent_low_fps": 6.291337040933317,
+      "below_budget_seconds": 58.92286099999997,
+      "longest_below_budget_seconds": 17.72706033333334
+    }
+  },
+  "mean_fps_change_percent": 1.020160738780218,
+  "post_fps_mechanism": [
+    {
+      "index": 1,
+      "variant": "parent",
+      "seconds": 3.0527599000000123,
+      "static_box": {
+        "calls": 3759,
+        "ms": 27.743500000241283,
+        "completed": 3759,
+        "class": "lod_static_box",
+        "max_ms": 0.07170000000655818
+      },
+      "max_all_class_callbacks": 1381,
+      "max_all_class_body_ms": 11.137000000275066,
+      "restored": true
+    },
+    {
+      "index": 2,
+      "variant": "candidate",
+      "seconds": 3.0067015000000197,
+      "static_box": {
+        "calls": 3702,
+        "ms": 28.681499999123616,
+        "completed": 3702,
+        "class": "lod_static_box",
+        "max_ms": 0.47150000000328873
+      },
+      "max_all_class_callbacks": 248,
+      "max_all_class_body_ms": 1.3099999999042211,
+      "restored": true
+    },
+    {
+      "index": 3,
+      "variant": "candidate",
+      "seconds": 3.0562366999999995,
+      "static_box": {
+        "calls": 3778,
+        "ms": 27.307000001599135,
+        "completed": 3778,
+        "class": "lod_static_box",
+        "max_ms": 0.10720000000219443
+      },
+      "max_all_class_callbacks": 262,
+      "max_all_class_body_ms": 0.9983999999292337,
+      "restored": true
+    },
+    {
+      "index": 4,
+      "variant": "parent",
+      "seconds": 3.067336299999994,
+      "static_box": {
+        "calls": 3759,
+        "ms": 28.854700000749745,
+        "completed": 3759,
+        "class": "lod_static_box",
+        "max_ms": 0.12250000000335604
+      },
+      "max_all_class_callbacks": 1381,
+      "max_all_class_body_ms": 12.166800000443345,
+      "restored": true
+    },
+    {
+      "index": 5,
+      "variant": "parent",
+      "seconds": 3.029021499999999,
+      "static_box": {
+        "calls": 3759,
+        "ms": 22.381899999942334,
+        "completed": 3759,
+        "class": "lod_static_box",
+        "max_ms": 0.0722000000052958
+      },
+      "max_all_class_callbacks": 1381,
+      "max_all_class_body_ms": 7.709799999844336,
+      "restored": true
+    },
+    {
+      "index": 6,
+      "variant": "candidate",
+      "seconds": 3.0395321999999965,
+      "static_box": {
+        "calls": 3721,
+        "ms": 27.750300000946027,
+        "completed": 3721,
+        "class": "lod_static_box",
+        "max_ms": 0.08510000000683249
+      },
+      "max_all_class_callbacks": 242,
+      "max_all_class_body_ms": 0.7774000002598314,
+      "restored": true
+    }
+  ],
+  "decision": "Reject: mean FPS +1.0202% with overlapping ranges/mixed pairs; p95/p99 minor mixed changes, 1% low worsens and longest continuous drops rise10.495to17.727s. Reduced callback cohorts do not demonstrate improved overall frame pacing. No confirmation series justified. Preserve failed evidence; no acceptance gain claim.",
+  "gates": "All six before/after exact source/Think/deadline/phase/HUD/renderer/resources/input/bothON checks passed. PostFPS3s observers independently restored. All owned games stopped/root install restored. PreFPS proof allows initialized just-overdue deadlines because bridge can run before ClientSim; bounds futureinterval<=1 and candidatephaseidentity still checked. No FPS observer or benchmark criterion change."
 }

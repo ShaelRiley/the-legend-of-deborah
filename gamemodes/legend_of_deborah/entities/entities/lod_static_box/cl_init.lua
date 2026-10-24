@@ -182,15 +182,7 @@ function ENT:Think()
     local now = CurTime()
     if now >= (self._LODNextBoundsRefresh or 0) and refreshRenderBounds(self) then
         syncNativeDrawQueue(self)
-        -- Spawned boxes otherwise wake together once per second. Distribute
-        -- their polling within that same maximum interval, on fixed binary
-        -- phases so rounded frames do not gradually merge the cohorts again.
-        -- Datatable/transmit notifications still request an immediate Think.
-        local index = self.EntIndex and self:EntIndex() or 0
-        local phase = type(index)=="number" and (index % 64)/64 or 0
-        local deadline = math.floor(now) + phase
-        if deadline <= now then deadline = deadline + 1 end
-        self._LODNextBoundsRefresh = deadline
+        self._LODNextBoundsRefresh = now + 1
     end
     -- Bounds already refresh once per second. Let Source sleep until that
     -- deadline instead of invoking an otherwise empty callback every frame.
