@@ -1,3 +1,9 @@
+# Current checkpoint — exact-cell shortcut rejected after six source captures
+
+P,C,C,P,P,C22.344/22.663/21.820/21.839/25.061/23.233FPS. Means23.082/22.572(-2.208%),p9578.576/85.485ms,p99106.719/115.342ms,longest12.239/9.522s. Reject: avgFPS/tails worse despite native29727queryparity/micro~30% mechanismbenefit. Restoreall4runtimefiles byte-exacte464ba7d; keepuseful9900float32/nativeboundary/custom/config/large/tinycellregressions; removeobsolete implementation-specific no-center assertion. CI336includes new behavior gate. All6source/native/HUD/renderer/resources/input/bothONchecks pass/ownedStop/rootinstallrestore, allFAIL40. EarlierprivateisvectorCassertwrong: failedbeforeFPS, archived/excluded; correctedvalidationrestartedsix, no failedcapture replaced. [Allmetrics/raw/limits](validation/STEAM_DECK_EXACT_INTERIOR_20261024.json).
+
+Next investigate whether native collision rules can remove engine-to-Lua callback cost while preserving the complete current ray/hull/physical/player/loot/world matrix. Prior group19 failsfourNPCraytraces; do not reuse it or alter mechanical collisions on unsupported assumptions. Read current native collision gates first; source changes only after equivalence/measured benefit. BothmonitorsONalways. SP40UNMET; fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — exact-cell interior source candidate
 
 Navigationprofiles repeat~690kExactCell/~70s71.775/71.221ms/sinclusive; nestedcoordinatesoverlap, Distance1.262/2.978. Firstprofilecontroller metadatafloor15vsactual8failed afterFPS despite8restoredtrue; originalfailurequalified/preserved, remaining2completedafterfix. [Rows/raw/limits](validation/STEAM_DECK_NAVIGATION_CPU_20261024.json). Short3sinstructionexposure restored/errors0 but sparse/linecapoverflow/VMbias, notCPUtime. [Census](validation/STEAM_DECK_INSTRUCTION_EXPOSURE_20261024.json).

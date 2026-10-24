@@ -15,8 +15,6 @@ local function sorted(t) local a={} for k in pairs(t or {}) do a[#a+1]=k end tab
 local function alive(e) return IsValid(e) and not e.LODDead and e:Health()>0 end
 local function state() return LOD.RunManager and LOD.RunManager.State end
 local function nav() return LOD.MazeNavigator end
-local latticeFloor = math.floor
-if not debug or not debug.getinfo or debug.getinfo(latticeFloor,"S").what~="C" then latticeFloor=nil end
 local function identity(p)
     return LOD.RunManager and LOD.RunManager:IdentityOf(p)
 end
@@ -93,39 +91,12 @@ function S:ExactCell(graph,pos)
     -- Native Vector component access crosses the engine boundary. Borrow its
     -- coordinates only inside this query; never retain membership across calls.
     local px,py,pz=pos.x,pos.y,pos.z
-    local ox,size,width=m.Origin.x,m.CellSize,m.Width
-    local rx=(px-ox)/size+(width+1)*.5
-    local x=math.floor(rx+.5)
-    local oy,ySize,height=m.Origin.y,m.CellSize,m.Height
-    local ry=(py-oy)/ySize+(height+1)*.5
-    local y=math.floor(ry+.5)
-    local oz,levelHeight=m.Origin.z,m.LevelHeight
-    local rz=(pz-oz+24)/levelHeight
-    local z=math.floor(rz)
+    local x=math.floor((px-m.Origin.x)/m.CellSize+(m.Width+1)*.5+.5)
+    local y=math.floor((py-m.Origin.y)/m.CellSize+(m.Height+1)*.5+.5)
+    local z=math.floor((pz-m.Origin.z+24)/m.LevelHeight)
     local c=graph.Cells[LOD.MazeGenerator.CellKey(x,y,z)]
     if not c then return nil end
     local navigator=nav();local cx,cy,cz
-    local builder=LOD.MazeBuilder
-    local nc=navigator and navigator.LODLatticeCellCenters
-    local bc=builder and builder.LODLatticeCellCenters
-    -- Grid decoding already proves containment well inside a regular cell.
-    -- Native center construction rounds the offset and sum to float32. With
-    -- both magnitudes below 2^20 their combined error is below one world unit;
-    -- reserve that full unit on every face, leaving all boundaries exact below.
-    -- Changed/custom providers, non-native inputs and irregular cells fall back.
-    if nc and bc and nc.config==m and bc.config==m
-        and navigator.CellCenter==nc.center and navigator.CellCenterCoordinates==nc.coordinates
-        and builder.CellCenter==bc.center and builder.CellCenterCoordinates==bc.coordinates
-        and math.floor==latticeFloor and LOD.MazeGenerator.CellKey==LOD.MazeGenerator.LODLatticeCellKey
-        and getmetatable(m)==nil and type(c)=="table"
-        and rawget(c,"x")==x and rawget(c,"y")==y and rawget(c,"z")==z
-        and isvector and isvector(pos) and isvector(m.Origin)
-        and size==ySize and size>2 and levelHeight>2
-        and math.abs(ox)+math.abs((x-(width+1)*.5)*size)<1048576
-        and math.abs(oy)+math.abs((y-(height+1)*.5)*size)<1048576
-        and math.abs(oz)+math.abs(z*levelHeight)<1048576
-        and math.abs(rx-x)<.5-1/size and math.abs(ry-y)<.5-1/size
-        and rz-z>1/levelHeight and rz-z<1-1/levelHeight then return c end
     if navigator.CellCenterCoordinates then cx,cy,cz=navigator:CellCenterCoordinates(c)
     else local p=navigator:CellCenter(c);cx,cy,cz=p.x,p.y,p.z end
     if math.abs(px-cx)>m.CellSize*.5 or math.abs(py-cy)>m.CellSize*.5

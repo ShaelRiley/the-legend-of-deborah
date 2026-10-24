@@ -267,15 +267,6 @@ if latticeParent then
     m.Origin,m.CellSize,m.Width,m.Height,m.LevelHeight=oldOrigin,oldSize,oldWidth,oldHeight,oldLevelHeight
     m.Origin=Vector(oldOrigin.x,oldOrigin.y,oldOrigin.z)
     local point=N:CellCenter(startCell)+Vector(0,0,12)
-    local oldHook,oldMask,oldCount=debug.gethook()
-    assert(not oldHook,'lattice mechanism probe needs an unowned debug hook')
-    local centerCalls=0
-    debug.sethook(function()
-        if debug.getinfo(2,'f').func==N.CellCenterCoordinates then centerCalls=centerCalls+1 end
-    end,'c')
-    local ok,err=pcall(function()assert(S:ExactCell(g,point)==startCell)end)
-    debug.sethook();assert(ok,err)
-    assert(centerCalls==0,'regular interior still queries cell-center coordinates')
     -- A live custom coordinate provider is called even for an interior point.
     local old=N.CellCenterCoordinates;local calls=0
     N.CellCenterCoordinates=function()calls=calls+1;return 1e8,1e8,1e8 end

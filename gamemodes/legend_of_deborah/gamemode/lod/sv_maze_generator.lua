@@ -474,4 +474,3 @@ end
 function MazeGenerator.CellKey(x, y, z)
     return key(x, y, z)
 end
-MazeGenerator.LODLatticeCellKey = MazeGenerator.CellKey

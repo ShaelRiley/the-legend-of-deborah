@@ -50,10 +50,6 @@ function MazeNavigator:CellCenterCoordinates(cell)
     return p.x, p.y, p.z
 end
 
-MazeNavigator.LODLatticeCellCenters = {
-    config = MC, center = nativeCellCenter, coordinates = MazeNavigator.CellCenterCoordinates
-}
-
 function MazeNavigator:WorldToCell(graph, pos)
     if not graph or not pos then return nil end
 

@@ -57,12 +57,6 @@ function MazeBuilder:CellCenterCoordinates(cell)
     return cached.px, cached.py, cached.pz
 end
 
--- Identify the exact providers/configuration implementing the regular lattice.
--- Consumers must compare current functions before using its geometric identity.
-MazeBuilder.LODLatticeCellCenters = {
-    config = MC, center = nativeCellCenter, coordinates = MazeBuilder.CellCenterCoordinates
-}
-
 local function spawnBox(pos, ang, mins, maxs, kind)
     local ent = ents.Create("lod_static_box")
     if not IsValid(ent) then return nil end
