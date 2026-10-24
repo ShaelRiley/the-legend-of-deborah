@@ -81,6 +81,14 @@ def main() -> None:
         run(server,'idempotent server reload')
         run((GAME/'lod/cl_warden_dancefloor.lua').read_text(),'client dancefloor')
         run(checks,'dancefloor checks')
+        run(setup,'fresh foreign-provider setup')
+        run(phase_source(args.phase_source.read_text()),'fresh production methods')
+        run('LOD.Warden.Tick=function(self,e) self.foreignCalls=(self.foreignCalls or 0)+1; '
+            'return "foreign" end','foreign provider before extension')
+        run(server,'legacy foreign extension')
+        run(server,'legacy foreign extension reload')
+        run('assert(LOD.Warden:Tick({LODArchetypeId="soldier"})=="foreign"); '
+            'assert(LOD.Warden.foreignCalls==1)','legacy foreign provider called exactly once')
         print('PASS: four Lua syntax checks; server/client load-order and distribution checks')
     finally:
         lua.lua_close(state)

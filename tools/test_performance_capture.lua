@@ -22,7 +22,9 @@ function math.Clamp(n,a,b) return math.max(a,math.min(b,n)) end
 ents={GetCount=function() return 3000 end}
 function ScrW() return 1280 end;function ScrH() return 800 end
 game={GetMap=function() return 'gm_flatgrass' end,SinglePlayer=function() return true end}
-local settings={lod_reduced_effects='1',lod_wall_batches='0',fps_max='300',mat_vsync='0',lod_third_person='0',lod_map_scale='1',lod_map_opacity='1'}
+local settings={lod_reduced_effects='1',lod_wall_batches='0',fps_max='300',mat_vsync='0',lod_third_person='0',lod_map_scale='1',lod_map_opacity='1',
+    gmod_mcore_test='1',cl_threaded_bone_setup='1',net_usesocketsforloopback='0',
+    net_graph='1',cl_showfps='0',cl_showpos='0',developer='0'}
 GetConVar=function(name)
     if not settings[name] then return end
     return {GetString=function() return settings[name] end,GetBool=function() return settings[name]=='1' end}
@@ -62,7 +64,7 @@ paths[#paths+1]='gamemodes/legend_of_deborah/content/sound/lod/gps_praise_bank.m
 for _,path in ipairs({root..'sh_progression_props.lua','gamemodes/legend_of_deborah/gamemode/shared.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_keycard/shared.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_keycard/cl_init.lua'}) do paths[#paths+1]=path end
-for _,path in ipairs({root..'cl_combat_roll_feed.lua',root..'cl_entry_safety.lua',root..'sh_die_logger.lua',root..'sh_feedback_language.lua',
+for _,path in ipairs({root..'cl_combat_roll_feed.lua',root..'cl_feedback_language.lua',root..'cl_entry_safety.lua',root..'sh_die_logger.lua',root..'sh_feedback_language.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/cl_init.lua'}) do paths[#paths+1]=path end
 for _,path in ipairs({root..'cl_pushback_fx.lua',root..'cl_loop_audio.lua',root..'cl_boss_encounter.lua'}) do paths[#paths+1]=path end
@@ -142,6 +144,8 @@ assert(out.start_configuration.lod_wall_batches=='0' and out.windows[1].renderer
     'renderer preference/live windows missing from frame evidence')
 assert(out.start_configuration.lod_third_person=='0' and out.start_configuration.lod_map_scale=='1'
     and out.start_configuration.lod_map_opacity=='1','saved camera/map preferences absent from FPS comparison')
+assert(out.start_configuration.gmod_mcore_test=='1' and out.start_configuration.cl_threaded_bone_setup=='1'
+    and out.start_configuration.net_usesocketsforloopback=='0','restart-sensitive runtime settings missing')
 assert(files['DATA:legend_of_deborah/performance_client_latest.txt']:find('p99_ms=120.000',1,true))
 assert(not next(hooks.PreRender) and not next(hooks.Think),'sampler left recurring hooks')
 local afterReads=reads;assert(afterReads-startReads==2,'per-frame hashing/I/O occurred')
@@ -233,6 +237,15 @@ assert(math.abs(out.active.one_percent_low_fps-1000/1100)<1e-7)
 local timeline=out.frame_timeline.samples_ms
 A:SavePerformanceCapture(out)
 assert(timeline[1]==900 and timeline[3]==1100,'repeat save changed raw evidence')
+A:StartPerformanceCapture(30)
+settings.gmod_mcore_test='0';settings.cl_threaded_bone_setup='0';settings.net_usesocketsforloopback='1';settings.net_graph='0'
+out=A:StopPerformanceCapture('manual')
+assert(out.start_configuration.gmod_mcore_test=='1' and out.end_configuration.gmod_mcore_test=='0')
+assert(out.start_configuration.net_graph=='1' and out.end_configuration.net_graph=='0'
+    and out.start_configuration.cl_showfps=='0' and out.start_configuration.cl_showpos=='0'
+    and out.start_configuration.developer=='0','diagnostic overlay condition not recorded')
+assert(table.concat(out.configuration_changes,',')=='cl_threaded_bone_setup,gmod_mcore_test,net_graph,net_usesocketsforloopback',
+    'runtime setting change silently reused the starting condition')
 print('PERFORMANCE_CAPTURE_PASS: opt-in/idle; frame clock and percentiles; active/staged/dead/menu separation; all 36 pacing windows with live renderer history; native/default route without batch-preparation delay; build/settings/resource evidence including experimental preference; preparation excluded or explicitly timed out; stalled renderer still measured; true no-render wait; 65536 limit; reset/refresh/shutdown/throwing and silent I/O cleanup')
 print('PERFORMANCE_PACING_PASS: ordered bounded timeline; exact active ranges; slowest-1%-mean FPS; elapsed time below40; contiguous two-second drop; inactive gaps; terminal unrendered gap; repeat-save chronology. Synthetic clocks only.')
 

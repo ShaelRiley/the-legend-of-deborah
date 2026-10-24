@@ -1,0 +1,252 @@
+{
+  "tested_source": "ebdc8606e6aa86f6b42a5e60335bc1d564c95ce0",
+  "status": "Diagnostic complete; 40FPS target UNMET; all six complete acceptance scenarios UNVERIFIED",
+  "raw": "/home/deck/deborah-benchmarks/native-hierarchy/ebdc8606",
+  "complete_run": "normal-d20-vprof60-complete-run2",
+  "report_completion_markers": 2,
+  "active_capture": {
+    "frames": 1232,
+    "seconds": 59.973118,
+    "fps": 20.54253707469403,
+    "median_ms": 39.591,
+    "p95_ms": 90.791,
+    "p99_ms": 132.141,
+    "max_ms": 356.899,
+    "one_percent_low_fps": 5.9443490046187595,
+    "below_budget_seconds": 59.10867300000003,
+    "longest_below_budget_seconds": 29.224872999999988,
+    "below_budget_runs_ge2s": 3
+  },
+  "engine_profile": {
+    "frames": 0,
+    "seconds_scope": "From vprof_on through vprof_off; includes capture preparation and IPC, not identical to active gameplay window. Inclusive engine/Lua scopes overlap. Self means exclude instrumented native children but include unscoped work/GC/dispatch. No exact Lua-function/GC attribution inferred.",
+    "top_self_rows": [
+      {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 17730.004,
+        "self_ms": 17628.47,
+        "per_frame_ms": 11.151,
+        "self_per_frame_ms": 11.09,
+        "count": 168634,
+        "peak_ms": 80.23,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CBaseEntity::PhysicsDispatchThink > NextBotCombatCharacter::DoThink > INextBot::Update > LuaBotBehaviour > CLuaInterface::CallFunctionProtected"
+      },
+      {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 5605.044,
+        "self_ms": 5154.81,
+        "per_frame_ms": 3.525,
+        "self_per_frame_ms": 3.24,
+        "count": 56231,
+        "peak_ms": 281.0,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CLuaGamemode::Call > CLuaInterface::CallFunctionProtected"
+      },
+      {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 4802.823,
+        "self_ms": 4447.32,
+        "per_frame_ms": 3.021,
+        "self_per_frame_ms": 2.8,
+        "count": 1589,
+        "peak_ms": 13.59,
+        "path": "CEngine::Frame > CViewRender::Render > CViewRender::DrawOpaqueRenderables > CLuaGamemode::CallNoReturns > CLuaInterface::CallFunctionProtected"
+      },
+      {
+        "name": "_Host_RunFrame_Server",
+        "inclusive_ms": 40495.682,
+        "self_ms": 4353.87,
+        "per_frame_ms": 25.469,
+        "self_per_frame_ms": 2.74,
+        "count": 4733,
+        "peak_ms": 313.05,
+        "path": "CEngine::Frame > _Host_RunFrame_Server"
+      },
+      {
+        "name": "surface.DrawText",
+        "inclusive_ms": 1965.058,
+        "self_ms": 1965.02,
+        "per_frame_ms": 1.236,
+        "self_per_frame_ms": 1.24,
+        "count": 743210,
+        "peak_ms": 3.27,
+        "path": "CEngine::Frame > CViewRender::Render > VGui_DrawHud > CEngineVGui::Paint > CLuaGamemode::Call > CLuaInterface::CallFunctionProtected > surface.DrawText"
+      },
+      {
+        "name": "CClientLeafSystem::ComputeTranslucentRenderLeaf",
+        "inclusive_ms": 1945.017,
+        "self_ms": 1895.99,
+        "per_frame_ms": 1.223,
+        "self_per_frame_ms": 1.19,
+        "count": 1589,
+        "peak_ms": 29.14,
+        "path": "CEngine::Frame > CViewRender::Render > CClientLeafSystem::ComputeTranslucentRenderLeaf"
+      },
+      {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 1781.803,
+        "self_ms": 1736.7,
+        "per_frame_ms": 1.121,
+        "self_per_frame_ms": 1.09,
+        "count": 14203,
+        "peak_ms": 12.48,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CBasePlayer::PhysicsSimulate > CLuaGamemode::CallNoReturns > CLuaInterface::CallFunctionProtected"
+      },
+      {
+        "name": "Client SimulateEntities",
+        "inclusive_ms": 3879.928,
+        "self_ms": 1673.94,
+        "per_frame_ms": 2.44,
+        "self_per_frame_ms": 1.05,
+        "count": 1589,
+        "peak_ms": 20.14,
+        "path": "CEngine::Frame > Client SimulateEntities"
+      },
+      {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 3692.002,
+        "self_ms": 1358.12,
+        "per_frame_ms": 2.322,
+        "self_per_frame_ms": 0.85,
+        "count": 6356,
+        "peak_ms": 29.68,
+        "path": "CEngine::Frame > CViewRender::Render > VGui_DrawHud > CEngineVGui::Paint > CLuaGamemode::Call > CLuaInterface::CallFunctionProtected"
+      },
+      {
+        "name": "C_BaseAnimating::SetupBones",
+        "inclusive_ms": 1266.057,
+        "self_ms": 1158.87,
+        "per_frame_ms": 0.796,
+        "self_per_frame_ms": 0.73,
+        "count": 88984,
+        "peak_ms": 1.23,
+        "path": "CEngine::Frame > Client SimulateEntities > C_RopeKeyframe::CalculateEndPointAttachment > C_BaseAnimating::SetupBones"
+      },
+      {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 1734.897,
+        "self_ms": 1080.5,
+        "per_frame_ms": 1.091,
+        "self_per_frame_ms": 0.68,
+        "count": 216214,
+        "peak_ms": 31.61,
+        "path": "CEngine::Frame > CViewRender::Render > CViewRender::DrawOpaqueRenderables > CLuaInterface::CallFunctionProtected"
+      },
+      {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 1049.762,
+        "self_ms": 1049.76,
+        "per_frame_ms": 0.66,
+        "self_per_frame_ms": 0.66,
+        "count": 221529,
+        "peak_ms": 3.76,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CBaseEntity::PhysicsDispatchThink > NextBotCombatCharacter::DoThink > INextBot::Update > NextBotGroundLocomotion::Update > NextBotGroundLocomotion::UpdateGroundConstraint > CLuaGamemode::CallFinish > CLuaInterface::CallFunctionProtected"
+      },
+      {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 2059.456,
+        "self_ms": 968.25,
+        "per_frame_ms": 1.295,
+        "self_per_frame_ms": 0.61,
+        "count": 7428,
+        "peak_ms": 64.39,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > Timer::Cycle > CLuaInterface::CallFunctionProtected"
+      },
+      {
+        "name": "CEngine::Frame",
+        "inclusive_ms": 70596.387,
+        "self_ms": 966.31,
+        "per_frame_ms": 44.4,
+        "self_per_frame_ms": 0.61,
+        "count": 1589,
+        "peak_ms": 359.59,
+        "path": "CEngine::Frame"
+      },
+      {
+        "name": "CNavMesh::GetNearestNavArea",
+        "inclusive_ms": 951.905,
+        "self_ms": 951.9,
+        "per_frame_ms": 0.599,
+        "self_per_frame_ms": 0.6,
+        "count": 129136,
+        "peak_ms": 3.46,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CBaseEntity::PhysicsDispatchThink > NextBotCombatCharacter::DoThink > CNavMesh::GetNearestNavArea"
+      },
+      {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 992.107,
+        "self_ms": 928.55,
+        "per_frame_ms": 0.624,
+        "self_per_frame_ms": 0.58,
+        "count": 66523,
+        "peak_ms": 4.81,
+        "path": "CEngine::Frame > _Host_RunFrame_Input > CLuaGamemode::CallFinish > CLuaInterface::CallFunctionProtected"
+      },
+      {
+        "name": "_Host_RunFrame_Input",
+        "inclusive_ms": 1973.122,
+        "self_ms": 925.26,
+        "per_frame_ms": 1.241,
+        "self_per_frame_ms": 0.58,
+        "count": 4733,
+        "peak_ms": 8.82,
+        "path": "CEngine::Frame > _Host_RunFrame_Input"
+      },
+      {
+        "name": "BuildRenderablesList",
+        "inclusive_ms": 946.864,
+        "self_ms": 924.43,
+        "per_frame_ms": 0.596,
+        "self_per_frame_ms": 0.58,
+        "count": 1589,
+        "peak_ms": 2.09,
+        "path": "CEngine::Frame > CViewRender::Render > BuildRenderablesList"
+      }
+    ]
+  },
+  "retirement": {
+    "owned_game_stopped": true,
+    "vprof_native_process_retired": true
+  },
+  "earlier_incomplete_hierarchy": {
+    "raw": "/home/deck/deborah-benchmarks/native-hierarchy/ebdc8606/normal-d20-vprof60-run1",
+    "active": {
+      "frames": 1304,
+      "seconds": 59.970864,
+      "fps": 21.743892167369808,
+      "median_ms": 38.018,
+      "p95_ms": 85.915,
+      "p99_ms": 117.912,
+      "max_ms": 346.268,
+      "one_percent_low_fps": 6.308989047595014,
+      "below_budget_seconds": 59.15313300000008,
+      "longest_below_budget_seconds": 32.06760700000004,
+      "below_budget_runs_ge2s": 4
+    },
+    "limit": "Flat report complete; hierarchy cut short by owned process shutdown. Partial448rows preserved; no full server hierarchy claimed. Collector now waits for two report-end markers before copying/stopping. Repeat is a new diagnostic, not replacement/discarded FPS."
+  },
+  "conditions": "Actual Deck LCD/Jupiter512GB SteamOS3.8.28 Win64GMod2026.09.17/P10.0-4b. Same frozen D20lowercourt-v1; one actual human listen host, normal seeds/resources/57roamers/1820models/actions/graphics; both monitors ON internal1280x800@60/external1920x1080@75. No Lua CPU observer, active external sampler, JIT/GC/affinity change. Native one-tick startup report retained. Short instrumented diagnostic, not acceptance.",
+  "findings": [
+    "NextBot Lua remains the largest self scope (~11.09ms/rendered frame); server inclusive25.469ms/frame. Rendering has opaque Lua2.8ms/frame, text1.24ms/frame and leaf classification1.19ms/frame.",
+    "File-open peaks include166.44ms and other scopes, but the report includes source verification and capture preparation. Do not attribute those peaks to active-gameplay asset stalls without timestamp evidence.",
+    "Do not repeat rejected generic entity-index wrappers. Proposed adjacent movement-field borrowing was not implemented: native/custom provider and reentrant callback fallback costs/correctness need an isolated mechanism gate first. No source gain claimed.",
+    "Changing static render group is not supported as a fix: reference Source leaf classification iterates renderables independently of that group; GMod fork details remain unverified. Existing UnlitGeneric wall batches omit required bump lighting/visibility and remain excluded."
+  ],
+  "next_experiment": {
+    "hypothesis": "Compiled machine-code byte capacity is independent of trace-count and trace-length limits. Lua dominates CPU, so a larger public maxmcode request may improve steady gameplay if this capacity is constraining execution. Saturation, eviction and native numeric defaults cannot be observed and are not assumed. Earlier standalone maxtrace and maxrecord screens failed; prior Linux allocator/cache probes used a different runtime.",
+    "setting": "Only public jit.opt.start maxmcode=16384(KiB) in both realms, before canonical scenario setup. Stock parameters untouched in controls; no JIT on/off/flush or other optimization flags.",
+    "sequence": [
+      "stock",
+      "16384",
+      "16384",
+      "stock"
+    ],
+    "duration_seconds_each": 60,
+    "conditions": "Same normal frozen D20, fresh owned process every arm, source/settings/resources/physical inputs verified, both monitors ON. No active profiler/sampler. Existing generator interpreter crash guard remains. Fresh publicAPI receipts require accepted request, invalid-option rejection and unchanged enabled flags; they do not prove saturation/effective performance.",
+    "decision": "Reject within noise or pacing/behavior regression. Clear benefit needs further comparison/regression tests before source retention. No final40FPS acceptance from this short screen. Whole process stop restores stock; no exact in-process numeric restoration claim."
+  },
+  "primary_references": [
+    "https://wiki.facepunch.com/gmod/jit.opt.start",
+    "https://raw.githubusercontent.com/LuaJIT/LuaJIT/v2.1/src/lj_jit.h",
+    "https://raw.githubusercontent.com/ValveSoftware/source-sdk-2013/master/src/game/client/clientleafsystem.cpp"
+  ]
+}

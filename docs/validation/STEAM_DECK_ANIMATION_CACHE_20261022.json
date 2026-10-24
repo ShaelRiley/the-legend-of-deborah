@@ -1,0 +1,239 @@
+{
+  "status": "REJECTED; animation runtime restoredexactlyto62d587cb. TargetUNMET; allsixfullgatesUNVERIFIED.",
+  "parent": "62d587cb8af56875f084b424f8c060f7a92a79d2",
+  "device": "ActualLCDSteamDeck/SteamOS3.8.28/Windows64Gmod25375506/Proton10.0-4b;internal1280x800@60,external1920x1080@75,BOTHONalways;15WACautoGPU;normalfrozenD20listenhost",
+  "baseline": {
+    "frames": 1339,
+    "seconds": 59.967147,
+    "fps": 22.328892851947753,
+    "median_ms": 37.434,
+    "p95_ms": 77.102,
+    "p99_ms": 116.449,
+    "max_ms": 370.191,
+    "one_percent_low_fps": 6.400257473214923,
+    "below_budget_seconds": 59.059670999999966,
+    "longest_below_budget_seconds": 25.236335000000018,
+    "below_budget_runs_ge2s": 5
+  },
+  "raw": "/home/deck/deborah-benchmarks/cpu-scheduling-d20/62d587cb",
+  "cpu_accounting": {
+    "window_s": 64.916977943,
+    "main_task": {
+      "tid": 83362,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 62.43,
+      "one_core_percent": 96.16898687861952,
+      "run_seconds": 62.431083962,
+      "runqueue_wait_seconds": 0.41979916,
+      "timeslices": 88501
+    },
+    "gpu": [
+      {
+        "engine": "drm-engine-gfx",
+        "seconds": 4.074248071,
+        "busy_percent": 6.276090169473648
+      },
+      {
+        "engine": "drm-engine-compute",
+        "seconds": 0.001434388,
+        "busy_percent": 0.002209572973744182
+      }
+    ],
+    "observer": "Boundary-only counters; no active-window sampler. Not frame-timer attribution."
+  },
+  "broad_profile": {
+    "bindings": 2244,
+    "duplicates_skipped": 68,
+    "restored": true,
+    "raw": "/home/deck/deborah-benchmarks/cpu-scheduling-d20/62d587cb/both-on75-broad-profile60-run2",
+    "caveat": "1in128 inclusivewalltimeestimates overlap. CellCenter wrapper changes function-identity fallback, so its timing is excluded. Firstbroad alias lease failedrestoration; processstopped andrawpreserved."
+  },
+  "hypothesis": "Existing animation signature cache repeatedly reads native entity fields. Borrow native instance Lua table for current owned cache hit; keep fresh model/razor/PlayerHold and original fallback/invalidation. No animation/AI cadence or content change.",
+  "focused_gate": "Parent fails new native-shaped owned-cache lookup test. Candidate passes exact same test plus false/replacedcache,model,razor,skeleton/copiedweaponhold,inherited/missingcachefallback.",
+  "regressions": [
+    "enemy_attack_animationPASS",
+    "skeleton_animationPASS",
+    "hostile_hurt_pose23PASS",
+    "bestiary_b29_dispatchPASS",
+    "fallen_heroesPASS",
+    "skeleton_heroPASS",
+    "SPOT03Razor55PASS",
+    "event_skeleton_lifecyclePASS viaSQLitefixture",
+    "syntax/diffPASS"
+  ],
+  "next": "Measure native per-call player/deploymentquery duplication; avoidpersistedidentity/statecaches andpreservecallback/overridefreshness. ContinuefullbenchmarkcoveragewithBOTHmonitorsONalways.",
+  "updated_utc": "2026-10-22T21:58:29.658889+00:00",
+  "native_micro": {
+    "raw": "/home/deck/deborah-benchmarks/animation-instance-cache/eb1f5631/native-animation-probe-run1",
+    "actors": 57,
+    "assertions": 5763,
+    "cache_fields_restored": true,
+    "queries_each_arm": 114000,
+    "parent_ms": [
+      184.5471,
+      183.5761,
+      184.0935
+    ],
+    "candidate_ms": [
+      96.9939,
+      99.4895,
+      97.8898
+    ],
+    "scope": "Installedoriginalcandidatevsdetachedexactparentresolver. Equalchecksums; narrowfunctioncostonly,notFPSacceptance."
+  },
+  "source_comparison": {
+    "raw": "/home/deck/deborah-benchmarks/animation-instance-cache/eb1f5631/original-source-series",
+    "frozen_sequence": "P,C,C,P,P,C; no replacements",
+    "parent_control": "2d1c3d3c313fa72073a1b61fd10190f90b1c03c1 onlyanimationrestored;119/115/52manifestmatchescandidate",
+    "candidate": "eb1f5631807ba3bb27da929800a5dd51b626531e",
+    "parent_valid_mean_fps": 21.83688163973993,
+    "candidate_valid_mean_fps": 21.232388523957646,
+    "valid_runs": [
+      {
+        "arm": "01-parent",
+        "sha": "2d1c3d3c313fa72073a1b61fd10190f90b1c03c1",
+        "metrics": {
+          "frames": 1274,
+          "seconds": 59.962608,
+          "fps": 21.24657419837376,
+          "median_ms": 37.959,
+          "p95_ms": 86.341,
+          "p99_ms": 119.183,
+          "max_ms": 357.796,
+          "one_percent_low_fps": 6.287498276983644,
+          "below_budget_seconds": 59.02644800000001,
+          "longest_below_budget_seconds": 22.317115000000012,
+          "below_budget_runs_ge2s": 5
+        },
+        "raw": "/home/deck/deborah-benchmarks/animation-instance-cache/eb1f5631/original-source-series/01-parent"
+      },
+      {
+        "arm": "02-candidate",
+        "sha": "eb1f5631807ba3bb27da929800a5dd51b626531e",
+        "metrics": {
+          "frames": 1266,
+          "seconds": 59.963685,
+          "fps": 21.11277850919269,
+          "median_ms": 38.113,
+          "p95_ms": 87.916,
+          "p99_ms": 134.476,
+          "max_ms": 428.716,
+          "one_percent_low_fps": 5.639118128680337,
+          "below_budget_seconds": 59.026911000000005,
+          "longest_below_budget_seconds": 21.732521999999978,
+          "below_budget_runs_ge2s": 4
+        },
+        "raw": "/home/deck/deborah-benchmarks/animation-instance-cache/eb1f5631/original-source-series/02-candidate"
+      },
+      {
+        "arm": "04-parent",
+        "sha": "2d1c3d3c313fa72073a1b61fd10190f90b1c03c1",
+        "metrics": {
+          "frames": 1338,
+          "seconds": 59.941221,
+          "fps": 22.321867617611595,
+          "median_ms": 36.962,
+          "p95_ms": 79.003,
+          "p99_ms": 105.652,
+          "max_ms": 364.241,
+          "one_percent_low_fps": 6.951792792877789,
+          "below_budget_seconds": 59.354795999999986,
+          "longest_below_budget_seconds": 23.374741999999983,
+          "below_budget_runs_ge2s": 5
+        },
+        "raw": "/home/deck/deborah-benchmarks/animation-instance-cache/eb1f5631/original-source-series/04-parent"
+      },
+      {
+        "arm": "05-parent",
+        "sha": "2d1c3d3c313fa72073a1b61fd10190f90b1c03c1",
+        "metrics": {
+          "frames": 1316,
+          "seconds": 59.975746,
+          "fps": 21.94220310323443,
+          "median_ms": 37.677,
+          "p95_ms": 79.566,
+          "p99_ms": 115.223,
+          "max_ms": 367.311,
+          "one_percent_low_fps": 6.1910495995938675,
+          "below_budget_seconds": 59.02216000000006,
+          "longest_below_budget_seconds": 11.408280000000008,
+          "below_budget_runs_ge2s": 8
+        },
+        "raw": "/home/deck/deborah-benchmarks/animation-instance-cache/eb1f5631/original-source-series/05-parent"
+      },
+      {
+        "arm": "06-candidate",
+        "sha": "eb1f5631807ba3bb27da929800a5dd51b626531e",
+        "metrics": {
+          "frames": 1280,
+          "seconds": 59.94755,
+          "fps": 21.351998538722597,
+          "median_ms": 38.356,
+          "p95_ms": 80.033,
+          "p99_ms": 100.782,
+          "max_ms": 432.773,
+          "one_percent_low_fps": 6.264513794218432,
+          "below_budget_seconds": 59.517701999999964,
+          "longest_below_budget_seconds": 19.760366000000005,
+          "below_budget_runs_ge2s": 6
+        },
+        "raw": "/home/deck/deborah-benchmarks/animation-instance-cache/eb1f5631/original-source-series/06-candidate"
+      }
+    ],
+    "failed_attempt": {
+      "arm": "03-candidate",
+      "sha": "eb1f5631807ba3bb27da929800a5dd51b626531e",
+      "raw": "/home/deck/deborah-benchmarks/animation-instance-cache/eb1f5631/original-source-series/03-candidate",
+      "reason": "Ordinary playerdeath47.314865s/node157,HP0; only47.275485active seconds in60s capture. FAIL/INCOMPLETE, retained, no replacement.",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1011,
+          "seconds": 47.275485,
+          "fps": 21.38529091769233,
+          "median_ms": 37.548,
+          "p95_ms": 85.429,
+          "p99_ms": 129.549,
+          "max_ms": 365.706,
+          "one_percent_low_fps": 5.671149624518339,
+          "below_budget_seconds": 46.44917499999995,
+          "longest_below_budget_seconds": 22.36247,
+          "below_budget_runs_ge2s": 3
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1011,
+          "seconds": 47.275485,
+          "fps": 21.38529091769233,
+          "median_ms": 37.548,
+          "p95_ms": 85.429,
+          "p99_ms": 129.549,
+          "max_ms": 365.706,
+          "one_percent_low_fps": 5.671149624518339,
+          "below_budget_seconds": 46.44917499999995,
+          "longest_below_budget_seconds": 22.36247,
+          "below_budget_runs_ge2s": 3
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "insufficient active gameplay duration",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    },
+    "decision": "REJECT; restore runtime animation exactlyto62d587cb. No repeatable wholeFPSbenefit; rangesoverlap,tailsinconsistent,onecandidateordinarydeath/incomplete. No statisticalslowdownclaim.",
+    "coverage": "5complete60s captures havefreshnativefunction/filehash,normal211HP/20clip/3items/1820models andbothON receipts. Consoleperiodicticks>=60s+manualhookstopcorroboratephysicalinput. Manualhookstopwritesnostructuredendreceipt. Fullphases/upperfloor/Hector/rescue/4humans remainunverified."
+  },
+  "ci": {
+    "eb1_run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39858438817",
+    "result": "318/334FAIL;7NEWsharedB28fixturecountfailuresattools/test_bestiary_b28.lua:157 plus9knownparentfailures. Notallbaseline.",
+    "raw": "/home/deck/deborah-recovery/evidence/eb1f5631-ci/full-failures.log",
+    "repair": "B28fixture115sourcecount+explicitanimationinclusion;all7affectedgatesPASSlocally;allbehaviorassertionsretained. NewCIpending.",
+    "source_vr_audio": "eb1PASS"
+  },
+  "retained": "119total/115server/52clientwatchedsources includinganimation; cachevalue/invalidationregressionskept; noanimationruntimecandidate."
+}

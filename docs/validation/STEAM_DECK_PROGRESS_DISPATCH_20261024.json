@@ -1,0 +1,60 @@
+{
+  "status": "No source candidate: only~2.3% native micro benefit; not sufficient evidence of material gameplay benefit. SP40UNMET/fullfiveSP/releaseordinary/40capUNVERIFIED.",
+  "sha": "d4011061608ba561466dfefc4f959b0a9deb744c",
+  "raw": "/home/deck/deborah-benchmarks/progress-dispatch-micro/d4011061/native-readonly-v1",
+  "native": {
+    "rows": [
+      {
+        "variant": "parent",
+        "milliseconds": 16.42310000001146,
+        "queries": 57000,
+        "index": 1
+      },
+      {
+        "variant": "candidate",
+        "milliseconds": 16.025400000003742,
+        "queries": 57000,
+        "index": 2
+      },
+      {
+        "variant": "candidate",
+        "milliseconds": 15.761600000004705,
+        "queries": 57000,
+        "index": 3
+      },
+      {
+        "variant": "parent",
+        "milliseconds": 16.128699999995888,
+        "queries": 57000,
+        "index": 4
+      },
+      {
+        "variant": "parent",
+        "milliseconds": 16.422199999993836,
+        "queries": 57000,
+        "index": 5
+      },
+      {
+        "variant": "candidate",
+        "milliseconds": 16.077699999996753,
+        "queries": 57000,
+        "index": 6
+      }
+    ],
+    "custom_provider_fallback": true,
+    "resolver_never_installed": true,
+    "passed": true,
+    "restored": true,
+    "scope": "Noninstalled native function micro: skip only canonical Soldier StateFor for current native NextBot type, still query original ordinary provider live. Public Soldier provider replacement falls back to full original resolver. No profile/validity/result cache; no game/actor/RNG/movement/source/JIT change. Loop call-shape/order/warmup bias; not FPS proof. Need fresh source comparisons before any gain claim.",
+    "parity_queries": 60,
+    "actors": 57,
+    "players": 1
+  },
+  "means_ms": {
+    "parent": 16.32466666666706,
+    "candidate": 15.954900000001734
+  },
+  "percent_time_reduction": 2.265079429893313,
+  "retirement": "Owned native game stopped, displaykeepawake/watch active, both outputs ON. No resolver installed/production source changed.",
+  "next": "Additional ordinary release-config D20 capture, explicitly separate from frozen developer-density benchmark. No changed frozen counts/criteria or acceptance substitution."
+}

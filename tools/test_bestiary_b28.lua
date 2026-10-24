@@ -154,7 +154,13 @@ local sourceFile=assert(io.open('lua/autorun/server/lod_population_observability
 local sourceBytes=sourceFile:read('*a');sourceFile:close()
 local declaration=assert(sourceBytes:match('local watched=(%b{})'))
 local watched={};for path in declaration:gmatch('"([^"]+)"') do watched[#watched+1]=path end
-assert(#watched==110,'source coverage changed without fixture review')
+assert(#watched==116,'source coverage changed without fixture review')
+local animationWatched=false
+for _,path in ipairs(watched)do if path=='gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_animation.lua' then animationWatched=true end end
+assert(animationWatched,'native animation authority missing from installed source coverage')
+local generatorWatched=false
+for _,path in ipairs(watched)do if path=='gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua' then generatorWatched=true end end
+assert(generatorWatched,'cell-key authority must be included in source identity')
 local manifest={};for _,p in ipairs(watched) do manifest[#manifest+1]=string.rep('a',64)..'  '..p;memory['GAME:'..p]='exact' end
 memory['DATA:legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
 memory['DATA:legend_of_deborah/dev_build.txt']='test-checkout clean'

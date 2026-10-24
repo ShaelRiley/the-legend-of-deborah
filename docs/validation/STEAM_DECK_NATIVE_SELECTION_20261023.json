@@ -1,0 +1,437 @@
+{
+  "state": "REJECTED; runtime renderer restored byte-exact e07177e2; useful lifecycle regressions retained",
+  "hypothesis": "Weakentity/weakvalue map stores exact current native selection. Active render owns the pass token; map retains neither entity nor completed view, even if unknownviewfieldsreferenceentity. No acrosspassvisibility/pose reuse.",
+  "parent": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
+  "sequence": [
+    "parent",
+    "candidate",
+    "candidate",
+    "parent",
+    "parent",
+    "candidate"
+  ],
+  "seconds_each": 60,
+  "conditions": "FrozenD20lowercourt-v1 normalresources,seeds,AI,count,physicalactions,graphics/power unchanged; bothmonitorsON1280x800@60/external1920x1080@75. Noactiveprofiler/memorytrace/sampler/GC/JIT/affinitychange. GC200/200.",
+  "gates": "ActualclientfileSHA256/Draw+Pre/Postfunctionlines,120manifest116server52client,normalresources/geometry/input/focus/bothON. Existingnativevisibility/300drawparity/weakcleanup+samepassrecordreplacement/manifest/syntax/diffPASS. Retainonlysupportedgain/pacing; do notreplacefailedarms.",
+  "ownership_regression": "Lua5.4 and LuaJITCLI correctedcasePASS; exact7132085d strongvaluecandidate fails removedentityownership underLuaJITCLI. Lua5.4ephemeronbehavior didnotexposeit. CLIgcfixturesnotactualGMod/FPSproof.",
+  "interrupted_startup": {
+    "raw": "/home/deck/deborah-benchmarks/native-selection/7132085d/original-source-series",
+    "reason": "OwnershipreviewinterruptedfirstparentstartupbeforeFPS; no candidateexecuted/no performance seen. Alllogsretained/ownedunitstopped; noFPSfiles.",
+    "next": "SameP,C,C,P,P,C60sbenchmark/seeds/conditions; correctedcandidate source"
+  },
+  "decision": "Averagegainnotrepeated, rangesoverlapandlongestslowepisodesworseinbothseries. Confirmationp99improvesbutdoesnotestablishanoverall40FPS/pacinggain. All12FAIL; noconfirmedcausalregression/statisticalsignificanceclaimed.",
+  "series": {
+    "original-source-series": {
+      "runs": [
+        {
+          "arm": "01-parent",
+          "sha": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
+          "metrics": {
+            "frames": 1178,
+            "seconds": 59.953506999999995,
+            "fps": 19.648558673973817,
+            "median_ms": 40.2,
+            "p95_ms": 92.53,
+            "p99_ms": 153.886,
+            "max_ms": 360.75,
+            "one_percent_low_fps": 5.246846645166254,
+            "below_budget_seconds": 59.80809800000005,
+            "longest_below_budget_seconds": 19.262839999999997,
+            "below_budget_runs_ge2s": 4
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 205,
+          "fresh_native_schedule_log": false,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/original-source-series/01-parent"
+        },
+        {
+          "arm": "02-candidate",
+          "sha": "e3271bb81b3a51f66db29719e07ec8bfde2a22bc",
+          "metrics": {
+            "frames": 1184,
+            "seconds": 59.977837,
+            "fps": 19.740625191268567,
+            "median_ms": 40.368,
+            "p95_ms": 91.808,
+            "p99_ms": 137.463,
+            "max_ms": 348.396,
+            "one_percent_low_fps": 5.409250359038992,
+            "below_budget_seconds": 59.78760800000002,
+            "longest_below_budget_seconds": 36.32693399999997,
+            "below_budget_runs_ge2s": 2
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 207,
+          "fresh_native_schedule_log": false,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/original-source-series/02-candidate"
+        },
+        {
+          "arm": "03-candidate",
+          "sha": "e3271bb81b3a51f66db29719e07ec8bfde2a22bc",
+          "metrics": {
+            "frames": 1257,
+            "seconds": 59.949677,
+            "fps": 20.967585863723667,
+            "median_ms": 38.028,
+            "p95_ms": 89.571,
+            "p99_ms": 141.341,
+            "max_ms": 358.316,
+            "one_percent_low_fps": 5.640505423996793,
+            "below_budget_seconds": 59.258775999999955,
+            "longest_below_budget_seconds": 32.02015099999996,
+            "below_budget_runs_ge2s": 2
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 210,
+          "fresh_native_schedule_log": false,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/original-source-series/03-candidate"
+        },
+        {
+          "arm": "04-parent",
+          "sha": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
+          "metrics": {
+            "frames": 1206,
+            "seconds": 59.925647,
+            "fps": 20.124939160022755,
+            "median_ms": 39.829,
+            "p95_ms": 91.85,
+            "p99_ms": 137.721,
+            "max_ms": 370.354,
+            "one_percent_low_fps": 4.968495913985399,
+            "below_budget_seconds": 59.51104699999996,
+            "longest_below_budget_seconds": 29.466094999999978,
+            "below_budget_runs_ge2s": 3
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 205,
+          "fresh_native_schedule_log": false,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/original-source-series/04-parent"
+        },
+        {
+          "arm": "05-parent",
+          "sha": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
+          "metrics": {
+            "frames": 1138,
+            "seconds": 59.9474,
+            "fps": 18.98330870062755,
+            "median_ms": 43.494,
+            "p95_ms": 92.479,
+            "p99_ms": 124.408,
+            "max_ms": 446.335,
+            "one_percent_low_fps": 5.563911726685819,
+            "below_budget_seconds": 59.690811000000025,
+            "longest_below_budget_seconds": 58.82212800000002,
+            "below_budget_runs_ge2s": 1
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 210,
+          "fresh_native_schedule_log": false,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/original-source-series/05-parent"
+        },
+        {
+          "arm": "06-candidate",
+          "sha": "e3271bb81b3a51f66db29719e07ec8bfde2a22bc",
+          "metrics": {
+            "frames": 1207,
+            "seconds": 59.964225,
+            "fps": 20.128668385191336,
+            "median_ms": 39.883,
+            "p95_ms": 93.284,
+            "p99_ms": 131.3,
+            "max_ms": 341.421,
+            "one_percent_low_fps": 5.952735281862016,
+            "below_budget_seconds": 59.59778899999993,
+            "longest_below_budget_seconds": 58.82551999999991,
+            "below_budget_runs_ge2s": 1
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 210,
+          "fresh_native_schedule_log": false,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/original-source-series/06-candidate"
+        }
+      ],
+      "means": {
+        "parent": {
+          "fps": 19.585602178208042,
+          "p95_ms": 92.28633333333333,
+          "p99_ms": 138.67166666666668,
+          "longest_below_budget_seconds": 35.85035433333333
+        },
+        "candidate": {
+          "fps": 20.278959813394522,
+          "p95_ms": 91.55433333333333,
+          "p99_ms": 136.70133333333334,
+          "longest_below_budget_seconds": 42.39086833333328
+        }
+      }
+    },
+    "confirmation-source-series": {
+      "runs": [
+        {
+          "arm": "01-parent",
+          "sha": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
+          "metrics": {
+            "frames": 1412,
+            "seconds": 59.916062,
+            "fps": 23.566301804013754,
+            "median_ms": 34.811,
+            "p95_ms": 80.461,
+            "p99_ms": 105.7,
+            "max_ms": 379.71,
+            "one_percent_low_fps": 7.006261729649846,
+            "below_budget_seconds": 58.69338399999983,
+            "longest_below_budget_seconds": 10.039037000000002,
+            "below_budget_runs_ge2s": 6
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 211,
+          "fresh_native_schedule_log": true,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/confirmation-source-series/01-parent"
+        },
+        {
+          "arm": "02-candidate",
+          "sha": "e3271bb81b3a51f66db29719e07ec8bfde2a22bc",
+          "metrics": {
+            "frames": 1297,
+            "seconds": 59.939505,
+            "fps": 21.63848366782475,
+            "median_ms": 37.911,
+            "p95_ms": 83.115,
+            "p99_ms": 107.645,
+            "max_ms": 396.688,
+            "one_percent_low_fps": 6.526989099928203,
+            "below_budget_seconds": 58.875640999999945,
+            "longest_below_budget_seconds": 11.49712199999999,
+            "below_budget_runs_ge2s": 6
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 207,
+          "fresh_native_schedule_log": true,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/confirmation-source-series/02-candidate"
+        },
+        {
+          "arm": "03-candidate",
+          "sha": "e3271bb81b3a51f66db29719e07ec8bfde2a22bc",
+          "metrics": {
+            "frames": 1302,
+            "seconds": 59.953771,
+            "fps": 21.716732380353523,
+            "median_ms": 37.796,
+            "p95_ms": 82.375,
+            "p99_ms": 110.695,
+            "max_ms": 325.888,
+            "one_percent_low_fps": 6.862798923913129,
+            "below_budget_seconds": 59.349962999999896,
+            "longest_below_budget_seconds": 35.64899999999997,
+            "below_budget_runs_ge2s": 3
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 211,
+          "fresh_native_schedule_log": true,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/confirmation-source-series/03-candidate"
+        },
+        {
+          "arm": "04-parent",
+          "sha": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
+          "metrics": {
+            "frames": 1274,
+            "seconds": 59.964358,
+            "fps": 21.24595413828995,
+            "median_ms": 38.596,
+            "p95_ms": 83.589,
+            "p99_ms": 131.028,
+            "max_ms": 339.899,
+            "one_percent_low_fps": 5.922168133086608,
+            "below_budget_seconds": 59.04859100000007,
+            "longest_below_budget_seconds": 26.670180999999985,
+            "below_budget_runs_ge2s": 3
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 207,
+          "fresh_native_schedule_log": true,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/confirmation-source-series/04-parent"
+        },
+        {
+          "arm": "05-parent",
+          "sha": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
+          "metrics": {
+            "frames": 1325,
+            "seconds": 59.949517,
+            "fps": 22.1019295284731,
+            "median_ms": 36.601,
+            "p95_ms": 82.526,
+            "p99_ms": 128.041,
+            "max_ms": 339.199,
+            "one_percent_low_fps": 6.214825199162952,
+            "below_budget_seconds": 58.63782400000005,
+            "longest_below_budget_seconds": 13.375904000000002,
+            "below_budget_runs_ge2s": 7
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 210,
+          "fresh_native_schedule_log": true,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/confirmation-source-series/05-parent"
+        },
+        {
+          "arm": "06-candidate",
+          "sha": "e3271bb81b3a51f66db29719e07ec8bfde2a22bc",
+          "metrics": {
+            "frames": 1377,
+            "seconds": 59.944513,
+            "fps": 22.971243423063594,
+            "median_ms": 37.138,
+            "p95_ms": 76.294,
+            "p99_ms": 94.53,
+            "max_ms": 344.197,
+            "one_percent_low_fps": 7.88067753562207,
+            "below_budget_seconds": 59.26308499999997,
+            "longest_below_budget_seconds": 15.423951000000018,
+            "below_budget_runs_ge2s": 5
+          },
+          "native_source_proof": true,
+          "source_counts": [
+            52,
+            116
+          ],
+          "models": [
+            1820,
+            1820
+          ],
+          "route_node": 211,
+          "fresh_native_schedule_log": true,
+          "raw": "/home/deck/deborah-benchmarks/native-selection/e3271bb8/confirmation-source-series/06-candidate"
+        }
+      ],
+      "means": {
+        "parent": {
+          "fps": 22.304728490258935,
+          "p95_ms": 82.192,
+          "p99_ms": 121.58966666666666,
+          "longest_below_budget_seconds": 16.695040666666664
+        },
+        "candidate": {
+          "fps": 22.10881982374729,
+          "p95_ms": 80.59466666666667,
+          "p99_ms": 104.28999999999999,
+          "longest_below_budget_seconds": 20.856690999999994
+        }
+      }
+    }
+  },
+  "session_limit": "Rebootseparateseries; backgroundcodexonecore~38-58%original/~6%confirmation. No pooledcausalFPSestimate. Eachseriescomparedwithinitsowncontrols.",
+  "restored_renderer_sha256": "7bec9bbda2a984eec3b9d393021f9f3b5f0943a8a2e5b13e55adb9e6a5ef347f",
+  "CI": {
+    "sha": "e3271bb81b3a51f66db29719e07ec8bfde2a22bc",
+    "run_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39901552492",
+    "failing_names": [
+      "Bestiary B29 Bilateral Combat Seams",
+      "Active Event Catalog, Bribe Removal & Quiz Placement",
+      "Minigame Shell & Equipment UI Restrictions",
+      "Client Geometry Full-Update Recovery",
+      "Shared Native DamageInfo Lifetime",
+      "Shotgun Native Bullet Aggregation",
+      "Feat: rebalance_20261002",
+      "Retired Cross Feats & Shared Dodge",
+      "Live-GDD Feat Release Gate"
+    ],
+    "same_names_as_670": true,
+    "matrix": [
+      "SYSTEMS_MATRIX 325/334; source_changed=0"
+    ],
+    "same_known_leaf_anchors": {
+      "test_cross_feats_dodge.lua:177": true,
+      "test_event_quiz_generation.lua:164": true,
+      "test_minigame_ui.lua:106": true,
+      "lod_keycard/cl_init.lua:6": true,
+      "test_checkpoint_d_rebalance_20261002.lua:6": true
+    }
+  }
+}

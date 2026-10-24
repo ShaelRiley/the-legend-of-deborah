@@ -31,6 +31,7 @@ local function box(x,kind,mins,maxs)
  function e:GetPos() return self.pos end;function e:GetAngles() return self.ang end
  function e:GetBoxKind() return self.kind end;function e:GetBoxMins() return self.mins end
  function e:GetBoxMaxs() return self.maxs end;function e:SetRenderBounds() end
+ function e:SetNoDraw(value) self.noDraw=value end;function e:GetNoDraw() return self.noDraw or false end
  function e:GetClass() return 'lod_static_box' end
  function e:GetNW2Bool(k,d) local v=self.nw[k];if v==nil then return d end;return v end
  e.GetNW2String=e.GetNW2Bool;e:Initialize();entities[#entities+1]=e;return e
@@ -95,3 +96,129 @@ hooks.NotifyShouldTransmit.LOD_Recover_lod_static_box(late,true);assert(frame()=
 -- Failure/fallback resolution is not sticky across independent render passes.
 material={};assert(frame()==1 and materialCalls==1)
 print('LOW_END_GEOMETRY_PASS: rear-only rejection; camera/rotation/intersection/asymmetry/changed bounds; orthographic/unknown fail-open; floors/stairs/grates/hazards; full update; per-pass material refresh')
+
+-- Exercise the actual Source visibility handoff with declared datatables.
+-- A newly seen or uncertain box always falls back to the original Lua pass.
+for _,e in ipairs(entities) do e:OnRemove(false) end
+late:OnRemove(false)
+CLIENT=true
+dofile('gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua')
+local native=box(200)
+local values={BoxKind=1,BoxMins=Vector(-10,-10,-10),BoxMaxs=Vector(10,10,10)}
+local notifications={}
+function native:GetTable() return self end
+function native:NetworkVar(_,_,name)
+ local owner=self
+ self['Get'..name]=function() return owner and values[name] end
+ self['Set'..name]=function(self,value)
+  if notifications[name] then notifications[name](self,name,values[name],value) end
+  values[name]=value
+ end
+end
+function native:NetworkVarNotify(name,fn) notifications[name]=fn end
+function native:SetNextClientThink(at) self.nextThink=at end
+native:SetupDataTables()
+local nativeDraw=ENT.Draw
+local positionReads=0
+native.GetPos=function(self) positionReads=positionReads+1;return self.pos end
+view={origin=eye,angles=angle_zero,fov=90,aspect=1,znear=1,zfar=10000}
+local function nativeFrame(submitted,between)
+ draws,wires,materialCalls={}, {}, 0
+ hooks.PreRender.LOD_StaticBoxNativeVisibility()
+ hooks.PreDrawOpaqueRenderables.LOD_StaticBoxNativeVisibility(false,false,false)
+ if submitted then native:Draw() end
+ if between then between() end
+ positionReads=0
+ draw(false,false,false)
+ local count=0;for _ in pairs(draws) do count=count+1 end
+ return count,positionReads
+end
+assert(nativeFrame(false)==1,'unobserved native Draw must fail open')
+native:Initialize()
+assert(nativeFrame(false)==0,'fresh declared instance did not use native selection')
+assert(nativeFrame(true)==1,'native-visible floor disappeared')
+local count,reads=nativeFrame(false)
+assert(count==0 and reads==0,'native rejection still reads native pose or draws offscreen floor')
+assert(nativeFrame(true)==1,'moving into native visibility did not recover immediately')
+-- Native selection belongs to the entity and current view even if a refresh
+-- replaces its Lua registration between Source's Draw and the manual pass.
+assert(nativeFrame(true,function()
+ local previous=native._LODVisualKindRecord
+ native:SetupDataTables();native:Initialize()
+ assert(native._LODVisualKindRecord~=previous)
+end)==1,'same-pass registration replacement lost an actual native selection')
+assert(nativeFrame(false)==0,'registration replacement retained selection into next view')
+-- Native NoDraw can suppress ENT:Draw without changing the manual floor.
+native:SetNoDraw(true)
+assert(nativeFrame(false)==1,'native NoDraw incorrectly hid a manually rendered floor')
+native:SetNoDraw(false)
+-- Invisible collision-only kinds leave the native render queue, then a proxy
+-- must release that flag before a late same-pass kind transition is rendered.
+native:SetBoxKind(3);native:Think()
+assert(native:GetNoDraw() and native._LODVisualKindRecord.clientNoDrawOwned,'invisible collision surrogate stayed in native render queue')
+local kindNotify=notifications.BoxKind
+notifications.BoxKind=function(...)
+ kindNotify(...);native:Think()
+ assert(not native:GetNoDraw(),'reentrant Think re-hid a newly visible kind before native write')
+end
+assert(nativeFrame(false,function() native:SetBoxKind(1) end)==1,'same-pass visible kind borrowed stale native omission')
+notifications.BoxKind=kindNotify
+native:Think();assert(nativeFrame(true)==1 and nativeFrame(false)==0,'visible kind did not recover native selection')
+-- Unknown/custom kind accessors and externally owned flags stay conservative.
+native:SetBoxKind(4);native:Think();assert(native:GetNoDraw())
+local kindGetter=native.GetBoxKind
+native.GetBoxKind=function() return 1 end
+native._LODNextBoundsRefresh=0;native:Think()
+assert(not native:GetNoDraw() and nativeFrame(false)==1,'custom kind retained owned invisible flag')
+native.GetBoxKind=kindGetter
+native:SetNoDraw(true);native:SetBoxKind(3);native:Think()
+assert(not native._LODVisualKindRecord.clientNoDrawOwned,'claimed an externally owned NoDraw flag')
+native:SetBoxKind(1);native:Think()
+assert(native:GetNoDraw() and nativeFrame(false)==1,'changed external NoDraw ownership or hid manual floor')
+native:SetNoDraw(false);assert(nativeFrame(true)==1)
+native:SetBoxMaxs(Vector(15,10,10))
+assert(native.nextThink==CurTime() and nativeFrame(false)==1,'pending bounds notification hid changed geometry')
+native:Think();assert(nativeFrame(false)==0,'updated native bounds did not regain conservative selection')
+-- A notification can call back into Think before the native setter commits.
+local notify=notifications.BoxMaxs
+notifications.BoxMaxs=function(...)
+ notify(...);native:Think()
+ assert(not native._LODVisualKindRecord.boundsReady,'reentrant Think certified pre-write bounds')
+end
+native:SetBoxMaxs(Vector(20,10,10))
+assert(nativeFrame(false)==1,'reentrant native bounds update did not fail open')
+native:Think();assert(nativeFrame(false)==0)
+local getter=native.GetBoxMins
+native.GetBoxMins=function() return Vector(-15,-10,-10) end
+assert(nativeFrame(false)==1,'custom/replaced bounds accessor borrowed native bounds')
+native.GetBoxMins=getter;native:Think()
+native.Draw=function() end
+assert(nativeFrame(false)==1,'replaced native Draw silently removed generated geometry')
+native.Draw=nil
+local wrapper=function(self,...) return nativeDraw(self,...) end
+native.Draw=wrapper
+LOD.RuntimeAudit={CPUProfile={bindings={[native]={Draw={wrapper=wrapper,callback=nativeDraw}}}}}
+assert(nativeFrame(true)==1 and nativeFrame(false)==0,'opt-in CPU wrapper lost native visibility ownership')
+LOD.RuntimeAudit=nil;native.Draw=nil
+assert(nativeFrame(false,function() view.origin=Vector(-20,0,0) end)==1,'different/nested view borrowed native rejection')
+view.origin=eye
+view.ortho={};assert(nativeFrame(false)==1,'orthographic native pass did not fail open');view.ortho=nil
+native:OnRemove(true);assert(nativeFrame(false)==1,'full-update bounds used retired native selection')
+CurTime=function() return 12 end
+native:Think();assert(nativeFrame(true)==1 and nativeFrame(false)==0)
+native.nw.LOD_GeometryHidden=true;assert(nativeFrame(true)==0,'native handoff exposed hidden false floor')
+native.nw.LOD_GeometryHidden=false;assert(nativeFrame(true)==1)
+native:OnRemove(false);assert(nativeFrame(true)==0,'removed entity was resurrected by native Draw')
+native:Initialize()
+-- An unknown view field may itself reference an entity. A completed pass must
+-- not retain that entity through a weak-key cache's strong value.
+local far=view.zfar;view.zfar=native
+assert(nativeFrame(true,function() collectgarbage('collect') end)==1,
+ 'collection lost selection while the active view still owns its pass')
+view.zfar=far
+native:OnRemove(true)
+local retained=native._LODVisualKindRecord
+local weak=setmetatable({native},{__mode='v'})
+native=nil;getter=nil;kindGetter=nil;entities={};collectgarbage('collect');collectgarbage('collect')
+assert(weak[1]==nil and retained.lua[1]==nil,'retained bounds cache owns removed entity through native accessor closures')
+print('NATIVE_GEOMETRY_VISIBILITY_PASS: native selection avoids offscreen pose reads; newly seen/custom/pending/reentrant/full-update views fail open; exact view ownership, CPU wrappers, hidden state and removal')

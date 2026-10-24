@@ -1,0 +1,92 @@
+{
+  "status": "Target UNMET; all six full acceptance gates UNVERIFIED",
+  "source": "f889bf9535e5e19849c14c46be609bd5fcb67e40; runtime8b0b531e",
+  "scope": "Historical separate external display diagnostic. No OFF result qualifies. Every arm fails. No source gain inferred from this noisy four-arm sequence.",
+  "user_requirement": "Both monitors ON at all times; 40FPS must be achieved with both ON. No further OFF arms.",
+  "conditions": "Actual LCD Deck, same frozen D20 lower court route,60s uncapped,1280x800 internal60Hz,external1080p60 for this matched series,normal population/AI/resources/graphics; power verified before/after timing. Short diagnostics are not final acceptance.",
+  "results": [
+    {
+      "arm": "on1",
+      "raw": "/home/deck/deborah-benchmarks/external-display-diagnostic/f889bf95/verified-v2/on1",
+      "metrics": {
+        "frames": 1190,
+        "seconds": 59.917533999999996,
+        "fps": 19.86063044583911,
+        "median_ms": 41.203,
+        "p95_ms": 91.126,
+        "p99_ms": 127.743,
+        "max_ms": 363.049,
+        "one_percent_low_fps": 5.926915208563207,
+        "below_budget_seconds": 59.66275900000001,
+        "longest_below_budget_seconds": 35.95334600000001,
+        "below_budget_runs_ge2s": 2
+      },
+      "acceptance": "FAIL; diagnostic only; OFF variants additionally ineligible under explicit both-monitors-on requirement"
+    },
+    {
+      "arm": "off1",
+      "raw": "/home/deck/deborah-benchmarks/external-display-diagnostic/f889bf95/verified-v2/off1",
+      "metrics": {
+        "frames": 1365,
+        "seconds": 59.961419,
+        "fps": 22.76463804167143,
+        "median_ms": 36.928,
+        "p95_ms": 78.279,
+        "p99_ms": 106.463,
+        "max_ms": 383.765,
+        "one_percent_low_fps": 6.6242556584155246,
+        "below_budget_seconds": 59.158361000000056,
+        "longest_below_budget_seconds": 23.35946000000001,
+        "below_budget_runs_ge2s": 4
+      },
+      "acceptance": "FAIL; diagnostic only; OFF variants additionally ineligible under explicit both-monitors-on requirement"
+    },
+    {
+      "arm": "off2",
+      "raw": "/home/deck/deborah-benchmarks/external-display-diagnostic/f889bf95/verified-v2/off2",
+      "metrics": {
+        "frames": 1256,
+        "seconds": 59.950237,
+        "fps": 20.950709502616313,
+        "median_ms": 39.763,
+        "p95_ms": 85.05,
+        "p99_ms": 119.374,
+        "max_ms": 438.272,
+        "one_percent_low_fps": 6.134978010823046,
+        "below_budget_seconds": 59.09119399999986,
+        "longest_below_budget_seconds": 22.232768999999973,
+        "below_budget_runs_ge2s": 4
+      },
+      "acceptance": "FAIL; diagnostic only; OFF variants additionally ineligible under explicit both-monitors-on requirement"
+    },
+    {
+      "arm": "on2",
+      "raw": "/home/deck/deborah-benchmarks/external-display-diagnostic/f889bf95/verified-v2/on2",
+      "metrics": {
+        "frames": 1266,
+        "seconds": 59.916591999999994,
+        "fps": 21.129372645226553,
+        "median_ms": 37.896,
+        "p95_ms": 87.416,
+        "p99_ms": 120.272,
+        "max_ms": 361.334,
+        "one_percent_low_fps": 6.617823733755788,
+        "below_budget_seconds": 59.330990999999884,
+        "longest_below_budget_seconds": 15.18605199999999,
+        "below_budget_runs_ge2s": 5
+      },
+      "acceptance": "FAIL; diagnostic only; OFF variants additionally ineligible under explicit both-monitors-on requirement"
+    }
+  ],
+  "restoration": "Both ON and external original1920x1080@75 restored; internal1280x800@60. Session ScreenSaver inhibitor holds blanking off.",
+  "v1_aborted": "Initial off arm did not establish actual power state; retained separately and excluded.",
+  "ci": {
+    "source": "f889bf95",
+    "full": "325/334FAIL; all9 names AND exact file/line anchors match bc95 parent. New8d bossfixture failure repaired;76/76boss casesPASS.",
+    "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39852357677",
+    "comparison": "/home/deck/deborah-recovery/evidence/f889bf95-ci/comparison.json",
+    "source_vr_audio": "PASS"
+  },
+  "next": "Bounded before/after CPU/thread accounting on same normal route with both monitorsON. No speculative runtime change.",
+  "updated_utc": "2026-10-22T21:18:03.529382+00:00"
+}

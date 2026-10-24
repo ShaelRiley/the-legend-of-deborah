@@ -1,0 +1,1962 @@
+{
+  "recorded_utc": "2026-10-22T18:34:58.604069+00:00",
+  "source": "b19bccfb6af3e7b7feb5e959f6c3c83d11598157",
+  "current_label": "0070179cf0e30305ea886816c88137ed474001bd",
+  "runtime_equivalence": "git diff b19bccfb..0070179c -- gamemodes lua tools/install_dev.sh is empty",
+  "decision": "Retain as loading-time asset-stall improvement only. No steady FPS gain claimed; all six full acceptance scenarios remain UNVERIFIED and target UNMET.",
+  "boss_baseline": {
+    "raw": "/home/deck/deborah-benchmarks/boss-commit-profile/28cc1b69/d14-v2-source60/",
+    "commit_ms": 1175.6236,
+    "max_frame_ms": 1218.346,
+    "diagnostic_wrappers": true
+  },
+  "boss_source_repeats": [
+    {
+      "raw": "/home/deck/deborah-benchmarks/boss-precache-source/b19bccfb/d14-v2-unprofiled60-run1",
+      "boss_precache_seconds": 1.196263,
+      "private_precache_or_profiler": false,
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 2288,
+          "seconds": 59.964031999999996,
+          "fps": 38.15620670738085,
+          "median_ms": 24.149,
+          "p95_ms": 39.502,
+          "p99_ms": 62.301,
+          "max_ms": 117.762,
+          "one_percent_low_fps": 12.807070393784004,
+          "below_budget_seconds": 29.730233000000055,
+          "longest_below_budget_seconds": 2.6896290000000014,
+          "below_budget_runs_ge2s": 2
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 2288,
+          "seconds": 59.964031999999996,
+          "fps": 38.15620670738085,
+          "median_ms": 24.149,
+          "p95_ms": 39.502,
+          "p99_ms": 62.301,
+          "max_ms": 117.762,
+          "one_percent_low_fps": 12.807070393784004,
+          "below_budget_seconds": 29.730233000000055,
+          "longest_below_budget_seconds": 2.6896290000000014,
+          "below_budget_runs_ge2s": 2
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    },
+    {
+      "raw": "/home/deck/deborah-benchmarks/boss-precache-source/0070179c/d14-v2-unprofiled60-run2",
+      "boss_precache_seconds": 1.1641967,
+      "private_precache_or_profiler": false,
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 2220,
+          "seconds": 59.974896,
+          "fps": 37.0154872798779,
+          "median_ms": 24.72,
+          "p95_ms": 40.467,
+          "p99_ms": 66.257,
+          "max_ms": 134.2,
+          "one_percent_low_fps": 11.801420070008076,
+          "below_budget_seconds": 33.05442299999997,
+          "longest_below_budget_seconds": 3.1127200000000013,
+          "below_budget_runs_ge2s": 2
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 2220,
+          "seconds": 59.974896,
+          "fps": 37.0154872798779,
+          "median_ms": 24.72,
+          "p95_ms": 40.467,
+          "p99_ms": 66.257,
+          "max_ms": 134.2,
+          "one_percent_low_fps": 11.801420070008076,
+          "below_budget_seconds": 33.05442299999997,
+          "longest_below_budget_seconds": 3.1127200000000013,
+          "below_budget_runs_ge2s": 2
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    }
+  ],
+  "current_d10": {
+    "raw": "/home/deck/deborah-benchmarks/current-listen-d10/0070179c/v5-gameplay180-run1",
+    "analysis": {
+      "mode": "uncapped",
+      "limiter_tolerance_ms": 0,
+      "active": {
+        "frames": 6538,
+        "seconds": 179.956763,
+        "fps": 36.33094911803898,
+        "median_ms": 25.929,
+        "p95_ms": 39.986,
+        "p99_ms": 73.949,
+        "max_ms": 159.411,
+        "one_percent_low_fps": 11.215296304729797,
+        "below_budget_seconds": 117.15959300000004,
+        "longest_below_budget_seconds": 13.178514000000002,
+        "below_budget_runs_ge2s": 11
+      },
+      "pacing_at_tolerated_budget": {
+        "frames": 6538,
+        "seconds": 179.956763,
+        "fps": 36.33094911803898,
+        "median_ms": 25.929,
+        "p95_ms": 39.986,
+        "p99_ms": 73.949,
+        "max_ms": 159.411,
+        "one_percent_low_fps": 11.215296304729797,
+        "below_budget_seconds": 117.15959300000004,
+        "longest_below_budget_seconds": 13.178514000000002,
+        "below_budget_runs_ge2s": 11
+      },
+      "capture_checks_passed": false,
+      "issues": [
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+    },
+    "input_receipt": {
+      "events": [
+        {
+          "detail": {
+            "position": "-3468.568848 384.000000 -12271.937500",
+            "key": "stair",
+            "index": 1
+          },
+          "seconds": 1.921600341796875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3455.519775 752.391907 -12271.937500",
+            "key": "stair",
+            "index": 2
+          },
+          "seconds": 3.8218994140625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3456.008789 1139.391602 -12271.937500",
+            "key": "stair",
+            "index": 3
+          },
+          "seconds": 5.759368896484375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3455.999512 1526.391602 -12271.937500",
+            "key": "stair",
+            "index": 4
+          },
+          "seconds": 7.692352294921875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3087.653320 1536.604980 -12271.937500",
+            "key": "stair",
+            "index": 5
+          },
+          "seconds": 9.597991943359375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2703.653809 1535.986816 -12271.937500",
+            "key": "stair",
+            "index": 6
+          },
+          "seconds": 11.5299072265625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2687.715820 1907.415283 -12271.937500",
+            "key": "stair",
+            "index": 7
+          },
+          "seconds": 13.438873291015625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2316.720703 1920.389893 -12271.937500",
+            "key": "stair",
+            "index": 8
+          },
+          "seconds": 15.359527587890625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2303.531738 1551.466187 -12271.937500",
+            "key": "stair",
+            "index": 9
+          },
+          "seconds": 17.26239013671875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1935.641846 1535.639648 -12271.937500",
+            "key": "stair",
+            "index": 10
+          },
+          "seconds": 19.16815185546875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1548.641968 1536.006592 -12271.937500",
+            "key": "stair",
+            "index": 11
+          },
+          "seconds": 21.1009521484375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.524780 1167.603271 -12271.937500",
+            "key": "stair",
+            "index": 12
+          },
+          "seconds": 23.01788330078125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.010620 783.603638 -12271.937500",
+            "key": "stair",
+            "index": 13
+          },
+          "seconds": 24.938201904296875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999756 396.603638 -12271.937500",
+            "key": "stair",
+            "index": 14
+          },
+          "seconds": 26.865142822265625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999756 12.603638 -12271.937500",
+            "key": "stair",
+            "index": 15
+          },
+          "seconds": 28.784271240234375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999756 -368.396332 -12271.937500",
+            "key": "stair",
+            "index": 16
+          },
+          "seconds": 30.689483642578125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999756 -755.396301 -12271.937500",
+            "key": "stair",
+            "index": 17
+          },
+          "seconds": 32.62054443359375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1164.614502 -768.388489 -12271.937500",
+            "key": "stair",
+            "index": 18
+          },
+          "seconds": 34.54986572265625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-783.614746 -767.985535 -12271.937500",
+            "key": "stair",
+            "index": 19
+          },
+          "seconds": 36.451568603515625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-767.779114 -393.593506 -12271.937500",
+            "key": "stair",
+            "index": 20
+          },
+          "seconds": 38.389801025390625,
+          "kind": "node"
+        },
+        {
+          "detail": 40,
+          "seconds": 40.005035400390625,
+          "kind": "map-toggle"
+        },
+        {
+          "detail": {
+            "position": "-768.008362 -9.593582 -12271.937500",
+            "key": "stair",
+            "index": 21
+          },
+          "seconds": 40.308441162109375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-767.999756 -371.477478 -12271.937500",
+            "key": "stair",
+            "index": 22
+          },
+          "seconds": 42.266204833984375,
+          "kind": "node"
+        },
+        {
+          "detail": 44,
+          "seconds": 44.021026611328125,
+          "kind": "map-toggle"
+        },
+        {
+          "detail": {
+            "position": "-768.000244 -752.477478 -12271.937500",
+            "key": "stair",
+            "index": 23
+          },
+          "seconds": 44.170501708984375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1139.409302 -768.290222 -12271.937500",
+            "key": "stair",
+            "index": 24
+          },
+          "seconds": 46.093536376953125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1520.363647 -769.067017 -12271.937500",
+            "key": "stair",
+            "index": 25
+          },
+          "seconds": 48.009674072265625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.364502 -1136.385864 -12271.937500",
+            "key": "stair",
+            "index": 26
+          },
+          "seconds": 49.906707763671875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.992920 -1523.385742 -12271.937500",
+            "key": "stair",
+            "index": 27
+          },
+          "seconds": 51.835784912109375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000366 -1907.385742 -12271.937500",
+            "key": "stair",
+            "index": 28
+          },
+          "seconds": 53.763946533203125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000366 -2288.385742 -12271.937500",
+            "key": "stair",
+            "index": 29
+          },
+          "seconds": 55.671417236328125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000366 -2672.385742 -12271.937500",
+            "key": "stair",
+            "index": 30
+          },
+          "seconds": 57.591644287109375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000366 -2699.385742 -12271.937500",
+            "key": "stair",
+            "index": 31
+          },
+          "seconds": 57.725311279296875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000366 -2756.385742 -12239.937500",
+            "key": "stair",
+            "index": 32
+          },
+          "seconds": 58.006805419921875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000122 -2768.385742 -12223.937500",
+            "key": "stair",
+            "index": 33
+          },
+          "seconds": 58.063385009765625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2780.385742 -12207.937500",
+            "key": "stair",
+            "index": 34
+          },
+          "seconds": 58.132598876953125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2798.385742 -12191.937500",
+            "key": "stair",
+            "index": 35
+          },
+          "seconds": 58.218536376953125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2810.385742 -12175.937500",
+            "key": "stair",
+            "index": 36
+          },
+          "seconds": 58.274261474609375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2825.385742 -12159.937500",
+            "key": "stair",
+            "index": 37
+          },
+          "seconds": 58.348785400390625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2834.385742 -12143.937500",
+            "key": "stair",
+            "index": 38
+          },
+          "seconds": 58.402252197265625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2849.385742 -12127.937500",
+            "key": "stair",
+            "index": 39
+          },
+          "seconds": 58.473602294921875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2864.385742 -12111.937500",
+            "key": "stair",
+            "index": 40
+          },
+          "seconds": 58.544769287109375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2879.385742 -12095.937500",
+            "key": "stair",
+            "index": 41
+          },
+          "seconds": 58.621429443359375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2888.385742 -12079.937500",
+            "key": "stair",
+            "index": 42
+          },
+          "seconds": 58.673065185546875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2900.385742 -12063.937500",
+            "key": "stair",
+            "index": 43
+          },
+          "seconds": 58.720977783203125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2915.385742 -12047.937500",
+            "key": "stair",
+            "index": 44
+          },
+          "seconds": 58.795684814453125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2927.385742 -12031.937500",
+            "key": "stair",
+            "index": 45
+          },
+          "seconds": 58.867767333984375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2942.385742 -12015.937500",
+            "key": "stair",
+            "index": 46
+          },
+          "seconds": 58.938690185546875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2954.385742 -11999.937500",
+            "key": "stair",
+            "index": 47
+          },
+          "seconds": 58.994110107421875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2972.385742 -11983.937500",
+            "key": "stair",
+            "index": 48
+          },
+          "seconds": 59.087005615234375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2981.385742 -11967.937500",
+            "key": "stair",
+            "index": 49
+          },
+          "seconds": 59.136444091796875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2996.385742 -11951.937500",
+            "key": "stair",
+            "index": 50
+          },
+          "seconds": 59.204864501953125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3008.385742 -11935.937500",
+            "key": "stair",
+            "index": 51
+          },
+          "seconds": 59.271514892578125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3023.385742 -11919.937500",
+            "key": "stair",
+            "index": 52
+          },
+          "seconds": 59.338531494140625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3038.385742 -11903.937500",
+            "key": "stair",
+            "index": 53
+          },
+          "seconds": 59.412750244140625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3050.385742 -11887.937500",
+            "key": "stair",
+            "index": 54
+          },
+          "seconds": 59.471954345703125,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3062.385742 -11887.937500",
+            "key": "stair",
+            "index": 55
+          },
+          "seconds": 59.540679931640625,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3122.385742 -11887.937500",
+            "key": "stair",
+            "index": 56
+          },
+          "seconds": 59.836273193359375,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1360.351074 -3124.154785 -11887.937500",
+            "key": "upper-landing-east-clearance",
+            "index": 57
+          },
+          "seconds": 60.779510498046875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1168.228271 -3076.274414 -11887.937500",
+            "key": "stair",
+            "index": 58
+          },
+          "seconds": 61.765838623046875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-784.266846 -3071.918701 -11887.937500",
+            "key": "stair",
+            "index": 59
+          },
+          "seconds": 63.685760498046875,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1134.151001 -3072.002441 -11887.937500",
+            "key": "stair",
+            "index": 60
+          },
+          "seconds": 65.59408569335938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1356.354614 -3123.045166 -11887.937500",
+            "key": "upper-landing-east-clearance",
+            "index": 61
+          },
+          "seconds": 66.74496459960938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.335938 -3124.018799 -11887.937500",
+            "key": "stair",
+            "index": 62
+          },
+          "seconds": 67.63101196289062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1907.947876 -3073.709717 -11887.937500",
+            "key": "stair",
+            "index": 63
+          },
+          "seconds": 69.50839233398438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2288.943848 -3071.933594 -11887.937500",
+            "key": "stair",
+            "index": 64
+          },
+          "seconds": 71.42489624023438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2727.399902 -3072.000000 -11887.937500",
+            "key": "stair",
+            "index": 65
+          },
+          "seconds": 73.71127319335938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2725.583252 -3072.000244 -11887.937500",
+            "key": "stair",
+            "index": 66
+          },
+          "seconds": 73.73587036132812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2683.516113 -3071.999756 -11887.937500",
+            "key": "stair",
+            "index": 67
+          },
+          "seconds": 74.08541870117188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2671.516113 -3071.999756 -11887.937500",
+            "key": "stair",
+            "index": 68
+          },
+          "seconds": 74.15475463867188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2659.516113 -3071.999756 -11887.937500",
+            "key": "stair",
+            "index": 69
+          },
+          "seconds": 74.20736694335938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2641.516113 -3071.999756 -11919.937500",
+            "key": "stair",
+            "index": 70
+          },
+          "seconds": 74.29501342773438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2632.516113 -3071.999756 -11919.937500",
+            "key": "stair",
+            "index": 71
+          },
+          "seconds": 74.33944702148438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2617.516113 -3071.999756 -11951.937500",
+            "key": "stair",
+            "index": 72
+          },
+          "seconds": 74.41122436523438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2605.516113 -3071.999756 -11951.937500",
+            "key": "stair",
+            "index": 73
+          },
+          "seconds": 74.48312377929688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2590.516113 -3071.999756 -11983.937500",
+            "key": "stair",
+            "index": 74
+          },
+          "seconds": 74.55068969726562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2578.516113 -3071.999756 -11999.937500",
+            "key": "stair",
+            "index": 75
+          },
+          "seconds": 74.61911010742188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2563.516113 -3071.999756 -12015.937500",
+            "key": "stair",
+            "index": 76
+          },
+          "seconds": 74.69229125976562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2551.516113 -3071.999756 -12031.937500",
+            "key": "stair",
+            "index": 77
+          },
+          "seconds": 74.74227905273438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2539.516113 -3071.999756 -12031.937500",
+            "key": "stair",
+            "index": 78
+          },
+          "seconds": 74.81143188476562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2524.516113 -3071.999756 -12063.937500",
+            "key": "stair",
+            "index": 79
+          },
+          "seconds": 74.88217163085938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2509.516113 -3071.999756 -12079.937500",
+            "key": "stair",
+            "index": 80
+          },
+          "seconds": 74.95565795898438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2497.516113 -3071.999756 -12095.937500",
+            "key": "stair",
+            "index": 81
+          },
+          "seconds": 75.02200317382812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2485.516113 -3071.999756 -12095.937500",
+            "key": "stair",
+            "index": 82
+          },
+          "seconds": 75.07516479492188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2464.516113 -3071.999756 -12127.937500",
+            "key": "stair",
+            "index": 83
+          },
+          "seconds": 75.17648315429688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2458.516113 -3071.999756 -12143.937500",
+            "key": "stair",
+            "index": 84
+          },
+          "seconds": 75.21530151367188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2437.691895 -3071.999756 -12159.937500",
+            "key": "stair",
+            "index": 85
+          },
+          "seconds": 75.52371215820312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2432.184814 -3071.999756 -12159.937500",
+            "key": "stair",
+            "index": 86
+          },
+          "seconds": 75.68331909179688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2419.270020 -3071.999756 -12175.937500",
+            "key": "stair",
+            "index": 87
+          },
+          "seconds": 75.74960327148438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2401.302490 -3071.999756 -12207.937500",
+            "key": "stair",
+            "index": 88
+          },
+          "seconds": 75.83743286132812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2392.302490 -3071.999756 -12207.937500",
+            "key": "stair",
+            "index": 89
+          },
+          "seconds": 75.88131713867188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2374.302490 -3071.999756 -12239.937500",
+            "key": "stair",
+            "index": 90
+          },
+          "seconds": 75.97134399414062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2338.302490 -3071.999756 -12271.937500",
+            "key": "stair",
+            "index": 91
+          },
+          "seconds": 76.15481567382812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2326.681396 -2961.765137 -12271.937500",
+            "key": "lower-landing-side",
+            "index": 92
+          },
+          "seconds": 76.76821899414062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3061.860107 -2959.714600 -12271.937500",
+            "key": "lower-stair-bypass",
+            "index": 93
+          },
+          "seconds": 80.49783325195312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3075.932129 -3058.698730 -12271.937500",
+            "key": "stair",
+            "index": 94
+          },
+          "seconds": 81.04464721679688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3441.005371 -3072.419678 -12271.937500",
+            "key": "stair",
+            "index": 95
+          },
+          "seconds": 82.95114135742188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3825.005371 -3071.989258 -12271.937500",
+            "key": "stair",
+            "index": 96
+          },
+          "seconds": 84.86618041992188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3840.305176 -2700.594482 -12271.937500",
+            "key": "stair",
+            "index": 97
+          },
+          "seconds": 86.79318237304688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3839.989014 -2319.594482 -12271.937500",
+            "key": "stair",
+            "index": 98
+          },
+          "seconds": 88.69833374023438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3840.209717 -1937.254395 -12271.937500",
+            "key": "stair",
+            "index": 99
+          },
+          "seconds": 90.61959838867188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3839.994873 -1553.181274 -12271.937500",
+            "key": "stair",
+            "index": 100
+          },
+          "seconds": 92.53494262695312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3840.000488 -1169.181274 -12271.937500",
+            "key": "stair",
+            "index": 101
+          },
+          "seconds": 94.45950317382812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3840.000488 -785.181274 -12271.937500",
+            "key": "stair",
+            "index": 102
+          },
+          "seconds": 96.37167358398438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3840.000488 -398.181274 -12271.937500",
+            "key": "stair",
+            "index": 103
+          },
+          "seconds": 98.31021118164062,
+          "kind": "node"
+        },
+        {
+          "detail": 100,
+          "seconds": 100.01901245117188,
+          "kind": "map-toggle"
+        },
+        {
+          "detail": {
+            "position": "-3840.000488 -14.181274 -12271.937500",
+            "key": "stair",
+            "index": 104
+          },
+          "seconds": 100.22604370117188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3840.000488 366.818695 -12271.937500",
+            "key": "stair",
+            "index": 105
+          },
+          "seconds": 102.14535522460938,
+          "kind": "node"
+        },
+        {
+          "detail": 104,
+          "seconds": 104.02053833007812,
+          "kind": "map-toggle"
+        },
+        {
+          "detail": {
+            "position": "-3468.584473 384.234955 -12271.937500",
+            "key": "stair",
+            "index": 106
+          },
+          "seconds": 104.05447387695312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3455.518066 752.303711 -12271.937500",
+            "key": "stair",
+            "index": 107
+          },
+          "seconds": 105.96890258789062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3456.008789 1139.303345 -12271.937500",
+            "key": "stair",
+            "index": 108
+          },
+          "seconds": 107.89053344726562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3455.999268 1520.303345 -12271.937500",
+            "key": "stair",
+            "index": 109
+          },
+          "seconds": 109.80435180664062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-3087.586426 1536.350342 -12271.937500",
+            "key": "stair",
+            "index": 110
+          },
+          "seconds": 111.70620727539062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2700.586426 1535.993774 -12271.937500",
+            "key": "stair",
+            "index": 111
+          },
+          "seconds": 113.64175415039062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2687.614014 1907.391357 -12271.937500",
+            "key": "stair",
+            "index": 112
+          },
+          "seconds": 115.55642700195312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2319.755127 1920.481689 -12271.937500",
+            "key": "stair",
+            "index": 113
+          },
+          "seconds": 117.46334838867188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2303.652832 1551.541016 -12271.937500",
+            "key": "stair",
+            "index": 114
+          },
+          "seconds": 119.36843872070312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1935.631592 1535.634155 -12271.937500",
+            "key": "stair",
+            "index": 115
+          },
+          "seconds": 121.27957153320312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1551.631592 1536.007690 -12271.937500",
+            "key": "stair",
+            "index": 116
+          },
+          "seconds": 123.20230102539062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.712402 1164.587646 -12271.937500",
+            "key": "stair",
+            "index": 117
+          },
+          "seconds": 125.12313842773438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.053833 775.003479 -12271.937500",
+            "key": "stair",
+            "index": 118
+          },
+          "seconds": 127.06149291992188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.995850 400.003479 -12271.937500",
+            "key": "stair",
+            "index": 119
+          },
+          "seconds": 128.94277954101562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000366 16.003479 -12271.937500",
+            "key": "stair",
+            "index": 120
+          },
+          "seconds": 130.86306762695312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000122 -370.996490 -12271.937500",
+            "key": "stair",
+            "index": 121
+          },
+          "seconds": 132.80020141601562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000122 -751.996460 -12271.937500",
+            "key": "stair",
+            "index": 122
+          },
+          "seconds": 134.70285034179688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1164.591675 -768.275513 -12271.937500",
+            "key": "stair",
+            "index": 123
+          },
+          "seconds": 136.62185668945312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-777.591675 -767.993713 -12271.937500",
+            "key": "stair",
+            "index": 124
+          },
+          "seconds": 138.55899047851562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-767.393372 -399.660400 -12271.937500",
+            "key": "stair",
+            "index": 125
+          },
+          "seconds": 140.45632934570312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-768.013123 -15.661022 -12271.937500",
+            "key": "stair",
+            "index": 126
+          },
+          "seconds": 142.38430786132812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-767.999939 -368.544922 -12271.937500",
+            "key": "stair",
+            "index": 127
+          },
+          "seconds": 144.30227661132812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-767.999939 -755.544922 -12271.937500",
+            "key": "stair",
+            "index": 128
+          },
+          "seconds": 146.23446655273438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1136.385010 -768.488647 -12271.937500",
+            "key": "stair",
+            "index": 129
+          },
+          "seconds": 148.14700317382812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1532.384644 -767.997375 -12271.937500",
+            "key": "stair",
+            "index": 130
+          },
+          "seconds": 150.12722778320312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.860107 -1136.200928 -12271.937500",
+            "key": "stair",
+            "index": 131
+          },
+          "seconds": 152.02133178710938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.981689 -1520.199707 -12271.937500",
+            "key": "stair",
+            "index": 132
+          },
+          "seconds": 153.94955444335938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000244 -1907.199707 -12271.937500",
+            "key": "stair",
+            "index": 133
+          },
+          "seconds": 155.88882446289062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000244 -2288.199707 -12271.937500",
+            "key": "stair",
+            "index": 134
+          },
+          "seconds": 157.78933715820312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000244 -2675.199707 -12271.937500",
+            "key": "stair",
+            "index": 135
+          },
+          "seconds": 159.71731567382812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000244 -2696.199707 -12271.937500",
+            "key": "stair",
+            "index": 136
+          },
+          "seconds": 159.83078002929688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000244 -2756.199707 -12239.937500",
+            "key": "stair",
+            "index": 137
+          },
+          "seconds": 160.12155151367188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000244 -2768.199707 -12223.937500",
+            "key": "stair",
+            "index": 138
+          },
+          "seconds": 160.18869018554688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.000000 -2786.199707 -12207.937500",
+            "key": "stair",
+            "index": 139
+          },
+          "seconds": 160.27621459960938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2795.199707 -12191.937500",
+            "key": "stair",
+            "index": 140
+          },
+          "seconds": 160.33035278320312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2807.199707 -12175.937500",
+            "key": "stair",
+            "index": 141
+          },
+          "seconds": 160.37545776367188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2825.199707 -12159.937500",
+            "key": "stair",
+            "index": 142
+          },
+          "seconds": 160.46682739257812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2834.199707 -12143.937500",
+            "key": "stair",
+            "index": 143
+          },
+          "seconds": 160.51095581054688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2849.199707 -12127.937500",
+            "key": "stair",
+            "index": 144
+          },
+          "seconds": 160.59902954101562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2864.199707 -12111.937500",
+            "key": "stair",
+            "index": 145
+          },
+          "seconds": 160.66592407226562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2876.199707 -12095.937500",
+            "key": "stair",
+            "index": 146
+          },
+          "seconds": 160.73275756835938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2895.006836 -12065.551758",
+            "key": "stair",
+            "index": 147
+          },
+          "seconds": 160.87448120117188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2906.199707 -12063.937500",
+            "key": "stair",
+            "index": 148
+          },
+          "seconds": 160.87448120117188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2918.199707 -12047.937500",
+            "key": "stair",
+            "index": 149
+          },
+          "seconds": 160.93606567382812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2927.199707 -12031.937500",
+            "key": "stair",
+            "index": 150
+          },
+          "seconds": 160.97988891601562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2942.199707 -12015.937500",
+            "key": "stair",
+            "index": 151
+          },
+          "seconds": 161.06515502929688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2957.199707 -11999.937500",
+            "key": "stair",
+            "index": 152
+          },
+          "seconds": 161.13003540039062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2969.199707 -11983.937500",
+            "key": "stair",
+            "index": 153
+          },
+          "seconds": 161.19790649414062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2984.199707 -11967.937500",
+            "key": "stair",
+            "index": 154
+          },
+          "seconds": 161.26437377929688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -2999.199707 -11951.937500",
+            "key": "stair",
+            "index": 155
+          },
+          "seconds": 161.33895874023438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3008.199707 -11935.937500",
+            "key": "stair",
+            "index": 156
+          },
+          "seconds": 161.38107299804688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3023.199707 -11919.937500",
+            "key": "stair",
+            "index": 157
+          },
+          "seconds": 161.46841430664062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3038.199707 -11903.937500",
+            "key": "stair",
+            "index": 158
+          },
+          "seconds": 161.53250122070312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3047.199707 -11887.937500",
+            "key": "stair",
+            "index": 159
+          },
+          "seconds": 161.57571411132812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3062.199707 -11887.937500",
+            "key": "stair",
+            "index": 160
+          },
+          "seconds": 161.65859985351562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1535.999878 -3122.199707 -11887.937500",
+            "key": "stair",
+            "index": 161
+          },
+          "seconds": 161.95053100585938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1357.139648 -3123.629639 -11887.937500",
+            "key": "upper-landing-east-clearance",
+            "index": 162
+          },
+          "seconds": 162.96591186523438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1165.317017 -3075.549805 -11887.937500",
+            "key": "stair",
+            "index": 163
+          },
+          "seconds": 163.90841674804688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-784.339600 -3071.884277 -11887.937500",
+            "key": "stair",
+            "index": 164
+          },
+          "seconds": 165.81826782226562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1134.223877 -3072.002686 -11887.937500",
+            "key": "stair",
+            "index": 165
+          },
+          "seconds": 167.71719360351562,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1359.324707 -3123.817383 -11887.937500",
+            "key": "upper-landing-east-clearance",
+            "index": 166
+          },
+          "seconds": 168.87405395507812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1536.298950 -3124.025635 -11887.937500",
+            "key": "stair",
+            "index": 167
+          },
+          "seconds": 169.75460815429688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-1907.906128 -3073.708984 -11887.937500",
+            "key": "stair",
+            "index": 168
+          },
+          "seconds": 171.63253784179688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2288.902588 -3071.933105 -11887.937500",
+            "key": "stair",
+            "index": 169
+          },
+          "seconds": 173.54324340820312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2724.399902 -3072.000244 -11887.937500",
+            "key": "stair",
+            "index": 170
+          },
+          "seconds": 175.81210327148438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2727.399902 -3072.000000 -11887.937500",
+            "key": "stair",
+            "index": 171
+          },
+          "seconds": 175.83578491210938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2680.516113 -3071.999756 -11887.937500",
+            "key": "stair",
+            "index": 172
+          },
+          "seconds": 176.22415161132812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2668.516113 -3071.999756 -11887.937500",
+            "key": "stair",
+            "index": 173
+          },
+          "seconds": 176.27951049804688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2659.516113 -3071.999756 -11887.937500",
+            "key": "stair",
+            "index": 174
+          },
+          "seconds": 176.33181762695312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2644.516113 -3071.999756 -11919.937500",
+            "key": "stair",
+            "index": 175
+          },
+          "seconds": 176.39767456054688,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2632.516113 -3071.999756 -11919.937500",
+            "key": "stair",
+            "index": 176
+          },
+          "seconds": 176.46658325195312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2617.516113 -3071.999756 -11951.937500",
+            "key": "stair",
+            "index": 177
+          },
+          "seconds": 176.54177856445312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2602.516113 -3071.999756 -11967.937500",
+            "key": "stair",
+            "index": 178
+          },
+          "seconds": 176.60934448242188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2587.160889 -3071.999756 -11983.937500",
+            "key": "stair",
+            "index": 179
+          },
+          "seconds": 176.92098999023438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2572.742676 -3071.999756 -11999.937500",
+            "key": "stair",
+            "index": 180
+          },
+          "seconds": 177.13046264648438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2560.969238 -3071.999756 -12015.937500",
+            "key": "stair",
+            "index": 181
+          },
+          "seconds": 177.19985961914062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2545.969238 -3071.999756 -12031.937500",
+            "key": "stair",
+            "index": 182
+          },
+          "seconds": 177.26809692382812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2533.969238 -3071.999756 -12047.937500",
+            "key": "stair",
+            "index": 183
+          },
+          "seconds": 177.33914184570312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2524.969238 -3071.999756 -12063.937500",
+            "key": "stair",
+            "index": 184
+          },
+          "seconds": 177.37173461914062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2512.969238 -3071.999756 -12063.937500",
+            "key": "stair",
+            "index": 185
+          },
+          "seconds": 177.44338989257812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2497.969238 -3071.999756 -12095.937500",
+            "key": "stair",
+            "index": 186
+          },
+          "seconds": 177.51480102539062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2479.969238 -3071.999756 -12111.937500",
+            "key": "stair",
+            "index": 187
+          },
+          "seconds": 177.60348510742188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2470.969238 -3071.999756 -12127.937500",
+            "key": "stair",
+            "index": 188
+          },
+          "seconds": 177.65103149414062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2452.969238 -3071.999756 -12143.937500",
+            "key": "stair",
+            "index": 189
+          },
+          "seconds": 177.73196411132812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2440.969238 -3071.999756 -12159.937500",
+            "key": "stair",
+            "index": 190
+          },
+          "seconds": 177.80502319335938,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2431.969238 -3071.999756 -12175.937500",
+            "key": "stair",
+            "index": 191
+          },
+          "seconds": 177.83670043945312,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2416.969238 -3071.999756 -12191.937500",
+            "key": "stair",
+            "index": 192
+          },
+          "seconds": 177.92044067382812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2404.969238 -3071.999756 -12207.937500",
+            "key": "stair",
+            "index": 193
+          },
+          "seconds": 177.97476196289062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2389.969238 -3071.999756 -12223.937500",
+            "key": "stair",
+            "index": 194
+          },
+          "seconds": 178.05532836914062,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2374.969238 -3071.999756 -12239.937500",
+            "key": "stair",
+            "index": 195
+          },
+          "seconds": 178.13485717773438,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2341.969238 -3071.999756 -12271.937500",
+            "key": "stair",
+            "index": 196
+          },
+          "seconds": 178.29348754882812,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "position": "-2326.174561 -2964.564209 -12271.937500",
+            "key": "lower-landing-side",
+            "index": 197
+          },
+          "seconds": 178.89401245117188,
+          "kind": "node"
+        },
+        {
+          "detail": {
+            "health": 116,
+            "reason": "deadline",
+            "node": 198,
+            "position": "-2534.640381 -2946.803223 -12271.937500"
+          },
+          "seconds": 180.04110717773438,
+          "kind": "end"
+        }
+      ],
+      "reason": "deadline",
+      "duration": 180.04110717773438,
+      "node": 198
+    }
+  },
+  "ci": {
+    "head": "0070179cf0e30305ea886816c88137ed474001bd",
+    "matrix": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39830523555",
+    "passed": 325,
+    "total": 334,
+    "status": "failure; nine exact known parent suite/anchor signatures",
+    "raw_failed_log": "/home/deck/deborah-recovery/evidence/0070179c-full-matrix-failures.log",
+    "source_vr_audio": "success"
+  }
+}

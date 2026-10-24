@@ -1,0 +1,246 @@
+{
+  "tested_source": "817eb1aa4cd4b5c83110a573815c0dd278a913ba",
+  "status": "Diagnostic complete; target UNMET; all six full acceptance scenarios UNVERIFIED",
+  "raw": "/home/deck/deborah-benchmarks/timer-cpu/817eb1aa/observer-series-v1",
+  "scenario": "Unchanged D20 lowercourt-v1, fresh processes, 60s each; both displays ON, Deck 1280x800@60, external1920x1080@75, Windows64 GMod2026.09.17/P10.0-4b, listen host, one actual human. Not full acceptance.",
+  "sequence": [
+    "unprofiled",
+    "profiled",
+    "profiled",
+    "unprofiled"
+  ],
+  "observer": "Private early timer.Create/Simple registration decorator; canonical gamemode source only; existing Audit:MeasureCPUCall and report transport. Normal off arms have no provider wrapping. All timer registration arguments and callback nil/vararg/return/error/yield behavior retained in semantic checks. Coverage excludes earlier/engine/other-addon registrations. Inclusive wall times overlap and observer affects workload.",
+  "runs": [
+    {
+      "arm": "arm01-unprofiled",
+      "metrics": {
+        "frames": 1335,
+        "seconds": 59.964994,
+        "fps": 22.26298896986465,
+        "median_ms": 35.578,
+        "p95_ms": 83.855,
+        "p99_ms": 118.839,
+        "max_ms": 348.505,
+        "one_percent_low_fps": 6.1711579472612845,
+        "below_budget_seconds": 59.063622000000066,
+        "longest_below_budget_seconds": 22.407376000000017,
+        "below_budget_runs_ge2s": 6
+      },
+      "state": {
+        "variant": "unprofiled",
+        "active": false,
+        "passed": true,
+        "decorated_callbacks": 0
+      }
+    },
+    {
+      "arm": "arm02-profiled",
+      "metrics": {
+        "frames": 1162,
+        "seconds": 59.973739,
+        "fps": 19.375146845521837,
+        "median_ms": 41.067,
+        "p95_ms": 94.696,
+        "p99_ms": 120.144,
+        "max_ms": 334.503,
+        "one_percent_low_fps": 6.199503109825748,
+        "below_budget_seconds": 59.62013799999995,
+        "longest_below_budget_seconds": 32.18351099999998,
+        "below_budget_runs_ge2s": 2
+      },
+      "state": {
+        "variant": "profiled",
+        "active": true,
+        "passed": true,
+        "decorated_callbacks": 873
+      }
+    },
+    {
+      "arm": "arm03-profiled",
+      "metrics": {
+        "frames": 1122,
+        "seconds": 59.968795,
+        "fps": 18.709730619066132,
+        "median_ms": 46.506,
+        "p95_ms": 94.227,
+        "p99_ms": 119.915,
+        "max_ms": 364.621,
+        "one_percent_low_fps": 6.080237858905041,
+        "below_budget_seconds": 59.824169999999995,
+        "longest_below_budget_seconds": 52.52467499999998,
+        "below_budget_runs_ge2s": 2
+      },
+      "state": {
+        "variant": "profiled",
+        "active": true,
+        "passed": true,
+        "decorated_callbacks": 873
+      }
+    },
+    {
+      "arm": "arm04-unprofiled",
+      "metrics": {
+        "frames": 1282,
+        "seconds": 59.969348,
+        "fps": 21.377587763668867,
+        "median_ms": 36.766,
+        "p95_ms": 88.04,
+        "p99_ms": 137.3,
+        "max_ms": 335.275,
+        "one_percent_low_fps": 5.984355054547396,
+        "below_budget_seconds": 59.06591299999998,
+        "longest_below_budget_seconds": 25.21767000000004,
+        "below_budget_runs_ge2s": 4
+      },
+      "state": {
+        "variant": "unprofiled",
+        "active": false,
+        "passed": true,
+        "decorated_callbacks": 0
+      }
+    }
+  ],
+  "timer_profiles": [
+    {
+      "arm": "arm02-profiled",
+      "received": "received",
+      "rows": 22,
+      "inclusive_row_sum_ms_per_second": 24.453007138701075,
+      "top": [
+        {
+          "calls": 1199,
+          "milliseconds": 603.3328000002882,
+          "completed": 1199,
+          "ms_per_second": 10.055465988316024,
+          "mean_ms": 0.5031966638868125,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_player_weapon_specials.lua:525",
+          "maximum_ms": 31.641199999995703
+        },
+        {
+          "calls": 1199,
+          "milliseconds": 247.3574000001264,
+          "completed": 1199,
+          "ms_per_second": 4.122590256419616,
+          "mean_ms": 0.2063030859050262,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_seeker.lua:676",
+          "maximum_ms": 3.256800000002613
+        },
+        {
+          "calls": 96,
+          "milliseconds": 223.43590000009783,
+          "completed": 96,
+          "ms_per_second": 3.723901788562947,
+          "mean_ms": 2.327457291667686,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_combat_rolls.lua:670",
+          "maximum_ms": 3.7569000000132746
+        },
+        {
+          "calls": 600,
+          "milliseconds": 185.53629999985333,
+          "completed": 600,
+          "ms_per_second": 3.092246856536943,
+          "mean_ms": 0.3092271666664222,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_killer_instinct_feat.lua:182",
+          "maximum_ms": 0.8466000000026952
+        },
+        {
+          "calls": 399,
+          "milliseconds": 120.36849999978472,
+          "completed": 399,
+          "ms_per_second": 2.006125570848915,
+          "mean_ms": 0.3016754385959517,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_sixth_sense_feat.lua:225",
+          "maximum_ms": 1.1113000000193551
+        },
+        {
+          "calls": 240,
+          "milliseconds": 29.65619999979197,
+          "completed": 240,
+          "ms_per_second": 0.494266034335384,
+          "mean_ms": 0.1235674999991332,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_dice_ammo.lua:183",
+          "maximum_ms": 0.4448999999908665
+        }
+      ],
+      "provider_restoration_passed": true,
+      "providers_restored": true
+    },
+    {
+      "arm": "arm03-profiled",
+      "received": "received",
+      "rows": 22,
+      "inclusive_row_sum_ms_per_second": 23.779946490667797,
+      "top": [
+        {
+          "calls": 1199,
+          "milliseconds": 542.695600000485,
+          "completed": 1199,
+          "ms_per_second": 9.04557515903386,
+          "mean_ms": 0.4526235196000709,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_player_weapon_specials.lua:525",
+          "maximum_ms": 34.38409999998271
+        },
+        {
+          "calls": 1199,
+          "milliseconds": 262.5586999999143,
+          "completed": 1199,
+          "ms_per_second": 4.376292077004726,
+          "mean_ms": 0.21898140116756823,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_seeker.lua:676",
+          "maximum_ms": 2.0794000000137203
+        },
+        {
+          "calls": 99,
+          "milliseconds": 243.17780000005484,
+          "completed": 99,
+          "ms_per_second": 4.053253917863043,
+          "mean_ms": 2.456341414141968,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_combat_rolls.lua:670",
+          "maximum_ms": 4.0195999999923515
+        },
+        {
+          "calls": 599,
+          "milliseconds": 176.94059999979572,
+          "completed": 599,
+          "ms_per_second": 2.9492214345966112,
+          "mean_ms": 0.29539332220333175,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_killer_instinct_feat.lua:182",
+          "maximum_ms": 0.645899999994981
+        },
+        {
+          "calls": 399,
+          "milliseconds": 115.11579999991284,
+          "completed": 399,
+          "ms_per_second": 1.9187342239196177,
+          "mean_ms": 0.28851077694213745,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_sixth_sense_feat.lua:225",
+          "maximum_ms": 0.5906000000095446
+        },
+        {
+          "calls": 240,
+          "milliseconds": 33.2121000001564,
+          "completed": 240,
+          "ms_per_second": 0.5535746866945204,
+          "mean_ms": 0.13838375000065165,
+          "name": "timer/@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_dice_ammo.lua:183",
+          "maximum_ms": 0.3786000000047806
+        }
+      ],
+      "provider_restoration_passed": true,
+      "providers_restored": true
+    }
+  ],
+  "observer_comparison": {
+    "control_mean_fps": 21.82028836676676,
+    "profiled_mean_fps": 19.042438732293984,
+    "arithmetic_difference_percent": -12.730581685178644,
+    "interpretation": "Material observer effect; profiled FPS never acceptance. Only two repeats/condition, no statistical significance or isolated timer-only overhead claim."
+  },
+  "retirement": {
+    "owned_games_stopped": true,
+    "autorun_removed": true,
+    "flag_removed": true
+  },
+  "retirement_limit": "Provider restoration disables measurement; queued callbacks remain pass-through until owned process stop. All owned processes stopped and owned autorun/flag removed. No claim of independent exact queued callback replacement.",
+  "decision": "Do not optimize timers as the dominant bottleneck: measured inclusive rows sum about24ms/s, insufficient to explain frame deficit. Fresh native VProf next, normal frozen gameplay with no Lua CPU observer; inclusive engine/Lua/render hierarchy, instrumented diagnostic only."
+}

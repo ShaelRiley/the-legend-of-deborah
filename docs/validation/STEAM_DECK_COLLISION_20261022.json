@@ -1,0 +1,59 @@
+{
+  "status": "Both native-collision alternatives rejected before production; targetUNMET,all six full acceptance scenariosUNVERIFIED",
+  "source": "3cf2e875115fd8cf23230c7e74e89789264a2c3a",
+  "device": "ActualLCDDeck/SteamOS3.8.28/Windows64Gmod25375506/Proton10.0-4b;1280x800internal60/external1080p75,BOTHONALWAYS;15WACautoGPU",
+  "hypothesis": "Custom ShouldCollide callbacks cross engine-to-Lua boundary thousands of times/s. Callback body timers do not measure bridge or native broadphase overhead. Test native alternatives for behavioral equivalence before considering a source candidate.",
+  "classification": {
+    "raw": "/home/deck/deborah-benchmarks/collision-attribution/3cf2e875/collision-classification60-run1",
+    "seconds": 68.0195424,
+    "bindings": 2,
+    "restored": true,
+    "separation_calls": 243025,
+    "separation_calls_per_s": 3572.8703,
+    "latch_calls": 208671,
+    "latch_calls_per_s": 3067.8095,
+    "separation_samples": {
+      "hostile_static": 3231,
+      "hostile_hostile": 546,
+      "hostile_loot": 17,
+      "hostile_player": 2
+    },
+    "body_ms_per_s": [
+      6.08324,
+      7.13066
+    ],
+    "scope": "Onlybodytimers;nativebridge/broadphaseunmeasured. Group/flag/counts/AIunchanged;diagnostic22.43FPSnotacceptance."
+  },
+  "group19_matrix": {
+    "raw": "/home/deck/deborah-benchmarks/collision-attribution/3cf2e875/native-pair-matrix-run1",
+    "ok": true,
+    "restored": true,
+    "matrix_equal": false,
+    "target_coverage": {
+      "hull": 4,
+      "ray": 4
+    },
+    "decision": "REJECTED:all four NPC-pair traces change from hit/target to no-hit; player shot/movement and generated-floor checks match. Do not waive failed trace gate or apply group19."
+  },
+  "native_constraint_matrix": {
+    "raw": "/home/deck/deborah-benchmarks/collision-attribution/3cf2e875/native-constraint-matrix-run1",
+    "ok": true,
+    "restored": true,
+    "available": false,
+    "native_physics_bodies": [
+      false,
+      false
+    ],
+    "decision": "UNAVAILABLE:constraint.NoCollide requires valid physics bodies. Both actual ordinary actors lack them. No constraint created, no production candidate, no gain claim."
+  },
+  "limits": [
+    "Only two existing ordinary actors; Climber/Lurker exceptions, dynamic physical contacts and actual multiplayer remain separate requirements.",
+    "No FPS captured by either synchronous trace matrix. Instrumented classification capture is diagnostic only.",
+    "No source behavior change was implemented for collision. Failed data retained."
+  ],
+  "next": "Native main-thread user cpu-clock stack sampling99Hz, noLua wrappers; establish CPU/GC/native-call distribution before next candidate.",
+  "ci": {
+    "run": 39867453761,
+    "result": "325/334FAIL;source_changed0;allninefailingnamesandfiveleafanchors match precedingafff/f247 runs. Source/VR/audioPASS. Not fullgreen."
+  }
+}

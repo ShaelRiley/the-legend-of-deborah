@@ -33,7 +33,7 @@ end
 local production=readBytes('lua/autorun/server/lod_population_observability.lua')
 local watched=assert(production:match('local watched=(%b{})'));local manifest={}
 for path in watched:gmatch('"([^"]+)"') do manifest[#manifest+1]=string.rep('a',64)..'  '..path end
-assert(#manifest==110,'installer/runtime source coverage changed without transport review')
+assert(#manifest==116,'installer/runtime source coverage changed without transport review')
 for _,name in ipairs({'server','client'}) do
     files[name]['legend_of_deborah/dev_population_sources.txt']=table.concat(manifest,'\n')
     files[name]['legend_of_deborah/dev_build.txt']='test-checkout clean'
@@ -100,9 +100,19 @@ end,Remove=function(event,id)
 end,GetTable=function() return hooks[side()] end}
 timer={Create=function(id,seconds,reps,fn) timers[side()][id]={seconds=seconds,reps=reps,fn=fn} end,Simple=noop}
 concommand={Add=noop};local map='gm_flatgrass'
-game={GetMap=function() return map end,SinglePlayer=function() return true end}
+game={GetMap=function() return map end,SinglePlayer=function() return CLIENT end,
+    IsDedicated=function() return SERVER end,MaxPlayers=function() return 4 end,
+    GetTimeScale=function() return 1 end}
+engine={TickInterval=function() return SERVER and .015 or .020 end}
+player={GetHumans=function() return {admin} end}
+local serverSettings={nb_update_frequency='0.015',nb_update_framelimit='15',sv_cheats='0',host_timescale='1',sv_lan='1'}
 GetConVar=function(name)
     if name=='lod_reduced_effects' then return {GetBool=function() return true end,GetString=function() return '1' end} end
+    if SERVER and serverSettings[name] then return {GetString=function() return serverSettings[name] end} end
+    -- Deliberately different client-local values must never stand in for the
+    -- server's cheat/cadence settings in a received population snapshot.
+    if CLIENT and name=='nb_update_frequency' then return {GetString=function() return '0.1' end} end
+    if CLIENT and name=='sv_cheats' then return {GetString=function() return '1' end} end
     return {GetBool=function() return false end,GetString=function() return '0' end}
 end
 ScrW=function() return 1280 end;ScrH=function() return 800 end
@@ -128,11 +138,16 @@ realm('client',function() Audit:StartPerformanceCapture(30) end)
 assert(requestCount==1 and #requests==1 and Audit.PopulationEvidenceStatus.state=='requested')
 request(nonAdmin);request(nil);assert(censusCalls==0 and writes.server==0)
 request(admin);receive()
-assert(censusCalls==1 and hashes.server==110 and A.LastWrite.ok)
+assert(censusCalls==1 and hashes.server==116 and A.LastWrite.ok)
 assert(Audit.LastPopulationEvidence.live==64 and Audit.LastPopulationEvidence.entry.heroes[1].depth==23)
 assert(Audit.PopulationEvidenceStatus.state=='received' and Audit.PopulationEvidenceStatus.client_write)
-assert(Audit.LastPopulationEvidence.server_write.ok and Audit.LastPopulationEvidence.source.checked==110)
-assert(#Audit.LastPopulationEvidence.source.modules==110,'full source manifest lost in transport')
+assert(Audit.LastPopulationEvidence.server_write.ok and Audit.LastPopulationEvidence.source.checked==116)
+assert(#Audit.LastPopulationEvidence.source.modules==116,'full source manifest lost in transport')
+local runtime=Audit.LastPopulationEvidence.server_runtime
+assert(runtime.dedicated==true and runtime.singleplayer==false and runtime.max_players==4 and runtime.human_players==1,
+    'available slots stood in for actual human players')
+assert(runtime.tick_interval==.015 and runtime.time_scale==1 and runtime.convars.nb_update_frequency=='0.015'
+    and runtime.convars.sv_cheats=='0','server runtime replaced with client-local defaults')
 local saved=assert(files.client['legend_of_deborah/population_latest.txt'])
 assert(saved:sub(1,17)=='[LOD:POPULATION] ' and #saved>4095,'full client record unexpectedly compacted')
 local checkedConsole=0
@@ -145,12 +160,14 @@ for _,line in ipairs(printed) do
         checkedConsole=checkedConsole+1
     end
 end
-assert(checkedConsole==1 and #A.Source.modules==110,'console compaction mutated cached identity')
+assert(checkedConsole==1 and #A.Source.modules==116,'console compaction mutated cached identity')
 request(admin);assert(censusCalls==1 and writes.server==1,'request rate bound failed')
 local out=realm('client',function() return Audit:StopPerformanceCapture('manual') end)
 assert(out.population.live==64 and out.population_status.client_write and out.saved)
 -- Server DATA silently dropping a write does not lose the client mirror.
-now=102;drop.server=true;request(admin);receive()
+now=102;drop.server=true;serverSettings.nb_update_frequency='0.1';request(admin);receive()
+assert(Audit.LastPopulationEvidence.server_runtime.convars.nb_update_frequency=='0.1'
+    and runtime.convars.nb_update_frequency=='0.015','cadence evidence stale or previous capture mutated')
 assert(not A.LastWrite.ok and A.LastWrite.error:find('did not persist',1,true))
 assert(Audit.PopulationEvidenceStatus.client_write and not Audit.LastPopulationEvidence.server_write.ok)
 drop.server=false;now=104;drop.client=true;request(admin);receive()
@@ -170,7 +187,7 @@ map='gm_flatgrass';local run=serverLOD.RunManager;serverLOD.RunManager=nil
 request(admin);assert(censusCalls==3);serverLOD.RunManager=run
 now=108;tooLarge=true;request(admin);assert(#responses==0 and censusCalls==4)
 tooLarge=false
-assert(hashes.server==110,'transport rehashed gameplay on every request')
+assert(hashes.server==116,'transport rehashed gameplay on every request')
 -- Throwing DATA failure is contained as well as a silent failure.
 local oldWrite=file.Write
 file.Write=function(path,text) if SERVER then error('injected disk failure') end;return oldWrite(path,text) end
@@ -178,6 +195,21 @@ now=110;request(admin);receive()
 assert(not A.LastWrite.ok and A.LastWrite.error:find('injected',1,true))
 assert(Audit.PopulationEvidenceStatus.client_write and #A.Records<=64)
 file.Write=oldWrite
+local oldEngine,oldDedicated,oldGetConVar=engine,game.IsDedicated,GetConVar
+engine=nil;game.IsDedicated=nil;GetConVar=function() return nil end
+local missing=realm('server',function() return A:Snapshot('missing-runtime-boundaries') end).server_runtime
+assert(missing.tick_interval=='unavailable' and missing.dedicated=='unavailable'
+    and missing.convars.nb_update_frequency=='unavailable','missing native APIs falsely reported a normal runtime')
+engine,game.IsDedicated,GetConVar=oldEngine,oldDedicated,oldGetConVar
+local bounded=realm('server',function() return A:Snapshot('runtime-console-bounds') end)
+bounded.bulk={text=string.rep('x',6000)}
+local encoded=A:ConsoleSummary(bounded)
+assert(#encoded<=3800 and codec[encoded].server_runtime.convars.nb_update_frequency=='0.1',
+    'compact console discarded the authoritative server cadence')
+bounded.oversized=string.rep('x',6000)
+encoded=A:ConsoleSummary(bounded)
+assert(#encoded<=3800 and codec[encoded].server_runtime.convars.nb_update_frequency=='0.1',
+    'last-resort console discarded the authoritative server cadence')
 print=nativePrint
 print('POPULATION_TRANSPORT_PASS: one automatic opt-in request; existing census/source cache; admin/rate/map/payload bounds; complete client mirror and performance embedding; valid bounded console; native DATA silent/throwing failures; malformed packets; no second census or timer')
 

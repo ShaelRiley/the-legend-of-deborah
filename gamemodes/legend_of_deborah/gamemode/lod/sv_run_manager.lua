@@ -741,6 +741,11 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     self.State.LevelSeed = LOD.Seeds.Normalize(levelSeed)
 
     local totalStarted = SysTime()
+    local bossPrecacheStarted = SysTime()
+    if LOD.BossEncounter and LOD.BossEncounter.PrecacheLevel then
+        LOD.BossEncounter:PrecacheLevel(self.State.Level, self.State.LevelSeed)
+    end
+    local bossPrecacheSeconds = SysTime() - bossPrecacheStarted
     local graph, buildReport
     local generationSeconds, buildSeconds, firstLayoutAttempt = 0, 0, 1
     local placementFailures = {}
@@ -783,6 +788,7 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     buildReport.eventPlacementFailures = placementFailures
     buildReport.generationSeconds = generationSeconds
     buildReport.buildSeconds = buildSeconds
+    buildReport.bossPrecacheSeconds = bossPrecacheSeconds
     buildReport.totalSeconds = SysTime() - totalStarted
 
     self.State.Graph = graph
@@ -819,7 +825,7 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
     self:PromoteWaitingSpectators()
 
     print(string.format(
-        "[LOD] Level %d ready. campaign=%d levelSeed=%d layoutAttempt=%d cells=%d entities=%d vertical=%d mazeAttempt=%d gen+progression=%.3fs build=%.3fs total=%.3fs",
+        "[LOD] Level %d ready. campaign=%d levelSeed=%d layoutAttempt=%d cells=%d entities=%d vertical=%d mazeAttempt=%d gen+progression=%.3fs build=%.3fs total=%.3fs boss-assets=%.3fs",
         self.State.Level,
         self.State.CampaignSeed,
         self.State.LevelSeed,
@@ -830,7 +836,8 @@ function RunManager:BuildCurrentLevel(levelSeedOverride)
         graph.Attempt,
         buildReport.generationSeconds,
         buildReport.buildSeconds,
-        buildReport.totalSeconds
+        buildReport.totalSeconds,
+        buildReport.bossPrecacheSeconds
     ))
     return true, graph
 end

@@ -1,0 +1,466 @@
+{
+  "tested_source": "9b7f7d0e",
+  "scope": "Singleplayer D20lowercourt-v1; normal frozen setup. Both displays ON. One-in128 selected service-method samples; inclusive estimates overlap and can alias. Whole profile includes source/population capture preparation and IPC, not only60s active frames. No acceptance from profiled FPS.",
+  "raw": "/home/deck/deborah-benchmarks/query-cpu/9b7f7d0e/observer-series-v1",
+  "runs": [
+    {
+      "arm": "arm01-control",
+      "metrics": {
+        "frames": 1289,
+        "seconds": 59.947567,
+        "fps": 21.502123680849298,
+        "median_ms": 37.243,
+        "p95_ms": 85.302,
+        "p99_ms": 133.134,
+        "max_ms": 348.049,
+        "one_percent_low_fps": 5.686863782114377,
+        "below_budget_seconds": 58.49663099999994,
+        "longest_below_budget_seconds": 18.560697000000005,
+        "below_budget_runs_ge2s": 5
+      },
+      "state": {
+        "variant": "control",
+        "active": false,
+        "passed": true,
+        "bindings": 0
+      }
+    },
+    {
+      "arm": "arm02-profiled",
+      "metrics": {
+        "frames": 1308,
+        "seconds": 59.944941,
+        "fps": 21.82002314423831,
+        "median_ms": 36.595,
+        "p95_ms": 82.162,
+        "p99_ms": 116.726,
+        "max_ms": 327.348,
+        "one_percent_low_fps": 6.341271850777191,
+        "below_budget_seconds": 59.18474300000007,
+        "longest_below_budget_seconds": 30.169074999999967,
+        "below_budget_runs_ge2s": 4
+      },
+      "state": {
+        "variant": "profiled",
+        "active": true,
+        "passed": true,
+        "bindings": 20
+      },
+      "profile": {
+        "scope": "Sparse inclusive wall estimates overlap; deterministic sampling can alias. Low sample counts are weak evidence. Maximum is sampled only; errors do not complete samples. Counter/provider observation affects JIT and performance. Not acceptance FPS.",
+        "reason": "explicit",
+        "rows": [
+          {
+            "calls": 122962,
+            "completed_samples": 960,
+            "maximum_sample_ms": 0.7568000000048869,
+            "estimated_ms_per_second": 87.93659970175844,
+            "name": "HostileMotionV2.MoveToward",
+            "sampled_ms": 48.110499999566514
+          },
+          {
+            "calls": 277943,
+            "completed_samples": 2171,
+            "maximum_sample_ms": 0.7066000000008898,
+            "estimated_ms_per_second": 68.13196983847884,
+            "name": "EntrySafety.BeforeAI",
+            "sampled_ms": 37.27530000024615
+          },
+          {
+            "calls": 1495006,
+            "completed_samples": 11679,
+            "maximum_sample_ms": 0.09200000000930686,
+            "estimated_ms_per_second": 46.61541806069174,
+            "name": "RPGAbilityRules.ProgressionState",
+            "sampled_ms": 25.50350000107926
+          },
+          {
+            "calls": 1086003,
+            "completed_samples": 8484,
+            "maximum_sample_ms": 0.10240000000294458,
+            "estimated_ms_per_second": 46.597505573456154,
+            "name": "RPGStatusElements.BindActorLife",
+            "sampled_ms": 25.493700000623676
+          },
+          {
+            "calls": 1028664,
+            "completed_samples": 8036,
+            "maximum_sample_ms": 0.09799999997994746,
+            "estimated_ms_per_second": 35.71786344840356,
+            "name": "RPGStatusElements.Has",
+            "sampled_ms": 19.541400000079534
+          },
+          {
+            "calls": 1663609,
+            "completed_samples": 12996,
+            "maximum_sample_ms": 0.09479999999939537,
+            "estimated_ms_per_second": 34.761738791125445,
+            "name": "SoldierProgression.StateFor",
+            "sampled_ms": 19.018299999856936
+          },
+          {
+            "calls": 223363,
+            "completed_samples": 1745,
+            "maximum_sample_ms": 0.11560000000088166,
+            "estimated_ms_per_second": 21.384401497059198,
+            "name": "RPGStatusElements.CanInitiateAttack",
+            "sampled_ms": 11.699500000048602
+          },
+          {
+            "calls": 163635,
+            "completed_samples": 1278,
+            "maximum_sample_ms": 0.08170000000973232,
+            "estimated_ms_per_second": 10.207741102697861,
+            "name": "RPGStatusElements.CanMoveVoluntarily",
+            "sampled_ms": 5.584699999573672
+          },
+          {
+            "calls": 132305,
+            "completed_samples": 1033,
+            "maximum_sample_ms": 0.11519999999620723,
+            "estimated_ms_per_second": 8.371345686711836,
+            "name": "RPGStatusElements.LocomotionMultiplier",
+            "sampled_ms": 4.580000000260043
+          },
+          {
+            "calls": 146315,
+            "completed_samples": 1143,
+            "maximum_sample_ms": 0.10009999999738284,
+            "estimated_ms_per_second": 7.755375490394809,
+            "name": "RPGAbilityRules.RogueMovementMultiplier",
+            "sampled_ms": 4.242999999917174
+          },
+          {
+            "calls": 119351,
+            "completed_samples": 932,
+            "maximum_sample_ms": 0.10240000000294458,
+            "estimated_ms_per_second": 7.5448123848274395,
+            "name": "RPGStatusElements.HandleAIFlee",
+            "sampled_ms": 4.1277999998641235
+          },
+          {
+            "calls": 38428,
+            "completed_samples": 300,
+            "maximum_sample_ms": 0.13309999999933098,
+            "estimated_ms_per_second": 5.545376785848106,
+            "name": "RPGAbilityRules.Derived",
+            "sampled_ms": 3.033900000204426
+          },
+          {
+            "calls": 127629,
+            "completed_samples": 997,
+            "maximum_sample_ms": 0.08850000000393266,
+            "estimated_ms_per_second": 4.032137245900824,
+            "name": "RPGStatusElements.ObserveCell",
+            "sampled_ms": 2.2060000002852576
+          },
+          {
+            "calls": 23711,
+            "completed_samples": 185,
+            "maximum_sample_ms": 0.07980000000884502,
+            "estimated_ms_per_second": 3.5885290360941924,
+            "name": "HostileMotionV2.Stop",
+            "sampled_ms": 1.9632999999430467
+          },
+          {
+            "calls": 122971,
+            "completed_samples": 960,
+            "maximum_sample_ms": 0.06920000001287008,
+            "estimated_ms_per_second": 1.95026765242327,
+            "name": "RPGAbilityRules.HostileDexMovementMultiplier",
+            "sampled_ms": 1.0670000001056223
+          },
+          {
+            "calls": 38698,
+            "completed_samples": 302,
+            "maximum_sample_ms": 0.03739999999652355,
+            "estimated_ms_per_second": 1.4998965655506393,
+            "name": "CharacterProgressionSystem.ReconcileFeatOwnership",
+            "sampled_ms": 0.8206000000114955
+          },
+          {
+            "calls": 37831,
+            "completed_samples": 295,
+            "maximum_sample_ms": 0.04389999999432348,
+            "estimated_ms_per_second": 0.877163492167613,
+            "name": "IdentityPerkDirector.EnsurePackage",
+            "sampled_ms": 0.47989999991671084
+          },
+          {
+            "calls": 38796,
+            "completed_samples": 303,
+            "maximum_sample_ms": 0.062399999990248034,
+            "estimated_ms_per_second": 0.8208671059838508,
+            "name": "IdentityPerkDirector.EnsureState",
+            "sampled_ms": 0.4490999997273093
+          },
+          {
+            "calls": 38698,
+            "completed_samples": 302,
+            "maximum_sample_ms": 0.0030999999864889105,
+            "estimated_ms_per_second": 0.4074176750855114,
+            "name": "CharacterProgressionSystem.RepairDuplicateFeatSelections",
+            "sampled_ms": 0.22289999981239816
+          },
+          {
+            "calls": 270,
+            "completed_samples": 2,
+            "maximum_sample_ms": 0.08729999998990934,
+            "estimated_ms_per_second": 0.2672250522348571,
+            "name": "CharacterProgressionSystem._RecomputeProgressionState",
+            "sampled_ms": 0.14619999998899402
+          }
+        ],
+        "sampling": 128,
+        "mismatches": [],
+        "seconds": 70.0293623,
+        "bindings": 20,
+        "restored": true
+      },
+      "independent_retirement": {
+        "originals_cleared": true,
+        "checked": 20,
+        "passed": true,
+        "lease_absent": true
+      }
+    },
+    {
+      "arm": "arm03-profiled",
+      "metrics": {
+        "frames": 1269,
+        "seconds": 59.94683800000001,
+        "fps": 21.168756223639352,
+        "median_ms": 37.548,
+        "p95_ms": 90.572,
+        "p99_ms": 128.703,
+        "max_ms": 341.342,
+        "one_percent_low_fps": 5.972431257316228,
+        "below_budget_seconds": 59.13568799999998,
+        "longest_below_budget_seconds": 13.208378999999992,
+        "below_budget_runs_ge2s": 6
+      },
+      "state": {
+        "variant": "profiled",
+        "active": true,
+        "passed": true,
+        "bindings": 20
+      },
+      "profile": {
+        "scope": "Sparse inclusive wall estimates overlap; deterministic sampling can alias. Low sample counts are weak evidence. Maximum is sampled only; errors do not complete samples. Counter/provider observation affects JIT and performance. Not acceptance FPS.",
+        "reason": "explicit",
+        "rows": [
+          {
+            "calls": 118311,
+            "completed_samples": 924,
+            "maximum_sample_ms": 0.24820000000147502,
+            "estimated_ms_per_second": 83.08570132766853,
+            "name": "HostileMotionV2.MoveToward",
+            "sampled_ms": 44.81129999962263
+          },
+          {
+            "calls": 270166,
+            "completed_samples": 2110,
+            "maximum_sample_ms": 0.6051000000013573,
+            "estimated_ms_per_second": 69.86802302736969,
+            "name": "EntrySafety.BeforeAI",
+            "sampled_ms": 37.68249999976092
+          },
+          {
+            "calls": 1049121,
+            "completed_samples": 8196,
+            "maximum_sample_ms": 0.12580000000639302,
+            "estimated_ms_per_second": 50.77592404537305,
+            "name": "RPGStatusElements.BindActorLife",
+            "sampled_ms": 27.385400000198956
+          },
+          {
+            "calls": 1449538,
+            "completed_samples": 11324,
+            "maximum_sample_ms": 0.1719999999920674,
+            "estimated_ms_per_second": 48.592136939105714,
+            "name": "RPGAbilityRules.ProgressionState",
+            "sampled_ms": 26.207599998627984
+          },
+          {
+            "calls": 1614748,
+            "completed_samples": 12615,
+            "maximum_sample_ms": 0.09000000000014552,
+            "estimated_ms_per_second": 40.72230814652672,
+            "name": "SoldierProgression.StateFor",
+            "sampled_ms": 21.96310000242363
+          },
+          {
+            "calls": 992104,
+            "completed_samples": 7750,
+            "maximum_sample_ms": 0.07829999998421044,
+            "estimated_ms_per_second": 38.40298458129296,
+            "name": "RPGStatusElements.Has",
+            "sampled_ms": 20.712199998968117
+          },
+          {
+            "calls": 214332,
+            "completed_samples": 1674,
+            "maximum_sample_ms": 0.10699999999985721,
+            "estimated_ms_per_second": 21.820998506507017,
+            "name": "RPGStatusElements.CanInitiateAttack",
+            "sampled_ms": 11.768900000134863
+          },
+          {
+            "calls": 158077,
+            "completed_samples": 1234,
+            "maximum_sample_ms": 0.0897999999978083,
+            "estimated_ms_per_second": 10.501201407509457,
+            "name": "RPGStatusElements.CanMoveVoluntarily",
+            "sampled_ms": 5.663700000226868
+          },
+          {
+            "calls": 127522,
+            "completed_samples": 996,
+            "maximum_sample_ms": 0.20100000000411455,
+            "estimated_ms_per_second": 8.916667141093157,
+            "name": "RPGStatusElements.LocomotionMultiplier",
+            "sampled_ms": 4.809100000016997
+          },
+          {
+            "calls": 141333,
+            "completed_samples": 1104,
+            "maximum_sample_ms": 0.10149999999953252,
+            "estimated_ms_per_second": 8.537127983877388,
+            "name": "RPGAbilityRules.RogueMovementMultiplier",
+            "sampled_ms": 4.604400000332021
+          },
+          {
+            "calls": 114886,
+            "completed_samples": 897,
+            "maximum_sample_ms": 0.094600000011269,
+            "estimated_ms_per_second": 7.324901792562134,
+            "name": "RPGStatusElements.HandleAIFlee",
+            "sampled_ms": 3.950600000351301
+          },
+          {
+            "calls": 38213,
+            "completed_samples": 298,
+            "maximum_sample_ms": 0.06410000000300897,
+            "estimated_ms_per_second": 5.214908818998241,
+            "name": "RPGAbilityRules.Derived",
+            "sampled_ms": 2.812600000055454
+          },
+          {
+            "calls": 25172,
+            "completed_samples": 196,
+            "maximum_sample_ms": 0.07870000000309574,
+            "estimated_ms_per_second": 4.664234027212178,
+            "name": "HostileMotionV2.Stop",
+            "sampled_ms": 2.51560000002371
+          },
+          {
+            "calls": 122911,
+            "completed_samples": 960,
+            "maximum_sample_ms": 0.08289999999533393,
+            "estimated_ms_per_second": 3.8834624621416327,
+            "name": "RPGStatusElements.ObserveCell",
+            "sampled_ms": 2.094499999969912
+          },
+          {
+            "calls": 118322,
+            "completed_samples": 924,
+            "maximum_sample_ms": 0.04190000001358385,
+            "estimated_ms_per_second": 1.8643215592598157,
+            "name": "RPGAbilityRules.HostileDexMovementMultiplier",
+            "sampled_ms": 1.0055000000335212
+          },
+          {
+            "calls": 37563,
+            "completed_samples": 293,
+            "maximum_sample_ms": 0.07850000000075852,
+            "estimated_ms_per_second": 1.4350918815364586,
+            "name": "IdentityPerkDirector.EnsurePackage",
+            "sampled_ms": 0.7740000000353575
+          },
+          {
+            "calls": 38483,
+            "completed_samples": 300,
+            "maximum_sample_ms": 0.0213999999942871,
+            "estimated_ms_per_second": 1.433979407064993,
+            "name": "CharacterProgressionSystem.ReconcileFeatOwnership",
+            "sampled_ms": 0.7733999999572916
+          },
+          {
+            "calls": 38590,
+            "completed_samples": 301,
+            "maximum_sample_ms": 0.028599999993161873,
+            "estimated_ms_per_second": 0.8043189384497448,
+            "name": "IdentityPerkDirector.EnsureState",
+            "sampled_ms": 0.4338000001240516
+          },
+          {
+            "calls": 38483,
+            "completed_samples": 300,
+            "maximum_sample_ms": 0.003699999993500569,
+            "estimated_ms_per_second": 0.4253360173630633,
+            "name": "CharacterProgressionSystem.RepairDuplicateFeatSelections",
+            "sampled_ms": 0.22939999988125237
+          },
+          {
+            "calls": 270,
+            "completed_samples": 2,
+            "maximum_sample_ms": 0.1023000000088814,
+            "estimated_ms_per_second": 0.2629147658978784,
+            "name": "CharacterProgressionSystem._RecomputeProgressionState",
+            "sampled_ms": 0.14180000000862947
+          }
+        ],
+        "sampling": 128,
+        "mismatches": [],
+        "seconds": 69.035301,
+        "bindings": 20,
+        "restored": true
+      },
+      "independent_retirement": {
+        "originals_cleared": true,
+        "checked": 20,
+        "passed": true,
+        "lease_absent": true
+      }
+    },
+    {
+      "arm": "arm04-control",
+      "metrics": {
+        "frames": 1308,
+        "seconds": 59.938652999999995,
+        "fps": 21.822312223132542,
+        "median_ms": 36.562,
+        "p95_ms": 84.607,
+        "p99_ms": 140.946,
+        "max_ms": 344.02,
+        "one_percent_low_fps": 5.91134835322502,
+        "below_budget_seconds": 59.16589299999995,
+        "longest_below_budget_seconds": 16.263488,
+        "below_budget_runs_ge2s": 5
+      },
+      "state": {
+        "variant": "control",
+        "active": false,
+        "passed": true,
+        "bindings": 0
+      }
+    }
+  ],
+  "mean_fps": {
+    "control": 21.662217951990918,
+    "profiled": 21.49438968393883
+  },
+  "interpretation": "Profiled and control FPS ranges overlap; no isolated observer overhead/significance conclusion from two percondition. Profiles repeat many progression/life queries; Derived/reconciliation small. Next focused hypothesis: bypass canonical StateFor empty NextBot dispatch while honoring replaced providers and live base resolver. No cross-frame state cache. Native source timing required; no predicted gain retained.",
+  "retirement": {
+    "all_owned_games_stopped": true
+  },
+  "candidate_hypothesis": {
+    "file": "gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+    "function": "Rules:ProgressionState",
+    "change": "Skip canonical StateFor empty NextBot dispatch only while provider identity is unchanged. Still call existing base resolver on every query. Foreign providers stay live, including callbacks mutating ordinary progression. No cross-call/profile/table/validity cache.",
+    "expected": "Remove one redundant Lua provider dispatch on frequent native NPC queries. Type/validity/base resolution remains, so the entire sampled StateFor row is not a predicted saving. Added guard costs must be measured.",
+    "risks": "Custom provider behavior, callback ordering, invalid/removed actors, false/nil/inherited profiles, Hero/Soldier incarnation and Lua-refresh fallback.",
+    "static_checks": "HumanSoldier progression15requirements underLua5.4/LuaJIT, nativeAPI available/unavailable variants; foreign-provider override/removal/callback replacement; actor progression/status elements/Soldier lifecycle/sharedAI B29/source120/syntax/diff pass. Native timing unverified.",
+    "comparison": "Freeze six fresh P,C,C,P,P,C60s normalD20 on exact original source. Native actual provider/upvalue/file/function/result parity proof before FPS, all source/runtime/normal resources/input/bothON, no profiler/sampler/JIT/GC/affinity changes. Retain only a repeatable measured gain without correctness/pacing regression; final five SP scenarios still3x180s+warmed+40cap."
+  }
+}

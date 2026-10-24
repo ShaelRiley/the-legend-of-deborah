@@ -1,0 +1,329 @@
+{
+  "status": "RETAIN native floor support repair; target UNMET, complete acceptance UNVERIFIED",
+  "parent": "bc95bed0b590da75622d0edefdd1fa7e1d2efe1f",
+  "device": "Actual LCD/Jupiter512GB Deck SteamOS3.8.28 GMod2026.09.17/public25375506 Windows64 Proton10.0-4b/sniper;1280x800@60 AC15W GPUauto uncapped300 vsync0 mcore1 queue2 bones1; solo listen host",
+  "scenario": "Frozen D20 lowercourt-v1 before first FPS result;640points radius288 normal input; HP211 AR2clip20 canonical3items; campaign654759232 level1217159003 layout899898795 roster588052291;57normalroamers53planned1820models",
+  "freeze": "/home/deck/deborah-benchmarks/frozen-scenarios/d20-normal-20-20261022/lower-court-v1",
+  "preparation_failures": "d20-normal60-run1 no timing started: private fixture assumed512-unit cells, actual384;352/320circles hit authored stairs,288clear; no source collision change",
+  "baseline": {
+    "mode": "uncapped",
+    "limiter_tolerance_ms": 0,
+    "active": {
+      "frames": 326,
+      "seconds": 59.846835,
+      "fps": 5.447238772108834,
+      "median_ms": 196.041,
+      "p95_ms": 305.864,
+      "p99_ms": 334.24,
+      "max_ms": 387.357,
+      "one_percent_low_fps": 2.789886660854403,
+      "below_budget_seconds": 59.013464000000006,
+      "longest_below_budget_seconds": 58.817505,
+      "below_budget_runs_ge2s": 1
+    },
+    "pacing_at_tolerated_budget": {
+      "frames": 326,
+      "seconds": 59.846835,
+      "fps": 5.447238772108834,
+      "median_ms": 196.041,
+      "p95_ms": 305.864,
+      "p99_ms": 334.24,
+      "max_ms": 387.357,
+      "one_percent_low_fps": 2.789886660854403,
+      "below_budget_seconds": 59.013464000000006,
+      "longest_below_budget_seconds": 58.817505,
+      "below_budget_runs_ge2s": 1
+    },
+    "capture_checks_passed": false,
+    "issues": [
+      "unrendered terminal interval exceeds spike budget or is unknown",
+      "average FPS below budget",
+      "p95 exceeds frame budget",
+      "p99 exceeds spike budget",
+      "continuous drop lasting at least two seconds"
+    ],
+    "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+  },
+  "baseline_raw": "/home/deck/deborah-benchmarks/finale-baseline/bc95bed0/d20-normal60-run2",
+  "baseline_coverage": {
+    "status": "FAILED timing and encounter commit; traversal only, normal combat UNVERIFIED",
+    "events": {
+      "WARDEN_COMPOSITION_RETRY": 263,
+      "WARDEN_TURRETS_ADMITTED": 263,
+      "WARDEN_COMMIT": 0,
+      "WARDEN_PHASE": 0
+    },
+    "input_progress": "reached node187 by60.388s, normal physical lower court circuits; no HP/phase/ammo writes",
+    "client_lua_errors": 0,
+    "server_lua_errors": 0,
+    "bounded_probe": "/home/deck/deborah-recovery/evidence/finale-support-gate",
+    "hypothesis": "all4requiredSentries fail native TraceLine support while one-unitvertical zeroXYextent TraceHull hitsall20samples; compositionrollback/retry repeatedly initializes5actors"
+  },
+  "hypothesis": "Required four Sentries all reject support because native TraceLine misses generated SOLID_BBOX floors. Existing complete-group rollback recreates Gordon+4clones roughly5Hz. Repair support only; no retry throttling/removal of actors.",
+  "native_probe": {
+    "admission": "44/44Placement calls reject support;4slots skip;boundedmethodbindingsrestored;14.178msoneAdmit",
+    "line": "12/12native support probes miss floors across3masks4corners",
+    "hull": "20/20five-point samples hit generatedfloor,0StartSolid/AllSolid,maxheight error0.03125",
+    "raw": "/home/deck/deborah-recovery/evidence/finale-support-gate"
+  },
+  "change": "T:Supported uses zeroXY-extent one-unitvertical TraceHull at exact existing5points and4\u2192-8range. Same mask/filter/normal/height tolerance/nonactor rules. Existing occupancy/route/stair checks remain.",
+  "regressions": {
+    "spot08": "262focusedproductionassertionsPASS; exactparent failsnewnativeBBoxgate",
+    "gordon": "Warden24arenas/clone/resupply/lifetimePASS;SPOT06116PASS;SPOT07130PASS",
+    "hector": "encounterhandoff/cleanup/rescue/Level21andfinalePASS",
+    "source": "manifest118total/114server/52client; installandpopulationtransport/B28PASS;changedLuaSyntaxPASS"
+  },
+  "native_candidate": {
+    "raw": "/home/deck/deborah-benchmarks/finale-support-source/8b0b531e/d20-normal60-run1",
+    "analysis": {
+      "mode": "uncapped",
+      "limiter_tolerance_ms": 0,
+      "active": {
+        "frames": 1374,
+        "seconds": 59.910873,
+        "fps": 22.93406741043483,
+        "median_ms": 36.877,
+        "p95_ms": 76.116,
+        "p99_ms": 98.104,
+        "max_ms": 468.224,
+        "one_percent_low_fps": 6.688311316049463,
+        "below_budget_seconds": 59.39311299999999,
+        "longest_below_budget_seconds": 25.195458000000006,
+        "below_budget_runs_ge2s": 3
+      },
+      "pacing_at_tolerated_budget": {
+        "frames": 1374,
+        "seconds": 59.910873,
+        "fps": 22.93406741043483,
+        "median_ms": 36.877,
+        "p95_ms": 76.116,
+        "p99_ms": 98.104,
+        "max_ms": 468.224,
+        "one_percent_low_fps": 6.688311316049463,
+        "below_budget_seconds": 59.39311299999999,
+        "longest_below_budget_seconds": 25.195458000000006,
+        "below_budget_runs_ge2s": 3
+      },
+      "capture_checks_passed": false,
+      "issues": [
+        "unrendered terminal interval exceeds spike budget or is unknown",
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+    },
+    "coverage": {
+      "status": "nine-actorcommit/normalcombat observed;FAILframebudget;fullphasesunverified",
+      "events": {
+        "WARDEN_COMMIT": 1,
+        "WARDEN_COMPOSITION_RETRY": 0,
+        "WARDEN_TURRETS_ADMITTED": 1,
+        "WARDEN_PHASE": 0
+      },
+      "native_gate": {
+        "phase": 1,
+        "composition": 9,
+        "health": 1667,
+        "maximum": 1667,
+        "turrets": 4,
+        "skipped": 0,
+        "player_health": -3,
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua",
+        "scope": "read-only native composition/lifetime/support after active FPS capture; no phase/HP/resources overrides",
+        "slots": [
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 1,
+            "health": 483,
+            "position": "5480.000000 1048.000000 -11501.968750",
+            "maximum": 483,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 2,
+            "health": 262,
+            "position": "4504.000000 2024.000000 -11501.968750",
+            "maximum": 262,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 3,
+            "health": 556,
+            "position": "4504.000000 1048.000000 -11501.968750",
+            "maximum": 556,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 4,
+            "health": 279,
+            "position": "5480.000000 2024.000000 -11501.968750",
+            "maximum": 279,
+            "admitted": true
+          }
+        ],
+        "clones": 4,
+        "seconds": 159.2929229736328
+      },
+      "baseline_comparison_limit": "parent failscombatcomposition, so5.447\u219222.934FPS is a repaired retry pathology, not identical functioningfight performance nor40FPSacceptance"
+    },
+    "interpretation": "Full9actor group now commits1time with0compositionretries; all4actualSentries remaincanonicalownedand5sample-supported. Nativegateat159saftercapture findslaterplayerdeath; active60sendswithordinaryHP192. This is a correctness/retry-pathology repair; baselinehadnofunctioningcombat, so notsamefightFPSgain oracceptance.",
+    "next": "samefrozenroute nativeVProf60 to identify functioningfight bottleneck; fullphase/upperfloor/Hector/rescue stillunverified"
+  },
+  "ci_parent": "bc95lowend/VR/audioPASS;fullmatrix325/334FAIL run39845300211",
+  "coverage_gaps": [
+    "D20upperfloor",
+    "allGordonandHectorphases/core/rescue",
+    "sixscenarios3x180warmed",
+    "separate40capverification",
+    "fouractualconnectedplayers"
+  ],
+  "optional_os_variant": "GameMode1.8.2 CPUgovernortest denied by OS pkexecpolicy; no bypass/no CPU policychange/no gainclaim",
+  "primary_api_reference": "https://wiki.facepunch.com/gmod/util.TraceHull",
+  "updated_utc": "2026-10-22T20:50:46.616680+00:00",
+  "source": "8b0b531e7d8cd5dfdbae36801f604537d4e147b7",
+  "separate_dedicated_diagnostic": {
+    "source": "8b0b531e7d8cd5dfdbae36801f604537d4e147b7",
+    "raw": "/home/deck/deborah-benchmarks/current-dedicated-d20/8b0b531e/normal60-run1",
+    "analysis": {
+      "mode": "uncapped",
+      "limiter_tolerance_ms": 0,
+      "active": {
+        "frames": 2519,
+        "seconds": 59.971271,
+        "fps": 42.00344528299225,
+        "median_ms": 19.822,
+        "p95_ms": 43.54,
+        "p99_ms": 55.264,
+        "max_ms": 275.124,
+        "one_percent_low_fps": 13.444710695681042,
+        "below_budget_seconds": 28.65180799999999,
+        "longest_below_budget_seconds": 4.619353000000001,
+        "below_budget_runs_ge2s": 4
+      },
+      "pacing_at_tolerated_budget": {
+        "frames": 2519,
+        "seconds": 59.971271,
+        "fps": 42.00344528299225,
+        "median_ms": 19.822,
+        "p95_ms": 43.54,
+        "p99_ms": 55.264,
+        "max_ms": 275.124,
+        "one_percent_low_fps": 13.444710695681042,
+        "below_budget_seconds": 28.65180799999999,
+        "longest_below_budget_seconds": 4.619353000000001,
+        "below_budget_runs_ge2s": 4
+      },
+      "capture_checks_passed": false,
+      "issues": [
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+    },
+    "coverage": {
+      "status": "SEPARATEconfigurationFAILtails;only1human/fourslots,not4humanacceptance;phase1lowercourt",
+      "events": {
+        "WARDEN_COMMIT": 1,
+        "WARDEN_COMPOSITION_RETRY": 0,
+        "WARDEN_TURRETS_ADMITTED": 1,
+        "WARDEN_PHASE": 0
+      },
+      "native_gate": {
+        "phase": 1,
+        "composition": 9,
+        "health": 1570,
+        "maximum": 1667,
+        "turrets": 4,
+        "skipped": 0,
+        "player_health": 46,
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua",
+        "scope": "read-only native composition/lifetime/support after active FPS capture; no phase/HP/resources overrides",
+        "slots": [
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 1,
+            "health": 403,
+            "position": "5480.000000 1048.000000 -11501.968750",
+            "maximum": 483,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 2,
+            "health": 224,
+            "position": "4504.000000 2024.000000 -11501.968750",
+            "maximum": 262,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 3,
+            "health": 556,
+            "position": "4504.000000 1048.000000 -11501.968750",
+            "maximum": 556,
+            "admitted": true
+          },
+          {
+            "supported": true,
+            "archetype": "sentry",
+            "slot": 4,
+            "health": 235,
+            "position": "5480.000000 2024.000000 -11501.968750",
+            "maximum": 279,
+            "admitted": true
+          }
+        ],
+        "clones": 4,
+        "seconds": 222.56336975097656
+      },
+      "frozen_listen_host": "stillFAIL22.934FPS; no criterion/scenario replacement",
+      "one_tick_ai": "nativeactualservernb_update_frequency.015,tick.0151515,nb_stop0,ai_disabled0,scale1,sv_cheats0;114serverhashesmatch",
+      "player_end": "normalincomingdamage duringrun; postcaptureprobe mayfindordinarydeath; no survival/phaseoverride"
+    },
+    "runtime": "sameDeckLinux32GMod2026.09.17/LuaJIT2.0.4dedicated127.0.0.1:27018 plusWindows64P10client;sv_lan1/cheats0/net_usesocketsforloopback1both;native66Hztick andnb_update_frequency.015;1human/fourslots;114serverhashesmatch;1820clientmodels;9actualbossactors",
+    "interpretation": "42.003average passes averageonly;FAILp9543.54,p9955.264,longest4.619s/4episodes>=2s. Notfrozenlistenhostacceptanceandnotfourhumanproof."
+  },
+  "detailed_profiling": {
+    "engine_raw": "/home/deck/deborah-benchmarks/finale-support-source/8b0b531e/d20-native-profile60-run1/native-summary.json",
+    "inclusive_ms_per_frame": {
+      "server": 25.0,
+      "nextbot_lua": 11.32,
+      "render": 12.772
+    },
+    "scope": "includespreparation;overlappingtimers;diagnosticnotacceptance",
+    "sparse_raw": "/home/deck/deborah-benchmarks/finale-support-source/8b0b531e/d20-sparse-profile60-run1",
+    "sparse_restored_bindings": 173,
+    "entry_raw": "/home/deck/deborah-benchmarks/finale-support-source/8b0b531e/d20-entry-sparse60-run1",
+    "entry_restored_bindings": 162,
+    "conclusion": "movement/entryworkdominatesmeasuredbossmethods;nocallbackspanningentrymemoizationornewsourcecandidateimplemented"
+  },
+  "ci_new_fixture_failure": {
+    "commit": "8d478035b83aa1cacab164ef77781c1f6f805986",
+    "matrix": "324/334;oneNEWbossframeworkfixturefailure+9knownparentfailures;source_changed0",
+    "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39850111135",
+    "raw": "/home/deck/deborah-recovery/evidence/8d478035-ci/full-failures.log",
+    "cause": "twointegrationtests fake floors onlyforTraceLine; actualnativeunitverticalhullSupport thereforeseesnocollisioninmock",
+    "repair": "f889 fixture-only repair;76/76localPASS;full325/334FAIL same9names AND exactanchor sets as bc95. Runtimeunchanged."
+  },
+  "ci_current": {
+    "source": "f889bf95",
+    "full": "325/334FAIL; all9 names AND exact file/line anchors match bc95 parent. New8d bossfixture failure repaired;76/76boss casesPASS.",
+    "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39852357677",
+    "comparison": "/home/deck/deborah-recovery/evidence/f889bf95-ci/comparison.json",
+    "source_vr_audio": "PASS"
+  },
+  "both_monitors_requirement": "Both monitors ON at all times; 40FPS must be achieved with both ON. No further OFF arms."
+}

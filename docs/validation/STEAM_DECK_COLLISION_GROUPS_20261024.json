@@ -1,0 +1,278 @@
+{
+  "status": "Native group sweep only, no source candidate/gain/physicalcontact acceptance. SP40 UNMET; full five SP/releaseordinary/40cap UNVERIFIED; multiplayer deferred",
+  "source": "4fb82e9d710f2b407ba1819dd617e6c432293946",
+  "raw": "/home/deck/deborah-benchmarks/collision-group-sweep/4fb82e9d/native-readonly-v1",
+  "restored": true,
+  "groups_tested": 22,
+  "coverage": {
+    "hull": 4,
+    "ray": 4
+  },
+  "rows": [
+    {
+      "matrix_equal": true,
+      "name": "COLLISION_GROUP_NONE",
+      "group": 0,
+      "failed_checks": []
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_DEBRIS",
+      "group": 1,
+      "failed_checks": [
+        "player-movement-1",
+        "npc-pair-1",
+        "player-movement-2",
+        "npc-pair-2",
+        "player-movement-3",
+        "npc-pair-3",
+        "player-movement-4",
+        "npc-pair-4"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_DEBRIS_TRIGGER",
+      "group": 2,
+      "failed_checks": [
+        "player-movement-1",
+        "npc-pair-1",
+        "player-movement-2",
+        "npc-pair-2",
+        "player-movement-3",
+        "npc-pair-3",
+        "player-movement-4",
+        "npc-pair-4"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_INTERACTIVE_DEBRIS",
+      "group": 3,
+      "failed_checks": [
+        "npc-pair-1",
+        "npc-pair-2",
+        "npc-pair-3",
+        "npc-pair-4"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_INTERACTIVE",
+      "group": 4,
+      "failed_checks": [
+        "npc-pair-1",
+        "npc-pair-2",
+        "npc-pair-3",
+        "npc-pair-4"
+      ]
+    },
+    {
+      "matrix_equal": true,
+      "name": "COLLISION_GROUP_PLAYER",
+      "group": 5,
+      "failed_checks": []
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_BREAKABLE_GLASS",
+      "group": 6,
+      "failed_checks": [
+        "npc-pair-1",
+        "npc-pair-2",
+        "npc-pair-3",
+        "npc-pair-4"
+      ]
+    },
+    {
+      "matrix_equal": true,
+      "name": "COLLISION_GROUP_VEHICLE",
+      "group": 7,
+      "failed_checks": []
+    },
+    {
+      "matrix_equal": true,
+      "name": "COLLISION_GROUP_PLAYER_MOVEMENT",
+      "group": 8,
+      "failed_checks": []
+    },
+    {
+      "matrix_equal": true,
+      "name": "COLLISION_GROUP_NPC",
+      "group": 9,
+      "failed_checks": []
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_IN_VEHICLE",
+      "group": 10,
+      "failed_checks": [
+        "player-shot-1",
+        "player-movement-1",
+        "npc-pair-1",
+        "player-shot-2",
+        "player-movement-2",
+        "npc-pair-2",
+        "player-shot-3",
+        "player-movement-3",
+        "npc-pair-3",
+        "player-shot-4",
+        "player-movement-4",
+        "npc-pair-4",
+        "generated-floor"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_WEAPON",
+      "group": 11,
+      "failed_checks": [
+        "player-movement-1",
+        "player-movement-2",
+        "player-movement-3",
+        "player-movement-4"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_VEHICLE_CLIP",
+      "group": 12,
+      "failed_checks": [
+        "player-shot-1",
+        "player-movement-1",
+        "npc-pair-1",
+        "player-shot-2",
+        "player-movement-2",
+        "npc-pair-2",
+        "player-shot-3",
+        "player-movement-3",
+        "npc-pair-3",
+        "player-shot-4",
+        "player-movement-4",
+        "npc-pair-4",
+        "generated-floor"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_PROJECTILE",
+      "group": 13,
+      "failed_checks": [
+        "npc-pair-1",
+        "npc-pair-2",
+        "npc-pair-3",
+        "npc-pair-4"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_DOOR_BLOCKER",
+      "group": 14,
+      "failed_checks": [
+        "player-shot-1",
+        "player-movement-1",
+        "npc-pair-1",
+        "player-shot-2",
+        "player-movement-2",
+        "npc-pair-2",
+        "player-shot-3",
+        "player-movement-3",
+        "npc-pair-3",
+        "player-shot-4",
+        "player-movement-4",
+        "npc-pair-4",
+        "generated-floor"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_PASSABLE_DOOR",
+      "group": 15,
+      "failed_checks": [
+        "player-movement-1",
+        "player-movement-2",
+        "player-movement-3",
+        "player-movement-4"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_DISSOLVING",
+      "group": 16,
+      "failed_checks": [
+        "player-movement-1",
+        "npc-pair-1",
+        "player-movement-2",
+        "npc-pair-2",
+        "player-movement-3",
+        "npc-pair-3",
+        "player-movement-4",
+        "npc-pair-4"
+      ]
+    },
+    {
+      "matrix_equal": true,
+      "name": "COLLISION_GROUP_PUSHAWAY",
+      "group": 17,
+      "failed_checks": []
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_NPC_ACTOR",
+      "group": 18,
+      "failed_checks": [
+        "player-movement-1",
+        "player-movement-2",
+        "player-movement-3",
+        "player-movement-4"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_NPC_SCRIPTED",
+      "group": 19,
+      "failed_checks": [
+        "npc-pair-1",
+        "npc-pair-2",
+        "npc-pair-3",
+        "npc-pair-4"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_WORLD",
+      "group": 20,
+      "failed_checks": [
+        "player-movement-1",
+        "npc-pair-1",
+        "player-movement-2",
+        "npc-pair-2",
+        "player-movement-3",
+        "npc-pair-3",
+        "player-movement-4",
+        "npc-pair-4"
+      ]
+    },
+    {
+      "matrix_equal": false,
+      "name": "COLLISION_GROUP_HL2_SPIT",
+      "group": 22,
+      "failed_checks": [
+        "player-movement-1",
+        "npc-pair-1",
+        "player-movement-2",
+        "npc-pair-2",
+        "player-movement-3",
+        "npc-pair-3",
+        "player-movement-4",
+        "npc-pair-4"
+      ]
+    }
+  ],
+  "limits": "Twoexistingordinaryactors/currentnative shot/playerhull/NPCpair/floor traces only. CustomcollisionOFF eachcandidate. All flags/groups/health/positions restored synchronously and ownedgame stopped; bothmonitorsON. Traceequal groups0/5/7/8/9/17 are necessaryonly, no proof of hostilephysicalpass-through/player/loot/world/Climber/Lurker/multiplayer contacts. InteractiveDebris3 andScriptedNPC19 bothfail4NPCpairqueries. No source change/NoCollideconstraints/actorpositionmutation/FPS measurement; do not treat raymatrix as physicalcollision equivalence.",
+  "sources": [
+    "https://wiki.facepunch.com/gmod/Enums/COLLISION_GROUP",
+    "https://raw.githubusercontent.com/ValveSoftware/source-sdk-2013/master/src/game/shared/gamerules.cpp"
+  ],
+  "inference": "SDK native group policies supportrejecting unsafe assumptions but GMod currentnative trace evidence is authority for tested cases. No equivalent native replacement established."
+}

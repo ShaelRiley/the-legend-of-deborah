@@ -79,15 +79,22 @@ LOD.EnemyVariance.Apply=function(_,e)
 end
 local geometry,collision=nil,nil
 local traceCallback
+local supportSamples={}
+local function support(t)
+ supportSamples[#supportSamples+1]=t
+ return {Hit=geometry~='unsupported',HitNormal=Vector(0,0,geometry=='slope' and .1 or 1),
+  HitPos=Vector(t.start.x,t.start.y,t.start.z-6),Entity=geometry=='actor_support' and created[1] or nil}
+end
 util.TraceHull=function(t)
+ if t.mins.x==0 and t.mins.y==0 and t.maxs.x==0 and t.maxs.y==0 and t.maxs.z>t.mins.z then return support(t) end
  if geometry=='occupied' and t.start:DistToSqr(t.endpos)==0 then return {Hit=true} end
  if collision and t.mins.x==-2 then if traceCallback then traceCallback() end;return {Hit=true,HitPos=collision:GetPos(),Entity=collision,StartSolid=geometry=='startsolid'} end
  return {Hit=false,HitPos=t.endpos}
 end
 util.TraceLine=function(t)
  if t.mask==MASK_NPCSOLID then
-  return {Hit=geometry~='unsupported',HitNormal=Vector(0,0,geometry=='slope' and .1 or 1),
-    HitPos=Vector(t.start.x,t.start.y,t.start.z-6),Entity=geometry=='actor_support' and created[1] or nil}
+  if geometry=='native_bbox' then return {Hit=false,HitPos=t.endpos} end
+  return support(t)
  end
  return {Hit=geometry=='cover',StartSolid=geometry=='startsolid',HitPos=t.endpos}
 end
@@ -154,6 +161,17 @@ check(group.desired==4 and group.admitted==4 and group.skipped==0,'four single-p
 check(#created==9,'one Gordon, four clones, four turrets')
 check(varianceCalls>=9,'normal generation invoked')
 local e,slot=first(group)
+geometry='native_bbox';supportSamples={}
+check(T:Supported(slot.pos,e),'native BBOX floor support works when ray traces miss it')
+check(#supportSamples==5,'native BBOX support checks every footprint sample')
+local footprint={{0,0},{-16,-16},{-16,16},{16,-16},{16,16}}
+for i,t in ipairs(supportSamples) do
+ check(t.start.x==slot.pos.x+footprint[i][1] and t.start.y==slot.pos.y+footprint[i][2]
+  and t.endpos.x==t.start.x and t.endpos.y==t.start.y,'unchanged footprint point '..i)
+ check(t.start.z==slot.pos.z+4 and t.endpos.z==slot.pos.z-8
+  and t.mask==MASK_NPCSOLID and t.filter==e,'unchanged support range/mask/actor filter '..i)
+end
+geometry=nil
 check(e.LODArchetypeId=='sentry' and e:GetMaxHealth()==55,'ordinary reference HP; no boss/party override')
 check(not e.LODWarden and not e.LODWardenClone and not e.LODMajorThreat,'no boss-authority masquerade')
 check(e.LODNextAttack>=clock+1.2,'initial arming wait')

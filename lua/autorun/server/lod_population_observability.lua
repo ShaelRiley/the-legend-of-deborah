@@ -9,6 +9,7 @@ local watched={
         "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/init.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_feedback_language.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_die_logger.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_feedback_language.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sv_combat_feed_semantics.lua",
@@ -16,9 +17,12 @@ local watched={
         "gamemodes/legend_of_deborah/gamemode/lod/sv_staging_lore.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_character_progression.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_e_feats.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_feat_card_text.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_animation.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_gps_feat.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sh_gps_voice.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sh_gps_praise.lua",
@@ -58,6 +62,7 @@ local watched={
     "gamemodes/legend_of_deborah/gamemode/lod/cl_loop_audio.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/cl_boss_encounter.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_boss_encounter.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_chuck.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua",
@@ -96,6 +101,7 @@ local watched={
     "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
     "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_no_progress_recovery.lua",
@@ -143,6 +149,31 @@ function A:SourceIdentity()
     return out
 end
 
+local runtimeConvars={"sv_cheats","sv_lan","sv_hibernate_think","host_timescale",
+    "nb_update_frequency","nb_update_framelimit","nb_stop","ai_disabled",
+    "net_usesocketsforloopback"}
+
+-- Read the server's own values: a client's non-replicated NextBot defaults do
+-- not prove the cadence of the server producing its gameplay snapshots.
+local function serverRuntime()
+    local out={engine=tostring(VERSIONSTR or VERSION or "unavailable"),
+        os=jit and jit.os or "unavailable",architecture=jit and jit.arch or "unavailable",
+        jit_version=jit and jit.version or "unavailable",dedicated="unavailable",
+        singleplayer="unavailable",max_players="unavailable",human_players="unavailable",tick_interval="unavailable",
+        time_scale="unavailable",convars={}}
+    if game and game.IsDedicated then out.dedicated=game.IsDedicated() end
+    if game and game.SinglePlayer then out.singleplayer=game.SinglePlayer() end
+    if game and game.MaxPlayers then out.max_players=game.MaxPlayers() end
+    if player and player.GetHumans then out.human_players=#player.GetHumans() end
+    if game and game.GetTimeScale then out.time_scale=game.GetTimeScale() end
+    if engine and engine.TickInterval then out.tick_interval=engine.TickInterval() end
+    for _,name in ipairs(runtimeConvars) do
+        local cv=GetConVar and GetConVar(name)
+        out.convars[name]=cv and cv.GetString and cv:GetString() or "unavailable"
+    end
+    return out
+end
+
 function A:Snapshot(reason)
     local state=LOD.RunManager and LOD.RunManager.State
     local D,W=LOD.EncounterDirector,LOD.WanderingDirector
@@ -151,6 +182,7 @@ function A:Snapshot(reason)
     out.entry=LOD.EntrySafety and LOD.EntrySafety:Snapshot() or {ready=false,version="missing"}
     out.observer=self.Version;out.reason=reason;out.seconds=CurTime()
     out.source=self:SourceIdentity()
+    out.server_runtime=serverRuntime()
     out.nativeProbes={support=W and W.NativeSupportRevision or "missing",
         supportBound=W~=nil and W.NativeSupportFunction~=nil and W.NativeSupportFunction==W._SupportedSpawn,
         visibility=D and D.NativeVisibilityRevision or "missing",
@@ -190,7 +222,7 @@ function A:ConsoleSummary(out)
     end
     local encoded=util.TableToJSON(summary)
     if encoded and #encoded<=3800 then return encoded end
-    local compact={source=summary.source,gates=out.gates,entry={version=entry.version,
+    local compact={source=summary.source,server_runtime=out.server_runtime,gates=out.gates,entry={version=entry.version,
         ready=entry.ready,eventSerial=entry.eventSerial,stats=entry.stats},
         console_detail_omitted=true}
     for key,value in pairs(out) do
@@ -199,7 +231,7 @@ function A:ConsoleSummary(out)
     encoded=util.TableToJSON(compact)
     if encoded and #encoded<=3800 then return encoded end
     return util.TableToJSON({observer=out.observer,reason=out.reason,seconds=out.seconds,
-        source=summary.source,gates=out.gates,console_detail_omitted=true}) or "{}"
+        source=summary.source,server_runtime=out.server_runtime,gates=out.gates,console_detail_omitted=true}) or "{}"
 end
 
 function A:Capture(reason)

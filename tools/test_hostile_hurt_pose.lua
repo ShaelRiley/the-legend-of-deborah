@@ -211,5 +211,28 @@ check('model replacement cannot replay an old model-local hurt ID',function()
     e.writes={};e.model='replacement.mdl';e.metadata[5].flags=4;e.named.pain=nil
     fire('Think');safeWrites(e);assert(e.sequence==2 and e.LODFrozenHurtModel==e.model)
 end)
+check('reload resumes an existing frozen pose without restarting its deadline',function()
+    local e=actor();actors={e};assert(F:ApplyHitStun(e));local deadline=e.LODHitStunUntil
+    dofile(root..'sv_hostile_hurt_pose.lua')
+    e.sequence=2;e.rate=1;fire('Think')
+    assert(e.sequence==1 and e.rate==0 and e.LODHitStunUntil==deadline)
+    now=deadline+.01;fire('Think');assert(not e.LODFrozenHurtSequence and e.rate==1)
+end)
+check('a callback can freeze a later registry actor in the same frame',function()
+    local a,b=actor(),actor();actors={a,b};assert(F:ApplyHitStun(a))
+    local first=true
+    a.SetVelocity=function()
+        if first then first=false;assert(F:ApplyHitStun(b));b.sequence=2;b.rate=1 end
+    end
+    fire('Think');assert(b.sequence==1 and b.rate==0 and b.speed==0)
+end)
+check('clear and refreeze keep the current pose and registry eligibility',function()
+    local e=actor();actors={e};assert(F:ApplyHitStun(e));H:Clear(e)
+    e.LODHitStunUntil=11;e.sequence=2;assert(H:Freeze(e,.44,'stun'))
+    e.rate=1;fire('Think');assert(e.sequence==2 and e.rate==0 and e.speed==0)
+    actors={};e.rate=1;fire('Think');assert(e.rate==1,'unregistered actor processed')
+    actors={e};fire('Think');assert(e.rate==0,'registry reentry missed')
+    H:Clear(nil);e.valid=false;H:Clear(e);fire('EntityRemoved',e);fire('Think')
+end)
 print(string.format('HOSTILE_HURT_POSE %d passed; %d failed',passed,failed))
 assert(failed==0,'hurt-pose regression failure')

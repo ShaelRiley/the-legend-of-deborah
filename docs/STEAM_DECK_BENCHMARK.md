@@ -1,9 +1,34 @@
 # Steam Deck acceptance protocol — frozen 2026-10-21
 
-Status: **unverified**. No current-build hardware baseline has been obtained.
+Status: **unverified**. Focused stationary Deck baselines exist in
+`docs/validation/STEAM_DECK_20261021_ITERATIONS.md`; required gameplay coverage
+and final acceptance remain open.
 This protocol precedes further performance changes. The October 14 consultant
 changes remain source-validated, not native-performance accepted. Do not adjust
 scenarios, thresholds, counts, graphics or resolution in response to poor results.
+
+## Current user scope — 2026-10-23
+
+The user explicitly narrowed the current goal to **singleplayer on Steam Deck**.
+The five singleplayer scenarios below remain required, with their existing
+resolution, both-monitors-ON condition, gameplay, pacing, warmup, three-repeat
+and capped/uncapped criteria. Multiplayer testing is deferred and cannot block
+this current goal. The historical coop row is retained as future coverage,
+not part of current singleplayer acceptance. No performance threshold or
+singleplayer workload was relaxed by this scope clarification.
+
+## Developer-fixture qualification — 2026-10-23
+
+Existing short D20/D10 developer fixtures use `lod_developer_mode 1`.
+`sv_m3_dense_testing.lua` doubles discretionary encounter-planning threat budgets,
+sets developer caps3/4/4/4 and spacing2; the plan reports `developerDense=true`.
+“Normal resources” in those records means canonical XP/feats/starter/deployment
+and unchanged active gameplay; it does **not** prove release-density equivalence.
+Preserve these frozen stress conditions and all prior results. Do not quietly
+remove enemies, change planning or relax any acceptance requirement. Record
+ordinary release-mode corroboration separately; it remains unverified, alongside
+all five full singleplayer acceptance scenarios. Current short stress captures
+are not final acceptance.
 
 ## Conditions and evidence
 
@@ -17,7 +42,10 @@ scenarios, thresholds, counts, graphics or resolution in response to poor result
 - Target device: SteamOS3.8.28, kernel6.18.50-valve2-1-neptune-618-gc7289a96b14d,
   Steam GMod build25375506. Installed files indicate Windows x64 under Proton
   Experimental11.0-100; confirm the actual running process before accepting it.
-- Fix display60Hz, power15W, GPU automatic, AC connected; verify these on device
+- Keep **both monitors on at all times**, as explicitly required on2026-10-22.
+  Internal1280×800@60; external1920×1080@75 restored after historical diagnostics.
+  No monitor-off result qualifies. Preserve display layout and record both states.
+- Fix internal display60Hz, power15W, GPU automatic, AC connected; verify these on device
   rather than assuming them from installation files. Record fan/temperature,
   CPU/GPU clocks/utilization, memory and network observations where accessible.
   Keep background workload identical. Initial loading and compilation get their
@@ -31,6 +59,23 @@ scenarios, thresholds, counts, graphics or resolution in response to poor result
   same Hero, party, inventory, map, progression and world checkpoint between
   builds. Custom seeds mark the session unranked; they do not alter gameplay.
   Record actual layout/population seeds, counts and boss phase from the logs.
+- Match actual AI execution cadence, not only actor counts or stored profiles.
+  The listen-host baseline reports one NextBot tick. Native dedicated defaults
+  were later found to move actors at less than half that travel rate; those
+  earlier short results are not equivalent workloads. Current captures include
+  authoritative `population.server_runtime` settings/human counts. Record
+  nb_update_frequency, nb_update_framelimit, tick interval, time scale, sv_cheats,
+  nb_stop and ai_disabled, and corroborate cadence with actual movement/behavior.
+  A client-local cvar is not proof of a nonreplicated server value. Missing
+  metadata or unexplained cadence differences leave acceptance unverified.
+  In the2026.09.17 listen-host runtime, the exposed frequency reads`.1` while
+  the native engine reports one-tick scheduling. Do not infer effective cadence
+  from that convar alone or equate the simulation tick rate with observed AI
+  callback rate. Preserve the fresh startup scheduling report and corroborate
+  actual callbacks/movement; the bounded three-actor observation and its limits
+  are recorded in `validation/STEAM_DECK_AI_CADENCE_20261023.json`.
+  The one-tick sv_cheats1 mechanism diagnostic does not establish a normal
+  production configuration or waive any frozen hosting/gameplay criterion.
 
 ## Required scenarios
 
@@ -81,6 +126,34 @@ git rev-parse HEAD
 Launch the installed Windows x64 GMod through Steam/Proton with
 `-windowed -w 1280 -h 800 -condebug -conclearlog +gamemode legend_of_deborah +map gm_flatgrass`.
 Retain the existing verified VR dependency; confirm idle non-VR work in captures.
+
+
+For the separately recorded public-Windows64/Proton10, multicore1 condition,
+copy the checked-in settings file after installation:
+
+```bash
+cp tools/steam_deck_benchmark.cfg "$HOME/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/cfg/lod_deck_benchmark.cfg"
+```
+
+Append `+exec lod_deck_benchmark.cfg` **after** `+map gm_flatgrass` in the x64
+launch arguments. A fresh actual Deck launch verified this order restores
+multicore1 without a later console command. Confirm the running process is x64;
+a generic Steam launch/selector previously selected32bit. This opt-in file uses
+the recorded unchanged graphics, fps300/vsync0, multicore1, queue2 and threaded
+bones1; it does not select a different hosting condition. It is not automatically
+installed or applied to ordinary players. Initial Experimental/multicore0
+measurements retain their original conditions and are separate comparisons.
+
+`gmod_mcore_test` resets to0 on a normal restart; do not assume its previous
+value persisted. The task-local capture harness now verifies multicore, queue,
+threaded bones, FPS limit, vsync,1280×800 and focus before starting a capture.
+A deliberately mismatched expected multicore value was rejected before any
+performance capture. Exact harness/launcher snapshots and receipts:
+`~/deborah-benchmarks/auto-settings-launch/31a09219/` and
+`~/deborah-benchmarks/preflight-guard/31a09219/`.
+For capped verification, apply `fps_max 40` after the uncapped launch config and
+use the declared capped analyzer mode; never rerun the uncapped config during
+a capped capture.
 Use the installed developer marker for controlled unranked setup. In the GMod
 console, before starting the baseline campaign:
 

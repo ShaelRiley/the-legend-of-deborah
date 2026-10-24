@@ -1,0 +1,455 @@
+{
+  "utc": "2026-10-23T04:24:21.479580+00:00",
+  "state": "Nativeboundedattributionobserved;40FPSUNMET/fullacceptanceUNVERIFIED",
+  "scope": "ExistingboundedCPUprofile only. Optional Audit.CPUProfileMemorySampleEvery integer16..4096;private diagnosticnext64. Ordinarygameplay/ordinarycaptures/defaultCPUprofileleaveunset.",
+  "meaning": "Sampled inclusive signed net heap deltas,notgrossallocationtotals; anydelta mayincludeGC; nestedscopesoverlap; uncompletedcallsnodata.",
+  "tests": [
+    "profile/capture/5analysis/120manifest/syntax/diffPASS",
+    "exactoldsourcefailsheapcadencegate",
+    "sampledreturns/errors/negativecollections/restoration/invalidoptionsPASS"
+  ],
+  "next": "NativeD20normal60s allocationprofile64bothrealms; actualsource/workload/GC200andretirementrequired. Nooptimizationgainor40FPSacceptance.",
+  "raw": "/home/deck/deborah-benchmarks/allocation-cpu/e07177e2/sample64-client-server-profile60-run1",
+  "tested_commit": "e07177e2b4de786d75e7e85ab97a3d1561f7292a",
+  "instrumented_measurement": {
+    "mode": "uncapped",
+    "limiter_tolerance_ms": 0,
+    "active": {
+      "frames": 1033,
+      "seconds": 59.916907,
+      "fps": 17.240542807057782,
+      "median_ms": 49.034,
+      "p95_ms": 111.147,
+      "p99_ms": 169.147,
+      "max_ms": 339.655,
+      "one_percent_low_fps": 4.637794568467972,
+      "below_budget_seconds": 59.72469299999998,
+      "longest_below_budget_seconds": 58.81319099999998,
+      "below_budget_runs_ge2s": 1
+    },
+    "pacing_at_tolerated_budget": {
+      "frames": 1033,
+      "seconds": 59.916907,
+      "fps": 17.240542807057782,
+      "median_ms": 49.034,
+      "p95_ms": 111.147,
+      "p99_ms": 169.147,
+      "max_ms": 339.655,
+      "one_percent_low_fps": 4.637794568467972,
+      "below_budget_seconds": 59.72469299999998,
+      "longest_below_budget_seconds": 58.81319099999998,
+      "below_budget_runs_ge2s": 1
+    },
+    "capture_checks_passed": false,
+    "issues": [
+      "profile/comparison run is diagnostic, not final gameplay acceptance",
+      "unrendered terminal interval exceeds spike budget or is unknown",
+      "average FPS below budget",
+      "p95 exceeds frame budget",
+      "p99 exceeds spike budget",
+      "continuous drop lasting at least two seconds"
+    ],
+    "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+  },
+  "sampling_limit": "Deterministicevery64canaliasrepeatedrenderpasses. Rankssampledscopeonly;neverextrapolategrossallocationtotalsorclaimGCfunctionCPUcost. Fullobserveroverheadnotindependentlymeasured;FPSnotordinaryperformance.",
+  "retirement": {
+    "client": {
+      "inspection": {
+        "scope": "Read-only post-profile current hook/entity-method inspection; no FPS. Does not claim independent history of every retired binding.",
+        "cpu_profile_absent": true,
+        "realm": "client",
+        "leftovers": [],
+        "checked_entity_methods": 4137,
+        "passed": true,
+        "capture_absent": true
+      },
+      "option_clear": {
+        "running": true,
+        "passed": true,
+        "realm": "client"
+      }
+    },
+    "server": {
+      "inspection": {
+        "scope": "Read-only post-profile current hook/entity-method inspection; no FPS. Does not claim independent history of every retired binding.",
+        "cpu_profile_absent": true,
+        "realm": "server",
+        "leftovers": [],
+        "checked_entity_methods": 1511,
+        "passed": true,
+        "capture_absent": true
+      },
+      "option_clear": {
+        "running": true,
+        "passed": true,
+        "realm": "server"
+      }
+    }
+  },
+  "sampled_rows": {
+    "client": [
+      {
+        "calls": 2068,
+        "milliseconds": 2638.1086999998897,
+        "ms_per_second": 43.9683859997209,
+        "completed": 2068,
+        "sampled_heap": {
+          "samples": 32,
+          "maximum_kb": 194.1015625,
+          "positive_kb": 1918.2490234375,
+          "negative_kb": 86.9921875
+        },
+        "mean_ms": 1.2756811895550724,
+        "name": "hook/PostDrawOpaqueRenderables/LOD.DrawGeneratedStaticGeometry",
+        "maximum_ms": 12.306899999998677
+      },
+      {
+        "calls": 2068,
+        "milliseconds": 459.3813999995291,
+        "ms_per_second": 7.656340588343584,
+        "completed": 2068,
+        "sampled_heap": {
+          "samples": 32,
+          "maximum_kb": 24.7578125,
+          "positive_kb": 609.77734375,
+          "negative_kb": 1012.0654296875
+        },
+        "mean_ms": 0.2221380077367162,
+        "name": "hook/PostDrawOpaqueRenderables/LOD_DrawContainerBranding",
+        "maximum_ms": 1.309899999995423
+      },
+      {
+        "calls": 16516,
+        "milliseconds": 1714.7754000000646,
+        "ms_per_second": 28.579529982988113,
+        "completed": 16516,
+        "sampled_heap": {
+          "samples": 258,
+          "maximum_kb": 18.78515625,
+          "positive_kb": 529.970703125,
+          "negative_kb": 1047.3955078125
+        },
+        "mean_ms": 0.10382510293049556,
+        "name": "entity/lod_hostile.Draw",
+        "maximum_ms": 30.814800000001696
+      },
+      {
+        "calls": 4229,
+        "milliseconds": 533.507499999871,
+        "ms_per_second": 8.891772993941231,
+        "completed": 4229,
+        "sampled_heap": {
+          "samples": 66,
+          "maximum_kb": 15.81640625,
+          "positive_kb": 292.46875,
+          "negative_kb": 454.421875
+        },
+        "mean_ms": 0.12615452825724072,
+        "name": "entity/lod_hostile.DrawTranslucent",
+        "maximum_ms": 1.043699999996761
+      },
+      {
+        "calls": 2068,
+        "milliseconds": 198.55700000005072,
+        "ms_per_second": 3.309276383853773,
+        "completed": 2068,
+        "sampled_heap": {
+          "samples": 32,
+          "maximum_kb": 11.65625,
+          "positive_kb": 286.26171875,
+          "negative_kb": 869.1865234375
+        },
+        "mean_ms": 0.09601402321085625,
+        "name": "hook/PostDrawOpaqueRenderables/LOD_DrawSecurityGates",
+        "maximum_ms": 0.6602999999927306
+      },
+      {
+        "calls": 72674,
+        "milliseconds": 460.23319999893886,
+        "ms_per_second": 7.670537225187475,
+        "completed": 72674,
+        "sampled_heap": {
+          "samples": 1135,
+          "maximum_kb": 1.0078125,
+          "positive_kb": 176.28515625,
+          "negative_kb": 231.359375
+        },
+        "mean_ms": 0.00633284530917438,
+        "name": "entity/lod_static_box.Think",
+        "maximum_ms": 0.19830000002230008
+      },
+      {
+        "calls": 2068,
+        "milliseconds": 228.24429999974427,
+        "ms_per_second": 3.804063678128681,
+        "completed": 2068,
+        "sampled_heap": {
+          "samples": 32,
+          "maximum_kb": 8.671875,
+          "positive_kb": 171.708984375,
+          "negative_kb": 43.234375
+        },
+        "mean_ms": 0.11036958413914133,
+        "name": "hook/PostDrawTranslucentRenderables/LOD_DrawContainerWayfinding",
+        "maximum_ms": 0.675499999999829
+      },
+      {
+        "calls": 1034,
+        "milliseconds": 1131.3019000000254,
+        "ms_per_second": 18.85499207118374,
+        "completed": 1034,
+        "sampled_heap": {
+          "samples": 16,
+          "maximum_kb": 32.4775390625,
+          "positive_kb": 94.919921875,
+          "negative_kb": 0
+        },
+        "mean_ms": 1.0941024177949956,
+        "name": "hook/HUDPaint/LOD_CombatRollFeed",
+        "maximum_ms": 2.608500000008007
+      },
+      {
+        "calls": 131508,
+        "milliseconds": 125.96689999810451,
+        "ms_per_second": 2.0994439244695005,
+        "completed": 131508,
+        "sampled_heap": {
+          "samples": 2054,
+          "maximum_kb": 6,
+          "positive_kb": 81.515625,
+          "negative_kb": 0
+        },
+        "mean_ms": 0.0009578649207508631,
+        "name": "entity/lod_static_box.Draw",
+        "maximum_ms": 0.09300000002099296
+      },
+      {
+        "calls": 2068,
+        "milliseconds": 28.14369999978794,
+        "ms_per_second": 0.46906068163570097,
+        "completed": 2068,
+        "sampled_heap": {
+          "samples": 32,
+          "maximum_kb": 11.47265625,
+          "positive_kb": 77.4296875,
+          "negative_kb": 0
+        },
+        "mean_ms": 0.013609139264887786,
+        "name": "hook/PostDrawTranslucentRenderables/LOD_WardenHazards",
+        "maximum_ms": 0.3498000000092816
+      },
+      {
+        "calls": 2068,
+        "milliseconds": 109.31240000022058,
+        "ms_per_second": 1.8218695074110443,
+        "completed": 2068,
+        "sampled_heap": {
+          "samples": 32,
+          "maximum_kb": 3.19140625,
+          "positive_kb": 63.2783203125,
+          "negative_kb": 29.3203125
+        },
+        "mean_ms": 0.05285899419739873,
+        "name": "hook/PostDrawTranslucentRenderables/LOD_DrawJailDoorLabel",
+        "maximum_ms": 28.541300000000547
+      },
+      {
+        "calls": 2068,
+        "milliseconds": 161.63410000052636,
+        "ms_per_second": 2.6938960094938196,
+        "completed": 2068,
+        "sampled_heap": {
+          "samples": 32,
+          "maximum_kb": 2.96875,
+          "positive_kb": 63.0791015625,
+          "negative_kb": 13.90625
+        },
+        "mean_ms": 0.07815962282423905,
+        "name": "hook/PostDrawTranslucentRenderables/LOD_DrawSecurityGateLabels",
+        "maximum_ms": 0.31549999999924694
+      }
+    ],
+    "server": [
+      {
+        "calls": 215677,
+        "milliseconds": 3434.2798000084117,
+        "ms_per_second": 57.2098599995112,
+        "completed": 215677,
+        "sampled_heap": {
+          "samples": 3369,
+          "maximum_kb": 10.93359375,
+          "positive_kb": 1132.978515625,
+          "negative_kb": 1327.59765625
+        },
+        "mean_ms": 0.0159232546818085,
+        "name": "service/EntrySafety.BeforeAI",
+        "maximum_ms": 19.67390000001501
+      },
+      {
+        "calls": 3998,
+        "milliseconds": 974.2114000003,
+        "ms_per_second": 16.22887506248281,
+        "completed": 3998,
+        "sampled_heap": {
+          "samples": 62,
+          "maximum_kb": 50.4453125,
+          "positive_kb": 961.89453125,
+          "negative_kb": 1009.94921875
+        },
+        "mean_ms": 0.2436746873437469,
+        "name": "hook/Think/LOD_EnemyRosterAttacks",
+        "maximum_ms": 24.22630000000936
+      },
+      {
+        "calls": 17918,
+        "milliseconds": 1584.8034000009648,
+        "ms_per_second": 26.400405884396047,
+        "completed": 17918,
+        "sampled_heap": {
+          "samples": 279,
+          "maximum_kb": 5.20703125,
+          "positive_kb": 753.8994140625,
+          "negative_kb": 706.2578125
+        },
+        "mean_ms": 0.08844756111178506,
+        "name": "entity/lod_hostile/soldier._BehaviourTick",
+        "maximum_ms": 14.133600000008071
+      },
+      {
+        "calls": 16292,
+        "milliseconds": 1436.3529000027595,
+        "ms_per_second": 23.927447122639375,
+        "completed": 16292,
+        "sampled_heap": {
+          "samples": 254,
+          "maximum_kb": 3.78515625,
+          "positive_kb": 680.75,
+          "negative_kb": 976.11328125
+        },
+        "mean_ms": 0.08816308003945247,
+        "name": "entity/lod_hostile/bioblaster._BehaviourTick",
+        "maximum_ms": 1.1180999999993446
+      },
+      {
+        "calls": 3998,
+        "milliseconds": 1044.125900000438,
+        "ms_per_second": 17.393543927533912,
+        "completed": 3998,
+        "sampled_heap": {
+          "samples": 62,
+          "maximum_kb": 11.45703125,
+          "positive_kb": 612.49609375,
+          "negative_kb": 674.85546875
+        },
+        "mean_ms": 0.26116205602812353,
+        "name": "hook/Think/LOD_EnemyVariancePhysicalFootsteps",
+        "maximum_ms": 17.4046000000061
+      },
+      {
+        "calls": 7911,
+        "milliseconds": 1024.9382000001929,
+        "ms_per_second": 17.073906130193127,
+        "completed": 7911,
+        "sampled_heap": {
+          "samples": 123,
+          "maximum_kb": 5.39453125,
+          "positive_kb": 458.666015625,
+          "negative_kb": 402.3515625
+        },
+        "mean_ms": 0.1295586145873079,
+        "name": "entity/lod_hostile/warden._BehaviourTick",
+        "maximum_ms": 19.205900000002885
+      },
+      {
+        "calls": 9777,
+        "milliseconds": 830.1645000004356,
+        "ms_per_second": 13.8292735558334,
+        "completed": 9777,
+        "sampled_heap": {
+          "samples": 152,
+          "maximum_kb": 6.62890625,
+          "positive_kb": 412.41796875,
+          "negative_kb": 324.37890625
+        },
+        "mean_ms": 0.0849099416999525,
+        "name": "entity/lod_hostile/shambler._BehaviourTick",
+        "maximum_ms": 3.064500000007797
+      },
+      {
+        "calls": 3998,
+        "milliseconds": 177.66270000015538,
+        "ms_per_second": 2.959589429527307,
+        "completed": 3998,
+        "sampled_heap": {
+          "samples": 62,
+          "maximum_kb": 7.8671875,
+          "positive_kb": 394.0625,
+          "negative_kb": 382.48828125
+        },
+        "mean_ms": 0.04443789394701235,
+        "name": "hook/Think/LOD_CombatAudio_Think",
+        "maximum_ms": 0.964699999997265
+      },
+      {
+        "calls": 6314,
+        "milliseconds": 1227.053899999234,
+        "ms_per_second": 20.44084521902917,
+        "completed": 6314,
+        "sampled_heap": {
+          "samples": 98,
+          "maximum_kb": 28.28125,
+          "positive_kb": 372.1982421875,
+          "negative_kb": 431.7265625
+        },
+        "mean_ms": 0.19433859676896328,
+        "name": "entity/lod_hostile/sentry._BehaviourTick",
+        "maximum_ms": 1.798100000002023
+      },
+      {
+        "calls": 6515,
+        "milliseconds": 588.6510999999075,
+        "ms_per_second": 9.806028914554512,
+        "completed": 6515,
+        "sampled_heap": {
+          "samples": 101,
+          "maximum_kb": 4.59375,
+          "positive_kb": 316.34765625,
+          "negative_kb": 255.1171875
+        },
+        "mean_ms": 0.09035320030696968,
+        "name": "entity/lod_hostile/seeker._BehaviourTick",
+        "maximum_ms": 0.95579999999984
+      },
+      {
+        "calls": 6512,
+        "milliseconds": 579.4796000013065,
+        "ms_per_second": 9.65324572231019,
+        "completed": 6512,
+        "sampled_heap": {
+          "samples": 101,
+          "maximum_kb": 3.2578125,
+          "positive_kb": 264.421875,
+          "negative_kb": 250.8671875
+        },
+        "mean_ms": 0.08898642506162568,
+        "name": "entity/lod_hostile/runner._BehaviourTick",
+        "maximum_ms": 18.316799999993805
+      },
+      {
+        "calls": 107070,
+        "milliseconds": 2274.254999997183,
+        "ms_per_second": 37.88561728508799,
+        "completed": 107070,
+        "sampled_heap": {
+          "samples": 1672,
+          "maximum_kb": 5.09765625,
+          "positive_kb": 234.67578125,
+          "negative_kb": 210.68359375
+        },
+        "mean_ms": 0.021240823760130596,
+        "name": "service/EnemyRoster.TickCloseDefense",
+        "maximum_ms": 7.436499999997181
+      }
+    ]
+  }
+}

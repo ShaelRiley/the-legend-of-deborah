@@ -117,7 +117,13 @@ local function profileState()
 end
 function Audit:StartCPUProfile()
     if self.CPUProfile then self:StopCPUProfile("restarted") end
+    -- Optional diagnostic only. Heap deltas include nested work and collection;
+    -- they are samples, not gross allocation totals or GC CPU attribution.
+    local memoryEvery=tonumber(self.CPUProfileMemorySampleEvery)
+    if not memoryEvery or memoryEvery~=memoryEvery or memoryEvery<16
+        or memoryEvery>4096 or memoryEvery~=math.floor(memoryEvery) then memoryEvery=nil end
     local profile={started=SysTime(),enabled=true,rows={},
+        memory_every=memoryEvery,
         bindings=setmetatable({},{__mode="k"}),state_start=profileState()}
     self.CPUProfile=profile
     local function getRow(name)
@@ -132,10 +138,31 @@ function Audit:StartCPUProfile()
             row.maximum=math.max(row.maximum,elapsed)
             return ...
         end
+        if memoryEvery then
+            row.memory={samples=0,positive_kb=0,negative_kb=0,maximum_kb=0}
+            local function finish(start,before,...)
+                if before then
+                    local delta=collectgarbage("count")-before
+                    local m=row.memory;m.samples=m.samples+1
+                    if delta>=0 then m.positive_kb=m.positive_kb+delta
+                    else m.negative_kb=m.negative_kb-delta end
+                    m.maximum_kb=math.max(m.maximum_kb,delta)
+                end
+                return row.finish(start,...)
+            end
+            row.sample=function(fn,...)
+                row.calls=row.calls+1
+                local start=SysTime()
+                local before=row.calls%memoryEvery==0 and collectgarbage("count")
+                return finish(start,before,fn(...))
+            end
+        end
         return row
     end
     profile.measure=function(name,fn,...)
-        local row=getRow(name);row.calls=row.calls+1
+        local row=getRow(name)
+        if row.sample then return row.sample(fn,...) end
+        row.calls=row.calls+1
         return row.finish(SysTime(),fn(...))
     end
     local function wrap(target,key,name,fn)
@@ -150,7 +177,13 @@ function Audit:StartCPUProfile()
             row.calls=row.calls+1
             return row.finish(SysTime(),fn(...))
         end
-        bindings[key]={original=original,wrapper=wrapper}
+        if row.sample then
+            wrapper=function(...)
+                if not profile.enabled then return fn(...) end
+                return row.sample(fn,...)
+            end
+        end
+        bindings[key]={original=original,wrapper=wrapper,callback=fn}
         target[key]=wrapper
     end
     for event,callbacks in pairs(hook.GetTable and hook.GetTable() or {}) do
@@ -220,11 +253,17 @@ local function profileReport(profile,reason)
         timing="inclusive wall-clock; nested rows overlap; diagnostic overhead included; GPU unmeasured",
         coverage="existing LOD hooks, native LOD entity callbacks and selected AI services; excludes timers, gamemode methods and unwrapped engine work",
         state_start=profile.state_start,state_end=profileState(),rows={}}
+    if profile.memory_every then
+        out.memory_sampling={every=profile.memory_every,
+            meaning="sampled inclusive net heap deltas; any delta may include collection; nested rows overlap; do not extrapolate gross allocation totals",
+            observer="two heap queries per selected completed call; extra profiler/storage work included; uncompleted calls have no delta"}
+    end
     for _,row in pairs(profile.rows) do
         out.rows[#out.rows+1]={name=row.name,calls=row.calls,completed=row.completed,
             milliseconds=row.seconds*1000,maximum_ms=row.maximum*1000,
             mean_ms=row.completed>0 and row.seconds*1000/row.completed or 0,
-            ms_per_second=seconds>0 and row.seconds*1000/seconds or 0}
+            ms_per_second=seconds>0 and row.seconds*1000/seconds or 0,
+            sampled_heap=row.memory}
     end
     table.sort(out.rows,function(a,b) return a.milliseconds==b.milliseconds and a.name<b.name or a.milliseconds>b.milliseconds end)
     return out
@@ -337,6 +376,8 @@ if CLIENT then
         end)
     end
     local settingsNames={"fps_max","mat_vsync","mat_dxlevel","mat_queue_mode",
+        "net_graph","cl_showfps","cl_showpos","developer",
+        "gmod_mcore_test","cl_threaded_bone_setup","net_usesocketsforloopback",
         "mat_antialias","mat_aaquality","mat_hdr_level","mat_picmip","mat_viewportscale",
         "r_shadows","r_shadowrendertotexture","r_waterforceexpensive","lod_reduced_effects","lod_wall_batches",
         "lod_third_person","lod_map_scale","lod_map_opacity","lod_container_model_pool","lod_boss_binary_snapshots"}
@@ -348,6 +389,7 @@ if CLIENT then
         "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/cl_init.lua",
         "gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed.lua",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_feedback_language.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/cl_entry_safety.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_die_logger.lua",
         "gamemodes/legend_of_deborah/gamemode/lod/sh_feedback_language.lua",

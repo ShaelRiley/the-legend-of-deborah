@@ -1,0 +1,827 @@
+{
+  "status": "REJECTED: +0.932% arithmetic mean FPS, overlapping ranges/mixed pairs; no demonstrated gain. SP40 UNMET; all six FAIL40. Full five SP/release ordinary/40cap UNVERIFIED.",
+  "parent": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+  "hypothesis": "Weak frozen-pose membership removes native checks for ordinary enemies from measured per-frame hook. Registry traversal order including callback-created freezes stays live; active actors retain every original per-frame validity/pose/model/stun/death check. Empty set exits early.",
+  "correctness": "Only Freeze and Clear write LODFrozenHurtSequence; module reload seeds existing poses once. Weak keys/EntityRemoved avoid entity retention. Clear nil/invalid behavior unchanged. No reduced AI/content/cadence/rendering/settings.",
+  "static": "26 production-code hurt-pose cases pass; enemy attack animation/native sequence cache and death handoff pass; exact120-source/repeat install manifest pass; syntax/diff pass. Synthetic sequence fixtures are not native visual or FPS acceptance.",
+  "frozen_comparison": {
+    "sequence": [
+      "parent",
+      "candidate",
+      "candidate",
+      "parent",
+      "parent",
+      "candidate"
+    ],
+    "seconds_each": 60,
+    "scope": "Same D20lowercourt-v1 developer-density subset, exact seeds normal57roamers/1820models/Wizardresources/physical input/settings/runtime. Both monitors ON always. Fresh processes, no profilers/JIT/GC/affinity changes. Actual file hash/function line/frozen-set ownership and retained HUD/renderer/source/resource/input/display checks at both boundaries.",
+    "decision": "Reject no repeatable gain or correctness/pacing regression; unchanged confirmation if promising. All five SP three warmed180s/full bosses/ordinary release/40cap still required."
+  },
+  "candidate": "1489c75e39c33567cf6a819d647196d619a6bc21",
+  "results": {
+    "rows": [
+      {
+        "variant": "parent",
+        "metrics": {
+          "frames": 1390,
+          "seconds": 59.967489,
+          "fps": 23.179226330453822,
+          "median_ms": 35.786,
+          "p95_ms": 82.944,
+          "p99_ms": 117.513,
+          "max_ms": 343.837,
+          "one_percent_low_fps": 6.447479979423328,
+          "below_budget_seconds": 58.69170199999998,
+          "longest_below_budget_seconds": 10.310415000000006,
+          "below_budget_runs_ge2s": 8
+        },
+        "raw": "/home/deck/deborah-benchmarks/hurt-membership-source/1489c75e/original-source-series/arm01-parent",
+        "bench_hurt_membership_before": {
+          "live_poses": 0,
+          "phase": "before",
+          "sha": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "parent",
+          "weak_membership": false,
+          "functions": [
+            {
+              "line": 108,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 164,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 136,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 57,
+          "sha256": "7b246fe8a3315ec3610fb40561754595caf25c10d39142e45ef454f29b45cb7d"
+        },
+        "bench_hurt_membership_after": {
+          "live_poses": 0,
+          "phase": "after",
+          "sha": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "parent",
+          "weak_membership": false,
+          "functions": [
+            {
+              "line": 108,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 164,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 136,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 66,
+          "sha256": "7b246fe8a3315ec3610fb40561754595caf25c10d39142e45ef454f29b45cb7d"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3768,
+            "builds": 283
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3768,
+            "builds": 283
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1440,
+          "seconds": 59.943327,
+          "fps": 24.02269063243687,
+          "median_ms": 33.884,
+          "p95_ms": 79.521,
+          "p99_ms": 98.613,
+          "max_ms": 423.906,
+          "one_percent_low_fps": 7.143629335170992,
+          "below_budget_seconds": 58.474168999999954,
+          "longest_below_budget_seconds": 9.261809999999997,
+          "below_budget_runs_ge2s": 8
+        },
+        "raw": "/home/deck/deborah-benchmarks/hurt-membership-source/1489c75e/original-source-series/arm02-candidate",
+        "bench_hurt_membership_before": {
+          "live_poses": 0,
+          "phase": "before",
+          "sha": "1489c75e39c33567cf6a819d647196d619a6bc21",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "candidate",
+          "weak_membership": true,
+          "functions": [
+            {
+              "line": 120,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 178,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 149,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 57,
+          "sha256": "fa558105441fc76aa202a14c534fb3aa95191d893c86c35c39f54750e584e5d3"
+        },
+        "bench_hurt_membership_after": {
+          "live_poses": 0,
+          "phase": "after",
+          "sha": "1489c75e39c33567cf6a819d647196d619a6bc21",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "candidate",
+          "weak_membership": true,
+          "functions": [
+            {
+              "line": 120,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 178,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 149,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 66,
+          "sha256": "fa558105441fc76aa202a14c534fb3aa95191d893c86c35c39f54750e584e5d3"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "1489c75e39c33567cf6a819d647196d619a6bc21",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3804,
+            "builds": 304
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3804,
+            "builds": 304
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1367,
+          "seconds": 59.968309,
+          "fps": 22.795373469677124,
+          "median_ms": 35.78,
+          "p95_ms": 81.651,
+          "p99_ms": 117.134,
+          "max_ms": 343.878,
+          "one_percent_low_fps": 6.45479270663751,
+          "below_budget_seconds": 58.818515000000076,
+          "longest_below_budget_seconds": 9.983308000000001,
+          "below_budget_runs_ge2s": 8
+        },
+        "raw": "/home/deck/deborah-benchmarks/hurt-membership-source/1489c75e/original-source-series/arm03-candidate",
+        "bench_hurt_membership_before": {
+          "live_poses": 0,
+          "phase": "before",
+          "sha": "1489c75e39c33567cf6a819d647196d619a6bc21",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "candidate",
+          "weak_membership": true,
+          "functions": [
+            {
+              "line": 120,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 178,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 149,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 57,
+          "sha256": "fa558105441fc76aa202a14c534fb3aa95191d893c86c35c39f54750e584e5d3"
+        },
+        "bench_hurt_membership_after": {
+          "live_poses": 0,
+          "phase": "after",
+          "sha": "1489c75e39c33567cf6a819d647196d619a6bc21",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "candidate",
+          "weak_membership": true,
+          "functions": [
+            {
+              "line": 120,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 178,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 149,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 66,
+          "sha256": "fa558105441fc76aa202a14c534fb3aa95191d893c86c35c39f54750e584e5d3"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "1489c75e39c33567cf6a819d647196d619a6bc21",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3685,
+            "builds": 328
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3685,
+            "builds": 328
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "parent",
+        "metrics": {
+          "frames": 1332,
+          "seconds": 59.905532,
+          "fps": 22.235008279368923,
+          "median_ms": 35.919,
+          "p95_ms": 82.583,
+          "p99_ms": 122.938,
+          "max_ms": 352.285,
+          "one_percent_low_fps": 6.402962193252376,
+          "below_budget_seconds": 58.69195500000007,
+          "longest_below_budget_seconds": 16.234210000000004,
+          "below_budget_runs_ge2s": 6
+        },
+        "raw": "/home/deck/deborah-benchmarks/hurt-membership-source/1489c75e/original-source-series/arm04-parent",
+        "bench_hurt_membership_before": {
+          "live_poses": 0,
+          "phase": "before",
+          "sha": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "parent",
+          "weak_membership": false,
+          "functions": [
+            {
+              "line": 108,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 164,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 136,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 57,
+          "sha256": "7b246fe8a3315ec3610fb40561754595caf25c10d39142e45ef454f29b45cb7d"
+        },
+        "bench_hurt_membership_after": {
+          "live_poses": 0,
+          "phase": "after",
+          "sha": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "parent",
+          "weak_membership": false,
+          "functions": [
+            {
+              "line": 108,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 164,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 136,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 66,
+          "sha256": "7b246fe8a3315ec3610fb40561754595caf25c10d39142e45ef454f29b45cb7d"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3564,
+            "builds": 314
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3564,
+            "builds": 314
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "parent",
+        "metrics": {
+          "frames": 1350,
+          "seconds": 59.960945,
+          "fps": 22.51465516429069,
+          "median_ms": 36.555,
+          "p95_ms": 81.484,
+          "p99_ms": 113.364,
+          "max_ms": 423.114,
+          "one_percent_low_fps": 6.243126986094773,
+          "below_budget_seconds": 58.618614999999906,
+          "longest_below_budget_seconds": 8.873302,
+          "below_budget_runs_ge2s": 10
+        },
+        "raw": "/home/deck/deborah-benchmarks/hurt-membership-source/1489c75e/original-source-series/arm05-parent",
+        "bench_hurt_membership_before": {
+          "live_poses": 0,
+          "phase": "before",
+          "sha": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "parent",
+          "weak_membership": false,
+          "functions": [
+            {
+              "line": 108,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 164,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 136,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 57,
+          "sha256": "7b246fe8a3315ec3610fb40561754595caf25c10d39142e45ef454f29b45cb7d"
+        },
+        "bench_hurt_membership_after": {
+          "live_poses": 0,
+          "phase": "after",
+          "sha": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "parent",
+          "weak_membership": false,
+          "functions": [
+            {
+              "line": 108,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 164,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 136,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 66,
+          "sha256": "7b246fe8a3315ec3610fb40561754595caf25c10d39142e45ef454f29b45cb7d"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3637,
+            "builds": 291
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3637,
+            "builds": 291
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1303,
+          "seconds": 59.925212,
+          "fps": 21.743769550619195,
+          "median_ms": 38.197,
+          "p95_ms": 82.386,
+          "p99_ms": 126.205,
+          "max_ms": 333.002,
+          "one_percent_low_fps": 6.3601960757590215,
+          "below_budget_seconds": 58.42729500000002,
+          "longest_below_budget_seconds": 9.202737000000003,
+          "below_budget_runs_ge2s": 7
+        },
+        "raw": "/home/deck/deborah-benchmarks/hurt-membership-source/1489c75e/original-source-series/arm06-candidate",
+        "bench_hurt_membership_before": {
+          "live_poses": 0,
+          "phase": "before",
+          "sha": "1489c75e39c33567cf6a819d647196d619a6bc21",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "candidate",
+          "weak_membership": true,
+          "functions": [
+            {
+              "line": 120,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 178,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 149,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 57,
+          "sha256": "fa558105441fc76aa202a14c534fb3aa95191d893c86c35c39f54750e584e5d3"
+        },
+        "bench_hurt_membership_after": {
+          "live_poses": 0,
+          "phase": "after",
+          "sha": "1489c75e39c33567cf6a819d647196d619a6bc21",
+          "passed": true,
+          "scope": "Read-only loaded source hash/function lines and shared weak membership ownership across Freeze/Clear/Think/EntityRemoved, all current registry frozen poses recognized. No actors or methods mutated, no per-frame observer. Synthetic lifecycle cases separate; this does not establish full visual/full bosses or FPS acceptance.",
+          "profiler_absent": true,
+          "mode": "candidate",
+          "weak_membership": true,
+          "functions": [
+            {
+              "line": 120,
+              "name": "Freeze",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 178,
+              "name": "Think",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            },
+            {
+              "line": 149,
+              "name": "Clear",
+              "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua"
+            }
+          ],
+          "hostiles": 66,
+          "sha256": "fa558105441fc76aa202a14c534fb3aa95191d893c86c35c39f54750e584e5d3"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "1489c75e39c33567cf6a819d647196d619a6bc21",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3489,
+            "builds": 306
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3489,
+            "builds": 306
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      }
+    ],
+    "means": {
+      "parent": {
+        "fps": 22.642963258037813,
+        "median_ms": 36.086666666666666,
+        "p95_ms": 82.337,
+        "p99_ms": 117.93833333333333,
+        "longest_below_budget_seconds": 11.80597566666667
+      },
+      "candidate": {
+        "fps": 22.853944550911063,
+        "median_ms": 35.95366666666667,
+        "p95_ms": 81.18599999999999,
+        "p99_ms": 113.984,
+        "longest_below_budget_seconds": 9.482618333333333
+      }
+    },
+    "retirement": {
+      "all_owned_games_stopped": true,
+      "root_install_restored": true,
+      "root_sha": "1489c75e39c33567cf6a819d647196d619a6bc21"
+    },
+    "decision": "Restore hurt-pose source byte-exact bf05ad1a; retain three behavior/lifecycle regressions (not implementation-specific). Small mean FPS/pacing difference is not repeatable causal evidence. No selection/deletion/replacement of captures. Both monitors observed ON throughout all six; exactsource/provider/HUD/renderer/resource/input checks pass. No full visual/boss acceptance claim."
+  }
+}

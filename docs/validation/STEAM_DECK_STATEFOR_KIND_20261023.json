@@ -1,0 +1,90 @@
+{
+  "status": "REJECTclassificationguard feasibility: parity passes but no microcost benefit; no source implementation or FPSclaim. GoalSP40UNMET.",
+  "source": "933caccd17894d3d00ddc3d28b457fcea410182d",
+  "raw": "/home/deck/deborah-benchmarks/statefor-kind-probe/933caccd/native-readonly-v1",
+  "probe": {
+    "scope": "Read-only native StateFor result/parity plus synthetic flatloop timings. Candidate never installed as provider; actor/profile/registry/metatable fields unchanged. Public type temporarily replaced only for protectederror probe and synchronouslyrestored. No result/type cache, profiler, JIT/GC tuning. Loopshape/JIT/order effects make microtiming nonrepresentative of gameplay; actualsourceDeckFPS required for gain. No40FPS claim.",
+    "passed": true,
+    "parity_cases": 64,
+    "foreign_type_restored": true,
+    "rows": [
+      {
+        "variant": "parent",
+        "milliseconds": 0.28390000001365934,
+        "index": 1,
+        "delegations": 0,
+        "calls": 57000
+      },
+      {
+        "variant": "candidate",
+        "milliseconds": 0.3536999999909085,
+        "index": 2,
+        "delegations": 0,
+        "calls": 57000
+      },
+      {
+        "variant": "candidate",
+        "milliseconds": 0.23569999999040192,
+        "index": 3,
+        "delegations": 0,
+        "calls": 57000
+      },
+      {
+        "variant": "parent",
+        "milliseconds": 0.20100000000411455,
+        "index": 4,
+        "delegations": 0,
+        "calls": 57000
+      },
+      {
+        "variant": "parent",
+        "milliseconds": 0.2151000000054637,
+        "index": 5,
+        "delegations": 0,
+        "calls": 57000
+      },
+      {
+        "variant": "candidate",
+        "milliseconds": 0.23710000000676246,
+        "index": 6,
+        "delegations": 0,
+        "calls": 57000
+      }
+    ],
+    "functions": {
+      "statefor": {
+        "what": "Lua",
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+        "line": 83
+      },
+      "isentity": {
+        "what": "Lua",
+        "source": "@lua/includes/util.lua",
+        "line": 105
+      },
+      "type": {
+        "what": "Lua",
+        "source": "@lua/includes/util.lua",
+        "line": 56
+      },
+      "getmetatable": {
+        "what": "C",
+        "source": "=[C]",
+        "line": -1
+      },
+      "istable": {
+        "what": "Lua",
+        "source": "@lua/includes/util.lua",
+        "line": 98
+      }
+    },
+    "actors": 57,
+    "method_unchanged": true
+  },
+  "arithmetic_micro_means_ms": {
+    "parent": 0.2333333333410792,
+    "candidate": 0.2754999999960243
+  },
+  "decision": "Discard. Both fixedwarmflatloops take<0.4ms/57000calls; candidate mean is higher, with substantial order/JIT effects. Optimizer may eliminate/hoist pure classification, so timing is not realservicecost or FPS. Previoussampled35-41ms/s inclusive estimates cannot be assigned to typeclassification alone. No methodsinstalled/actorsfields/registry/metatablechanged; temporary publictype restored. WholeownedgameStopped.",
+  "next": "Read-only actual BehaviourTick ancestry/census to identify pure archetype guard chains and mandatory wrapper work. No runtime-provider edits or gamebehavior changes; establisheligiblecalls before any shared-dispatch optimization."
+}

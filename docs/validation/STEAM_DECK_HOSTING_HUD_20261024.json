@@ -1,0 +1,691 @@
+{
+  "status": "Additionaldifferenthostingdiagnostic, all4FAIL40pacing. SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED/multiplayerdeferred",
+  "source": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+  "raw": "/home/deck/deborah-benchmarks/hosting-retained-hud/eef47658/bracketed-series-v1",
+  "rows": [
+    {
+      "variant": "listen",
+      "metrics": {
+        "frames": 1417,
+        "seconds": 59.920693,
+        "fps": 23.64792409860814,
+        "median_ms": 35.425,
+        "p95_ms": 74.588,
+        "p99_ms": 101.888,
+        "max_ms": 356.985,
+        "one_percent_low_fps": 7.177830266326214,
+        "below_budget_seconds": 58.11152400000003,
+        "longest_below_budget_seconds": 9.951341999999993,
+        "below_budget_runs_ge2s": 8
+      },
+      "raw": "/home/deck/deborah-benchmarks/hosting-retained-hud/eef47658/bracketed-series-v1/arm01-listen",
+      "controller_exit": 0,
+      "bench_hud_raster_source_after": {
+        "phase": "after",
+        "slots": [
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          }
+        ],
+        "sha": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+        "probe_owner_cleared": true,
+        "passed": true,
+        "cache_matches_lexical": true,
+        "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+        "public_provider_unchanged": true,
+        "delta": {
+          "fallbacks": 0,
+          "hits": 3809,
+          "builds": 243
+        },
+        "hud_line": 309,
+        "public_line": 63,
+        "counters": {
+          "fallbacks": 0,
+          "hits": 3809,
+          "builds": 243
+        },
+        "mode": "candidate",
+        "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+      }
+    },
+    {
+      "variant": "dedicated32",
+      "metrics": {
+        "frames": 2521,
+        "seconds": 59.963188,
+        "fps": 42.042461117977915,
+        "median_ms": 20.05,
+        "p95_ms": 43.578,
+        "p99_ms": 54.792,
+        "max_ms": 265.495,
+        "one_percent_low_fps": 13.559258392007548,
+        "below_budget_seconds": 32.85091800000001,
+        "longest_below_budget_seconds": 6.665465,
+        "below_budget_runs_ge2s": 3
+      },
+      "raw": "/home/deck/deborah-benchmarks/hosting-retained-hud/eef47658/bracketed-series-v1/arm02-dedicated32",
+      "controller_exit": 0,
+      "bench_hud_raster_source_after": {
+        "phase": "after",
+        "slots": [
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          }
+        ],
+        "sha": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+        "probe_owner_cleared": true,
+        "passed": true,
+        "cache_matches_lexical": true,
+        "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+        "public_provider_unchanged": true,
+        "delta": {
+          "fallbacks": 0,
+          "hits": 7219,
+          "builds": 340
+        },
+        "hud_line": 309,
+        "public_line": 63,
+        "counters": {
+          "fallbacks": 0,
+          "hits": 7219,
+          "builds": 340
+        },
+        "mode": "candidate",
+        "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+      },
+      "bench_hosting_runtime_before": {
+        "singleplayer": false,
+        "jit_enabled": true,
+        "max_players": 4,
+        "passed": true,
+        "jit_os": "Linux",
+        "convars": {
+          "net_usesocketsforloopback": "1",
+          "host_timescale": "1.0",
+          "nb_stop": "0",
+          "ai_disabled": "0",
+          "sv_cheats": "0",
+          "sv_lan": "1",
+          "nb_update_frequency": "0.015"
+        },
+        "alive_hostiles": 57,
+        "tick_interval": 0.01515151560306549,
+        "dedicated": true,
+        "phase": "before",
+        "engine": "2026.09.17",
+        "snapshot": {
+          "lua_kb": 41537,
+          "damsels": "damsels-20261012-lore",
+          "jit_version": "LuaJIT 2.0.4",
+          "lua_errors": 0,
+          "realm": "server",
+          "branch": "unknown",
+          "equipment_generation": "interpreter-generator",
+          "architecture": "x86",
+          "engine": "2026.09.17",
+          "wall_models": 0,
+          "meshes": 0,
+          "entities": 1460,
+          "install": "eef47658d0b64815395827834eb6cc72dd2b0d35 clean ",
+          "loot_entities": 24,
+          "vr": {
+            "method_overrides": 0,
+            "active": false,
+            "version": "deborah-vr-idle-20261007-r2",
+            "recurring_timers": 0,
+            "local_tracking": false,
+            "runtime_hooks": 0,
+            "pending_once": 0,
+            "native_resources": 0,
+            "resource_counts": {
+              "physics_proxies": 0,
+              "held_props": 0,
+              "motion_controllers": 0
+            },
+            "idle": true,
+            "source": {
+              "bridge_checked": 2,
+              "verified": true,
+              "checked": 139,
+              "mismatches": 0,
+              "missing": 0
+            },
+            "players": 0
+          },
+          "build": "generator-jit-20260917-01",
+          "feedback_audio": "feedback-20260919-01",
+          "missing": "none"
+        },
+        "archetypes": {
+          "bioblaster": 9,
+          "shy": 1,
+          "arccaster": 1,
+          "deadcrab": 4,
+          "afterburst": 2,
+          "caromer": 2,
+          "repulsor": 1,
+          "reaper": 1,
+          "soldier": 11,
+          "drubber": 1,
+          "redliner": 1,
+          "runner": 5,
+          "silencer": 1,
+          "forker": 1,
+          "shambler": 4,
+          "reeler": 1,
+          "flamer": 2,
+          "razor": 1,
+          "seeker": 4,
+          "watcher": 2,
+          "pincer": 1,
+          "fencer": 1
+        },
+        "scope": "SameDeck Linux32 dedicated plusWin64P10 client, onehuman. DIFFERENThosting/runtime/not frozenlistenhost acceptance. Native66Hz/normalAI/resources/noGodNoClip; before57hostiles, after ordinarycombatcountrecorded. Boundaryonly/no sampler.",
+        "sha": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+        "move_type": 2,
+        "health": 211,
+        "humans": 1,
+        "branch": "unknown",
+        "jit_arch": "x86",
+        "god": false
+      },
+      "bench_hosting_runtime_after": {
+        "singleplayer": false,
+        "jit_enabled": true,
+        "max_players": 4,
+        "passed": true,
+        "jit_os": "Linux",
+        "convars": {
+          "net_usesocketsforloopback": "1",
+          "host_timescale": "1.0",
+          "nb_stop": "0",
+          "ai_disabled": "0",
+          "sv_cheats": "0",
+          "sv_lan": "1",
+          "nb_update_frequency": "0.015"
+        },
+        "alive_hostiles": 66,
+        "tick_interval": 0.01515151560306549,
+        "dedicated": true,
+        "phase": "after",
+        "engine": "2026.09.17",
+        "snapshot": {
+          "lua_kb": 52795,
+          "damsels": "damsels-20261012-lore",
+          "jit_version": "LuaJIT 2.0.4",
+          "lua_errors": 0,
+          "realm": "server",
+          "branch": "unknown",
+          "equipment_generation": "interpreter-generator",
+          "architecture": "x86",
+          "engine": "2026.09.17",
+          "wall_models": 0,
+          "meshes": 0,
+          "entities": 1469,
+          "install": "eef47658d0b64815395827834eb6cc72dd2b0d35 clean ",
+          "loot_entities": 24,
+          "vr": {
+            "method_overrides": 0,
+            "active": false,
+            "version": "deborah-vr-idle-20261007-r2",
+            "recurring_timers": 0,
+            "local_tracking": false,
+            "runtime_hooks": 0,
+            "pending_once": 0,
+            "native_resources": 0,
+            "resource_counts": {
+              "physics_proxies": 0,
+              "held_props": 0,
+              "motion_controllers": 0
+            },
+            "idle": true,
+            "source": {
+              "bridge_checked": 2,
+              "verified": true,
+              "checked": 139,
+              "mismatches": 0,
+              "missing": 0
+            },
+            "players": 0
+          },
+          "build": "generator-jit-20260917-01",
+          "feedback_audio": "feedback-20260919-01",
+          "missing": "none"
+        },
+        "archetypes": {
+          "bioblaster": 9,
+          "shy": 1,
+          "arccaster": 1,
+          "deadcrab": 4,
+          "afterburst": 2,
+          "caromer": 2,
+          "repulsor": 1,
+          "pincer": 1,
+          "soldier": 11,
+          "drubber": 1,
+          "redliner": 1,
+          "warden": 5,
+          "runner": 5,
+          "silencer": 1,
+          "sentry": 4,
+          "watcher": 2,
+          "flamer": 2,
+          "reeler": 1,
+          "razor": 1,
+          "forker": 1,
+          "reaper": 1,
+          "seeker": 4,
+          "shambler": 4,
+          "fencer": 1
+        },
+        "scope": "SameDeck Linux32 dedicated plusWin64P10 client, onehuman. DIFFERENThosting/runtime/not frozenlistenhost acceptance. Native66Hz/normalAI/resources/noGodNoClip; before57hostiles, after ordinarycombatcountrecorded. Boundaryonly/no sampler.",
+        "sha": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+        "move_type": 2,
+        "health": 206,
+        "humans": 1,
+        "branch": "unknown",
+        "jit_arch": "x86",
+        "god": false
+      }
+    },
+    {
+      "variant": "dedicated32",
+      "metrics": {
+        "frames": 2700,
+        "seconds": 59.973924,
+        "fps": 45.01956550316768,
+        "median_ms": 20.056,
+        "p95_ms": 39.377,
+        "p99_ms": 51.724,
+        "max_ms": 261.467,
+        "one_percent_low_fps": 14.91599807086425,
+        "below_budget_seconds": 25.730286999999986,
+        "longest_below_budget_seconds": 4.182897999999999,
+        "below_budget_runs_ge2s": 5
+      },
+      "raw": "/home/deck/deborah-benchmarks/hosting-retained-hud/eef47658/bracketed-series-v1/arm03-dedicated32",
+      "controller_exit": 0,
+      "bench_hud_raster_source_after": {
+        "phase": "after",
+        "slots": [
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          }
+        ],
+        "sha": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+        "probe_owner_cleared": true,
+        "passed": true,
+        "cache_matches_lexical": true,
+        "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+        "public_provider_unchanged": true,
+        "delta": {
+          "fallbacks": 0,
+          "hits": 7227,
+          "builds": 309
+        },
+        "hud_line": 309,
+        "public_line": 63,
+        "counters": {
+          "fallbacks": 0,
+          "hits": 7227,
+          "builds": 309
+        },
+        "mode": "candidate",
+        "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+      },
+      "bench_hosting_runtime_before": {
+        "singleplayer": false,
+        "jit_enabled": true,
+        "max_players": 4,
+        "passed": true,
+        "jit_os": "Linux",
+        "convars": {
+          "net_usesocketsforloopback": "1",
+          "host_timescale": "1.0",
+          "nb_stop": "0",
+          "ai_disabled": "0",
+          "sv_cheats": "0",
+          "sv_lan": "1",
+          "nb_update_frequency": "0.015"
+        },
+        "alive_hostiles": 57,
+        "tick_interval": 0.01515151560306549,
+        "dedicated": true,
+        "phase": "before",
+        "engine": "2026.09.17",
+        "snapshot": {
+          "lua_kb": 34123,
+          "damsels": "damsels-20261012-lore",
+          "jit_version": "LuaJIT 2.0.4",
+          "lua_errors": 0,
+          "realm": "server",
+          "branch": "unknown",
+          "equipment_generation": "interpreter-generator",
+          "architecture": "x86",
+          "engine": "2026.09.17",
+          "wall_models": 0,
+          "meshes": 0,
+          "entities": 1460,
+          "install": "eef47658d0b64815395827834eb6cc72dd2b0d35 clean ",
+          "loot_entities": 24,
+          "vr": {
+            "method_overrides": 0,
+            "active": false,
+            "version": "deborah-vr-idle-20261007-r2",
+            "recurring_timers": 0,
+            "local_tracking": false,
+            "runtime_hooks": 0,
+            "pending_once": 0,
+            "native_resources": 0,
+            "resource_counts": {
+              "physics_proxies": 0,
+              "held_props": 0,
+              "motion_controllers": 0
+            },
+            "idle": true,
+            "source": {
+              "bridge_checked": 2,
+              "verified": true,
+              "checked": 139,
+              "mismatches": 0,
+              "missing": 0
+            },
+            "players": 0
+          },
+          "build": "generator-jit-20260917-01",
+          "feedback_audio": "feedback-20260919-01",
+          "missing": "none"
+        },
+        "archetypes": {
+          "bioblaster": 9,
+          "shy": 1,
+          "arccaster": 1,
+          "deadcrab": 4,
+          "afterburst": 2,
+          "caromer": 2,
+          "repulsor": 1,
+          "reaper": 1,
+          "soldier": 11,
+          "drubber": 1,
+          "redliner": 1,
+          "runner": 5,
+          "silencer": 1,
+          "forker": 1,
+          "shambler": 4,
+          "reeler": 1,
+          "flamer": 2,
+          "razor": 1,
+          "seeker": 4,
+          "watcher": 2,
+          "pincer": 1,
+          "fencer": 1
+        },
+        "scope": "SameDeck Linux32 dedicated plusWin64P10 client, onehuman. DIFFERENThosting/runtime/not frozenlistenhost acceptance. Native66Hz/normalAI/resources/noGodNoClip; before57hostiles, after ordinarycombatcountrecorded. Boundaryonly/no sampler.",
+        "sha": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+        "move_type": 2,
+        "health": 211,
+        "humans": 1,
+        "branch": "unknown",
+        "jit_arch": "x86",
+        "god": false
+      },
+      "bench_hosting_runtime_after": {
+        "singleplayer": false,
+        "jit_enabled": true,
+        "max_players": 4,
+        "passed": true,
+        "jit_os": "Linux",
+        "convars": {
+          "net_usesocketsforloopback": "1",
+          "host_timescale": "1.0",
+          "nb_stop": "0",
+          "ai_disabled": "0",
+          "sv_cheats": "0",
+          "sv_lan": "1",
+          "nb_update_frequency": "0.015"
+        },
+        "alive_hostiles": 66,
+        "tick_interval": 0.01515151560306549,
+        "dedicated": true,
+        "phase": "after",
+        "engine": "2026.09.17",
+        "snapshot": {
+          "lua_kb": 56824,
+          "damsels": "damsels-20261012-lore",
+          "jit_version": "LuaJIT 2.0.4",
+          "lua_errors": 0,
+          "realm": "server",
+          "branch": "unknown",
+          "equipment_generation": "interpreter-generator",
+          "architecture": "x86",
+          "engine": "2026.09.17",
+          "wall_models": 0,
+          "meshes": 0,
+          "entities": 1469,
+          "install": "eef47658d0b64815395827834eb6cc72dd2b0d35 clean ",
+          "loot_entities": 24,
+          "vr": {
+            "method_overrides": 0,
+            "active": false,
+            "version": "deborah-vr-idle-20261007-r2",
+            "recurring_timers": 0,
+            "local_tracking": false,
+            "runtime_hooks": 0,
+            "pending_once": 0,
+            "native_resources": 0,
+            "resource_counts": {
+              "physics_proxies": 0,
+              "held_props": 0,
+              "motion_controllers": 0
+            },
+            "idle": true,
+            "source": {
+              "bridge_checked": 2,
+              "verified": true,
+              "checked": 139,
+              "mismatches": 0,
+              "missing": 0
+            },
+            "players": 0
+          },
+          "build": "generator-jit-20260917-01",
+          "feedback_audio": "feedback-20260919-01",
+          "missing": "none"
+        },
+        "archetypes": {
+          "bioblaster": 9,
+          "shy": 1,
+          "arccaster": 1,
+          "deadcrab": 4,
+          "afterburst": 2,
+          "caromer": 2,
+          "repulsor": 1,
+          "pincer": 1,
+          "soldier": 11,
+          "drubber": 1,
+          "redliner": 1,
+          "warden": 5,
+          "runner": 5,
+          "silencer": 1,
+          "sentry": 4,
+          "watcher": 2,
+          "flamer": 2,
+          "reeler": 1,
+          "razor": 1,
+          "forker": 1,
+          "reaper": 1,
+          "seeker": 4,
+          "shambler": 4,
+          "fencer": 1
+        },
+        "scope": "SameDeck Linux32 dedicated plusWin64P10 client, onehuman. DIFFERENThosting/runtime/not frozenlistenhost acceptance. Native66Hz/normalAI/resources/noGodNoClip; before57hostiles, after ordinarycombatcountrecorded. Boundaryonly/no sampler.",
+        "sha": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+        "move_type": 2,
+        "health": 211,
+        "humans": 1,
+        "branch": "unknown",
+        "jit_arch": "x86",
+        "god": false
+      }
+    },
+    {
+      "variant": "listen",
+      "metrics": {
+        "frames": 1379,
+        "seconds": 59.919838000000006,
+        "fps": 23.014080912568556,
+        "median_ms": 34.841,
+        "p95_ms": 81.618,
+        "p99_ms": 115.714,
+        "max_ms": 338.926,
+        "one_percent_low_fps": 6.59758990040938,
+        "below_budget_seconds": 57.81758299999995,
+        "longest_below_budget_seconds": 9.651237999999998,
+        "below_budget_runs_ge2s": 9
+      },
+      "raw": "/home/deck/deborah-benchmarks/hosting-retained-hud/eef47658/bracketed-series-v1/arm04-listen",
+      "controller_exit": 0,
+      "bench_hud_raster_source_after": {
+        "phase": "after",
+        "slots": [
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          },
+          {
+            "width": 1024,
+            "height": 256,
+            "building": false
+          }
+        ],
+        "sha": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+        "probe_owner_cleared": true,
+        "passed": true,
+        "cache_matches_lexical": true,
+        "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+        "public_provider_unchanged": true,
+        "delta": {
+          "fallbacks": 0,
+          "hits": 3643,
+          "builds": 311
+        },
+        "hud_line": 309,
+        "public_line": 63,
+        "counters": {
+          "fallbacks": 0,
+          "hits": 3643,
+          "builds": 311
+        },
+        "mode": "candidate",
+        "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+      }
+    }
+  ],
+  "retirement": {
+    "all_owned_games_and_servers_stopped": true
+  },
+  "limits": "ListenvsLinux32localdedicated hasprocess/runtime/architecture/network/maxslots/svCheats/tickconfounds, notisolatedCPUcontention/codegain orfrozenSPacceptance. Win64P10client1280x800same, onehuman,57initialordinaryhostiles/1820models/seeds/resources/input/graphics/15WAC/bothdisplaysON. Dedicatedtick.0151515156seconds vslisten.015; nb_update_frequency.015 readback, actualperactorcallbackfrequency not countedthisdiagnostic. Allsource/HUD/renderer/resource/input/focus/display/native runtime gates pass/allownedStop. Dedicatedaverages42.042/45.020butp9543.578/39.377ms,p9954.792/51.724ms,longdrops6.665/4.183sFAIL. Do not replaceSPbenchmark or mergeonthebasisofaverageFPS."
+}

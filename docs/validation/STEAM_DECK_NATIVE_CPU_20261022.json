@@ -1,0 +1,212 @@
+{
+  "status": "Diagnostic only; target UNMET; all six complete acceptance scenarios UNVERIFIED",
+  "source": "3cf2e875115fd8cf23230c7e74e89789264a2c3a; later890fc13f changes evidence only",
+  "device": "ActualLCD/Jupiter512GBSteamDeck;SteamOS3.8.28/kernel6.18.50;GMod2026.09.17/build25375506Windows64/Proton10.0-4b/sniper/LuaJIT2.1beta3;15WACautoGPU;internal1280x800@60/external1920x1080@75 BOTH ON",
+  "scenario": "Existing frozen D20 lower-court-v1; normal Wizard20/HP211/AR2clip20/3items;campaign654759232,level1217159003,layout899898795;normal57roamers/1820clientmodels;noAI/count/graphics reduction",
+  "raw": "/home/deck/deborah-benchmarks/native-perf-d20/3cf2e875/main-stack60-run2",
+  "native_sampler": {
+    "event": "cpu-clock:u main thread only",
+    "frequency_hz": 99,
+    "stack_bytes": 16384,
+    "samples": 5890,
+    "lost": 0,
+    "sampled_user_cpu_seconds": 59.49494889999801,
+    "module_shares": [
+      {
+        "module": "lua_shared.dll",
+        "percent": 42.64855687606255,
+        "sampled_cpu_seconds": 25.37373712
+      },
+      {
+        "module": "client.dll",
+        "percent": 15.840407470289156,
+        "sampled_cpu_seconds": 9.42424233
+      },
+      {
+        "module": "unmapped/non-PE",
+        "percent": 10.679117147708338,
+        "sampled_cpu_seconds": 6.35353529
+      },
+      {
+        "module": "server.dll",
+        "percent": 10.662139219015637,
+        "sampled_cpu_seconds": 6.34343428
+      },
+      {
+        "module": "engine.dll",
+        "percent": 9.949066213922235,
+        "sampled_cpu_seconds": 5.91919186
+      },
+      {
+        "module": "vguimatsurface.dll",
+        "percent": 2.631578947368509,
+        "sampled_cpu_seconds": 1.56565655
+      },
+      {
+        "module": "materialsystem.dll",
+        "percent": 1.5789473684211055,
+        "sampled_cpu_seconds": 0.93939393
+      },
+      {
+        "module": "tier0.dll",
+        "percent": 1.443123938879505,
+        "sampled_cpu_seconds": 0.85858585
+      },
+      {
+        "module": "vphysics.dll",
+        "percent": 1.0186757215620035,
+        "sampled_cpu_seconds": 0.6060606
+      },
+      {
+        "module": "ntdll.dll",
+        "percent": 0.9677419354839034,
+        "sampled_cpu_seconds": 0.57575757
+      },
+      {
+        "module": "datacache.dll",
+        "percent": 0.7470288624788026,
+        "sampled_cpu_seconds": 0.44444444
+      },
+      {
+        "module": "studiorender.dll",
+        "percent": 0.4584040747029016,
+        "sampled_cpu_seconds": 0.27272727
+      },
+      {
+        "module": "kernelbase.dll",
+        "percent": 0.288624787775901,
+        "sampled_cpu_seconds": 0.17171717
+      },
+      {
+        "module": "shaderapidx9.dll",
+        "percent": 0.25466893039050087,
+        "sampled_cpu_seconds": 0.15151515
+      },
+      {
+        "module": "vgui2.dll",
+        "percent": 0.18675721561970066,
+        "sampled_cpu_seconds": 0.11111111
+      },
+      {
+        "module": "filesystem_stdio.dll",
+        "percent": 0.18675721561970066,
+        "sampled_cpu_seconds": 0.11111111
+      },
+      {
+        "module": "vstdlib.dll",
+        "percent": 0.18675721561970066,
+        "sampled_cpu_seconds": 0.11111111
+      },
+      {
+        "module": "kernel32.dll",
+        "percent": 0.06791171477080024,
+        "sampled_cpu_seconds": 0.04040404
+      },
+      {
+        "module": "resources.dll",
+        "percent": 0.03395585738540012,
+        "sampled_cpu_seconds": 0.02020202
+      },
+      {
+        "module": "inputsystem.dll",
+        "percent": 0.03395585738540012,
+        "sampled_cpu_seconds": 0.02020202
+      },
+      {
+        "module": "bass.dll",
+        "percent": 0.03395585738540012,
+        "sampled_cpu_seconds": 0.02020202
+      },
+      {
+        "module": "msvcrt.dll",
+        "percent": 0.01697792869270006,
+        "sampled_cpu_seconds": 0.01010101
+      },
+      {
+        "module": "steam_api64.dll",
+        "percent": 0.01697792869270006,
+        "sampled_cpu_seconds": 0.01010101
+      },
+      {
+        "module": "stdshader_dx9.dll",
+        "percent": 0.01697792869270006,
+        "sampled_cpu_seconds": 0.01010101
+      },
+      {
+        "module": "soundemittersystem.dll",
+        "percent": 0.01697792869270006,
+        "sampled_cpu_seconds": 0.01010101
+      },
+      {
+        "module": "ServerBrowser.dll",
+        "percent": 0.01697792869270006,
+        "sampled_cpu_seconds": 0.01010101
+      },
+      {
+        "module": "lsteamclient.dll",
+        "percent": 0.01697792869270006,
+        "sampled_cpu_seconds": 0.01010101
+      }
+    ],
+    "method": "Match sample PCs to Windows PE image ranges using saved proc maps and local PE SizeOfImage. perf originally calls anonymous Wine executable pages JIT; that is not proof of compiled Lua. Nearest exports do not identify internal functions."
+  },
+  "instrumented_fps": {
+    "frames": 1272,
+    "seconds": 59.965758,
+    "fps": 21.212105748750812,
+    "median_ms": 39.805,
+    "p95_ms": 83.325,
+    "p99_ms": 123.191,
+    "max_ms": 354.663,
+    "one_percent_low_fps": 5.810079236072905,
+    "below_budget_seconds": 59.02079899999999,
+    "longest_below_budget_seconds": 23.338369999999994,
+    "below_budget_runs_ge2s": 4
+  },
+  "collector_failure": {
+    "reason": "Requested samplerSIGINT exits-2 after successful flush. Collector incorrectly requires0 beforecopyingFPS. StopfixedtoacceptrequestedSIGINT only withflushedsamplelog and validperfheader.",
+    "recovery": "Intact reason=complete/requested60 nativeFPS DATA copied beforeanotherlaunch;5890samples/0lost/validperfreport. Rawfailurelog preserved.",
+    "missing": "No post-capture process snapshot and no exact after-capture display check; do not fabricate these. BothdisplaysON preflight and afterownedservice; allgameprocessesstopped."
+  },
+  "interpretation": [
+    "Main-thread CPU constraint established by earlier independent boundary counters; no scheduling wait or GPU conclusion from these module percentages alone.",
+    "Hotaddresses include table-lookup instructions; no exact Lua function, realm, GC, cache-miss or JIT-compilation attribution established.",
+    "Sampling overhead has not been measured in matched pairs; instrumented FPS cannot establish a source gain.",
+    "Full boss/finale phase coverage, ordinary full scenarios and actual multiplayer remain unverified."
+  ],
+  "public_jit_profile_probe": {
+    "raw": "/home/deck/deborah-benchmarks/jit-profile-capability/890fc13f/public-module-probe-run6",
+    "server": {
+      "available": false,
+      "error": "Module not found!"
+    },
+    "client": {
+      "available": false,
+      "error": "Module not found!"
+    },
+    "method": "One standard public require(jit.profile) perrealm; no profiler started, binarymoduleloaded, or disabledAPIrestored.",
+    "primary_api_docs": "https://luajit.org/ext_profiler.html"
+  },
+  "next_collision_probe": {
+    "raw": "/home/deck/deborah-benchmarks/collision-attribution/890fc13f/native-coalesce-probe-run1",
+    "cases": 80,
+    "checks": 6400,
+    "mismatches": 0,
+    "original_bindings_unchanged": true,
+    "scope": "Both original callback orders vscombinedbooleanreturns; nativeactors/player/world/static plus syntheticlatch/lurker/invalid cases. No physicalstate changes. No FPSgain proof.",
+    "comparison_plan": "/home/deck/deborah-benchmarks/collision-coalesce/890fc13f/private-series-v1/plan.json",
+    "sequence": [
+      "parent",
+      "candidate",
+      "candidate",
+      "parent"
+    ],
+    "retention": "Screening only; source candidate and fresh source comparisons required if benefit exceeds noise."
+  },
+  "startup_preparation": {
+    "failure": "Stock Chromium GPU crashes lead to failed-menu overlay; paused game-time clienttimer cannot alwaysclosemenu. Allfailedstartupattempts kept; no FPS fromthem.",
+    "repair": "Use native launcher-hijack command forwarding forResumeGame/gameui_hide/hideconsole if initialcloseACKmissing. Guardoneownedinstance/service. ActualclientACK/nativechecks determinesuccess; boundedProtonforwardwrappermaywaituntil20stimeout. -console/+con_enable1uniformnewarms.",
+    "restoration": "FailedPreRender/clientPanel/menuThink/menuPanel attempts discarded; originalprivatebridge andstockmenu restoredBYTEEXACTbeforepublicprobe6andcoalesce. No shippedgameplay change.",
+    "limits": "Newpreflightpreparation doesnotproduceorjustifyFPSgain; normal game-time capture observer retained."
+  }
+}

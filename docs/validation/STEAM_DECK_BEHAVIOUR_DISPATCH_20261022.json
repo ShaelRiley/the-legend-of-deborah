@@ -1,0 +1,99 @@
+{
+  "rows": [
+    {
+      "arm": "arm1-parent",
+      "mode": "parent",
+      "metrics": {
+        "frames": 2031,
+        "seconds": 59.966356,
+        "fps": 33.86899147248501,
+        "median_ms": 27.08,
+        "p95_ms": 49.402,
+        "p99_ms": 81.521,
+        "max_ms": 137.123,
+        "one_percent_low_fps": 10.120135648370587,
+        "below_budget_seconds": 44.36566400000004,
+        "longest_below_budget_seconds": 8.633432000000008,
+        "below_budget_runs_ge2s": 4
+      },
+      "callbacks": 89532,
+      "steps": 0,
+      "actors": 34,
+      "restored": true,
+      "errors": 0
+    },
+    {
+      "arm": "arm2-direct",
+      "mode": "direct",
+      "metrics": {
+        "frames": 2218,
+        "seconds": 59.963807,
+        "fps": 36.98897903530374,
+        "median_ms": 25.664,
+        "p95_ms": 37.404,
+        "p99_ms": 70.843,
+        "max_ms": 105.591,
+        "one_percent_low_fps": 12.446237664696191,
+        "below_budget_seconds": 38.45513500000006,
+        "longest_below_budget_seconds": 4.205557999999999,
+        "below_budget_runs_ge2s": 3
+      },
+      "callbacks": 94585,
+      "steps": 94585,
+      "actors": 34,
+      "restored": true,
+      "errors": 0
+    },
+    {
+      "arm": "arm3-direct",
+      "mode": "direct",
+      "metrics": {
+        "frames": 2160,
+        "seconds": 59.967951,
+        "fps": 36.019239676873404,
+        "median_ms": 25.692,
+        "p95_ms": 44.361,
+        "p99_ms": 80.94,
+        "max_ms": 179.77,
+        "one_percent_low_fps": 10.426317922129622,
+        "below_budget_seconds": 38.81141300000002,
+        "longest_below_budget_seconds": 2.748637,
+        "below_budget_runs_ge2s": 2
+      },
+      "callbacks": 94137,
+      "steps": 94137,
+      "actors": 34,
+      "restored": true,
+      "errors": 0
+    },
+    {
+      "arm": "arm4-parent",
+      "mode": "parent",
+      "metrics": {
+        "frames": 2202,
+        "seconds": 59.966800000000006,
+        "fps": 36.72031857627887,
+        "median_ms": 25.905,
+        "p95_ms": 38.419,
+        "p99_ms": 71.316,
+        "max_ms": 140.034,
+        "one_percent_low_fps": 12.150340922718021,
+        "below_budget_seconds": 39.141905999999935,
+        "longest_below_budget_seconds": 5.248218,
+        "below_budget_runs_ge2s": 4
+      },
+      "callbacks": 96643,
+      "steps": 0,
+      "actors": 35,
+      "restored": true,
+      "errors": 0
+    }
+  ],
+  "means": {
+    "parent": 35.29465502438194,
+    "direct": 36.50410935608858
+  },
+  "arithmetic_percent": 3.426735098759659,
+  "decision": "REJECT; overlapping run ranges/last control overlaps both direct arms. No repeatable gain established and all fail. Native step:callback1:1 and zeroerrors/restoration prove execution but not useful speed. No productionchange.",
+  "created_utc": "2026-10-22T17:43:22.065556+00:00"
+}

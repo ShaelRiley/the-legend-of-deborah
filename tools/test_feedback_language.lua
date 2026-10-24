@@ -381,3 +381,82 @@ feed.entries[#feed.entries+1]=stale
 dofile(root..'cl_combat_roll_feed.lua')
 for _,entry in ipairs(feed.entries) do assert(entry~=stale,'Lua refresh retained old noncombat rows') end
 print('COMBAT_TAIL_PASS: history retains all noncombat families; bursts cannot evict combat; sanctuary note; exact shared combat text; replay/ACK/cues retained; hot reload cleanup')
+
+
+-- Exercise the native string-returning JSON contract as well as the table
+-- transport double above. Tokens are valid JSON objects backed by immutable
+-- decoded rows; the test checks cache invalidation and persisted data, not JSON
+-- spelling/key order. Native JSON round-trip proof is a separate runtime gate.
+do
+    local originalEncode, originalDecode = util.TableToJSON, util.JSONToTable
+    local encodedRows, encodeCalls, nextEncoded = {}, 0, 0
+    util.TableToJSON = function(value)
+        encodeCalls = encodeCalls + 1
+        if value[1] then
+            local parts = {}
+            for i,row in ipairs(value) do parts[i] = util.TableToJSON(row) end
+            return "[" .. table.concat(parts, ",") .. "]"
+        end
+        nextEncoded = nextEncoded + 1
+        encodedRows[nextEncoded] = table.Copy(value)
+        return '{"encoded":' .. nextEncoded .. '}'
+    end
+    util.JSONToTable = function(value)
+        if type(value) ~= "string" then return originalDecode(value) end
+        if not value:match("^%[.*%]$") then return nil end
+        local rows = {}
+        for id in value:gmatch('{"encoded":(%d+)}') do
+            rows[#rows+1] = table.Copy(assert(encodedRows[tonumber(id)]))
+        end
+        return rows
+    end
+    local fresh = {entries={},historyLoaded=true,history={}}
+    for i=1,1000 do
+        fresh.history[i] = {text="roll "..i,stamp="01-01 00:00:00",family="routine",category=3,
+            cue=1,cueVariant=2,serial=i,segments={{text="roll ",role="prose"},{text=tostring(i),role="prose"}}}
+    end
+    LOD.CombatRollFeed = fresh
+    dofile(root.."cl_feedback_language.lua")
+    assert(encodeCalls==1000,"existing history is encoded during loading")
+    local function save(expected)
+        local before=encodeCalls
+        hooks.ShutDown.LOD_DieLoggerSave()
+        assert(encodeCalls-before==expected,"only changed rows should be encoded")
+        local raw=disk["legend_of_deborah/die_logger_history.json"]
+        assert(type(raw)=="string" and raw:sub(1,1)=="[" and raw:sub(-1)=="]","ordinary JSON array retained")
+        return util.JSONToTable(raw)
+    end
+    local saved=save(0)
+    assert(#saved==1000 and saved[1].serial==1 and saved[1000].serial==1000)
+    save(0)
+    local row=fresh.history[500]
+    for key,value in pairs({stamp="new stamp",family="danger",category=1,cue=4,cueVariant=3,serial=99999}) do
+        row[key]=value;saved=save(1)
+        assert(saved[500][key]==value,"changed scalar persisted: "..key)
+    end
+    row.text="roll changed";row.segments[2].text="changed"
+    saved=save(1);assert(saved[500].text==row.text and saved[500].segments[2].text=="changed")
+    row.segments[2].role="contribution"
+    saved=save(1);assert(saved[500].segments[2].role=="contribution","in-place semantic role edit invalidates")
+    row.segments=table.Copy(row.segments);save(0)
+    row.segments=nil;saved=save(1);assert(saved[500].segments==nil)
+    row.segments={{text=row.text,role="prose"}};saved=save(1);assert(#saved[500].segments==1)
+    -- History page layout is transient and cannot contaminate persistence.
+    row.layoutEpoch={};row.lines={{{text="drawing only",role="prose"}}};row.layoutWidth=900
+    saved=save(0);assert(saved[500].lines==nil and saved[500].layoutEpoch==nil)
+    fresh.history[1],fresh.history[1000]=fresh.history[1000],fresh.history[1]
+    saved=save(0);assert(saved[1].serial==1000 and saved[1000].serial==1,"ordering is rebuilt from live history")
+    fresh.history[1000]={text="replacement",stamp="now",family="routine",category=3,serial=1001}
+    saved=save(1);assert(saved[1000].text=="replacement","replacement row does not inherit old encoding")
+    table.remove(fresh.history,1);saved=save(0);assert(#saved==999 and saved[1].serial==2)
+    local beforeReload=table.Copy(saved)
+    LOD.CombatRollFeed={entries={}}
+    dofile(root.."cl_feedback_language.lua")
+    assert(#LOD.CombatRollFeed.history==999 and #LOD.CombatRollFeed.entries==0,"reload retains rows without replay")
+    for i,v in ipairs(beforeReload) do
+        local got=LOD.CombatRollFeed.history[i]
+        assert(got.text==v.text and got.serial==v.serial and got.stamp==v.stamp,"reload identity/order")
+    end
+    util.TableToJSON,util.JSONToTable=originalEncode,originalDecode
+    print("HISTORY_JSON_CACHE_PASS: loading warmup, unchanged rows, scalar/span edits, replacement/order, transient layout and reload")
+end

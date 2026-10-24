@@ -1,0 +1,67 @@
+{
+	"reason": "both normal actor draws observed",
+	"actors": [
+		{
+			"support": "jane_propane",
+			"beaver": false,
+			"entity": 115,
+			"model": "models/props_junk/propane_tank001a.mdl",
+			"expected_maxs": [
+				89.67803955078125,
+				89.65347290039063,
+				197.1436004638672
+			],
+			"actual_maxs": [
+				89.67803955078125,
+				89.65347290039063,
+				197.1436004638672
+			],
+			"actual_mins": [
+				-89.67803955078125,
+				-89.65347290039063,
+				-80
+			],
+			"expected_mins": [
+				-89.67803955078125,
+				-89.65347290039063,
+				-80
+			],
+			"native_bounds_match": true,
+			"size": 2.0999999046325684,
+			"signature": "models/props_junk/propane_tank001a.mdl:2.0999999046326"
+		},
+		{
+			"support": "",
+			"beaver": true,
+			"entity": 114,
+			"model": "models/humans/group01/male_02.mdl",
+			"expected_maxs": [
+				94.94999694824219,
+				94.94999694824219,
+				209.62857055664063
+			],
+			"actual_maxs": [
+				94.94999694824219,
+				94.94999694824219,
+				209.62857055664063
+			],
+			"actual_mins": [
+				-94.94999694824219,
+				-94.94999694824219,
+				-80
+			],
+			"expected_mins": [
+				-94.94999694824219,
+				-94.94999694824219,
+				-80
+			],
+			"native_bounds_match": true,
+			"size": 1.149999976158142,
+			"signature": "models/humans/group01/male_02.mdl:1.1499999761581"
+		}
+	],
+	"util_api": "nil",
+	"normal_draw_returns": 51,
+	"seconds": 0.9700927734375,
+	"restored": true
+}
