@@ -3,18 +3,6 @@ LOD.HostileHurtPose = LOD.HostileHurtPose or {}
 
 local HurtPose = LOD.HostileHurtPose
 
--- Freeze/Clear own the frozen-pose fields. Keep membership, never validity or
--- pose values, so ordinary enemies avoid native queries in this per-frame hook.
--- Retain registry traversal order, including freezes from earlier callbacks in
--- the same traversal. Weak keys and EntityRemoved do not retain dead entities.
-local frozen = setmetatable({}, {__mode = "k"})
-for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
-    if IsValid(hostile) and hostile.LODFrozenHurtSequence then frozen[hostile] = true end
-end
-hook.Add("EntityRemoved", "LOD_HostileHurtPoseForget", function(hostile)
-    frozen[hostile] = nil
-end)
-
 -- Prefer explicit sequence names first. Some Source models return a generic
 -- weighted sequence for unsupported activities; named pain/flinch sequences are
 -- less likely to silently resolve to an idle/walk animation.
@@ -142,13 +130,11 @@ function HurtPose:Freeze(hostile, cycle, mode)
     hostile.LODFrozenHurtMode = mode or "stun"
     hostile.LODFrozenHurtFallback = fallback
     hostile.LODFrozenHurtModel = hostile.GetModel and hostile:GetModel() or nil
-    frozen[hostile] = true
     return applySequence(hostile, sequence, hostile.LODFrozenHurtCycle)
 end
 
 function HurtPose:Clear(hostile)
     if not IsValid(hostile) then return end
-    frozen[hostile] = nil
     hostile.LODFrozenHurtSequence = nil
     hostile.LODFrozenHurtCycle = nil
     hostile.LODFrozenHurtMode = nil
@@ -176,10 +162,9 @@ if LOD.M3HitFeedback and not LOD.M3HitFeedback.LODFrozenHurtPoseWrapped then
 end
 
 hook.Add("Think", "LOD_HostileHurtPoseAuthoritative", function()
-    if next(frozen) == nil then return end
     local now = CurTime()
     for _, hostile in ipairs(LOD.HostileRegistry and LOD.HostileRegistry:List() or {}) do
-        if frozen[hostile] and IsValid(hostile) and hostile.LODFrozenHurtSequence then
+        if IsValid(hostile) and hostile.LODFrozenHurtSequence then
             local dead = hostile.LODDead == true
             local stunned = now < (hostile.LODHitStunUntil or 0)
 

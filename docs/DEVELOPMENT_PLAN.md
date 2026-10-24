@@ -1,3 +1,9 @@
+# Current checkpoint — hurt-pose membership rejected after six source captures
+
+P,C,C,P,P,C23.179/24.023/22.795/22.235/22.515/21.744FPS. Means22.643/22.854(+0.932%), p9582.337/81.186ms, p99117.938/113.984ms, longest11.806/9.483s. Overlapping ranges/mixed pairs do not demonstrate gain; reject and restore hurt-pose byte-exactbf05ad1a, retain three useful reload/reentrant/registry regressions. Source/function/membership/HUD/renderer/resources/input/display checks pass; all owned games stopped/root install restored; all six FAIL40. [All rows/raw/limits](validation/STEAM_DECK_HURT_MEMBERSHIP_20261024.json).
+
+Next inspect repeated progression reconciliation cost at the observed caller before choosing another candidate; unchanged lifetime binder already early-returns. No frame validity/state cache, AI/content/cadence/settings change. Both monitors ON always. SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
 # Current checkpoint — caller census complete; frozen-pose membership candidate
 
 Repeated caller samples identify progression/status/player identity and hurt-pose queries. Four controls/profile21.981–23.914FPS/allFAIL40; count samples are not exclusive CPU cost. Providers restored/owned games stopped/both monitors ON. [Raw results and limits](validation/STEAM_DECK_VALIDITY_CALLERS_20261023.json).
