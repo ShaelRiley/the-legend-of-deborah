@@ -1,0 +1,171 @@
+{
+  "status": "Additional release-config D20 short observation FAILS40; not frozenstressreplacement/sourcegain/fullplayacceptance. SP40UNMET/fullfiveSP/40capUNVERIFIED.",
+  "sha": "2e4577c27a600a3c63a26955e9d6702495f4f837",
+  "raw": "/home/deck/deborah-benchmarks/release-d20/2e4577c2/release-config-v2",
+  "analysis": {
+    "mode": "uncapped",
+    "limiter_tolerance_ms": 0,
+    "active": {
+      "frames": 1504,
+      "seconds": 59.967317,
+      "fps": 25.080328339518672,
+      "median_ms": 33.767,
+      "p95_ms": 68.73,
+      "p99_ms": 92.767,
+      "max_ms": 344.841,
+      "one_percent_low_fps": 7.711571791841543,
+      "below_budget_seconds": 56.618076,
+      "longest_below_budget_seconds": 9.542258000000004,
+      "below_budget_runs_ge2s": 8
+    },
+    "pacing_at_tolerated_budget": {
+      "frames": 1504,
+      "seconds": 59.967317,
+      "fps": 25.080328339518672,
+      "median_ms": 33.767,
+      "p95_ms": 68.73,
+      "p99_ms": 92.767,
+      "max_ms": 344.841,
+      "one_percent_low_fps": 7.711571791841543,
+      "below_budget_seconds": 56.618076,
+      "longest_below_budget_seconds": 9.542258000000004,
+      "below_budget_runs_ge2s": 8
+    },
+    "capture_checks_passed": false,
+    "issues": [
+      "average FPS below budget",
+      "p95 exceeds frame budget",
+      "p99 exceeds spike budget",
+      "continuous drop lasting at least two seconds"
+    ],
+    "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+  },
+  "before": {
+    "discretionary": [
+      4,
+      6,
+      6,
+      6
+    ],
+    "encounters": 25,
+    "passed": true,
+    "players": 1,
+    "planned_composition_count": 67,
+    "normal_AI": true,
+    "spacing": 4,
+    "no_god_noclip": true,
+    "level": 20,
+    "phase": "before",
+    "campaign": 654759232,
+    "health": 211,
+    "maximum": 211,
+    "archetypes": {
+      "bioblaster": 8,
+      "arccaster": 1,
+      "deadcrab": 4,
+      "razor": 1,
+      "accumulator": 1,
+      "repulsor": 1,
+      "reaper": 2,
+      "soldier": 10,
+      "seeker": 4,
+      "runner": 5,
+      "flamer": 3,
+      "pincer": 1,
+      "watcher": 3,
+      "forker": 1,
+      "caromer": 2,
+      "drubber": 1,
+      "shambler": 3,
+      "afterburst": 2,
+      "sniper": 1
+    },
+    "scope": "Additional ordinary release-configuration D20 subset. Current production planner/configuration, no actor count edits. Not the frozen developer-density stress benchmark; cannot substitute for its failed acceptance. Before-after counts reflect normal spawning/combat, not manual resets.",
+    "level_seed": 1217159003,
+    "developer_dense": false,
+    "layout_seed": 899898795,
+    "threat": [
+      12,
+      24,
+      27,
+      30
+    ],
+    "developer_mode": false,
+    "hostiles": 54,
+    "singleplayer": true
+  },
+  "after": {
+    "discretionary": [
+      4,
+      6,
+      6,
+      6
+    ],
+    "encounters": 25,
+    "passed": true,
+    "players": 1,
+    "planned_composition_count": 67,
+    "normal_AI": true,
+    "spacing": 4,
+    "no_god_noclip": true,
+    "level": 20,
+    "phase": "after",
+    "campaign": 654759232,
+    "health": -6,
+    "maximum": 211,
+    "archetypes": {
+      "bioblaster": 8,
+      "arccaster": 1,
+      "deadcrab": 4,
+      "razor": 1,
+      "accumulator": 1,
+      "repulsor": 1,
+      "reaper": 2,
+      "soldier": 10,
+      "seeker": 4,
+      "warden": 5,
+      "runner": 5,
+      "forker": 1,
+      "pincer": 1,
+      "flamer": 3,
+      "watcher": 3,
+      "sentry": 4,
+      "drubber": 1,
+      "caromer": 2,
+      "shambler": 3,
+      "afterburst": 2,
+      "sniper": 1
+    },
+    "scope": "Additional ordinary release-configuration D20 subset. Current production planner/configuration, no actor count edits. Not the frozen developer-density stress benchmark; cannot substitute for its failed acceptance. Before-after counts reflect normal spawning/combat, not manual resets.",
+    "level_seed": 1217159003,
+    "developer_dense": false,
+    "layout_seed": 899898795,
+    "threat": [
+      12,
+      24,
+      27,
+      30
+    ],
+    "developer_mode": false,
+    "hostiles": 63,
+    "singleplayer": true
+  },
+  "lease": {
+    "scope": "Single120s authorized observation lease: developer0 during gameplay; private server bridge retains developer1 access gate. Post recorded before restoring setup cvar. No recurringobserver/file polling during FPS.",
+    "developer_restored": true,
+    "passed": true,
+    "seconds": 120.0212711
+  },
+  "failed_preFPS_attempts": [
+    {
+      "raw": "/home/deck/deborah-benchmarks/client-think-short/2e4577c2/native-readonly-v1",
+      "reason": "Private scriptbasename containeddigits; unchanged bridge rejected. No FPS."
+    },
+    {
+      "raw": "/home/deck/deborah-benchmarks/release-d20/2e4577c2/release-config-v1",
+      "reason": "Privatehelperused unavailableloadstring. ReplacedwithpublicCompileString; leasecleanup establishedbeforemode0. No FPS."
+    }
+  ],
+  "verification": "Nativeproductionplan/dev0/singleplayer1human/normalAI/noGodNoclip before/after, source/HUD/renderer/resources/input/bothON checks passed; capturefinished before120slease restoredsetupcvar/allownedStop. One60sactivecapture, no full boss/releaseplay acceptance. Postleaseafter120s hasdeadplayer; performance activewindow isseparate. Cleanupsuccess/errorfixture L54/LJpass. Bridge developer1 access gateunchanged.",
+  "limitations": "No before-afteroptimizationinferenceacrossdifferentcontent; release planner67planned/54live before, stress57initialnative. Same1820wallmodels/seeds/normalresources/input/settings. Extra leasecallbackonlyaftercapture/no duringFPSobserver. Ordinaryfulltraversal/events/bossphases notproved."
+}

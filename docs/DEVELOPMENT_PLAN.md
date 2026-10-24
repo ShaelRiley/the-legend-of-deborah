@@ -1,3 +1,9 @@
+# Current checkpoint — additional production-plan D20 also fails 40 FPS
+
+Additionalrelease-config/dev0D20/54initialhostiles/67planned/1820models onretainedHUDsource:25.080FPS, median33.767ms,p9568.730,p9992.767,1%low7.712,longestdrop9.542s. Same seeds/legalresources/input/graphics/bothON. Nativeplan/runtime/source/HUD/renderer/input/displaygates pass; 120slease recordsdev0 thenrestores1/allownedStop. Captureendsbeforelease; post120sobservationplayerdead, separatefromactivecapture. Earlierprivatebasename/loadstring mistakes failedbeforeFPS/preserved, fixedwithpublicCompileString andcleanupfixtureL54/LJ. [Raw/allmetrics/limits](validation/STEAM_DECK_RELEASE_D20_20261024.json).
+
+This is additional coverage, not a replacement for frozen developer-density stress or a sourcegain; full ordinaryplay/completebossphases remainunverified. StaticgeometryalreadyusesSOLID_BBOX/noPhysCollide, so no collision representationchange justified. Nativehierarchy stillNextbotLua10.94selfms/frame/serverGM3.05/opaqueLua2.81. Next choose a source change in measured repeated server authority with finite native correctness/FPS gate, avoid rejected caches/dispatch. BothmonitorsONalways/SP40UNMET/fivefullSP/40capUNVERIFIED/multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — progression dispatch micro does not justify source change
 
 Noninstallednative57NextBots57000queriesperarm P,C,C,P,P,C16.423/16.025/15.762/16.129/16.422/16.078ms; only~2.3%time reduction, no meaningful predictedgain claimed. All native profile/Player/null/custompublicproviderparity/restoration checks pass; resolverneverinstalled/allownedStop. No sourcecandidate. [Raw/limits](validation/STEAM_DECK_PROGRESS_DISPATCH_20261024.json).
