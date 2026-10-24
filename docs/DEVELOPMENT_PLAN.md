@@ -1,3 +1,9 @@
+# Current checkpoint — progression dispatch micro does not justify source change
+
+Noninstallednative57NextBots57000queriesperarm P,C,C,P,P,C16.423/16.025/15.762/16.129/16.422/16.078ms; only~2.3%time reduction, no meaningful predictedgain claimed. All native profile/Player/null/custompublicproviderparity/restoration checks pass; resolverneverinstalled/allownedStop. No sourcecandidate. [Raw/limits](validation/STEAM_DECK_PROGRESS_DISPATCH_20261024.json).
+
+Next additional ordinary release-configuration D20 capture on current retainedHUDsource: build via canonical BuildCurrentLevel withdeveloper mode0, unchanged release population/planner/configuration/gameplay; same legal20Wizard/resources/physicalcourtinput/graphics/bothON. Separate from frozen developer-density D20stress; never replace/reclassify itsfailedcounts oracceptance. Exactnative releaseplan/runtime/source/HUD/renderer/resources/input/display gates, 60s first finiteobservationalrun; no FPSgain inference acrossdifferentcontent. BothmonitorsONalways; SP40UNMET/fivefullSP/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — bounds polling phases rejected after six source captures
 
 P,C,C,P,P,C22.145/22.645/21.926/21.457/23.035/22.746FPS. Means22.212/22.439(+1.020%), p9583.128/82.669ms, p99118.773/116.457ms, 1%low6.549/6.291, longest10.495/17.727s. Reject: overlapping/mixed FPS and worse prolonged drops despite smaller callback cohorts. Restore runtime and implementation-specific phase test byte-exacteef47658. All native source/deadline/HUD/renderer/resources/input/bothON checks pass; postFPS observers independently restored/allownedStop. [All rows/raw/mechanism/limits](validation/STEAM_DECK_BOUNDS_PHASES_20261024.json).
