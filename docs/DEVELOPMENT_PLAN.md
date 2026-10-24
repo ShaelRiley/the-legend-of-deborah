@@ -1,3 +1,9 @@
+# Current checkpoint — direct AI-step prototype rejected
+
+FixedC,P,P,C23.323/23.558/21.871/23.328FPS; means23.326/22.714(-2.621%), median34.736/36.137,p9579.524/80.679,p99110.515/104.664,longdrops9.135/10.784s. Reject: removingordinarycoroutine resume/yield via exactsourcebody/directprotectednativecallback doesnot improveoverallperformance. No game sourcecandidate. Same55ordinaryactors/twoWatchersunchanged/57initialhostiles/1820models/seeds/resources/input/AIcadence/settings/bothON; nativecallback/thread/source/HUD/renderer/input/display checks pass, allownedrestored/independentretirement/allownedStop. L54/LJ100-step/order/error/foreignyield fixturespass. [Allrows/raw/contracts/limits](validation/STEAM_DECK_BEHAVIOUR_DIRECT_20261024.json).
+
+Next measured bottleneck remains server AI authority; retain existing cadence/coroutines/content. Do not repeat rejected dispatch/cache/geometry-phase/direct-coroutine approaches. BothmonitorsONalways/SP40UNMET/fivefullSP/fullordinaryplay/40capUNVERIFIED/multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — additional production-plan D20 also fails 40 FPS
 
 Additionalrelease-config/dev0D20/54initialhostiles/67planned/1820models onretainedHUDsource:25.080FPS, median33.767ms,p9568.730,p9992.767,1%low7.712,longestdrop9.542s. Same seeds/legalresources/input/graphics/bothON. Nativeplan/runtime/source/HUD/renderer/input/displaygates pass; 120slease recordsdev0 thenrestores1/allownedStop. Captureendsbeforelease; post120sobservationplayerdead, separatefromactivecapture. Earlierprivatebasename/loadstring mistakes failedbeforeFPS/preserved, fixedwithpublicCompileString andcleanupfixtureL54/LJ. [Raw/allmetrics/limits](validation/STEAM_DECK_RELEASE_D20_20261024.json).

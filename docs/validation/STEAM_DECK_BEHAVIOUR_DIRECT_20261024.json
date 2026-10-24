@@ -1,0 +1,114 @@
+{
+  "status": "REJECT private direct-step prototype; no game source candidate. SP40UNMET/fivefullSP/fullordinaryplay/40capUNVERIFIED.",
+  "source": "a065855beb83fa67bc924db06f994e45a44ba60e",
+  "raw": "/home/deck/deborah-benchmarks/behave-direct/a065855b/prototype-series-v1",
+  "plan": {
+    "sha": "a065855beb83fa67bc924db06f994e45a44ba60e",
+    "utc": "2026-10-24T03:22:55.252583+00:00",
+    "sequence": [
+      "control",
+      "candidate",
+      "candidate",
+      "control"
+    ],
+    "seconds_each": 60,
+    "scope": "PRIVATE PROTOTYPE singleplayer frozen D20stress57initialhostiles/1820models/seeds/legalWizard20resources/normalinput/AI/cadence/settings/15WAC/bothON. No production game sourcechange.",
+    "hypothesis": "NativeNextbotLua10.94ms/frame dominated by canonical simpleRunBehaviour whileloop/yield. Same exact sourcebody compiled asone protected directstep fromsame nativeBehaveUpdate callback, avoidingcoroutine resume/yield for55ordinarybots. Two specializedWatchers unchanged. No fewer updates orcachedactorresults. Existing originalcoroutines remain suspended and resume exactnextstep onretirement; changed tick/thread fallsback tooriginalcallback.",
+    "proof": "L54/LJ100step/order/admission/close-defense/error/nil/dead/foreignyield/retirement fixture passes. Native exactCoreSHA/currentNativeRunBehaviour847/router/ordinarythread/baseBehaveUpdate23 validated BEFOREanyproviderwrite. Currentthread/callback/source/HUD/renderer/resources/input/bothON beforeafter, exactownedrestore plus independentretirement/allownedStop. No duringFPS counters/profiler/JIT/GCchanges; finite120slease.",
+    "decision": "Freshfixed4control,candidate,candidate,control60s. Rejectnoise/regression; promisingprototype requires real source/lifecycle/cadence/sourceFPS checks. Not full40SPacceptance. TargetUNMET/fullfiveSP3x180swarm/releasefullplay/cap40UNVERIFIED; multiplayerdeferred."
+  },
+  "runs": [
+    {
+      "index": 1,
+      "variant": "control",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/behave-direct/a065855b/prototype-series-v1/arm01-control",
+      "frames": 1398,
+      "seconds": 59.939778,
+      "fps": 23.323409706322238,
+      "median_ms": 33.841,
+      "p95_ms": 81.53,
+      "p99_ms": 124.41,
+      "max_ms": 353.526,
+      "one_percent_low_fps": 5.846539203759826,
+      "below_budget_seconds": 58.00990799999988,
+      "longest_below_budget_seconds": 8.723736000000004,
+      "below_budget_runs_ge2s": 7
+    },
+    {
+      "index": 2,
+      "variant": "candidate",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/behave-direct/a065855b/prototype-series-v1/arm02-candidate",
+      "frames": 1413,
+      "seconds": 59.980553,
+      "fps": 23.557635422267612,
+      "median_ms": 35.078,
+      "p95_ms": 76.52,
+      "p99_ms": 103.287,
+      "max_ms": 337.811,
+      "one_percent_low_fps": 6.78684510338175,
+      "below_budget_seconds": 58.45097799999996,
+      "longest_below_budget_seconds": 8.888501999999994,
+      "below_budget_runs_ge2s": 9
+    },
+    {
+      "index": 3,
+      "variant": "candidate",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/behave-direct/a065855b/prototype-series-v1/arm03-candidate",
+      "frames": 1311,
+      "seconds": 59.941796000000004,
+      "fps": 21.871216538123083,
+      "median_ms": 37.195,
+      "p95_ms": 84.838,
+      "p99_ms": 106.04,
+      "max_ms": 327.418,
+      "one_percent_low_fps": 6.956691119435951,
+      "below_budget_seconds": 58.65281299999996,
+      "longest_below_budget_seconds": 12.679582999999997,
+      "below_budget_runs_ge2s": 7
+    },
+    {
+      "index": 4,
+      "variant": "control",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/behave-direct/a065855b/prototype-series-v1/arm04-control",
+      "frames": 1399,
+      "seconds": 59.970531,
+      "fps": 23.328124274904283,
+      "median_ms": 35.631,
+      "p95_ms": 77.518,
+      "p99_ms": 96.62,
+      "max_ms": 356.351,
+      "one_percent_low_fps": 7.2505575160832905,
+      "below_budget_seconds": 58.33538800000002,
+      "longest_below_budget_seconds": 9.546322999999989,
+      "below_budget_runs_ge2s": 7
+    }
+  ],
+  "arithmetic_run_means": {
+    "control": {
+      "fps": 23.32576699061326,
+      "median_ms": 34.736000000000004,
+      "p95_ms": 79.524,
+      "p99_ms": 110.515,
+      "one_percent_low_fps": 6.548548359921558,
+      "below_budget_seconds": 58.17264799999995,
+      "longest_below_budget_seconds": 9.135029499999996
+    },
+    "candidate": {
+      "fps": 22.714425980195347,
+      "median_ms": 36.1365,
+      "p95_ms": 80.679,
+      "p99_ms": 104.6635,
+      "one_percent_low_fps": 6.8717681114088505,
+      "below_budget_seconds": 58.55189549999996,
+      "longest_below_budget_seconds": 10.784042499999995
+    }
+  },
+  "mean_fps_change_percent": -2.620882780248679,
+  "decision": "Reject: candidate meanFPS -2.621%, median/p95/prolongeddrops worse, mixedindividualresults despite somep99improvement. No production implementation or sourceconfirmation justified. Bothcontrols23.323/23.328 vs candidates23.558/21.871. Native ownership/thread/source/parity regression checks do not prove a performance gain.",
+  "regressions": "Exactsource484byte AIstep body compiled via publicCompileString; all55ordinaryactors originalnativecallback/thread/router/corefunction validated beforewrites, originalsthreadssuspended/source/HUD/renderer/resources/input/bothON beforeafter passed. TwoWatchersunchanged; allownedcallbacks independentlyrestored/leaseabsent/originalscleared/allownedgamesstopped. L54/LJ100step/order/admission/close-defense/error/nil/dead/foreignyield/retirement fixtures pass. No AI frequency/enemycount/gameplay/settings/JIT/GC changes.",
+  "limitations": "Four60s privateprototype arms, not full source or broadgameplayacceptance; actualallactorcallbackcounts notmeasured duringFPS. Native callback wrapper support measured earlier threeactorcadenceprobe; no isolatedcausal claim aboutcoroutine cost. Exactbody/publiccallback shape differs andpcall/JIT effects unisolated. Failedcriterion captures preserved."
+}
