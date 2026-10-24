@@ -1,3 +1,9 @@
+# Current checkpoint — native-vector swept admission without per-centre tables
+
+MeasuredMovementAllowed~22–24ms/sinclusive inMoveToward~108–113 motivates allocationremoval, no predictedFPSgain. Original createslo/hi/axis tablesforeachcentre/step. Candidate native-vector/plain-centres path retains exactclippingarithmetic/.0001threshold/fullpolicy/currentinputs, removesonlytemporarytables; custom/unknowninputs/centres retainoriginal. L54/LJ12317 fullqueryoracle/denial/boundary/parallel/random/mutation/fallback casespass, existingB29runtime/entryhotpath/120manifest/repeatinstaller/syntax pass. CI337newbehaviorgate/notfullgreen. [Finitegates](validation/STEAM_DECK_MOVEMENT_SWEEP_20261024.json).
+
+Next6freshactualsourceP,C,C,P,P,C60s frozenD20stress; beforeafterexactfile/function/helper/currentnativeVector/fullqueryoracle>=1000/source/HUD/renderer/resources/input/bothON. Restoreonlyownparitydenialcounterincrements synchronously, no gameplay/providers/profilers duringFPS. Rejectnoise/regression, confirmunchangedifpromising. BothmonitorsONalways/SP40UNMET/fivefullSP/fullordinaryplay/40capUNVERIFIED/multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — direct AI-step prototype rejected
 
 FixedC,P,P,C23.323/23.558/21.871/23.328FPS; means23.326/22.714(-2.621%), median34.736/36.137,p9579.524/80.679,p99110.515/104.664,longdrops9.135/10.784s. Reject: removingordinarycoroutine resume/yield via exactsourcebody/directprotectednativecallback doesnot improveoverallperformance. No game sourcecandidate. Same55ordinaryactors/twoWatchersunchanged/57initialhostiles/1820models/seeds/resources/input/AIcadence/settings/bothON; nativecallback/thread/source/HUD/renderer/input/display checks pass, allownedrestored/independentretirement/allownedStop. L54/LJ100-step/order/error/foreignyield fixturespass. [Allrows/raw/contracts/limits](validation/STEAM_DECK_BEHAVIOUR_DIRECT_20261024.json).
