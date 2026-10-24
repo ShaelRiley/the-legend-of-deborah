@@ -265,6 +265,7 @@ SUITES = [
     ("Magic Forms & Contents Schema", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_c_headless.lua", "."]),
     ("Implemented Feats & Capstones (112+9)", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_d_closure.lua"]),
     ("Human Soldier RPG & XP Progression", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_progression.lua"]),
+    ("Native Account Key & Player State Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_run_manager_identity.lua"]),
     ("Human Soldier Lifecycle & Isolation", ["python3", "tools/run_lua54.py", "tools/test_human_soldier_lifecycle.lua"]),
     ("Death Tetris Deadline & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_tetris_lifecycle.lua"]),
     ("Checkpoint E Closure & Parity", ["python3", "tools/run_lua54.py", "tools/test_checkpoint_e_closure.lua"]),

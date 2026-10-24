@@ -1,0 +1,81 @@
+{
+  "status": "Source candidate, actual source FPS pending. No performance improvement or 40FPS claim. SP40 UNMET; five full SP/release ordinary/40cap UNVERIFIED; multiplayer deferred",
+  "parent": "9ef11be958403f5e59160b90716e52c27901d6ec",
+  "motivation": "Two sparse public Entity.IsValid caller profiles repeatedly identify RunManager.IdentityOf (~377/389 source samples in ~69s). Counts are not exclusive CPU cost. Native micro100000queries means42.2008/17.7594ms; cost reduction is mechanism evidence only, loop/JIT/order effects limit inference. At observed caller frequency the isolated saving is modest; do not predict game FPS.",
+  "private_native_probe": {
+    "raw": "/home/deck/deborah-benchmarks/identity-key-probe/9ef11be9/native-readonly-v1",
+    "proof": {
+      "scope": "Read-only native authenticated player immutable account key feasibility. Candidate never installed; no actor/profile/state/provider mutation. Every call fresh IsValid, current SteamID64 provider check; unknown/zero/unauthenticated/custom providers uncached. Weakkeys; real source would clear disconnect/removal/reload and current GetPlayerState still reads live state. Micro/JIT/callshape nonrepresentative; no FPS or acceptance claim. IDs never logged.",
+      "players": 1,
+      "parity_cases": 3,
+      "method_unchanged": true,
+      "rows": [
+        {
+          "variant": "parent",
+          "milliseconds": 42.70619999999781,
+          "calls": 100000,
+          "index": 1
+        },
+        {
+          "variant": "candidate",
+          "milliseconds": 18.02589999999782,
+          "calls": 100000,
+          "index": 2
+        },
+        {
+          "variant": "candidate",
+          "milliseconds": 17.578899999989517,
+          "calls": 100000,
+          "index": 3
+        },
+        {
+          "variant": "parent",
+          "milliseconds": 42.06580000000315,
+          "calls": 100000,
+          "index": 4
+        },
+        {
+          "variant": "parent",
+          "milliseconds": 41.830300000000875,
+          "calls": 100000,
+          "index": 5
+        },
+        {
+          "variant": "candidate",
+          "milliseconds": 17.67339999999251,
+          "calls": 100000,
+          "index": 6
+        }
+      ],
+      "identifiers_redacted": true,
+      "passed": true,
+      "cached_players": 1
+    },
+    "mean_ms_per_100000": {
+      "parent": 42.20076666666728,
+      "candidate": 17.75939999999328
+    },
+    "retired": "Probe returned success, owned game unit stopped; both monitors confirmed ON after Stop."
+  },
+  "contract": "Fresh IsValid and current SteamID64 provider check every query. Cache only native C SteamID64 confirmed by same native C IsFullyAuthenticated method and nonzero key. Weak player keys, disconnect/removal cleanup, new cache on reload. Custom/Lua/unavailable/zero/unauthenticated providers uncached; provider changes clear previous native receipt. No profile/role/RunManager state/validity result cache. GetPlayerState still reads current State.PlayerState every call.",
+  "sources": [
+    "https://wiki.facepunch.com/gmod/Player:SteamID64",
+    "https://wiki.facepunch.com/gmod/Player:IsFullyAuthenticated",
+    "https://wiki.facepunch.com/gmod/GM:NetworkIDValidated"
+  ],
+  "source_inference": "Official native API documents account identity string and fully authenticated semantics; SP/listen host IsFullyAuthenticated true, bots false. Stable confirmed account key within live player incarnation is an inference; removal/provider/reload boundaries invalidate ownership. NetworkIDValidated intentionally absent in SP, so no reliance on that hook.",
+  "static": "Production identity regression Lua54/LJ pass; existing Soldier lifecycle/15progressionrequirements and exact120source/repeatmanifest/syntax/diff pass. Synthetic metadata is explicitly doubled; actualC/source/cache/nativeidentityparity required at Deck boundaries. CI matrix336 includes new gate, not fullgreen claim.",
+  "frozen_gate": {
+    "sequence": [
+      "parent",
+      "candidate",
+      "candidate",
+      "parent",
+      "parent",
+      "candidate"
+    ],
+    "seconds": 60,
+    "scope": "Same D20lowercourt-v1 developer density57roamers/1820models/frozen seeds/Wizardresources/physicalinputs/settings/runtime/both displays ON always; actual loaded source/hash/Cproviders/weakownership/currentnativeidentity/currentprofileparity and retainedHUD/renderer/resource/input/display gates. No profiler/JIT/GC/settings changes.",
+    "decision": "Reject noise or pacing/correctness regression. Repeat unchanged source only if promising. Full five SP3x180s warmed/capped/ordinaryrelease still required."
+  }
+}

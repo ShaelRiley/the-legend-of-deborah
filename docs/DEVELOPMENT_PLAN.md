@@ -1,3 +1,9 @@
+# Current checkpoint — authenticated account key source candidate
+
+Native read-only micro100000calls means42.201ms parent/17.759ms candidate, one actual authenticated SP player, method/providers unchanged and IDs redacted. Only feasibility evidence, no FPS prediction; observed call frequency makes isolated savings modest. Source weakly caches only a confirmed native account key, keeps current validity/provider/state queries, clears provider/removal/disconnect/reload boundaries, preserves uncached unknown/zero/custom/unauthenticated paths. Lua54/LJ identity/provider/lifecycle plus Soldier lifecycle/15progression/120source/repeatinstaller/syntax/diff pass. [Native evidence, API references, finite source gate](validation/STEAM_DECK_ACCOUNT_KEY_20261024.json).
+
+Next6fresh actualsourceP,C,C,P,P,C60s unchangedD20subset, read-only source/function/nativeC/cache/currentidentity/profile parity before/after plus retainedHUD/renderer/resources/input/display. Reject noise/regression; confirm promising. Both displays ON always. SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
 # Current checkpoint — hurt-pose membership rejected after six source captures
 
 P,C,C,P,P,C23.179/24.023/22.795/22.235/22.515/21.744FPS. Means22.643/22.854(+0.932%), p9582.337/81.186ms, p99117.938/113.984ms, longest11.806/9.483s. Overlapping ranges/mixed pairs do not demonstrate gain; reject and restore hurt-pose byte-exactbf05ad1a, retain three useful reload/reentrant/registry regressions. Source/function/membership/HUD/renderer/resources/input/display checks pass; all owned games stopped/root install restored; all six FAIL40. [All rows/raw/limits](validation/STEAM_DECK_HURT_MEMBERSHIP_20261024.json).

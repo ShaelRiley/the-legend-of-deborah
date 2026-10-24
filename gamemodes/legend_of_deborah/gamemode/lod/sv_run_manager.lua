@@ -52,13 +52,40 @@ end
 RunManager.CampaignEpoch = RunManager.CampaignEpoch or 0
 RunManager.State = RunManager.State or freshState(RunManager.CampaignEpoch)
 
+-- Authenticated native account keys are fixed for this player incarnation.
+-- Keep only the key, never validity, the cooperative state or its RPG profile.
+-- Unknown/custom providers and pending authentication retain fresh queries.
+local playerMeta = FindMetaTable and FindMetaTable("Player")
+local nativeIdentity = playerMeta and playerMeta.SteamID64
+local nativeAuthenticated = playerMeta and playerMeta.IsFullyAuthenticated
+if not debug or not debug.getinfo or type(nativeIdentity) ~= "function" or type(nativeAuthenticated) ~= "function"
+    or debug.getinfo(nativeIdentity, "S").what ~= "C"
+    or debug.getinfo(nativeAuthenticated, "S").what ~= "C" then
+    nativeIdentity, nativeAuthenticated = nil, nil
+end
+local accountKeys = setmetatable({}, {__mode = "k"})
+local function forgetAccountKey(ply) accountKeys[ply] = nil end
+hook.Add("PlayerDisconnected", "LOD_RunManagerAccountKey", forgetAccountKey)
+hook.Add("EntityRemoved", "LOD_RunManagerAccountKey", forgetAccountKey)
+
 function RunManager:IsCampaignEpoch(epoch)
     return self.State and self.State.CampaignEpoch == epoch
 end
 
 function RunManager:IdentityOf(ply)
     if not IsValid(ply) then return nil end
-    local steamID = ply:SteamID64()
+    local provider = ply.SteamID64
+    local steamID
+    if nativeIdentity and provider == nativeIdentity then
+        steamID = accountKeys[ply]
+        if steamID then return steamID end
+        steamID = provider(ply)
+        if steamID ~= "0" and ply.IsFullyAuthenticated == nativeAuthenticated
+            and nativeAuthenticated(ply) then accountKeys[ply] = steamID end
+    else
+        accountKeys[ply] = nil
+        steamID = provider(ply)
+    end
     return steamID ~= "0" and steamID or ("bot:" .. ply:EntIndex())
 end
 
