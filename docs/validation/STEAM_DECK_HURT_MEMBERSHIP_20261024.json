@@ -1,0 +1,20 @@
+{
+  "status": "Source candidate; static tests pass, Deck comparison pending. No performance gain claimed. SP40 UNMET",
+  "parent": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+  "hypothesis": "Weak frozen-pose membership removes native checks for ordinary enemies from measured per-frame hook. Registry traversal order including callback-created freezes stays live; active actors retain every original per-frame validity/pose/model/stun/death check. Empty set exits early.",
+  "correctness": "Only Freeze and Clear write LODFrozenHurtSequence; module reload seeds existing poses once. Weak keys/EntityRemoved avoid entity retention. Clear nil/invalid behavior unchanged. No reduced AI/content/cadence/rendering/settings.",
+  "static": "26 production-code hurt-pose cases pass; enemy attack animation/native sequence cache and death handoff pass; exact120-source/repeat install manifest pass; syntax/diff pass. Synthetic sequence fixtures are not native visual or FPS acceptance.",
+  "frozen_comparison": {
+    "sequence": [
+      "parent",
+      "candidate",
+      "candidate",
+      "parent",
+      "parent",
+      "candidate"
+    ],
+    "seconds_each": 60,
+    "scope": "Same D20lowercourt-v1 developer-density subset, exact seeds normal57roamers/1820models/Wizardresources/physical input/settings/runtime. Both monitors ON always. Fresh processes, no profilers/JIT/GC/affinity changes. Actual file hash/function line/frozen-set ownership and retained HUD/renderer/source/resource/input/display checks at both boundaries.",
+    "decision": "Reject no repeatable gain or correctness/pacing regression; unchanged confirmation if promising. All five SP three warmed180s/full bosses/ordinary release/40cap still required."
+  }
+}

@@ -1,3 +1,9 @@
+# Current checkpoint — caller census complete; frozen-pose membership candidate
+
+Repeated caller samples identify progression/status/player identity and hurt-pose queries. Four controls/profile21.981–23.914FPS/allFAIL40; count samples are not exclusive CPU cost. Providers restored/owned games stopped/both monitors ON. [Raw results and limits](validation/STEAM_DECK_VALIDITY_CALLERS_20261023.json).
+
+Frozen-pose hook currently checks every registered hostile. Candidate tracks only owned pose membership, retains registry order/same-frame callback freezes, checks active state freshly every frame, seeds on reload and forgets removed actors. Existing23 plus3 lifecycle/reentrancy cases, animation/death/manifest/syntax checks pass. No FPS claim. Next fixed6fresh P,C,C,P,P,C60s actual source comparison with boundary source/ownership/HUD/renderer/resource/input/display checks. Reject noise/regression; confirm promising gain. [Finite gate](validation/STEAM_DECK_HURT_MEMBERSHIP_20261024.json). SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
 # Current checkpoint — validity forwarding rejected after twelve source captures
 
 Readonlysource6P24.384/C21.646/C22.954/P21.929/P21.574/C22.333FPS. MeansP22.6289/C22.3107(−1.406%),p9581.342/81.034,p99116.030/114.295,longest13.771/11.209s. Firstsource6means22.632/22.593(−0.170%). BothactualsourceseriesfailtoshowavgFPSgain; reject/restoreMotionV2byte-exact92290/removeobsoleteunit/matrixrowback335. Earlierprototype+8.289%wasnotconfirmed. All12actualsource/nativeCcallee/owner/result/HUD/renderer/resource/input/displaychecks pass/allownedStop/rootinstallrestore; allFAIL40. No causalclaimaboutreloadinstrumentation: readonlygatesdidnotestablishbenefit. [All12/raw/limits](validation/STEAM_DECK_NATIVE_VALIDITY_20261023.json).
