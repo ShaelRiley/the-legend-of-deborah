@@ -1,0 +1,75 @@
+{
+  "status": "Source candidate; native actual source FPS not yet measured. SP40 UNMET; five full SP/release ordinary/40cap UNVERIFIED; multiplayer deferred",
+  "parent": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+  "hypothesis": "Two navigation profiles repeat ExactCell~690k/~70s (~71ms/sinclusive). Decode fractional lattice coordinates once. With current declared canonical cell providers/config/keys/nativevectors and <2^20 intermediate magnitude, a point >1worldunit inside idealcellfaces is guaranteed inside nativefloat32centerbounds; skip redundant centerlookup. Exact fallback preserves all faces/unknown/mutated/customprovider inputs. No across-call membership/validity cache/physicalmargin/AI/content/cadence/settings change.",
+  "float_reasoning": "For offset magnitude<2^20, float32 constructor rounding <=2^-5; rounded offset+native origin sum magnitude<2^20 has final rounding <=2^-5. Two-stage center error <=1/16worldunit (conservative margin1). Lua double grid arithmetic at these bounded coordinates adds much less than margin. Native point components read freshly. Far coordinates, tinycells, unknown providers and within1unit of anyface use original exact center and bounds. This is an optimization certificate, not changed accepted volume.",
+  "native_prototype": {
+    "raw": "/home/deck/deborah-benchmarks/exact-interior-probe/e464ba7d/native-readonly-v1",
+    "report": {
+      "fast_parity": 3163,
+      "rows": [
+        {
+          "variant": "parent",
+          "milliseconds": 89.7389000000004,
+          "calls": 57000,
+          "index": 1
+        },
+        {
+          "variant": "candidate",
+          "milliseconds": 63.4490999999997,
+          "calls": 57000,
+          "index": 2
+        },
+        {
+          "variant": "candidate",
+          "milliseconds": 62.053499999990436,
+          "calls": 57000,
+          "index": 3
+        },
+        {
+          "variant": "parent",
+          "milliseconds": 89.55620000000408,
+          "calls": 57000,
+          "index": 4
+        },
+        {
+          "variant": "parent",
+          "milliseconds": 89.74030000000255,
+          "calls": 57000,
+          "index": 5
+        },
+        {
+          "variant": "candidate",
+          "milliseconds": 62.336599999994746,
+          "calls": 57000,
+          "index": 6
+        }
+      ],
+      "scope": "Private noninstalled interior proof prototype, no source gain. Current nativevector/canonical providers only; integer grid candidate certified at least1worldunit inside all idealcellfaces, center input/output magnitude<2^20 bounds nativefloat rounding farbelowmargin. Boundary/unknown/mutated/custom cases delegate original; real source needs explicit provider ownership proofs and mutable input regressions. Actual all671cells faceepsilon nativeparity, current57actors, syntheticmicro/JIT/order not FPS. No actors/config/providers mutated; no random/RNG calls.",
+      "actors": 57,
+      "cases": 29727,
+      "passed": true,
+      "method_unchanged": true
+    },
+    "mean_ms_per57000": {
+      "parent": 89.67846666666901,
+      "candidate": 62.61306666666163
+    },
+    "qualification": "Rawscope text says671cells but codecases count29727 includes57actorcases +43percell =>690actualcells. All current graphcells were iterated; record this correction without editing raw report. Synthetic flatloop/JIT/order and candidatecounter limit inference; no FPS gain. Candidate never installed/providers unchanged/ownedgameStop/bothON."
+  },
+  "source": "Canonical builder/navigator declare current lattice providers/config; generatordeclarespureCellKey. ExactCell validatescurrentproviders/config/key/nativefloor/inputs/ownedcellcoords, recomputeslivecoordinates everycall; no extra vector allocations. Existing center/cache/route APIs unchanged.",
+  "static": "ExistingB29spatial5145/nativequeries/directsources/coordinatescache/mutableproviders/weaklifetime/reload plusdispatch/door gates pass. New9900nativefloat oraclecases +callhookproof interioravoids centerlookup; custom coordinate/key/config/unknownprovider fallback pass. Exact120manifest/repeatinstall/syntax/diff pass. Lua54floatfixture not native acceptance. NewCI336gate not fullgreen claim.",
+  "frozen_gate": {
+    "sequence": [
+      "parent",
+      "candidate",
+      "candidate",
+      "parent",
+      "parent",
+      "candidate"
+    ],
+    "seconds_each": 60,
+    "scope": "Same frozen actual Deck Windows64/Proton10 D20lowercourt-v1 stress57roamers/1820models/seeds/Wizardresources/physicalinputs/settings/15WAC/bothdisplays ON always. Sourcehash/function/provider/canonicalmetadata/nativepointparity and HUD/renderer/resource/input/displaygates before/after. No observers/JIT/GC/affinitychanges.",
+    "decision": "Rejectnoise/correctness/pacingregression; unchangedconfirmationifpromising. AllfivefullSP3x180swarmed/ordinaryrelease/40capseparate remain."
+  }
+}

@@ -1,6 +1,8 @@
 -- Production sanctuary queries; native vector access, ownership and time are
 -- doubled. Optional parent source enables a paired, unchanged-code comparison.
-local parentPath=arg[1]
+local latticeOnly=arg[1]=='--lattice-interior'
+local parentPath=not latticeOnly and arg[1] or nil
+local latticeParent=latticeOnly or arg[2]=='--lattice-interior'
 local coordinateParent=arg[2]=='--cell-coordinates' or arg[2]=='--cell-negative-control'
 local savedArg=arg[1];arg[1]='--runtime'
 local H=dofile('tools/test_bestiary_b29.lua');arg[1]=savedArg
@@ -13,6 +15,23 @@ if parentPath then
     local isolatedLOD=setmetatable({EntrySafety=parent},{__index=LOD})
     local env=setmetatable({LOD=isolatedLOD},{__index=_G})
     assert(load(source,'@entry-safety-parent','t',env))()
+end
+if latticeOnly then
+    -- Independent exact-native-centre oracle: deliberately constructs the
+    -- rounded Vector and applies the original bounds, without interior logic.
+    parent=setmetatable({ExactCell=function(_,graph,pos)
+        if not graph or not pos then return nil end
+        local m=LOD.Config.Maze
+        local x=math.floor((pos.x-m.Origin.x)/m.CellSize+(m.Width+1)*.5+.5)
+        local y=math.floor((pos.y-m.Origin.y)/m.CellSize+(m.Height+1)*.5+.5)
+        local z=math.floor((pos.z-m.Origin.z+24)/m.LevelHeight)
+        local c=graph.Cells[LOD.MazeGenerator.CellKey(x,y,z)]
+        if not c then return nil end
+        local center=N:CellCenter(c)
+        if math.abs(pos.x-center.x)>m.CellSize*.5 or math.abs(pos.y-center.y)>m.CellSize*.5
+            or pos.z<center.z-24 or pos.z>=center.z+m.LevelHeight-24 then return nil end
+        return c
+    end},{__index=S})
 end
 if arg[2]=='--cell-negative-control' then S=assert(parent,'negative control requires exact parent source') end
 local m=LOD.Config.Maze
@@ -102,7 +121,7 @@ end
 local candidateReads=nativeReads(S)
 assert(candidateReads==10000,'membership repeats native position-component reads')
 local parentReads=parent and nativeReads(parent)
-if parent and not coordinateParent then assert(candidateReads<parentReads,'unchanged parent did not fail reduced-work gate') end
+if parent and not coordinateParent and not latticeParent then assert(candidateReads<parentReads,'unchanged parent did not fail reduced-work gate') end
 local inside=position(center.x,center.y,center.z+12)
 reads=0;assert(S:ExactCell(g,inside)==g.Cells[key(g.Start)] and reads==3,'exact cell repeats native position reads')
 local function allocation(authority)
@@ -115,7 +134,7 @@ end
 local candidateKB=allocation(S)
 assert(candidateKB<16,'direct combat sources still allocate owner-cycle tables')
 local parentKB=parent and allocation(parent)
-if parent and not coordinateParent then assert(candidateKB<parentKB*.1,'unchanged parent did not fail allocation gate') end
+if parent and not coordinateParent and not latticeParent then assert(candidateKB<parentKB*.1,'unchanged parent did not fail allocation gate') end
 
 -- Empty admission must still perform live service/context calls before return.
 local service,context=S.Service,S.Context
@@ -146,7 +165,7 @@ local function farClaims(authority)
 end
 local farKB=farClaims(S);assert(farKB<16,'far admission still allocates an empty nearby array')
 local parentFarKB=parent and farClaims(parent)
-if parent and not coordinateParent then assert(farKB<parentFarKB*.1,'unchanged parent passed empty-array work gate') end
+if parent and not coordinateParent and not latticeParent then assert(farKB<parentFarKB*.1,'unchanged parent passed empty-array work gate') end
 local finalParentReads=parentReads or -1;local finalParentKB=parentKB or -1
 print(string.format('ENTRY_HOTPATH_PASS boundaries=%d direct_sources=50000 native_reads=%d parent_reads=%d allocation_kb=%.3f parent_kb=%.3f far_claim_kb=%.3f parent_far_kb=%.3f; immediate mutations, four-hop/cycle/invalid ownership, live empty/far admission',
     checks,candidateReads,finalParentReads,candidateKB,finalParentKB,farKB,parentFarKB or -1))
@@ -199,6 +218,8 @@ local function f32(n)return string.unpack('f',string.pack('f',n)) end
 local floatMeta={}
 floatMeta.__add=function(a,b)return Vector(a.x+b.x,a.y+b.y,a.z+b.z)end
 Vector=function(x,y,z)return setmetatable({x=f32(x or 0),y=f32(y or 0),z=f32(z or 0)},floatMeta)end
+local oldIsVector=isvector
+if latticeParent then isvector=function(v)return getmetatable(v)==floatMeta end end
 local oldOrigin,oldSize,oldWidth,oldHeight,oldLevelHeight=m.Origin,m.CellSize,m.Width,m.Height,m.LevelHeight
 m.Origin=Vector(8192.12345,-4096.23456,.34567);m.CellSize=383.98765;m.Width=47.125;m.Height=41.375;m.LevelHeight=255.87654
 local rounded=0
@@ -222,6 +243,56 @@ if parent then
         end
     end
 end
+if latticeParent then
+    assert(parent,'unchanged parent required')
+    local latticeChecks=0
+    local configs={
+        {Vector(8192.12345,-4096.23456,.34567),383.98765,47.125,41.375,255.87654},
+        {Vector(524000.125,-520000.25,524000.5),512,48,48,384},
+        {Vector(2^21+.25,-2^21+.5,2^21+.75),257.125,47.25,41.5,255.875},
+        {Vector(0,0,0),1.5,10,10,1.5}}
+    for _,cfg in ipairs(configs)do
+        m.Origin,m.CellSize,m.Width,m.Height,m.LevelHeight=cfg[1],cfg[2],cfg[3],cfg[4],cfg[5]
+        for _,c in ipairs(cells)do
+            local center=N:CellCenter(c);local half=m.CellSize*.5
+            for _,dx in ipairs({-half-1,-half-.001,-half,-half+.001,-half+1,0,half-1,half-.001,half,half+.001,half+1})do
+            for _,dy in ipairs({-half-.001,-half,0,half,half+.001})do
+            for _,dz in ipairs({-25,-24.001,-24,-23.999,-23,2,m.LevelHeight-25,m.LevelHeight-24,m.LevelHeight-23})do
+                local point=Vector(center.x+dx,center.y+dy,center.z+dz)
+                assert(S:ExactCell(g,point)==parent:ExactCell(g,point),'float32 interior or conservative fallback differs')
+                latticeChecks=latticeChecks+1
+            end end end
+        end
+    end
+    m.Origin,m.CellSize,m.Width,m.Height,m.LevelHeight=oldOrigin,oldSize,oldWidth,oldHeight,oldLevelHeight
+    m.Origin=Vector(oldOrigin.x,oldOrigin.y,oldOrigin.z)
+    local point=N:CellCenter(startCell)+Vector(0,0,12)
+    local oldHook,oldMask,oldCount=debug.gethook()
+    assert(not oldHook,'lattice mechanism probe needs an unowned debug hook')
+    local centerCalls=0
+    debug.sethook(function()
+        if debug.getinfo(2,'f').func==N.CellCenterCoordinates then centerCalls=centerCalls+1 end
+    end,'c')
+    local ok,err=pcall(function()assert(S:ExactCell(g,point)==startCell)end)
+    debug.sethook();assert(ok,err)
+    assert(centerCalls==0,'regular interior still queries cell-center coordinates')
+    -- A live custom coordinate provider is called even for an interior point.
+    local old=N.CellCenterCoordinates;local calls=0
+    N.CellCenterCoordinates=function()calls=calls+1;return 1e8,1e8,1e8 end
+    assert(S:ExactCell(g,point)==nil and calls==1,'custom coordinate provider skipped')
+    N.CellCenterCoordinates=old
+    local oldKey=LOD.MazeGenerator.CellKey
+    LOD.MazeGenerator.CellKey=function(x,y,z)m.Width=m.Width+.25;return oldKey(x,y,z)end
+    local beforeWidth=m.Width
+    local result=S:ExactCell(g,point);local afterWidth=m.Width;m.Width=beforeWidth
+    assert(result==parent:ExactCell(g,point) and m.Width==afterWidth,'custom key/config boundary differs')
+    LOD.MazeGenerator.CellKey=oldKey;m.Width=oldWidth
+    local data=N.LODLatticeCellCenters;N.LODLatticeCellCenters=nil
+    assert(S:ExactCell(g,point)==parent:ExactCell(g,point),'unknown lattice declaration changed fallback')
+    N.LODLatticeCellCenters=data
+    print('ENTRY_LATTICE_PARITY_PASS cases='..latticeChecks..' nativefloat32 interiors/faces/epsilon/largeworld/tinycells/customproviders/config key mutation/unknown declaration')
+end
+isvector=oldIsVector
 m.Origin,m.CellSize,m.Width,m.Height,m.LevelHeight=oldOrigin,oldSize,oldWidth,oldHeight,oldLevelHeight
 Vector=originalVector
 

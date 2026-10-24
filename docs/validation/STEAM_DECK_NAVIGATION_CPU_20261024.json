@@ -1,0 +1,373 @@
+{
+  "status": "Diagnostic attribution only. SP40 UNMET; five full SP/release ordinary/40cap UNVERIFIED; multiplayer deferred",
+  "source": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+  "scope": "ActualLCDSteamDeck/Windowsx64GMod25375506/Proton10/frozenD20lowercourt-v1 developer-density subset, both monitors ON always; no content/count/AI/cadence/settings change.",
+  "raw": "/home/deck/deborah-benchmarks/navigation-cpu/e464ba7d/observer-series-v1",
+  "rows": [
+    {
+      "variant": "control",
+      "controller_exit": 0,
+      "metrics": {
+        "frames": 1350,
+        "seconds": 59.943605000000005,
+        "fps": 22.521168021175903,
+        "median_ms": 36.657,
+        "p95_ms": 77.798,
+        "p99_ms": 100.493,
+        "max_ms": 333.815,
+        "one_percent_low_fps": 7.434446765643934,
+        "below_budget_seconds": 58.48748000000001,
+        "longest_below_budget_seconds": 10.64815699999999,
+        "below_budget_runs_ge2s": 7
+      },
+      "raw": "/home/deck/deborah-benchmarks/navigation-cpu/e464ba7d/observer-series-v1/arm01-control",
+      "counters_before": {
+        "scope": "Existing production counters and cache entry counts at boundary only. No reset/mutation/crosscallstatecache. DeltasnotexclusiveCPU.",
+        "phase": "before",
+        "nav": {
+          "hits": 13447,
+          "misses": 30,
+          "builds": 30
+        },
+        "hostile_path_entries": 0,
+        "tree_entries": 23,
+        "passed": true
+      },
+      "counters_after": {
+        "scope": "Existing production counters and cache entry counts at boundary only. No reset/mutation/crosscallstatecache. DeltasnotexclusiveCPU.",
+        "phase": "after",
+        "nav": {
+          "hits": 25996,
+          "misses": 163,
+          "builds": 163
+        },
+        "hostile_path_entries": 0,
+        "tree_entries": 72,
+        "passed": true
+      },
+      "nav_counter_delta": {
+        "hits": 12549,
+        "misses": 133,
+        "builds": 133
+      }
+    },
+    {
+      "variant": "profiled",
+      "controller_exit": 1,
+      "metrics": {
+        "frames": 1366,
+        "seconds": 59.879903,
+        "fps": 22.81232820300327,
+        "median_ms": 35.616,
+        "p95_ms": 83.637,
+        "p99_ms": 125.913,
+        "max_ms": 339.135,
+        "one_percent_low_fps": 6.0938531738310795,
+        "below_budget_seconds": 58.91208400000001,
+        "longest_below_budget_seconds": 13.686346000000007,
+        "below_budget_runs_ge2s": 7
+      },
+      "raw": "/home/deck/deborah-benchmarks/navigation-cpu/e464ba7d/observer-series-v1/arm02-profiled",
+      "counters_before": {
+        "scope": "Existing production counters and cache entry counts at boundary only. No reset/mutation/crosscallstatecache. DeltasnotexclusiveCPU.",
+        "phase": "before",
+        "nav": {
+          "hits": 13447,
+          "misses": 30,
+          "builds": 30
+        },
+        "hostile_path_entries": 0,
+        "tree_entries": 23,
+        "passed": true
+      },
+      "counters_after": {
+        "scope": "Existing production counters and cache entry counts at boundary only. No reset/mutation/crosscallstatecache. DeltasnotexclusiveCPU.",
+        "phase": "after",
+        "nav": {
+          "hits": 26121,
+          "misses": 165,
+          "builds": 165
+        },
+        "hostile_path_entries": 0,
+        "tree_entries": 72,
+        "passed": true
+      },
+      "nav_counter_delta": {
+        "hits": 12674,
+        "misses": 135,
+        "builds": 135
+      },
+      "profile": {
+        "scope": "Sparse inclusive wall estimates overlap; deterministic sampling can alias. Low sample counts are weak evidence. Maximum is sampled only; errors do not complete samples. Counter/provider observation affects JIT and performance. Not acceptance FPS.",
+        "reason": "explicit",
+        "rows": [
+          {
+            "calls": 695208,
+            "completed_samples": 5431,
+            "maximum_sample_ms": 0.10389999999915744,
+            "estimated_ms_per_second": 71.7747693173693,
+            "name": "EntrySafety.ExactCell",
+            "sampled_ms": 39.27030000168941
+          },
+          {
+            "calls": 695208,
+            "completed_samples": 5431,
+            "maximum_sample_ms": 0.10119999998892126,
+            "estimated_ms_per_second": 42.29872158434254,
+            "name": "MazeNavigator.CellCenterCoordinates",
+            "sampled_ms": 23.1429999999051
+          },
+          {
+            "calls": 695208,
+            "completed_samples": 5431,
+            "maximum_sample_ms": 0.09959999999864522,
+            "estimated_ms_per_second": 22.982737954338543,
+            "name": "MazeBuilder.CellCenterCoordinates",
+            "sampled_ms": 12.57460000095989
+          },
+          {
+            "calls": 547083,
+            "completed_samples": 4274,
+            "maximum_sample_ms": 0.12660000000153104,
+            "estimated_ms_per_second": 12.970718468450197,
+            "name": "EntrySafety.ProtectedPosition",
+            "sampled_ms": 7.096700001099521
+          },
+          {
+            "calls": 167407,
+            "completed_samples": 1307,
+            "maximum_sample_ms": 0.051000000013345925,
+            "estimated_ms_per_second": 6.539185328995549,
+            "name": "MazeNavigator.WorldToCell",
+            "sampled_ms": 3.5777999996184917
+          },
+          {
+            "calls": 12768,
+            "completed_samples": 99,
+            "maximum_sample_ms": 0.07429999999430947,
+            "estimated_ms_per_second": 1.2624001641930784,
+            "name": "MazeNavigator.Distance",
+            "sampled_ms": 0.6907000000353491
+          },
+          {
+            "calls": 0,
+            "completed_samples": 0,
+            "maximum_sample_ms": 0,
+            "estimated_ms_per_second": 0,
+            "name": "MazeNavigator.FindHostilePath",
+            "sampled_ms": 0
+          },
+          {
+            "calls": 66,
+            "completed_samples": 0,
+            "maximum_sample_ms": 0,
+            "estimated_ms_per_second": 0,
+            "name": "MazeNavigator.FindPath",
+            "sampled_ms": 0
+          }
+        ],
+        "sampling": 128,
+        "mismatches": [],
+        "seconds": 70.03294400000001,
+        "bindings": 8,
+        "restored": true
+      },
+      "retirement": {
+        "originals_cleared": true,
+        "checked": 8,
+        "passed": true,
+        "lease_absent": true
+      }
+    },
+    {
+      "variant": "profiled",
+      "controller_exit": 0,
+      "metrics": {
+        "frames": 1320,
+        "seconds": 59.955645,
+        "fps": 22.0162755316868,
+        "median_ms": 37.161,
+        "p95_ms": 84.512,
+        "p99_ms": 110.613,
+        "max_ms": 364.796,
+        "one_percent_low_fps": 7.093384405701054,
+        "below_budget_seconds": 58.693333999999986,
+        "longest_below_budget_seconds": 20.07653800000001,
+        "below_budget_runs_ge2s": 5
+      },
+      "raw": "/home/deck/deborah-benchmarks/navigation-cpu/e464ba7d/observer-series-v1/arm03-profiled",
+      "counters_before": {
+        "scope": "Existing production counters and cache entry counts at boundary only. No reset/mutation/crosscallstatecache. DeltasnotexclusiveCPU.",
+        "phase": "before",
+        "nav": {
+          "hits": 13442,
+          "misses": 30,
+          "builds": 30
+        },
+        "hostile_path_entries": 0,
+        "tree_entries": 23,
+        "passed": true
+      },
+      "counters_after": {
+        "scope": "Existing production counters and cache entry counts at boundary only. No reset/mutation/crosscallstatecache. DeltasnotexclusiveCPU.",
+        "phase": "after",
+        "nav": {
+          "hits": 26103,
+          "misses": 164,
+          "builds": 164
+        },
+        "hostile_path_entries": 0,
+        "tree_entries": 72,
+        "passed": true
+      },
+      "nav_counter_delta": {
+        "hits": 12661,
+        "misses": 134,
+        "builds": 134
+      },
+      "profile": {
+        "scope": "Sparse inclusive wall estimates overlap; deterministic sampling can alias. Low sample counts are weak evidence. Maximum is sampled only; errors do not complete samples. Counter/provider observation affects JIT and performance. Not acceptance FPS.",
+        "reason": "explicit",
+        "rows": [
+          {
+            "calls": 690945,
+            "completed_samples": 5398,
+            "maximum_sample_ms": 0.10240000000294458,
+            "estimated_ms_per_second": 71.22140417333688,
+            "name": "EntrySafety.ExactCell",
+            "sampled_ms": 38.95540000020503
+          },
+          {
+            "calls": 690945,
+            "completed_samples": 5398,
+            "maximum_sample_ms": 0.09979999998677158,
+            "estimated_ms_per_second": 41.71642815524401,
+            "name": "MazeNavigator.CellCenterCoordinates",
+            "sampled_ms": 22.817299998919793
+          },
+          {
+            "calls": 690945,
+            "completed_samples": 5398,
+            "maximum_sample_ms": 0.07250000001590706,
+            "estimated_ms_per_second": 21.691452986523878,
+            "name": "MazeBuilder.CellCenterCoordinates",
+            "sampled_ms": 11.864400000021647
+          },
+          {
+            "calls": 544130,
+            "completed_samples": 4251,
+            "maximum_sample_ms": 0.02709999999694901,
+            "estimated_ms_per_second": 12.806740322033557,
+            "name": "EntrySafety.ProtectedPosition",
+            "sampled_ms": 7.0047999998621435
+          },
+          {
+            "calls": 165407,
+            "completed_samples": 1292,
+            "maximum_sample_ms": 0.04969999997683772,
+            "estimated_ms_per_second": 6.46608018833672,
+            "name": "MazeNavigator.WorldToCell",
+            "sampled_ms": 3.5367000004242755
+          },
+          {
+            "calls": 12752,
+            "completed_samples": 99,
+            "maximum_sample_ms": 0.7094000000051892,
+            "estimated_ms_per_second": 2.977537872473587,
+            "name": "MazeNavigator.Distance",
+            "sampled_ms": 1.6286000000178547
+          },
+          {
+            "calls": 0,
+            "completed_samples": 0,
+            "maximum_sample_ms": 0,
+            "estimated_ms_per_second": 0,
+            "name": "MazeNavigator.FindHostilePath",
+            "sampled_ms": 0
+          },
+          {
+            "calls": 69,
+            "completed_samples": 0,
+            "maximum_sample_ms": 0,
+            "estimated_ms_per_second": 0,
+            "name": "MazeNavigator.FindPath",
+            "sampled_ms": 0
+          }
+        ],
+        "sampling": 128,
+        "mismatches": [],
+        "seconds": 70.01113300000002,
+        "bindings": 8,
+        "restored": true
+      },
+      "retirement": {
+        "originals_cleared": true,
+        "checked": 8,
+        "passed": true,
+        "lease_absent": true
+      }
+    },
+    {
+      "variant": "control",
+      "controller_exit": 0,
+      "metrics": {
+        "frames": 1304,
+        "seconds": 59.979433,
+        "fps": 21.740785712329092,
+        "median_ms": 37.216,
+        "p95_ms": 84.471,
+        "p99_ms": 111.072,
+        "max_ms": 348.12,
+        "one_percent_low_fps": 7.022951003880682,
+        "below_budget_seconds": 58.75850999999999,
+        "longest_below_budget_seconds": 12.561222999999995,
+        "below_budget_runs_ge2s": 7
+      },
+      "raw": "/home/deck/deborah-benchmarks/navigation-cpu/e464ba7d/observer-series-v1/arm04-control",
+      "counters_before": {
+        "scope": "Existing production counters and cache entry counts at boundary only. No reset/mutation/crosscallstatecache. DeltasnotexclusiveCPU.",
+        "phase": "before",
+        "nav": {
+          "hits": 13254,
+          "misses": 27,
+          "builds": 27
+        },
+        "hostile_path_entries": 0,
+        "tree_entries": 20,
+        "passed": true
+      },
+      "counters_after": {
+        "scope": "Existing production counters and cache entry counts at boundary only. No reset/mutation/crosscallstatecache. DeltasnotexclusiveCPU.",
+        "phase": "after",
+        "nav": {
+          "hits": 25776,
+          "misses": 164,
+          "builds": 164
+        },
+        "hostile_path_entries": 0,
+        "tree_entries": 72,
+        "passed": true
+      },
+      "nav_counter_delta": {
+        "hits": 12522,
+        "misses": 137,
+        "builds": 137
+      }
+    }
+  ],
+  "observer": "Eightpublicnavigation/coordinates/exactcell methods, 1in128completedcalls, lease120/currentproviderrestore plusindependentinspection/ownedStop. Inclusive estimatesoverlap, deterministic alias/JIT/providerobserver/countercost/earlieraliascoverage limitations; lowerstatrowsfew samples. No CellCenter replacement so existing coordinate provider identity checks remain eligible. Profiles~70s include preparation/IPC before60s FPS. No exclusiveCPU or acceptanceFPS claim.",
+  "controller_failure": {
+    "scope": "Diagnostic metadata failure retained; no FPS/source/settings/workload/observer change or failed-data replacement. First profile completed, eight current providers restored; controller obsolete minimum15 rejected receipt8 after FPS. Subsequent two diagnostic arms use corrected minimum8. Original arm02 exitcode1 remains; not a successful capture controller or acceptance claim.",
+    "receipt": {
+      "originals_cleared": true,
+      "checked": 8,
+      "passed": true,
+      "lease_absent": true
+    },
+    "arm": "arm02-profiled"
+  },
+  "retirement": {
+    "all_owned_games_stopped": true
+  },
+  "decision": "RepeatedExactCell695208/690945calls/~70s estimates71.775/71.221ms/s, nested N.CellCenterCoordinates42.299/41.716 and B.CellCenterCoordinates22.983/21.691. Do not add nestedcosts. WorldToCell6.539/6.466, Distance1.262/2.978, fewFindPathsamples andzeroFindHostilePath. Investigate exactcell before broadBFS/cache refactors. Prototype a mathematically certified interior accept path with exact/native boundary/provider fallback, native parity before source."
+}

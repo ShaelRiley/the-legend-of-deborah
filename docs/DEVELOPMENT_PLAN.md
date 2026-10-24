@@ -1,3 +1,11 @@
+# Current checkpoint — exact-cell interior source candidate
+
+Navigationprofiles repeat~690kExactCell/~70s71.775/71.221ms/sinclusive; nestedcoordinatesoverlap, Distance1.262/2.978. Firstprofilecontroller metadatafloor15vsactual8failed afterFPS despite8restoredtrue; originalfailurequalified/preserved, remaining2completedafterfix. [Rows/raw/limits](validation/STEAM_DECK_NAVIGATION_CPU_20261024.json). Short3sinstructionexposure restored/errors0 but sparse/linecapoverflow/VMbias, notCPUtime. [Census](validation/STEAM_DECK_INSTRUCTION_EXPOSURE_20261024.json).
+
+Noninstallednativeinteriorprototype matches29727queries/all690currentcells+57actors; micro57000calls89.678/62.613ms, mechanismonly. Source validates canonicalprovider/config/key/nativeinput identities and proves strictlyinteriorpoints within conservativefloatbound; allboundaries/custom/unknown/large/tiny cases keep exactnativecenter. No physicalmargin/acceptedvolume/cadence/content/settings change. ExistingB29spatial/dispatch/doors plusnew9900float32oracle+interiorwork/provider/keymutation checks/120manifest/syntax pass. [Finitegate](validation/STEAM_DECK_EXACT_INTERIOR_20261024.json).
+
+Next6fresh actualsourceP,C,C,P,P,C60s sameD20stress, source/nativeprovider/pointparity and HUD/renderer/resources/input/bothON atboundaries. Rejectnoise/regression; confirm promising. SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
 # Current checkpoint — authenticated account cache rejected after six source captures
 
 P,C,C,P,P,C22.909/22.751/22.638/22.702/23.327/24.292FPS; means22.979/23.227(+1.078%), p9581.278/77.369ms,p99114.541/110.835ms,longest10.367/10.238s. Only1/3pairedFPSdirectionspositive, overlappingranges/medianworse/mixedpacing; reject source candidate despite isolatednative micro benefit. Restore RunManager byte-exact9ef11be9/remove obsolete cacheunit/CIrow/matrix335. All source/nativeC/cache/nativeidentity/currentPlayerState/HUD/renderer/resources/input/bothmonitor checks pass, ownedStop/rootinstallrestore, all sixFAIL40. [All rows/raw/limits](validation/STEAM_DECK_ACCOUNT_KEY_20261024.json).
