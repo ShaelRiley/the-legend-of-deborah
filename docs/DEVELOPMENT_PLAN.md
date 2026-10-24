@@ -1,3 +1,9 @@
+# Current checkpoint — authenticated account cache rejected after six source captures
+
+P,C,C,P,P,C22.909/22.751/22.638/22.702/23.327/24.292FPS; means22.979/23.227(+1.078%), p9581.278/77.369ms,p99114.541/110.835ms,longest10.367/10.238s. Only1/3pairedFPSdirectionspositive, overlappingranges/medianworse/mixedpacing; reject source candidate despite isolatednative micro benefit. Restore RunManager byte-exact9ef11be9/remove obsolete cacheunit/CIrow/matrix335. All source/nativeC/cache/nativeidentity/currentPlayerState/HUD/renderer/resources/input/bothmonitor checks pass, ownedStop/rootinstallrestore, all sixFAIL40. [All rows/raw/limits](validation/STEAM_DECK_ACCOUNT_KEY_20261024.json).
+
+Next boundeddiagnostic mustattribute the remaining NextBot Lua cost more precisely; inspect the earlier public instruction sampling failure before reusing it. No disabledAPI recovery/processmemory/validitycache/AI/content/cadence/settings change. Both monitors ON always. SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
 # Current checkpoint — authenticated account key source candidate
 
 Native read-only micro100000calls means42.201ms parent/17.759ms candidate, one actual authenticated SP player, method/providers unchanged and IDs redacted. Only feasibility evidence, no FPS prediction; observed call frequency makes isolated savings modest. Source weakly caches only a confirmed native account key, keeps current validity/provider/state queries, clears provider/removal/disconnect/reload boundaries, preserves uncached unknown/zero/custom/unauthenticated paths. Lua54/LJ identity/provider/lifecycle plus Soldier lifecycle/15progression/120source/repeatinstaller/syntax/diff pass. [Native evidence, API references, finite source gate](validation/STEAM_DECK_ACCOUNT_KEY_20261024.json).

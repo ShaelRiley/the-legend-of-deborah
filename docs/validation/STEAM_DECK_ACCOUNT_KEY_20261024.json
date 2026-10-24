@@ -1,5 +1,5 @@
 {
-  "status": "Source candidate, actual source FPS pending. No performance improvement or 40FPS claim. SP40 UNMET; five full SP/release ordinary/40cap UNVERIFIED; multiplayer deferred",
+  "status": "REJECTED: source mean +1.078%, overlapping ranges and only1/3 pairedFPSimprovements, median slightly worse, mixedpacing. No repeatable gain; SP40 UNMET, all six FAIL40, full five SP/release ordinary/40cap UNVERIFIED.",
   "parent": "9ef11be958403f5e59160b90716e52c27901d6ec",
   "motivation": "Two sparse public Entity.IsValid caller profiles repeatedly identify RunManager.IdentityOf (~377/389 source samples in ~69s). Counts are not exclusive CPU cost. Native micro100000queries means42.2008/17.7594ms; cost reduction is mechanism evidence only, loop/JIT/order effects limit inference. At observed caller frequency the isolated saving is modest; do not predict game FPS.",
   "private_native_probe": {
@@ -77,5 +77,656 @@
     "seconds": 60,
     "scope": "Same D20lowercourt-v1 developer density57roamers/1820models/frozen seeds/Wizardresources/physicalinputs/settings/runtime/both displays ON always; actual loaded source/hash/Cproviders/weakownership/currentnativeidentity/currentprofileparity and retainedHUD/renderer/resource/input/display gates. No profiler/JIT/GC/settings changes.",
     "decision": "Reject noise or pacing/correctness regression. Repeat unchanged source only if promising. Full five SP3x180s warmed/capped/ordinaryrelease still required."
+  },
+  "candidate": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+  "actual_source_comparison": {
+    "rows": [
+      {
+        "variant": "parent",
+        "metrics": {
+          "frames": 1373,
+          "seconds": 59.934048000000004,
+          "fps": 22.9085143723314,
+          "median_ms": 34.915,
+          "p95_ms": 80.113,
+          "p99_ms": 110.85,
+          "max_ms": 342.661,
+          "one_percent_low_fps": 6.828958491151377,
+          "below_budget_seconds": 57.80135899999999,
+          "longest_below_budget_seconds": 8.676286999999999,
+          "below_budget_runs_ge2s": 9
+        },
+        "raw": "/home/deck/deborah-benchmarks/account-key-source/3f6264b3/original-source-series/arm01-parent",
+        "bench_account_key_before": {
+          "phase": "before",
+          "sha": "9ef11be958403f5e59160b90716e52c27901d6ec",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 59,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": false,
+          "cached_players": 0,
+          "mode": "parent",
+          "sha256": "48e468dda0636493573665893459d1338a64f8d79d7f503e4b58750a4ff4c4c0"
+        },
+        "bench_account_key_after": {
+          "phase": "after",
+          "sha": "9ef11be958403f5e59160b90716e52c27901d6ec",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 59,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": false,
+          "cached_players": 0,
+          "mode": "parent",
+          "sha256": "48e468dda0636493573665893459d1338a64f8d79d7f503e4b58750a4ff4c4c0"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "9ef11be958403f5e59160b90716e52c27901d6ec",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3641,
+            "builds": 311
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3641,
+            "builds": 311
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1363,
+          "seconds": 59.909445,
+          "fps": 22.75100361887846,
+          "median_ms": 37.038,
+          "p95_ms": 78.158,
+          "p99_ms": 116.628,
+          "max_ms": 340.519,
+          "one_percent_low_fps": 6.12596024426829,
+          "below_budget_seconds": 58.15884900000004,
+          "longest_below_budget_seconds": 11.928552999999996,
+          "below_budget_runs_ge2s": 6
+        },
+        "raw": "/home/deck/deborah-benchmarks/account-key-source/3f6264b3/original-source-series/arm02-candidate",
+        "bench_account_key_before": {
+          "phase": "before",
+          "sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 75,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": true,
+          "cached_players": 1,
+          "mode": "candidate",
+          "sha256": "cfff93f04f1684da9622b3e3ce49e693a7de9afc4a40fc27683257046c7b3e9e"
+        },
+        "bench_account_key_after": {
+          "phase": "after",
+          "sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 75,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": true,
+          "cached_players": 1,
+          "mode": "candidate",
+          "sha256": "cfff93f04f1684da9622b3e3ce49e693a7de9afc4a40fc27683257046c7b3e9e"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3606,
+            "builds": 316
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3606,
+            "builds": 316
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1357,
+          "seconds": 59.944583,
+          "fps": 22.63757510832964,
+          "median_ms": 36.216,
+          "p95_ms": 80.209,
+          "p99_ms": 109.414,
+          "max_ms": 335.428,
+          "one_percent_low_fps": 6.965219178034484,
+          "below_budget_seconds": 58.13828300000004,
+          "longest_below_budget_seconds": 9.582471999999997,
+          "below_budget_runs_ge2s": 7
+        },
+        "raw": "/home/deck/deborah-benchmarks/account-key-source/3f6264b3/original-source-series/arm03-candidate",
+        "bench_account_key_before": {
+          "phase": "before",
+          "sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 75,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": true,
+          "cached_players": 1,
+          "mode": "candidate",
+          "sha256": "cfff93f04f1684da9622b3e3ce49e693a7de9afc4a40fc27683257046c7b3e9e"
+        },
+        "bench_account_key_after": {
+          "phase": "after",
+          "sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 75,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": true,
+          "cached_players": 1,
+          "mode": "candidate",
+          "sha256": "cfff93f04f1684da9622b3e3ce49e693a7de9afc4a40fc27683257046c7b3e9e"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3650,
+            "builds": 321
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3650,
+            "builds": 321
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "parent",
+        "metrics": {
+          "frames": 1362,
+          "seconds": 59.994832,
+          "fps": 22.701955395091364,
+          "median_ms": 35.016,
+          "p95_ms": 86.071,
+          "p99_ms": 117.889,
+          "max_ms": 338.775,
+          "one_percent_low_fps": 6.71717341342763,
+          "below_budget_seconds": 58.442273999999955,
+          "longest_below_budget_seconds": 12.800602999999997,
+          "below_budget_runs_ge2s": 6
+        },
+        "raw": "/home/deck/deborah-benchmarks/account-key-source/3f6264b3/original-source-series/arm04-parent",
+        "bench_account_key_before": {
+          "phase": "before",
+          "sha": "9ef11be958403f5e59160b90716e52c27901d6ec",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 59,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": false,
+          "cached_players": 0,
+          "mode": "parent",
+          "sha256": "48e468dda0636493573665893459d1338a64f8d79d7f503e4b58750a4ff4c4c0"
+        },
+        "bench_account_key_after": {
+          "phase": "after",
+          "sha": "9ef11be958403f5e59160b90716e52c27901d6ec",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 59,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": false,
+          "cached_players": 0,
+          "mode": "parent",
+          "sha256": "48e468dda0636493573665893459d1338a64f8d79d7f503e4b58750a4ff4c4c0"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "9ef11be958403f5e59160b90716e52c27901d6ec",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3625,
+            "builds": 295
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3625,
+            "builds": 295
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "parent",
+        "metrics": {
+          "frames": 1398,
+          "seconds": 59.930697,
+          "fps": 23.326943786420504,
+          "median_ms": 35.631,
+          "p95_ms": 77.649,
+          "p99_ms": 114.885,
+          "max_ms": 345.086,
+          "one_percent_low_fps": 6.437595558059066,
+          "below_budget_seconds": 58.16995000000007,
+          "longest_below_budget_seconds": 9.623728999999999,
+          "below_budget_runs_ge2s": 8
+        },
+        "raw": "/home/deck/deborah-benchmarks/account-key-source/3f6264b3/original-source-series/arm05-parent",
+        "bench_account_key_before": {
+          "phase": "before",
+          "sha": "9ef11be958403f5e59160b90716e52c27901d6ec",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 59,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": false,
+          "cached_players": 0,
+          "mode": "parent",
+          "sha256": "48e468dda0636493573665893459d1338a64f8d79d7f503e4b58750a4ff4c4c0"
+        },
+        "bench_account_key_after": {
+          "phase": "after",
+          "sha": "9ef11be958403f5e59160b90716e52c27901d6ec",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 59,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": false,
+          "cached_players": 0,
+          "mode": "parent",
+          "sha256": "48e468dda0636493573665893459d1338a64f8d79d7f503e4b58750a4ff4c4c0"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "9ef11be958403f5e59160b90716e52c27901d6ec",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3851,
+            "builds": 258
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3851,
+            "builds": 258
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1456,
+          "seconds": 59.937529999999995,
+          "fps": 24.29195864427513,
+          "median_ms": 34.506,
+          "p95_ms": 73.739,
+          "p99_ms": 106.462,
+          "max_ms": 339.112,
+          "one_percent_low_fps": 7.394863527793595,
+          "below_budget_seconds": 57.97386299999994,
+          "longest_below_budget_seconds": 9.202004,
+          "below_budget_runs_ge2s": 8
+        },
+        "raw": "/home/deck/deborah-benchmarks/account-key-source/3f6264b3/original-source-series/arm06-candidate",
+        "bench_account_key_before": {
+          "phase": "before",
+          "sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 75,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": true,
+          "cached_players": 1,
+          "mode": "candidate",
+          "sha256": "cfff93f04f1684da9622b3e3ce49e693a7de9afc4a40fc27683257046c7b3e9e"
+        },
+        "bench_account_key_after": {
+          "phase": "after",
+          "sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+          "scope": "Actual loaded source hash/function/nativeCproviders and shared weak-key ownership in identity/disconnect/removal. Fresh identity/native results and current live cooperative PlayerState lookups agree. No methods, actors, profiles, game state or providers replaced; normal boundary queries may fill candidate account receipt. No FPS or full coverage claim; IDs never logged.",
+          "parity_calls": 22,
+          "passed": true,
+          "players": 1,
+          "line": 75,
+          "identifiers_redacted": true,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "profiler_absent": true,
+          "weak_membership": true,
+          "cached_players": 1,
+          "mode": "candidate",
+          "sha256": "cfff93f04f1684da9622b3e3ce49e693a7de9afc4a40fc27683257046c7b3e9e"
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3996,
+            "builds": 252
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3996,
+            "builds": 252
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      }
+    ],
+    "means": {
+      "parent": {
+        "fps": 22.979137851281088,
+        "median_ms": 35.187333333333335,
+        "p95_ms": 81.27766666666666,
+        "p99_ms": 114.54133333333333,
+        "longest_below_budget_seconds": 10.366872999999998
+      },
+      "candidate": {
+        "fps": 23.22684579049441,
+        "median_ms": 35.92,
+        "p95_ms": 77.36866666666667,
+        "p99_ms": 110.83466666666666,
+        "longest_below_budget_seconds": 10.237676333333331
+      }
+    },
+    "retirement": {
+      "all_owned_games_stopped": true,
+      "root_install_restored": true,
+      "root_sha": "3f6264b39ea1b93665ce78a6e85816a3d9862c53"
+    },
+    "decision": "Restore sv_run_manager byte-exact9ef11be9; remove obsolete implementation-specific native account cache test and CIrow, return matrix335. Native/source/weakkey/currentidentity/PlayerState/HUD/renderer/resources/input/bothmonitors checks pass, all owned processes stopped/root install restored. Native micro reduction did not establish game gain; all six data retained, no replacements."
   }
 }
