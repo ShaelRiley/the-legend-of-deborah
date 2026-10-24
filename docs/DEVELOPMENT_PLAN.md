@@ -1,3 +1,9 @@
+# Current checkpoint — native collision groups provide no proven replacement
+
+Actual22group sweep restoredbothactors/allownedStop/bothON. InteractiveDebris3 andScriptedNPC19failfourNPCpairqueries. Traceequal0/5/7/8/9/17notphysicalcontactequivalence; no nativepair/player/loot/Climber/Lurkerbehavior proof or FPSgain. No newsourcecandidate. [Matrix/raw/limits](validation/STEAM_DECK_COLLISION_GROUPS_20261024.json).
+
+Next retainedHUD sameDeck hosting diagnostic withfixedlisten/dedicated/dedicated/listen60s, onehuman andunchangedD20subsetcounts/settings/input/bothON. Olderlocaldedicated32~42avgfailedpacing, predatesretainedHUD. Differentprocess/32bitserverbranch/networkingareexplicitconfounds, notisolatedprocess effect orfrozen singleplayeracceptance. Recordruntime/cadence/source/counts/normalresources andretireallownedprocesses. Usecomparisononlytoassesslargerclient/servercontention; do notreplacefiveSPacceptancescenarios. SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED/multiplayerdeferred/mainunchanged.
+
 # Current checkpoint — exact-cell shortcut rejected after six source captures
 
 P,C,C,P,P,C22.344/22.663/21.820/21.839/25.061/23.233FPS. Means23.082/22.572(-2.208%),p9578.576/85.485ms,p99106.719/115.342ms,longest12.239/9.522s. Reject: avgFPS/tails worse despite native29727queryparity/micro~30% mechanismbenefit. Restoreall4runtimefiles byte-exacte464ba7d; keepuseful9900float32/nativeboundary/custom/config/large/tinycellregressions; removeobsolete implementation-specific no-center assertion. CI336includes new behavior gate. All6source/native/HUD/renderer/resources/input/bothONchecks pass/ownedStop/rootinstallrestore, allFAIL40. EarlierprivateisvectorCassertwrong: failedbeforeFPS, archived/excluded; correctedvalidationrestartedsix, no failedcapture replaced. [Allmetrics/raw/limits](validation/STEAM_DECK_EXACT_INTERIOR_20261024.json).
