@@ -1,0 +1,22 @@
+{
+  "variant": "off",
+  "engine_window_sys": [
+    97.4604031,
+    156.9398161
+  ],
+  "command_window_seconds": 59.47941300000001,
+  "full_frame_capture_seconds": 59.97471000000005,
+  "matching_complete_frame_subset": {
+    "frames": 1406,
+    "seconds": 59.45051,
+    "fps": 23.649923272315075,
+    "median_ms": 35.071,
+    "p95_ms": 74.679,
+    "p99_ms": 108.187,
+    "one_percent_low_fps": 7.057677694680159,
+    "max_ms": 318.499,
+    "below40_seconds": 57.749663000000034,
+    "longest_below40_seconds": 19.077155
+  },
+  "scope": "Actual native on/off command callbacks lie inside actualframecapture; reported subset includesonlywholeframeintervalsbetween them. VProf uses its own CEngine::Frame count denominator; no divisionbyfull60sFPSframes. Queueedges may partialengineframes; retainownengineframecount/context. Setup/warmup/reportgeneration outside nativeprofilewindow."
+}

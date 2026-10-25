@@ -1,0 +1,1012 @@
+{
+  "pe_module_mapping": [
+    {
+      "base": "0x120000",
+      "end": "0x131000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/apisetschema.dll"
+    },
+    {
+      "base": "0x117600000",
+      "end": "0x117602000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/usp10.dll"
+    },
+    {
+      "base": "0x140000000",
+      "end": "0x140103000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/gmod_win64.exe"
+    },
+    {
+      "base": "0x180000000",
+      "end": "0x180002000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/normaliz.dll"
+    },
+    {
+      "base": "0x6fffea910000",
+      "end": "0x6fffeaa6e000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/ServerBrowser.dll"
+    },
+    {
+      "base": "0x6fffeaa80000",
+      "end": "0x6fffeaac9000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/dsound.dll"
+    },
+    {
+      "base": "0x6fffeaae0000",
+      "end": "0x6fffeaaed000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/schannel.dll"
+    },
+    {
+      "base": "0x6fffeab00000",
+      "end": "0x6fffeab0e000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/wpc.dll"
+    },
+    {
+      "base": "0x6fffeab20000",
+      "end": "0x6fffeab34000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/windows.ui.dll"
+    },
+    {
+      "base": "0x6fffeab50000",
+      "end": "0x6fffeab83000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/msctf.dll"
+    },
+    {
+      "base": "0x6fffeaba0000",
+      "end": "0x6fffeabac000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/avrt.dll"
+    },
+    {
+      "base": "0x6fffeabe0000",
+      "end": "0x6fffeac0e000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/mmdevapi.dll"
+    },
+    {
+      "base": "0x6fffeac20000",
+      "end": "0x6fffeae17000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/GameUI.dll"
+    },
+    {
+      "base": "0x6fffeae30000",
+      "end": "0x6fffeae3f000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/esent.dll"
+    },
+    {
+      "base": "0x6fffeae50000",
+      "end": "0x6fffeae5c000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/wevtapi.dll"
+    },
+    {
+      "base": "0x6fffeae70000",
+      "end": "0x6fffeae7c000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/dhcpcsvc.dll"
+    },
+    {
+      "base": "0x6fffeae90000",
+      "end": "0x6fffeaf9a000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/cryptui.dll"
+    },
+    {
+      "base": "0x6fffeafb0000",
+      "end": "0x6fffeafbf000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/ncrypt.dll"
+    },
+    {
+      "base": "0x6fffeafd0000",
+      "end": "0x6fffeafee000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/jsproxy.dll"
+    },
+    {
+      "base": "0x6fffeb000000",
+      "end": "0x6fffeb043000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/winhttp.dll"
+    },
+    {
+      "base": "0x6fffeb060000",
+      "end": "0x6fffeb089000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/credui.dll"
+    },
+    {
+      "base": "0x6fffeb0a0000",
+      "end": "0x6fffeb0bf000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/dxva2.dll"
+    },
+    {
+      "base": "0x6fffeb0d0000",
+      "end": "0x6fffeb1d3000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/comdlg32.dll"
+    },
+    {
+      "base": "0x6fffeb1f0000",
+      "end": "0x6fffeb1fe000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/dwmapi.dll"
+    },
+    {
+      "base": "0x6fffeb210000",
+      "end": "0x6fffeb288000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/dwrite.dll"
+    },
+    {
+      "base": "0x6fffeb2a0000",
+      "end": "0x6fffeb2c6000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/propsys.dll"
+    },
+    {
+      "base": "0x6fffeb2e0000",
+      "end": "0x6fffeb3e5000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/chrome_elf.dll"
+    },
+    {
+      "base": "0x6fffeb400000",
+      "end": "0x6fffeb40e000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/wtsapi32.dll"
+    },
+    {
+      "base": "0x6fffeb420000",
+      "end": "0x6fffeb42c000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/netutils.dll"
+    },
+    {
+      "base": "0x6fffeb440000",
+      "end": "0x6fffeb467000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/netapi32.dll"
+    },
+    {
+      "base": "0x6fffeb880000",
+      "end": "0x6ffff3d20000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/libcef.dll"
+    },
+    {
+      "base": "0x6ffff3d30000",
+      "end": "0x6ffff3db1000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/html_chromium.dll"
+    },
+    {
+      "base": "0x6ffff3dd0000",
+      "end": "0x6ffff3e2c000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/bass.dll"
+    },
+    {
+      "base": "0x6ffff3e40000",
+      "end": "0x6ffff3e69000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/gmod_audio.dll"
+    },
+    {
+      "base": "0x6ffff3e80000",
+      "end": "0x6ffff3f6e000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/resources.dll"
+    },
+    {
+      "base": "0x6ffff3f80000",
+      "end": "0x6ffff4278000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/menusystem.dll"
+    },
+    {
+      "base": "0x6ffff4290000",
+      "end": "0x6ffff431b000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/wldap32.dll"
+    },
+    {
+      "base": "0x6ffff4330000",
+      "end": "0x6ffff4563000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/GameAnalytics.dll"
+    },
+    {
+      "base": "0x6ffff4580000",
+      "end": "0x6ffff45c1000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/analytics.dll"
+    },
+    {
+      "base": "0x6ffff45e0000",
+      "end": "0x6ffff46aa000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/lua_shared.dll"
+    },
+    {
+      "base": "0x6ffff46c0000",
+      "end": "0x6ffff46f4000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/scenefilecache.dll"
+    },
+    {
+      "base": "0x6ffff4710000",
+      "end": "0x6ffff475c000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/soundemittersystem.dll"
+    },
+    {
+      "base": "0x6ffff4770000",
+      "end": "0x6ffff57b0000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/server.dll"
+    },
+    {
+      "base": "0x6ffff57c0000",
+      "end": "0x6ffff6329000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/client.dll"
+    },
+    {
+      "base": "0x6ffff6340000",
+      "end": "0x6ffff6360000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/unicode.dll"
+    },
+    {
+      "base": "0x6ffff6370000",
+      "end": "0x6ffff63df000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/game_shader_generic_garrysmod.dll"
+    },
+    {
+      "base": "0x6ffff63f0000",
+      "end": "0x6ffff640d000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/compstui.dll"
+    },
+    {
+      "base": "0x6ffff6720000",
+      "end": "0x6ffff675c000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/wbemprox.dll"
+    },
+    {
+      "base": "0x6ffff6770000",
+      "end": "0x6ffff6881000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/stdshader_dx9.dll"
+    },
+    {
+      "base": "0x6ffff68a0000",
+      "end": "0x6ffff6953000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/stdshader_dx8.dll"
+    },
+    {
+      "base": "0x6ffff6970000",
+      "end": "0x6ffff69de000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/stdshader_dx7.dll"
+    },
+    {
+      "base": "0x6ffff69f0000",
+      "end": "0x6ffff6a77000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/stdshader_dx6.dll"
+    },
+    {
+      "base": "0x6ffff6a90000",
+      "end": "0x6ffff6afb000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/stdshader_dbg.dll"
+    },
+    {
+      "base": "0x6ffff6b10000",
+      "end": "0x6ffff6b21000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/cfgmgr32.dll"
+    },
+    {
+      "base": "0x6ffff6d20000",
+      "end": "0x6ffff6d3f000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/secur32.dll"
+    },
+    {
+      "base": "0x6ffff6d50000",
+      "end": "0x6ffff6d5d000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/mswsock.dll"
+    },
+    {
+      "base": "0x6ffff6d70000",
+      "end": "0x6ffff6d7b000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/psapi.dll"
+    },
+    {
+      "base": "0x6ffff6d90000",
+      "end": "0x6ffff6fe8000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/lsteamclient.dll"
+    },
+    {
+      "base": "0x6ffff89d0000",
+      "end": "0x6ffff89ff000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/winevulkan.dll"
+    },
+    {
+      "base": "0x6ffff8a10000",
+      "end": "0x6ffff8a37000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/d3dxof.dll"
+    },
+    {
+      "base": "0x6ffff8a50000",
+      "end": "0x6ffff8baa000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/vkd3d/x86_64-windows/libvkd3d-shader-1.dll"
+    },
+    {
+      "base": "0x6ffff8bc0000",
+      "end": "0x6ffff8c39000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/vkd3d/x86_64-windows/libvkd3d-1.dll"
+    },
+    {
+      "base": "0x6ffff8c50000",
+      "end": "0x6ffff8da7000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/wined3d.dll"
+    },
+    {
+      "base": "0x6ffff8dc0000",
+      "end": "0x6ffff8df6000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/d3dcompiler_47.dll"
+    },
+    {
+      "base": "0x6ffff8e10000",
+      "end": "0x6ffff8eaf000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/d3dx9_42.dll"
+    },
+    {
+      "base": "0x6ffff9290000",
+      "end": "0x6ffff936f000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/shaderapidx9.dll"
+    },
+    {
+      "base": "0x6ffff9380000",
+      "end": "0x6ffff9422000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vgui2.dll"
+    },
+    {
+      "base": "0x6ffff9440000",
+      "end": "0x6ffff95c7000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vguimatsurface.dll"
+    },
+    {
+      "base": "0x6ffff95e0000",
+      "end": "0x6ffff9746000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vphysics.dll"
+    },
+    {
+      "base": "0x6ffff9760000",
+      "end": "0x6ffff9f83000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/studiorender.dll"
+    },
+    {
+      "base": "0x6ffff9fa0000",
+      "end": "0x6ffffa01a000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/datacache.dll"
+    },
+    {
+      "base": "0x6ffffa030000",
+      "end": "0x6ffffc168000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/materialsystem.dll"
+    },
+    {
+      "base": "0x6ffffc180000",
+      "end": "0x6ffffc1bb000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/inputsystem.dll"
+    },
+    {
+      "base": "0x6ffffc1d0000",
+      "end": "0x6ffffcfff000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/engine.dll"
+    },
+    {
+      "base": "0x6ffffd050000",
+      "end": "0x6ffffd144000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/filesystem_stdio.dll"
+    },
+    {
+      "base": "0x6ffffd160000",
+      "end": "0x6ffffd1a4000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/dinput8.dll"
+    },
+    {
+      "base": "0x6ffffd1c0000",
+      "end": "0x6ffffd1d2000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/xinput1_4.dll"
+    },
+    {
+      "base": "0x6ffffd1f0000",
+      "end": "0x6ffffd2e3000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vstdlib.dll"
+    },
+    {
+      "base": "0x6ffffd300000",
+      "end": "0x6ffffd364000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/tier0.dll"
+    },
+    {
+      "base": "0x6ffffd380000",
+      "end": "0x6ffffd3d0000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/steam_api64.dll"
+    },
+    {
+      "base": "0x6ffffd3e0000",
+      "end": "0x6ffffd3f0000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/hid.dll"
+    },
+    {
+      "base": "0x6ffffd400000",
+      "end": "0x6ffffd410000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/wsock32.dll"
+    },
+    {
+      "base": "0x6ffffd420000",
+      "end": "0x6ffffd46a000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/launcher.dll"
+    },
+    {
+      "base": "0x6ffffdcd0000",
+      "end": "0x6ffffdcf0000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/msacm32.dll"
+    },
+    {
+      "base": "0x6ffffdd00000",
+      "end": "0x6ffffddc1000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/winmm.dll"
+    },
+    {
+      "base": "0x6ffffde30000",
+      "end": "0x6ffffdea1000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/uiautomationcore.dll"
+    },
+    {
+      "base": "0x6ffffdf40000",
+      "end": "0x6ffffdf68000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/wintrust.dll"
+    },
+    {
+      "base": "0x6ffffdf80000",
+      "end": "0x6ffffdf8d000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/version.dll"
+    },
+    {
+      "base": "0x6ffffdfa0000",
+      "end": "0x6ffffdfbe000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/mpr.dll"
+    },
+    {
+      "base": "0x6ffffdfd0000",
+      "end": "0x6ffffe053000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/wininet.dll"
+    },
+    {
+      "base": "0x6ffffe070000",
+      "end": "0x6ffffe0eb000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/urlmon.dll"
+    },
+    {
+      "base": "0x6ffffe120000",
+      "end": "0x6ffffe137000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/shcore.dll"
+    },
+    {
+      "base": "0x6ffffe150000",
+      "end": "0x6ffffe19d000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/shlwapi.dll"
+    },
+    {
+      "base": "0x6ffffe1b0000",
+      "end": "0x6ffffead6000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/shell32.dll"
+    },
+    {
+      "base": "0x6ffffeb40000",
+      "end": "0x6ffffebb2000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/dbghelp.dll"
+    },
+    {
+      "base": "0x6ffffebd0000",
+      "end": "0x6ffffebe1000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/imagehlp.dll"
+    },
+    {
+      "base": "0x6ffffec00000",
+      "end": "0x6ffffec1b000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/bcrypt.dll"
+    },
+    {
+      "base": "0x6ffffec30000",
+      "end": "0x6ffffed03000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/crypt32.dll"
+    },
+    {
+      "base": "0x6ffffed20000",
+      "end": "0x6ffffedfc000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/oleaut32.dll"
+    },
+    {
+      "base": "0x6ffffee10000",
+      "end": "0x6ffffee40000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/oleacc.dll"
+    },
+    {
+      "base": "0x6ffffee50000",
+      "end": "0x6ffffef91000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/comctl32.dll"
+    },
+    {
+      "base": "0x6fffff150000",
+      "end": "0x6fffff184000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/uxtheme.dll"
+    },
+    {
+      "base": "0x6fffff1a0000",
+      "end": "0x6fffff1bc000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/coml2.dll"
+    },
+    {
+      "base": "0x6fffff1d0000",
+      "end": "0x6fffff21e000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/combase.dll"
+    },
+    {
+      "base": "0x6fffff230000",
+      "end": "0x6fffff2e8000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/ole32.dll"
+    },
+    {
+      "base": "0x6fffff3b0000",
+      "end": "0x6fffff3bd000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/nsi.dll"
+    },
+    {
+      "base": "0x6fffff3d0000",
+      "end": "0x6fffff3e5000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/dnsapi.dll"
+    },
+    {
+      "base": "0x6fffff400000",
+      "end": "0x6fffff42c000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/iphlpapi.dll"
+    },
+    {
+      "base": "0x6fffff490000",
+      "end": "0x6fffff4ae000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/imm32.dll"
+    },
+    {
+      "base": "0x6fffff4c0000",
+      "end": "0x6fffff4fc000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/win32u.dll"
+    },
+    {
+      "base": "0x6fffff510000",
+      "end": "0x6fffff58f000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/gdi32.dll"
+    },
+    {
+      "base": "0x6fffff5a0000",
+      "end": "0x6fffff758000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/user32.dll"
+    },
+    {
+      "base": "0x6fffff850000",
+      "end": "0x6fffff85d000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/userenv.dll"
+    },
+    {
+      "base": "0x6fffff870000",
+      "end": "0x6fffff8ea000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/setupapi.dll"
+    },
+    {
+      "base": "0x6fffff900000",
+      "end": "0x6fffff983000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/rpcrt4.dll"
+    },
+    {
+      "base": "0x6fffff9a0000",
+      "end": "0x6fffff9c6000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/ws2_32.dll"
+    },
+    {
+      "base": "0x6fffff9e0000",
+      "end": "0x6fffffaae000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/ucrtbase.dll"
+    },
+    {
+      "base": "0x6fffffac0000",
+      "end": "0x6fffffadf000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/sechost.dll"
+    },
+    {
+      "base": "0x6fffffaf0000",
+      "end": "0x6fffffb8f000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/msvcrt.dll"
+    },
+    {
+      "base": "0x6fffffba0000",
+      "end": "0x6fffffbe2000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/advapi32.dll"
+    },
+    {
+      "base": "0x6fffffc00000",
+      "end": "0x6fffffea6000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/kernelbase.dll"
+    },
+    {
+      "base": "0x6fffffec0000",
+      "end": "0x6ffffff24000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/kernel32.dll"
+    },
+    {
+      "base": "0x6ffffff40000",
+      "end": "0x6fffffff0000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/ntdll.dll"
+    },
+    {
+      "base": "0x7fffffaa0000",
+      "end": "0x7fffffba3000",
+      "path": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/opengl32.dll"
+    }
+  ],
+  "pe_mapping_basis": "Actual file-backed offset0 PE header mapping base plus on-disk validated PE SizeOfImage; ranges nonoverlapping. Maps anonymouscode back toloadedmodule, not function/Lua attribution. No processmemory/symbolinstallation.",
+  "window": {
+    "scope": "Conservative native trace window lies inside actual first-last sampledframeinterval using2msFSclockguard andSysTimewritebrackets. Samples outside excluded. No setup/warmup/teardown quantitativetotals. Nativewindow is slightly shorter; no conversionusingfullcaptureframecount.",
+    "offset_bounds_seconds": [
+      [
+        99199.02067629858,
+        99199.0260805285
+      ],
+      [
+        99199.02055739575,
+        99199.02594158784
+      ]
+    ],
+    "common_offset_seconds": [
+      99199.02067629858,
+      99199.02594158784
+    ],
+    "alignment_uncertainty_ms": 5.265289262752049,
+    "start_mono": 99298.02137958784,
+    "end_mono": 99357.94938289857,
+    "seconds": 59.92800331073522,
+    "frame_capture_seconds": 59.93327400000001
+  },
+  "samples": 5485,
+  "sample_weight_ns": 55404039850,
+  "lost": [],
+  "context_switch_events_in_window": 151688,
+  "main_thread_time": {
+    "on_cpu_including_kernel_seconds": 58.399556738630054,
+    "off_cpu_after_preempted_switch_seconds": 0.12937867642904166,
+    "off_cpu_after_other_switch_seconds": 1.3990678956761258,
+    "unknown_seconds": 0.0
+  },
+  "modules": [
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/lua_shared.dll",
+      "samples": 2405,
+      "weighted_user_sample_percent": 43.846855059252505
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/client.dll",
+      "samples": 910,
+      "weighted_user_sample_percent": 16.590701914311758
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/server.dll",
+      "samples": 575,
+      "weighted_user_sample_percent": 10.48313582497721
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/engine.dll",
+      "samples": 562,
+      "weighted_user_sample_percent": 10.2461257976299
+    },
+    {
+      "dso": "[unmapped]",
+      "samples": 446,
+      "weighted_user_sample_percent": 8.13126709206928
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vguimatsurface.dll",
+      "samples": 89,
+      "weighted_user_sample_percent": 1.6226071103008204
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/materialsystem.dll",
+      "samples": 78,
+      "weighted_user_sample_percent": 1.422060164083865
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/tier0.dll",
+      "samples": 76,
+      "weighted_user_sample_percent": 1.3855970829535096
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/ntdll.dll",
+      "samples": 69,
+      "weighted_user_sample_percent": 1.2579762989972654
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vphysics.dll",
+      "samples": 44,
+      "weighted_user_sample_percent": 0.8021877848678214
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "samples": 43,
+      "weighted_user_sample_percent": 0.7839562443026435
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/studiorender.dll",
+      "samples": 34,
+      "weighted_user_sample_percent": 0.6198723792160438
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/datacache.dll",
+      "samples": 31,
+      "weighted_user_sample_percent": 0.5651777575205105
+    },
+    {
+      "dso": "/run/host/usr/lib/libc.so.6",
+      "samples": 25,
+      "weighted_user_sample_percent": 0.45578851412944393
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/win32u.so",
+      "samples": 14,
+      "weighted_user_sample_percent": 0.2552415679124886
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vstdlib.dll",
+      "samples": 12,
+      "weighted_user_sample_percent": 0.2187784867821331
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/shaderapidx9.dll",
+      "samples": 12,
+      "weighted_user_sample_percent": 0.2187784867821331
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vgui2.dll",
+      "samples": 11,
+      "weighted_user_sample_percent": 0.20054694621695535
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/kernelbase.dll",
+      "samples": 10,
+      "weighted_user_sample_percent": 0.18231540565177756
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/filesystem_stdio.dll",
+      "samples": 9,
+      "weighted_user_sample_percent": 0.1640838650865998
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/kernel32.dll",
+      "samples": 6,
+      "weighted_user_sample_percent": 0.10938924339106655
+    },
+    {
+      "dso": "[anonymous]",
+      "samples": 3,
+      "weighted_user_sample_percent": 0.054694621695533276
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/user32.dll",
+      "samples": 3,
+      "weighted_user_sample_percent": 0.054694621695533276
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/lsteamclient.so",
+      "samples": 3,
+      "weighted_user_sample_percent": 0.054694621695533276
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/stdshader_dx9.dll",
+      "samples": 2,
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/deborah-recovery/compatdata-proton10/pfx/drive_c/windows/system32/d3d9.dll (deleted)",
+      "samples": 2,
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/inputsystem.dll",
+      "samples": 2,
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/linux64/steamclient.so",
+      "samples": 2,
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/GameUI.dll",
+      "samples": 1,
+      "weighted_user_sample_percent": 0.018231540565177756
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/soundemittersystem.dll",
+      "samples": 1,
+      "weighted_user_sample_percent": 0.018231540565177756
+    },
+    {
+      "dso": "/run/host/usr/lib/libm.so.6",
+      "samples": 1,
+      "weighted_user_sample_percent": 0.018231540565177756
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/menusystem.dll",
+      "samples": 1,
+      "weighted_user_sample_percent": 0.018231540565177756
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/bass.dll",
+      "samples": 1,
+      "weighted_user_sample_percent": 0.018231540565177756
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/lsteamclient.dll",
+      "samples": 1,
+      "weighted_user_sample_percent": 0.018231540565177756
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/winex11.so",
+      "samples": 1,
+      "weighted_user_sample_percent": 0.018231540565177756
+    }
+  ],
+  "symbols": [
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/lua_shared.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 43.846855059252505
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/client.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 16.590701914311758
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/server.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 10.48313582497721
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/engine.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 10.2461257976299
+    },
+    {
+      "dso": "[unmapped]",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 8.13126709206928
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vguimatsurface.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 1.6226071103008204
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/materialsystem.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 1.422060164083865
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/tier0.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 1.3855970829535096
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/ntdll.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 1.2579762989972654
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vphysics.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.8021877848678214
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/studiorender.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.6198723792160438
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/datacache.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.5651777575205105
+    },
+    {
+      "dso": "/run/host/usr/lib/libc.so.6",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.45578851412944393
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vstdlib.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.2187784867821331
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/shaderapidx9.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.2187784867821331
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/vgui2.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.20054694621695535
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/kernelbase.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.18231540565177756
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/filesystem_stdio.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.1640838650865998
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "symbol": "__wine_syscall_dispatcher",
+      "weighted_user_sample_percent": 0.1640838650865998
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "symbol": "NtProtectVirtualMemory",
+      "weighted_user_sample_percent": 0.10938924339106655
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/kernel32.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.10938924339106655
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "symbol": "hash_short_file_name",
+      "weighted_user_sample_percent": 0.054694621695533276
+    },
+    {
+      "dso": "[anonymous]",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.054694621695533276
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "symbol": "ntdll_umbstowcs",
+      "weighted_user_sample_percent": 0.054694621695533276
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-windows/user32.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.054694621695533276
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "symbol": "NtQueryPerformanceCounter",
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/stdshader_dx9.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "symbol": "is_hidden_file.part.0",
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "symbol": "lookup_unix_name",
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/deborah-recovery/compatdata-proton10/pfx/drive_c/windows/system32/d3d9.dll (deleted)",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "symbol": "get_cached_object",
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/bin/win64/inputsystem.dll",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/linux64/steamclient.so",
+      "symbol": "[unknown]",
+      "weighted_user_sample_percent": 0.03646308113035551
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/win32u.so",
+      "symbol": "peek_message",
+      "weighted_user_sample_percent": 0.018231540565177756
+    },
+    {
+      "dso": "/home/deck/.local/share/Steam/steamapps/common/Proton 10.0/files/lib/wine/x86_64-unix/ntdll.so",
+      "symbol": "set_vprot",
+      "weighted_user_sample_percent": 0.018231540565177756
+    }
+  ],
+  "limits": "MAIN THREAD only. CPU IP sample distribution, notexclusiveLua functions. Other-switch offCPU includesblocking pluswakeuprunqueue; preemptedoffCPU is scheduling delay, not a namedwaitreason. OnCPU includeskernel whileIPsamples useronly; do notassumealloncpuCPUtimeisinLua oralloffCPUisGPU. Samplingperiodcountsapproximateexecution; no additiveVProf budget."
+}

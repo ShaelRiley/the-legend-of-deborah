@@ -1,0 +1,12 @@
+{
+  "tid": 203934,
+  "event": "cpu-clock:u",
+  "frequency_hz": 99,
+  "callgraph": null,
+  "user_registers": null,
+  "scope": "MAIN THREAD ONLY99HzuserCPU-clockIP +contextswitch records. No Lua wrappers/callstacks. Raw includes preparation but analysisMUSTfilteractualalignedframewindow; no offwindowquantitativeattribution.",
+  "started_monotonic": 102402.557477144,
+  "context_switch_records": true,
+  "stopped_monotonic": 102467.072107904,
+  "exit_code": -2
+}

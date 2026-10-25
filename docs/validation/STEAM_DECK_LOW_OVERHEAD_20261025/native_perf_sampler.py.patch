@@ -1,0 +1,15 @@
+--- native_perf_sampler.pre-low-overhead.py
++++ native_perf_sampler.py
+@@ -16,9 +16,11 @@
+  assert len(pids)==1,('Expected one owned nativegame',pids)
+  out=Path(out);logfile=(out/'native-perf-record.log').open('w')
+  table_targets=os.environ.get('LOD_NATIVE_TABLE_TARGET_SAMPLE')=='1'
++ aligned=os.environ.get('LOD_NATIVE_SAMPLE_ALIGNED')=='1'
+  receipt={'tid':pids[0],'event':'cpu-clock:u','frequency_hz':99,'callgraph':None if table_targets else 'dwarf,16384','user_registers':['BP','R9'] if table_targets else None,'scope':'MAIN THREAD ONLY; native sampling active including capture preparation; diagnostic FPS, no acceptance or gain inference; no Lua wrappers or hooks','started_monotonic':time.monotonic()}
+  (out/'native-main-maps.txt').write_text(Path('/proc',str(pids[0]),'maps').read_text())
+- sample_options=['--user-regs=BP,R9'] if table_targets else ['--call-graph','dwarf,16384']
++ sample_options=['--switch-events','--timestamp'] if aligned else ['--user-regs=BP,R9'] if table_targets else ['--call-graph','dwarf,16384']
++ if aligned:receipt.update(callgraph=None,context_switch_records=True,scope='MAIN THREAD ONLY99HzuserCPU-clockIP +contextswitch records. No Lua wrappers/callstacks. Raw includes preparation but analysisMUSTfilteractualalignedframewindow; no offwindowquantitativeattribution.')
+  sampler=subprocess.Popen(['perf','record','--clockid','mono','--no-inherit','-e','cpu-clock:u','-F','99',*sample_options,'-t',str(pids[0]),'-o',str(out/'native-main.perf.data')],stdout=logfile,stderr=subprocess.STDOUT)
+  atexit.register(stop,out)
+  time.sleep(.3)
