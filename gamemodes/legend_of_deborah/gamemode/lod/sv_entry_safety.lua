@@ -503,58 +503,23 @@ end
 
 -- Swept segment versus the compact sanctuary, expanded by the hostile hull.
 -- This also covers long special moves and pushback that skip a logical cell.
--- Native vectors cannot mutate during this callback-free segment test. Keep
--- the original arithmetic and strict parallel-axis threshold without allocating
--- two bounds tables and an axis list for each sanctuary centre.
-local function slabAxis(origin,delta,lo,hi,enter,leave)
-    if math.abs(delta)<.0001 then
-        return not (origin<lo or origin>hi),enter,leave
-    end
-    local a,b=(lo-origin)/delta,(hi-origin)/delta
-    if a>b then a,b=b,a end
-    enter=math.max(enter,a);leave=math.min(leave,b)
-    return not (enter>leave),enter,leave
-end
-local function nativeSegment(fx,fy,fz,dx,dy,dz,c,half,height)
-    local cx,cy,cz=c.x,c.y,c.z
-    local hit,enter,leave=slabAxis(fx,dx,cx-half,cx+half,0,1)
-    if not hit then return false end
-    hit,enter,leave=slabAxis(fy,dy,cy-half,cy+half,enter,leave)
-    if not hit then return false end
-    return (slabAxis(fz,dz,cz-96,cz+height-24,enter,leave))
-end
 function S:MovementAllowed(e,from,to)
     local s,g,data=self:Context();if not s or not IsValid(e) then return true end
     if not e.LODHostile and not (LOD.FactionManager and LOD.FactionManager:IsEnemyCombatant(e)) then return true end
     local half=LOD.Config.Maze.CellSize*.5+self.Config.HullMargin
-    local centers=data.centers
-    local native=isvector and isvector(from) and isvector(to)
-        and type(centers)=="table" and getmetatable(centers)==nil
-    if native then
-        for _,c in ipairs(centers) do if not isvector(c) then native=false;break end end
-    end
-    local fx,fy,fz,dx,dy,dz
-    if native then
-        fx,fy,fz=from.x,from.y,from.z
-        dx,dy,dz=to.x-fx,to.y-fy,to.z-fz
-    end
-    for _,c in ipairs(centers) do
-        local hit
-        if native then hit=nativeSegment(fx,fy,fz,dx,dy,dz,c,half,LOD.Config.Maze.LevelHeight)
-        else
-            local lo={x=c.x-half,y=c.y-half,z=c.z-96}
-            local hi={x=c.x+half,y=c.y+half,z=c.z+LOD.Config.Maze.LevelHeight-24}
-            local enter,leave=0,1;hit=true
-            for _,axis in ipairs({"x","y","z"}) do
-                local delta=to[axis]-from[axis]
-                if math.abs(delta)<.0001 then
-                    if from[axis]<lo[axis] or from[axis]>hi[axis] then hit=false;break end
-                else
-                    local a,b=(lo[axis]-from[axis])/delta,(hi[axis]-from[axis])/delta
-                    if a>b then a,b=b,a end
-                    enter=math.max(enter,a);leave=math.min(leave,b)
-                    if enter>leave then hit=false;break end
-                end
+    for _,c in ipairs(data.centers) do
+        local lo={x=c.x-half,y=c.y-half,z=c.z-96}
+        local hi={x=c.x+half,y=c.y+half,z=c.z+LOD.Config.Maze.LevelHeight-24}
+        local enter,leave=0,1;local hit=true
+        for _,axis in ipairs({"x","y","z"}) do
+            local delta=to[axis]-from[axis]
+            if math.abs(delta)<.0001 then
+                if from[axis]<lo[axis] or from[axis]>hi[axis] then hit=false;break end
+            else
+                local a,b=(lo[axis]-from[axis])/delta,(hi[axis]-from[axis])/delta
+                if a>b then a,b=b,a end
+                enter=math.max(enter,a);leave=math.min(leave,b)
+                if enter>leave then hit=false;break end
             end
         end
         if hit then self.Stats.movementDenied=self.Stats.movementDenied+1;return false end

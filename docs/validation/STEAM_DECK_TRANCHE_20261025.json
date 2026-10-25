@@ -1,0 +1,350 @@
+{
+  "status": "SP40 UNMET. No complete frozen scenario passes; no canonical main delivery or capped acceptance.",
+  "tranche": {
+    "start_utc": "2026-10-25T18:34:30+00:00",
+    "deadline_utc": "2026-10-25T20:34:30+00:00",
+    "maximum_new_hypotheses": 3,
+    "stop_rule": "Finish coherent pushed checkpoint/decision report within approximatelytwohours; no automaticnexttranche. No moretwo adequatelymeasuredfailures in samefamily."
+  },
+  "retained": {
+    "runtime_reference": "4b07f6b56e4c43a335b9d5e06fda377819388128",
+    "retained_HUD_change": "cd37397f4890d9463c2aad7f5df14e09d950221d",
+    "experimental_archive": "perf/experimental-movement-sweep-0d247f72 at0d247f7218abbdfb6bb65213b485030dc56c8118",
+    "movement_decision": "Do not retain after12sourcecaptures: overlapping/mixed results andpacing safety not established; restore runtime reference. Candidate remains separatelypublished."
+  },
+  "conditions": "ActualLCD512GBJupiterDeck/SteamOS3.8.28/kernel6.18.50/GModWin64 2026.09.17 public25375506/P10.0-4b/LuaJIT2.1beta3; singleplayerlisten onehuman;1280x800internal60Hz+external1920x1080@75 BOTHON;15WAC/GPUauto/fps300/vsync0/AA0/picmip0/HDR2/shadows+water1/mcore1/queue2/bone1/reducedEffects1/nativewalls/batches0/netgraph1. FrozenD20developer-densitylowercourt57initialhostiles/1820models/campaign654759232/level1217159003/layout899898795/pop588052291/legalWizard20 HP211 AR2clip20/3items/640point288radiusphysicalroute/aim5Hz/magic10s. Short60siterationcaptures, no final10minwarmup proof.",
+  "scorecard": [
+    {
+      "scenario": "D1 fullmaze traversal",
+      "source": null,
+      "status": "Currentretainedsource notmeasured over completefrozen scenario; earlierdifferent-source/config observationsdo not prove this build."
+    },
+    {
+      "scenario": "D10 densecombat",
+      "source": null,
+      "status": "Currentretainedsource notmeasured over completefrozen scenario; earlierdifferent-source/config observationsdo not prove this build."
+    },
+    {
+      "scenario": "D1 events/keys/maps/Neil",
+      "source": null,
+      "status": "UNVERIFIED onretainedsource/fullscenario."
+    },
+    {
+      "scenario": "D14 Chuck/Jane",
+      "source": null,
+      "status": "UNVERIFIED onretainedsource/fullscenario."
+    },
+    {
+      "scenario": "D20 fullGordon/Hector/rescue",
+      "source": "4b07f6b56e4c43a335b9d5e06fda377819388128",
+      "status": "FullscenarioUNVERIFIED. Availabledeveloper-density lowercourtphase1only six60scontrols ALLFAIL40. Means below are arithmeticmeansofper-runmetrics, notpooledpercentiles.",
+      "run_metric_means": {
+        "fps": 22.333982906870418,
+        "median_ms": 36.63033333333333,
+        "p95_ms": 80.73933333333333,
+        "p99_ms": 114.79966666666667,
+        "one_percent_low_fps": 6.679271602188562,
+        "longest_below_budget_seconds": 10.333867166666664
+      },
+      "runs": [
+        {
+          "source": "4b07f6b56e4c43a335b9d5e06fda377819388128",
+          "raw": "/home/deck/deborah-benchmarks/movement-sweep-source/0d247f72/original-source-series/arm01-parent",
+          "frames": 1328,
+          "seconds": 59.932947999999996,
+          "fps": 22.158095743930367,
+          "median_ms": 37.098,
+          "p95_ms": 82.743,
+          "p99_ms": 111.278,
+          "max_ms": 342.426,
+          "one_percent_low_fps": 6.99546344195789,
+          "below_budget_seconds": 58.04601299999997,
+          "longest_below_budget_seconds": 8.184819999999998,
+          "below_budget_runs_ge2s": 7
+        },
+        {
+          "source": "4b07f6b56e4c43a335b9d5e06fda377819388128",
+          "raw": "/home/deck/deborah-benchmarks/movement-sweep-source/0d247f72/original-source-series/arm04-parent",
+          "frames": 1308,
+          "seconds": 59.868304,
+          "fps": 21.84795480426504,
+          "median_ms": 37.067,
+          "p95_ms": 84.141,
+          "p99_ms": 109.372,
+          "max_ms": 395.387,
+          "one_percent_low_fps": 6.96915799130946,
+          "below_budget_seconds": 58.426436999999936,
+          "longest_below_budget_seconds": 11.531735999999995,
+          "below_budget_runs_ge2s": 9
+        },
+        {
+          "source": "4b07f6b56e4c43a335b9d5e06fda377819388128",
+          "raw": "/home/deck/deborah-benchmarks/movement-sweep-source/0d247f72/original-source-series/arm05-parent",
+          "frames": 1329,
+          "seconds": 59.916435,
+          "fps": 22.180892437942944,
+          "median_ms": 37.191,
+          "p95_ms": 79.803,
+          "p99_ms": 116.3,
+          "max_ms": 339.692,
+          "one_percent_low_fps": 6.477430088865714,
+          "below_budget_seconds": 57.90360499999991,
+          "longest_below_budget_seconds": 8.780652000000003,
+          "below_budget_runs_ge2s": 7
+        },
+        {
+          "source": "4b07f6b56e4c43a335b9d5e06fda377819388128",
+          "raw": "/home/deck/deborah-benchmarks/movement-sweep-source/0d247f72/confirmation-source-series/arm01-parent",
+          "frames": 1318,
+          "seconds": 59.970760999999996,
+          "fps": 21.977376608577636,
+          "median_ms": 37.24,
+          "p95_ms": 80.125,
+          "p99_ms": 113.232,
+          "max_ms": 344.915,
+          "one_percent_low_fps": 6.710737035455221,
+          "below_budget_seconds": 58.44524699999989,
+          "longest_below_budget_seconds": 9.142070999999998,
+          "below_budget_runs_ge2s": 7
+        },
+        {
+          "source": "4b07f6b56e4c43a335b9d5e06fda377819388128",
+          "raw": "/home/deck/deborah-benchmarks/movement-sweep-source/0d247f72/confirmation-source-series/arm04-parent",
+          "frames": 1305,
+          "seconds": 59.934461000000006,
+          "fps": 21.773783867014338,
+          "median_ms": 37.238,
+          "p95_ms": 80.658,
+          "p99_ms": 127.945,
+          "max_ms": 343.98,
+          "one_percent_low_fps": 6.133910271408004,
+          "below_budget_seconds": 58.60894000000001,
+          "longest_below_budget_seconds": 9.665328999999996,
+          "below_budget_runs_ge2s": 7
+        },
+        {
+          "source": "4b07f6b56e4c43a335b9d5e06fda377819388128",
+          "raw": "/home/deck/deborah-benchmarks/movement-sweep-source/0d247f72/confirmation-source-series/arm05-parent",
+          "frames": 1443,
+          "seconds": 59.960623,
+          "fps": 24.065793979492174,
+          "median_ms": 33.948,
+          "p95_ms": 76.966,
+          "p99_ms": 110.671,
+          "max_ms": 332.912,
+          "one_percent_low_fps": 6.788930784135084,
+          "below_budget_seconds": 58.80015199999999,
+          "longest_below_budget_seconds": 14.698594999999997,
+          "below_budget_runs_ge2s": 7
+        }
+      ]
+    }
+  ],
+  "ordinary_release_observation": {
+    "status": "Additional release-config D20 short observation FAILS40; not frozenstressreplacement/sourcegain/fullplayacceptance. SP40UNMET/fullfiveSP/40capUNVERIFIED.",
+    "sha": "2e4577c27a600a3c63a26955e9d6702495f4f837",
+    "raw": "/home/deck/deborah-benchmarks/release-d20/2e4577c2/release-config-v2",
+    "analysis": {
+      "mode": "uncapped",
+      "limiter_tolerance_ms": 0,
+      "active": {
+        "frames": 1504,
+        "seconds": 59.967317,
+        "fps": 25.080328339518672,
+        "median_ms": 33.767,
+        "p95_ms": 68.73,
+        "p99_ms": 92.767,
+        "max_ms": 344.841,
+        "one_percent_low_fps": 7.711571791841543,
+        "below_budget_seconds": 56.618076,
+        "longest_below_budget_seconds": 9.542258000000004,
+        "below_budget_runs_ge2s": 8
+      },
+      "pacing_at_tolerated_budget": {
+        "frames": 1504,
+        "seconds": 59.967317,
+        "fps": 25.080328339518672,
+        "median_ms": 33.767,
+        "p95_ms": 68.73,
+        "p99_ms": 92.767,
+        "max_ms": 344.841,
+        "one_percent_low_fps": 7.711571791841543,
+        "below_budget_seconds": 56.618076,
+        "longest_below_budget_seconds": 9.542258000000004,
+        "below_budget_runs_ge2s": 8
+      },
+      "capture_checks_passed": false,
+      "issues": [
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+    },
+    "before": {
+      "discretionary": [
+        4,
+        6,
+        6,
+        6
+      ],
+      "encounters": 25,
+      "passed": true,
+      "players": 1,
+      "planned_composition_count": 67,
+      "normal_AI": true,
+      "spacing": 4,
+      "no_god_noclip": true,
+      "level": 20,
+      "phase": "before",
+      "campaign": 654759232,
+      "health": 211,
+      "maximum": 211,
+      "archetypes": {
+        "bioblaster": 8,
+        "arccaster": 1,
+        "deadcrab": 4,
+        "razor": 1,
+        "accumulator": 1,
+        "repulsor": 1,
+        "reaper": 2,
+        "soldier": 10,
+        "seeker": 4,
+        "runner": 5,
+        "flamer": 3,
+        "pincer": 1,
+        "watcher": 3,
+        "forker": 1,
+        "caromer": 2,
+        "drubber": 1,
+        "shambler": 3,
+        "afterburst": 2,
+        "sniper": 1
+      },
+      "scope": "Additional ordinary release-configuration D20 subset. Current production planner/configuration, no actor count edits. Not the frozen developer-density stress benchmark; cannot substitute for its failed acceptance. Before-after counts reflect normal spawning/combat, not manual resets.",
+      "level_seed": 1217159003,
+      "developer_dense": false,
+      "layout_seed": 899898795,
+      "threat": [
+        12,
+        24,
+        27,
+        30
+      ],
+      "developer_mode": false,
+      "hostiles": 54,
+      "singleplayer": true
+    },
+    "after": {
+      "discretionary": [
+        4,
+        6,
+        6,
+        6
+      ],
+      "encounters": 25,
+      "passed": true,
+      "players": 1,
+      "planned_composition_count": 67,
+      "normal_AI": true,
+      "spacing": 4,
+      "no_god_noclip": true,
+      "level": 20,
+      "phase": "after",
+      "campaign": 654759232,
+      "health": -6,
+      "maximum": 211,
+      "archetypes": {
+        "bioblaster": 8,
+        "arccaster": 1,
+        "deadcrab": 4,
+        "razor": 1,
+        "accumulator": 1,
+        "repulsor": 1,
+        "reaper": 2,
+        "soldier": 10,
+        "seeker": 4,
+        "warden": 5,
+        "runner": 5,
+        "forker": 1,
+        "pincer": 1,
+        "flamer": 3,
+        "watcher": 3,
+        "sentry": 4,
+        "drubber": 1,
+        "caromer": 2,
+        "shambler": 3,
+        "afterburst": 2,
+        "sniper": 1
+      },
+      "scope": "Additional ordinary release-configuration D20 subset. Current production planner/configuration, no actor count edits. Not the frozen developer-density stress benchmark; cannot substitute for its failed acceptance. Before-after counts reflect normal spawning/combat, not manual resets.",
+      "level_seed": 1217159003,
+      "developer_dense": false,
+      "layout_seed": 899898795,
+      "threat": [
+        12,
+        24,
+        27,
+        30
+      ],
+      "developer_mode": false,
+      "hostiles": 63,
+      "singleplayer": true
+    },
+    "lease": {
+      "scope": "Single120s authorized observation lease: developer0 during gameplay; private server bridge retains developer1 access gate. Post recorded before restoring setup cvar. No recurringobserver/file polling during FPS.",
+      "developer_restored": true,
+      "passed": true,
+      "seconds": 120.0212711
+    },
+    "failed_preFPS_attempts": [
+      {
+        "raw": "/home/deck/deborah-benchmarks/client-think-short/2e4577c2/native-readonly-v1",
+        "reason": "Private scriptbasename containeddigits; unchanged bridge rejected. No FPS."
+      },
+      {
+        "raw": "/home/deck/deborah-benchmarks/release-d20/2e4577c2/release-config-v1",
+        "reason": "Privatehelperused unavailableloadstring. ReplacedwithpublicCompileString; leasecleanup establishedbeforemode0. No FPS."
+      }
+    ],
+    "verification": "Nativeproductionplan/dev0/singleplayer1human/normalAI/noGodNoclip before/after, source/HUD/renderer/resources/input/bothON checks passed; capturefinished before120slease restoredsetupcvar/allownedStop. One60sactivecapture, no full boss/releaseplay acceptance. Postleaseafter120s hasdeadplayer; performance activewindow isseparate. Cleanupsuccess/errorfixture L54/LJpass. Bridge developer1 access gateunchanged.",
+    "limitations": "No before-afteroptimizationinferenceacrossdifferentcontent; release planner67planned/54live before, stress57initialnative. Same1820wallmodels/seeds/normalresources/input/settings. Extra leasecallbackonlyaftercapture/no duringFPSobserver. Ordinaryfulltraversal/events/bossphases notproved."
+  },
+  "cumulative_baseline_improvement": "UNQUANTIFIED: originalmaincec10 baseline usedProtonExperimental/external60Hz/videoactive/differentlayout+population/entrywall. Mainalso lacksrequiredSentrynativeBBoxsupportrepair causing263compositionretries/zeroWARDEN_COMMIT in priorfrozenD20. Matchingcurrentfixture wouldrequirebackportingfixes, sohistoricalcomparisonstoppedafterread-onlyfeasibilityreview (<10min, no reconstruction). Nevercompare23.40entrywallFPS tocurrent22.33D20asregression/gain.",
+  "validated_incremental_HUD": "Two independent matchedD20six-run source comparisons improvedrunmeanFPS4.052% and9.391%, withnativevisual/state/lifecyclegates. Alltwelvefailed40. Do not addpercentages tootherexperiments/runtimechanges. Raw/docsvalidationSTEAM_DECK_HUD_CACHE_20261023.json.",
+  "hosting": "Separate sameDeckLinux32dedicated42.04/45.02averagebutp9543.58/39.38,p9954.79/51.72,longdrops6.665/4.183sFAIL. Differentruntime/tick/network/hosting; neverSPacceptance. Multiplayerdeferred.",
+  "ranked_costs": [
+    {
+      "rank": 1,
+      "cost": "NextBot protectedLua",
+      "observed_ms_per_engine_frame": 10.948,
+      "attribution": "NativeVProfselfwithinengineinstrumentation, notexclusiveLuafunctionCPU. Genericmethodprofilesoverlap; no additivebudget.",
+      "action": "Needarchitecturaloralgorithmicchange affectinglargepartofAI; repeatedmicrolookup/dispatchfamilies closedafterfailures."
+    },
+    {
+      "rank": 2,
+      "cost": "ServergamemodeprotectedLua",
+      "observed_ms_per_engine_frame": 3.047,
+      "peak_ms": 279.14,
+      "specific_hook": "ExistingfullLua profileLOD_WardenService max260.480ms at encountercommit.",
+      "action": "Newhypothesis1: profileonlycommit/spawn/progressionphase-start funcs. A100-260ms encounterspike isworth reducing; cannotclose~20mssteadystate gapalone. Cheapest4counterbalanced30sC/P/P/Cobservations onretainedsource, finitecurrent-providerrestore; noperformancegainclaim fromprofiledFPS."
+    },
+    {
+      "rank": 3,
+      "cost": "Opaque renderhookLua",
+      "observed_ms_per_engine_frame": 2.814,
+      "attribution": "Aggregatedenginehookscope; existingfunctionprofilegeneratedgeometry~1.30ms/call. Renderingcache/selection/batchingfamilies alreadyrejected; donotrevisitwithoutnew evidence."
+    },
+    {
+      "rank": 4,
+      "cost": "CliententityThinkLua",
+      "observed_ms_per_engine_frame": 0.339,
+      "peak_ms": 35.48,
+      "attribution": "Geometry1Hzcohortmechanism confirmed butstaggeringfailedsourceFPS; familyclosed."
+    }
+  ],
+  "raw_attribution": "/home/deck/deborah-benchmarks/native-hierarchy/f5ca1c37/retained-hud-vprof60-run1; exclusiveOSmain-threadIPsamplingolderbuildlua_shared42.65%/client15.84%/server10.66%/engine9.95%, notLuafunctionexclusiveCPU.",
+  "regressions": "RestoreEntrySafety/testmatrixexact4b07 removesimplementation-specificsweepunit/CIrow. Matrix336 and9previouslyclassifiedfailures; nofullgreenclaim. Runonlytargetedrestorationgates.",
+  "next": "BoundedWardencommit attribution andsourceexperimentonlyifmaterialbottleneck confirmed. Atbudgetboundarypushreviewablecheckpoint/reportwithoutfullacceptanceclaim."
+}

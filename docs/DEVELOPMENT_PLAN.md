@@ -1,3 +1,11 @@
+# Current checkpoint — bounded two-hour optimization tranche (October 25)
+
+User limits this tranche to approximatelytwohours from18:34:30UTC/deadline20:34:30UTC, atmostthree new hypotheses; finishpushedcheckpoint/decisionreport, no automaticnexttranche. Futuregameplayfeatures/multiplayer deferred; bothdisplaysONalways/unchangedSP40criteria/mainunaccepted. [Scorecard, costs, baseline limits, stoprules](validation/STEAM_DECK_TRANCHE_20261025.json).
+
+Movement-sweep12sourcecaptures complete: meansFPS+4.693%/+2.698%butoverlapping/mixedpairs, confirmation1%low6.545to5.997(-8.36%)andfirstseriesprolongeddropsworse. Do notretainwithoutpacing safety; runtime/testmatrix restoredexact4b07, candidatepreserved onperf/experimental-movement-sweep-0d247f72. [All12/raw](validation/STEAM_DECK_MOVEMENT_SWEEP_20261024.json). Retainedruntime4b07/HUDcd37397 only; D20sixcontrolsmean22.33FPS/fullfiveSP+cap40UNVERIFIED. Originalmaincomparisonrequiresgameplaybackports dueSentrysupportfailure/differentenvironment; cumulativegainUNQUANTIFIED.
+
+Nextnewhypothesis1: targetobservedWardenService260mscommitspike (serverGMVProfpeak279ms). Useexistingfullprofilestoavoidreaudit, thenfocusedcommit/spawn/progressionallcalltimings/finiteprovidersrestore. Onlysourcechangeifdataidentifiesmaterialreduciblework. NativeNextbotLua10.948ms/frame remainslargeststeadycost; no additivebudgetfromoverlappingprofiles. No morelookup/dispatch/cohort microfamilieswithoutnewrationale.
+
 # Current checkpoint — native-vector swept admission without per-centre tables
 
 MeasuredMovementAllowed~22–24ms/sinclusive inMoveToward~108–113 motivates allocationremoval, no predictedFPSgain. Original createslo/hi/axis tablesforeachcentre/step. Candidate native-vector/plain-centres path retains exactclippingarithmetic/.0001threshold/fullpolicy/currentinputs, removesonlytemporarytables; custom/unknowninputs/centres retainoriginal. L54/LJ12317 fullqueryoracle/denial/boundary/parallel/random/mutation/fallback casespass, existingB29runtime/entryhotpath/120manifest/repeatinstaller/syntax pass. CI337newbehaviorgate/notfullgreen. [Finitegates](validation/STEAM_DECK_MOVEMENT_SWEEP_20261024.json).
