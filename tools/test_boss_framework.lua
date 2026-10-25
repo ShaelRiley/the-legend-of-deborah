@@ -50,6 +50,25 @@ test('loading precache preserves Chuck identity and encounter RNG without actors
  s.BuildReady=true;check(B:Commit(c),'ordinary commitment failed after loading')
  check(c.data.citizenModel==expectedModel and B:Random(c,'chuck_citizen',1,1000000)==expectedNext,'preload changed citizen identity or subsequent stream')
 end)
+test('Gordon loading routes only authored Warden levels through optional preload',function()
+ local s=F.setup(20,false);s.BuildReady=false
+ local previous,report=LOD.Warden,ErrorNoHalt
+ local calls={};local created=#F.created
+ LOD.Warden={Precache=function(_,seed)
+  check(not s.BuildReady,'Gordon preload escaped loading')
+  calls[#calls+1]=seed;return true
+ end}
+ check(B:PrecacheLevel(1,123) and B:PrecacheLevel(20,456),'Gordon authored levels not routed')
+ check(#calls==2 and calls[1]==123 and calls[2]==456,'wrong seed or duplicated preload')
+ check(not B:PrecacheLevel(2,789) and not B:PrecacheLevel(21,789),'unrelated module/endless policy changed')
+ check(#F.created==created and not s.Warden and not s.Boss,'preload created encounter state or actors')
+ LOD.Warden={};check(not B:PrecacheLevel(20,456),'unavailable optional preload did not fall back')
+ local message;LOD.Warden={Precache=function()error('injected Gordon asset error')end}
+ ErrorNoHalt=function(text)message=text end
+ local ok=B:PrecacheLevel(20,456)
+ LOD.Warden=previous;ErrorNoHalt=report
+ check(not ok and message and message:find('Model precache failed',1,true),'Gordon preload error escaped loading fallback')
+end)
 for level=2,19 do
  local id=order[level]
  test('actual Start Think and phases '..id,function()

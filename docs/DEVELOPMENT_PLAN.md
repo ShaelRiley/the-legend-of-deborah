@@ -1,3 +1,11 @@
+# Current checkpoint — seeded Gordon model preparation candidate
+
+The bounded October 25 tranche ends at 20:34:30 UTC. New hypothesis 1 targets the measured encounter-start stall. Two focused profiles reproduced Warden Commit at 244.182/250.515 ms. A counterbalanced feasibility series, with the same observer in every arm, reduced Commit from 260.043/243.904 ms to 132.913/135.983 ms by warming the exact seeded model before capture (123.449/124.382 ms preparation). Nested scopes overlap; these are wall times, not exclusive CPU attribution or proof of throughput gains.
+
+Candidate extends the existing BossEncounter:PrecacheLevel loading seam to the authored Warden and warms only CitizenModel(seed). RunManager already holds players with BuildReady=false. No actors, encounter RNG, AI cadence, resources or gameplay values change. Lua 5.4 boss framework 77/77, Warden and 120-source installation/manifest regressions pass. System Lua 5.5 lacks legacy math.pow and is not the canonical runner. [Finite gate and raw evidence](validation/STEAM_DECK_WARDEN_PRECACHE_20261025.json).
+
+Next: six fresh unprofiled P,C,C,P,P,C 60-second frozen D20 source captures, exact loaded-source/model/loading receipt checks before and after, unchanged HUD/renderer/resources/input/both displays ON. Retain only a repeatable hitch reduction without material regression. This remains experimental pending those captures; retained runtime reference is 4b68237f (runtime identical to 4b07f6b). SteamOS is now 3.9.5/kernel 7.2.7, so older-environment numbers cannot establish this tranche's source effect. SP40 remains UNMET, full five-scenario acceptance and capped verification UNVERIFIED; PR remains draft and main unchanged. No automatic next tranche.
+
 # Current checkpoint — bounded two-hour optimization tranche (October 25)
 
 User limits this tranche to approximatelytwohours from18:34:30UTC/deadline20:34:30UTC, atmostthree new hypotheses; finishpushedcheckpoint/decisionreport, no automaticnexttranche. Futuregameplayfeatures/multiplayer deferred; bothdisplaysONalways/unchangedSP40criteria/mainunaccepted. [Scorecard, costs, baseline limits, stoprules](validation/STEAM_DECK_TRANCHE_20261025.json).

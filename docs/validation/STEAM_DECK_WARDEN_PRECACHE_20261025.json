@@ -1,0 +1,58 @@
+{
+  "status": "Experimental source candidate; unprofiled actual-source validation pending. SP40 UNMET, full five scenarios and cap UNVERIFIED.",
+  "parent": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+  "hypothesis": {
+    "family": 1,
+    "observed": "Replicated Warden Commit 244.182/250.515 ms; specific recurring encounter-start wall-time stall.",
+    "plausible_saving": "About 120 ms from one encounter-start frame, paid once during existing loading; cannot close steady-state frame budget.",
+    "evidence": "Same-source, identically profiled C/P/P/C feasibility isolates exact seeded CitizenModel preloading. No additive budget from overlapping scopes.",
+    "invariants": "Same model/seed, no actors or encounter RNG created, BuildReady false, same actors/AI cadence/gates/combat/resources/graphics/display state.",
+    "cheapest_valid_source_test": "Six unprofiled fresh-source P,C,C,P,P,C 60s frozen D20 captures. Observer only during preparation, restored before FPS; current source/functions/models/clones/Sentries checked."
+  },
+  "raw_attribution": "/home/deck/deborah-benchmarks/warden-start-cpu/4b68237f/observer-series-v2",
+  "raw_feasibility": "/home/deck/deborah-benchmarks/warden-model-precache/4b68237f/profiled-feasibility-v1",
+  "feasibility": {
+    "control_commit_ms": [
+      260.0433,
+      243.9036
+    ],
+    "preloaded_commit_ms": [
+      132.9132,
+      135.9834
+    ],
+    "preparation_ms": [
+      123.4486,
+      124.3823
+    ],
+    "control_max_frame_ms": [
+      352.683,
+      320.436
+    ],
+    "preloaded_max_frame_ms": [
+      219.579,
+      203.226
+    ],
+    "limitation": "Identical nine-method all-call observer in all arms; diagnostic FPS and maximum-frame signal require actual unprofiled source confirmation. No 40 FPS proof."
+  },
+  "static": {
+    "boss_framework": "77/77 canonical Lua 5.4 PASS",
+    "warden": "canonical Lua 5.4 PASS, seeded exact model/no actor/no run mutation/missing API",
+    "manifest": "120-source hash/repeat install/symlink/atomic manifest/owned cleanup PASS",
+    "syntax": "luac and git diff --check PASS",
+    "known_failure": "System Lua 5.5 boss suite fails pre-existing math.pow compatibility; canonical tools/run_lua54.py passes. Not full matrix green."
+  },
+  "source_gate": {
+    "sequence": [
+      "parent",
+      "candidate",
+      "candidate",
+      "parent",
+      "parent",
+      "candidate"
+    ],
+    "seconds": 60,
+    "hosting": "Singleplayer listen host, frozen developer-density D20 lowercourt-v1 subset; not complete boss acceptance",
+    "overhead": "Preparation-only PrecacheModel observer, lease and own-provider restoration before FPS. No query/CPU profiler during FPS.",
+    "decision": "No throughput claim from noise. Repeatable hitch reduction with no material pacing/correctness regression may be retained as limited improvement. Preserve all failed attempts."
+  }
+}
