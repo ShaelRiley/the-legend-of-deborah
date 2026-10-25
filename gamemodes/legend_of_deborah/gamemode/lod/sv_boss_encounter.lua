@@ -15,7 +15,6 @@ end
 function B:RegisterSupport(id,d) d.id=id;self.Support[id]=d;self:RegisterArchetype(id,d,false) end
 function B:PrecacheLevel(level,seed)
     local d=self.Modules[LOD.BossRegistry:Modular(level)]
-    if not d and LOD.BossRegistry:ForLevel(level)=='warden' then d=LOD.Warden end
     if not d or not d.Precache then return false end
     local ok,result=pcall(d.Precache,d,seed)
     if not ok then ErrorNoHalt('[LOD:BOSS] Model precache failed: '..tostring(result)..'\n');return false end

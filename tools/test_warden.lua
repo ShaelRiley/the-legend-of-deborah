@@ -24,21 +24,6 @@ dofile(root..'sh_rng.lua');dofile(root..'sv_maze_generator.lua');dofile(root..'s
 dofile(root..'sv_neil_brute.lua');dofile(root..'sv_warden_arena.lua');dofile(root..'sv_warden.lua');dofile(root..'sv_graph_integrity.lua')
 local P,W,N,R,H=LOD.ProgressionDirector,LOD.Warden,LOD.MazeNavigator,LOD.RunManager,LOD.NeilBrute
 local key=function(c) return LOD.MazeGenerator.CellKey(c.x,c.y,c.z) end
--- The real Gordon selector/precache must not create an actor or touch a run.
-do
- local preload,create=util.PrecacheModel,ents.Create
- local state=R.State;local modelCalls={}
- ents.Create=function()error('asset preload created actor')end
- for _,seed in ipairs({1,777,1217159003})do
-  local expected=W:CitizenModel(seed);local before=#modelCalls
-  util.PrecacheModel=function(model)modelCalls[#modelCalls+1]=model end
-  assert(W:Precache(seed) and #modelCalls==before+1 and modelCalls[#modelCalls]==expected)
-  assert(R.State==state and W:CitizenModel(seed)==expected,'preload changed run or seeded identity')
- end
- util.PrecacheModel=nil;assert(not W:Precache(1),'missing optional model API did not fall back')
- util.PrecacheModel=preload;ents.Create=create
- print('WARDEN_PRECACHE_PASS exact_seeded_model/no_actor/no_run_mutation/missing_API')
-end
 local graphs={}
 for seed=1,24 do
  local g,ok,err

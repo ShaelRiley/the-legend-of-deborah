@@ -21,13 +21,6 @@ function W:CitizenModel(seed)
     local rng=LOD.RNG.New(LOD.Seeds.Derive(seed or 1,"warden-citizen-model"))
     return string.format("models/Humans/Group01/male_%02d.mdl",rng:Int(1,9))
 end
--- RunManager already holds players during the level's asset preparation.
--- Warm only the exact seeded model; no actors or encounter RNG are created.
-function W:Precache(seed)
-    if not util or not util.PrecacheModel then return false end
-    util.PrecacheModel(self:CitizenModel(seed))
-    return true
-end
 local baseReserve=LOD.WanderingDirector.GetDeficitReservation
 function W:CloneCount(level) return math.min(4,math.max(0,math.floor((tonumber(level) or 1)/4))) end
 function LOD.WanderingDirector:GetDeficitReservation(...)
