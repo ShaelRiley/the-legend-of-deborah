@@ -1,3 +1,9 @@
+# Current checkpoint — remaining-budget attribution recorded; source unchanged
+
+The original October25 deadline remains20:34:30UTC; no new tranche or source hypothesis. After the earlier decision checkpoint, the remaining budget captured four fresh30s C/P/P/C diagnostic runs on07cc818d. Two selected-service selfwall profiles balance all38providers/allcompletedcalls/zeroopenframes/exactroot-selfsum, with zero Lua errors and completeownedrestoration. Movement self44.78/44.49ms/s, entry admission41.36/40.79, close defense27.22/27.63 repeat closely. However the observer reducesFPS22.54→17.89 (20.6%); these are perturbed wall times exclusive only of nestedselectedcalls, notexclusiveCPU/productioncost/predictedsavings. [Raw captures, method, qualifications and ranking](validation/STEAM_DECK_SELECTED_SELF_20261025.json).
+
+No further runtime change is justified by these values alone. Retainedruntime/tools remain byte-exact07cc818d/4b682; earlierHUDgain preserved, movement/preload experiments remainexcluded. FullfiveSP/40capUNVERIFIED/SP40UNMET/bothdisplaysONalways. Finish publication and stop bytheoriginaldeadline. Futureboundedworkmustlowerattributionoverhead andfinda substantial algorithmic/native-movement orentry/close-defensecost beforeanotherimplementationcycle. Do not invent an additiveCPUbudget from these scopes orrevisitfailedmicrofamiliesbasedonlyonstableinstrumentedrankings.
+
 # Current checkpoint — bounded tranche closed; retain measured source
 
 SP40 remains **UNMET**. Both displays stayed ON. The October25 tranche used one new hypothesis and stops after this pushed decision checkpoint; do not automatically launch another tranche. Future gameplay features, multiplayer and Workshop/VPS remain deferred. [Current scorecard and decision](validation/STEAM_DECK_TRANCHE_20261025.json).

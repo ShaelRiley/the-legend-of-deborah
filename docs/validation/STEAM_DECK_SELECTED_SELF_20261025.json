@@ -1,0 +1,874 @@
+{
+  "status": "Attribution diagnostic complete; no runtime change. SP40 UNMET; fullfive+capUNVERIFIED.",
+  "tested_source": "07cc818dd8507374a452c9c964449b957853e43b",
+  "runtime_equivalent": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+  "raw": "/home/deck/deborah-benchmarks/warden-start-cpu/07cc818d/observer-series-v1",
+  "scope": "Remaining original October25 two-hour tranche only; no newtranche/newsourcehypothesis. Four C/P/P/C30s frozenD20 lowercourt stress captures on retainedsource, same onehumanSP listenhost/57initialhostiles/1820models/seeds/resources/AI/input/graphics/1280x800/bothdisplaysON/15WAC/P10.0-4b/SteamOS3.9.5. Not fullboss oracceptance.",
+  "method": "Reuse existing targeted query profiler and finite capture/restoration infrastructure; optinselfmode subtracts nested selectedpublicprovider wall durations, percoroutine reusable frame stacks. All38selectedmethods measured everycall; no per-callresults tables/pcall or game-state mutation. Inheritedproviders restored byownership;120slease/explicitStop/independentretirement.",
+  "qualification": {
+    "all_calls_completed": true,
+    "open_context_frames": [
+      0,
+      0
+    ],
+    "contexts": [
+      67,
+      67
+    ],
+    "bindings": [
+      38,
+      38
+    ],
+    "self_sum_minus_root_ms": [
+      0.0,
+      0.0
+    ],
+    "all_owned_games_stopped": true,
+    "capture_lua_errors": 0,
+    "fixtures": "Lua5.4/LuaJIT PASS nested5/7/12ms/selfsumroot/main-coroutineisolation/varargs/nils/yield/errorinvalidation/owned-inheritedrestore/foreign-owner/lease"
+  },
+  "observer_overhead": {
+    "mean_fps": {
+      "control": 22.5397718547145,
+      "profiled": 17.892240626536033
+    },
+    "profiled_fps_percent_change": -20.61924698322255,
+    "interpretation": "About20.6%throughputpenalty materiallyperturbs calls/JIT/scheduling. Absolute timings are notproductionCPU costs, per-framebudget, expected savings, or performanceimprovement. Do not subtractoverheadfromscopes/add themto VProf costs.",
+    "timing_window": "Providerobserver activeabout40s, includes preparation/retirement around30sFPSwindow. Self-ms/s referswholeobserverinterval; cannotdividebyactiveFPSframecount toinventperframebudget."
+  },
+  "ranking_by_repeat": [
+    [
+      {
+        "name": "HostileMotionV2.MoveToward",
+        "calls": 64572,
+        "completed": 64572,
+        "inclusive_ms_per_second": 107.41280628883888,
+        "selected_self_ms_per_second": 44.77511286778466,
+        "maximum_inclusive_call_ms": 17.342900000002714
+      },
+      {
+        "name": "EntrySafety.BeforeAI",
+        "calls": 147698,
+        "completed": 147698,
+        "inclusive_ms_per_second": 76.80512396340922,
+        "selected_self_ms_per_second": 41.355103594084206,
+        "maximum_inclusive_call_ms": 17.227900000008844
+      },
+      {
+        "name": "EnemyRoster.TickCloseDefense",
+        "calls": 74001,
+        "completed": 74001,
+        "inclusive_ms_per_second": 52.52548619081224,
+        "selected_self_ms_per_second": 27.223569446827312,
+        "maximum_inclusive_call_ms": 2.725799999993228
+      },
+      {
+        "name": "RPGAbilityRules.ProgressionState",
+        "calls": 778771,
+        "completed": 778771,
+        "inclusive_ms_per_second": 30.578017266374125,
+        "selected_self_ms_per_second": 24.567710905668473,
+        "maximum_inclusive_call_ms": 0.20489999999995234
+      },
+      {
+        "name": "EntrySafety.ExactCell",
+        "calls": 371351,
+        "completed": 371351,
+        "inclusive_ms_per_second": 41.02294138190741,
+        "selected_self_ms_per_second": 23.847082084879634,
+        "maximum_inclusive_call_ms": 0.14570000000446726
+      },
+      {
+        "name": "EnemyRoster.Tick",
+        "calls": 66348,
+        "completed": 66348,
+        "inclusive_ms_per_second": 63.85393335697043,
+        "selected_self_ms_per_second": 22.01929169791857,
+        "maximum_inclusive_call_ms": 17.370200000002
+      },
+      {
+        "name": "EntrySafety.MovementAllowed",
+        "calls": 64572,
+        "completed": 64572,
+        "inclusive_ms_per_second": 24.637437411448623,
+        "selected_self_ms_per_second": 17.364470906664955,
+        "maximum_inclusive_call_ms": 15.210300000006782
+      },
+      {
+        "name": "RPGStatusElements.BindActorLife",
+        "calls": 565301,
+        "completed": 565301,
+        "inclusive_ms_per_second": 38.28840160006758,
+        "selected_self_ms_per_second": 16.955074103207927,
+        "maximum_inclusive_call_ms": 0.20450000000948876
+      },
+      {
+        "name": "HostileAnimation.Move",
+        "calls": 64572,
+        "completed": 64572,
+        "inclusive_ms_per_second": 10.069382408028149,
+        "selected_self_ms_per_second": 10.069382408028149,
+        "maximum_inclusive_call_ms": 17.20799999999656
+      },
+      {
+        "name": "RPGStatusElements.Has",
+        "calls": 532830,
+        "completed": 532830,
+        "inclusive_ms_per_second": 45.24530892544097,
+        "selected_self_ms_per_second": 9.704921685259801,
+        "maximum_inclusive_call_ms": 0.20539999999868996
+      },
+      {
+        "name": "MazeBuilder.CellCenterCoordinates",
+        "calls": 371351,
+        "completed": 371351,
+        "inclusive_ms_per_second": 9.612835825414203,
+        "selected_self_ms_per_second": 9.612835825414203,
+        "maximum_inclusive_call_ms": 0.1417999999944186
+      },
+      {
+        "name": "EntrySafety.ProtectedPosition",
+        "calls": 285780,
+        "completed": 285780,
+        "inclusive_ms_per_second": 7.747677408073727,
+        "selected_self_ms_per_second": 7.747677408073727,
+        "maximum_inclusive_call_ms": 0.3011999999955606
+      },
+      {
+        "name": "MazeNavigator.CellCenterCoordinates",
+        "calls": 371351,
+        "completed": 371351,
+        "inclusive_ms_per_second": 17.175859297027774,
+        "selected_self_ms_per_second": 7.563023471613572,
+        "maximum_inclusive_call_ms": 0.14360000000124273
+      },
+      {
+        "name": "RPGStatusElements.CanInitiateAttack",
+        "calls": 113819,
+        "completed": 113819,
+        "inclusive_ms_per_second": 22.38408472501199,
+        "selected_self_ms_per_second": 7.364095427250343,
+        "maximum_inclusive_call_ms": 0.5078000000082739
+      },
+      {
+        "name": "SoldierProgression.StateFor",
+        "calls": 865571,
+        "completed": 865571,
+        "inclusive_ms_per_second": 7.2953008738764575,
+        "selected_self_ms_per_second": 7.2953008738764575,
+        "maximum_inclusive_call_ms": 0.2006999999935033
+      },
+      {
+        "name": "Warden.Tick",
+        "calls": 70497,
+        "completed": 70497,
+        "inclusive_ms_per_second": 16.35996898345777,
+        "selected_self_ms_per_second": 6.8982643034812146,
+        "maximum_inclusive_call_ms": 0.991900000002488
+      },
+      {
+        "name": "MazeNavigator.WorldToCell",
+        "calls": 89257,
+        "completed": 89257,
+        "inclusive_ms_per_second": 5.025218023567186,
+        "selected_self_ms_per_second": 5.025218023567186,
+        "maximum_inclusive_call_ms": 0.1407000000028802
+      },
+      {
+        "name": "HostileMotionV2.Stop",
+        "calls": 12946,
+        "completed": 12946,
+        "inclusive_ms_per_second": 4.0563826309673505,
+        "selected_self_ms_per_second": 3.88001132495893,
+        "maximum_inclusive_call_ms": 0.14029999999820575
+      },
+      {
+        "name": "RPGStatusElements.CanMoveVoluntarily",
+        "calls": 82795,
+        "completed": 82795,
+        "inclusive_ms_per_second": 10.877637210735422,
+        "selected_self_ms_per_second": 3.7944066543592654,
+        "maximum_inclusive_call_ms": 0.12710000000026866
+      },
+      {
+        "name": "RPGAbilityRules.RogueMovementMultiplier",
+        "calls": 77911,
+        "completed": 77911,
+        "inclusive_ms_per_second": 6.129696167794003,
+        "selected_self_ms_per_second": 3.478499885709666,
+        "maximum_inclusive_call_ms": 0.1508000000001175
+      },
+      {
+        "name": "MazeNavigator.Distance",
+        "calls": 7202,
+        "completed": 7202,
+        "inclusive_ms_per_second": 3.246978503937624,
+        "selected_self_ms_per_second": 3.246978503937624,
+        "maximum_inclusive_call_ms": 2.8853999999967073
+      },
+      {
+        "name": "RPGAbilityRules.Derived",
+        "calls": 21744,
+        "completed": 21744,
+        "inclusive_ms_per_second": 7.8976567306519945,
+        "selected_self_ms_per_second": 1.9718481912724777,
+        "maximum_inclusive_call_ms": 0.19199999999841566
+      },
+      {
+        "name": "NeilBrute.Tick",
+        "calls": 66348,
+        "completed": 66348,
+        "inclusive_ms_per_second": 1.723539179653436,
+        "selected_self_ms_per_second": 1.723539179653436,
+        "maximum_inclusive_call_ms": 0.05639999999118572
+      },
+      {
+        "name": "RPGStatusElements.LocomotionMultiplier",
+        "calls": 69908,
+        "completed": 69908,
+        "inclusive_ms_per_second": 7.009953637956587,
+        "selected_self_ms_per_second": 1.5942751777650803,
+        "maximum_inclusive_call_ms": 0.20630000000210202
+      },
+      {
+        "name": "RPGStatusElements.ObserveCell",
+        "calls": 67239,
+        "completed": 67239,
+        "inclusive_ms_per_second": 7.139455000272776,
+        "selected_self_ms_per_second": 1.5197939676516647,
+        "maximum_inclusive_call_ms": 0.15910000000474156
+      },
+      {
+        "name": "RPGStatusElements.HandleAIFlee",
+        "calls": 63034,
+        "completed": 63034,
+        "inclusive_ms_per_second": 6.385885546262552,
+        "selected_self_ms_per_second": 1.2974821712771067,
+        "maximum_inclusive_call_ms": 0.12110000000120635
+      },
+      {
+        "name": "BossEncounter.TickActor",
+        "calls": 70497,
+        "completed": 70497,
+        "inclusive_ms_per_second": 1.1520301869334126,
+        "selected_self_ms_per_second": 1.1520301869334126,
+        "maximum_inclusive_call_ms": 0.0676999999882355
+      },
+      {
+        "name": "Hector.Tick",
+        "calls": 70497,
+        "completed": 70497,
+        "inclusive_ms_per_second": 1.0370827679153898,
+        "selected_self_ms_per_second": 1.0370827679153898,
+        "maximum_inclusive_call_ms": 0.10569999999177071
+      },
+      {
+        "name": "RPGAbilityRules.HostileDexMovementMultiplier",
+        "calls": 64574,
+        "completed": 64574,
+        "inclusive_ms_per_second": 1.0132217965441321,
+        "selected_self_ms_per_second": 1.0132217965441321,
+        "maximum_inclusive_call_ms": 0.06170000000338405
+      },
+      {
+        "name": "MagicForms.ConstrainWallMovement",
+        "calls": 64572,
+        "completed": 64572,
+        "inclusive_ms_per_second": 0.8742684912929112,
+        "selected_self_ms_per_second": 0.8742684912929112,
+        "maximum_inclusive_call_ms": 0.07409999999197225
+      },
+      {
+        "name": "CharacterProgressionSystem.ReconcileFeatOwnership",
+        "calls": 22014,
+        "completed": 22014,
+        "inclusive_ms_per_second": 1.0157478113899892,
+        "selected_self_ms_per_second": 0.7530372668166131,
+        "maximum_inclusive_call_ms": 0.1718999999980042
+      },
+      {
+        "name": "IdentityPerkDirector.EnsureState",
+        "calls": 22077,
+        "completed": 22077,
+        "inclusive_ms_per_second": 1.0323130721546305,
+        "selected_self_ms_per_second": 0.7272224440888753,
+        "maximum_inclusive_call_ms": 0.07600000000707041
+      },
+      {
+        "name": "EnemyUpdate.Tick",
+        "calls": 44358,
+        "completed": 44358,
+        "inclusive_ms_per_second": 0.6808322183041507,
+        "selected_self_ms_per_second": 0.6808322183041507,
+        "maximum_inclusive_call_ms": 0.07779999999968368
+      },
+      {
+        "name": "CharacterProgressionSystem._RecomputeProgressionState",
+        "calls": 270,
+        "completed": 270,
+        "inclusive_ms_per_second": 0.6775241632186132,
+        "selected_self_ms_per_second": 0.6626079329218227,
+        "maximum_inclusive_call_ms": 0.39989999999079373
+      },
+      {
+        "name": "IdentityPerkDirector.EnsurePackage",
+        "calls": 21472,
+        "completed": 21472,
+        "inclusive_ms_per_second": 0.30509062806575526,
+        "selected_self_ms_per_second": 0.30509062806575526,
+        "maximum_inclusive_call_ms": 0.06779999999650954
+      },
+      {
+        "name": "CharacterProgressionSystem.RepairDuplicateFeatSelections",
+        "calls": 22014,
+        "completed": 22014,
+        "inclusive_ms_per_second": 0.26271054457337617,
+        "selected_self_ms_per_second": 0.26271054457337617,
+        "maximum_inclusive_call_ms": 0.05230000000722157
+      },
+      {
+        "name": "MazeNavigator.FindHostilePath",
+        "calls": 0,
+        "completed": 0,
+        "inclusive_ms_per_second": 0,
+        "selected_self_ms_per_second": 0,
+        "maximum_inclusive_call_ms": 0
+      },
+      {
+        "name": "BossEncounter.Owned",
+        "calls": 0,
+        "completed": 0,
+        "inclusive_ms_per_second": 0,
+        "selected_self_ms_per_second": 0,
+        "maximum_inclusive_call_ms": 0
+      }
+    ],
+    [
+      {
+        "name": "HostileMotionV2.MoveToward",
+        "calls": 64955,
+        "completed": 64955,
+        "inclusive_ms_per_second": 108.76092875518607,
+        "selected_self_ms_per_second": 44.4905783321976,
+        "maximum_inclusive_call_ms": 17.451100000002384
+      },
+      {
+        "name": "EntrySafety.BeforeAI",
+        "calls": 148451,
+        "completed": 148451,
+        "inclusive_ms_per_second": 76.58401443923134,
+        "selected_self_ms_per_second": 40.78549565194614,
+        "maximum_inclusive_call_ms": 1.9374000000027536
+      },
+      {
+        "name": "EnemyRoster.TickCloseDefense",
+        "calls": 74385,
+        "completed": 74385,
+        "inclusive_ms_per_second": 53.671630201028655,
+        "selected_self_ms_per_second": 27.626796170939063,
+        "maximum_inclusive_call_ms": 5.3493000000059965
+      },
+      {
+        "name": "RPGAbilityRules.ProgressionState",
+        "calls": 782186,
+        "completed": 782186,
+        "inclusive_ms_per_second": 30.853544542514527,
+        "selected_self_ms_per_second": 24.92066697728943,
+        "maximum_inclusive_call_ms": 0.3958000000068296
+      },
+      {
+        "name": "EntrySafety.ExactCell",
+        "calls": 374113,
+        "completed": 374113,
+        "inclusive_ms_per_second": 41.40207942639957,
+        "selected_self_ms_per_second": 23.890109116719625,
+        "maximum_inclusive_call_ms": 0.41459999999915453
+      },
+      {
+        "name": "EnemyRoster.Tick",
+        "calls": 66662,
+        "completed": 66662,
+        "inclusive_ms_per_second": 64.14131525720252,
+        "selected_self_ms_per_second": 22.256870109784167,
+        "maximum_inclusive_call_ms": 16.550399999999854
+      },
+      {
+        "name": "EntrySafety.MovementAllowed",
+        "calls": 64955,
+        "completed": 64955,
+        "inclusive_ms_per_second": 25.350869120842564,
+        "selected_self_ms_per_second": 18.029911870163172,
+        "maximum_inclusive_call_ms": 16.432299999991073
+      },
+      {
+        "name": "RPGStatusElements.BindActorLife",
+        "calls": 567901,
+        "completed": 567901,
+        "inclusive_ms_per_second": 38.74301834470931,
+        "selected_self_ms_per_second": 17.14107039006856,
+        "maximum_inclusive_call_ms": 0.17429999999762913
+      },
+      {
+        "name": "HostileAnimation.Move",
+        "calls": 64955,
+        "completed": 64955,
+        "inclusive_ms_per_second": 10.831775315695864,
+        "selected_self_ms_per_second": 10.831775315695864,
+        "maximum_inclusive_call_ms": 17.294899999996005
+      },
+      {
+        "name": "RPGStatusElements.Has",
+        "calls": 535523,
+        "completed": 535523,
+        "inclusive_ms_per_second": 45.94528871991613,
+        "selected_self_ms_per_second": 9.991370729317493,
+        "maximum_inclusive_call_ms": 0.1754999999974416
+      },
+      {
+        "name": "MazeBuilder.CellCenterCoordinates",
+        "calls": 374113,
+        "completed": 374113,
+        "inclusive_ms_per_second": 9.838204539142552,
+        "selected_self_ms_per_second": 9.838204539142552,
+        "maximum_inclusive_call_ms": 0.2868999999918742
+      },
+      {
+        "name": "EntrySafety.ProtectedPosition",
+        "calls": 287321,
+        "completed": 287321,
+        "inclusive_ms_per_second": 7.836468474140272,
+        "selected_self_ms_per_second": 7.836468474140272,
+        "maximum_inclusive_call_ms": 0.1620000000031041
+      },
+      {
+        "name": "MazeNavigator.CellCenterCoordinates",
+        "calls": 374113,
+        "completed": 374113,
+        "inclusive_ms_per_second": 17.511970309679946,
+        "selected_self_ms_per_second": 7.673765770537393,
+        "maximum_inclusive_call_ms": 0.2909999999900492
+      },
+      {
+        "name": "RPGStatusElements.CanInitiateAttack",
+        "calls": 114376,
+        "completed": 114376,
+        "inclusive_ms_per_second": 22.69338913173666,
+        "selected_self_ms_per_second": 7.336750695426069,
+        "maximum_inclusive_call_ms": 0.194000000007577
+      },
+      {
+        "name": "SoldierProgression.StateFor",
+        "calls": 868591,
+        "completed": 868591,
+        "inclusive_ms_per_second": 7.236222659814914,
+        "selected_self_ms_per_second": 7.236222659814914,
+        "maximum_inclusive_call_ms": 0.14009999999586853
+      },
+      {
+        "name": "Warden.Tick",
+        "calls": 70866,
+        "completed": 70866,
+        "inclusive_ms_per_second": 17.019226324560236,
+        "selected_self_ms_per_second": 7.028220270453175,
+        "maximum_inclusive_call_ms": 15.903899999997861
+      },
+      {
+        "name": "MazeNavigator.WorldToCell",
+        "calls": 89833,
+        "completed": 89833,
+        "inclusive_ms_per_second": 5.342345606204496,
+        "selected_self_ms_per_second": 5.342345606204496,
+        "maximum_inclusive_call_ms": 14.996400000001131
+      },
+      {
+        "name": "HostileMotionV2.Stop",
+        "calls": 12989,
+        "completed": 12989,
+        "inclusive_ms_per_second": 4.505707667986791,
+        "selected_self_ms_per_second": 3.9531893788882306,
+        "maximum_inclusive_call_ms": 15.033299999998917
+      },
+      {
+        "name": "RPGStatusElements.CanMoveVoluntarily",
+        "calls": 83277,
+        "completed": 83277,
+        "inclusive_ms_per_second": 10.908796770928106,
+        "selected_self_ms_per_second": 3.761430034292365,
+        "maximum_inclusive_call_ms": 0.24899999999661304
+      },
+      {
+        "name": "MazeNavigator.Distance",
+        "calls": 7228,
+        "completed": 7228,
+        "inclusive_ms_per_second": 3.650995814557769,
+        "selected_self_ms_per_second": 3.650995814557769,
+        "maximum_inclusive_call_ms": 5.157099999991033
+      },
+      {
+        "name": "RPGAbilityRules.RogueMovementMultiplier",
+        "calls": 78296,
+        "completed": 78296,
+        "inclusive_ms_per_second": 6.10465719081258,
+        "selected_self_ms_per_second": 3.4367190090200235,
+        "maximum_inclusive_call_ms": 0.42139999999335487
+      },
+      {
+        "name": "RPGAbilityRules.Derived",
+        "calls": 21644,
+        "completed": 21644,
+        "inclusive_ms_per_second": 8.020649563012936,
+        "selected_self_ms_per_second": 1.9987512212102585,
+        "maximum_inclusive_call_ms": 0.3148999999922353
+      },
+      {
+        "name": "NeilBrute.Tick",
+        "calls": 66662,
+        "completed": 66662,
+        "inclusive_ms_per_second": 1.7470926835738392,
+        "selected_self_ms_per_second": 1.7470926835738392,
+        "maximum_inclusive_call_ms": 0.08800000000519503
+      },
+      {
+        "name": "RPGStatusElements.LocomotionMultiplier",
+        "calls": 70292,
+        "completed": 70292,
+        "inclusive_ms_per_second": 7.098610127386026,
+        "selected_self_ms_per_second": 1.6338559579720755,
+        "maximum_inclusive_call_ms": 0.14080000001115422
+      },
+      {
+        "name": "RPGStatusElements.ObserveCell",
+        "calls": 67622,
+        "completed": 67622,
+        "inclusive_ms_per_second": 7.240653716393712,
+        "selected_self_ms_per_second": 1.5280301371740614,
+        "maximum_inclusive_call_ms": 0.17640000000085365
+      },
+      {
+        "name": "RPGStatusElements.HandleAIFlee",
+        "calls": 63308,
+        "completed": 63308,
+        "inclusive_ms_per_second": 6.4701494229245275,
+        "selected_self_ms_per_second": 1.3036048634402235,
+        "maximum_inclusive_call_ms": 0.15019999999310585
+      },
+      {
+        "name": "BossEncounter.TickActor",
+        "calls": 70866,
+        "completed": 70866,
+        "inclusive_ms_per_second": 1.1312707312889387,
+        "selected_self_ms_per_second": 1.1312707312889387,
+        "maximum_inclusive_call_ms": 0.07439999998837266
+      },
+      {
+        "name": "Hector.Tick",
+        "calls": 70866,
+        "completed": 70866,
+        "inclusive_ms_per_second": 1.1051839470783116,
+        "selected_self_ms_per_second": 1.1051839470783116,
+        "maximum_inclusive_call_ms": 0.08420000000342043
+      },
+      {
+        "name": "RPGAbilityRules.HostileDexMovementMultiplier",
+        "calls": 64958,
+        "completed": 64958,
+        "inclusive_ms_per_second": 1.0621272651565565,
+        "selected_self_ms_per_second": 1.0621272651565565,
+        "maximum_inclusive_call_ms": 0.0700000000080081
+      },
+      {
+        "name": "MagicForms.ConstrainWallMovement",
+        "calls": 64955,
+        "completed": 64955,
+        "inclusive_ms_per_second": 0.8387011021532631,
+        "selected_self_ms_per_second": 0.8387011021532631,
+        "maximum_inclusive_call_ms": 0.10190000000420696
+      },
+      {
+        "name": "CharacterProgressionSystem._RecomputeProgressionState",
+        "calls": 270,
+        "completed": 270,
+        "inclusive_ms_per_second": 0.8259374610913767,
+        "selected_self_ms_per_second": 0.8069493594634699,
+        "maximum_inclusive_call_ms": 0.3791000000035183
+      },
+      {
+        "name": "IdentityPerkDirector.EnsureState",
+        "calls": 21974,
+        "completed": 21974,
+        "inclusive_ms_per_second": 1.0951378875827693,
+        "selected_self_ms_per_second": 0.7992587038019345,
+        "maximum_inclusive_call_ms": 0.10520000000724394
+      },
+      {
+        "name": "CharacterProgressionSystem.ReconcileFeatOwnership",
+        "calls": 21914,
+        "completed": 21914,
+        "inclusive_ms_per_second": 1.040911146311464,
+        "selected_self_ms_per_second": 0.7469452597420089,
+        "maximum_inclusive_call_ms": 0.29960000000528453
+      },
+      {
+        "name": "EnemyUpdate.Tick",
+        "calls": 44552,
+        "completed": 44552,
+        "inclusive_ms_per_second": 0.712253633415278,
+        "selected_self_ms_per_second": 0.712253633415278,
+        "maximum_inclusive_call_ms": 0.06399999999473494
+      },
+      {
+        "name": "IdentityPerkDirector.EnsurePackage",
+        "calls": 21249,
+        "completed": 21249,
+        "inclusive_ms_per_second": 0.29587918378083483,
+        "selected_self_ms_per_second": 0.29587918378083483,
+        "maximum_inclusive_call_ms": 0.06260000000679611
+      },
+      {
+        "name": "CharacterProgressionSystem.RepairDuplicateFeatSelections",
+        "calls": 21914,
+        "completed": 21914,
+        "inclusive_ms_per_second": 0.29396588656945516,
+        "selected_self_ms_per_second": 0.29396588656945516,
+        "maximum_inclusive_call_ms": 0.06249999999852207
+      },
+      {
+        "name": "MazeNavigator.FindHostilePath",
+        "calls": 0,
+        "completed": 0,
+        "inclusive_ms_per_second": 0,
+        "selected_self_ms_per_second": 0,
+        "maximum_inclusive_call_ms": 0
+      },
+      {
+        "name": "BossEncounter.Owned",
+        "calls": 0,
+        "completed": 0,
+        "inclusive_ms_per_second": 0,
+        "selected_self_ms_per_second": 0,
+        "maximum_inclusive_call_ms": 0
+      }
+    ]
+  ],
+  "runs": [
+    {
+      "arm": "arm01-control",
+      "variant": "control",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 681,
+          "seconds": 29.959895,
+          "fps": 22.730386738671815,
+          "median_ms": 35.445,
+          "p95_ms": 80.457,
+          "p99_ms": 115.698,
+          "max_ms": 323.488,
+          "one_percent_low_fps": 5.994977921352741,
+          "below_budget_seconds": 29.323856999999997,
+          "longest_below_budget_seconds": 13.059180000000001,
+          "below_budget_runs_ge2s": 4
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 681,
+          "seconds": 29.959895,
+          "fps": 22.730386738671815,
+          "median_ms": 35.445,
+          "p95_ms": 80.457,
+          "p99_ms": 115.698,
+          "max_ms": 323.488,
+          "one_percent_low_fps": 5.994977921352741,
+          "below_budget_seconds": 29.323856999999997,
+          "longest_below_budget_seconds": 13.059180000000001,
+          "below_budget_runs_ge2s": 4
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      },
+      "raw": "/home/deck/deborah-benchmarks/warden-start-cpu/07cc818d/observer-series-v1/arm01-control",
+      "lua_errors_before_after": [
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "arm02-profiled",
+      "variant": "profiled",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 541,
+          "seconds": 29.945704000000003,
+          "fps": 18.066030439624996,
+          "median_ms": 41.912,
+          "p95_ms": 114.001,
+          "p99_ms": 146.003,
+          "max_ms": 311.606,
+          "one_percent_low_fps": 5.19710001818985,
+          "below_budget_seconds": 29.637408000000022,
+          "longest_below_budget_seconds": 28.811796000000015,
+          "below_budget_runs_ge2s": 1
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 541,
+          "seconds": 29.945704000000003,
+          "fps": 18.066030439624996,
+          "median_ms": 41.912,
+          "p95_ms": 114.001,
+          "p99_ms": 146.003,
+          "max_ms": 311.606,
+          "one_percent_low_fps": 5.19710001818985,
+          "below_budget_seconds": 29.637408000000022,
+          "longest_below_budget_seconds": 28.811796000000015,
+          "below_budget_runs_ge2s": 1
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      },
+      "raw": "/home/deck/deborah-benchmarks/warden-start-cpu/07cc818d/observer-series-v1/arm02-profiled",
+      "lua_errors_before_after": [
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "arm03-profiled",
+      "variant": "profiled",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 531,
+          "seconds": 29.96876,
+          "fps": 17.71845081344707,
+          "median_ms": 47.645,
+          "p95_ms": 109.178,
+          "p99_ms": 147.377,
+          "max_ms": 346.734,
+          "one_percent_low_fps": 4.8563649137347715,
+          "below_budget_seconds": 29.94505999999998,
+          "longest_below_budget_seconds": 29.73290599999998,
+          "below_budget_runs_ge2s": 1
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 531,
+          "seconds": 29.96876,
+          "fps": 17.71845081344707,
+          "median_ms": 47.645,
+          "p95_ms": 109.178,
+          "p99_ms": 147.377,
+          "max_ms": 346.734,
+          "one_percent_low_fps": 4.8563649137347715,
+          "below_budget_seconds": 29.94505999999998,
+          "longest_below_budget_seconds": 29.73290599999998,
+          "below_budget_runs_ge2s": 1
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      },
+      "raw": "/home/deck/deborah-benchmarks/warden-start-cpu/07cc818d/observer-series-v1/arm03-profiled",
+      "lua_errors_before_after": [
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "arm04-control",
+      "variant": "control",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 669,
+          "seconds": 29.934015,
+          "fps": 22.349156970757182,
+          "median_ms": 34.626,
+          "p95_ms": 82.645,
+          "p99_ms": 114.495,
+          "max_ms": 311.321,
+          "one_percent_low_fps": 6.21630430052812,
+          "below_budget_seconds": 28.967311000000024,
+          "longest_below_budget_seconds": 8.405757000000003,
+          "below_budget_runs_ge2s": 4
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 669,
+          "seconds": 29.934015,
+          "fps": 22.349156970757182,
+          "median_ms": 34.626,
+          "p95_ms": 82.645,
+          "p99_ms": 114.495,
+          "max_ms": 311.321,
+          "one_percent_low_fps": 6.21630430052812,
+          "below_budget_seconds": 28.967311000000024,
+          "longest_below_budget_seconds": 8.405757000000003,
+          "below_budget_runs_ge2s": 4
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      },
+      "raw": "/home/deck/deborah-benchmarks/warden-start-cpu/07cc818d/observer-series-v1/arm04-control",
+      "lua_errors_before_after": [
+        0,
+        0
+      ]
+    }
+  ],
+  "published_raw": [
+    {
+      "path": "docs/validation/STEAM_DECK_SELECTED_SELF_20261025/arm01-control.txt.gz",
+      "uncompressed_sha256": "54fe11fc71809ad5f6eb3a81fc841c06be778b53ac74f66ff2e7ae9b19243976",
+      "compressed_sha256": "3952ca16e5ca0a9c5169f28dffce98044ea3bc1066bb2c6c069a012c9f3eb65e"
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_SELECTED_SELF_20261025/arm02-profiled.txt.gz",
+      "uncompressed_sha256": "b8bc92b70f2283902d957a829cfd0ce798a05bf9a774221bd29f353ee95170d6",
+      "compressed_sha256": "8d5e35415b3ef62ba0a60f7d477ccc5cc2b563fe39e8bedabb30c63d9bcd9c76"
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_SELECTED_SELF_20261025/arm03-profiled.txt.gz",
+      "uncompressed_sha256": "997e13e66660484add52ba80ffdc2441a2b48be5c38a11c2795a37f73323cbc2",
+      "compressed_sha256": "aabe37f56d1f0d9e9f83417aeb5f4a1cadbb5ee8a74b76e2bc2531c1456eabb4"
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_SELECTED_SELF_20261025/arm04-control.txt.gz",
+      "uncompressed_sha256": "53f207210d8b60507ddd8266badaa59b660be270b3e6f61380990e4bee05759b",
+      "compressed_sha256": "b068b4c528bd68ba3f1918e42265cdc26cc771b8ee55de07ff35ceb54c634868"
+    }
+  ],
+  "limitations": [
+    "Selectedself is wall time exclusive only of otherselectedcalls, notexclusive CPU. UnselectedLua/native/engine descendants and enter/exit wrapper overhead remain.",
+    "Coroutineseparation prevents mixingstacks; doesnot prove methods neveryield or preempt. Async/offCPU timecannotbeconvertedtoCPU cost.",
+    "The profiledrankingrepeatsclosely but20.6%overheadprecludes usingits absolutevalues tojustify a costly sourcechange by itself. Nativeengine NextBot scope remainsincompletelyattributed.",
+    "No newsourcehypothesis orthroughput gain. Fullfive180s warmed/cappedacceptance andordinaryfullplayremainUNVERIFIED.",
+    "Copied rawplan inherited stale failed_preFPS_attempt metadata from earlier4b682 attribution. This07ccserieshadnoretry orprefpsfailure; allfourfreshcapturescompleted. Rawfoldernamewarden-start-cpu is legacy; these are selectedpublicmethodselfwall diagnostics."
+  ],
+  "decision": "Do not implementanotherlookup/movementmicrobasedonthis diagnostic. Retainedcodeunchanged. Need lower-overhead attribution that separates actualnative movement/pose/entry/close-defense work and estimates a substantial reducible cost; repeat source family onlywithnewmaterial rationale. No demonstrated40FPSpath. Originaltrancheends20:34:30UTC; no automaticnexttranche."
+}

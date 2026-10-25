@@ -1,0 +1,395 @@
+{
+	"context_count": 67,
+	"rows": [
+		{
+			"calls": 64572,
+			"completed_samples": 64572,
+			"maximum_sample_ms": 17.342900000002714,
+			"self_ms_per_second": 44.77511286778466,
+			"self_ms": 1792.0574999957212,
+			"estimated_ms_per_second": 107.41280628883888,
+			"name": "HostileMotionV2.MoveToward",
+			"sampled_ms": 4299.038300001613
+		},
+		{
+			"calls": 147698,
+			"completed_samples": 147698,
+			"maximum_sample_ms": 17.227900000008844,
+			"self_ms_per_second": 41.355103594084206,
+			"self_ms": 1655.1767000056116,
+			"estimated_ms_per_second": 76.80512396340922,
+			"name": "EntrySafety.BeforeAI",
+			"sampled_ms": 3074.011199997642
+		},
+		{
+			"calls": 66348,
+			"completed_samples": 66348,
+			"maximum_sample_ms": 17.370200000002,
+			"self_ms_per_second": 22.01929169791857,
+			"self_ms": 881.2895000034615,
+			"estimated_ms_per_second": 63.85393335697043,
+			"name": "EnemyRoster.Tick",
+			"sampled_ms": 2555.6590000003607
+		},
+		{
+			"calls": 74001,
+			"completed_samples": 74001,
+			"maximum_sample_ms": 2.725799999993228,
+			"self_ms_per_second": 27.223569446827312,
+			"self_ms": 1089.5830000004878,
+			"estimated_ms_per_second": 52.52548619081224,
+			"name": "EnemyRoster.TickCloseDefense",
+			"sampled_ms": 2102.254699996337
+		},
+		{
+			"calls": 532830,
+			"completed_samples": 532830,
+			"maximum_sample_ms": 0.20539999999868996,
+			"self_ms_per_second": 9.704921685259801,
+			"self_ms": 388.4250999946488,
+			"estimated_ms_per_second": 45.24530892544097,
+			"name": "RPGStatusElements.Has",
+			"sampled_ms": 1810.876399996701
+		},
+		{
+			"calls": 371351,
+			"completed_samples": 371351,
+			"maximum_sample_ms": 0.14570000000446726,
+			"self_ms_per_second": 23.847082084879634,
+			"self_ms": 954.4440999939923,
+			"estimated_ms_per_second": 41.02294138190741,
+			"name": "EntrySafety.ExactCell",
+			"sampled_ms": 1641.8823999933636
+		},
+		{
+			"calls": 565301,
+			"completed_samples": 565301,
+			"maximum_sample_ms": 0.20450000000948876,
+			"self_ms_per_second": 16.955074103207927,
+			"self_ms": 678.6016999970172,
+			"estimated_ms_per_second": 38.28840160006758,
+			"name": "RPGStatusElements.BindActorLife",
+			"sampled_ms": 1532.4365000008129
+		},
+		{
+			"calls": 778771,
+			"completed_samples": 778771,
+			"maximum_sample_ms": 0.20489999999995234,
+			"self_ms_per_second": 24.567710905668473,
+			"self_ms": 983.2861999976501,
+			"estimated_ms_per_second": 30.578017266374125,
+			"name": "RPGAbilityRules.ProgressionState",
+			"sampled_ms": 1223.8398000026223
+		},
+		{
+			"calls": 64572,
+			"completed_samples": 64572,
+			"maximum_sample_ms": 15.210300000006782,
+			"self_ms_per_second": 17.364470906664955,
+			"self_ms": 694.9872000018047,
+			"estimated_ms_per_second": 24.637437411448623,
+			"name": "EntrySafety.MovementAllowed",
+			"sampled_ms": 986.0769000010379
+		},
+		{
+			"calls": 113819,
+			"completed_samples": 113819,
+			"maximum_sample_ms": 0.5078000000082739,
+			"self_ms_per_second": 7.364095427250343,
+			"self_ms": 294.7369999949956,
+			"estimated_ms_per_second": 22.38408472501199,
+			"name": "RPGStatusElements.CanInitiateAttack",
+			"sampled_ms": 895.8897999977751
+		},
+		{
+			"calls": 371351,
+			"completed_samples": 371351,
+			"maximum_sample_ms": 0.14360000000124273,
+			"self_ms_per_second": 7.563023471613572,
+			"self_ms": 302.6988000001296,
+			"estimated_ms_per_second": 17.175859297027774,
+			"name": "MazeNavigator.CellCenterCoordinates",
+			"sampled_ms": 687.4382999993713
+		},
+		{
+			"calls": 70497,
+			"completed_samples": 70497,
+			"maximum_sample_ms": 0.991900000002488,
+			"self_ms_per_second": 6.8982643034812146,
+			"self_ms": 276.0928000005265,
+			"estimated_ms_per_second": 16.35996898345777,
+			"name": "Warden.Tick",
+			"sampled_ms": 654.7835000008888
+		},
+		{
+			"calls": 82795,
+			"completed_samples": 82795,
+			"maximum_sample_ms": 0.12710000000026866,
+			"self_ms_per_second": 3.7944066543592654,
+			"self_ms": 151.86549999454257,
+			"estimated_ms_per_second": 10.877637210735422,
+			"name": "RPGStatusElements.CanMoveVoluntarily",
+			"sampled_ms": 435.36129999922935
+		},
+		{
+			"calls": 64572,
+			"completed_samples": 64572,
+			"maximum_sample_ms": 17.20799999999656,
+			"self_ms_per_second": 10.069382408028149,
+			"self_ms": 403.0121000010922,
+			"estimated_ms_per_second": 10.069382408028149,
+			"name": "HostileAnimation.Move",
+			"sampled_ms": 403.0121000010922
+		},
+		{
+			"calls": 371351,
+			"completed_samples": 371351,
+			"maximum_sample_ms": 0.1417999999944186,
+			"self_ms_per_second": 9.612835825414203,
+			"self_ms": 384.73949999924173,
+			"estimated_ms_per_second": 9.612835825414203,
+			"name": "MazeBuilder.CellCenterCoordinates",
+			"sampled_ms": 384.73949999924173
+		},
+		{
+			"calls": 21744,
+			"completed_samples": 21744,
+			"maximum_sample_ms": 0.19199999999841566,
+			"self_ms_per_second": 1.9718481912724777,
+			"self_ms": 78.92029999918293,
+			"estimated_ms_per_second": 7.8976567306519945,
+			"name": "RPGAbilityRules.Derived",
+			"sampled_ms": 316.091999998946
+		},
+		{
+			"calls": 285780,
+			"completed_samples": 285780,
+			"maximum_sample_ms": 0.3011999999955606,
+			"self_ms_per_second": 7.747677408073727,
+			"self_ms": 310.08930000209034,
+			"estimated_ms_per_second": 7.747677408073727,
+			"name": "EntrySafety.ProtectedPosition",
+			"sampled_ms": 310.08930000209034
+		},
+		{
+			"calls": 865571,
+			"completed_samples": 865571,
+			"maximum_sample_ms": 0.2006999999935033,
+			"self_ms_per_second": 7.2953008738764575,
+			"self_ms": 291.9836000047695,
+			"estimated_ms_per_second": 7.2953008738764575,
+			"name": "SoldierProgression.StateFor",
+			"sampled_ms": 291.9836000047695
+		},
+		{
+			"calls": 67239,
+			"completed_samples": 67239,
+			"maximum_sample_ms": 0.15910000000474156,
+			"self_ms_per_second": 1.5197939676516647,
+			"self_ms": 60.82750000476267,
+			"estimated_ms_per_second": 7.139455000272776,
+			"name": "RPGStatusElements.ObserveCell",
+			"sampled_ms": 285.7461000020436
+		},
+		{
+			"calls": 69908,
+			"completed_samples": 69908,
+			"maximum_sample_ms": 0.20630000000210202,
+			"self_ms_per_second": 1.5942751777650803,
+			"self_ms": 63.80849999881377,
+			"estimated_ms_per_second": 7.009953637956587,
+			"name": "RPGStatusElements.LocomotionMultiplier",
+			"sampled_ms": 280.56299999995815
+		},
+		{
+			"calls": 63034,
+			"completed_samples": 63034,
+			"maximum_sample_ms": 0.12110000000120635,
+			"self_ms_per_second": 1.2974821712771067,
+			"self_ms": 51.92979999880265,
+			"estimated_ms_per_second": 6.385885546262552,
+			"name": "RPGStatusElements.HandleAIFlee",
+			"sampled_ms": 255.58559999807073
+		},
+		{
+			"calls": 77911,
+			"completed_samples": 77911,
+			"maximum_sample_ms": 0.1508000000001175,
+			"self_ms_per_second": 3.478499885709666,
+			"self_ms": 139.2218000058989,
+			"estimated_ms_per_second": 6.129696167794003,
+			"name": "RPGAbilityRules.RogueMovementMultiplier",
+			"sampled_ms": 245.33200000247746
+		},
+		{
+			"calls": 89257,
+			"completed_samples": 89257,
+			"maximum_sample_ms": 0.1407000000028802,
+			"self_ms_per_second": 5.025218023567186,
+			"self_ms": 201.12689999999134,
+			"estimated_ms_per_second": 5.025218023567186,
+			"name": "MazeNavigator.WorldToCell",
+			"sampled_ms": 201.12689999999134
+		},
+		{
+			"calls": 12946,
+			"completed_samples": 12946,
+			"maximum_sample_ms": 0.14029999999820575,
+			"self_ms_per_second": 3.88001132495893,
+			"self_ms": 155.2917000006886,
+			"estimated_ms_per_second": 4.0563826309673505,
+			"name": "HostileMotionV2.Stop",
+			"sampled_ms": 162.35070000030305
+		},
+		{
+			"calls": 7202,
+			"completed_samples": 7202,
+			"maximum_sample_ms": 2.8853999999967073,
+			"self_ms_per_second": 3.246978503937624,
+			"self_ms": 129.9555000003778,
+			"estimated_ms_per_second": 3.246978503937624,
+			"name": "MazeNavigator.Distance",
+			"sampled_ms": 129.9555000003778
+		},
+		{
+			"calls": 66348,
+			"completed_samples": 66348,
+			"maximum_sample_ms": 0.05639999999118572,
+			"self_ms_per_second": 1.723539179653436,
+			"self_ms": 68.98210000173322,
+			"estimated_ms_per_second": 1.723539179653436,
+			"name": "NeilBrute.Tick",
+			"sampled_ms": 68.98210000173322
+		},
+		{
+			"calls": 70497,
+			"completed_samples": 70497,
+			"maximum_sample_ms": 0.0676999999882355,
+			"self_ms_per_second": 1.1520301869334126,
+			"self_ms": 46.10830000164867,
+			"estimated_ms_per_second": 1.1520301869334126,
+			"name": "BossEncounter.TickActor",
+			"sampled_ms": 46.10830000164867
+		},
+		{
+			"calls": 70497,
+			"completed_samples": 70497,
+			"maximum_sample_ms": 0.10569999999177071,
+			"self_ms_per_second": 1.0370827679153898,
+			"self_ms": 41.507699999485226,
+			"estimated_ms_per_second": 1.0370827679153898,
+			"name": "Hector.Tick",
+			"sampled_ms": 41.507699999485226
+		},
+		{
+			"calls": 22077,
+			"completed_samples": 22077,
+			"maximum_sample_ms": 0.07600000000707041,
+			"self_ms_per_second": 0.7272224440888753,
+			"self_ms": 29.105999999217147,
+			"estimated_ms_per_second": 1.0323130721546305,
+			"name": "IdentityPerkDirector.EnsureState",
+			"sampled_ms": 41.31679999916571
+		},
+		{
+			"calls": 22014,
+			"completed_samples": 22014,
+			"maximum_sample_ms": 0.1718999999980042,
+			"self_ms_per_second": 0.7530372668166131,
+			"self_ms": 30.139200000675714,
+			"estimated_ms_per_second": 1.0157478113899892,
+			"name": "CharacterProgressionSystem.ReconcileFeatOwnership",
+			"sampled_ms": 40.653800000029605
+		},
+		{
+			"calls": 64574,
+			"completed_samples": 64574,
+			"maximum_sample_ms": 0.06170000000338405,
+			"self_ms_per_second": 1.0132217965441321,
+			"self_ms": 40.55270000139899,
+			"estimated_ms_per_second": 1.0132217965441321,
+			"name": "RPGAbilityRules.HostileDexMovementMultiplier",
+			"sampled_ms": 40.55270000139899
+		},
+		{
+			"calls": 64572,
+			"completed_samples": 64572,
+			"maximum_sample_ms": 0.07409999999197225,
+			"self_ms_per_second": 0.8742684912929112,
+			"self_ms": 34.99129999867989,
+			"estimated_ms_per_second": 0.8742684912929112,
+			"name": "MagicForms.ConstrainWallMovement",
+			"sampled_ms": 34.99129999867989
+		},
+		{
+			"calls": 44358,
+			"completed_samples": 44358,
+			"maximum_sample_ms": 0.07779999999968368,
+			"self_ms_per_second": 0.6808322183041507,
+			"self_ms": 27.249299999610344,
+			"estimated_ms_per_second": 0.6808322183041507,
+			"name": "EnemyUpdate.Tick",
+			"sampled_ms": 27.249299999610344
+		},
+		{
+			"calls": 270,
+			"completed_samples": 270,
+			"maximum_sample_ms": 0.39989999999079373,
+			"self_ms_per_second": 0.6626079329218227,
+			"self_ms": 26.51990000015303,
+			"estimated_ms_per_second": 0.6775241632186132,
+			"name": "CharacterProgressionSystem._RecomputeProgressionState",
+			"sampled_ms": 27.11689999999578
+		},
+		{
+			"calls": 21472,
+			"completed_samples": 21472,
+			"maximum_sample_ms": 0.06779999999650954,
+			"self_ms_per_second": 0.30509062806575526,
+			"self_ms": 12.210799999948563,
+			"estimated_ms_per_second": 0.30509062806575526,
+			"name": "IdentityPerkDirector.EnsurePackage",
+			"sampled_ms": 12.210799999948563
+		},
+		{
+			"calls": 22014,
+			"completed_samples": 22014,
+			"maximum_sample_ms": 0.05230000000722157,
+			"self_ms_per_second": 0.26271054457337617,
+			"self_ms": 10.51459999935389,
+			"estimated_ms_per_second": 0.26271054457337617,
+			"name": "CharacterProgressionSystem.RepairDuplicateFeatSelections",
+			"sampled_ms": 10.51459999935389
+		},
+		{
+			"calls": 0,
+			"completed_samples": 0,
+			"maximum_sample_ms": 0,
+			"self_ms_per_second": 0,
+			"self_ms": 0,
+			"estimated_ms_per_second": 0,
+			"name": "MazeNavigator.FindHostilePath",
+			"sampled_ms": 0
+		},
+		{
+			"calls": 0,
+			"completed_samples": 0,
+			"maximum_sample_ms": 0,
+			"self_ms_per_second": 0,
+			"self_ms": 0,
+			"estimated_ms_per_second": 0,
+			"name": "BossEncounter.Owned",
+			"sampled_ms": 0
+		}
+	],
+	"self_mode": true,
+	"open_context_frames": 0,
+	"mismatches": [],
+	"restored": true,
+	"scope": "Self-mode subtracts only nested selected-provider wall scopes using per-coroutine reusable frames; not exclusive CPU or complete AI attribution. Instrumented call-shape/JIT/clock overhead and unselected descendants remain. Zero open frames and zero capture Lua errors required. Inclusive wall estimates overlap; when sampling=1 allselectedrareinitializationcalls measured. Events>=8ms capped128; observerchangescallshape/JIT andisnotexclusiveCPU. Sampling128retainsoriginalsparsemode; deterministic sampling can alias. Low sample counts are weak evidence. Maximum is sampled only; errors do not complete samples. Counter/provider observation affects JIT and performance. Not acceptance FPS.",
+	"reason": "explicit",
+	"sampling": 1,
+	"seconds": 40.023517200000015,
+	"bindings": 38,
+	"root_ms": 12782.033499998206
+}
