@@ -1,0 +1,555 @@
+{
+  "root": "/home/deck/deborah-benchmarks/low-overhead-native/a4ccd068/confirmation-v1",
+  "rows": [
+    {
+      "arm": "arm01-on",
+      "variant": "on",
+      "metrics": {
+        "frames": 1384,
+        "seconds": 59.980332000000004,
+        "fps": 23.074230399391585,
+        "median_ms": 36.429,
+        "p95_ms": 75.395,
+        "p99_ms": 93.391,
+        "max_ms": 306.954,
+        "one_percent_low_fps": 7.304430397908846,
+        "below_budget_seconds": 58.57826999999996,
+        "longest_below_budget_seconds": 10.401470000000009,
+        "below_budget_runs_ge2s": 8
+      },
+      "source": "a4ccd068938a5f1dfa70b6476ad6d7983f16abeb",
+      "full_acceptance_checks_passed": false,
+      "acceptance_issues": [
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "alignment": {
+        "client_host_offset_seconds": [
+          [
+            106233.14417970146,
+            106233.14930212405
+          ],
+          [
+            106233.14193671323,
+            106233.14756296689
+          ]
+        ],
+        "server_host_offset_seconds": [
+          [
+            106233.14533990629,
+            106233.15041505203
+          ],
+          [
+            106233.14303441701,
+            106233.14799943226
+          ]
+        ],
+        "server_minus_client_seconds_bounds": [
+          -0.006235350578208454,
+          0.004528549878159538
+        ],
+        "local_start_end_delta_bounds_seconds": [
+          [
+            -0.006235350578208454,
+            0.003962217757361941
+          ],
+          [
+            -0.006062719025067054,
+            0.004528549878159538
+          ]
+        ],
+        "refinement": "Endpoint-local clock brackets, same unchanged2msFSguard; no whole-window constant-host-offset assumption. Nominal same-process SysTime must agree with both endpoint-local brackets. Local marks separated~8s/3s; unmeasured nonlinear clock behavior remains a limit.",
+        "nominal_delta_seconds": 0,
+        "uncertainty_ms": 10.763900456367992
+      },
+      "probe_restored": true,
+      "max_active": 1,
+      "allocated_kb": 8193.4296875,
+      "beforeai": {
+        "corresponding_rendered_frames": 1384,
+        "window_seconds": 59.98032590000001,
+        "nominal": {
+          "calls_entered": 236782,
+          "inclusive_overlap_ms": 3622.153700004631,
+          "inclusive_wall_ms_per_rendered_frame": 2.617163078038028,
+          "boundary_crossing_calls": 0
+        },
+        "alignment_lower": {
+          "calls_entered": 236778,
+          "inclusive_overlap_ms": 3621.7698000046,
+          "inclusive_wall_ms_per_rendered_frame": 2.616885693644942,
+          "boundary_crossing_calls": 0
+        },
+        "alignment_upper": {
+          "calls_entered": 236782,
+          "inclusive_overlap_ms": 3622.153700004631,
+          "inclusive_wall_ms_per_rendered_frame": 2.617163078038028,
+          "boundary_crossing_calls": 0
+        },
+        "entered_calls_per_frame": 171.08526011560693,
+        "call_wall_ms": {
+          "median": 0.01369999998246385,
+          "p95": 0.02739999999334941,
+          "p99": 0.05170000000020991,
+          "max": 1.2562999999943258
+        },
+        "calls_ge10ms": [],
+        "frame_cost_p95_ms": 4.782700000191653,
+        "frame_cost_p99_ms": 6.360499999829017,
+        "top_cost_frames": [
+          {
+            "frame": 44,
+            "frame_ms": 216.768,
+            "inclusive_beforeai_ms": 17.58209999981375
+          },
+          {
+            "frame": 93,
+            "frame_ms": 127.78,
+            "inclusive_beforeai_ms": 12.24590000002479
+          },
+          {
+            "frame": 92,
+            "frame_ms": 137.081,
+            "inclusive_beforeai_ms": 10.417400000150678
+          },
+          {
+            "frame": 45,
+            "frame_ms": 110.536,
+            "inclusive_beforeai_ms": 9.697099999883108
+          },
+          {
+            "frame": 1156,
+            "frame_ms": 107.608,
+            "inclusive_beforeai_ms": 9.194900000068174
+          },
+          {
+            "frame": 1155,
+            "frame_ms": 110.035,
+            "inclusive_beforeai_ms": 7.715399999767669
+          },
+          {
+            "frame": 419,
+            "frame_ms": 89.539,
+            "inclusive_beforeai_ms": 7.6200999999400665
+          },
+          {
+            "frame": 1262,
+            "frame_ms": 67.431,
+            "inclusive_beforeai_ms": 7.24220000009268
+          },
+          {
+            "frame": 94,
+            "frame_ms": 94.171,
+            "inclusive_beforeai_ms": 7.18060000009757
+          },
+          {
+            "frame": 1157,
+            "frame_ms": 93.391,
+            "inclusive_beforeai_ms": 6.961099999813314
+          },
+          {
+            "frame": 1152,
+            "frame_ms": 69.577,
+            "inclusive_beforeai_ms": 6.93390000012073
+          },
+          {
+            "frame": 1028,
+            "frame_ms": 90.541,
+            "inclusive_beforeai_ms": 6.753700000217577
+          },
+          {
+            "frame": 523,
+            "frame_ms": 58.651,
+            "inclusive_beforeai_ms": 6.544800000042983
+          },
+          {
+            "frame": 812,
+            "frame_ms": 65.74,
+            "inclusive_beforeai_ms": 6.360499999829017
+          },
+          {
+            "frame": 422,
+            "frame_ms": 82.029,
+            "inclusive_beforeai_ms": 6.332100000051355
+          }
+        ],
+        "limits": "Inclusive elapsed wall time only, includes native work/preemption/wait; not exclusive CPU. max_active<=1 observed but native internals opaque. No sum with overlapping NextBot/movement. Endpoint-local FS clocks frozen2msguards; nominal same-process SysTime supported by both local brackets, interval sensitivity reported. No whole-window constant offset claim; local drift below guard observed but exact intra-bracket drift unresolved. Cost excludes recorder work before first timestamp/after finish timestamp; matched observer screen captures total perturbation."
+      }
+    },
+    {
+      "arm": "arm02-off",
+      "variant": "off",
+      "metrics": {
+        "frames": 1344,
+        "seconds": 59.933631999999996,
+        "fps": 22.424804824109444,
+        "median_ms": 37.844,
+        "p95_ms": 77.484,
+        "p99_ms": 97.612,
+        "max_ms": 331.987,
+        "one_percent_low_fps": 7.547995818410317,
+        "below_budget_seconds": 58.29002400000004,
+        "longest_below_budget_seconds": 8.795682999999995,
+        "below_budget_runs_ge2s": 7
+      },
+      "source": "a4ccd068938a5f1dfa70b6476ad6d7983f16abeb",
+      "full_acceptance_checks_passed": false,
+      "acceptance_issues": [
+        "unrendered terminal interval exceeds spike budget or is unknown",
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "alignment": {
+        "client_host_offset_seconds": [
+          [
+            106403.27632290151,
+            106403.28150877044
+          ],
+          [
+            106403.27490064997,
+            106403.28014898046
+          ]
+        ],
+        "server_host_offset_seconds": [
+          [
+            106403.27636382994,
+            106403.28131489885
+          ],
+          [
+            106403.2754030896,
+            106403.28080394327
+          ]
+        ],
+        "server_minus_client_seconds_bounds": [
+          -0.005903293305891566,
+          0.005144940500031225
+        ],
+        "local_start_end_delta_bounds_seconds": [
+          [
+            -0.00499199733894784,
+            0.005144940500031225
+          ],
+          [
+            -0.005903293305891566,
+            0.004745890852063894
+          ]
+        ],
+        "refinement": "Endpoint-local clock brackets, same unchanged2msFSguard; no whole-window constant-host-offset assumption. Nominal same-process SysTime must agree with both endpoint-local brackets. Local marks separated~8s/3s; unmeasured nonlinear clock behavior remains a limit.",
+        "nominal_delta_seconds": 0,
+        "uncertainty_ms": 11.048233805922791
+      },
+      "probe_restored": true,
+      "max_active": 0,
+      "allocated_kb": 0,
+      "beforeai": {
+        "calls": "unmeasured in observer-off; no wrapper",
+        "cost": "unmeasured"
+      }
+    },
+    {
+      "arm": "arm03-off",
+      "variant": "off",
+      "metrics": {
+        "frames": 1370,
+        "seconds": 59.950545,
+        "fps": 22.852169233824313,
+        "median_ms": 36.795,
+        "p95_ms": 77.338,
+        "p99_ms": 110.244,
+        "max_ms": 310.009,
+        "one_percent_low_fps": 7.246211783996637,
+        "below_budget_seconds": 58.82048300000005,
+        "longest_below_budget_seconds": 12.379918000000007,
+        "below_budget_runs_ge2s": 8
+      },
+      "source": "a4ccd068938a5f1dfa70b6476ad6d7983f16abeb",
+      "full_acceptance_checks_passed": false,
+      "acceptance_issues": [
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "alignment": {
+        "client_host_offset_seconds": [
+          [
+            106570.94307111161,
+            106570.94824075737
+          ],
+          [
+            106570.9406888701,
+            106570.94644432377
+          ]
+        ],
+        "server_host_offset_seconds": [
+          [
+            106570.9438394782,
+            106570.9487580087
+          ],
+          [
+            106570.9420939686,
+            106570.94705746067
+          ]
+        ],
+        "server_minus_client_seconds_bounds": [
+          -0.006368590562487952,
+          0.004401279162266292
+        ],
+        "local_start_end_delta_bounds_seconds": [
+          [
+            -0.005686897085979581,
+            0.004401279162266292
+          ],
+          [
+            -0.006368590562487952,
+            0.004350355171482079
+          ]
+        ],
+        "refinement": "Endpoint-local clock brackets, same unchanged2msFSguard; no whole-window constant-host-offset assumption. Nominal same-process SysTime must agree with both endpoint-local brackets. Local marks separated~8s/3s; unmeasured nonlinear clock behavior remains a limit.",
+        "nominal_delta_seconds": 0,
+        "uncertainty_ms": 10.769869724754244
+      },
+      "probe_restored": true,
+      "max_active": 0,
+      "allocated_kb": 0,
+      "beforeai": {
+        "calls": "unmeasured in observer-off; no wrapper",
+        "cost": "unmeasured"
+      }
+    },
+    {
+      "arm": "arm04-on",
+      "variant": "on",
+      "metrics": {
+        "frames": 1329,
+        "seconds": 59.978741,
+        "fps": 22.15785089586992,
+        "median_ms": 37.135,
+        "p95_ms": 79.36,
+        "p99_ms": 115.436,
+        "max_ms": 313.373,
+        "one_percent_low_fps": 6.824374716666586,
+        "below_budget_seconds": 58.61030199999996,
+        "longest_below_budget_seconds": 20.94421600000001,
+        "below_budget_runs_ge2s": 5
+      },
+      "source": "a4ccd068938a5f1dfa70b6476ad6d7983f16abeb",
+      "full_acceptance_checks_passed": false,
+      "acceptance_issues": [
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "alignment": {
+        "client_host_offset_seconds": [
+          [
+            106738.90833240587,
+            106738.91351352846
+          ],
+          [
+            106738.90680359236,
+            106738.91201088444
+          ]
+        ],
+        "server_host_offset_seconds": [
+          [
+            106738.90754096556,
+            106738.91300973449
+          ],
+          [
+            106738.90664332717,
+            106738.9114293424
+          ]
+        ],
+        "server_minus_client_seconds_bounds": [
+          -0.004677328615798615,
+          0.005972562896204181
+        ],
+        "local_start_end_delta_bounds_seconds": [
+          [
+            -0.004677328615798615,
+            0.005972562896204181
+          ],
+          [
+            -0.0046257500507636,
+            0.005367557270801626
+          ]
+        ],
+        "refinement": "Endpoint-local clock brackets, same unchanged2msFSguard; no whole-window constant-host-offset assumption. Nominal same-process SysTime must agree with both endpoint-local brackets. Local marks separated~8s/3s; unmeasured nonlinear clock behavior remains a limit.",
+        "nominal_delta_seconds": 0,
+        "uncertainty_ms": 10.649891512002796
+      },
+      "probe_restored": true,
+      "max_active": 1,
+      "allocated_kb": 8193.4296875,
+      "beforeai": {
+        "corresponding_rendered_frames": 1329,
+        "window_seconds": 59.97873659999999,
+        "nominal": {
+          "calls_entered": 236391,
+          "inclusive_overlap_ms": 3628.458500003589,
+          "inclusive_wall_ms_per_rendered_frame": 2.7302170805143633,
+          "boundary_crossing_calls": 0
+        },
+        "alignment_lower": {
+          "calls_entered": 236391,
+          "inclusive_overlap_ms": 3628.458500003589,
+          "inclusive_wall_ms_per_rendered_frame": 2.7302170805143633,
+          "boundary_crossing_calls": 0
+        },
+        "alignment_upper": {
+          "calls_entered": 236391,
+          "inclusive_overlap_ms": 3628.458500003589,
+          "inclusive_wall_ms_per_rendered_frame": 2.7302170805143633,
+          "boundary_crossing_calls": 0
+        },
+        "entered_calls_per_frame": 177.87133182844244,
+        "call_wall_ms": {
+          "median": 0.013300000006211121,
+          "p95": 0.02729999999928623,
+          "p99": 0.05210000000488435,
+          "max": 21.301100000016504
+        },
+        "calls_ge10ms": [
+          {
+            "offset_seconds": 9.698738199999994,
+            "wall_ms": 19.891600000008225
+          },
+          {
+            "offset_seconds": 14.600991100000002,
+            "wall_ms": 19.383300000001213
+          },
+          {
+            "offset_seconds": 57.65955919999999,
+            "wall_ms": 21.301100000016504
+          }
+        ],
+        "frame_cost_p95_ms": 5.155199999961724,
+        "frame_cost_p99_ms": 8.84519999996769,
+        "top_cost_frames": [
+          {
+            "frame": 1295,
+            "frame_ms": 90.874,
+            "inclusive_beforeai_ms": 26.731600000033495
+          },
+          {
+            "frame": 202,
+            "frame_ms": 50.951,
+            "inclusive_beforeai_ms": 22.37579999996342
+          },
+          {
+            "frame": 317,
+            "frame_ms": 36.886,
+            "inclusive_beforeai_ms": 19.98559999999827
+          },
+          {
+            "frame": 45,
+            "frame_ms": 187.22,
+            "inclusive_beforeai_ms": 15.384100000076728
+          },
+          {
+            "frame": 564,
+            "frame_ms": 126.507,
+            "inclusive_beforeai_ms": 11.088300000025697
+          },
+          {
+            "frame": 567,
+            "frame_ms": 141.5,
+            "inclusive_beforeai_ms": 11.070000000273694
+          },
+          {
+            "frame": 819,
+            "frame_ms": 131.366,
+            "inclusive_beforeai_ms": 10.25790000059601
+          },
+          {
+            "frame": 97,
+            "frame_ms": 102.891,
+            "inclusive_beforeai_ms": 10.172099999934403
+          },
+          {
+            "frame": 566,
+            "frame_ms": 148.325,
+            "inclusive_beforeai_ms": 9.822599999992576
+          },
+          {
+            "frame": 96,
+            "frame_ms": 111.978,
+            "inclusive_beforeai_ms": 9.575499999940007
+          },
+          {
+            "frame": 46,
+            "frame_ms": 103.02,
+            "inclusive_beforeai_ms": 9.417599999949289
+          },
+          {
+            "frame": 820,
+            "frame_ms": 121.202,
+            "inclusive_beforeai_ms": 9.402199999755112
+          },
+          {
+            "frame": 565,
+            "frame_ms": 128.438,
+            "inclusive_beforeai_ms": 8.876099999966414
+          },
+          {
+            "frame": 818,
+            "frame_ms": 128.748,
+            "inclusive_beforeai_ms": 8.84519999996769
+          },
+          {
+            "frame": 1298,
+            "frame_ms": 115.436,
+            "inclusive_beforeai_ms": 8.571200000034196
+          }
+        ],
+        "limits": "Inclusive elapsed wall time only, includes native work/preemption/wait; not exclusive CPU. max_active<=1 observed but native internals opaque. No sum with overlapping NextBot/movement. Endpoint-local FS clocks frozen2msguards; nominal same-process SysTime supported by both local brackets, interval sensitivity reported. No whole-window constant offset claim; local drift below guard observed but exact intra-bracket drift unresolved. Cost excludes recorder work before first timestamp/after finish timestamp; matched observer screen captures total perturbation."
+      }
+    }
+  ],
+  "means": {
+    "off": {
+      "fps": 22.63848702896688,
+      "p95_ms": 77.411,
+      "p99_ms": 103.928,
+      "max_ms": 320.99800000000005,
+      "one_percent_low_fps": 7.397103801203476,
+      "longest_below_budget_seconds": 10.5878005
+    },
+    "on": {
+      "fps": 22.616040647630754,
+      "p95_ms": 77.3775,
+      "p99_ms": 104.4135,
+      "max_ms": 310.1635,
+      "one_percent_low_fps": 7.064402557287716,
+      "longest_below_budget_seconds": 15.672843000000011
+    }
+  },
+  "observer_screen": {
+    "mean_throughput_penalty_percent": 0.09915141991336807,
+    "control_fps_range": [
+      22.424804824109444,
+      22.852169233824313
+    ],
+    "control_range_percent_of_mean": 1.887778141569437,
+    "all_pair_penalty_percent_range": [
+      -2.8960143928830506,
+      3.0383038513766447
+    ],
+    "metric_change_percent_on_vs_off": {
+      "fps": -0.09915141991336807,
+      "p95_ms": -0.043275503481421396,
+      "p99_ms": 0.4671503348472106,
+      "max_ms": -3.375254674483963,
+      "one_percent_low_fps": -4.497723066447056,
+      "longest_below_budget_seconds": 48.02737357962128
+    },
+    "limits": "Descriptive repeated short runs, not a statistical confidence interval. Worst cross-condition pairing plus control spread screen unresolved 5% bound conservatively; mean below5 alone insufficient. Pacing must also be interpreted. Ordinary variation not source gain."
+  },
+  "source_change": false
+}

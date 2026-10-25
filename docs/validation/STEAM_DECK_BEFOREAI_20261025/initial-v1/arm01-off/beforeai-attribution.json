@@ -1,0 +1,72 @@
+{
+  "arm": "arm01-off",
+  "variant": "off",
+  "metrics": {
+    "frames": 1412,
+    "seconds": 59.944275999999995,
+    "fps": 23.555209841887155,
+    "median_ms": 35.161,
+    "p95_ms": 73.757,
+    "p99_ms": 96.017,
+    "max_ms": 318.752,
+    "one_percent_low_fps": 7.4513427319603,
+    "below_budget_seconds": 57.933126,
+    "longest_below_budget_seconds": 8.902678000000003,
+    "below_budget_runs_ge2s": 8
+  },
+  "source": "a4ccd068938a5f1dfa70b6476ad6d7983f16abeb",
+  "full_acceptance_checks_passed": false,
+  "acceptance_issues": [
+    "unrendered terminal interval exceeds spike budget or is unknown",
+    "average FPS below budget",
+    "p95 exceeds frame budget",
+    "p99 exceeds spike budget",
+    "continuous drop lasting at least two seconds"
+  ],
+  "alignment": {
+    "client_host_offset_seconds": [
+      [
+        105402.167022385,
+        105402.1721607765
+      ],
+      [
+        105402.16711588697,
+        105402.17219561746
+      ]
+    ],
+    "server_host_offset_seconds": [
+      [
+        105402.1674829619,
+        105402.17289963082
+      ],
+      [
+        105402.16710866605,
+        105402.17230757338
+      ]
+    ],
+    "server_minus_client_seconds_bounds": [
+      -0.005877245828742161,
+      0.005086951408884488
+    ],
+    "local_start_end_delta_bounds_seconds": [
+      [
+        -0.005877245828742161,
+        0.004677814606111497
+      ],
+      [
+        -0.0051916864031227306,
+        0.005086951408884488
+      ]
+    ],
+    "refinement": "Endpoint-local clock brackets, same unchanged2msFSguard; no whole-window constant-host-offset assumption. Nominal same-process SysTime must agree with both endpoint-local brackets. Local marks separated~8s/3s; unmeasured nonlinear clock behavior remains a limit.",
+    "nominal_delta_seconds": 0,
+    "uncertainty_ms": 10.96419723762665
+  },
+  "probe_restored": true,
+  "max_active": 0,
+  "allocated_kb": 0,
+  "beforeai": {
+    "calls": "unmeasured in observer-off; no wrapper",
+    "cost": "unmeasured"
+  }
+}

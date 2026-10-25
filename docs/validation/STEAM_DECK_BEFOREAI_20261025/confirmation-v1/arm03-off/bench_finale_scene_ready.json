@@ -1,0 +1,58 @@
+{
+	"level": 20,
+	"focus": true,
+	"section": {
+		"next_model": 1821,
+		"retries": 0,
+		"stable_passes": 2,
+		"applied": 1820,
+		"instances": 1820,
+		"complete": true,
+		"cursor": 1,
+		"calls": 1138,
+		"ready": true
+	},
+	"height": 800,
+	"width": 1280,
+	"resources": {
+		"lua_kb": 71703,
+		"damsels": "damsels-20261012-lore",
+		"jit_version": "LuaJIT 2.1.0-beta3",
+		"lua_errors": 0,
+		"realm": "client",
+		"branch": "unknown",
+		"equipment_generation": "interpreter-generator",
+		"architecture": "x64",
+		"engine": "2026.09.17",
+		"wall_models": 1820,
+		"meshes": 202,
+		"entities": 3237,
+		"install": "a4ccd068938a5f1dfa70b6476ad6d7983f16abeb clean ",
+		"loot_entities": 0,
+		"vr": {
+			"method_overrides": 0,
+			"active": false,
+			"version": "deborah-vr-idle-20261007-r2",
+			"recurring_timers": 0,
+			"local_tracking": false,
+			"runtime_hooks": 0,
+			"pending_once": 0,
+			"native_resources": 0,
+			"resource_counts": [],
+			"source": {
+				"bridge_checked": 2,
+				"verified": true,
+				"checked": 139,
+				"mismatches": 0,
+				"missing": 0
+			},
+			"idle": true,
+			"adapter_think": false,
+			"players": 0
+		},
+		"build": "generator-jit-20260917-01",
+		"feedback_audio": "feedback-20260919-01",
+		"missing": "none"
+	},
+	"seconds": 56.325721740722656
+}

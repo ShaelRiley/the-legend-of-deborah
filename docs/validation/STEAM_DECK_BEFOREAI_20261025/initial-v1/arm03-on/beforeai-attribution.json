@@ -1,0 +1,191 @@
+{
+  "arm": "arm03-on",
+  "variant": "on",
+  "metrics": {
+    "frames": 1386,
+    "seconds": 59.971786,
+    "fps": 23.110867500260873,
+    "median_ms": 36.197,
+    "p95_ms": 76.547,
+    "p99_ms": 117.125,
+    "max_ms": 310.747,
+    "one_percent_low_fps": 6.542416824852959,
+    "below_budget_seconds": 58.31511399999995,
+    "longest_below_budget_seconds": 10.098642999999997,
+    "below_budget_runs_ge2s": 8
+  },
+  "source": "a4ccd068938a5f1dfa70b6476ad6d7983f16abeb",
+  "full_acceptance_checks_passed": false,
+  "acceptance_issues": [
+    "unrendered terminal interval exceeds spike budget or is unknown",
+    "average FPS below budget",
+    "p95 exceeds frame budget",
+    "p99 exceeds spike budget",
+    "continuous drop lasting at least two seconds"
+  ],
+  "alignment": {
+    "client_host_offset_seconds": [
+      [
+        105740.02053773556,
+        105740.02586319657
+      ],
+      [
+        105740.01644930939,
+        105740.02152770146
+      ]
+    ],
+    "server_host_offset_seconds": [
+      [
+        105740.02033139563,
+        105740.0257573798
+      ],
+      [
+        105740.01602170581,
+        105740.0209333979
+      ]
+    ],
+    "server_minus_client_seconds_bounds": [
+      -0.0052196442411514,
+      0.005531800939934328
+    ],
+    "local_start_end_delta_bounds_seconds": [
+      [
+        -0.0052196442411514,
+        0.005531800939934328
+      ],
+      [
+        -0.0044840885093435645,
+        0.005505995650310069
+      ]
+    ],
+    "refinement": "Endpoint-local clock brackets, same unchanged2msFSguard; no whole-window constant-host-offset assumption. Nominal same-process SysTime must agree with both endpoint-local brackets. Local marks separated~8s/3s; unmeasured nonlinear clock behavior remains a limit.",
+    "nominal_delta_seconds": 0,
+    "uncertainty_ms": 10.751445181085728
+  },
+  "probe_restored": true,
+  "max_active": 1,
+  "allocated_kb": 8193.4296875,
+  "beforeai": {
+    "corresponding_rendered_frames": 1386,
+    "window_seconds": 59.97179,
+    "nominal": {
+      "calls_entered": 233199,
+      "inclusive_overlap_ms": 3538.1376999950335,
+      "inclusive_wall_ms_per_rendered_frame": 2.55276890331532,
+      "boundary_crossing_calls": 0
+    },
+    "alignment_lower": {
+      "calls_entered": 233199,
+      "inclusive_overlap_ms": 3538.1376999950335,
+      "inclusive_wall_ms_per_rendered_frame": 2.55276890331532,
+      "boundary_crossing_calls": 0
+    },
+    "alignment_upper": {
+      "calls_entered": 233222,
+      "inclusive_overlap_ms": 3538.3996999950396,
+      "inclusive_wall_ms_per_rendered_frame": 2.5529579365043578,
+      "boundary_crossing_calls": 0
+    },
+    "entered_calls_per_frame": 168.25324675324674,
+    "call_wall_ms": {
+      "median": 0.01319999998372623,
+      "p95": 0.02829999999676147,
+      "p99": 0.05240000000128475,
+      "max": 21.2099999999964
+    },
+    "calls_ge10ms": [
+      {
+        "offset_seconds": 14.032947699999994,
+        "wall_ms": 19.73209999999881
+      },
+      {
+        "offset_seconds": 24.2921664,
+        "wall_ms": 21.200299999989625
+      },
+      {
+        "offset_seconds": 51.8100412,
+        "wall_ms": 21.2099999999964
+      }
+    ],
+    "frame_cost_p95_ms": 4.958000000101492,
+    "frame_cost_p99_ms": 6.87559999985865,
+    "top_cost_frames": [
+      {
+        "frame": 535,
+        "frame_ms": 74.971,
+        "inclusive_beforeai_ms": 25.529300000115995
+      },
+      {
+        "frame": 296,
+        "frame_ms": 79.943,
+        "inclusive_beforeai_ms": 24.433099999896513
+      },
+      {
+        "frame": 1160,
+        "frame_ms": 58.389,
+        "inclusive_beforeai_ms": 23.812099999929615
+      },
+      {
+        "frame": 808,
+        "frame_ms": 137.338,
+        "inclusive_beforeai_ms": 16.70739999983084
+      },
+      {
+        "frame": 47,
+        "frame_ms": 178.574,
+        "inclusive_beforeai_ms": 15.354300000041121
+      },
+      {
+        "frame": 95,
+        "frame_ms": 150.378,
+        "inclusive_beforeai_ms": 11.178599999894345
+      },
+      {
+        "frame": 94,
+        "frame_ms": 171.26,
+        "inclusive_beforeai_ms": 10.924400000163814
+      },
+      {
+        "frame": 96,
+        "frame_ms": 125.146,
+        "inclusive_beforeai_ms": 9.402400000055877
+      },
+      {
+        "frame": 195,
+        "frame_ms": 143.07,
+        "inclusive_beforeai_ms": 8.730799999923988
+      },
+      {
+        "frame": 809,
+        "frame_ms": 97.418,
+        "inclusive_beforeai_ms": 8.209300000117992
+      },
+      {
+        "frame": 48,
+        "frame_ms": 89.989,
+        "inclusive_beforeai_ms": 7.703999999776556
+      },
+      {
+        "frame": 1161,
+        "frame_ms": 76.879,
+        "inclusive_beforeai_ms": 7.64840000013578
+      },
+      {
+        "frame": 393,
+        "frame_ms": 80.61,
+        "inclusive_beforeai_ms": 7.221499999943148
+      },
+      {
+        "frame": 893,
+        "frame_ms": 79.707,
+        "inclusive_beforeai_ms": 6.87559999985865
+      },
+      {
+        "frame": 394,
+        "frame_ms": 74.975,
+        "inclusive_beforeai_ms": 6.721300000080532
+      }
+    ],
+    "limits": "Inclusive elapsed wall time only, includes native work/preemption/wait; not exclusive CPU. max_active<=1 observed but native internals opaque. No sum with overlapping NextBot/movement. Endpoint-local FS clocks frozen2msguards; nominal same-process SysTime supported by both local brackets, interval sensitivity reported. No whole-window constant offset claim; local drift below guard observed but exact intra-bracket drift unresolved. Cost excludes recorder work before first timestamp/after finish timestamp; matched observer screen captures total perturbation."
+  }
+}

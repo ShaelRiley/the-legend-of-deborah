@@ -1,0 +1,72 @@
+{
+  "arm": "arm02-off",
+  "variant": "off",
+  "metrics": {
+    "frames": 1344,
+    "seconds": 59.933631999999996,
+    "fps": 22.424804824109444,
+    "median_ms": 37.844,
+    "p95_ms": 77.484,
+    "p99_ms": 97.612,
+    "max_ms": 331.987,
+    "one_percent_low_fps": 7.547995818410317,
+    "below_budget_seconds": 58.29002400000004,
+    "longest_below_budget_seconds": 8.795682999999995,
+    "below_budget_runs_ge2s": 7
+  },
+  "source": "a4ccd068938a5f1dfa70b6476ad6d7983f16abeb",
+  "full_acceptance_checks_passed": false,
+  "acceptance_issues": [
+    "unrendered terminal interval exceeds spike budget or is unknown",
+    "average FPS below budget",
+    "p95 exceeds frame budget",
+    "p99 exceeds spike budget",
+    "continuous drop lasting at least two seconds"
+  ],
+  "alignment": {
+    "client_host_offset_seconds": [
+      [
+        106403.27632290151,
+        106403.28150877044
+      ],
+      [
+        106403.27490064997,
+        106403.28014898046
+      ]
+    ],
+    "server_host_offset_seconds": [
+      [
+        106403.27636382994,
+        106403.28131489885
+      ],
+      [
+        106403.2754030896,
+        106403.28080394327
+      ]
+    ],
+    "server_minus_client_seconds_bounds": [
+      -0.005903293305891566,
+      0.005144940500031225
+    ],
+    "local_start_end_delta_bounds_seconds": [
+      [
+        -0.00499199733894784,
+        0.005144940500031225
+      ],
+      [
+        -0.005903293305891566,
+        0.004745890852063894
+      ]
+    ],
+    "refinement": "Endpoint-local clock brackets, same unchanged2msFSguard; no whole-window constant-host-offset assumption. Nominal same-process SysTime must agree with both endpoint-local brackets. Local marks separated~8s/3s; unmeasured nonlinear clock behavior remains a limit.",
+    "nominal_delta_seconds": 0,
+    "uncertainty_ms": 11.048233805922791
+  },
+  "probe_restored": true,
+  "max_active": 0,
+  "allocated_kb": 0,
+  "beforeai": {
+    "calls": "unmeasured in observer-off; no wrapper",
+    "cost": "unmeasured"
+  }
+}

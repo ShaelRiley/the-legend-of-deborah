@@ -1,0 +1,17 @@
+{
+  "sha": "a4ccd068938a5f1dfa70b6476ad6d7983f16abeb",
+  "utc": "2026-10-25T22:48:43.406695+00:00",
+  "sequence": [
+    "off",
+    "on",
+    "on",
+    "off"
+  ],
+  "seconds_each": 60,
+  "scope": "FrozenD20lowercourt stress/SP listenhost/oneplayer/1280x800/57initialhostiles/1820models/legalresources/unchangedAIgraphics15WAC/bothdisplaysON; matchedC/P/P/C freshprocesses. Actualfirst/lastPreRenderframewindowalignmentmarkersinbothconditions.",
+  "approach": 1,
+  "observer": "One BeforeAI wrapper, exact forwards/returns; preallocated numeric call start/duration arrays in memory; clip after capture to actual first/last frame interval using bounded clock mapping. Inclusive wall time only.",
+  "screen": "<=5%throughputpenalty andno materialslowframedistortion, accountcontrolvariation; no sourcegainfromprofiledFPS. Bothintrusive/inconclusive=>stopquantitativeattribution.",
+  "deadline": "2026-10-25T23:36:58UTC; max1refinement/child/candidate; reserve12minpublication",
+  "failed_preFPS_attempt": null
+}

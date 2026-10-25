@@ -1,3 +1,13 @@
+# Current checkpoint — BeforeAI observer gate unresolved; retained source unchanged
+
+The October 25 BeforeAI-only checkpoint started at 22:36:58 UTC and has a hard 23:36:58 UTC deadline. Eight fresh 60-second captures (off/on/on/off, then reversed confirmation) are complete; substantive measurement stopped at 23:13:54 UTC. [Decision, all metrics, failed evidence and raw captures](validation/STEAM_DECK_BEFOREAI_20261025.json).
+
+Outcome **C**: stop this measurement approach after one refinement. Small mean throughput penalties do not resolve the 5% bound under variation; confirmation also has a 20.944-second below-target episode. Qualified BeforeAI inclusive wall estimates are 2.538–2.730 ms per corresponding rendered frame, not validated production CPU time or recoverable cost. Endpoint-local clock brackets replace a rejected whole-window constant-offset assumption; nonlinear drift remains unresolved. No child probe, implementation or new experimental source SHA is justified.
+
+All eight runs loaded retained a4ccd068 source, with gameplay/tools byte-identical to fdd75bfc / 4b68237f. Source/HUD/renderer/resources/input/display checks are separate from failed automatic acceptance checks, which include budget, prolonged-drop and unrendered-terminal-interval flags. No uninstrumented source gain. Restore helpers, verify installation, commit/push this diagnostic checkpoint and stop before the deadline. PR #7 stays draft; main unchanged; SP40 **UNMET**, full five-scenario warmed repeated 180-second, ordinary-play and capped acceptance **UNVERIFIED**. Multiplayer/future features/Workshop/VPS deferred.
+
+One future decision only if separately commissioned: use the already-working native VProf path to localize the largest recurring stalls within existing engine scopes, without more per-call Lua wrappers or a new symbols project. These findings do not establish that 40 FPS is impossible or that no economical remedy exists. No automatic new tranche.
+
 # Current checkpoint — bounded low-overhead diagnostic; retained source unchanged
 
 The new diagnostic tranche began October25 at20:54:04UTC with a hard22:24:04UTC deadline. Two instrumentation approaches were selected within18minutes; no implementation candidate was justified. [Decision, conditions, overhead screens, raw captures and restoration](validation/STEAM_DECK_LOW_OVERHEAD_20261025.json).
