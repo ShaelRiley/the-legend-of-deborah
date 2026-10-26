@@ -62,7 +62,7 @@ paths[#paths+1]='gamemodes/legend_of_deborah/content/sound/lod/gps_praise_bank.m
 for _,path in ipairs({root..'sh_progression_props.lua','gamemodes/legend_of_deborah/gamemode/shared.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_keycard/shared.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_keycard/cl_init.lua'}) do paths[#paths+1]=path end
-for _,path in ipairs({root..'cl_combat_roll_feed.lua',root..'cl_entry_safety.lua',root..'sh_die_logger.lua',root..'sh_feedback_language.lua',
+for _,path in ipairs({root..'cl_combat_roll_feed.lua',root..'cl_feedback_language.lua',root..'cl_entry_safety.lua',root..'sh_die_logger.lua',root..'sh_feedback_language.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua',
     'gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/cl_init.lua'}) do paths[#paths+1]=path end
 for _,path in ipairs({root..'cl_pushback_fx.lua',root..'cl_loop_audio.lua',root..'cl_boss_encounter.lua'}) do paths[#paths+1]=path end
