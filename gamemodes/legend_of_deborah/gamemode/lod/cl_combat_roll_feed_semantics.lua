@@ -5,7 +5,11 @@ local FONT, ROW_HEIGHT = "LOD_CombatRoll", 22
 local HOLD_SECONDS, FADE_SECONDS, EXPLOSION_FX_SECONDS = 9, 1.4, 0.52
 Feed.RowHeight = ROW_HEIGHT
 local layoutEpoch = {}
-local function invalidateTextMetrics() layoutEpoch = {} end
+local rasterCache
+local function invalidateTextMetrics()
+    layoutEpoch = {}
+    if rasterCache then rasterCache:Invalidate() end
+end
 hook.Add("OnScreenSizeChanged", "LOD_CombatRollMetrics", invalidateTextMetrics)
 hook.Add("OnReloaded", "LOD_CombatRollMetrics", invalidateTextMetrics)
 
@@ -98,6 +102,169 @@ function Feed:DrawLines(lines, x, y, alpha, first, last, hud)
     end
 end
 
+-- Only this HUD uses raster reuse. The public DrawLines method remains the
+-- ordinary drawing authority for panels, fades and foreign providers.
+local drawNativeLines = Feed.DrawLines
+local nativeHUDText = UI.HUDText
+local nativeText = {draw=surface.DrawText, font=surface.SetFont,
+    size=surface.GetTextSize, pos=surface.SetTextPos, color=surface.SetTextColor}
+local RASTER_WIDTH, RASTER_HEIGHT, RASTER_SLOTS = 1024, 256, 6
+rasterCache = {slots={}, hits=0, builds=0, fallbacks=0}
+Feed.HUDRasterCache = rasterCache
+
+function rasterCache:Invalidate()
+    for _,slot in ipairs(self.slots) do
+        slot.owner, slot.spans, slot.epoch = nil, nil, nil
+    end
+end
+
+function rasterCache:Prepare()
+    if #self.slots == RASTER_SLOTS then return true end
+    if not GetRenderTargetEx or not CreateMaterial or not FrameNumber
+        or not render or not render.PushRenderTarget or not render.OverrideBlend
+        or not render.OverrideAlphaWriteEnable or not cam or not cam.Start2D
+        or not DisableClipping or not surface.GetTextPos or not surface.GetTextColor
+        or not surface.SetMaterial or not surface.DrawTexturedRectUV
+        or not bit or not bit.bor or RT_SIZE_NO_CHANGE==nil
+        or MATERIAL_RT_DEPTH_NONE==nil or IMAGE_FORMAT_RGBA8888==nil then return false end
+    for i=1,RASTER_SLOTS do
+        -- Fixed names reuse the same six engine resources across Lua reloads.
+        local texture=GetRenderTargetEx("lod_combat_hud_raster_v1_"..i,
+            RASTER_WIDTH,RASTER_HEIGHT,RT_SIZE_NO_CHANGE,MATERIAL_RT_DEPTH_NONE,
+            bit.bor(1,4,8),0,IMAGE_FORMAT_RGBA8888)
+        local material=CreateMaterial("lod_combat_hud_raster_mat_v1_"..i,"UnlitGeneric",{
+            ["$basetexture"]=texture:GetName(),["$translucent"]="1",
+            ["$vertexcolor"]="1",["$vertexalpha"]="1",["$ignorez"]="1"})
+        self.slots[i]={texture=texture,material=material}
+    end
+    return true
+end
+
+local function rasterMatches(slot,lines,first,last,fx,fy)
+    if slot.owner~=lines or slot.first~=first or slot.last~=last
+        or slot.fx~=fx or slot.fy~=fy or slot.epoch~=layoutEpoch then return false end
+    local count=0
+    for i=first,last do
+        for _,span in ipairs(lines[i]) do
+            count=count+1
+            local old=slot.spans[count]
+            local color=UI.HUDRoles[span.role] or UI.HUDRoles.prose
+            if not old or old.span~=span or old.text~=span.text or old.role~=span.role
+                or old.r~=color.r or old.g~=color.g or old.b~=color.b
+                or span.drawAlpha~=255 then return false end
+        end
+    end
+    return count==#slot.spans
+end
+
+local function rasterFallback(cache,lines,x,y,alpha,first,last)
+    cache.fallbacks=cache.fallbacks+1
+    return Feed:DrawLines(lines,x,y,alpha,first,last,true)
+end
+local function paintRaster(slot,lines,x,y,first,last)
+    drawNativeLines(Feed,lines,x,y,255,first,last,true)
+    slot.textX,slot.textY=surface.GetTextPos()
+    local color=surface.GetTextColor()
+    slot.r,slot.g,slot.b,slot.a=color.r,color.g,color.b,color.a
+end
+function rasterCache:Draw(lines,x,y,alpha,first,last)
+    -- A provider replacement still receives every draw, including warm entries.
+    if Feed.DrawLines~=drawNativeLines or UI.HUDText~=nativeHUDText
+        or surface.DrawText~=nativeText.draw or surface.SetFont~=nativeText.font
+        or surface.GetTextSize~=nativeText.size or surface.SetTextPos~=nativeText.pos
+        or surface.SetTextColor~=nativeText.color or alpha~=255
+        or first<1 or last>#lines or last-first>=6 or first>last or x<0 or y<0
+        or not self:Prepare() then return rasterFallback(self,lines,x,y,alpha,first,last) end
+    local frame=FrameNumber()
+    local fx,fy=x-math.floor(x),y-math.floor(y)
+    local slot
+    for _,candidate in ipairs(self.slots) do
+        if not candidate.building and candidate.owner==lines then slot=candidate;break end
+    end
+    if not slot then
+        for _,candidate in ipairs(self.slots) do
+            if not candidate.building and candidate.used~=frame then slot=candidate;break end
+        end
+    end
+    if not slot then return rasterFallback(self,lines,x,y,alpha,first,last) end
+    local usedThisFrame=slot.used==frame
+    slot.used=frame
+    if not rasterMatches(slot,lines,first,last,fx,fy) then
+        -- A second view/range must not overwrite a texture already submitted in
+        -- this frame. Native drawing remains available without a new resource.
+        if usedThisFrame then return rasterFallback(self,lines,x,y,alpha,first,last) end
+        -- Measure before rendering, so oversized glyphs can never be clipped
+        -- into a valid-looking cache entry. Keep coalesced-string kerning.
+        surface.SetFont("ChatFont")
+        local width,height=0,(last-first+1)*ROW_HEIGHT
+        for i=first,last do
+            local advance=0
+            for _,span in ipairs(lines[i]) do
+                local w,h=surface.GetTextSize(span.text)
+                advance=advance+w
+                height=math.max(height,(i-first)*ROW_HEIGHT+h)
+            end
+            width=math.max(width,advance)
+        end
+        width,height=math.ceil(width+fx)+5,math.ceil(height+fy)+5
+        if width>RASTER_WIDTH or height>RASTER_HEIGHT then return rasterFallback(self,lines,x,y,alpha,first,last) end
+        slot.owner=nil
+        slot.building=true
+        local epoch=layoutEpoch
+        render.PushRenderTarget(slot.texture)
+        render.OverrideAlphaWriteEnable(true,true)
+        render.Clear(0,0,0,0,true,true)
+        cam.Start2D()
+        local clipped=DisableClipping(true)
+        render.OverrideBlend(true,BLEND_ZERO,BLEND_ZERO,BLENDFUNC_ADD,
+            BLEND_ZERO,BLEND_ZERO,BLENDFUNC_ADD)
+        surface.SetDrawColor(0,0,0,255)
+        surface.DrawRect(0,0,RASTER_WIDTH,RASTER_HEIGHT)
+        render.OverrideBlend(true,BLEND_SRC_ALPHA,BLEND_ONE_MINUS_SRC_ALPHA,
+            BLENDFUNC_ADD,BLEND_ONE,BLEND_ONE_MINUS_SRC_ALPHA,BLENDFUNC_ADD)
+        local ok,err=pcall(paintRaster,slot,lines,2+fx,2+fy,first,last)
+        render.OverrideBlend(false)
+        DisableClipping(clipped)
+        cam.End2D()
+        render.OverrideAlphaWriteEnable(false)
+        render.PopRenderTarget()
+        slot.building=nil
+        if not ok then error(err,0) end
+        if epoch~=layoutEpoch then return rasterFallback(self,lines,x,y,alpha,first,last) end
+        local spans=slot.spans or {}
+        local count=0
+        for i=first,last do
+            for _,span in ipairs(lines[i]) do
+                count=count+1
+                local row=spans[count] or {};spans[count]=row
+                local color=UI.HUDRoles[span.role] or UI.HUDRoles.prose
+                row.span,row.text,row.role=span,span.text,span.role
+                row.r,row.g,row.b=color.r,color.g,color.b
+            end
+        end
+        for i=#spans,count+1,-1 do spans[i]=nil end
+        slot.spans,slot.width,slot.height=spans,width,height
+        slot.owner,slot.first,slot.last,slot.fx,slot.fy=lines,first,last,fx,fy
+        slot.epoch=epoch
+        self.builds=self.builds+1
+    else self.hits=self.hits+1 end
+    slot.used=frame
+    surface.SetDrawColor(255,255,255,255)
+    surface.SetMaterial(slot.material)
+    render.OverrideBlend(true,BLEND_ONE,BLEND_ONE_MINUS_SRC_ALPHA,
+        BLENDFUNC_ADD,BLEND_ONE,BLEND_ONE_MINUS_SRC_ALPHA,BLENDFUNC_ADD)
+    surface.DrawTexturedRectUV(math.floor(x)-2,math.floor(y)-2,
+        slot.width,slot.height,0,0,slot.width/RASTER_WIDTH,slot.height/RASTER_HEIGHT)
+    render.OverrideBlend(false)
+    -- DrawText advances the cursor. Preserve its exact final native state for
+    -- the acknowledgement callback and subsequent HUD drawing.
+    surface.SetFont("ChatFont")
+    surface.SetTextColor(slot.r,slot.g,slot.b,slot.a)
+    surface.SetTextPos(slot.textX+math.floor(x)-2,slot.textY+math.floor(y)-2)
+end
+hook.Add("InitPostEntity","LOD_CombatRollRasterPrepare",function() rasterCache:Prepare() end)
+hook.Add("PostCleanupMap","LOD_CombatRollRasterCleanup",function() rasterCache:Invalidate() end)
+
 local function drawDiceExplosion(now)
     local fx = Feed.diceExplosion
     if not fx then return end
@@ -156,7 +323,7 @@ hook.Add("HUDPaint", "LOD_CombatRollFeed", function()
         local h = shown*ROW_HEIGHT
         local age = now-entry.created
         local alpha = age <= HOLD_SECONDS and 255 or math.Clamp(255*(1-(age-HOLD_SECONDS)/FADE_SECONDS),0,255)
-        Feed:DrawLines(lines,right-width,bottom-h,alpha,1,shown,true)
+        rasterCache:Draw(lines,right-width,bottom-h,alpha,1,shown)
         if shown < #lines then
             UI:HUDText("... FULL RECORD: DIE-LOGGER / L", "Default",right,bottom+2,
                 UI.HUDColor,TEXT_ALIGN_RIGHT)

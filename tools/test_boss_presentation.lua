@@ -38,6 +38,36 @@ dofile(F.root..'cl_boss_encounter.lua')
 for _,id in ipairs(LOD.BossRegistry.Modules) do dofile(F.root..'bosses/cl_'..id..'.lua') end
 hook.Add=originalAdd
 local V=LOD.BossPresentation
+-- The native client exposes model bounds on Entity, not util. Exercise the
+-- actual draw setup; packet/ghost parsing alone never reaches this seam.
+local savedBounds,savedMatrix=util.GetModelBounds,Matrix
+util.GetModelBounds=nil
+local boundsReads,matrices,draws=0,0,0
+Matrix=function()
+ matrices=matrices+1
+ return {Scale=function(self,v) self.scale=v end,SetTranslation=function(self,v) self.translation=v end}
+end
+local body=F.actor('client_model');body:SetNW2Float('LOD_SizeScale',1.5)
+function body:GetModelBounds() boundsReads=boundsReads+1;return Vector(-24,-18,-12),Vector(28,34,90) end
+function body:EnableMatrix(name,matrix) assert(name=='RenderMultiply');self.visualMatrix=matrix end
+function body:SetRenderBounds(lo,hi) self.visualLo,self.visualHi=lo,hi end
+function body:DrawModel() draws=draws+1 end
+local chuckModule=V.Modules.chuck
+local moduleDraws=0
+V.Modules.chuck={Draw=function(_,e,size) assert(e==body and size==e:GetNW2Float('LOD_SizeScale'));moduleDraws=moduleDraws+1 end}
+V:DrawActor(body,{id='chuck',size=1.5})
+assert(boundsReads==1 and matrices==1 and draws==1 and moduleDraws==1,'native Entity bounds did not reach boss body/module draw')
+assert(body.visualMatrix.scale.x==1.5 and body.visualMatrix.translation.z==18,'native model origin/scale changed')
+assert(body.visualLo.x==-116 and body.visualLo.y==-107 and body.visualLo.z==-80,'lower render bounds changed')
+assert(body.visualHi.x==122 and body.visualHi.y==131 and body.visualHi.z==273,'upper render bounds changed')
+V:DrawActor(body,{id='chuck',size=1.5})
+assert(boundsReads==1 and matrices==1 and draws==2,'unchanged boss repeats native bounds/matrix setup')
+body:SetModel('models/Humans/Group01/male_02.mdl');V:DrawActor(body,{id='chuck',size=1.5})
+assert(boundsReads==2 and matrices==2,'replacement model kept stale presentation bounds')
+body:SetNW2Float('LOD_SizeScale',2);V:DrawActor(body,{id='chuck',size=2})
+assert(boundsReads==3 and matrices==3 and body.visualMatrix.translation.z==24 and body.visualHi.z==324,'scale replacement kept stale presentation bounds')
+V.Modules.chuck=chuckModule;util.GetModelBounds=savedBounds;Matrix=savedMatrix
+print('BOSS_NATIVE_MODEL_BOUNDS_PASS Entity API without util API; origin/scale/render bounds, body/module drawing, unchanged/model/scale lifetime')
 local bools={'LOD_Beaver','LOD_MelfGiant','LOD_BDDActive','LOD_BossEngineDamaged','LOD_BossCracked','LOD_BossInverted','LOD_BossVertical','LOD_BossTorn','LOD_BossSectionDetached','LOD_RankAllDrawers','LOD_BossDoorOpen','LOD_CornetteMissingLeft','LOD_CornetteMissingRight','LOD_CornetteCrying','LOD_MookyDamaged','LOD_BossScorched'}
 local strings={'LOD_MelfIdentity','LOD_MelfClass','LOD_MelfWeapon','LOD_BossAction','LOD_BossCycle','LOD_MookyProtectedKnee'}
 local numbers={'LOD_BossHeat','LOD_RankDrawer','LOD_CornetteStrain','LOD_BDDHits'}

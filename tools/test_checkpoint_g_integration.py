@@ -26,6 +26,8 @@ def get_lua_files():
 LUA_FILES = get_lua_files()
 
 SUITES = [
+    ("HUD Raster Reuse, Bounds & Render Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_hud_raster_cache.lua"]),
+    ("Hostile Stair Collision & Supported Flights", ["python3", "tools/run_lua54.py", "tools/test_hostile_stair_collision.lua"]),
     ("Consult Cargo Pool & Elapsed Construction Budget", ["python3", "tools/run_lua54.py", "tools/test_consult_wall_pool.lua"]),
     ("Consult Trace Scratch & Native Reentry", ["python3", "tools/run_lua54.py", "tools/test_consult_trace_scratch.lua"]),
     ("Consult Global Ghost Draw Budget", ["python3", "tools/run_lua54.py", "tools/test_consult_ghost_budget.lua"]),

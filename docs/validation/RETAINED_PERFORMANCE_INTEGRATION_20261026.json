@@ -1,0 +1,239 @@
+{
+  "status": "Selected retained partial improvements; static affected checks passed. Exact-main comparison, complete integration matrix and brief actualDeck checks pending. No40FPS certification.",
+  "base_main": "cec10dc5426e2ee3e2137f68de0ef4a321772413",
+  "research_checkpoint": "5b47a62e02863e434111ed79c691563cc5887571",
+  "research_preserved": true,
+  "integration_branch": "integrate/retained-deck-improvements-20261026",
+  "goal": "Sustained40FPS remains unmet and optimizationgoal paused. Userexplicitlyauthorizespartialimprovementintegration/mergewithoutfullacceptance. Workshop/VPSoutside scope.",
+  "selected_improvements": [
+    {
+      "change": "Bounded HUD raster cache",
+      "source": "cd37397f4890d9463c2aad7f5df14e09d950221d",
+      "decision": "Final RETAIN, not superseded preparation status",
+      "benefit": "Separate six-run installed-source comparisons:22.262971\u219223.164959FPS(+4.051513%) and21.918106\u219223.976363FPS(+9.390670%). Individual tails mixed; no cumulative/universal/40FPS claim.",
+      "evidence": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_HUD_CACHE_20261023.json"
+    },
+    {
+      "change": "Native floor visibility handoff and retained invisible-box render-queue retirement",
+      "source": [
+        "48740b24",
+        "b8d2af54"
+      ],
+      "benefit": "Floor handoff:three parent/three candidate Deck arrival captures, meanFPS+5.70%, ranges disjoint. Queue retirement has weaker separate two matched private-flag comparisons (~3.6%/~4.2%) plus installed-source collision/fullupdate/red-card-route checks; no isolated installed-source FPS confirmation. Do not assign floor percentage to queue or combine.",
+      "evidence": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_20261021_ITERATIONS.md"
+    },
+    {
+      "change": "Skip human-Soldier state lookups for ordinary native NPCs",
+      "source": "da4e9597",
+      "benefit": "Final six-arm alternating comparison:33.098vs32.416FPS,+2.104%; liveplayer/Soldier state and foreign-provider fallbacks remain.",
+      "evidence": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_20261021_ITERATIONS.md"
+    },
+    {
+      "change": "Live NextBot progression-state lookup through native entity table",
+      "source": "4a6b4aa2",
+      "benefit": "Six installed source/control arms:33.649vs32.842FPS,+2.458%; per-call live state, missing/inherited/provider fallback, no persistedstatecache.",
+      "evidence": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_20261021_ITERATIONS.md"
+    },
+    {
+      "change": "Reject missing close-defense targets before repeated actor queries",
+      "source": "4d0a6d80",
+      "benefit": "Six installedsource/control arms:33.979vs33.310FPS,+2.007%. Valid-target/status/lifecycle path unchanged.",
+      "evidence": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_20261021_ITERATIONS.md"
+    },
+    {
+      "change": "Cache unchanged feedback-history row encodings",
+      "source": "c11c3567",
+      "benefit": "Six native same-data serialization pairs:parent44.004\u201350.333ms,cached3.900\u20135.600ms; decodedJSONequality andinstalledsource hitch checks. Loading/serialization benefit, not whole-gameFPSclaim; initialdiscoveryusedseparatelocaldedicated diagnostic.",
+      "evidence": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_HISTORY_CACHE_20261022.json"
+    },
+    {
+      "change": "Precache Chuck/Jane encounter assets during held loading",
+      "source": "b19bccfb",
+      "benefit": "Two fresh installed-source unprofiled runs move1.196/1.164s ofassetwork intoexistingheldbuild; gameplaymax117.762/134.200ms versuspriorcold1218.346ms. Priorcoldattributioninstrumented; notmatchedsteady-FPSgain.",
+      "evidence": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_BOSS_PRECACHE_20261022.json"
+    }
+  ],
+  "correctness_lineage": [
+    {
+      "source": "77db9cfe",
+      "change": "Boss visual bounds use available Entity:GetModelBounds API; commit cache signature only after setup succeeds. Included with boss presentation/preload lineage; not an FPS gain."
+    },
+    {
+      "source": "8b0b531e",
+      "change": "Sentry floor support uses unchanged five footprint points with zero-XY,one-unit-tall nativehulls because ray probes miss generatedSOLID_BBOX floors. Native D20 evidence263compositionrollbacks\u2192one nine-actor commit/zero retries; functional encounter/pathology repair, not Chuck14dependency or samefightFPSgain.",
+      "evidence": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_FINALE_SUPPORT_20261022.json"
+    },
+    {
+      "source": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+      "change": "Retain shared generated-stair collision/index/support/routes/detours and recovery safeguards. Four runtimefiles byte-identical to retainedcorrectnessfix; native9case and56case geometric evidence retains its narrowbossAI/hull limits.",
+      "evidence": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STAIR_COLLISION_FIX_20261026.json"
+    }
+  ],
+  "source_identity_dependencies": "Only profiler hook callback metadata needed for native visibility compatibility and four additional watched sourcefiles; no heap sampler, server-runtime telemetry or benchmark config/runtime settings changes. HUD alreadywatched onmain. Manifest fixturecounts reviewed(server114,installer118).",
+  "source_files": [
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+      "retained_source": "b8d2af54",
+      "sha256": "7bec9bbda2a984eec3b9d393021f9f3b5f0943a8a2e5b13e55adb9e6a5ef347f",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua",
+      "retained_source": "b8d2af54",
+      "sha256": "cbe07555db9006f2cba7933d5cf3f1c0e1c5f2df5b06fc9584957f10e22429e4",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua",
+      "retained_source": "cd37397f",
+      "sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_feedback_language.lua",
+      "retained_source": "c11c3567",
+      "sha256": "97e4614b3c9eddc544e14e51aa465f0f9f589781ebd01e89bbe6dbf57875e3a4",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+      "retained_source": "da4e9597",
+      "sha256": "f4512a048055bec94ef055616b2fd0454b0e06aa70731f530cc2888d706ce3fc",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+      "retained_source": "4a6b4aa2",
+      "sha256": "66543d6cb179b9905da7278963284561f3c84d3521a92d3ad482ada64b970f54",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua",
+      "retained_source": "4d0a6d80",
+      "sha256": "220156e10ba07e1919fea2ca1331b522b287a4c8d48196a4df4016339afc4150",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_chuck.lua",
+      "retained_source": "b19bccfb",
+      "sha256": "927313227873994563db28bcbc7beb8c50f62ab28f518980d3a7d6820778aab8",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_boss_encounter.lua",
+      "retained_source": "b19bccfb",
+      "sha256": "e736bed64961853b3452694ca413b2bdac694fa6cc94cfe569a3249dafea70a6",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+      "retained_source": "b19bccfb",
+      "sha256": "48e468dda0636493573665893459d1338a64f8d79d7f503e4b58750a4ff4c4c0",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_boss_encounter.lua",
+      "retained_source": "77db9cfe",
+      "sha256": "58c38bac70fafebf1b7d25cf8b896e8213e85d4df0cf7656e6c2a995257cb150",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua",
+      "retained_source": "8b0b531e",
+      "sha256": "ecbf7fa20ee371fd6259bef9f9a5600c0979b5e0cd4dc7ed8ed23c26766c6953",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+      "retained_source": "54bf0698",
+      "sha256": "a1cab80b004743fe756c2772342fa0a9aee8e738cf4f78411a0c3147c2046764",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_stair_recovery.lua",
+      "retained_source": "54bf0698",
+      "sha256": "c696f69b085d5b4c94ecb04c377f3da4e10f604526760954f0fb957c9056aaf2",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua",
+      "retained_source": "54bf0698",
+      "sha256": "5b99d4e86ced2dd28fe81db1c9cd5eabb7f6c800de41c22607204bfb393fea0b",
+      "runtime": true
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua",
+      "retained_source": "54bf0698",
+      "sha256": "2ac3ca1b2e8c88ab54691ed0e08e55b8b7c11a0cf04698d6e680fdd4bcd9f6b3",
+      "runtime": true
+    },
+    {
+      "path": "tools/test_hud_raster_cache.lua",
+      "retained_source": "cd37397f",
+      "sha256": "d2cdf56272d1708ddb8bc0522853c78930688f1762974a22a8ec6e96a3b13992",
+      "runtime": false
+    },
+    {
+      "path": "tools/test_low_end_geometry.lua",
+      "retained_source": "b8d2af54",
+      "sha256": "797e7912e28129379004cf1aaecc03f41d068cdbd1394f072b65151bb18bb227",
+      "runtime": false
+    },
+    {
+      "path": "tools/test_human_soldier_progression.lua",
+      "retained_source": "4a6b4aa2",
+      "sha256": "e2a9223b00319ca1d874d46651c3a554bcbb9874f6c8d2ade85fdc31a911e32f",
+      "runtime": false
+    },
+    {
+      "path": "tools/test_enemy_ai_work.lua",
+      "retained_source": "4d0a6d80",
+      "sha256": "f84f31b384cffd56be6a768e52722e25a2d38277f46e3010e667b3a2cbdac39b",
+      "runtime": false
+    },
+    {
+      "path": "tools/test_feedback_language.lua",
+      "retained_source": "c11c3567",
+      "sha256": "66d835e769957f6434068f2cbf8d16cc713d91a7b52d221b061790fc9711e316",
+      "runtime": false
+    },
+    {
+      "path": "tools/test_boss_presentation.lua",
+      "retained_source": "77db9cfe",
+      "sha256": "8abb5ebb9a3cb1cfcd7d0bcd6e3590b34e82895cc2f2713d96f626ab6f1eeb7b",
+      "runtime": false
+    },
+    {
+      "path": "tools/test_boss_framework.lua",
+      "retained_source": "5b47a62e",
+      "sha256": "981b5a9433d131404be9a92c5817dc4a5e7b60856a9aeaa51c1de92966173771",
+      "runtime": false
+    },
+    {
+      "path": "tools/validate_spot08_turrets.lua",
+      "retained_source": "8b0b531e",
+      "sha256": "fc42d7ae645e4fe53bcac0882cd9d73782ee8864207642d1c994160993b37169",
+      "runtime": false
+    },
+    {
+      "path": "tools/test_hostile_stair_collision.lua",
+      "retained_source": "54bf0698",
+      "sha256": "f7912f7ee6f3618db8c4c604f45f623fe41084ae9347e8639a100ac17e7204d9",
+      "runtime": false
+    }
+  ],
+  "excluded": [
+    "Entire researchhistory and rawresearchartifacttree",
+    "Rejected lookup/context/dispatch/native validity/animation/vector/component/bounds-cohort/GC/preload/forcedadvance candidates",
+    "Private/temporary profiling, heapsampler extensions and speculative candidates",
+    "Proton/hosting/runtime/graphics/AI-cadence settings; these are not source gains",
+    "Unrelated tests introduced by rejected experiments"
+  ],
+  "validation": {
+    "targeted": "HUD raster/text, nativegeometry, humanSoldier/progression, sharedAI, feedbackhistory, bossframework/presentation, Sentry, staircollision/headroom, B28sourceidentity, populationtransport, profilelifecycle, enemyupdate, installer118hashes, properWardendancefloorPythonwrapper PASS. HUD24cases/stair56cases alsoPASS underLuaJIT.",
+    "repairs": "Required cl_feedback_language sourcewatch fixture added from32d82a82 without researchheaptests. RawunsupportedstandaloneWardendancefloorLua invocation failed onmain too; canonicalPythonwrapperpasses.",
+    "matrix": "pending exactmain334 andintegration336 comparisons; inherited failures must match names+error signatures, not assumedfromresearch.",
+    "native": "pending brief actualDeck source/HUD/render/movement/lifecycle check, no optimization or acceptance campaign."
+  },
+  "retention_scope": "Implementations reused unchanged; results from different scenarios/software/hosting are separate. No addition/multiplication into cumulativegain. FinalmergeSHA/PR andactualchecks recordedaftervalidation."
+}

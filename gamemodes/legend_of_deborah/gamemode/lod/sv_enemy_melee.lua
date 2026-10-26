@@ -44,6 +44,9 @@ function E:CloseTarget(e,p,origin)
     return tr and not tr.StartSolid and not tr.AllSolid and (not tr.Hit or tr.Entity==p)
 end
 function E:BeginCloseDefense(e,p,now)
+    -- No strike can commit without a live native target. Reject absent/removed
+    -- targets before repeating actor permission and body-geometry queries.
+    if not IsValid(p) then return false end
     if e.LODRosterAttack or now<(e.LODNextCloseDefense or 0) or now<(e.LODHitStunUntil or 0)
         or not self:CanCloseDefend(e) then return false end
     local origin=copy(e:WorldSpaceCenter())
