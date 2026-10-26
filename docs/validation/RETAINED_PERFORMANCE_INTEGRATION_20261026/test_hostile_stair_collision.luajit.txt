@@ -1,0 +1,5 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+HOSTILE_STAIR_COLLISION_PASS: cases=56 supportedmovementsteps=1084 geometric_trace_calls=9138; four rotations/ordinary+legacyboss hulls/complete flights/no tunneling/full-height advancement/graph+geometry retirement; native acceptance pending

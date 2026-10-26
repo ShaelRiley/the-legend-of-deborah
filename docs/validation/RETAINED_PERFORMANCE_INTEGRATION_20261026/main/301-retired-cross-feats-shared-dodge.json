@@ -1,0 +1,14 @@
+{
+  "index": 301,
+  "name": "Retired Cross Feats & Shared Dodge",
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_cross_feats_dodge.lua"
+  ],
+  "returncode": 1,
+  "seconds": 0.143,
+  "log_prefix": "301-retired-cross-feats-shared-dodge",
+  "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+  "stderr_sha256": "012a6cc0380e2f087db156a31e58e6df1b3dfcc681956c74d7240af2f30bf5be"
+}

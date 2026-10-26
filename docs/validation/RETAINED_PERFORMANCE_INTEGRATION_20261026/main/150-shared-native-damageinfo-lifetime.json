@@ -1,0 +1,14 @@
+{
+  "index": 150,
+  "name": "Shared Native DamageInfo Lifetime",
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_shared_damage_lifetime.lua"
+  ],
+  "returncode": 1,
+  "seconds": 0.116,
+  "log_prefix": "150-shared-native-damageinfo-lifetime",
+  "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+  "stderr_sha256": "3e7c31b9162fed14b9e7db8b0d5c33fc2d565e1b8da30783ca75dbfd8d6dcd3e"
+}

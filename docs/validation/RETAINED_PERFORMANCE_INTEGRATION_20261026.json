@@ -1,5 +1,5 @@
 {
-  "status": "Selected retained partial improvements; static affected checks passed. Exact-main comparison, complete integration matrix and brief actualDeck checks pending. No40FPS certification.",
+  "status": "Retained partial source improvements validated for main integration. Publication and merge status are recorded by the integration PR. Sustained40FPS remains unmet; broaderoptimizationgoal stayspaused.",
   "base_main": "cec10dc5426e2ee3e2137f68de0ef4a321772413",
   "research_checkpoint": "5b47a62e02863e434111ed79c691563cc5887571",
   "research_preserved": true,
@@ -224,16 +224,402 @@
   ],
   "excluded": [
     "Entire researchhistory and rawresearchartifacttree",
-    "Rejected lookup/context/dispatch/native validity/animation/vector/component/bounds-cohort/GC/preload/forcedadvance candidates",
+    "Later rejected lookup/context/dispatch/native-validity/animation/vector/component/bounds-cohort/GC/preload/forced-advance variants (retained lookup improvements above are intentionally included).",
     "Private/temporary profiling, heapsampler extensions and speculative candidates",
     "Proton/hosting/runtime/graphics/AI-cadence settings; these are not source gains",
     "Unrelated tests introduced by rejected experiments"
   ],
   "validation": {
-    "targeted": "HUD raster/text, nativegeometry, humanSoldier/progression, sharedAI, feedbackhistory, bossframework/presentation, Sentry, staircollision/headroom, B28sourceidentity, populationtransport, profilelifecycle, enemyupdate, installer118hashes, properWardendancefloorPythonwrapper PASS. HUD24cases/stair56cases alsoPASS underLuaJIT.",
-    "repairs": "Required cl_feedback_language sourcewatch fixture added from32d82a82 without researchheaptests. RawunsupportedstandaloneWardendancefloorLua invocation failed onmain too; canonicalPythonwrapperpasses.",
-    "matrix": "pending exactmain334 andintegration336 comparisons; inherited failures must match names+error signatures, not assumedfromresearch.",
-    "native": "pending brief actualDeck source/HUD/render/movement/lifecycle check, no optimization or acceptance campaign."
+    "exact_main_comparison": {
+      "prepared_utc": "2026-10-26T17:42:34.891824+00:00",
+      "result": "No new unresolved headless regression after capture fixture correction; nine failures inherited by exact name and normalized signature.",
+      "baseline": {
+        "sha": "cec10dc5426e2ee3e2137f68de0ef4a321772413",
+        "original_full_matrix_passed": 322,
+        "total": 334,
+        "effective_passed_after_three_dependency_reruns": 325,
+        "receipt": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/receipt.json",
+        "receipt_sha256": "609d9f4d7cb3cc752eea67d37bb8bd190b2cd8568b62f21e4612959d4a56c8d7",
+        "source_before": "6aa19cc8386a3fae05a4b1f34507912b8d1ff16490d97669c3b277e7c13970ed",
+        "source_after": "6aa19cc8386a3fae05a4b1f34507912b8d1ff16490d97669c3b277e7c13970ed",
+        "changed_during_gate": [],
+        "dependency_reruns": [
+          {
+            "name": "Great Crate Stock Hull Assets",
+            "initial_returncode": 1,
+            "initial_signature": [
+              "ModuleNotFoundError: No module named 'numpy'"
+            ],
+            "rerun_returncode": 0,
+            "rerun_logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/dependency-reruns/069-great-crate-stock-hull-assets"
+          },
+          {
+            "name": "Great Crate Original Assets & Safe Fit",
+            "initial_returncode": 1,
+            "initial_signature": [
+              "ModuleNotFoundError: No module named 'PIL'"
+            ],
+            "rerun_returncode": 0,
+            "rerun_logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/dependency-reruns/071-great-crate-original-assets-safe-fit"
+          },
+          {
+            "name": "Manual Source & Reader Navigation",
+            "initial_returncode": 1,
+            "initial_signature": [
+              "FileNotFoundError: [Errno 2] No such file or directory: 'node'"
+            ],
+            "rerun_returncode": 0,
+            "rerun_logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/dependency-reruns/156-manual-source-reader-navigation"
+          }
+        ],
+        "raw_log_directory": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix",
+        "summary": "/home/deck/deborah-recovery/main-integration-baseline-20261026/baseline-effective-summary.json"
+      },
+      "candidate_full_matrix": {
+        "sha": "42d40b23b9cc3da54ee8be1a4a2c8c2e4cc2d251",
+        "passed": 326,
+        "total": 336,
+        "receipt": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/receipt.json",
+        "receipt_sha256": "7e4194c08bd5cae307375efa9be432ad21ca299f81aeac3850e30458a863dbb7",
+        "source_before": "6dd2e58c509cad741026b0b281c446f4878fa96d58461bb9f44de76e398468ac",
+        "source_after": "6dd2e58c509cad741026b0b281c446f4878fa96d58461bb9f44de76e398468ac",
+        "changed_during_gate": [],
+        "raw_log_directory": "/home/deck/deborah-recovery/retained-integration-20261026/matrix",
+        "initial_comparison": "/home/deck/deborah-recovery/main-integration-baseline-20261026/integration-failure-comparison.json",
+        "initial_new_failure": {
+          "name": "Opt-in Rendered Frame Evidence & Lifecycle",
+          "returncode": 1,
+          "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/025-opt-in-rendered-frame-evidence-lifecycle",
+          "signature": [
+            "test_performance_capture.lua:83: assertion failed!"
+          ]
+        }
+      },
+      "correction": {
+        "sha": "b33ab81145198e401e93667cd462fa5c8e76febd",
+        "changed_files": [
+          "tools/test_performance_capture.lua"
+        ],
+        "exact_change": "Add only cl_feedback_language.lua to fixture paths; original verified/checked==#paths assertion retained.",
+        "production_runtime_unchanged_from_full_matrix": true,
+        "proof_receipt": "/home/deck/deborah-recovery/retained-integration-20261026/capture-fixture-fix.json",
+        "targeted_exit": 0,
+        "log": "/home/deck/deborah-recovery/retained-integration-20261026/targeted/test_performance_capture.fixture-fixed.log",
+        "log_sha256": "fb7473ae953557b080392dd55cb9d90b42ae1b4c22ed18f4b717948e37a71cb4",
+        "expected_pass_markers": [
+          "PERFORMANCE_CAPTURE_PASS:",
+          "PERFORMANCE_PACING_PASS:"
+        ],
+        "scope": "Headless synthetic recorder regression, not actual Deck FPS."
+      },
+      "effective_composite": {
+        "passed": 327,
+        "total": 336,
+        "baseline_effective_passed": 325,
+        "baseline_total": 334,
+        "inherited_failures": [
+          {
+            "name": "Bestiary B29 Bilateral Combat Seams",
+            "returncode": 1,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/065-bestiary-b29-bilateral-combat-seams",
+            "signature": [
+              "test_cross_feats_dodge.lua:177: assertion failed!"
+            ],
+            "baseline_signature": [
+              "test_cross_feats_dodge.lua:177: assertion failed!"
+            ]
+          },
+          {
+            "name": "Active Event Catalog, Bribe Removal & Quiz Placement",
+            "returncode": 1,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/110-active-event-catalog-bribe-removal-quiz-placement",
+            "signature": [
+              "test_event_quiz_generation.lua:164: assertion failed!"
+            ],
+            "baseline_signature": [
+              "test_event_quiz_generation.lua:164: assertion failed!"
+            ]
+          },
+          {
+            "name": "Minigame Shell & Equipment UI Restrictions",
+            "returncode": 1,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/111-minigame-shell-equipment-ui-restrictions",
+            "signature": [
+              "test_minigame_ui.lua:106: assertion failed!"
+            ],
+            "baseline_signature": [
+              "test_minigame_ui.lua:106: assertion failed!"
+            ]
+          },
+          {
+            "name": "Client Geometry Full-Update Recovery",
+            "returncode": 1,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/144-client-geometry-full-update-recovery",
+            "signature": [
+              "cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+            ],
+            "baseline_signature": [
+              "cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+            ]
+          },
+          {
+            "name": "Shared Native DamageInfo Lifetime",
+            "returncode": 1,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/152-shared-native-damageinfo-lifetime",
+            "signature": [
+              "test_cross_feats_dodge.lua:177: assertion failed!"
+            ],
+            "baseline_signature": [
+              "test_cross_feats_dodge.lua:177: assertion failed!"
+            ]
+          },
+          {
+            "name": "Shotgun Native Bullet Aggregation",
+            "returncode": 1,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/155-shotgun-native-bullet-aggregation",
+            "signature": [
+              "test_cross_feats_dodge.lua:177: assertion failed!"
+            ],
+            "baseline_signature": [
+              "test_cross_feats_dodge.lua:177: assertion failed!"
+            ]
+          },
+          {
+            "name": "Feat: rebalance_20261002",
+            "returncode": 1,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/277-feat-rebalance-20261002",
+            "signature": [
+              "test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+            ],
+            "baseline_signature": [
+              "test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+            ]
+          },
+          {
+            "name": "Retired Cross Feats & Shared Dodge",
+            "returncode": 1,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/303-retired-cross-feats-shared-dodge",
+            "signature": [
+              "test_cross_feats_dodge.lua:177: assertion failed!"
+            ],
+            "baseline_signature": [
+              "test_cross_feats_dodge.lua:177: assertion failed!"
+            ]
+          },
+          {
+            "name": "Live-GDD Feat Release Gate",
+            "returncode": 1,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/304-live-gdd-feat-release-gate",
+            "signature": [
+              "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+              "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER"
+            ],
+            "baseline_signature": [
+              "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+              "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER"
+            ]
+          }
+        ],
+        "new_suites": [
+          {
+            "name": "HUD Raster Reuse, Bounds & Render Lifecycle",
+            "returncode": 0,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/001-hud-raster-reuse-bounds-render-lifecycle"
+          },
+          {
+            "name": "Hostile Stair Collision & Supported Flights",
+            "returncode": 0,
+            "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/002-hostile-stair-collision-supported-flights"
+          }
+        ],
+        "new_unresolved_failures": [],
+        "changed_failure_signatures": [],
+        "missing_baseline_suites": [],
+        "no_new_unresolved_headless_regressions": true,
+        "qualification": "Composite evidence: one immutable full matrix at42d40b23(326/336) plus the one corrected fixture gate atb33ab811(PASS), giving327/336 effective coverage. No claim that a new full327/336 matrix ran locally. Allnineinheritedfailure names/error signatures are unchanged; native Deck behavior and final GitHub mergechecks remain separate."
+      },
+      "workflow_gate_results": {
+        "audio": "/home/deck/deborah-recovery/main-integration-baseline-20261026/workflow-wrapper-results.json",
+        "VR_Node22": "/home/deck/deborah-recovery/main-integration-baseline-20261026/workflow-vr-node22-result.json",
+        "private_prerequisites": {
+          "node": "/home/deck/deborah-recovery/main-integration-baseline-20261026/tooling/node22-receipt.json",
+          "python": "/home/deck/deborah-recovery/main-integration-baseline-20261026/python-prerequisites.json"
+        }
+      },
+      "source_edit_policy": "Comparison writes private evidence only; no source edits, broad reruns, fixture weakening or gameplay changes."
+    },
+    "affected_checks": "Targeted HUD24cases+textparity, nativegeometry, Soldier/progression/live-provider, sharedAI, historyserialization, bossframework/presentation, Sentry, stairs56cases/headroom, source-manifests/transport/capture/profile lifecycle allPASS. HUD/stairsPASSalsoLuaJIT. Seeoriginalandcorrectedlogs; no claimunrecordedfullrerun.",
+    "initial_fixture_repairs": "Required cl_feedbacksource entry added toprofilefixture, then capturefixture(assertionunchanged). StandaloneWardendancefloorLua call lacksitswrappercontext andfailsonmain too; canonicalPythonwrapperPASS. RejectedWardenfixtureadditions excluded.",
+    "native_functional": {
+      "tested_sha": "42d40b23b9cc3da54ee8be1a4a2c8c2e4cc2d251",
+      "latest_visual_sha": "b33ab81145198e401e93667cd462fa5c8e76febd",
+      "runtime_unchanged_between_tested_heads": true,
+      "environment": "ActualLCDJupiterDeck/SP1listenhost/gm_flatgrass/1280x800,bothdisplaysON,15WAC,SteamOS3.9.5/Proton10.0-4b/GModWin64engine2026.09.17; existinggraphics/population/resources/AI preserved. NoFPS/profiler captures. Initialfunctionalcheckoverlappedheadlessmatrix, so do NOTinferperformancefromitsonscreenFPS.",
+      "source_function_renderer_proofs": true,
+      "client_server_lua_errors": 0,
+      "history_semantic_checks": 327851,
+      "history_original_restored": true,
+      "history_encoder_writer_restored": true,
+      "stair_cases": 9,
+      "stair_steps": 448,
+      "stair_restored": true,
+      "stair_scope": "Native TraceHull against actual generated tread/rail/landing colliders after every production MoveToward step, actual _AdvanceWaypoint and real server time. Disposable frozen scene; test actors have paused own AI coroutine, neutral status/entry wrappers and 32x72 hull, boss flags exercise physical gateway only. This is NOT ordinary boss AI, full gameplay, FPS or all-orientation acceptance.",
+      "normal_forward_input_distance": 164.28245046223068,
+      "fixed_six_HUD_textures_cleanup": true,
+      "visible_normal_D1_scene": "native/native-scene.png",
+      "helpers_processes_restored": true,
+      "both_displays": "ONthroughalltests;keepON",
+      "final_installed_hashes": 118
+    },
+    "visual_control": {
+      "report": "hud-reference-control/pixel-comparison.json",
+      "protocol": "ExactlytwofreshD1VMs R5b47a62e thenI b33ab811, eachoneinitialhelpercall andonepredeclaredrepeat; unchangedhelper/8RGBmax/20pixelsover5gate/backgroundunchanged/fadeexact. NoFPSprofiling or furthersearch.",
+      "initial_results": "Darkfirstreference comparisonfails inbothbuilds:R10max/5pixels>5;I9/4. OriginalpilotI10/5preserved. Bothrepeatdark1/0PASS; bright5/0PASSall; black/fadeexact; backgroundunchangedthroughout.",
+      "equality": "AllcachedPNGsbyte-identicaltohistoricallyacceptedimages; onlyinitialdarkuncachedreferencevaries. Repeatdarkreferencesconvergebyte-for-bytebetweenretainedandintegration. No integration-specificcached-outputregressionidentified.",
+      "limits": "Coldmeansfirsthelpercall, notproofofuncachedglyphresources. Enginecauseoffirst-referencevariationunproved. InitialfailuresareNOTerased; no tolerancewidening orproductioncachechange.",
+      "postprocessor_correction": "Initialpilotpostprocessorincorrectlytreatedhistoricalobserved6/1ascriterion. Correctpredeclaredgateis8/20; pilot10/5stillfails. Bothfilesandcorrectionretained.",
+      "focus_setup": "Retainedfocusguardfailureoccurredbeforetestcapture; sameownedVMrecovered andfreshACKverified. NoautomaticrestartoradditionalVM."
+    },
+    "CI": "PRcheckrunsareauthoritative. Complete frozen matrix retainsnine baseline failures; do not claimfullygreen. Baselineandcandidateexactnames/errors/sourcebefore-afterdigests are preserved. No checks skipped, disabled or weakened."
   },
-  "retention_scope": "Implementations reused unchanged; results from different scenarios/software/hosting are separate. No addition/multiplication into cumulativegain. FinalmergeSHA/PR andactualchecks recordedaftervalidation."
+  "retention_scope": "Implementations reused unchanged; results from different scenarios/software/hosting are separate. No addition/multiplication into cumulativegain. FinalmergeSHA/PR andactualchecks recordedaftervalidation.",
+  "prepared_utc": "2026-10-26T18:01:37.180143+00:00",
+  "current_changed_runtime_and_tests": [
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua",
+      "sha256": "2ac3ca1b2e8c88ab54691ed0e08e55b8b7c11a0cf04698d6e680fdd4bcd9f6b3"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+      "sha256": "7bec9bbda2a984eec3b9d393021f9f3b5f0943a8a2e5b13e55adb9e6a5ef347f"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/entities/entities/lod_static_box/shared.lua",
+      "sha256": "cbe07555db9006f2cba7933d5cf3f1c0e1c5f2df5b06fc9584957f10e22429e4"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_chuck.lua",
+      "sha256": "927313227873994563db28bcbc7beb8c50f62ab28f518980d3a7d6820778aab8"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_boss_encounter.lua",
+      "sha256": "58c38bac70fafebf1b7d25cf8b896e8213e85d4df0cf7656e6c2a995257cb150"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua",
+      "sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_feedback_language.lua",
+      "sha256": "97e4614b3c9eddc544e14e51aa465f0f9f589781ebd01e89bbe6dbf57875e3a4"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sh_runtime_audit.lua",
+      "sha256": "86136f07a521652d869db06a9e192b2d15ce20244a30fa94c02d72ca91e1e8c3"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_boss_encounter.lua",
+      "sha256": "e736bed64961853b3452694ca413b2bdac694fa6cc94cfe569a3249dafea70a6"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua",
+      "sha256": "220156e10ba07e1919fea2ca1331b522b287a4c8d48196a4df4016339afc4150"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+      "sha256": "a1cab80b004743fe756c2772342fa0a9aee8e738cf4f78411a0c3147c2046764"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_stair_recovery.lua",
+      "sha256": "c696f69b085d5b4c94ecb04c377f3da4e10f604526760954f0fb957c9056aaf2"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+      "sha256": "f4512a048055bec94ef055616b2fd0454b0e06aa70731f530cc2888d706ce3fc"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua",
+      "sha256": "5b99d4e86ced2dd28fe81db1c9cd5eabb7f6c800de41c22607204bfb393fea0b"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+      "sha256": "66543d6cb179b9905da7278963284561f3c84d3521a92d3ad482ada64b970f54"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+      "sha256": "48e468dda0636493573665893459d1338a64f8d79d7f503e4b58750a4ff4c4c0"
+    },
+    {
+      "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua",
+      "sha256": "ecbf7fa20ee371fd6259bef9f9a5600c0979b5e0cd4dc7ed8ed23c26766c6953"
+    },
+    {
+      "path": "lua/autorun/server/lod_population_observability.lua",
+      "sha256": "c84df23bbb22d0872d68f986c67d0fba0f2b5f3dc8ab1d6d02903eaefce01bdd"
+    },
+    {
+      "path": "tools/install_dev.sh",
+      "sha256": "18291c05114585ded36c5d2cd94a3bb9833d660b48541c4ee9f428437672e7f5"
+    },
+    {
+      "path": "tools/test_bestiary_b28.lua",
+      "sha256": "b2c8041f750097b608a6d46c6696817f1d2957c5da5c70b0ba7a780307311b40"
+    },
+    {
+      "path": "tools/test_boss_framework.lua",
+      "sha256": "981b5a9433d131404be9a92c5817dc4a5e7b60856a9aeaa51c1de92966173771"
+    },
+    {
+      "path": "tools/test_boss_presentation.lua",
+      "sha256": "8abb5ebb9a3cb1cfcd7d0bcd6e3590b34e82895cc2f2713d96f626ab6f1eeb7b"
+    },
+    {
+      "path": "tools/test_checkpoint_g_integration.py",
+      "sha256": "491b832cbc194da92dc8cb6bd4387bb0eb8c7596491335513a8901bd4239d072"
+    },
+    {
+      "path": "tools/test_dev_population_manifest.py",
+      "sha256": "5e4f5f81766fbab944db75e5eea3faad10e4fafc41be537a1a9c187b59df90c5"
+    },
+    {
+      "path": "tools/test_enemy_ai_work.lua",
+      "sha256": "f84f31b384cffd56be6a768e52722e25a2d38277f46e3010e667b3a2cbdac39b"
+    },
+    {
+      "path": "tools/test_feedback_language.lua",
+      "sha256": "66d835e769957f6434068f2cbf8d16cc713d91a7b52d221b061790fc9711e316"
+    },
+    {
+      "path": "tools/test_hostile_stair_collision.lua",
+      "sha256": "f7912f7ee6f3618db8c4c604f45f623fe41084ae9347e8639a100ac17e7204d9"
+    },
+    {
+      "path": "tools/test_hud_raster_cache.lua",
+      "sha256": "d2cdf56272d1708ddb8bc0522853c78930688f1762974a22a8ec6e96a3b13992"
+    },
+    {
+      "path": "tools/test_human_soldier_progression.lua",
+      "sha256": "e2a9223b00319ca1d874d46651c3a554bcbb9874f6c8d2ade85fdc31a911e32f"
+    },
+    {
+      "path": "tools/test_low_end_geometry.lua",
+      "sha256": "797e7912e28129379004cf1aaecc03f41d068cdbd1394f072b65151bb18bb227"
+    },
+    {
+      "path": "tools/test_performance_capture.lua",
+      "sha256": "07e69c0480852d76d4b276944cba9bd102b2f3ab8277d52b9c6f83b2e45f23b9"
+    },
+    {
+      "path": "tools/test_performance_profile.lua",
+      "sha256": "a17daad2a10710f6ce60dfb618c34dc4f08f9393a82fc12b901db0ff2040ac9e"
+    },
+    {
+      "path": "tools/test_population_transport.lua",
+      "sha256": "d304d4c48dac54a8ce0573560ad1fb62844ca6f358bbc4e3571d21c3f4760ca6"
+    },
+    {
+      "path": "tools/validate_spot08_turrets.lua",
+      "sha256": "fc42d7ae645e4fe53bcac0882cd9d73782ee8864207642d1c994160993b37169"
+    }
+  ]
 }

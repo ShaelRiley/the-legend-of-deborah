@@ -1,0 +1,668 @@
+{
+  "status": "Bothcoldfirst-reference darkgatesFAIL unchanged8/20; bothone-repeatdarkgatesPASS. Allcachedimagesmatchacceptedhistoricalbytes. No integration-specificcachedoutputregression identified; first-reference/readinessmechanism notproved.",
+  "thresholds": {
+    "maximum_rgb_channel_error": 8,
+    "pixels_over_5": 20,
+    "background": "All reference-background RGBpixels unchanged (fullimage, noROIexclusions)",
+    "black_and_fade": "Exactpixelidentity required",
+    "source": "/home/deck/deborah-benchmarks/hud-raster-source/cd37397f/visual-gate-v1/plan.json; unchanged predeclared8/20 gate"
+  },
+  "initial_postprocessor_correction": {
+    "raw_report_preserved": "/home/deck/deborah-recovery/retained-integration-20261026/native/hud-pixel-comparison.json",
+    "wrong_report_threshold": "Observedhistorical6max/1pixelOver5wasmistakenforgate.",
+    "correct_gate": "Historicalpredeclared8max/20pixelsOver5",
+    "initial_integration_D1_dark": {
+      "max": 10,
+      "pixels_over_5": 5,
+      "corrected_gate_passed": false
+    },
+    "consequence": "Correctreportingonly; no tolerancechanged; originalD1failurestillfailscorrect8/20 andremainspreserved."
+  },
+  "captures": [
+    {
+      "variant": "retained",
+      "phase": "cold",
+      "all_cases_passed": false,
+      "cases": [
+        {
+          "case": "dark",
+          "maximum_channel_error": 10,
+          "pixels_over_5": 5,
+          "changed_pixels": 81,
+          "reference_background_pixels_changed": 0,
+          "bbox": [
+            53,
+            23,
+            260,
+            58
+          ],
+          "original_sha256": "ef2d44df44bdf458c48dafcfa4e23e1c630f03f7fc6ca233072f3fdd681b6a3f",
+          "cached_sha256": "afcd1bce65b677b418b835b9a9e8b572e96c308acb55234bda6c2108ccda2a69",
+          "passed_unchanged_gate": false,
+          "cached_equal_historical": true,
+          "original_equal_historical": false
+        },
+        {
+          "case": "bright",
+          "maximum_channel_error": 5,
+          "pixels_over_5": 0,
+          "changed_pixels": 1202,
+          "reference_background_pixels_changed": 0,
+          "bbox": [
+            20,
+            23,
+            291,
+            60
+          ],
+          "original_sha256": "aadf2ff757df90c0757106c4e98e02e498e1b2bbf336598394baa161d1494450",
+          "cached_sha256": "02253061d0c2634cbe320d7a997ffd16477ec3f8684b12ebfe6c2c1373809114",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        },
+        {
+          "case": "black",
+          "maximum_channel_error": 0,
+          "pixels_over_5": 0,
+          "changed_pixels": 0,
+          "reference_background_pixels_changed": 0,
+          "bbox": null,
+          "original_sha256": "03b954e35cd679d96899883f2eb1aa433ea93c518d09f025b44d4bd1f27471d1",
+          "cached_sha256": "03b954e35cd679d96899883f2eb1aa433ea93c518d09f025b44d4bd1f27471d1",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        },
+        {
+          "case": "fade",
+          "maximum_channel_error": 0,
+          "pixels_over_5": 0,
+          "changed_pixels": 0,
+          "reference_background_pixels_changed": 0,
+          "bbox": null,
+          "original_sha256": "34b879e97706d2840128503f9f7e1b225a3bf53555d10120aec309cf55c88fa0",
+          "cached_sha256": "34b879e97706d2840128503f9f7e1b225a3bf53555d10120aec309cf55c88fa0",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        }
+      ]
+    },
+    {
+      "variant": "retained",
+      "phase": "repeat",
+      "all_cases_passed": true,
+      "cases": [
+        {
+          "case": "dark",
+          "maximum_channel_error": 1,
+          "pixels_over_5": 0,
+          "changed_pixels": 7,
+          "reference_background_pixels_changed": 0,
+          "bbox": [
+            55,
+            28,
+            61,
+            33
+          ],
+          "original_sha256": "a7ff30bcbc304dfcb49981857da4d3f6b44f23a8006d090313667d6e9a22c5be",
+          "cached_sha256": "afcd1bce65b677b418b835b9a9e8b572e96c308acb55234bda6c2108ccda2a69",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": false
+        },
+        {
+          "case": "bright",
+          "maximum_channel_error": 5,
+          "pixels_over_5": 0,
+          "changed_pixels": 1202,
+          "reference_background_pixels_changed": 0,
+          "bbox": [
+            20,
+            23,
+            291,
+            60
+          ],
+          "original_sha256": "aadf2ff757df90c0757106c4e98e02e498e1b2bbf336598394baa161d1494450",
+          "cached_sha256": "02253061d0c2634cbe320d7a997ffd16477ec3f8684b12ebfe6c2c1373809114",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        },
+        {
+          "case": "black",
+          "maximum_channel_error": 0,
+          "pixels_over_5": 0,
+          "changed_pixels": 0,
+          "reference_background_pixels_changed": 0,
+          "bbox": null,
+          "original_sha256": "03b954e35cd679d96899883f2eb1aa433ea93c518d09f025b44d4bd1f27471d1",
+          "cached_sha256": "03b954e35cd679d96899883f2eb1aa433ea93c518d09f025b44d4bd1f27471d1",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        },
+        {
+          "case": "fade",
+          "maximum_channel_error": 0,
+          "pixels_over_5": 0,
+          "changed_pixels": 0,
+          "reference_background_pixels_changed": 0,
+          "bbox": null,
+          "original_sha256": "34b879e97706d2840128503f9f7e1b225a3bf53555d10120aec309cf55c88fa0",
+          "cached_sha256": "34b879e97706d2840128503f9f7e1b225a3bf53555d10120aec309cf55c88fa0",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        }
+      ]
+    },
+    {
+      "variant": "integration",
+      "phase": "cold",
+      "all_cases_passed": false,
+      "cases": [
+        {
+          "case": "dark",
+          "maximum_channel_error": 9,
+          "pixels_over_5": 4,
+          "changed_pixels": 74,
+          "reference_background_pixels_changed": 0,
+          "bbox": [
+            53,
+            23,
+            260,
+            58
+          ],
+          "original_sha256": "1324b849474d308668d16b6036ceddcb1780da9c7d1f4a968f702bf6780ebf97",
+          "cached_sha256": "afcd1bce65b677b418b835b9a9e8b572e96c308acb55234bda6c2108ccda2a69",
+          "passed_unchanged_gate": false,
+          "cached_equal_historical": true,
+          "original_equal_historical": false
+        },
+        {
+          "case": "bright",
+          "maximum_channel_error": 5,
+          "pixels_over_5": 0,
+          "changed_pixels": 1202,
+          "reference_background_pixels_changed": 0,
+          "bbox": [
+            20,
+            23,
+            291,
+            60
+          ],
+          "original_sha256": "aadf2ff757df90c0757106c4e98e02e498e1b2bbf336598394baa161d1494450",
+          "cached_sha256": "02253061d0c2634cbe320d7a997ffd16477ec3f8684b12ebfe6c2c1373809114",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        },
+        {
+          "case": "black",
+          "maximum_channel_error": 0,
+          "pixels_over_5": 0,
+          "changed_pixels": 0,
+          "reference_background_pixels_changed": 0,
+          "bbox": null,
+          "original_sha256": "03b954e35cd679d96899883f2eb1aa433ea93c518d09f025b44d4bd1f27471d1",
+          "cached_sha256": "03b954e35cd679d96899883f2eb1aa433ea93c518d09f025b44d4bd1f27471d1",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        },
+        {
+          "case": "fade",
+          "maximum_channel_error": 0,
+          "pixels_over_5": 0,
+          "changed_pixels": 0,
+          "reference_background_pixels_changed": 0,
+          "bbox": null,
+          "original_sha256": "34b879e97706d2840128503f9f7e1b225a3bf53555d10120aec309cf55c88fa0",
+          "cached_sha256": "34b879e97706d2840128503f9f7e1b225a3bf53555d10120aec309cf55c88fa0",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        }
+      ]
+    },
+    {
+      "variant": "integration",
+      "phase": "repeat",
+      "all_cases_passed": true,
+      "cases": [
+        {
+          "case": "dark",
+          "maximum_channel_error": 1,
+          "pixels_over_5": 0,
+          "changed_pixels": 7,
+          "reference_background_pixels_changed": 0,
+          "bbox": [
+            55,
+            28,
+            61,
+            33
+          ],
+          "original_sha256": "a7ff30bcbc304dfcb49981857da4d3f6b44f23a8006d090313667d6e9a22c5be",
+          "cached_sha256": "afcd1bce65b677b418b835b9a9e8b572e96c308acb55234bda6c2108ccda2a69",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": false
+        },
+        {
+          "case": "bright",
+          "maximum_channel_error": 5,
+          "pixels_over_5": 0,
+          "changed_pixels": 1202,
+          "reference_background_pixels_changed": 0,
+          "bbox": [
+            20,
+            23,
+            291,
+            60
+          ],
+          "original_sha256": "aadf2ff757df90c0757106c4e98e02e498e1b2bbf336598394baa161d1494450",
+          "cached_sha256": "02253061d0c2634cbe320d7a997ffd16477ec3f8684b12ebfe6c2c1373809114",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        },
+        {
+          "case": "black",
+          "maximum_channel_error": 0,
+          "pixels_over_5": 0,
+          "changed_pixels": 0,
+          "reference_background_pixels_changed": 0,
+          "bbox": null,
+          "original_sha256": "03b954e35cd679d96899883f2eb1aa433ea93c518d09f025b44d4bd1f27471d1",
+          "cached_sha256": "03b954e35cd679d96899883f2eb1aa433ea93c518d09f025b44d4bd1f27471d1",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        },
+        {
+          "case": "fade",
+          "maximum_channel_error": 0,
+          "pixels_over_5": 0,
+          "changed_pixels": 0,
+          "reference_background_pixels_changed": 0,
+          "bbox": null,
+          "original_sha256": "34b879e97706d2840128503f9f7e1b225a3bf53555d10120aec309cf55c88fa0",
+          "cached_sha256": "34b879e97706d2840128503f9f7e1b225a3bf53555d10120aec309cf55c88fa0",
+          "passed_unchanged_gate": true,
+          "cached_equal_historical": true,
+          "original_equal_historical": true
+        }
+      ]
+    }
+  ],
+  "cross_source_and_repeat_equalities": {
+    "bench_hud_source_dark_original.png": {
+      "cross_source_cold_equal": false,
+      "cross_source_repeat_equal": true,
+      "retained_cold_repeat_equal": false,
+      "integration_cold_repeat_equal": false
+    },
+    "bench_hud_source_dark_cached.png": {
+      "cross_source_cold_equal": true,
+      "cross_source_repeat_equal": true,
+      "retained_cold_repeat_equal": true,
+      "integration_cold_repeat_equal": true
+    },
+    "bench_hud_source_bright_original.png": {
+      "cross_source_cold_equal": true,
+      "cross_source_repeat_equal": true,
+      "retained_cold_repeat_equal": true,
+      "integration_cold_repeat_equal": true
+    },
+    "bench_hud_source_bright_cached.png": {
+      "cross_source_cold_equal": true,
+      "cross_source_repeat_equal": true,
+      "retained_cold_repeat_equal": true,
+      "integration_cold_repeat_equal": true
+    },
+    "bench_hud_source_black_original.png": {
+      "cross_source_cold_equal": true,
+      "cross_source_repeat_equal": true,
+      "retained_cold_repeat_equal": true,
+      "integration_cold_repeat_equal": true
+    },
+    "bench_hud_source_black_cached.png": {
+      "cross_source_cold_equal": true,
+      "cross_source_repeat_equal": true,
+      "retained_cold_repeat_equal": true,
+      "integration_cold_repeat_equal": true
+    },
+    "bench_hud_source_fade_original.png": {
+      "cross_source_cold_equal": true,
+      "cross_source_repeat_equal": true,
+      "retained_cold_repeat_equal": true,
+      "integration_cold_repeat_equal": true
+    },
+    "bench_hud_source_fade_cached.png": {
+      "cross_source_cold_equal": true,
+      "cross_source_repeat_equal": true,
+      "retained_cold_repeat_equal": true,
+      "integration_cold_repeat_equal": true
+    }
+  },
+  "source_and_state": [
+    {
+      "variant": "retained",
+      "states": {
+        "before": {
+          "server": {
+            "passed": true,
+            "configuration": {
+              "cl_threaded_bone_setup": "1",
+              "net_graph": "1",
+              "mat_vsync": "0",
+              "ai_disabled": "0",
+              "fps_max": "300",
+              "mat_queue_mode": "2",
+              "host_timescale": "1.0",
+              "nb_stop": "0",
+              "gmod_mcore_test": "1",
+              "nb_update_frequency": ".1",
+              "nb_update_framelimit": "15"
+            },
+            "install": "5b47a62e02863e434111ed79c691563cc5887571 clean ",
+            "lua_errors": 0,
+            "health": 100,
+            "width": null,
+            "height": null,
+            "focus": null,
+            "menu": null,
+            "god": false,
+            "players": 1,
+            "singleplayer": true,
+            "level": 1
+          },
+          "client": {
+            "passed": true,
+            "configuration": {
+              "cl_threaded_bone_setup": "1",
+              "net_graph": "1",
+              "mat_vsync": "0",
+              "ai_disabled": "0",
+              "fps_max": "300",
+              "mat_queue_mode": "2",
+              "host_timescale": "1.0",
+              "nb_stop": "0",
+              "gmod_mcore_test": "1",
+              "nb_update_frequency": ".1",
+              "nb_update_framelimit": "15"
+            },
+            "install": "5b47a62e02863e434111ed79c691563cc5887571 clean ",
+            "lua_errors": 0,
+            "health": 100,
+            "width": 1280,
+            "height": 800,
+            "focus": true,
+            "menu": null,
+            "god": null,
+            "players": null,
+            "singleplayer": null,
+            "level": null
+          }
+        },
+        "after": {
+          "server": {
+            "passed": true,
+            "configuration": {
+              "cl_threaded_bone_setup": "1",
+              "net_graph": "1",
+              "mat_vsync": "0",
+              "ai_disabled": "0",
+              "fps_max": "300",
+              "mat_queue_mode": "2",
+              "host_timescale": "1.0",
+              "nb_stop": "0",
+              "gmod_mcore_test": "1",
+              "nb_update_frequency": ".1",
+              "nb_update_framelimit": "15"
+            },
+            "install": "5b47a62e02863e434111ed79c691563cc5887571 clean ",
+            "lua_errors": 0,
+            "health": 100,
+            "width": null,
+            "height": null,
+            "focus": null,
+            "menu": null,
+            "god": false,
+            "players": 1,
+            "singleplayer": true,
+            "level": 1
+          },
+          "client": {
+            "passed": true,
+            "configuration": {
+              "cl_threaded_bone_setup": "1",
+              "net_graph": "1",
+              "mat_vsync": "0",
+              "ai_disabled": "0",
+              "fps_max": "300",
+              "mat_queue_mode": "2",
+              "host_timescale": "1.0",
+              "nb_stop": "0",
+              "gmod_mcore_test": "1",
+              "nb_update_frequency": ".1",
+              "nb_update_framelimit": "15"
+            },
+            "install": "5b47a62e02863e434111ed79c691563cc5887571 clean ",
+            "lua_errors": 0,
+            "health": 100,
+            "width": 1280,
+            "height": 800,
+            "focus": true,
+            "menu": null,
+            "god": null,
+            "players": null,
+            "singleplayer": null,
+            "level": null
+          }
+        }
+      },
+      "source_proofs": [
+        {
+          "phase": "cold",
+          "moment": "before",
+          "sha": "5b47a62e02863e434111ed79c691563cc5887571",
+          "source_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+          "passed": true,
+          "owner_cleared": null
+        },
+        {
+          "phase": "cold",
+          "moment": "after",
+          "sha": "5b47a62e02863e434111ed79c691563cc5887571",
+          "source_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+          "passed": true,
+          "owner_cleared": true
+        },
+        {
+          "phase": "repeat",
+          "moment": "before",
+          "sha": "5b47a62e02863e434111ed79c691563cc5887571",
+          "source_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+          "passed": true,
+          "owner_cleared": null
+        },
+        {
+          "phase": "repeat",
+          "moment": "after",
+          "sha": "5b47a62e02863e434111ed79c691563cc5887571",
+          "source_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+          "passed": true,
+          "owner_cleared": true
+        }
+      ]
+    },
+    {
+      "variant": "integration",
+      "states": {
+        "before": {
+          "server": {
+            "passed": true,
+            "configuration": {
+              "cl_threaded_bone_setup": "1",
+              "net_graph": "1",
+              "mat_vsync": "0",
+              "ai_disabled": "0",
+              "fps_max": "300",
+              "mat_queue_mode": "2",
+              "host_timescale": "1.0",
+              "nb_stop": "0",
+              "gmod_mcore_test": "1",
+              "nb_update_frequency": ".1",
+              "nb_update_framelimit": "15"
+            },
+            "install": "b33ab81145198e401e93667cd462fa5c8e76febd clean ",
+            "lua_errors": 0,
+            "health": 100,
+            "width": null,
+            "height": null,
+            "focus": null,
+            "menu": null,
+            "god": false,
+            "players": 1,
+            "singleplayer": true,
+            "level": 1
+          },
+          "client": {
+            "passed": true,
+            "configuration": {
+              "cl_threaded_bone_setup": "1",
+              "net_graph": "1",
+              "mat_vsync": "0",
+              "ai_disabled": "0",
+              "fps_max": "300",
+              "mat_queue_mode": "2",
+              "host_timescale": "1.0",
+              "nb_stop": "0",
+              "gmod_mcore_test": "1",
+              "nb_update_frequency": ".1",
+              "nb_update_framelimit": "15"
+            },
+            "install": "b33ab81145198e401e93667cd462fa5c8e76febd clean ",
+            "lua_errors": 0,
+            "health": 100,
+            "width": 1280,
+            "height": 800,
+            "focus": true,
+            "menu": null,
+            "god": null,
+            "players": null,
+            "singleplayer": null,
+            "level": null
+          }
+        },
+        "after": {
+          "server": {
+            "passed": true,
+            "configuration": {
+              "cl_threaded_bone_setup": "1",
+              "net_graph": "1",
+              "mat_vsync": "0",
+              "ai_disabled": "0",
+              "fps_max": "300",
+              "mat_queue_mode": "2",
+              "host_timescale": "1.0",
+              "nb_stop": "0",
+              "gmod_mcore_test": "1",
+              "nb_update_frequency": ".1",
+              "nb_update_framelimit": "15"
+            },
+            "install": "b33ab81145198e401e93667cd462fa5c8e76febd clean ",
+            "lua_errors": 0,
+            "health": 100,
+            "width": null,
+            "height": null,
+            "focus": null,
+            "menu": null,
+            "god": false,
+            "players": 1,
+            "singleplayer": true,
+            "level": 1
+          },
+          "client": {
+            "passed": true,
+            "configuration": {
+              "cl_threaded_bone_setup": "1",
+              "net_graph": "1",
+              "mat_vsync": "0",
+              "ai_disabled": "0",
+              "fps_max": "300",
+              "mat_queue_mode": "2",
+              "host_timescale": "1.0",
+              "nb_stop": "0",
+              "gmod_mcore_test": "1",
+              "nb_update_frequency": ".1",
+              "nb_update_framelimit": "15"
+            },
+            "install": "b33ab81145198e401e93667cd462fa5c8e76febd clean ",
+            "lua_errors": 0,
+            "health": 100,
+            "width": 1280,
+            "height": 800,
+            "focus": true,
+            "menu": null,
+            "god": null,
+            "players": null,
+            "singleplayer": null,
+            "level": null
+          }
+        }
+      },
+      "source_proofs": [
+        {
+          "phase": "cold",
+          "moment": "before",
+          "sha": "b33ab81145198e401e93667cd462fa5c8e76febd",
+          "source_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+          "passed": true,
+          "owner_cleared": null
+        },
+        {
+          "phase": "cold",
+          "moment": "after",
+          "sha": "b33ab81145198e401e93667cd462fa5c8e76febd",
+          "source_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+          "passed": true,
+          "owner_cleared": true
+        },
+        {
+          "phase": "repeat",
+          "moment": "before",
+          "sha": "b33ab81145198e401e93667cd462fa5c8e76febd",
+          "source_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+          "passed": true,
+          "owner_cleared": null
+        },
+        {
+          "phase": "repeat",
+          "moment": "after",
+          "sha": "b33ab81145198e401e93667cd462fa5c8e76febd",
+          "source_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+          "passed": true,
+          "owner_cleared": true
+        }
+      ]
+    }
+  ],
+  "restoration": {
+    "owned_games_stopped": true,
+    "prior_DATA_helpers_restored": true,
+    "integration_install_restored": "b33ab81145198e401e93667cd462fa5c8e76febd",
+    "installed_source_hashes_verified": 118,
+    "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+  },
+  "limits": [
+    "ExactlytwofreshVMs, onecoldhelperinvocation+oneunchangedrepeatineach; noFPS/profiling/history/stairnewtest.",
+    "Retainedinitialguardedfocuspreflightfailed beforeanyvisualtest; ownedVMconfirmedlive andsameVMrecovered via existingguardedEscape/SourceIPC/ACK. No nativegame restart.",
+    "Coldmeansfirsthelperinvocation inVM, notproofnativefont/glyphresourcesuncached; startup/readytimingdiffer and receipts/framecontexts preserved.",
+    "Bothcoldmaximums violatehistorical8 even thoughonly4\u20135pixels exceed5. Do notclaimunqualifiedvisualgatepass.",
+    "Cachedoutputisbyte-identical tohistolacceptedimages; repeatedreferenceoutputconvergesbetweenretained/integration. This isolates variationtoreference path butdoesnotprovefontatlas/renderreadinessrootcause."
+  ],
+  "completed_utc": "2026-10-26T17:59:02.935687+00:00"
+}

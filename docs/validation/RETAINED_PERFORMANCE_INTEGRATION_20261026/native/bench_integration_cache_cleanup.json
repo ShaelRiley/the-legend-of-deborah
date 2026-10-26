@@ -1,0 +1,5 @@
+{
+	"scope": "Invoke only actual HUD cache cleanup callback; fixed six RT identities unchanged and entries invalidated. No game map cleanup or actor/resource mutation.",
+	"passed": true,
+	"slots": 6
+}

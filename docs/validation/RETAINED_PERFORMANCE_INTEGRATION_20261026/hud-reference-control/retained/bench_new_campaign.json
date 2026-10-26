@@ -1,0 +1,10 @@
+{
+	"levelSeed": 206007348,
+	"reset": "canonical NewCampaign; VM/JIT retained; no resource/timer writes",
+	"roster": 2084084480,
+	"epoch": 2,
+	"campaign": 654759232,
+	"ready": true,
+	"seconds": 206.55955505371094,
+	"level": 1
+}

@@ -1,0 +1,4 @@
+GDD fixture: 112 ordinary (cross-attribute category retired), 6 fallbacks; loaded 114 ordinary, 129 total; blank descriptions=0
+BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER
+BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS
+FEAT_RELEASE_GATE_BLOCKED — no human-acceptance candidate may be claimed.

@@ -1,0 +1,11 @@
+{
+  "sha": "42d40b23b9cc3da54ee8be1a4a2c8c2e4cc2d251",
+  "status": "complete",
+  "unit": "lod-deck-retained-integration-20261026",
+  "scope": "Brief native functional/source/visual/physical checks only; concurrentheadlessmatrix mayrun, no FPSacceptance/performancecomparison.",
+  "utc": "2026-10-26T17:36:13.159933+00:00",
+  "normal_input_distance": 164.28245046223068,
+  "owned_game_stopped": true,
+  "new_DATA_helpers_removed": true,
+  "prior_helper_specs_restored": true
+}

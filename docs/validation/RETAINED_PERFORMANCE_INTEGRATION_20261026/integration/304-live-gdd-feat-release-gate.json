@@ -1,0 +1,13 @@
+{
+  "index": 304,
+  "name": "Live-GDD Feat Release Gate",
+  "command": [
+    "python3",
+    "tools/audit_live_gdd_feats.py"
+  ],
+  "returncode": 1,
+  "seconds": 0.162,
+  "log_prefix": "304-live-gdd-feat-release-gate",
+  "stdout_sha256": "1c86d4caf21b50a179ff38be0ef4f08dfea9d261e5c0de1554addb2facc3db69",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

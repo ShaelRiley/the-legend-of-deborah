@@ -1,0 +1,12 @@
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] active_frames=0 active_seconds=0.00 fps=unmeasured median_ms=0.000 p95_ms=0.000 p99_ms=0.000 max_ms=0.000 over25=0 over50=0 over100=0 source_verified=false reason=manual renderer=native preparation_timed_out=false
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] Recording 30s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.
+[LOD:PERF] Optional client/server CPU attribution will begin after warmup.
+[LOD:PERF] active_frames=1 active_seconds=0.03 fps=34.48 median_ms=29.000 p95_ms=29.000 p99_ms=29.000 max_ms=29.000 over25=1 over50=0 over100=0 source_verified=false reason=shutdown renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=partial server_rows=11; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+[LOD:PERF] active_frames=1 active_seconds=0.03 fps=34.48 median_ms=29.000 p95_ms=29.000 p99_ms=29.000 max_ms=29.000 over25=1 over50=0 over100=0 source_verified=false reason=shutdown renderer=native preparation_timed_out=false
+[LOD:PERF] CPU attribution: client_rows=5 server_status=received server_rows=11; inclusive timings overlap; GPU unmeasured
+[LOD:PERF] Saved data/legend_of_deborah/performance_client_latest.txt
+/home/deck/deborah-integration-retained/tools/test_performance_profile.lua: ...-integration-retained/tools/test_performance_profile.lua:213: assertion failed!

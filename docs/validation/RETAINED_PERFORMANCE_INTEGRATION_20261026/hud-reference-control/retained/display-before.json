@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-26T17:49:29.941182+00:00",
+  "text": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n",
+  "drm": {
+    "eDP-1": {
+      "status": "connected",
+      "enabled": "enabled",
+      "dpms": "On"
+    },
+    "DP-1": {
+      "status": "connected",
+      "enabled": "enabled",
+      "dpms": "On"
+    }
+  }
+}

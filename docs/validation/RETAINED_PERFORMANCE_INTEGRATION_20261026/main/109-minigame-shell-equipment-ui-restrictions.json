@@ -1,0 +1,14 @@
+{
+  "index": 109,
+  "name": "Minigame Shell & Equipment UI Restrictions",
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_minigame_ui.lua"
+  ],
+  "returncode": 1,
+  "seconds": 0.36,
+  "log_prefix": "109-minigame-shell-equipment-ui-restrictions",
+  "stdout_sha256": "285d0e7838ebaa49ab500a57005a662b2cde1fd520e2186892b3e623da6bb722",
+  "stderr_sha256": "7f251659ba7c74c081e9b51c2aa51292b861a5dd0a94039ed02baac7b26b8483"
+}

@@ -1,0 +1,1 @@
+/home/deck/deborah-main-integration-baseline/tools/test_geometry_fullupdate.lua: ...end_of_deborah/entities/entities/lod_keycard/cl_init.lua:6: attempt to call a nil value (field 'Remove')

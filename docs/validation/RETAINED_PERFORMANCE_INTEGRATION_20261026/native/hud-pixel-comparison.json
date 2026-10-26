@@ -1,0 +1,42 @@
+{
+  "passed": false,
+  "criteria": "Existingnativegate:opaquemax<=6,<=1pixelover5; black/fadeexact. No newtolerance orperformanceclaim.",
+  "rows": [
+    {
+      "case": "dark",
+      "maximum_channel_error": 10,
+      "pixels_over_5": 5,
+      "changed_pixels": 81,
+      "mean_text_channel_error": 0.0004984537760416666,
+      "background_changed": 0,
+      "passed": false
+    },
+    {
+      "case": "bright",
+      "maximum_channel_error": 5,
+      "pixels_over_5": 0,
+      "changed_pixels": 1202,
+      "mean_text_channel_error": 0.006389617919921875,
+      "background_changed": 0,
+      "passed": true
+    },
+    {
+      "case": "black",
+      "maximum_channel_error": 0,
+      "pixels_over_5": 0,
+      "changed_pixels": 0,
+      "mean_text_channel_error": 0.0,
+      "background_changed": 0,
+      "passed": true
+    },
+    {
+      "case": "fade",
+      "maximum_channel_error": 0,
+      "pixels_over_5": 0,
+      "changed_pixels": 0,
+      "mean_text_channel_error": 0.0,
+      "background_changed": 0,
+      "passed": true
+    }
+  ]
+}

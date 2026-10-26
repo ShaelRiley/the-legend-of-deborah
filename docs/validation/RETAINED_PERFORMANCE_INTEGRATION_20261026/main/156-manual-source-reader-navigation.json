@@ -1,0 +1,13 @@
+{
+  "index": 156,
+  "name": "Manual Source & Reader Navigation",
+  "command": [
+    "python3",
+    "tools/test_manual_document.py"
+  ],
+  "returncode": 1,
+  "seconds": 0.39,
+  "log_prefix": "156-manual-source-reader-navigation",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "6bebf465ce16f957e7c2f954898d7b6681555e49f5e43da52a8fd50ea61c9c4f"
+}

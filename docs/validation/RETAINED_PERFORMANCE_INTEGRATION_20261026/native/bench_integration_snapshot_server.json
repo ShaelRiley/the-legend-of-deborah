@@ -1,0 +1,66 @@
+{
+	"boxes": 1209,
+	"kinds": {
+		"4": 590,
+		"1": 422,
+		"5": 1,
+		"2": 168,
+		"3": 28
+	},
+	"position": [
+		-3840,
+		-1371.718505859375,
+		-12271.9375
+	],
+	"health": 100,
+	"no_god": true,
+	"alive": true,
+	"source": {
+		"lua_kb": 41924,
+		"damsels": "damsels-20261012-lore",
+		"jit_version": "LuaJIT 2.1.0-beta3",
+		"lua_errors": 0,
+		"realm": "server",
+		"branch": "unknown",
+		"equipment_generation": "interpreter-generator",
+		"architecture": "x64",
+		"engine": "2026.09.17",
+		"wall_models": 0,
+		"meshes": 0,
+		"entities": 1431,
+		"install": "42d40b23b9cc3da54ee8be1a4a2c8c2e4cc2d251 clean ",
+		"loot_entities": 44,
+		"vr": {
+			"method_overrides": 0,
+			"active": false,
+			"version": "deborah-vr-idle-20261007-r2",
+			"recurring_timers": 0,
+			"local_tracking": false,
+			"runtime_hooks": 0,
+			"pending_once": 0,
+			"native_resources": 0,
+			"resource_counts": {
+				"physics_proxies": 0,
+				"held_props": 0,
+				"motion_controllers": 0
+			},
+			"idle": true,
+			"source": {
+				"bridge_checked": 2,
+				"verified": true,
+				"checked": 139,
+				"mismatches": 0,
+				"missing": 0
+			},
+			"players": 0
+		},
+		"build": "generator-jit-20260917-01",
+		"feedback_audio": "feedback-20260919-01",
+		"missing": "none"
+	},
+	"realm": "server",
+	"passed": true,
+	"stair_probe_absent": true,
+	"profiler_absent": true,
+	"hidden_collision_boxes": 0
+}

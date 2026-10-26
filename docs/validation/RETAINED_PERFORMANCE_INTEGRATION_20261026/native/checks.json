@@ -1,0 +1,13 @@
+{
+  "source": "42d40b23b9cc3da54ee8be1a4a2c8c2e4cc2d251",
+  "no_FPS_capture": true,
+  "goal_paused": true,
+  "plan": [
+    "nativeexactsource+normalD1deployment",
+    "HUDsource/functionand4pixelpairs+fixed6slotcleanup",
+    "nativefloor/colliderqueue/source/lifecycle",
+    "historyJSONinvalidationnativeproof",
+    "9generatedstairphysicalcases",
+    "ordinaryforwardinputandfreshalivefocusrendererstate"
+  ]
+}

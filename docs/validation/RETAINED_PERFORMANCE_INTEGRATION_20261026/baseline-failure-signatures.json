@@ -1,0 +1,121 @@
+{
+  "main_sha": "cec10dc5426e2ee3e2137f68de0ef4a321772413",
+  "prepared_utc": "2026-10-26T17:27:42.681945+00:00",
+  "matrix_original": {
+    "passed": 322,
+    "total": 334,
+    "source_before": "6aa19cc8386a3fae05a4b1f34507912b8d1ff16490d97669c3b277e7c13970ed",
+    "source_after": "6aa19cc8386a3fae05a4b1f34507912b8d1ff16490d97669c3b277e7c13970ed",
+    "changed_during_gate": []
+  },
+  "environment_note": "Originalfullmatrix inheritedPATH lackedNodeandPIL/numpy. Originalfailures retained. Onlydependency-failedgates rerun with officialSHA-verifiedNode22 andtaskprivatePythonvenv. No sourceedits.",
+  "environment_reruns": [
+    {
+      "name": "Great Crate Stock Hull Assets",
+      "initial_returncode": 1,
+      "initial_signature": [
+        "ModuleNotFoundError: No module named 'numpy'"
+      ],
+      "rerun_returncode": 0,
+      "rerun_logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/dependency-reruns/069-great-crate-stock-hull-assets"
+    },
+    {
+      "name": "Great Crate Original Assets & Safe Fit",
+      "initial_returncode": 1,
+      "initial_signature": [
+        "ModuleNotFoundError: No module named 'PIL'"
+      ],
+      "rerun_returncode": 0,
+      "rerun_logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/dependency-reruns/071-great-crate-original-assets-safe-fit"
+    },
+    {
+      "name": "Manual Source & Reader Navigation",
+      "initial_returncode": 1,
+      "initial_signature": [
+        "FileNotFoundError: [Errno 2] No such file or directory: 'node'"
+      ],
+      "rerun_returncode": 0,
+      "rerun_logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/dependency-reruns/156-manual-source-reader-navigation"
+    }
+  ],
+  "effective_passed": 325,
+  "total": 334,
+  "fixture_findings": {
+    "test_cross_feats_dodge.lua:177": "LegacydraftfixtureexpectsfirstWIS_HERO_OF_LEGEND whilemigratedstatealreadyownsWIS(:167\u2013172). ProductionRepairCanonicalDrafts(:865\u2013881) nowremovesineligibleoffers; historicalunversionedhandstilllimit3(:848\u2013850). No baseline-sourcefixapplied."
+  },
+  "failures": [
+    {
+      "name": "Bestiary B29 Bilateral Combat Seams",
+      "returncode": 1,
+      "signature": [
+        "test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/063-bestiary-b29-bilateral-combat-seams"
+    },
+    {
+      "name": "Active Event Catalog, Bribe Removal & Quiz Placement",
+      "returncode": 1,
+      "signature": [
+        "test_event_quiz_generation.lua:164: assertion failed!"
+      ],
+      "logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/108-active-event-catalog-bribe-removal-quiz-placement"
+    },
+    {
+      "name": "Minigame Shell & Equipment UI Restrictions",
+      "returncode": 1,
+      "signature": [
+        "test_minigame_ui.lua:106: assertion failed!"
+      ],
+      "logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/109-minigame-shell-equipment-ui-restrictions"
+    },
+    {
+      "name": "Client Geometry Full-Update Recovery",
+      "returncode": 1,
+      "signature": [
+        "cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+      ],
+      "logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/142-client-geometry-full-update-recovery"
+    },
+    {
+      "name": "Shared Native DamageInfo Lifetime",
+      "returncode": 1,
+      "signature": [
+        "test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/150-shared-native-damageinfo-lifetime"
+    },
+    {
+      "name": "Shotgun Native Bullet Aggregation",
+      "returncode": 1,
+      "signature": [
+        "test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/153-shotgun-native-bullet-aggregation"
+    },
+    {
+      "name": "Feat: rebalance_20261002",
+      "returncode": 1,
+      "signature": [
+        "test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+      ],
+      "logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/275-feat-rebalance-20261002"
+    },
+    {
+      "name": "Retired Cross Feats & Shared Dodge",
+      "returncode": 1,
+      "signature": [
+        "test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/301-retired-cross-feats-shared-dodge"
+    },
+    {
+      "name": "Live-GDD Feat Release Gate",
+      "returncode": 1,
+      "signature": [
+        "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+        "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER"
+      ],
+      "logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/302-live-gdd-feat-release-gate"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "index": 63,
+  "name": "Bestiary B29 Bilateral Combat Seams",
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_bestiary_b29_combat.lua"
+  ],
+  "returncode": 1,
+  "seconds": 0.117,
+  "log_prefix": "063-bestiary-b29-bilateral-combat-seams",
+  "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+  "stderr_sha256": "c28cab64aadec3edccd26f93b979ec4a125231c6b0b5c1219029eabc7bb7b3f6"
+}

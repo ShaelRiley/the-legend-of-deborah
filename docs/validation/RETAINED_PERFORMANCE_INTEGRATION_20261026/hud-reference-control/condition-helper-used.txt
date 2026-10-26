@@ -1,0 +1,9 @@
+local realm=SERVER and "server" or "client"
+local p=SERVER and player.GetHumans()[1] or LocalPlayer()
+assert(IsValid(p) and p:Alive())
+local j={realm=realm,width=CLIENT and ScrW() or nil,height=CLIENT and ScrH() or nil,focus=CLIENT and system.HasFocus() or nil,menu=CLIENT and gui.IsGameUIVisible() or nil,health=p:Health(),god=SERVER and p:HasGodMode() or nil,move_type=p:GetMoveType(),architecture=jit.arch,engine=VERSIONSTR,jit_version=jit.version,snapshot=LOD.RuntimeAudit:Snapshot(true),configuration={}}
+for _,name in ipairs({"fps_max","mat_vsync","gmod_mcore_test","mat_queue_mode","cl_threaded_bone_setup","net_graph","nb_update_frequency","nb_update_framelimit","host_timescale","ai_disabled","nb_stop"})do local c=GetConVar(name);if c then j.configuration[name]=c:GetString()end end
+if SERVER then j.god=p:HasGodMode();local s=LOD.RunManager.State;j.level=s.Level;j.ready=s.BuildReady;j.frozen=s.SimulationFrozen;j.campaign=s.CampaignSeed;j.hostiles=#LOD.HostileRegistry:List();j.singleplayer=game.SinglePlayer();j.players=#player.GetHumans();j.dedicated=game.IsDedicated();j.passed=j.level==1 and j.ready and not j.frozen and j.singleplayer and j.players==1 and not j.dedicated and not j.god
+else j.passed=j.width==1280 and j.height==800 and j.focus and not j.menu end
+file.Write("legend_of_deborah/bench_hud_reference_state_"..realm..".json",util.TableToJSON(j,true))
+assert(j.passed,"HUD reference condition mismatch")

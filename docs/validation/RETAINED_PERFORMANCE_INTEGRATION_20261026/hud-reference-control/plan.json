@@ -1,0 +1,19 @@
+{
+  "created_utc": "2026-10-26T17:49:29.849695+00:00",
+  "sequence": [
+    "retained",
+    "integration"
+  ],
+  "captures_each_vm": [
+    "cold",
+    "repeat"
+  ],
+  "source": {
+    "retained": "5b47a62e02863e434111ed79c691563cc5887571",
+    "integration": "b33ab81145198e401e93667cd462fa5c8e76febd"
+  },
+  "scope": "Exactly two fresh native D1 sessions; each canonicalNewCampaign+existingnormalsetup, unchangedHUDvisualhelper first invocation then exactlyone repeat (new four PostRenderframes). NoFPS/profiling/historyproof/staircases. Cold denotesfirsthelperreference inthisfreshVM, notguaranteeduncachednativeglyphs.",
+  "conditions": "ActualLCDDeck/SP1listenhost/gm_flatgrass/1280x800internal60Hz+external1920x1080@75 BOTHON/15WAC/GPUauto/existinggraphics/software/Proton10.0-4b/nativeGModWin64; normalAI/resources/population preserved.",
+  "criteria": "Unchangedhistorical maxchannel<=8 andpixelsOver5<=20 foropaqueimages; backgroundunchanged; black/fadeexact; nativecursor/RGBAeq andactualopaquehit/build/fadefallback; no newtolerance.",
+  "failure_policy": "No automaticrestart onobservation timeout; retainownedliveunit/evidenceforinspection. Stopafterthese two sessions; no D20 oradditionaltests."
+}

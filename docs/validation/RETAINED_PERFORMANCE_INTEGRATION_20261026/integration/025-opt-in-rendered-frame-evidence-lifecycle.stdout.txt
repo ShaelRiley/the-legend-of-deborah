@@ -1,0 +1,1 @@
+[LOD:PERF] Recording 180s after up to 30s wall preparation and 3s warmup; play normally through combat, gates and a boss. Population evidence is requested automatically.

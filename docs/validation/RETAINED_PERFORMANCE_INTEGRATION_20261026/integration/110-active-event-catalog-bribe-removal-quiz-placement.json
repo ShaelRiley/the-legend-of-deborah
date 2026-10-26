@@ -1,0 +1,14 @@
+{
+  "index": 110,
+  "name": "Active Event Catalog, Bribe Removal & Quiz Placement",
+  "command": [
+    "python3",
+    "tools/test_crypto_sqlite.py",
+    "tools/test_event_quiz_generation.lua"
+  ],
+  "returncode": 1,
+  "seconds": 3.825,
+  "log_prefix": "110-active-event-catalog-bribe-removal-quiz-placement",
+  "stdout_sha256": "df640084375d597150632ff8e0b07cecb9a7827a6ee76675fc1d4fd4a265be32",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

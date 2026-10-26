@@ -1,0 +1,11 @@
+{
+	"writer_restored": true,
+	"original_history_restored": true,
+	"checks": 327851,
+	"passed": true,
+	"scope": "isolated history copies; preferred disk writes intercepted, no real history mutation or replay",
+	"source": "c11c3567 original installed closure",
+	"encoder_restored": true,
+	"initial_rows": 1000,
+	"native_json_roundtrip": true
+}

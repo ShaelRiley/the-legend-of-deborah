@@ -1,0 +1,90 @@
+[
+  {
+    "name": "test_hud_raster_cache",
+    "exit": 0,
+    "seconds": 0.06914023499120958
+  },
+  {
+    "name": "test_hud_text_work",
+    "exit": 0,
+    "seconds": 1.367333136004163
+  },
+  {
+    "name": "test_low_end_geometry",
+    "exit": 0,
+    "seconds": 0.08593892000499181
+  },
+  {
+    "name": "test_human_soldier_progression",
+    "exit": 0,
+    "seconds": 0.07545443798881024
+  },
+  {
+    "name": "test_enemy_ai_work",
+    "exit": 0,
+    "seconds": 10.26290986299864
+  },
+  {
+    "name": "test_feedback_language",
+    "exit": 0,
+    "seconds": 0.31845671200426295
+  },
+  {
+    "name": "test_boss_framework",
+    "exit": 0,
+    "seconds": 25.140237644984154
+  },
+  {
+    "name": "test_boss_presentation",
+    "exit": 0,
+    "seconds": 3.7771064359985758
+  },
+  {
+    "name": "validate_spot08_turrets",
+    "exit": 0,
+    "seconds": 2.9760760880017187
+  },
+  {
+    "name": "test_warden_dancefloor",
+    "exit": 1,
+    "seconds": 0.061433410010067746
+  },
+  {
+    "name": "test_hostile_stair_collision",
+    "exit": 0,
+    "seconds": 0.979506670992123
+  },
+  {
+    "name": "test_stair_headroom",
+    "exit": 0,
+    "seconds": 4.339253690006444
+  },
+  {
+    "name": "test_bestiary_b28",
+    "exit": 0,
+    "seconds": 8.116688078996958
+  },
+  {
+    "name": "test_population_transport",
+    "exit": 0,
+    "seconds": 0.08348178898449987
+  },
+  {
+    "name": "test_performance_profile",
+    "exit": 1,
+    "seconds": 0.068783891008934
+  },
+  {
+    "name": "test_enemy_update",
+    "exit": 0,
+    "seconds": 0.07640221601468511
+  },
+  {
+    "name": "test_dev_population_manifest.py",
+    "exit": 0
+  },
+  {
+    "name": "test_warden_dancefloor.py",
+    "exit": 0
+  }
+]
