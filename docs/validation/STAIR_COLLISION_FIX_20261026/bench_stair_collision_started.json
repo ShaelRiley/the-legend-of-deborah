@@ -1,0 +1,11 @@
+{
+	"flight_treads": 24,
+	"expected_cases": 9,
+	"passed": true,
+	"ordinary_gameplay": false,
+	"lease_seconds": 110,
+	"original_population_frozen": true,
+	"sha": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+	"flight_solids": 32,
+	"all_stair_solids": 224
+}

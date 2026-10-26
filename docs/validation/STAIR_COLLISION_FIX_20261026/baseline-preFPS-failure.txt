@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/deck/deborah-recovery/run-finale-arm.py", line 22, in <module>
+    for realm in ['client','server']:call(realm,'bench_renew_bridge.txt')
+                                     ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/deck/deborah-recovery/run-finale-arm.py", line 7, in call
+    r=subprocess.run(['python3','/home/deck/deborah-recovery/bench-command.py',realm,json.dumps({'action':'script','name':name})],capture_output=True,text=True,check=True);print(r.stdout.strip(),flush=True)
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['python3', '/home/deck/deborah-recovery/bench-command.py', 'client', '{"action": "script", "name": "bench_renew_bridge.txt"}']' returned non-zero exit status 1.

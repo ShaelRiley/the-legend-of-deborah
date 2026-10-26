@@ -1,3 +1,11 @@
+# Current checkpoint — stair collision repaired; corrected performance baseline pending
+
+User-prioritized shared stair walking bypass is fixed in54bf0698. Actualgenerated-collider nativevalidation passes9 physicalcases (ordinary/legacybossflags+ordinary/genericfullup/down);56-case L54/LJ geometricgate coversfourorientations,large-step/Zsnap,completeflights/detours andlifecycleinvalidation. [Source, rawnativechecks, limitations and failedbaselineattempt](validation/STAIR_COLLISION_FIX_20261026.json).
+
+MotionusesactualgeneratedBBoxindex+worldgrid/stairsweepsforallgroundactors, physicallysupportedwaypoint/up-across-downstairmovement, two-cornerdetours, staircommitmentpreservation andnonpenetratingrecovery. Geometry/content/cadence unchanged. Native test pausesownAIanduses32x72hulls ononeflight; fullbossAI/allauthoredhulls/ordinaryplay stillunverified. Initialfixturepublicwrapperassertionfailedbeforemovement/preserved/corrected; productioncodehashesverified. Ownedgame/helpers restored;120hashes/bothdisplaysON.
+
+Optimizationresumedwithonecorrected-buildD20profiler-offbaselineattempt; clientbridge renewal failedBEFORE FPS. No newbaseline/performancegain/40FPSclaim. Resumebaselineonfixedsourcebeforefurtheroptimization; donotapplyoldsourcecomparisonsacrossthecollisionchange. Current45mincheckpoint04:25:52–05:10:52UTC endsafterpublication; noautomaticnextcheckpoint. PR7draft/mainunchanged/SP40UNMET/fullfivewarmed180s/ordinaryplay/fullboss/40capUNVERIFIED.
+
 # Current checkpoint — forced-advance query not retained; stair collision bug prioritized
 
 The resumed checkpoint runs03:31:29–04:16:29UTC. One source candidate completed four profiler-off P,C,C,P captures; fifth parent failed focus BEFORE FPS, preserved/no replacement; sixth not started. [Raw evidence, metrics, regression results and bug handoff](validation/STEAM_DECK_ADVANCE_QUERY_20261026.json).
