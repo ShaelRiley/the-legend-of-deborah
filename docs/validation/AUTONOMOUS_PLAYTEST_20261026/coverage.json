@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "858941158ed5182a88ab2d7522f534bdd6029c30",
+  "current_candidate": "e76659db9d99360f557252faf2f6455d32d8c0c5",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -15,9 +15,9 @@
       "source": "05 LOD-STAGE-001; 06 LOD-LORE-UI-001",
       "expected": "Startup/title, role and class selection, Hermit chapter, one identity-bound starter, ready portal",
       "scenario": "Fresh session; create disposable Hero, talk/read/manual, select class and legal feat; ordinary portal Use",
-      "result": "failed: opening dialogue truncated",
+      "result": "partially observed: complete Hermit dialogue repaired/rechecked; class selection in progress; portal/ordinary progression pending",
       "evidence": [
-        "hermit-dialogue/defect.json"
+        "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png"
       ]
     },
     {
@@ -276,8 +276,10 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "pending",
-      "evidence": []
+      "result": "pass for e76659db:336/336 suites, source unchanged,925 Lua syntax files",
+      "evidence": [
+        "/tmp/deborah-playtest-e76659db-frozen-gate/receipt.json"
+      ]
     },
     {
       "id": "FINAL-01",
@@ -311,12 +313,18 @@
     {
       "id": "BUG-001",
       "record": "hermit-dialogue/defect.json",
-      "status": "implemented and targeted static checks pass; fresh native repair recheck pending"
+      "status": "repaired; complete native opening chapter and separate receipt observed on fresh committed production-settings build"
     }
   ],
   "static_fixture_checkpoint": {
     "commit": "9f698856cdd960baa149f01db3d82cacb076a892",
     "remote_verified": true,
     "result": "All nine prior fixture failures reproduced and pass after repair, plus four adjacent regressions. Gameplay unchanged."
+  },
+  "integration": {
+    "result": "336/336 pass, 925 Lua files, source unchanged",
+    "commit": "e76659db9d99360f557252faf2f6455d32d8c0c5",
+    "receipt": "/tmp/deborah-playtest-e76659db-frozen-gate/receipt.json",
+    "native_gmod_accepted": false
   }
 }

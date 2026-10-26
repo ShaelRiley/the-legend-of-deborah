@@ -16,9 +16,28 @@
   "severity": "Major usability and missing required guidance; no engine crash",
   "cause": "Complete 1757-byte opening chapter supplied to one native DLabel limited to 1023 bytes. Existing headless panel double did not model that limit.",
   "engine_source": "https://wiki.facepunch.com/gmod/Panel:SetText",
-  "status": "confirmed; repair in progress",
+  "status": "repaired; complete native opening chapter and separate receipt observed on fresh committed production-settings build",
   "evidence": [
     "deborah-hermit-dialogue.png",
     "deborah-hermit-dialogue-scrolled.png"
-  ]
+  ],
+  "repair_commit": "e76659db9d99360f557252faf2f6455d32d8c0c5",
+  "repair_recheck": {
+    "map": "gm_flatgrass",
+    "campaign_seed": 6102601,
+    "level_seed": 1694580310,
+    "layout_seed": 102935261,
+    "production_encounters": true,
+    "mounted_sources": "114 checked, zero mismatch/missing",
+    "observed": [
+      "Native scrollbar appears",
+      "Former cutoff and later portal/timer/Neil instructions readable",
+      "Final sentence and separate chapter receipt visible after ordinary wheel scroll",
+      "Portrait animates without scripted-only API error"
+    ],
+    "limitations": [
+      "Three event-role native appearances pending",
+      "One startup ErrorNoHalt entry from stale lod_roster_seed; diagnosed environment contamination, not clean-pass evidence"
+    ]
+  }
 }

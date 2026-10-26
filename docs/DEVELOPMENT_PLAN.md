@@ -1,3 +1,29 @@
+# Current checkpoint — autonomous native gameplay and defect campaign
+
+The October26 user goal supersedes the older next-test sequence: systematically
+play the actual client, repair demonstrated defects, retain a requirement-to-test
+matrix, and require three consecutive varied clean final-candidate passes before
+completion. Workshop/VPS and the sustained40-FPS goal remain outside this campaign;
+the October23 timer/countdown/hourglass/inventory/reward choices stay deferred.
+
+Baseline remote main85894115 was clean. Fixture checkpoint9f698856 repairs all
+nine inherited regression failures without gameplay changes. Native Steam Deck
+play found BUG-001: the Hermit's opening chapter was silently truncated by the
+native1023-byte Label limit. Source repair e76659db preserves complete UTF-8 text
+in the existing scroll canvas. Fresh production-settings gm_flatgrass evidence
+shows the full chapter, ordinary scroll and separate receipt; the portrait has no
+scripted-only animation API error. Exact e76659db passes336/336 suites with925 Lua
+files and unchanged source. Evidence and current coverage:
+[autonomous playtest](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
+
+Current native session: actual Steam Deck, Windows x86/Proton10, seed6102601,
+levelSeed1694580310, layoutSeed102935261;114 source hashes match. The stale
+benchmark roster seed produced one diagnosed startup warning; clear it before a
+fresh clean pass. Rogue class selection is observed; ordinary feat/portal/dungeon
+play is next. No full campaign, cooperative client or clean-pass completion claim;
+clean streak remains0. Preserve accepted collision/performance work and all open
+coverage. Use the matrix/defect records for the next exact action after interruption.
+
 # Current checkpoint — integrate retained partial performance improvements
 
 The author explicitly authorizes focused integration into main of retained, evidenced work while the broader 40 FPS optimization goal stays paused. This supersedes the earlier research-only main/draft hold for this integration. Selected unchanged implementations: HUD raster reuse, native geometry visibility/queue retirement, three AI query guards, feedback-history serialization caching and Chuck/Jane loading-time prefetch. Evidence and qualifications are in [the integration record](validation/RETAINED_PERFORMANCE_INTEGRATION_20261026.json); separate experiments are not a cumulative FPS claim.

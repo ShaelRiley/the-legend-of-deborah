@@ -1,0 +1,12 @@
+0.796 generator-jit-20260917-01 LUA_ERROR count=1 realm=server
+[LOD:RPG] lod_roster_seed ignored because developer mode is disabled.
+
+addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua:700 newCampaign
+addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_campaign_timeout.lua:405 NewCampaign
+addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_campaign_bootstrap_reliability.lua:61 
+[C]:-1 xpcall
+addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_campaign_bootstrap_reliability.lua:60 Ensure
+addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_campaign_bootstrap_reliability.lua:87 ensureFromLifecycle
+addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_campaign_bootstrap_reliability.lua:96 v
+lua/includes/modules/hook.lua:102 
+1.800 generator-jit-20260917-01 BUILD_IDENTITY build=generator-jit-20260917-01 realm=server install=e76659db9d99360f557252faf2f6455d32d8c0c5 clean  missing=none architecture=x86 branch=unknown engine=2026.09.17 lua_errors=1 lua_kb=28085 entities=1380 meshes=0 wall_models=0 loot_entities=0 jit_version=LuaJIT 2.0.4 equipment_generation=interpreter-generator damsels=damsels-20261012-lore feedback_audio=feedback-20260919-01
