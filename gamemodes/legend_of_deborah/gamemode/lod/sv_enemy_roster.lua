@@ -593,9 +593,29 @@ end
 -- Shared present-position eligibility. Mobile actors may still pursue when
 -- this is false; stationary actors cannot reserve an opening contact on a
 -- target they can neither reach nor threaten from their authored placement.
-function E:CanTargetFromHere(e,p,presentThreatOnly)
+-- A committed advance already selects the movement branch below, regardless
+-- of present-position geometry. Keep this decision live; it is not a cache.
+local function forcedAdvance(e,d,now)
+    return (e.LODArchetypeId=="razor" and now<(e.LODRazorApproachUntil or 0)) or (d.link and now<(e.LODLinkAdvanceUntil or 0)) or (d.edict and now<(e.LODEdictAdvanceUntil or 0)) or (d.companion and now<(e.LODCompanionAdvanceUntil or 0)) or (d.discipline and now<(e.LODDisciplineAdvanceUntil or 0)) or (d.crossfire and now<(e.LODCrossfireAdvanceUntil or 0)) or (d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0))
+end
+local tickGeometryQueryToken={}
+local queryOrigin,queryVisible=E.Origin,E.Visible
+local queryAcquireTrace,queryReleaseTrace=E.AcquireTrace,E.ReleaseTrace
+local queryTraceLine=util.TraceLine
+local queryTraceInfo=debug and debug.getinfo and debug.getinfo(queryTraceLine,"S")
+local queryTraceNative=queryTraceInfo and queryTraceInfo.what=="C"
+function E:CanTargetFromHere(e,p,presentThreatOnly,queryMode,now)
     local d=self.Definitions[e.LODArchetypeId]
     if not d or not self:AcquireTarget(p) then return false end
+    -- Preserve acquisition (including concealment expiry) before omitting a
+    -- geometry result that this tick cannot use. Opening reservations and all
+    -- public queries still perform the full current-position check. Foreign
+    -- geometry/trace providers retain their calls and side effects.
+    if queryMode==tickGeometryQueryToken and not d.stationary and d.kind~="beam"
+        and queryTraceNative and util.TraceLine==queryTraceLine
+        and self.Origin==queryOrigin and self.Visible==queryVisible
+        and self.AcquireTrace==queryAcquireTrace and self.ReleaseTrace==queryReleaseTrace
+        and forcedAdvance(e,d,now) then return false end
     local g=state().Graph
     if d.kind=="gas" or presentThreatOnly and d.stationary and d.trap then
         if key(N:WorldToCell(g,e:GetPos()))~=key(N:WorldToCell(g,p:GetPos())) then return false end
@@ -612,6 +632,7 @@ function E:CanTargetFromHere(e,p,presentThreatOnly)
     end
     return true
 end
+local tickCanTargetFromHere=E.CanTargetFromHere
 function E:Tick(e)
     if e.LODFallenHero then return LOD.FallenHeroes:TickAI(e) end
     -- This shared dispatch also sees non-roster Fighter/Rogue skeletons before
@@ -672,7 +693,14 @@ function E:Tick(e)
         if not self:PatrolWanderer(e,s.Graph) then motion:Stop(e);e:_SetActivity(ACT_IDLE) end
         return true
     end
-    local can=self:CanCast(e) and self:CanTargetFromHere(e,p)
+    local can=self:CanCast(e)
+    if can then
+        if self.CanTargetFromHere==tickCanTargetFromHere then
+            can=self:CanTargetFromHere(e,p,nil,tickGeometryQueryToken,now)
+        else
+            can=self:CanTargetFromHere(e,p)
+        end
+    end
     if can and d.kind=="beam" and now>=(e.LODNextAttack or 0) then
         local direction=p:GetPos()-e:GetPos();direction.z=0
         local yaw=direction:Angle().y
@@ -691,7 +719,7 @@ function E:Tick(e)
     end
     -- Arc Casters advance between commitments. Previously merely seeing a target
     -- inside the very long cast range held them still for the entire cooldown.
-    local reposition=(e.LODArchetypeId=="razor" and now<(e.LODRazorApproachUntil or 0)) or (d.link and now<(e.LODLinkAdvanceUntil or 0)) or (d.edict and now<(e.LODEdictAdvanceUntil or 0)) or (d.companion and now<(e.LODCompanionAdvanceUntil or 0)) or (d.discipline and now<(e.LODDisciplineAdvanceUntil or 0)) or (d.crossfire and now<(e.LODCrossfireAdvanceUntil or 0)) or (d.resource and now<(e.LODResourceAdvanceUntil or 0)) or (d.spacing and now<(e.LODSpacingAdvanceUntil or 0)) or (d.condition and now<(e.LODConditionAdvanceUntil or 0)) or (d.mobile and now<(e.LODMobileAdvanceUntil or 0)) or (d.tactical and now<(e.LODTacticalAdvanceUntil or 0)) or (d.melee and now<(e.LODMeleeAdvanceUntil or 0)) or (d.trap and now<(e.LODTrapAdvanceUntil or 0)) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
+    local reposition=forcedAdvance(e,d,now) or (d.kind=="arc" and not d.trap and now<(e.LODNextAttack or 0)
         and self:Target(p) and e:GetPos():DistToSqr(p:GetPos())>240^2)
     if can and not reposition then
         motion:Stop(e)

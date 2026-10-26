@@ -191,6 +191,7 @@ SUITES = [
     ("Staging Event Spawn & Deferred Native Deletion", ["python3", "tools/test_crypto_sqlite.py", "tools/test_staging_event_spawn.lua"]),
     ("Dedicated Server Deployment Preservation", ["python3", "tools/test_server_launcher.py"]),
     ("Complete Enemy Roster & Animation Safety", ["python3", "tools/run_lua54.py", "tools/test_enemy_roster.lua"]),
+    ("Roster Forced-Advance Query Parity", ["python3", "tools/run_lua54.py", "tools/test_roster_advance_query.lua"]),
     ("Bestiary B1 Content Enemies & Exact Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b1.lua"]),
     ("Bestiary B2 Ally Support & Production Progression", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b2.lua"]),
     ("Bestiary B3 Flank Pursuit & Production Progression", ["python3", "tools/run_lua54.py", "tools/test_bestiary_b3.lua"]),
