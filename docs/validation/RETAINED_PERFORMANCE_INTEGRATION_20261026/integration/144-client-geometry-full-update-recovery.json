@@ -1,0 +1,14 @@
+{
+  "index": 144,
+  "name": "Client Geometry Full-Update Recovery",
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_geometry_fullupdate.lua"
+  ],
+  "returncode": 1,
+  "seconds": 0.068,
+  "log_prefix": "144-client-geometry-full-update-recovery",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "8612c54e63dc6edbcefb0268e808573fe3cc43e043b6a143a3aeb35ac0b67fad"
+}

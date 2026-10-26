@@ -1,0 +1,13 @@
+{
+  "index": 71,
+  "name": "Great Crate Original Assets & Safe Fit",
+  "command": [
+    "python3",
+    "tools/test_great_crate_assets.py"
+  ],
+  "returncode": 1,
+  "seconds": 0.083,
+  "log_prefix": "071-great-crate-original-assets-safe-fit",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "a8469b1af4d0a4d9775882f5248fe9773076de3cd56eba23242a7839a90df954"
+}

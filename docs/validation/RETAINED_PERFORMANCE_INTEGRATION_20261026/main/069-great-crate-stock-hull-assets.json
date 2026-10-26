@@ -1,0 +1,13 @@
+{
+  "index": 69,
+  "name": "Great Crate Stock Hull Assets",
+  "command": [
+    "python3",
+    "tools/test_great_crate_hull.py"
+  ],
+  "returncode": 1,
+  "seconds": 0.082,
+  "log_prefix": "069-great-crate-stock-hull-assets",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "271dea65d05d682ecde78ab54842ee24ee02a97e75ae5531c243acb01c7c10d2"
+}

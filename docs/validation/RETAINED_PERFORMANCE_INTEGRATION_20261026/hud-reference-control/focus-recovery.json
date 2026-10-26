@@ -1,0 +1,12 @@
+{
+  "same_vm": true,
+  "pre_visual": true,
+  "native_session_restarted": false,
+  "recovery": "existingguardedEscape+freshclientcloseACK/SourceIPCifneeded",
+  "ack": {
+    "realm": "client",
+    "time": 86.15264892578125,
+    "ok": true,
+    "id": "1793037098188733289"
+  }
+}

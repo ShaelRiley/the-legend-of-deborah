@@ -1,0 +1,1 @@
+HUD_RASTER_CACHE_PASS cases=24 fixed_textures=6; command/text-state parity, warm reuse, fades, live text/role/palette, bounds, reload/cleanup, foreign providers and native-error cleanup; no FPS/pixel inference

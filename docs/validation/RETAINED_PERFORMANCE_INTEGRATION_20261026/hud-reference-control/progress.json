@@ -1,0 +1,24 @@
+{
+  "status": "two_sessions_complete",
+  "completed": [
+    {
+      "variant": "retained",
+      "sha": "5b47a62e02863e434111ed79c691563cc5887571",
+      "cold_and_repeat_semantic_pass": true,
+      "owned_game_stopped": true
+    },
+    {
+      "variant": "integration",
+      "sha": "b33ab81145198e401e93667cd462fa5c8e76febd",
+      "cold_and_repeat_semantic_pass": true,
+      "owned_game_stopped": true
+    }
+  ],
+  "utc": "2026-10-26T17:54:59.319399+00:00",
+  "active": null,
+  "unit": "lod-deck-hud-reference-integration-20261026",
+  "phase": null,
+  "helpers_restored": true,
+  "integration_install_restored": "b33ab81145198e401e93667cd462fa5c8e76febd",
+  "all_owned_games_stopped": true
+}

@@ -82,9 +82,13 @@ function T:Placement(s,a,slot,pos,actor)
 end
 function T:Supported(pos,actor)
     -- Five native support samples prove the footprint, not merely its center.
+    -- Generated SOLID_BBOX floors support movement hulls but native ray traces
+    -- miss them. Give each point one unit of vertical extent so it uses the
+    -- same collision path, without widening any footprint sample in x/y.
     for _,offset in ipairs({{0,0},{-16,-16},{-16,16},{16,-16},{16,16}}) do
         local p=pos+Vector(offset[1],offset[2],0)
-        local support=util.TraceLine({start=p+Vector(0,0,4),endpos=p-Vector(0,0,8),mask=MASK_NPCSOLID,filter=actor})
+        local support=util.TraceHull({start=p+Vector(0,0,4),endpos=p-Vector(0,0,8),
+            mins=Vector(0,0,0),maxs=Vector(0,0,1),mask=MASK_NPCSOLID,filter=actor})
         if not support or not support.Hit or support.StartSolid or support.AllSolid or not support.HitNormal
             or support.HitNormal.z<.7 or not support.HitPos or math.abs(support.HitPos.z-(pos.z-2))>3
             or (IsValid(support.Entity) and (support.Entity.LODHostile or support.Entity:IsPlayer())) then return false end

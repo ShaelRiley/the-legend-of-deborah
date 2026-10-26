@@ -1,0 +1,14 @@
+{
+  "index": 275,
+  "name": "Feat: rebalance_20261002",
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_checkpoint_d_rebalance_20261002.lua"
+  ],
+  "returncode": 1,
+  "seconds": 0.161,
+  "log_prefix": "275-feat-rebalance-20261002",
+  "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+  "stderr_sha256": "4f0b3a64f781714ed4818bf1720001a14684348fd907b41a1691a1a0ae958530"
+}

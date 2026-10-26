@@ -1,0 +1,218 @@
+{
+  "prepared_utc": "2026-10-26T17:42:34.891824+00:00",
+  "result": "No new unresolved headless regression after capture fixture correction; nine failures inherited by exact name and normalized signature.",
+  "baseline": {
+    "sha": "cec10dc5426e2ee3e2137f68de0ef4a321772413",
+    "original_full_matrix_passed": 322,
+    "total": 334,
+    "effective_passed_after_three_dependency_reruns": 325,
+    "receipt": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix/receipt.json",
+    "receipt_sha256": "609d9f4d7cb3cc752eea67d37bb8bd190b2cd8568b62f21e4612959d4a56c8d7",
+    "source_before": "6aa19cc8386a3fae05a4b1f34507912b8d1ff16490d97669c3b277e7c13970ed",
+    "source_after": "6aa19cc8386a3fae05a4b1f34507912b8d1ff16490d97669c3b277e7c13970ed",
+    "changed_during_gate": [],
+    "dependency_reruns": [
+      {
+        "name": "Great Crate Stock Hull Assets",
+        "initial_returncode": 1,
+        "initial_signature": [
+          "ModuleNotFoundError: No module named 'numpy'"
+        ],
+        "rerun_returncode": 0,
+        "rerun_logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/dependency-reruns/069-great-crate-stock-hull-assets"
+      },
+      {
+        "name": "Great Crate Original Assets & Safe Fit",
+        "initial_returncode": 1,
+        "initial_signature": [
+          "ModuleNotFoundError: No module named 'PIL'"
+        ],
+        "rerun_returncode": 0,
+        "rerun_logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/dependency-reruns/071-great-crate-original-assets-safe-fit"
+      },
+      {
+        "name": "Manual Source & Reader Navigation",
+        "initial_returncode": 1,
+        "initial_signature": [
+          "FileNotFoundError: [Errno 2] No such file or directory: 'node'"
+        ],
+        "rerun_returncode": 0,
+        "rerun_logs": "/home/deck/deborah-recovery/main-integration-baseline-20261026/dependency-reruns/156-manual-source-reader-navigation"
+      }
+    ],
+    "raw_log_directory": "/home/deck/deborah-recovery/main-integration-baseline-20261026/matrix",
+    "summary": "/home/deck/deborah-recovery/main-integration-baseline-20261026/baseline-effective-summary.json"
+  },
+  "candidate_full_matrix": {
+    "sha": "42d40b23b9cc3da54ee8be1a4a2c8c2e4cc2d251",
+    "passed": 326,
+    "total": 336,
+    "receipt": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/receipt.json",
+    "receipt_sha256": "7e4194c08bd5cae307375efa9be432ad21ca299f81aeac3850e30458a863dbb7",
+    "source_before": "6dd2e58c509cad741026b0b281c446f4878fa96d58461bb9f44de76e398468ac",
+    "source_after": "6dd2e58c509cad741026b0b281c446f4878fa96d58461bb9f44de76e398468ac",
+    "changed_during_gate": [],
+    "raw_log_directory": "/home/deck/deborah-recovery/retained-integration-20261026/matrix",
+    "initial_comparison": "/home/deck/deborah-recovery/main-integration-baseline-20261026/integration-failure-comparison.json",
+    "initial_new_failure": {
+      "name": "Opt-in Rendered Frame Evidence & Lifecycle",
+      "returncode": 1,
+      "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/025-opt-in-rendered-frame-evidence-lifecycle",
+      "signature": [
+        "test_performance_capture.lua:83: assertion failed!"
+      ]
+    }
+  },
+  "correction": {
+    "sha": "b33ab81145198e401e93667cd462fa5c8e76febd",
+    "changed_files": [
+      "tools/test_performance_capture.lua"
+    ],
+    "exact_change": "Add only cl_feedback_language.lua to fixture paths; original verified/checked==#paths assertion retained.",
+    "production_runtime_unchanged_from_full_matrix": true,
+    "proof_receipt": "/home/deck/deborah-recovery/retained-integration-20261026/capture-fixture-fix.json",
+    "targeted_exit": 0,
+    "log": "/home/deck/deborah-recovery/retained-integration-20261026/targeted/test_performance_capture.fixture-fixed.log",
+    "log_sha256": "fb7473ae953557b080392dd55cb9d90b42ae1b4c22ed18f4b717948e37a71cb4",
+    "expected_pass_markers": [
+      "PERFORMANCE_CAPTURE_PASS:",
+      "PERFORMANCE_PACING_PASS:"
+    ],
+    "scope": "Headless synthetic recorder regression, not actual Deck FPS."
+  },
+  "effective_composite": {
+    "passed": 327,
+    "total": 336,
+    "baseline_effective_passed": 325,
+    "baseline_total": 334,
+    "inherited_failures": [
+      {
+        "name": "Bestiary B29 Bilateral Combat Seams",
+        "returncode": 1,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/065-bestiary-b29-bilateral-combat-seams",
+        "signature": [
+          "test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "baseline_signature": [
+          "test_cross_feats_dodge.lua:177: assertion failed!"
+        ]
+      },
+      {
+        "name": "Active Event Catalog, Bribe Removal & Quiz Placement",
+        "returncode": 1,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/110-active-event-catalog-bribe-removal-quiz-placement",
+        "signature": [
+          "test_event_quiz_generation.lua:164: assertion failed!"
+        ],
+        "baseline_signature": [
+          "test_event_quiz_generation.lua:164: assertion failed!"
+        ]
+      },
+      {
+        "name": "Minigame Shell & Equipment UI Restrictions",
+        "returncode": 1,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/111-minigame-shell-equipment-ui-restrictions",
+        "signature": [
+          "test_minigame_ui.lua:106: assertion failed!"
+        ],
+        "baseline_signature": [
+          "test_minigame_ui.lua:106: assertion failed!"
+        ]
+      },
+      {
+        "name": "Client Geometry Full-Update Recovery",
+        "returncode": 1,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/144-client-geometry-full-update-recovery",
+        "signature": [
+          "cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+        ],
+        "baseline_signature": [
+          "cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+        ]
+      },
+      {
+        "name": "Shared Native DamageInfo Lifetime",
+        "returncode": 1,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/152-shared-native-damageinfo-lifetime",
+        "signature": [
+          "test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "baseline_signature": [
+          "test_cross_feats_dodge.lua:177: assertion failed!"
+        ]
+      },
+      {
+        "name": "Shotgun Native Bullet Aggregation",
+        "returncode": 1,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/155-shotgun-native-bullet-aggregation",
+        "signature": [
+          "test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "baseline_signature": [
+          "test_cross_feats_dodge.lua:177: assertion failed!"
+        ]
+      },
+      {
+        "name": "Feat: rebalance_20261002",
+        "returncode": 1,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/277-feat-rebalance-20261002",
+        "signature": [
+          "test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+        ],
+        "baseline_signature": [
+          "test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+        ]
+      },
+      {
+        "name": "Retired Cross Feats & Shared Dodge",
+        "returncode": 1,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/303-retired-cross-feats-shared-dodge",
+        "signature": [
+          "test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "baseline_signature": [
+          "test_cross_feats_dodge.lua:177: assertion failed!"
+        ]
+      },
+      {
+        "name": "Live-GDD Feat Release Gate",
+        "returncode": 1,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/304-live-gdd-feat-release-gate",
+        "signature": [
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER"
+        ],
+        "baseline_signature": [
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER"
+        ]
+      }
+    ],
+    "new_suites": [
+      {
+        "name": "HUD Raster Reuse, Bounds & Render Lifecycle",
+        "returncode": 0,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/001-hud-raster-reuse-bounds-render-lifecycle"
+      },
+      {
+        "name": "Hostile Stair Collision & Supported Flights",
+        "returncode": 0,
+        "logs": "/home/deck/deborah-recovery/retained-integration-20261026/matrix/002-hostile-stair-collision-supported-flights"
+      }
+    ],
+    "new_unresolved_failures": [],
+    "changed_failure_signatures": [],
+    "missing_baseline_suites": [],
+    "no_new_unresolved_headless_regressions": true,
+    "qualification": "Composite evidence: one immutable full matrix at42d40b23(326/336) plus the one corrected fixture gate atb33ab811(PASS), giving327/336 effective coverage. No claim that a new full327/336 matrix ran locally. Allnineinheritedfailure names/error signatures are unchanged; native Deck behavior and final GitHub mergechecks remain separate."
+  },
+  "workflow_gate_results": {
+    "audio": "/home/deck/deborah-recovery/main-integration-baseline-20261026/workflow-wrapper-results.json",
+    "VR_Node22": "/home/deck/deborah-recovery/main-integration-baseline-20261026/workflow-vr-node22-result.json",
+    "private_prerequisites": {
+      "node": "/home/deck/deborah-recovery/main-integration-baseline-20261026/tooling/node22-receipt.json",
+      "python": "/home/deck/deborah-recovery/main-integration-baseline-20261026/python-prerequisites.json"
+    }
+  },
+  "source_edit_policy": "Comparison writes private evidence only; no source edits, broad reruns, fixture weakening or gameplay changes."
+}

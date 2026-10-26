@@ -1,0 +1,14 @@
+{
+  "index": 153,
+  "name": "Shotgun Native Bullet Aggregation",
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_shotgun_native_path.lua"
+  ],
+  "returncode": 1,
+  "seconds": 0.111,
+  "log_prefix": "153-shotgun-native-bullet-aggregation",
+  "stdout_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+  "stderr_sha256": "e88179deb7b7ebb714b62f0179cc8c4f829cb74a0b722c99dfebe3733cba924c"
+}

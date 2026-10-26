@@ -1,0 +1,78 @@
+BOSS_FRAMEWORK_PASS exact canonical registry 1 through 20 and subordinate Jane
+BOSS_FRAMEWORK_PASS loading precache preserves Chuck identity and encounter RNG without actors
+BOSS_FRAMEWORK_PASS actual Start Think and phases chonker
+BOSS_FRAMEWORK_PASS actual Start Think and phases felon
+BOSS_FRAMEWORK_PASS actual Start Think and phases melf
+BOSS_FRAMEWORK_PASS actual Start Think and phases ollie
+BOSS_FRAMEWORK_PASS actual Start Think and phases crystal_bepis
+BOSS_FRAMEWORK_PASS actual Start Think and phases daryl
+BOSS_FRAMEWORK_PASS actual Start Think and phases sofa
+BOSS_FRAMEWORK_PASS actual Start Think and phases marion
+BOSS_FRAMEWORK_PASS actual Start Think and phases button
+BOSS_FRAMEWORK_PASS actual Start Think and phases ray
+BOSS_FRAMEWORK_PASS actual Start Think and phases cornette
+BOSS_FRAMEWORK_PASS actual Start Think and phases moshi
+BOSS_FRAMEWORK_PASS actual Start Think and phases chuck
+BOSS_FRAMEWORK_PASS actual Start Think and phases rank_and_file
+BOSS_FRAMEWORK_PASS actual Start Think and phases flightmeister
+BOSS_FRAMEWORK_PASS actual Start Think and phases conan
+BOSS_FRAMEWORK_PASS actual Start Think and phases joilette
+BOSS_FRAMEWORK_PASS actual Start Think and phases little_mooky
+BOSS_FRAMEWORK_PASS prepare commit phase native death key door rescue
+BOSS_FRAMEWORK_PASS Jane native death never completes Chuck
+BOSS_FRAMEWORK_PASS no Hero retention reconnect old life and exact scope
+BOSS_FRAMEWORK_PASS actual projectile trace impact defuse and bounded object use
+BOSS_FRAMEWORK_PASS zone warning LOS alcove and charge committed target
+BOSS_FRAMEWORK_PASS shared budgets callback dedup and frozen source
+BOSS_FRAMEWORK_PASS native Melf succession preserves identity and one final receipt
+BOSS_FRAMEWORK_PASS native Joilette Cleaner Neil drop throw trace three hits and retention
+BOSS_FRAMEWORK_PASS Button ordinary immunity atomic use native death postdefeat key
+BOSS_FRAMEWORK_PASS shared ninety six actor ceiling retained add queue and retry
+[LOD] Level 2 cleared by hero-a; advancing in 15 seconds
+BOSS_FRAMEWORK_PASS defeat callback timeout precedence and exactly one recoverable retained key
+BOSS_FRAMEWORK_PASS frozen packet source after roll cannot cross native damage boundary
+BOSS_FRAMEWORK_PASS real KeyPress discovery front range cover hold and old-life rejection
+BOSS_FRAMEWORK_PASS projectile pending target_spawn cannot damage new life
+BOSS_FRAMEWORK_PASS projectile pending target_profile cannot damage new life
+BOSS_FRAMEWORK_PASS projectile pending source_profile cannot damage new life
+BOSS_FRAMEWORK_PASS projectile pending source_life cannot damage new life
+BOSS_FRAMEWORK_PASS projectile pending source_removed cannot damage new life
+BOSS_FRAMEWORK_PASS zone pending target_spawn cannot damage new life
+BOSS_FRAMEWORK_PASS zone pending target_profile cannot damage new life
+BOSS_FRAMEWORK_PASS zone pending source_profile cannot damage new life
+BOSS_FRAMEWORK_PASS zone pending source_life cannot damage new life
+BOSS_FRAMEWORK_PASS zone pending source_removed cannot damage new life
+BOSS_FRAMEWORK_PASS failed native primary creation retries without duplicated Melf kits
+BOSS_FRAMEWORK_PASS Flightmeister native spawn lifts negative hull clear of supported floor
+BOSS_FRAMEWORK_PASS persistent solid cover blocks actual ground MotionV2 before SetPos
+BOSS_FRAMEWORK_PASS delayed callbacks cannot fallback to a replacement target life
+BOSS_FRAMEWORK_PASS muted blocks new admissions without changing committed ordnance deadline
+BOSS_FRAMEWORK_PASS intimidated blocks new admissions without changing committed ordnance deadline
+BOSS_FRAMEWORK_PASS hitstun blocks new admissions without changing committed ordnance deadline
+BOSS_FRAMEWORK_PASS held charge retires commitment and never teleports on recovery
+BOSS_FRAMEWORK_PASS Mooky sky arena remains grounded with actual native body hull
+BOSS_FRAMEWORK_PASS route clearance rejects offset choke and unreachable button while admitting safe center bomb
+BOSS_FRAMEWORK_PASS lost Melf primary and support recover exact records HP kits and native succession
+BOSS_FRAMEWORK_PASS Start error atomically restores open gate objective and checkpoint
+BOSS_FRAMEWORK_PASS harmless death object obeys velocity gravity expiry and cannot damage
+BOSS_FRAMEWORK_PASS canonical Pushback moves eligible objects respects states and body pushScale
+BOSS_FRAMEWORK_PASS authored graph path is executed exactly instead of shortest-path substitution
+BOSS_FRAMEWORK_PASS moving cone formation cannot close offset entry route through Push or object service
+BOSS_FRAMEWORK_PASS later nested work inherits stale target scope
+BOSS_FRAMEWORK_PASS onHit nested work inherits stale target scope
+BOSS_FRAMEWORK_PASS onTick nested work inherits stale target scope
+BOSS_FRAMEWORK_PASS nested delayed callback cannot renew stale source incarnation
+BOSS_FRAMEWORK_PASS charge finish spawned zone keeps pre-respawn target lease
+BOSS_FRAMEWORK_PASS cancellation callbacks clear flags without new attack spawn healing damage or Push
+BOSS_FRAMEWORK_PASS chonker manual object detonation obeys original current lease
+BOSS_FRAMEWORK_PASS chonker manual object detonation obeys original target_respawn lease
+BOSS_FRAMEWORK_PASS chonker manual object detonation obeys original source_profile lease
+BOSS_FRAMEWORK_PASS daryl manual object detonation obeys original current lease
+BOSS_FRAMEWORK_PASS daryl manual object detonation obeys original target_respawn lease
+BOSS_FRAMEWORK_PASS daryl manual object detonation obeys original source_profile lease
+BOSS_FRAMEWORK_PASS jane manual object detonation obeys original current lease
+BOSS_FRAMEWORK_PASS jane manual object detonation obeys original target_respawn lease
+BOSS_FRAMEWORK_PASS jane manual object detonation obeys original source_profile lease
+BOSS_FRAMEWORK_PASS production Gordon level one composition and level twenty Hector handoff
+BOSS_FRAMEWORK_PASS Gordon twenty failed clone and turret allocations roll back complete group and retry
+BOSS_FRAMEWORK_SUMMARY passed=76 failed=0

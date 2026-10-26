@@ -1,0 +1,3 @@
+LOW_END_GEOMETRY boxes=600 submitted=300 floor_material_resolutions=1 native_fps_measured=false
+LOW_END_GEOMETRY_PASS: rear-only rejection; camera/rotation/intersection/asymmetry/changed bounds; orthographic/unknown fail-open; floors/stairs/grates/hazards; full update; per-pass material refresh
+NATIVE_GEOMETRY_VISIBILITY_PASS: native selection avoids offscreen pose reads; newly seen/custom/pending/reentrant/full-update views fail open; exact view ownership, CPU wrappers, hidden state and removal

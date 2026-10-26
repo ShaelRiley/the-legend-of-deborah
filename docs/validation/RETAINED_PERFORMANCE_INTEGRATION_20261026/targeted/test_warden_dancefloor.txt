@@ -1,0 +1,1 @@
+/home/deck/deborah-integration-retained/tools/test_warden_dancefloor.lua: ...ah-integration-retained/tools/test_warden_dancefloor.lua:141: attempt to index a nil value (upvalue 'C')

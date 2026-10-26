@@ -1,0 +1,14 @@
+{
+  "index": 25,
+  "name": "Opt-in Rendered Frame Evidence & Lifecycle",
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_performance_capture.lua"
+  ],
+  "returncode": 1,
+  "seconds": 0.076,
+  "log_prefix": "025-opt-in-rendered-frame-evidence-lifecycle",
+  "stdout_sha256": "f84198faab54ebddba6d350d98cecceea89fa9cdf56e7b38201eec4419caf49a",
+  "stderr_sha256": "cf8fb55aa6b9390f6703aeb4e827e8557bbc2223d90af734376db18e9a9242fc"
+}

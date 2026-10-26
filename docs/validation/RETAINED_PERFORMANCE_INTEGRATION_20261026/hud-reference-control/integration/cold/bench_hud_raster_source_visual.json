@@ -1,0 +1,116 @@
+{
+	"scope": "Four separate actualPostRender frames; opaque must hit/build cache, fade must use native fallback. Cursor/RGBA equality checked percase. PNGcomparison still required; no FPS acceptance.",
+	"rows": [
+		{
+			"builds": 1,
+			"states": {
+				"original": [
+					286,
+					44,
+					165,
+					235,
+					165,
+					255
+				],
+				"cached": [
+					286,
+					44,
+					165,
+					235,
+					165,
+					255
+				]
+			},
+			"hits": 0,
+			"frame": 538,
+			"state_equal": true,
+			"fallbacks": 0,
+			"name": "dark",
+			"actual_path_passed": true
+		},
+		{
+			"builds": 0,
+			"states": {
+				"original": [
+					286,
+					44,
+					165,
+					235,
+					165,
+					255
+				],
+				"cached": [
+					286,
+					44,
+					165,
+					235,
+					165,
+					255
+				]
+			},
+			"hits": 1,
+			"frame": 539,
+			"state_equal": true,
+			"fallbacks": 0,
+			"name": "bright",
+			"actual_path_passed": true
+		},
+		{
+			"builds": 1,
+			"states": {
+				"original": [
+					286,
+					44,
+					165,
+					235,
+					165,
+					255
+				],
+				"cached": [
+					286,
+					44,
+					165,
+					235,
+					165,
+					255
+				]
+			},
+			"hits": 0,
+			"frame": 540,
+			"state_equal": true,
+			"fallbacks": 0,
+			"name": "black",
+			"actual_path_passed": true
+		},
+		{
+			"builds": 0,
+			"states": {
+				"original": [
+					286,
+					44,
+					165,
+					235,
+					165,
+					127
+				],
+				"cached": [
+					286,
+					44,
+					165,
+					235,
+					165,
+					127
+				]
+			},
+			"hits": 0,
+			"frame": 541,
+			"state_equal": true,
+			"fallbacks": 1,
+			"name": "fade",
+			"actual_path_passed": true
+		}
+	],
+	"public_provider_unchanged": true,
+	"passed": true,
+	"probe_hook_removed": true
+}

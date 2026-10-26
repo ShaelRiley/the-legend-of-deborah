@@ -23,6 +23,21 @@ local woods = {
     panel = {model = 'models/props_debris/wood_board06a.mdl', mass = 22, speed = 285, lift = 95, gravity = 110,
         radius = 42, hp = 24, life = 4, bounces = 0, damage = 9, push = 80, tell = 1.4, recovery = 1.65}
 }
+local function citizenModel(c)
+    return 'models/Humans/Group01/' .. citizens[B:Random(c, 'chuck_citizen', 1, #citizens)] .. '.mdl'
+end
+function D:Precache(seed)
+    if not util or not util.PrecacheModel then return false end
+    -- Preview only the first citizen draw in a detached stream. The real
+    -- encounter still consumes its own unchanged stream in Start.
+    local preview = {id = self.id, seed = seed, rng = {}}
+    for _, model in ipairs({self.model, citizenModel(preview), J.model,
+        'models/props_c17/FurnitureShelf001a.mdl', 'models/props_c17/concrete_barrier001a.mdl',
+        woods.plank.model, woods.timber.model, woods.panel.model}) do
+        util.PrecacheModel(model)
+    end
+    return true
+end
 local cylinderColors = {Stable = Color(140,165,170), Leaking = Color(210,220,90),
     Ignited = Color(255,130,35), Critical = Color(255,35,25)}
 local function aliveJane(c)
@@ -53,8 +68,7 @@ local function safeHazard(c, position, radius)
     return B:ValidateRoutes(c, occupied, maxRadius + 28) and p or nil
 end
 function D:Start(c)
-    local citizen = citizens[B:Random(c, 'chuck_citizen', 1, #citizens)]
-    c.data.citizenModel = 'models/Humans/Group01/' .. citizen .. '.mdl'
+    c.data.citizenModel = citizenModel(c)
     c.actor:SetModel(c.data.citizenModel)
     c.actor:SetNW2Bool('LOD_Beaver', true)
     c.data.safe = B:Point(c, #c.points)

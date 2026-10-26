@@ -1,0 +1,9 @@
+{
+  "gate": "Opt-in Rendered Frame Evidence & Lifecycle",
+  "original_head": "42d40b23b9cc3da54ee8be1a4a2c8c2e4cc2d251",
+  "fix": "Only addcl_feedback_language.lua toexactwatchedfixturepaths; verified/checked==#paths assertion unchanged",
+  "exit": 0,
+  "proof_log": "/home/deck/deborah-recovery/retained-integration-20261026/targeted/test_performance_capture.fixture-fixed.log",
+  "utc": "2026-10-26T17:41:23.123629+00:00",
+  "production_runtime_unchanged": true
+}

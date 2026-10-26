@@ -1,0 +1,12 @@
+[LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+[LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+[LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+WARDEN_PASS: 24 arena graphs, two floors/stairs, Black/jail separation, reserve, commitment, resupply, four-shot volley, phase cancellation, respawn persistence, bounded hazards, center key, wipe/stale callback precedence
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+WARDEN_BOUNDARIES_PASS: extended production floors/apertures, shared multi-target blast roll, separate defenses, alcove immunity, interrupted windup cancellation
+WARDEN_FUSES_PASS: independent fixed-time fuse, phase threshold cancels ordnance before detonation
+BOSS_FEEDBACK_PASS: shared melee window, preserved gun/Wall stun through wrappers and Neil recoil dispatch
+WARDEN_CLONES_PASS: dungeon thresholds, exact HP, legal separated spawns, idempotence, shared AI/budget, unique hazard IDs and isolated death/HUD
+WARDEN_DISTRIBUTION_PASS: separate Hero assignments and retained reservation for missing spawns
+SPOT08_PASS: 262 focused production assertions; native engine/physics/audio acceptance remains open

@@ -1,0 +1,2 @@
+HUD_TEXT_WORK_PASS traces=750 steady_frames=600 measurements=46200->0 font_selections=46200->600 colors=8400->0 ceilings=84000->0 native_draws=42000->42000; exact parent calls; refresh/screen/text/font/position/palette invalidation; bounded layout ownership; not native FPS
+HUD_ALIGNED_WORK_PASS labels=1200 measurements=12000->1200 font_selections=12000->1200 colors=1200->0 ceilings=24000->24000 native_draws=12000->12000; live metrics, exact aligned rounding, custom conversion/partial API fallback; not native FPS

@@ -1,0 +1,9 @@
+{
+  "mode": "candidate",
+  "condition_variant": "retained",
+  "sha": "5b47a62e02863e434111ed79c691563cc5887571",
+  "path": "gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua",
+  "sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c",
+  "hud_line": 309,
+  "public_line": 63
+}

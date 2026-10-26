@@ -23,6 +23,45 @@ LOD.TexturedBox = LOD.TexturedBox or {}
 -- Keep the same weak registry with the existing textured-geometry authority.
 LOD.TexturedBox.StaticVisualBoxes = LOD.TexturedBox.StaticVisualBoxes or setmetatable({}, {__mode = "k"})
 local visualBoxes = LOD.TexturedBox.StaticVisualBoxes
+local nativeDrawOwner = {}
+local nativeDefinition = ENT
+local nativePass
+local nativeDraw
+
+-- Source already culls these entities using their live pose and render bounds.
+-- Borrow that selection only for the exact opaque view that submitted it.
+-- Unknown/nested/replaced views retain the existing conservative Lua path.
+local function nativeView()
+    local view = render.GetViewSetup and render.GetViewSetup(true)
+    local p, a = view and view.origin, view and view.angles
+    if not p or not a or view.ortho or view.offcenter
+        or not view.fov or view.fov <= 0 or view.fov >= 180
+        or not view.aspect or view.aspect <= 0 or not view.znear or view.znear < 0 then return end
+    local values = {p.x,p.y,p.z,a.p,a.y,a.r,view.fov,view.aspect,view.znear,
+        view.zfar,view.x,view.y,view.w,view.h}
+    for i=1,9 do
+        local value=values[i]
+        if type(value)~="number" or value~=value or math.abs(value)==math.huge then return end
+    end
+    return values
+end
+hook.Add("PreRender", "LOD_StaticBoxNativeVisibility", function() nativePass=nil end)
+hook.Add("PreDrawOpaqueRenderables", "LOD_StaticBoxNativeVisibility", function(depth, sky, sky3d)
+    nativePass=nil
+    if depth or sky or sky3d then return end
+    local view=nativeView()
+    if view then nativePass={view=view,entities={}} end
+end)
+
+local function currentNativePass()
+    local pass=nativePass
+    nativePass=nil
+    if not pass then return end
+    local view=nativeView()
+    if not view then return end
+    for i=1,14 do if pass.view[i]~=view[i] then return end end
+    return pass
+end
 
 -- Transmission can resume before SetupDataTables installs the accessors.
 -- Keep registry membership while waiting so the next ready frame recovers.
@@ -41,7 +80,7 @@ local function registerVisualBox(ent)
     return record
 end
 local function resetKind(record)
-    if type(record)=="table" then record.kind = nil; record.pending = nil end
+    if type(record)=="table" then record.kind = nil; record.pending = nil; record.boundsReady = nil end
 end
 local function currentKind(ent, record)
     local data = type(record)=="table" and record.lua and record.lua[1]
@@ -52,7 +91,7 @@ local function currentKind(ent, record)
         and data.GetBoxKind==data._LODVisualKindGetter and data.SetBoxKind==data._LODVisualKindSetter
     local cached = observed and record.kind
     if type(record)=="table" and not observed then record.kind = nil end
-    if cached and not visibleKind(cached) then return cached end
+    if cached and not visibleKind(cached) then return cached, data end
     -- Only the verified live table may replace native entity indexing. Keep
     -- validity and current accessors live; copied/expired tables fail over.
     data = observed and data or nil
@@ -72,22 +111,69 @@ local function currentKind(ent, record)
     return kind, data
 end
 
+-- Invisible collision surrogates need neither a native model draw nor its
+-- render-queue work. Keep them transmitted and solid; only the client flag is
+-- owned here. Unknown/custom kind accessors retain the previous native path.
+local function syncNativeDrawQueue(ent)
+    if not ent.SetNoDraw or not ent.GetNoDraw then return end
+    local record=ent._LODVisualKindRecord
+    if type(record)~="table" then return end
+    local kind,data=currentKind(ent,record)
+    local hide=data and record.pending==nil and (kind==3 or kind==4 or kind==7)
+    if hide then
+        if not ent:GetNoDraw() then
+            ent:SetNoDraw(true)
+            record.clientNoDrawOwned=true
+        end
+    elseif record.clientNoDrawOwned then
+        ent:SetNoDraw(false)
+        record.clientNoDrawOwned=nil
+    end
+end
+
 local function refreshRenderBounds(ent)
     if not networkReady(ent) then return false end
     local mins = ent:GetBoxMins()
     local maxs = ent:GetBoxMaxs()
+    local record=ent._LODVisualKindRecord
+    if record then
+        local lo,hi=record.pendingMins,record.pendingMaxs
+        -- Notifications precede the native write. A reentrant Think must not
+        -- certify the old bounds while their new value is still pending.
+        if lo and (lo[1]~=mins.x or lo[2]~=mins.y or lo[3]~=mins.z)
+            or hi and (hi[1]~=maxs.x or hi[2]~=maxs.y or hi[3]~=maxs.z) then
+            record.boundsReady=nil
+            return false
+        end
+        record.pendingMins,record.pendingMaxs=nil,nil
+    end
     local b = ent._LODBoundsSnapshot
-    if b and b[1]==mins.x and b[2]==mins.y and b[3]==mins.z
-        and b[4]==maxs.x and b[5]==maxs.y and b[6]==maxs.z then return true end
-    ent._LODBoundsSnapshot = {mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z}
-    local margin = Vector(32, 32, 32)
-    ent:SetRenderBounds(mins - margin, maxs + margin)
+    if not b or b[1]~=mins.x or b[2]~=mins.y or b[3]~=mins.z
+        or b[4]~=maxs.x or b[5]~=maxs.y or b[6]~=maxs.z then
+        ent._LODBoundsSnapshot = {mins.x,mins.y,mins.z,maxs.x,maxs.y,maxs.z}
+        local margin = Vector(32, 32, 32)
+        ent:SetRenderBounds(mins - margin, maxs + margin)
+    end
+    if record then
+        local accessors=record.boundsAccessors
+        record.boundsReady=accessors and ent.GetBoxMins==accessors[1] and ent.GetBoxMaxs==accessors[2]
+    end
     return true
 end
 
 function ENT:Initialize()
-    resetKind(registerVisualBox(self))
+    local record=registerVisualBox(self)
+    resetKind(record)
+    -- Fresh native instances bind this definition before Initialize. Retained
+    -- instances from a Lua refresh stay on the fallback until Draw proves that
+    -- their callback has reached this file's current implementation.
+    if type(record)=="table" and nativeDefinition.Draw==nativeDraw then
+        local data=record.lua and record.lua[1]
+        local draw=data and rawget(data,"Draw")
+        if not draw or draw==nativeDraw then record.drawOwner=nativeDrawOwner end
+    end
     refreshRenderBounds(self)
+    syncNativeDrawQueue(self)
     self._LODNextBoundsRefresh = 0
 end
 
@@ -95,6 +181,7 @@ function ENT:Think()
     registerVisualBox(self)
     local now = CurTime()
     if now >= (self._LODNextBoundsRefresh or 0) and refreshRenderBounds(self) then
+        syncNativeDrawQueue(self)
         self._LODNextBoundsRefresh = now + 1
     end
     -- Bounds already refresh once per second. Let Source sleep until that
@@ -126,6 +213,31 @@ hook.Add("NotifyShouldTransmit", "LOD_Recover_lod_static_box", function(ent, tra
 end)
 
 function ENT:Draw()
+    local pass=nativePass
+    if not pass then return end
+    pass.entities[self]=true
+    local record=visualBoxes[self]
+    if type(record)=="table" then record.drawOwner=nativeDrawOwner end
+end
+nativeDraw=ENT.Draw
+
+local function nativeRejected(ent, record, data, pass)
+    if not pass or pass.entities[ent] or not data or not record.boundsReady
+        or nativeDefinition.Draw~=nativeDraw
+        or record.drawOwner~=nativeDrawOwner
+        or not record.boundsAccessors or data.GetBoxMins~=record.boundsAccessors[1]
+        or data.GetBoxMaxs~=record.boundsAccessors[2] then return false end
+    local draw=rawget(data,"Draw")
+    if draw and draw~=nativeDraw then
+        local profile=LOD.RuntimeAudit and LOD.RuntimeAudit.CPUProfile
+        local bindings=profile and profile.bindings[data]
+        local binding=bindings and bindings.Draw
+        if not binding or binding.wrapper~=draw or binding.callback~=nativeDraw then return false end
+    end
+    -- A client NoDraw flag can suppress native Draw independently of bounds.
+    -- The original manual renderer still owns such a floor's visibility.
+    if ent.GetNoDraw and ent:GetNoDraw() then return false end
+    return true
 end
 
 local function drawFloorSlab(ent, box, color, getMaterial)
@@ -361,7 +473,7 @@ local function inCamera(box, camera)
     return visible
 end
 
-local function drawGeneratedGeometry()
+local function drawGeneratedGeometry(pass)
     local camera = cameraSnapshot()
     -- Resolve the mounted concrete/fallback once per pass, only if needed.
     -- Pass-local ownership is safe for nested RenderView and retries next frame.
@@ -375,7 +487,8 @@ local function drawGeneratedGeometry()
         -- Most generated boxes are invisible collision walls. Resolve their
         -- cheap kind before native visibility/bounds/transform work. Native
         -- changes invalidate known kinds; unready/custom accessors still poll.
-        if visibleKind(kind) and not ent:GetNW2Bool("LOD_GeometryHidden", false) then
+        if visibleKind(kind) and not nativeRejected(ent, record, data, pass)
+            and not ent:GetNW2Bool("LOD_GeometryHidden", false) then
             local box = visualSnapshot(ent, data)
             if inCamera(box, camera) then
 
@@ -414,10 +527,11 @@ local function drawGeneratedGeometry()
 end
 
 hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", function(drawingDepth, drawingSkybox, drawing3DSkybox)
+    local pass=currentNativePass()
     if drawingDepth or drawingSkybox or drawing3DSkybox then return end
     if LOD.TexturedBox and LOD.TexturedBox.WithDrawState then
-        LOD.TexturedBox:WithDrawState(drawGeneratedGeometry)
+        LOD.TexturedBox:WithDrawState(drawGeneratedGeometry, pass)
     else
-        drawGeneratedGeometry()
+        drawGeneratedGeometry(pass)
     end
 end)
