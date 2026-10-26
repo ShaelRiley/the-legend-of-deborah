@@ -94,8 +94,9 @@ hook.Add("CalcView","LOD_TimeoutCamera",function(ply,origin)
     if elapsed>T.Reveal and elapsed<T.Collapse then angles.r=math.sin(elapsed*19)*.35 end
     return {origin=pos,angles=angles,fov=fov,znear=4,zfar=T.CameraFar,drawviewer=false}
 end)
-hook.Add("HUDShouldDraw","LOD_TimeoutStockHUD",function()
-    if T:IsCinematic() then return false end
+hook.Add("HUDShouldDraw","LOD_TimeoutStockHUD",function(name)
+    -- CHudGMod dispatches HUDPaint, including this cinematic's own overlay.
+    if T:IsCinematic() and name~="CHudGMod" then return false end
 end)
 hook.Add("PreDrawViewModel","LOD_TimeoutViewModel",function() if T:IsCinematic() then return true end end)
 hook.Add("PrePlayerDraw","LOD_TimeoutPlayers",function() if T:IsCinematic() then return true end end)

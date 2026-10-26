@@ -196,8 +196,9 @@ for _,at in ipairs({.6,2,3.3,4.8,6.8}) do
 end
 for i=2,#positions do assert((positions[i]-positions[i-1]):Length()>100,'Repeated static cinematic composition') end
 local serverReceivers=receivers;receivers={}
-local drawn,sounds,drawCalls=0,0,{}
-surface={CreateFont=noop,PlaySound=function() sounds=sounds+1 end,SetDrawColor=noop,DrawRect=noop}
+local drawn,sounds,drawCalls,rects=0,0,{},{}
+surface={CreateFont=noop,PlaySound=function() sounds=sounds+1 end,SetDrawColor=noop,
+ DrawRect=function(x,y,w,h) rects[#rects+1]={x=x,y=y,w=w,h=h} end}
 Material=function(x) return x end;render={SetMaterial=noop,DrawSprite=noop}
 local function recordDraw(text,font,x,y,_,alignX,alignY)
  drawn=drawn+1;drawCalls[#drawCalls+1]={text=text,font=font,x=x,y=y,alignX=alignX,alignY=alignY}
@@ -207,7 +208,8 @@ ScrW=function() return 1920 end;ScrH=function() return 1080 end;EyePos=function(
 LerpVector=function(f,a,b) return a+(b-a)*f end
 TEXT_ALIGN_LEFT=0;TEXT_ALIGN_CENTER=1;TEXT_ALIGN_TOP=2;color_black=Color(0,0,0);color_white=Color(255,255,255)
 KEY_E=18;local down=false;input={IsKeyDown=function() return down end};gui={IsGameUIVisible=function() return false end}
-local originalHUD=function() return 42 end
+local ordinaryHUDDraws=0
+local originalHUD=function() ordinaryHUDDraws=ordinaryHUDDraws+1 end
 hook.Add('HUDPaint','LOD_TestHUD',originalHUD)
 LOD.CharacterSheet={Close=noop};LOD.UI={SelectPage=noop}
 dofile(root..'cl_campaign_timeout.lua')
@@ -215,14 +217,40 @@ local readIndex=0
 local function read() readIndex=readIndex+1;return packet[readIndex] end
 net.ReadUInt=read;net.ReadBool=read;net.ReadFloat=read;net.ReadVector=read
 local function receive() readIndex=0;receivers[T.Message]() end
-T:Sync();receive();assert(not T:IsCinematic());assert(hooks.HUDPaint.LOD_TestHUD()==42)
-hooks.HUDPaint.LOD_TimeoutHUD()
+local function runHooks(event,...)
+ for _,callback in pairs(hooks[event] or {}) do
+  local result=callback(...)
+  if result~=nil then return result end
+ end
+end
+-- Native CHudGMod owns the HUDPaint dispatcher. Calling the overlay callback
+-- directly would hide a blanket HUDShouldDraw suppression of the overlay itself.
+local function paintHUD()
+ if runHooks('HUDShouldDraw','CHudGMod')~=false then runHooks('HUDPaint') end
+end
+local stockHUD={'CHudHealth','CHudBattery','CHudAmmo','CHudSecondaryAmmo','CHudCrosshair','CHudWeaponSelection','CHudChat'}
+local function assertHUDVisibility(cinematic)
+ assert(hooks.HUDShouldDraw.LOD_TimeoutStockHUD('CHudGMod')==nil,
+  'timeout must leave the native HUDPaint dispatcher available without overriding other hooks')
+ for _,name in ipairs(stockHUD) do
+  local expected;if cinematic then expected=false end
+  assert(hooks.HUDShouldDraw.LOD_TimeoutStockHUD(name)==expected,'incorrect stock HUD visibility for '..name)
+ end
+end
+T:Sync();receive();assert(not T:IsCinematic());assertHUDVisibility(false)
+paintHUD();assert(ordinaryHUDDraws==1)
 local timerDraw=drawCalls[#drawCalls]
 assert(timerDraw.text=='30:00  •  AWAITING FIRST HERO' and timerDraw.x==22 and timerDraw.y==72,
  'campaign clock has a dedicated row below the upper-left run/card block')
 assert(timerDraw.alignX==TEXT_ALIGN_LEFT and timerDraw.alignY==TEXT_ALIGN_TOP,
  'campaign clock grows rightward without occupying the objective anchor')
-T:Clock().deadline=now;T:Expire();T:Sync();receive();assert(T:IsCinematic() and hooks.HUDPaint.LOD_TestHUD()==nil)
+T:Clock().deadline=now;T:Expire();T:Sync();receive();assert(T:IsCinematic())
+local beforeFailureDraws,beforeFailureRects=drawn,#rects
+paintHUD()
+assert(drawn==beforeFailureDraws+2 and #rects==beforeFailureRects+2,'native HUD dispatcher suppressed timeout overlay')
+assertHUDVisibility(true)
+assert(drawCalls[#drawCalls-1].text=='TIME OVER','collapse must display the original TIME OVER wording')
+assert(ordinaryHUDDraws==1,'ordinary gamemode HUD leaked into the timeout cinematic')
 local clock=T:Clock();clock.scene.started=now-T.Settle;clock.scene.ready=true;clock.scene.readyAt=now
 T:Sync();receive();assert(T:IsCinematic() and T:Elapsed()==T.Settle)
 local view=hooks.CalcView.LOD_TimeoutCamera(nil,EyePos())
@@ -231,13 +259,28 @@ LOD.VR={IsActive=function() return true end}
 assert(hooks.CalcView.LOD_TimeoutCamera(nil,EyePos())==nil,'timeout must retain headset camera ownership')
 LOD.VR=nil
 local beforeCinematicDraws=drawn
-hooks.HUDPaint.LOD_TimeoutHUD();assert(drawn==beforeCinematicDraws+3)
+local beforeCinematicRects=#rects
+paintHUD();assert(drawn==beforeCinematicDraws+3 and #rects==beforeCinematicRects+2)
+assert(drawCalls[#drawCalls-2].text=='GAME OVER','settled scene must retain the original GAME OVER wording')
+assert(rects[#rects-1].y==0 and rects[#rects].y>ScrH()/2,'timeout letterbox bars must frame the screen')
+assert(ordinaryHUDDraws==1,'snapshot replay unguarded the ordinary HUD')
 local soundCount=sounds;now=now+1;T:Sync();receive();assert(sounds==soundCount,'snapshot replayed entrance audio')
 local sent=0;net.SendToServer=function() sent=sent+1 end
 down=true;hooks.Think.LOD_TimeoutRestartKey();assert(sent==0)
 now=clock.scene.readyAt+5;T:Sync();receive();hooks.Think.LOD_TimeoutRestartKey();assert(sent==0,'held E skipped fresh press')
 down=false;hooks.Think.LOD_TimeoutRestartKey();down=true;hooks.Think.LOD_TimeoutRestartKey()
 assert(sent==1 and T.Client.scene.manualRemaining==0 and T.Client.scene.autoRemaining==15)
-hooks.HUDPaint.LOD_TimeoutHUD();assert(drawCalls[#drawCalls].text:find('AUTO RESTART IN 15s',1,true))
+paintHUD();assert(drawCalls[#drawCalls].text:find('AUTO RESTART IN 15s',1,true))
 R:NewCampaign();receive();assert(not T:IsCinematic() and hooks.HUDPaint.LOD_TestHUD==originalHUD)
-print('PASS campaign timer layout, expiry race, empty-server reconnect, bounded collapse, idempotent canonical restart, cleanup, client transport and HUD restoration')
+assertHUDVisibility(false)
+local resetRects=#rects
+paintHUD();assert(ordinaryHUDDraws==2 and #rects==resetRects,'reset must restore ordinary HUD without cinematic bars')
+T:Clock().deadline=now;T:Expire();T:Sync();receive();assert(T:IsCinematic())
+local replayDraws,replayRects=drawn,#rects
+paintHUD()
+assert(drawn==replayDraws+2 and #rects==replayRects+2 and ordinaryHUDDraws==2,
+ 'a second timeout must show its overlay and guard the restored ordinary HUD')
+R:NewCampaign();receive();assertHUDVisibility(false)
+assert(hooks.HUDPaint.LOD_TestHUD==originalHUD,'repeated reset must restore the original HUD callback')
+paintHUD();assert(ordinaryHUDDraws==3)
+print('PASS campaign timer layout, expiry race, empty-server reconnect, bounded collapse, idempotent canonical restart, cleanup, client transport, native HUD dispatch and HUD restoration')
