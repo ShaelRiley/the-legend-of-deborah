@@ -1,0 +1,1 @@
+DEV_POPULATION_MANIFEST_PASS exact 120-source hashes including hostile animation cache, native Sentry support, feedback-history cache and Chuck preload, Soldier progression and optimized cargo/ghost/audio/trace/boss authorities; repeat install; actual symlink; atomic manifest; owned children retired before temporary cleanup

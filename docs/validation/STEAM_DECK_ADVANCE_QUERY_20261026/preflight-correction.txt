@@ -1,0 +1,1 @@
+Private proof helper lexical or0 typo rejected by luac before first bridge execution/FPS. Corrected to or 0 and replaced DATA before first proof call. No production/candidate change or measured-run replacement.

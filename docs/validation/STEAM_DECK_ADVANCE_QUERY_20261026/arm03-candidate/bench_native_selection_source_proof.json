@@ -1,0 +1,33 @@
+{
+	"profiler_absent": true,
+	"memory_option_absent": true,
+	"expected": {
+		"sha256": "7bec9bbda2a984eec3b9d393021f9f3b5f0943a8a2e5b13e55adb9e6a5ef347f",
+		"lines": {
+			"Pre": 49,
+			"Draw": 215,
+			"Post": 529
+		},
+		"mode": "candidate",
+		"sha": "2a3485c5ce517e8a9150694d09854a1db47229a2"
+	},
+	"functions": {
+		"Pre": {
+			"line": 49,
+			"source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+			"what": "Lua"
+		},
+		"Draw": {
+			"line": 215,
+			"source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+			"what": "Lua"
+		},
+		"Post": {
+			"line": 529,
+			"source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua",
+			"what": "Lua"
+		}
+	},
+	"actual_sha256": "7bec9bbda2a984eec3b9d393021f9f3b5f0943a8a2e5b13e55adb9e6a5ef347f",
+	"passed": true
+}

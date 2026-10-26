@@ -1,3 +1,11 @@
+# Current checkpoint — forced-advance query not retained; stair collision bug prioritized
+
+The resumed checkpoint runs03:31:29–04:16:29UTC. One source candidate completed four profiler-off P,C,C,P captures; fifth parent failed focus BEFORE FPS, preserved/no replacement; sixth not started. [Raw evidence, metrics, regression results and bug handoff](validation/STEAM_DECK_ADVANCE_QUERY_20261026.json).
+
+Omitting unused geometry queries during existing forced-advance windows raised descriptive mean FPS22.628→23.176, but p99106.780→125.316ms,1%low7.221→6.165 and longest drop9.073→10.536s worsen. No retention. Experiment2a3485c5 is preserved on perf/experimental-forced-advance-query-20261026. Runtime/tools restored byte-exactfcdf6f03/fdd75bfc/4b682;197cases/1037checksL54/LJ plusroster/trace/B29/120manifest pass. No claim of statistical significance or40acceptance.
+
+User now prioritizes enemies/bosses walking through stairs, then optimization. MotionV2 SetPos bypasses generated solid stair collision for ordinary/legacy bosses; onlyLODBossEncounter gets hullsweep. Same-cell chase can replace staircommitment; flat Zsnap can enter treads. Boundary-double repro confirms branch bypass, notnativephysics. BUG UNFIXED: preserve staircommitments plus shared collision/nonstair routing needs correct tests/native ordinary+boss verification. Blanketblocking all diagonal stairnodes can produce stuck routes. Separate bug-fix budget question pending; no clock reset or automatic extension. PR7draft/mainunchanged/SP40UNMET/fullacceptanceUNVERIFIED. Fixstairs before newperformancebaseline.
+
 # Current checkpoint — native VProf has reached its attribution limit
 
 The resumed checkpoint keeps the 45-minute cap from the resume first recorded at 23:57:20 UTC, with a conservative 00:40 UTC cutoff. Steering did not reset the clock. One additional series of two later-phase native VProf captures is complete. [Decision, metrics, raw reports and restoration](validation/STEAM_DECK_VPROF_PHASE_20261026.json).

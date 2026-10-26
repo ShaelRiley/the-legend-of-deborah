@@ -1,0 +1,170 @@
+{
+  "status": "Candidate NOT retained: available balanced4runcomparison shows pacing regression despitemeanFPSincrease. Sixrunplanincomplete: fifthparentfailedfocusgate beforeFPS, no replacement/sixthrun. Optimization interrupted byuserstairbug priority. SP40UNMET/fullacceptanceUNVERIFIED; PR7draft/mainunchanged.",
+  "start_utc": "2026-10-26T03:31:29+00:00",
+  "hard_deadline_utc": "2026-10-26T04:16:29+00:00",
+  "prepared_utc": "2026-10-26T04:13:44.480461+00:00",
+  "retained_runtime_sha": "fcdf6f037c51ccbabc120a1b88e6c7b0e937cf08",
+  "retained_runtime_equal": "fdd75bfc/4b68237f",
+  "experimental_sha": "2a3485c5ce517e8a9150694d09854a1db47229a2",
+  "experimental_branch": "perf/experimental-forced-advance-query-20261026",
+  "candidate_mechanism": "For mobile nonbeam actors alreadyin anexistingforcedadvance window, omitunusedorigin/range/LOS/anglework afterpreservingCanCast andAcquireTarget. Privatequerytoken/publicfullquery/nativeandforeignproviderfallbacks. No cadence/cache/movement/attacktimingchange.",
+  "correctness": "197cases/1037checksPASS Lua5.4/LuaJIT againstembeddedretainedTick/queryoracle; existingroster/20000tracescratch/B29dispatch/120manifestPASS. No preciseexclusiveCPUcost ornative skippedqueryfrequency measured. Source/stateproofbeforeafteronly; no profilingduringFPS.",
+  "conditions": "ActualDeck/SP1humanlistenhost/gm_flatgrass/frozenD20lowercourt/1280x800+externalbothON/15WAC/fixedruntimegraphics57initialhostiles1820walls/legalresources/seeds/physicalroute/AIcadence. Capture/software/source proofs archived. No comparisonagainstnewstairfix.",
+  "rows": [
+    {
+      "arm": "arm01-parent",
+      "variant": "parent",
+      "tested_source": "fcdf6f037c51ccbabc120a1b88e6c7b0e937cf08",
+      "active": {
+        "frames": 1356,
+        "seconds": 59.960425,
+        "fps": 22.614916421956647,
+        "median_ms": 34.762,
+        "p95_ms": 82.979,
+        "p99_ms": 108.02,
+        "max_ms": 325.084,
+        "one_percent_low_fps": 7.170599313568772,
+        "below_budget_seconds": 58.16542700000005,
+        "longest_below_budget_seconds": 9.079869000000002,
+        "below_budget_runs_ge2s": 6
+      },
+      "native_guard_active": false,
+      "boundary_advance_snapshot": 0,
+      "full_acceptance": false,
+      "issues": [
+        "unrendered terminal interval exceeds spike budget or is unknown",
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ]
+    },
+    {
+      "arm": "arm02-candidate",
+      "variant": "candidate",
+      "tested_source": "2a3485c5ce517e8a9150694d09854a1db47229a2",
+      "active": {
+        "frames": 1369,
+        "seconds": 59.969551,
+        "fps": 22.828251623894932,
+        "median_ms": 36.345,
+        "p95_ms": 80.693,
+        "p99_ms": 135.031,
+        "max_ms": 324.132,
+        "one_percent_low_fps": 5.943599486303188,
+        "below_budget_seconds": 58.27663399999989,
+        "longest_below_budget_seconds": 9.112239000000002,
+        "below_budget_runs_ge2s": 7
+      },
+      "native_guard_active": true,
+      "boundary_advance_snapshot": 0,
+      "full_acceptance": false,
+      "issues": [
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ]
+    },
+    {
+      "arm": "arm03-candidate",
+      "variant": "candidate",
+      "tested_source": "2a3485c5ce517e8a9150694d09854a1db47229a2",
+      "active": {
+        "frames": 1411,
+        "seconds": 59.981703,
+        "fps": 23.52384026175449,
+        "median_ms": 35.146,
+        "p95_ms": 76.353,
+        "p99_ms": 115.601,
+        "max_ms": 313.325,
+        "one_percent_low_fps": 6.3857395367529115,
+        "below_budget_seconds": 58.802958999999966,
+        "longest_below_budget_seconds": 11.960595000000005,
+        "below_budget_runs_ge2s": 8
+      },
+      "native_guard_active": true,
+      "boundary_advance_snapshot": 0,
+      "full_acceptance": false,
+      "issues": [
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ]
+    },
+    {
+      "arm": "arm04-parent",
+      "variant": "parent",
+      "tested_source": "fcdf6f037c51ccbabc120a1b88e6c7b0e937cf08",
+      "active": {
+        "frames": 1357,
+        "seconds": 59.934987,
+        "fps": 22.641199538426527,
+        "median_ms": 36.589,
+        "p95_ms": 78.119,
+        "p99_ms": 105.541,
+        "max_ms": 320.594,
+        "one_percent_low_fps": 7.271560045686173,
+        "below_budget_seconds": 58.29275400000002,
+        "longest_below_budget_seconds": 9.065849000000002,
+        "below_budget_runs_ge2s": 7
+      },
+      "native_guard_active": false,
+      "boundary_advance_snapshot": 0,
+      "full_acceptance": false,
+      "issues": [
+        "unrendered terminal interval exceeds spike budget or is unknown",
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ]
+    }
+  ],
+  "balanced_means": {
+    "parent": {
+      "fps": 22.628057980191585,
+      "median_ms": 35.6755,
+      "p95_ms": 80.549,
+      "p99_ms": 106.78049999999999,
+      "one_percent_low_fps": 7.221079679627472,
+      "longest_below_budget_seconds": 9.072859000000001
+    },
+    "candidate": {
+      "fps": 23.17604594282471,
+      "median_ms": 35.7455,
+      "p95_ms": 78.523,
+      "p99_ms": 125.316,
+      "one_percent_low_fps": 6.16466951152805,
+      "longest_below_budget_seconds": 10.536417000000004
+    }
+  },
+  "candidate_percent_change": {
+    "fps": 2.4217189257373706,
+    "median_ms": 0.19621308741293308,
+    "p95_ms": -2.515239171187733,
+    "p99_ms": 17.358506468877756,
+    "one_percent_low_fps": -14.629532077866802,
+    "longest_below_budget_seconds": 16.13116659258127
+  },
+  "decision": "Do notretain: p99+17.36%,1%low-14.63%,longestbelow40+16.13% outweighFPS+2.42%; no claim ofunbiasedcausalregressionorstatisticalsignificance with4runs, butno materialpacing safety/repeatableoverallgain. Candidatepreservedseparately; parentrestored.",
+  "stair_bug": {
+    "priority_received_first_observed_utc": "2026-10-26T04:05:31+00:00",
+    "status": "UNFIXED; separatebugfixbudgetquestionpending; no rushedruntimecollisionchange",
+    "cause": "MotionV2 directlySetPos forordinaryandlegacyWarden/Hector/Neil. Hullsweep onlyLODBossEncounter. Nonstairsegmentscanenterfilledtreadvolumes; same-cell localgoalcanoverrideactive stairroute andnonstair Zsnapcanpenetrate.",
+    "reproduction": "PrivateproductionMotionV2boundary-doubletest:ordinary/Warden/Hector/Neil0traces andcross mockedobstruction; genericLODBossEncounter1traceandblocks. Notnativephysicsproof. GeneratedstairsalreadySOLID_BBOX.",
+    "required_fix": "Preservecommittedstairwaypoints andsharedcollisionprotection/nonstairrouting forallgroundactors; naiveblockingtracesonallstairwaypointswouldstick onrisers. Needsnativegeneratedstairordinary+bossvalidation beforeclaimfixed.",
+    "budget": "Currentcheckpointremains04:16:29deadline; useraskednewbugprioritythenresumegoal. A separate45/90minute bugfixbudgetrequested; noansweratpreparation."
+  },
+  "restoration": {
+    "parent_runtime_and_tools_byte_exact": true,
+    "installed_source_hashes_verified": 120,
+    "private_controller_restored": true,
+    "owned_game_processes_retired": true,
+    "both_displays": "ON throughcapture gates; preservealways",
+    "new_DATA_scripts_removed": true
+  },
+  "CI": "PreviousretainedsourceCIbaseline9failures/336; experimentnewlocaltargetedtestpasses, nofullgreenclaim. ActualpublicationCIstatusinPR.",
+  "next_decision": "Complete prioritizedstaircollision/routingfix withtargetedandnativevalidation, thenreestablishperformancebaseline; do notpromoteoldoptimizerresults acrosschangedmovementsource. Noautonewoptimizationcheckpoint."
+}

@@ -1,0 +1,2 @@
+dpms mode for screen eDP-1: on
+dpms mode for screen DP-1: on
