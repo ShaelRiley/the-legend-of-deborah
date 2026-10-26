@@ -55,6 +55,30 @@ net.Receive('LOD_DamselState',function()
     LOD.ClientState=LOD.ClientState or {}
     LOD.ClientState.RescueTarget=D:Target(level)
 end)
+local function dialogueLabels(parent,text,font,color,bottomMargin)
+    -- Native Label truncates at 1023 bytes, even inside a scroll canvas. Keep
+    -- every authored byte in bounded labels, preferring paragraph boundaries.
+    text=tostring(text or '')
+    local first=1
+    repeat
+        local last=math.min(first+1022,#text)
+        if last<#text then
+            local paragraph=text:sub(first,last):match('.*()\n\n')
+            if paragraph then last=first+paragraph end
+            -- Never cut before a UTF-8 continuation byte.
+            local nextByte=text:byte(last+1)
+            while nextByte and nextByte>=128 and nextByte<=191 do
+                last=last-1;nextByte=text:byte(last+1)
+            end
+        end
+        local label=vgui.Create('DLabel',parent);label:Dock(TOP)
+        label:DockMargin(0,0,8,last==#text and bottomMargin or 0)
+        label:SetFont(font);label:SetTextColor(color)
+        label:SetWrap(true);label:SetAutoStretchVertical(true)
+        label:SetText(text:sub(first,last))
+        first=last+1
+    until first>#text
+end
 function D:ShowDialogue(level,line,result)
     if IsValid(self.DialogueFrame) then self.DialogueFrame:Remove() end
     local def=self.Definitions[level]
@@ -87,12 +111,8 @@ function D:ShowDialogue(level,line,result)
     -- Native scroll canvas owns the long text; invitation and actual grant
     -- receipt stay separate. Auto-stretch uses Derma's wrapped text measurement.
     local scroll=vgui.Create('DScrollPanel',frame);scroll:SetPos(textX,60);scroll:SetSize(width-textX-18,height-104)
-    local dialogue=vgui.Create('DLabel',scroll);dialogue:Dock(TOP);dialogue:DockMargin(0,0,8,16)
-    dialogue:SetFont('DermaDefaultBold');dialogue:SetTextColor(Color(236,231,214))
-    dialogue:SetWrap(true);dialogue:SetAutoStretchVertical(true);dialogue:SetText(line)
-    local receipt=vgui.Create('DLabel',scroll);receipt:Dock(TOP);receipt:DockMargin(0,0,8,12)
-    receipt:SetFont('DermaDefault');receipt:SetTextColor(Color(240,196,94))
-    receipt:SetWrap(true);receipt:SetAutoStretchVertical(true);receipt:SetText(result)
+    dialogueLabels(scroll,line,'DermaDefaultBold',Color(236,231,214),16)
+    dialogueLabels(scroll,result,'DermaDefault',Color(240,196,94),12)
     local done=vgui.Create('DButton',frame);done:SetPos(width-104,height-30);done:SetSize(88,22);done:SetText('Close')
     done.DoClick=function() frame:Close() end
     frame.OnKeyCodePressed=function(_,key) if key==KEY_E or key==KEY_ESCAPE or key==KEY_SPACE then frame:Close() end end

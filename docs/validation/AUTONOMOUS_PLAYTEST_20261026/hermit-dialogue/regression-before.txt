@@ -1,0 +1,4 @@
+Original production cl_damsels.lua with native 1023-byte DLabel double:
+python3 tools/run_lua54.py tools/test_staging_lore_ui.lua
+exit_code=1
+native Label limit discarded part of the authored chapter

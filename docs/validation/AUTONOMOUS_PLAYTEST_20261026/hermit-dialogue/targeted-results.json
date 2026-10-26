@@ -1,0 +1,26 @@
+[
+  {
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_staging_lore_ui.lua"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_staging_lore.lua"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_damsel_staging.lua"
+    ],
+    "returncode": 0
+  }
+]

@@ -22,14 +22,17 @@ vgui={Create=function(kind,parent)
  if parent then parent.children=parent.children or {};parent.children[#parent.children+1]=p end
  function p:SetSize(w,h) self.width=w;self.height=h end
  function p:SetPos(x,y) self.x=x;self.y=y end
- function p:SetText(v) self.text=v end
+ -- Native Label/Derma derivatives silently cap text at 1023 bytes. Model that
+ -- engine boundary so long chapters cannot pass here while truncating in-game.
+ function p:SetText(v) self.text=kind=='DLabel' and v:sub(1,1023) or v end
+ function p:SetFont(v) self.font=v end
  function p:SetModel(v) self.model=v end
  function p:SetVisible(v) self.visible=v end
  function p:SetWrap(v) self.wrap=v end
  function p:SetAutoStretchVertical(v) self.autoStretch=v end
  function p:Dock(v) self.dock=v end
  p.SetTitle=noop;p.SetDraggable=noop;p.MakePopup=noop;p.SetFOV=noop;p.SetCamPos=noop
- p.SetLookAt=noop;p.SetFont=noop;p.SetTextColor=noop;p.DockMargin=noop
+ p.SetLookAt=noop;p.SetTextColor=noop;p.DockMargin=noop
  function p:Remove() self.removed=true;if self.OnRemove then self.OnRemove() end end
  function p:Close() self:Remove() end
  panels[#panels+1]=p;return p
@@ -53,8 +56,9 @@ for _,tail in ipairs({false,true}) do
 end
 D.Campaign={seed=73,epoch=1,level=1,rescued={}}
 local body=string.rep('A long chapter with every control and clue. ',80)
+local receiptText='separate actual receipt'
 local function show(level)
- panels={};D:ShowDialogue(level or 31,body,'separate actual receipt')
+ panels={};D:ShowDialogue(level or 31,body,receiptText)
  local frame=D.DialogueFrame;local scroll,portrait,name
  for _,p in ipairs(panels) do
   if p.kind=='DScrollPanel' then scroll=p elseif p.kind=='DModelPanel' then portrait=p end
@@ -62,10 +66,17 @@ local function show(level)
  end
  assert(frame.width<=sw-32 and frame.height<=sh-32 and frame.x>=16 and frame.y>=16)
  assert(frame.x+frame.width<=sw-16 and frame.y+frame.height<=sh-16)
- assert(scroll and scroll.height>0 and #scroll.children==2)
- assert(scroll.children[1].text==body and scroll.children[1].wrap and scroll.children[1].autoStretch)
- assert(scroll.children[2].text=='separate actual receipt' and scroll.children[2].autoStretch)
- assert(scroll.children[1].height==nil,'long chapter forced into fixed label height')
+ assert(scroll and scroll.height>0)
+ local dialogue,receipt={},{}
+ for _,label in ipairs(scroll.children) do
+  assert(label.kind=='DLabel' and label.wrap and label.autoStretch)
+  assert(label.height==nil,'long chapter forced into fixed label height')
+  assert(#label.text<=1023 and utf8.len(label.text),'native label split broke a UTF-8 character')
+  local dest=label.font=='DermaDefaultBold' and dialogue or receipt
+  dest[#dest+1]=label.text
+ end
+ assert(table.concat(dialogue)==body,'native Label limit discarded part of the authored chapter')
+ assert(table.concat(receipt)==receiptText,'actual receipt must remain separate and complete')
  frame.Think();assert(not frame.removed)
  local before=idleCalls;portrait.LayoutEntity(portrait,portrait.Entity)
  assert(idleCalls==before+((level==nil or level==31 or level==30) and 1 or 0),'portrait idle admission changed')
@@ -90,6 +101,19 @@ local portrait,name;frame,portrait,name=show(30);assert(name.text=='Hector the D
 guide.removed=true;frame.Think();assert(frame.removed,'replaced guide retained its window');guide.removed=nil
 frame,portrait,name=show(20);assert(name.text=='Deborah' and portrait.model=='deborah-model')
 local old=frame;frame=show(0);assert(old.removed and D.DialogueFrame==frame)
+-- Exercise the exact shipping chapters, both sides of the native limit, and
+-- long single paragraphs whose boundary falls inside a multibyte character.
+LOD.StagingDeployment={};LOD.RunManager={}
+dofile(root..'sv_staging_lore.lua')
+local samples={'',string.rep('a',1023),string.rep('b',1024),
+ string.rep('c',1022)..'é fin',string.rep('d',1021)..'— fin',
+ string.rep('e',1020)..'😀 fin',string.rep('🙂',900),
+ string.rep('first paragraph\n\nsecond paragraph\n',100)}
+for _,chapter in ipairs(LOD.StagingDeployment.LoreChapters) do samples[#samples+1]=chapter.text end
+samples[#samples+1]=LOD.StagingDeployment.RevealedLore
+for _,sample in ipairs(samples) do body=sample;show() end
+receiptText=string.rep('Long actual receipt — ',100);show(20)
+receiptText='separate actual receipt'
 -- Execute the real LayoutEntity -> FriendlyIdle path with a native client model
 -- that has no scripted base_anim:SetAutomaticFrameAdvance method.
 local _,nativePortrait=show()

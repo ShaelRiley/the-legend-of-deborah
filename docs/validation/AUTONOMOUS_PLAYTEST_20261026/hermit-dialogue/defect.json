@@ -1,0 +1,24 @@
+{
+  "id": "BUG-001",
+  "build": "858941158ed5182a88ab2d7522f534bdd6029c30",
+  "environment": "Steam Deck, Proton 10.0, Windows x86, gm_flatgrass, 1280x800",
+  "campaign_seed": 654759232,
+  "level_seed": 206007348,
+  "layout_attempt": 7,
+  "reproduction": [
+    "Start verified development build",
+    "Aim at Hermit in staging; press E",
+    "Read opening chapter; attempt mouse-wheel scrolling"
+  ],
+  "expected": "Complete authored chapter is readable in scroll area with separate outcome receipt.",
+  "source": "Live GDD 06 LOD-LORE-UI-001 and 05 LOD-LORE-001; first authored chapter in sv_staging_lore.lua",
+  "actual": "Text ends at The Manual and Opt, around 1023 bytes; scroll area has no remaining chapter. Native DLabel silently truncates text.",
+  "severity": "Major usability and missing required guidance; no engine crash",
+  "cause": "Complete 1757-byte opening chapter supplied to one native DLabel limited to 1023 bytes. Existing headless panel double did not model that limit.",
+  "engine_source": "https://wiki.facepunch.com/gmod/Panel:SetText",
+  "status": "confirmed; repair in progress",
+  "evidence": [
+    "deborah-hermit-dialogue.png",
+    "deborah-hermit-dialogue-scrolled.png"
+  ]
+}

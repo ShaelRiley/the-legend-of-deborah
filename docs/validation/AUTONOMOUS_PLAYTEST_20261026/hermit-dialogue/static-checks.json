@@ -1,0 +1,11 @@
+{
+  "result": "pass",
+  "scope": "Targeted static/headless; no native repair acceptance yet",
+  "checks": [
+    "staging_lore_ui: all20 authored chapters, exact1023/1024 byte boundaries, UTF8 split, empty/long receipt, four viewport bounds and lifecycle",
+    "staging_lore: guide admission/replay, reveal/succession, unchanged services",
+    "damsel_staging: all20 placement, Use and dialogue lifecycle",
+    "Lua syntax: cl_damsels.lua and test_staging_lore_ui.lua"
+  ],
+  "engineBoundarySource": "https://wiki.facepunch.com/gmod/Panel:SetText"
+}

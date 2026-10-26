@@ -1,0 +1,322 @@
+{
+  "campaign": "Autonomous gameplay/repair campaign",
+  "created_utc": "2026-10-26T20:44:18.126954+00:00",
+  "repository": "ShaelRiley/the-legend-of-deborah",
+  "branch": "main",
+  "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
+  "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
+  "current_candidate": "858941158ed5182a88ab2d7522f534bdd6029c30",
+  "clean_pass_streak": 0,
+  "passes": [],
+  "requirements": [
+    {
+      "id": "FLOW-01",
+      "source": "05 LOD-STAGE-001; 06 LOD-LORE-UI-001",
+      "expected": "Startup/title, role and class selection, Hermit chapter, one identity-bound starter, ready portal",
+      "scenario": "Fresh session; create disposable Hero, talk/read/manual, select class and legal feat; ordinary portal Use",
+      "result": "failed: opening dialogue truncated",
+      "evidence": [
+        "hermit-dialogue/defect.json"
+      ]
+    },
+    {
+      "id": "FLOW-02",
+      "source": "05 LOD-OBJ-001",
+      "expected": "Ordered red/blue/yellow cards and gates, Neil release/hunt, black gate, boss/key/jail/rescue",
+      "scenario": "Walk ordinary legal route; attempt early interactions and progression bypass",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "FLOW-03",
+      "source": "05 LOD-STAGE-001; 05 LOD-BOSS-MODULAR-003",
+      "expected": "Rescue transition, repeat Hermit gift, independent deployment and replay",
+      "scenario": "Clear dungeon normally; return to staging and enter next dungeon",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "FLOW-04",
+      "source": "05 LOD-BOSS-MODULAR-002; 06 LOD-FINALE-001",
+      "expected": "All twenty authored boss identities, common key receipt and Level-20 Gordon/Hector ending",
+      "scenario": "Ordinary campaign plus separately labeled fixtures for every authored boss family",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "FLOW-05",
+      "source": "05 LOD-LORE-001; 06 LOD-FINALE-001",
+      "expected": "Rescued services, Deborah succession and authored continuation",
+      "scenario": "Check service cadence and no duplicate rescue/reward; complete finale then continuation",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "MAZE-01",
+      "source": "05 LOD-WORLD-001; 05 LOD-OBJ-001",
+      "expected": "Solvable seeded maze and reachable required objectives without illegal shortcuts",
+      "scenario": "Distinct seeds; graph validator plus ordinary route traversal",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "MAZE-02",
+      "source": "07 LOD-STAIR-HEADROOM-20260927; retained collision integration",
+      "expected": "Upright stairs, floor alignment, no blocked passages or accidental bypass",
+      "scenario": "Walk ascent/descent and turns, probe signed-floor seams and collision",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "MAZE-03",
+      "source": "05 LOD-B29-ENTRY; 06 LOD-B29-ENTRY",
+      "expected": "Safe arrival, ingress and fall/stall recovery",
+      "scenario": "Deploy, leave/return to entrance, fall boundary and recovery checks",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "REG-ROUTE",
+      "source": "Author request; 05 LOD-OBJ-001; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
+      "expected": "Previously reported No legal route regression",
+      "scenario": "Use ordinary found-floor map for objective on another floor; follow stairs",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "REG-PICKUPS",
+      "source": "Author request; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
+      "expected": "Native visible map/cards/Jail Key remain collectible from normal views",
+      "scenario": "Near/far and above/below orbit, touch, receipt and entity cleanup",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "REG-FEAT",
+      "source": "04 LOD-FEAT; approved FEAT_REPEAT_NEIL_CONSOLE_20261013",
+      "expected": "Rapid Recovery and other nonrepeatable feats cannot duplicate",
+      "scenario": "Four-choice drafts, repeat reopen, stale saved duplicate repair, legitimate fallback repeat",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "REG-IDLE",
+      "source": "05 LOD-NPC-IDLE-001; 07 LOD-NPC-IDLE-TUNING-001",
+      "expected": "Hermit portrait has no SetAutomaticFrameAdvance error; four friendly roles use living unarmed poses",
+      "scenario": "Approach/talk/reopen; observe hands/feet/cycles; event service and reduced-effects checks",
+      "result": "partially observed: Hermit empty hands and animated portrait; no SetAutomaticFrameAdvance error; three service roles pending",
+      "evidence": [
+        "hermit-dialogue/deborah-game-initial.png",
+        "hermit-dialogue/deborah-hermit-dialogue-scrolled.png"
+      ]
+    },
+    {
+      "id": "REG-NEIL",
+      "source": "Approved NEIL_RELEASE_LOGGER_20261013 and FEAT_REPEAT_NEIL_CONSOLE_20261013",
+      "expected": "Physical Neil release console seats on floor and aimed rebound-key prompt releases one hunt",
+      "scenario": "Open Yellow normally, aim and Use; duplicate/simultaneous interaction",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "REG-SANCTUARY",
+      "source": "05/06 LOD-B29-ENTRY; approved NEIL_RELEASE_LOGGER_20261013",
+      "expected": "Invisible sanctuary with reciprocal damage/status/attack protection",
+      "scenario": "Attack each direction across boundary; leave/return and verify clear feedback",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "REG-MAPS",
+      "source": "00 LOD-FLOOR-MAP-001; approved FLOOR_MAP_PANEL_20261013 and NAVIGATION_FEATS_20261013",
+      "expected": "Per-floor maps shared by party; personal Magic drain; unfound panel and navigation feats",
+      "scenario": "Open Q/M before/after pickup; two clients on different floors; Compass/Finder/GPS",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "COMBAT-01",
+      "source": "02 LOD-CLS/LOD-MON; 03 LOD-CBT",
+      "expected": "Enemy archetypes, native acquisition/telegraphs/attacks and damage/defenses",
+      "scenario": "Ordinary early/late combat plus bounded archetype fixtures",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "COMBAT-02",
+      "source": "03 LOD-STATUS/LOD-ELEM",
+      "expected": "Canonical status/element/save/duration and lifecycle behavior",
+      "scenario": "Apply each active status/element; immunity, death, transition and cleanup",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "MAGIC-01",
+      "source": "03 LOD-FORM/LOD-CONTENT/LOD-MAG",
+      "expected": "Forms/Contents, resources, Blast/Beam presentation and stable Summon",
+      "scenario": "Ordinary acquisition/casting plus rare-form fixtures; multi-body Beam and Summon floors",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "RPG-01",
+      "source": "02 LOD-LVL/LOD-XP/LOD-ABL/LOD-HP; 04 LOD-FEAT/LOD-CAP",
+      "expected": "Classes, leveling, eligibility, prerequisites and capstones",
+      "scenario": "Vary Fighter/Rogue/Wizard; natural XP plus bounded milestone/feat boundary fixtures",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "RPG-02",
+      "source": "02/03/06 LOD-CLASS-MILESTONES; 07 tuning",
+      "expected": "Active versus design-only class rewards reconciled before claims",
+      "scenario": "Read implementation and current explicit decisions; isolate any authored gap",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "INV-01",
+      "source": "90 LOD-EQUIP-016; 06 LOD-BIG-LOOT-LIFECYCLE",
+      "expected": "Owned equipment, capacity, stacks, acquisition, equips, pickup/drop and consumables",
+      "scenario": "Ordinary loot/inventory with full/empty/depleted/stale/duplicate boundaries",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "ECON-01",
+      "source": "06 LOD-ECON-001; 90 LOD-EQUIP-017",
+      "expected": "Atomic buying/selling/exchanges/rewards without duplication",
+      "scenario": "Disposable account state; reject insufficient funds/full capacity; repeat/simultaneous Use",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "EVENT-01",
+      "source": "05/06/07 LOD-EVENT-EXPANSION",
+      "expected": "Active 28-event catalog, exact density/placement/admission/outcomes",
+      "scenario": "Natural event samples plus deterministic setup of each authored family",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "EVENT-02",
+      "source": "06 LOD-EVENT-EXPANSION; 06 LOD-LIFE",
+      "expected": "Minigame cancellation, death/disconnect/transition cleanup and rewards",
+      "scenario": "Enter/cancel/complete/abandon during lifecycle changes",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "COOP-01",
+      "source": "06 LOD-MP-001; 06 LOD-RETENTION-001",
+      "expected": "Supported Hero/Soldier counts and shared versus personal state",
+      "scenario": "Multiple real clients; split floors, simultaneous interactions and roles",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "COOP-02",
+      "source": "06 LOD-SOLDIER/LOD-LIFE; 02 LOD-SXP",
+      "expected": "Late join, death, Soldier queue, disconnect/reconnect and synchronization",
+      "scenario": "Multiple real clients across alive/dead/staging/active/boss/reset states",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "UI-01",
+      "source": "06 LOD-UI-001 through 010; approved quieter logger amendment",
+      "expected": "Menus, direct keys, HUD/log readability, prompts, input and camera modes",
+      "scenario": "Rendered desktop input, menu scrolling, bindings, viewport sizes, third person",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "UI-02",
+      "source": "06 LOD-UI-OPTIONS-001",
+      "expected": "Available controller and rebound-key usability",
+      "scenario": "Physical controller input if accessible; record exact tested input mechanism",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "AUDIO-01",
+      "source": "05/06/07 LOD-MUSIC; approved MS3_SONG amendment",
+      "expected": "Effects/cues/music continuity, Options Off/On and cleanup",
+      "scenario": "Capture/listen actual audio during staging, floors, danger, boss, rescue and reset",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "FAIL-01",
+      "source": "06 LOD-RETENTION-001/LOD-LIFE/LOD-SOLDIER",
+      "expected": "Death, Tetris/revival/no-Hero retention and resource integrity",
+      "scenario": "Real deaths/return, spectator state, reconnect without reroll/duplication",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "FAIL-02",
+      "source": "05 LOD-TIMER-001; active LOD-HOURGLASS-001",
+      "expected": "Timeout/explosion/reset current timing and subsequent fresh campaign",
+      "scenario": "Force near-deadline setup only; observe genuine failure sequence and ordinary restart",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "PERF-01",
+      "source": "07 LOD-IMPL-004; retained optimization integration",
+      "expected": "Representative comparable performance; no repair-induced regression",
+      "scenario": "Same scene/seed/settings/hardware baseline and candidate captures; no 40-FPS claim",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "GATE-01",
+      "source": "AGENTS standard loop; current integration suite",
+      "expected": "Required checks and regression failures investigated, never suppressed",
+      "scenario": "Frozen-source integration gate plus meaningful focused checks",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "FINAL-01",
+      "source": "User completion criteria 3-6",
+      "expected": "Three consecutive clean varied final-candidate gameplay passes and fresh independent review",
+      "scenario": "Distinct seeds/builds/routes; ordinary full campaign, success/failure/replay/co-op; reset streak on gameplay edit",
+      "result": "pending",
+      "evidence": []
+    },
+    {
+      "id": "FINAL-02",
+      "source": "AGENTS branch discipline; user integration authorization",
+      "expected": "Validated final tested source equals verified remote main",
+      "scenario": "Non-forced push/integration then remote and installed-source verification",
+      "result": "pending",
+      "evidence": []
+    }
+  ],
+  "deferred": [
+    "October 23 shorter explosion reset, countdown, game-over wording, more common Magic Hourglasses, related inventory changes and time-versus-reward choices",
+    "Separate sustained 40-FPS optimization goal",
+    "Steam Workshop publication and public VPS deployment"
+  ],
+  "environment_notes": [
+    "Existing configuration, LoD data, saves and settings copied to /tmp/deborah-playtest-20261026-preserved before launch.",
+    "Existing console evidence predates candidate; no current runtime claim.",
+    "Workshop 3791535712 duplicate exists; launch requests use -noworkshop; actual mounted identity still pending.",
+    "Native baseline launched after Steam shader processing/Proton prefix migration. x86 client; exact114 source hashes match. Baseline developerDense=true is diagnostic, not a production acceptance pass."
+  ],
+  "defects": [
+    {
+      "id": "BUG-001",
+      "record": "hermit-dialogue/defect.json",
+      "status": "implemented and targeted static checks pass; fresh native repair recheck pending"
+    }
+  ],
+  "static_fixture_checkpoint": {
+    "commit": "9f698856cdd960baa149f01db3d82cacb076a892",
+    "remote_verified": true,
+    "result": "All nine prior fixture failures reproduced and pass after repair, plus four adjacent regressions. Gameplay unchanged."
+  }
+}
