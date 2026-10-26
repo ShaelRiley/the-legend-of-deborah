@@ -728,21 +728,42 @@ end)
 
 -- One presentation geometry for the map and every later HUD overlay. Keep the
 -- render target, graph and route caches independent of these saved preferences.
+local function legendLayout(width)
+    surface.SetFont("LOD_Map_Small")
+    local _,height=surface.GetTextSize("FOLLOW GOLD LINE")
+    local rows,line={},""
+    for _,instruction in ipairs({"FOLLOW GOLD LINE","FOLLOW STAIR ARROW","GREEN = OPEN"}) do
+        local candidate=line=="" and instruction or line.." • "..instruction
+        if line~="" and surface.GetTextSize(candidate)>width then
+            rows[#rows+1]=line
+            line=instruction
+        else line=candidate end
+    end
+    rows[#rows+1]=line
+    return rows,math.max(14,height+2)
+end
 function Map:PresentationLayout()
     local w,h=ScrW(),ScrH()
     local options=LOD.PlayerOptions
     local requested=options and options:MapScaleValue() or 1
     local layout=self.presentationLayout
-    if layout and layout.screenW==w and layout.screenH==h and layout.requested==requested then return layout end
+    if layout and layout.legend and layout.screenW==w and layout.screenH==h and layout.requested==requested then return layout end
     local baseScale=math.Clamp(h/1080,1,2)
     local gridSize=284*baseScale
-    local panelW,panelH=gridSize+52,gridSize+124
+    local panelW=gridSize+52
+    local legend,lineHeight=legendLayout(panelW-36)
+    -- Route status, the optional stair instruction and the complete legend
+    -- have separate measured rows below the grid. Fit this full panel before
+    -- applying the saved scale, preserving the normal font and all wording.
+    local footerTop=68+gridSize+10
+    local panelH=footerTop+(2+#legend)*lineHeight+12
     local scale=math.min(requested,math.max(0,w-40)/panelW,math.max(0,h-40)/panelH)
     local panelX,panelY=w-panelW-20,96
     local x,y=w-panelW*scale-20,math.min(96,h-panelH*scale-20)
     layout={screenW=w,screenH=h,requested=requested,scale=scale,
         panelX=panelX,panelY=panelY,panelW=panelW,panelH=panelH,
         gridX=panelX+26,gridY=panelY+68,gridSize=gridSize,
+        footerY=panelY+footerTop,footerLineHeight=lineHeight,legend=legend,
         x=x,y=y,width=panelW*scale,height=panelH*scale}
     if scale~=1 or y~=panelY then
         local matrix=Matrix()
@@ -948,17 +969,20 @@ local function paintMap(layout,ply,state,level)
         drawPlayerMarker(px, py, 3)
     end
 
-    draw.SimpleText(floorData.routeStatus, "LOD_Map_Small", panelX + 18, panelY + panelH - 47,
-        route and COLORS.routeReady or COLORS.routeBlocked, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+    draw.SimpleText(floorData.routeStatus, "LOD_Map_Small", panelX + 18, layout.footerY,
+        route and COLORS.routeReady or COLORS.routeBlocked, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
     if transitionGuide then
         draw.SimpleText(stairInstruction(ply, transitionGuide), "LOD_Map_Small",
-            panelX + 18, panelY + panelH - 32, COLORS.routeBright,
-            TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+            panelX + 18, layout.footerY + layout.footerLineHeight, COLORS.routeBright,
+            TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
     end
 
-    draw.SimpleText("FOLLOW GOLD LINE • FOLLOW STAIR ARROW • GREEN = OPEN", "LOD_Map_Small",
-        panelX + 18, panelY + panelH - 18, COLORS.footer, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+    for index,text in ipairs(layout.legend) do
+        draw.SimpleText(text, "LOD_Map_Small", panelX + 18,
+            layout.footerY + (index+1)*layout.footerLineHeight,
+            COLORS.footer, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+    end
 end
 
 hook.Add("HUDPaint", "LOD_MinimapHUD", function()

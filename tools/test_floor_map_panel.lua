@@ -94,6 +94,7 @@ LocalPlayer=function() return localPlayer end
 local texts,textures,rects,lines={},0,0,0
 Color=function(r,g,b,a) return {r=r,g=g,b=b,a=a or 255} end
 surface=setmetatable({GetAlphaMultiplier=function() return 1 end,
+ GetTextSize=function(text) return #text*7,14 end,
  DrawTexturedRect=function() textures=textures+1 end,DrawRect=function() rects=rects+1 end,DrawLine=function() lines=lines+1 end},{__index=function() return noop end})
 draw={RoundedBox=noop,SimpleText=function(t) texts[#texts+1]=t end}
 cam=setmetatable({},{__index=function() return noop end});render=setmetatable({},{__index=function() return noop end})

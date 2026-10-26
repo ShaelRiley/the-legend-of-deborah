@@ -1,0 +1,113 @@
+{
+  "kind": "static harness and syntax; no native acceptance",
+  "checks": [
+    {
+      "name": "minimap_player",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_minimap_player_marker.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.075
+    },
+    {
+      "name": "floor_panel",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.067
+    },
+    {
+      "name": "floor_panel_compass",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_floor_map_panel.lua",
+        "--compass"
+      ],
+      "returncode": 0,
+      "seconds": 0.066
+    },
+    {
+      "name": "minimap_transport",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_minimap_transport.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.059
+    },
+    {
+      "name": "floor_maps_ui",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_floor_maps_ui.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.061
+    },
+    {
+      "name": "navigation_feats",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_navigation_feats.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.064
+    },
+    {
+      "name": "player_options",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_player_options.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.064
+    },
+    {
+      "name": "neil_brute",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_neil_brute.lua"
+      ],
+      "returncode": 0,
+      "seconds": 2.213
+    },
+    {
+      "name": "lua_syntax",
+      "command": [
+        "luajit",
+        "-b",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua",
+        "/tmp/deborah-map-footer-repair/cl_minimap.luac"
+      ],
+      "returncode": 0,
+      "seconds": 0.003
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.008
+    }
+  ],
+  "sources": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua": "bfecdc3ea3c28ce4499005820d2fd0a4289c9d85f61d58237d53799648379490",
+    "tools/test_minimap_player_marker.lua": "14f66f5a61401aa71635f5ebc1d8ac2e629d85abe858826b7cbbb40b96714699",
+    "tools/test_floor_map_panel.lua": "4bf178a9616cd4bcc5c66d7abdc4a264fee1452c9f6e1bced723447585dc977f"
+  },
+  "final_followup": "All checks rerun on final owned source including retained pre-repair layout invalidation."
+}

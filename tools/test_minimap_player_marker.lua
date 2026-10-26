@@ -7,6 +7,23 @@ hook={Add=function(event,id,fn) hooks[event]=hooks[event] or {};hooks[event][id]
 local circles,lines,rects,color={},{},{},nil
 local alpha,alphaReads=1,0
 local matrices,matrixBuilds={},0
+local fonts,currentFont,textMeasurements={},nil,0
+TEXT_ALIGN_LEFT,TEXT_ALIGN_CENTER,TEXT_ALIGN_RIGHT=0,1,2
+TEXT_ALIGN_TOP,TEXT_ALIGN_BOTTOM=3,4
+-- Variable-width glyph metrics exercise measured drawing bounds independently
+-- of the production wrapping algorithm, including the UTF-8 bullet separator.
+local function textSize(text,font)
+ local width=0
+ for i=1,#text do
+  local byte=text:byte(i)
+  if byte<128 or byte>=192 then
+   local char=text:sub(i,i)
+   width=width+(char==' ' and 3.5 or char=='I' and 3 or (char=='M' or char=='W') and 10 or 7)
+  end
+ end
+ local size=assert(fonts[font],font).size
+ return width*size/12,math.ceil(size*1.2)
+end
 local function point(x,y)
  local m=matrices[#matrices];if m then return x*m.scale.x+m.pos.x,y*m.scale.y+m.pos.y end;return x,y
 end
@@ -14,6 +31,9 @@ surface=setmetatable({DrawCircle=function(x,y,r,red,green,blue)
  local m=matrices[#matrices];x,y=point(x,y);circles[#circles+1]={x=x,y=y,r=r*(m and m.scale.x or 1),red=red,green=green,blue=blue,alpha=alpha} end,
  GetAlphaMultiplier=function() alphaReads=alphaReads+1;return alpha end,
  SetAlphaMultiplier=function(n) alpha=n end,
+ CreateFont=function(name,settings) fonts[name]=settings end,
+ SetFont=function(name) currentFont=name end,
+ GetTextSize=function(text) textMeasurements=textMeasurements+1;return textSize(text,currentFont) end,
  SetDrawColor=function(c,...) color=type(c)=='table' and c or {r=c,g=select(1,...),b=select(2,...),a=select(3,...)} end,
  DrawRect=function(x,y,w,h) local m=matrices[#matrices];x,y=point(x,y);rects[#rects+1]={x=x,y=y,w=w*(m and m.scale.x or 1),h=h*(m and m.scale.y or 1),color=color,alpha=alpha} end,
  DrawLine=function(...) lines[#lines+1]={color=color,alpha=alpha} end}, {__index=function() return noop end})
@@ -29,7 +49,13 @@ draw={RoundedBox=function(_,x,y,w,h,c)
  local m=matrices[#matrices];x,y=point(x,y)
  if c.r==100 and c.g==235 then peerMarkers[#peerMarkers+1]={x=x,y=y,alpha=alpha}
  elseif c.a==226 then panels[#panels+1]={x=x,y=y,w=w*(m and m.scale.x or 1),h=h*(m and m.scale.y or 1),alpha=alpha} end end,
- SimpleText=function(text,font,x,y,c) x,y=point(x,y);texts[#texts+1]={text=text,x=x,y=y,alpha=alpha} end}
+ SimpleText=function(text,font,x,y,c,xalign,yalign)
+  local w,h=textSize(text,font)
+  local left=x-(xalign==TEXT_ALIGN_CENTER and w/2 or xalign==TEXT_ALIGN_RIGHT and w or 0)
+  local top=y-(yalign==TEXT_ALIGN_CENTER and h/2 or yalign==TEXT_ALIGN_BOTTOM and h or 0)
+  local right,bottom=point(left+w,top+h);left,top=point(left,top);x,y=point(x,y)
+  texts[#texts+1]={text=text,font=font,x=x,y=y,left=left,top=top,right=right,bottom=bottom,alpha=alpha}
+ end}
 GetRenderTarget=function() return {GetName=function() return 'map' end} end
 CreateMaterial=function() return {} end
 bit={band=function(a,b) return a&b end,lshift=function(a,b) return a<<b end}
@@ -153,15 +179,16 @@ player.pos={x=0,y=0,z=0};player.alive=true;player.access=true;M.open=true;M.laye
 M.cells={{x=11,y=11,z=0}};M.byKey={['11:11:0']=M.cells[1]};M.cache.adjacency={['11:11:0']={}}
 M.cache.topologyFloor=0;M.cache.reach=nil
 local previousLayout
-for _,size in ipairs({{1280,800},{640,480},{3840,2160}}) do
+for _,size in ipairs({{1280,800},{640,480},{480,360},{1920,1080},{3440,1440},{3840,2160}}) do
  ScrW=function() return size[1] end;ScrH=function() return size[2] end
  for _,scale in ipairs({.5,1,1.5}) do for _,opacity in ipairs({0,.3,1}) do for _,width in ipairs({21,29,37}) do
   preferences.lod_map_scale.value=scale;preferences.lod_map_opacity.value=opacity;M.gridWidth=width
   local layout=M:PresentationLayout()
   assert(layout.x>=20-1e-8 and layout.y>=20-1e-8 and layout.x+layout.width<=size[1]-20+1e-8 and layout.y+layout.height<=size[2]-20+1e-8,'map outside window')
   assert(layout.requested==scale and preferences.lod_map_scale.value==scale,'fit changed saved preference')
-  local builds=matrixBuilds
-  assert(M:PresentationLayout()==layout and matrixBuilds==builds,'static presentation reallocates a Matrix')
+  local builds,measurements=matrixBuilds,textMeasurements
+  assert(M:PresentationLayout()==layout and matrixBuilds==builds and textMeasurements==measurements,
+   'static presentation reallocates a Matrix or remeasures fixed text')
   local revision,reach=M.cache.revision,M.cache.reach
   local topologies,requests=M.stats.topologyBuilds,M.stats.mapRequests
   alpha=.8;circles={};lines={};rects={};panels={};texts={};peerMarkers={}
@@ -177,6 +204,20 @@ for _,size in ipairs({{1280,800},{640,480},{3840,2160}}) do
    near(c.x,layout.x+(26+10.5*layout.gridSize/width)*layout.scale,'scaled marker x')
    near(c.y,layout.y+(68+10.5*layout.gridSize/width)*layout.scale,'scaled marker y')
    near(c.r,3*layout.scale,'marker radius');near(c.alpha,.8*opacity,'marker opacity')
+   local legend,previous={}
+   for _,row in ipairs(texts) do
+    if row.text:find('FOLLOW GOLD LINE',1,true) or row.text:find('FOLLOW STAIR ARROW',1,true)
+     or row.text:find('GREEN = OPEN',1,true) then
+     assert(row.font=='LOD_Map_Small','footer font shrunk instead of fitting its panel')
+     assert(row.left>=panel.x-1e-8 and row.right<=panel.x+panel.w+1e-8
+      and row.top>=panel.y-1e-8 and row.bottom<=panel.y+panel.h+1e-8,
+      'measured map footer escapes panel/window: '..row.text)
+     if previous then assert(row.top>=previous.bottom,'wrapped map instructions overlap') end
+     previous=row;legend[#legend+1]=row.text
+    end
+   end
+   assert(table.concat(legend,' • ')=='FOLLOW GOLD LINE • FOLLOW STAIR ARROW • GREEN = OPEN',
+    'footer omitted, duplicated or reordered explanatory wording')
    for _,layer in ipairs({panels,rects,texts,lines,peerMarkers}) do for _,entry in ipairs(layer) do near(entry.alpha,.8*opacity,'overlay opacity') end end
    local a,b,cq,d=rects[2],rects[3],rects[4],rects[5]
    near(a.x,layout.x+26*layout.scale,'quadrant origin x');near(a.y,layout.y+68*layout.scale,'quadrant origin y')
@@ -189,6 +230,10 @@ for _,size in ipairs({{1280,800},{640,480},{3840,2160}}) do
   previousLayout=layout
  end end end
 end
+-- A Lua reload may retain the previous renderer's layout without wrapped rows.
+local oldLayout=M:PresentationLayout();oldLayout.legend=nil
+assert(M:PresentationLayout()~=oldLayout and #M:PresentationLayout().legend>0,
+ 'retained pre-repair layout bypassed measured footer construction')
 -- Early loading/preparation exits and thrown drawing callbacks restore state.
 preferences.lod_map_scale.value=1.5;preferences.lod_map_opacity.value=.25;M.open=true;alpha=.7
 for _,mode in ipairs({'loading','preparing','throwing'}) do
@@ -233,5 +278,5 @@ local requests=M.stats.mapRequests;M.nextRequestAt=0;circles={}
 hooks.HUDPaint.LOD_MinimapHUD()
 assert(M.stats.mapRequests==requests+1 and #circles==0,'same-level stale build cache rendered')
 player.serial=1;player.mask=nil;player.developer=false;M.floorMask=127
-print('MINIMAP_PLAYER_PASS: blue marker; expanded topology; Q/M/VR access/focus; shared panel/text/quadrant transforms and alpha; 81 size/opacity/grid/window cases; cached Matrix; no topology rebuild; draw-state cleanup; Magic expiry')
+print('MINIMAP_PLAYER_PASS: blue marker; expanded topology; Q/M/VR access/focus; measured complete footer within panel/window; shared panel/text/quadrant transforms and alpha; 162 size/opacity/grid/window cases; cached text/Matrix; no topology rebuild; draw-state cleanup; Magic expiry')
 return {hooks=hooks,Map=M,preferences=preferences,player=player,wall=wall}

@@ -1,0 +1,16 @@
+{
+  "id": "BUG-004",
+  "build": "e76659db9d99360f557252faf2f6455d32d8c0c5",
+  "seed": 6102601,
+  "environment": "Actual Steam Deck;1280x800;default map scale1;production encounters",
+  "reproduction": "Collect floor1 map normally, then hold Q to open the map",
+  "expected": "Whole map including text remains within panel/window; navigation instructions readable.",
+  "source": "Live GDD06 LOD-UI-OPTIONS-001; user presentation/usability coverage",
+  "actual": "Full FOLLOW GOLD LINE / FOLLOW STAIR ARROW / GREEN=OPEN footer extends beyond panel and screen",
+  "severity": "Usability/presentation",
+  "status": "implemented;10 focused/static checks pass; fresh native recheck pending",
+  "evidence": [
+    "native-overflow.before.png",
+    "static-repair/receipt.json"
+  ]
+}

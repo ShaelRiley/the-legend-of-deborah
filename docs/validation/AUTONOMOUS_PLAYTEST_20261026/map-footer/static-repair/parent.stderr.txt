@@ -1,0 +1,1 @@
+/home/deck/Downloads/the-legend-of-deborah/tools/test_minimap_player_marker.lua: ...e-legend-of-deborah/tools/test_minimap_player_marker.lua:212: measured map footer escapes panel/window: FOLLOW GOLD LINE • FOLLOW STAIR ARROW • GREEN = OPEN

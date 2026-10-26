@@ -1,0 +1,1 @@
+/home/deck/Downloads/the-legend-of-deborah/tools/test_floor_map_panel.lua: gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua:737: attempt to compare number with nil

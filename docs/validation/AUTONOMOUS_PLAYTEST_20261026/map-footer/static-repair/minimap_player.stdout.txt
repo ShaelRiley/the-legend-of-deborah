@@ -1,0 +1,1 @@
+MINIMAP_PLAYER_PASS: blue marker; expanded topology; Q/M/VR access/focus; measured complete footer within panel/window; shared panel/text/quadrant transforms and alpha; 162 size/opacity/grid/window cases; cached text/Matrix; no topology rebuild; draw-state cleanup; Magic expiry

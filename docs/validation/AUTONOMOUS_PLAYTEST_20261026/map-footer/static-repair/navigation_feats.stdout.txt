@@ -1,0 +1,3 @@
+map_movement PASS: ranks, DEX/SetupMove composition, actor isolation, close/death/access/mapless/failure/freeze/heartbeat/exhaustion, drain, prerequisites
+MAP_LIFECYCLE_PASS: eight exact-owner transitions cannot transfer budget, drain or movement
+NAVIGATION_FEATS_PASS: exact WIS15/WIS13 gates; no prerequisites/duplicates/unsupported AI; distinct owned effects; Cartographer and Frugal coexist; no extra range/cost
