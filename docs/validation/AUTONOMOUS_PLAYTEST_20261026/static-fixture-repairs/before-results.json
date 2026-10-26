@@ -1,0 +1,91 @@
+[
+  {
+    "name": "b29_combat",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_bestiary_b29_combat.lua"
+    ],
+    "returncode": 1,
+    "seconds": 0.13783171301474795
+  },
+  {
+    "name": "quiz_generation",
+    "command": [
+      "python3",
+      "tools/test_crypto_sqlite.py",
+      "tools/test_event_quiz_generation.lua"
+    ],
+    "returncode": 1,
+    "seconds": 3.8164828279986978
+  },
+  {
+    "name": "minigame_ui",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_minigame_ui.lua"
+    ],
+    "returncode": 1,
+    "seconds": 0.3975565349974204
+  },
+  {
+    "name": "geometry_fullupdate",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_geometry_fullupdate.lua"
+    ],
+    "returncode": 1,
+    "seconds": 0.0713501910213381
+  },
+  {
+    "name": "damage_lifetime",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_shared_damage_lifetime.lua"
+    ],
+    "returncode": 1,
+    "seconds": 0.13961234199814498
+  },
+  {
+    "name": "shotgun_native",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_shotgun_native_path.lua"
+    ],
+    "returncode": 1,
+    "seconds": 0.12334413899225183
+  },
+  {
+    "name": "feat_rebalance",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_checkpoint_d_rebalance_20261002.lua"
+    ],
+    "returncode": 1,
+    "seconds": 0.15243628798634745
+  },
+  {
+    "name": "cross_feats",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_cross_feats_dodge.lua"
+    ],
+    "returncode": 1,
+    "seconds": 0.126750394992996
+  },
+  {
+    "name": "feat_release_gate",
+    "command": [
+      "python3",
+      "tools/audit_live_gdd_feats.py"
+    ],
+    "returncode": 1,
+    "seconds": 0.18741818697890267
+  }
+]

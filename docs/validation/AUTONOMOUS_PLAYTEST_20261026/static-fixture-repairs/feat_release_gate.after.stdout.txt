@@ -1,0 +1,2 @@
+GDD fixture: 114 ordinary (cross-attribute category retired), 6 fallbacks; loaded 114 ordinary, 129 total; blank descriptions=0
+FEAT_INVENTORY_GATE_PASS — semantic behavior/actor coverage and Source acceptance still required.

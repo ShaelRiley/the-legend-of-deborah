@@ -1,7 +1,9 @@
 -- Production entity registries and draw hooks across Source's full-update
 -- removal/reappearance sequence, where Initialize is not called again.
 local noop=function() end
-local hooks={};hook={Add=function(event,id,fn) hooks[event]=hooks[event] or {};hooks[event][id]=fn end}
+local hooks={};hook={
+ Add=function(event,id,fn) hooks[event]=hooks[event] or {};hooks[event][id]=fn end,
+ Remove=function(event,id) if hooks[event] then hooks[event][id]=nil end end}
 include=noop;concommand={Add=noop}
 IsValid=function(e) return type(e)=='table' and e.valid~=false end
 CurTime=function() return 10 end
@@ -16,9 +18,11 @@ angle_zero={};Angle=function() return {} end
 EyePos=function() return Vector() end
 EyeAngles=function() return {y=0} end
 Material=function() return {IsError=function() return false end} end;CreateMaterial=Material
-render={SetMaterial=noop,DrawBox=noop,DrawWireframeBox=noop,CullMode=noop}
+render={SetMaterial=noop,DrawBox=noop,DrawWireframeBox=noop,CullMode=noop,SuppressEngineLighting=noop}
 cam={Start3D2D=noop,End3D2D=noop};draw={RoundedBox=noop,SimpleText=noop};surface={SetDrawColor=noop,DrawRect=noop}
 LOD={};dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua')
+dofile('gamemodes/legend_of_deborah/gamemode/lod/sh_progression_props.lua')
+ErrorNoHalt=function(message) error(message) end
 local slabs,bodies=0,0
 LOD.TexturedBox={DrawSlab=function() slabs=slabs+1 end,Draw=function() bodies=bodies+1 end}
 local function transmit(e,on) for _,fn in pairs(hooks.NotifyShouldTransmit) do fn(e,on) end end
@@ -31,6 +35,12 @@ for _,name in ipairs({'lod_static_box','lod_gate','lod_keycard','lod_jail_door'}
  function e:SetNW2Bool(key,value) self.nw[key]=value end
  e.GetNW2String,e.SetNW2String=e.GetNW2Bool,e.SetNW2Bool
  e.GetClass=function() return name end;e.GetPos=function() return Vector() end;e.GetAngles=function() return angle_zero end
+ -- Stock keycards use native model methods even while generated accessors are
+ -- absent. Exercise the real shared bounds/draw authority, not a prop substitute.
+ e.GetModel=function() return 'models/props_c17/BriefCase001a.mdl' end
+ e.GetModelBounds=function() return Vector(-8,-6,-1),Vector(8,6,1) end
+ local nativeDraws=0
+ e.DrawModel=function() nativeDraws=nativeDraws+1 end
  -- NotifyShouldTransmit may precede SetupDataTables. Exercise exactly the
  -- screenshot's missing GetBoxMins path and render callbacks in that frame.
  local function renderFrame()
@@ -49,7 +59,11 @@ for _,name in ipairs({'lod_static_box','lod_gate','lod_keycard','lod_jail_door'}
  local function visible()
   if name=='lod_static_box' then local before=slabs;hooks.PostDrawOpaqueRenderables['LOD.DrawGeneratedStaticGeometry']();return slabs>before end
   if name=='lod_gate' then local before=bodies;hooks.PostDrawOpaqueRenderables.LOD_DrawSecurityGates();return bodies>before end
-  return (name=='lod_keycard' and LOD.ClientKeycards[e] or name=='lod_jail_door' and LOD.ClientJailDoors[e])==true
+  if name=='lod_keycard' then
+   local before=nativeDraws;e:Draw()
+   return LOD.ClientKeycards[e]==true and nativeDraws==before+1
+  end
+  return name=='lod_jail_door' and LOD.ClientJailDoors[e]==true
  end
  renderFrame();assert(visible(),name..' early transmission did not recover when ready')
  -- Each missing accessor must be safe independently, including partial setup.
@@ -74,7 +88,10 @@ for _,name in ipairs({'lod_static_box','lod_gate','lod_keycard','lod_jail_door'}
  end
  e:OnRemove(true);transmit(e,false)
  local getters={}
- for k,v in pairs(e) do if k:match('^Get') and not k:match('^GetNW2') and k~='GetClass' and k~='GetPos' and k~='GetAngles' then getters[k]=v;e[k]=nil end end
+ local nativeGetters={GetClass=true,GetPos=true,GetAngles=true,GetModel=true,GetModelBounds=true}
+ for k,v in pairs(e) do
+  if k:match('^Get') and not k:match('^GetNW2') and not nativeGetters[k] then getters[k]=v;e[k]=nil end
+ end
  transmit(e,true);renderFrame()
  for k,v in pairs(getters) do e[k]=v end
  renderFrame();assert(visible(),name..' failed to recover without another notification')

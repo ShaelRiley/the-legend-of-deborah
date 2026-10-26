@@ -1,0 +1,1 @@
+GEOMETRY_FULLUPDATE_PASS: floors, gates, keycards and jail recover without Initialize; false floor hidden state survives full update and rearms through native NW2 state; partial accessors, draw hooks, deferred bounds and genuine removal

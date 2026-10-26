@@ -27,9 +27,27 @@ for _,kind in ipairs({'hero','human_soldier','ai'}) do
   check(#s.featIds==1 and s.featIds[1]=='DEX_FAST_RELOAD' and s.featStackCounts[id]==nil,'old ownership becomes inert')
   local draft=s.pendingFeatSlots[1]
   check(not draft.resolved and not draft.selectedFeatId and draft.offerFeatIds[1]=='DEX_STRAFER_1' and draft.rngSeed==777,'valid stored choice/seed kept, retired result reopened')
+  local strafeEligible=P:_FeatEligible(ps,s,P:_FindFeat('DEX_STRAFER_1'))
+  check(strafeEligible==(kind~='ai'),'Strafer remains a player-controlled movement feat')
+  local replay=table.Copy(s)
   P:RepairCanonicalDrafts(ps,s)
-  for _,offered in ipairs(draft.offerFeatIds) do check(not gone[offered],'repaired hand cannot retain removed IDs') end
-  check(draft.offerFeatIds[1]=='DEX_STRAFER_1' and s.notYetConsumedDungeonLevel==nil,'stable order and finite Not Yet migration')
+  local seen={}
+  for _,offered in ipairs(draft.offerFeatIds) do
+   check(not gone[offered],'repaired hand cannot retain removed IDs')
+   check(not seen[offered] and P:_FeatEligible(ps,s,P:_FindFeat(offered)),
+    'repaired hand must contain distinct, currently eligible offers')
+   seen[offered]=true
+  end
+  check(#draft.offerFeatIds==4 and draft.rngSeed==777,'stored four-card limit and seed kept')
+  if strafeEligible then
+   check(draft.offerFeatIds[1]=='DEX_STRAFER_1','eligible stored choice keeps its order')
+  else check(not seen.DEX_STRAFER_1,'ineligible player-only offer must be replaced for AI') end
+  check(s.notYetConsumedDungeonLevel==nil,'finite Not Yet migration')
+  P:RepairCanonicalDrafts(ps,replay)
+  check(#replay.pendingFeatSlots[1].offerFeatIds==#draft.offerFeatIds,'repair count is deterministic')
+  for index,offered in ipairs(draft.offerFeatIds) do
+   check(replay.pendingFeatSlots[1].offerFeatIds[index]==offered,'repair order is deterministic')
+  end
   check(not P:ReconcileFeatOwnership(s),'migration is idempotent')
  end
 end

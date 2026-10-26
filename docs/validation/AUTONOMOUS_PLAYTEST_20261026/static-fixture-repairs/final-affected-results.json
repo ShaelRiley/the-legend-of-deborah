@@ -1,0 +1,61 @@
+{
+  "source_before": {
+    "tools/test_geometry_fullupdate.lua": "9cc1cda5488f133a1b0eeaf44a47a36481d88be9e818d7c893e5a8571b1cc7be",
+    "tools/test_minigame_ui.lua": "a0e48576be2057fa491e28335508f04c86656fb1be093fab34fc2f6f249524d1",
+    "tools/test_event_quiz_generation.lua": "d5cb7ebf1d38827a00138f624facc56700126b0416b95673af9ede05f1a9ddae",
+    "tools/test_checkpoint_d_rebalance_20261002.lua": "fb695ecd784a34d180018d56742e50a4b557321d4aee23a49fed348841fcc5c3",
+    "tools/test_cross_feats_dodge.lua": "226bdade668a0e1c81593d7a40ec94086f3f12e5ac1205f315a49132beadf3ba",
+    "tools/fixtures/live_gdd_feats.json": "6e2c249bac9a6ab95bf21ee4f6627c099043fcab5b18f71e0d2c3e29fb564a50"
+  },
+  "source_after": {
+    "tools/test_geometry_fullupdate.lua": "9cc1cda5488f133a1b0eeaf44a47a36481d88be9e818d7c893e5a8571b1cc7be",
+    "tools/test_minigame_ui.lua": "a0e48576be2057fa491e28335508f04c86656fb1be093fab34fc2f6f249524d1",
+    "tools/test_event_quiz_generation.lua": "d5cb7ebf1d38827a00138f624facc56700126b0416b95673af9ede05f1a9ddae",
+    "tools/test_checkpoint_d_rebalance_20261002.lua": "fb695ecd784a34d180018d56742e50a4b557321d4aee23a49fed348841fcc5c3",
+    "tools/test_cross_feats_dodge.lua": "226bdade668a0e1c81593d7a40ec94086f3f12e5ac1205f315a49132beadf3ba",
+    "tools/fixtures/live_gdd_feats.json": "6e2c249bac9a6ab95bf21ee4f6627c099043fcab5b18f71e0d2c3e29fb564a50"
+  },
+  "source_unchanged_during_tests": true,
+  "changes_after_15_check_gate": [
+    "tools/test_checkpoint_d_rebalance_20261002.lua"
+  ],
+  "final_change": "Add independent assertion that Strafer eligibility excludes AI and includes Hero/human Soldier; no production or fixture behavior changed.",
+  "unchanged_checks_reused": "after-results.json contains all nine original failing suites + four relevant regressions, syntax and whitespace; only rebalance assertion changed after that frozen gate, so its full suite and changed-Lua syntax/whitespace are rerun here.",
+  "results": [
+    {
+      "name": "feat_rebalance",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_d_rebalance_20261002.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.2711276509799063
+    },
+    {
+      "name": "changed_lua_syntax",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "tools/test_geometry_fullupdate.lua",
+        "tools/test_minigame_ui.lua",
+        "tools/test_event_quiz_generation.lua",
+        "tools/test_checkpoint_d_rebalance_20261002.lua",
+        "tools/test_cross_feats_dodge.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.06412052299128845
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.008918006991734728
+    }
+  ]
+}

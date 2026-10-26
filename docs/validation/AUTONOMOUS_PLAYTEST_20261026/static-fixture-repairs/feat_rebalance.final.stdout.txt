@@ -1,0 +1,5 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 114
+[AUDIT] Implementation Feats Count: 114
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+FEAT_REBALANCE_20261002_PASS 2327 catalog/removal/AI/draft repair, exact nine-family+Pusher 55/75/95, Spellward 2d20, Cartographer and full square auras

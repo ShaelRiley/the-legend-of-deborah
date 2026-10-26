@@ -100,10 +100,13 @@ dofile('gamemodes/legend_of_deborah/entities/entities/lod_dungeon_event/cl_init.
 local drawn,posed=0,0
 local ent={GetNW2String=function() return 'equipment_quiz' end,GetEventID=function() return 'quiz' end,
  EntIndex=function() return 20 end,DrawModel=function() drawn=drawn+1 end}
-LOD.ApplyHermitPose=function() posed=posed+1 end
+LOD.FriendlyIdle={Apply=function(_,entity,role)
+ assert(entity==ent and role=='game_master','event used the wrong friendly idle role')
+ posed=posed+1
+end}
 LOD.DungeonEvents={events={{id='quiz',entityIndex=20,details={spent=true}}}}
 ENT.Draw(ent);assert(drawn==0 and posed==0)
 LOD.DungeonEvents.events[1].details.spent=false;ENT.Draw(ent);assert(drawn==1 and posed==1)
 LOD.DungeonEvents.events[1].entityIndex=21;LOD.DungeonEvents.events[1].details.spent=true
-ENT.Draw(ent);assert(drawn==2,'Old entity snapshot hid replacement')
+ENT.Draw(ent);assert(drawn==2 and posed==2,'Old entity snapshot hid or stopped animating replacement')
 print('MINIGAME_UI_PASS: actual modal, canonical menu/request/console guards, deferred unlock, wire shape, stale packets, pending failures, cleanup and recipient entity visibility')

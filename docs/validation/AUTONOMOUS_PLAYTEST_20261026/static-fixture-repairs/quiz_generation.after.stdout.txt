@@ -1,0 +1,33 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 114
+[AUDIT] Implementation Feats Count: 114
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=29 layoutAttempt=1 cells=641 entities=1 vertical=4 mazeAttempt=5 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=30 layoutAttempt=2 cells=657 entities=1 vertical=5 mazeAttempt=3 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=32 layoutAttempt=1 cells=490 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=39 layoutAttempt=1 cells=546 entities=1 vertical=4 mazeAttempt=4 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=44 layoutAttempt=1 cells=681 entities=1 vertical=4 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=2 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=50 layoutAttempt=1 cells=502 entities=1 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=58 layoutAttempt=2 cells=521 entities=1 vertical=3 mazeAttempt=2 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=61 layoutAttempt=1 cells=484 entities=1 vertical=4 mazeAttempt=3 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=73 layoutAttempt=1 cells=492 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=73 layoutAttempt=1 cells=492 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=1 maxPerFloor=1 collision=unchanged
+[LOD] Level 5 ready. campaign=41 levelSeed=73 layoutAttempt=1 cells=492 entities=1 vertical=3 mazeAttempt=1 gen+progression=0.000s build=0.000s total=0.000s boss-assets=0.000s
+QUIZ_GENERATION_PASS: eight-entry production catalog; 9 actual quiz builds / 2 bounded rejects; real encounter reservations; optional flat alcoves and mouths; independent ordered progression; all catalog partners; exact d4; deterministic retry; native Create failures; late joins; exact teardown

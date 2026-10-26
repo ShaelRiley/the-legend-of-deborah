@@ -1,0 +1,5 @@
+PASS /home/deck/Downloads/the-legend-of-deborah/tools/test_cross_feats_dodge.lua
+PASS /home/deck/Downloads/the-legend-of-deborah/tools/test_checkpoint_d_rebalance_20261002.lua
+PASS /home/deck/Downloads/the-legend-of-deborah/tools/test_event_quiz_generation.lua
+PASS /home/deck/Downloads/the-legend-of-deborah/tools/test_minigame_ui.lua
+PASS /home/deck/Downloads/the-legend-of-deborah/tools/test_geometry_fullupdate.lua

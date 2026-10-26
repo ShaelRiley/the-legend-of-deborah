@@ -1,0 +1,175 @@
+{
+  "source_before": {
+    "tools/test_geometry_fullupdate.lua": "9cc1cda5488f133a1b0eeaf44a47a36481d88be9e818d7c893e5a8571b1cc7be",
+    "tools/test_minigame_ui.lua": "a0e48576be2057fa491e28335508f04c86656fb1be093fab34fc2f6f249524d1",
+    "tools/test_event_quiz_generation.lua": "d5cb7ebf1d38827a00138f624facc56700126b0416b95673af9ede05f1a9ddae",
+    "tools/test_checkpoint_d_rebalance_20261002.lua": "174d924e1e08aa4cf47bf43541f01d44992f5150e65f8cea258e494bf7b494c5",
+    "tools/test_cross_feats_dodge.lua": "226bdade668a0e1c81593d7a40ec94086f3f12e5ac1205f315a49132beadf3ba",
+    "tools/fixtures/live_gdd_feats.json": "6e2c249bac9a6ab95bf21ee4f6627c099043fcab5b18f71e0d2c3e29fb564a50"
+  },
+  "source_after": {
+    "tools/test_geometry_fullupdate.lua": "9cc1cda5488f133a1b0eeaf44a47a36481d88be9e818d7c893e5a8571b1cc7be",
+    "tools/test_minigame_ui.lua": "a0e48576be2057fa491e28335508f04c86656fb1be093fab34fc2f6f249524d1",
+    "tools/test_event_quiz_generation.lua": "d5cb7ebf1d38827a00138f624facc56700126b0416b95673af9ede05f1a9ddae",
+    "tools/test_checkpoint_d_rebalance_20261002.lua": "174d924e1e08aa4cf47bf43541f01d44992f5150e65f8cea258e494bf7b494c5",
+    "tools/test_cross_feats_dodge.lua": "226bdade668a0e1c81593d7a40ec94086f3f12e5ac1205f315a49132beadf3ba",
+    "tools/fixtures/live_gdd_feats.json": "6e2c249bac9a6ab95bf21ee4f6627c099043fcab5b18f71e0d2c3e29fb564a50"
+  },
+  "source_unchanged_during_tests": true,
+  "results": [
+    {
+      "name": "b29_combat",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_bestiary_b29_combat.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.15719806900597177
+    },
+    {
+      "name": "quiz_generation",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_quiz_generation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 13.920429022982717
+    },
+    {
+      "name": "minigame_ui",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_minigame_ui.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.41620164102641866
+    },
+    {
+      "name": "geometry_fullupdate",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_geometry_fullupdate.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07296931400196627
+    },
+    {
+      "name": "damage_lifetime",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_shared_damage_lifetime.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.12880555598530918
+    },
+    {
+      "name": "shotgun_native",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_shotgun_native_path.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.12753856502240524
+    },
+    {
+      "name": "feat_rebalance",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_checkpoint_d_rebalance_20261002.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.22793232701951638
+    },
+    {
+      "name": "cross_feats",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_cross_feats_dodge.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.12923690298339352
+    },
+    {
+      "name": "feat_release_gate",
+      "command": [
+        "python3",
+        "tools/audit_live_gdd_feats.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.20131504099117592
+    },
+    {
+      "name": "feat_repeat_guard",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_feat_repeat_guard.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.1396232899860479
+    },
+    {
+      "name": "friendly_idle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_friendly_idle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07135328502045013
+    },
+    {
+      "name": "progression_stock_props",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_progression_stock_props.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.08069890999468043
+    },
+    {
+      "name": "navigation_feats",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_navigation_feats.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07356303901178762
+    },
+    {
+      "name": "syntax",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "tools/test_cross_feats_dodge.lua",
+        "tools/test_checkpoint_d_rebalance_20261002.lua",
+        "tools/test_event_quiz_generation.lua",
+        "tools/test_minigame_ui.lua",
+        "tools/test_geometry_fullupdate.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07261141602066346
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.008926848007831722
+    }
+  ]
+}

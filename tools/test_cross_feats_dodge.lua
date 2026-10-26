@@ -172,10 +172,24 @@ assert(CPS:ReconcileFeatOwnership(migrated))
 assert(#migrated.featIds==1 and migrated.featIds[1]=='WIS_HERO_OF_LEGEND')
 assert(migrated.featStackCounts.DEX_AR2_SNAP==nil)
 migrated.featQualificationAbilities={str=20,dex=20,con=20,int=20,wis=20,cha=20}
-CPS:RepairCanonicalDrafts({identity='legacy',starterWeaponClass='weapon_pistol'},migrated)
+local legacyPS={identity='legacy',starterWeaponClass='weapon_pistol'}
+local replay=table.Copy(migrated)
+CPS:RepairCanonicalDrafts(legacyPS,migrated)
 local repaired=migrated.pendingFeatSlots[1]
-assert(repaired.rngSeed==42 and repaired.offerFeatIds[1]=='WIS_HERO_OF_LEGEND'
-    and repaired.offerFeatIds[2]=='CON_REGEN_11' and #repaired.offerFeatIds==3)
+assert(repaired.rngSeed==42 and repaired.offerFeatIds[1]=='CON_REGEN_11'
+    and #repaired.offerFeatIds==3,'valid offer order, seed and legacy three-card limit survive')
+local seenOffers={}
+for _,id in ipairs(repaired.offerFeatIds) do
+    assert(id~='WIS_HERO_OF_LEGEND','already-owned nonrepeatable feat survived hand repair')
+    assert(not seenOffers[id] and CPS:_FeatEligible(legacyPS,migrated,CPS:_FindFeat(id)),
+        'repair must produce distinct, currently eligible offers')
+    seenOffers[id]=true
+end
+CPS:RepairCanonicalDrafts(legacyPS,replay)
+for index,id in ipairs(repaired.offerFeatIds) do
+    assert(replay.pendingFeatSlots[1].offerFeatIds[index]==id,'same stored seed repaired differently')
+end
+assert(#replay.pendingFeatSlots[1].offerFeatIds==#repaired.offerFeatIds)
 assert(not CPS:ReconcileFeatOwnership(migrated),'migration is idempotent')
 assert(not CPS:_HasCapability({}, {actorType='ai',archetypeId='soldier',capabilityTags={'reloadable_firearm'}},'reloadable_firearm'))
 assert(not CPS:_HasCapability({}, {actorType='ai',archetypeId='runner'},'d4_damage'),'no inherited Hero pistol')

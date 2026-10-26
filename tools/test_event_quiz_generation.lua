@@ -161,7 +161,8 @@ local function prove(g,plan)
   if i.archetype==Q.id then
    quiz=i
    assert(#i.entities==1 and i.entities[1].LODEventInstance==i)
-   assert(i.entities[1]:GetClass()=='lod_dungeon_event' and i.entities[1]:GetModel()=='models/monk.mdl')
+   assert(i.entities[1]:GetClass()=='lod_dungeon_event' and i.entities[1]:GetModel()=='models/player/monk.mdl',
+    'Game Master must use the approved unarmed animated stock model')
    assert(i.entities[1]:GetPos():DistToSqr(LOD.MazeBuilder:CellCenter(i.cell))<128*128)
    assert(count(g.Cells[p.cellKey].neighbors)==1 and g.Cells[p.cellKey].neighbors[p.approachCellKey])
    assert(LOD.SafeTeleport:FlatCell(g,i.cell) and LOD.SafeTeleport:FlatCell(g,g.Cells[p.approachCellKey]))

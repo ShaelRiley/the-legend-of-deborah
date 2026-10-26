@@ -1,0 +1,54 @@
+{
+  "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+  "tabId": "t.uvtkgy5665d",
+  "navigation": "Inherited parent reads 00 → 01; this subtask read 04",
+  "rules": [
+    {
+      "startIndex": 10835,
+      "endIndex": 10883,
+      "text": "LOD-FEAT-001 — ORDINARY FEAT CADENCE [CANONICAL]"
+    },
+    {
+      "startIndex": 10884,
+      "endIndex": 11159,
+      "text": "Ordinary FeatDirector slots occur at Combat Levels 1,3,6,9,12,15,18: seven ordinary selections by Level20. Level20 adds one separate class capstone and does not increase ordinary featSlotsGranted. Former Rogue bonus drafts at Levels 2/5/10/15 are SUPERSEDED and do not exist."
+    },
+    {
+      "startIndex": 11161,
+      "endIndex": 11198,
+      "text": "LOD-FEAT-002 — HERO DRAFT [CANONICAL]"
+    },
+    {
+      "startIndex": 11199,
+      "endIndex": 12252,
+      "text": "For a cooperative Hero, resolve class/Level-1 initialization first. At each ordinary feat level generate up to four distinct eligible offers once, store the hand with offerLimit=4, and let the Hero choose exactly one from each nonempty hand. Draw ordinary candidates first and fill only from eligible permanent neutral fallbacks. If the combined legal pool has one to three choices, offer only those choices; never duplicate cards or relax eligibility. A genuinely empty combined pool records an exhausted, resolved no-award slot with no selected ID or stat/stack grant, and is not counted as a chosen feat. Reopen/death/reconnect/dungeon transition never rerolls a stored hand. Existing valid three-card hands remain unchanged, including IDs, order, seed and result; only future slots use four. Existing removed-ID canonical repair retains the stored offerLimit, or the historical limit of three for unversioned hands. Multiple crossed feat levels resolve in chronological order. Eligibility/prerequisites/capability tags are enforced before weighting."
+    },
+    {
+      "startIndex": 12254,
+      "endIndex": 12309,
+      "text": "LOD-FEAT-003 — AI + HUMAN SOLDIER SELECTION [CANONICAL]"
+    },
+    {
+      "startIndex": 12310,
+      "endIndex": 12839,
+      "text": "AI monsters and human-controlled Soldiers use the same FeatDirector eligibility and stored up-to-four-offer hands, including the small-pool and legacy-hand rules in LOD-FEAT-002, but choose exactly once from each nonempty hand through the deterministic seeded AI synergy selector. The selector considers every stored offer, including the fourth; resolved hands cannot grant again. Human Soldiers receive no feat-choice UI. A fresh Soldier incarnation is a fresh generated character; it is not a reroll of the retired incarnation."
+    },
+    {
+      "startIndex": 12841,
+      "endIndex": 12893,
+      "text": "LOD-FEAT-004 — EXACT FEAT DEFINITIONS [HUMAN-DETAIL]"
+    },
+    {
+      "startIndex": 12894,
+      "endIndex": 13508,
+      "text": "October 2 final rebalance: ordinary cross-attribute feats are retired entirely; no CROSS_* registration, candidate, prerequisite or AI choice remains. Removed IDs in existing state are inert and pass through canonical stored-hand repair, not future draft compatibility offers. Strafer, Quick Reload, Heat Sink, Haste, Cartographer and Spellward are single ranks. Retained proc families use highest-only 55%/75%/95%; INT Spellbreaker remains, WIS Spellbreaker does not. Size Shifter is now equipment only: 03/HUMAN → LOD-SIZE-SHIFTER-RING-001. See the current HUMAN rows for all exact effects, gates and exclusions."
+    }
+  ],
+  "authorAmendments": [
+    "docs/validation/NAVIGATION_FEATS_20261013.md",
+    "docs/validation/NAVIGATION_FEATS_20261013/gdd_write_receipt.json",
+    "docs/validation/FEAT_REPEAT_NEIL_CONSOLE_20261013.md"
+  ],
+  "nativeScope": "No Source/gameplay acceptance; changes only test fixtures and evidence data."
+}

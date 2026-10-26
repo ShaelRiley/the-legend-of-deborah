@@ -1119,6 +1119,24 @@
       "prerequisite": "None",
       "requirement": "INT 17",
       "sourceTab": "04 — FEATS & IDENTITY"
+    },
+    {
+      "id": "WIS_INTERNAL_COMPASS",
+      "name": "Internal Compass",
+      "requirement": "WIS 15",
+      "prerequisite": "None",
+      "actors": "Heroes and human Soldiers with minimap access",
+      "effect": "While the existing personal map panel is open, the holder retains the ordinary current-objective breadcrumb trail on an unfound physical floor. This does not reveal its walls, grant party map ownership, increase breadcrumb range, bypass locks, or change Magic cost/map-up effects. Reuse the existing BreadcrumbCells formula and Cartographer bonus; show only bounded current-floor trail points and the next stair transition. Non-holders retain the no-map reminder. Finding the shared floor map restores the normal map presentation.",
+      "sourceTab": "Author-approved 2026-10-13 navigation amendment; live GDD mirror rejected"
+    },
+    {
+      "id": "WIS_MAP_FINDER",
+      "name": "Map Finder",
+      "requirement": "WIS 13",
+      "prerequisite": "None",
+      "actors": "Heroes and human Soldiers with minimap access",
+      "effect": "Passively show actual uncollected map pickups through walls and ceilings in world view, including other floors. No floor ownership, maze revelation, panel requirement or Magic cost.",
+      "sourceTab": "Author-approved 2026-10-13 navigation amendment; live GDD mirror rejected"
     }
   ],
   "overrides": {
@@ -1175,6 +1193,23 @@
         "INT_TIME_MANAGEMENT"
       ],
       "retrieved": "2026-10-02"
+    },
+    {
+      "sourceTab": "04 — FEATS & IDENTITY",
+      "tabId": "t.uvtkgy5665d",
+      "anchor": "Author-approved October 13 Internal Compass / Map Finder additions",
+      "ids": [
+        "WIS_INTERNAL_COMPASS",
+        "WIS_MAP_FINDER"
+      ],
+      "authority": "Explicit author additions supersede the older 112-feat inventory. Do not treat the rejected live-GDD mirror as a successful Doc write.",
+      "sourceEvidence": [
+        "docs/validation/NAVIGATION_FEATS_20261013.md",
+        "docs/validation/NAVIGATION_FEATS_20261013/gdd_write_receipt.json"
+      ],
+      "liveMirrorStatus": "FAILED_PRECONDITION; additions remain approved author amendments, not rows read from the live tab",
+      "liveTabRevisionObserved": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+      "verified": "2026-10-26"
     }
   ],
   "rebalanceAuthority": "Author final 2026-10-02 decision ledger; live HUMAN and normalized tabs reconciled in place. Retired IDs removed, not deferred. Source effects are extracted from the live document, independently of runtime.",

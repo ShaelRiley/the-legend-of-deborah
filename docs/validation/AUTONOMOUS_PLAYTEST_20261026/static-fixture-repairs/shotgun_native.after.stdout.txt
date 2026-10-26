@@ -1,0 +1,8 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 114
+[AUDIT] Implementation Feats Count: 114
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+[LOD:RPG-LOG] writing data/legend_of_deborah/rpg_test_log.txt
+[CROSS_FEATS_DODGE] PASS: retired cross IDs inert; production dice, bridge, Dodge, Morale and capability seams
+POISON_DIVERSION_PASS: contextual/native Poison bypass, ordinary diversion retained
+SHOTGUN_NATIVE_PATH_PASS: actual pellets, Source commit, CON0..3, split targets, cover, lifecycle, idempotence, zero scale
