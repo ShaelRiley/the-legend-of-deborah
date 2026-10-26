@@ -1,0 +1,33 @@
+{
+  "timestamp_utc": "2026-10-26T15:05:49.335583+00:00",
+  "proton": "Proton 10.0",
+  "proton_version": "1785139158 proton-10.0-4b",
+  "runtime": "SteamLinuxRuntime_sniper",
+  "compatdata": "/home/deck/deborah-recovery/compatdata-proton10",
+  "exe": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/gmod_win64.exe",
+  "windows_machine": "0x8664",
+  "mangohud": "0",
+  "mangohud_config": null,
+  "dxvk_hud": null,
+  "PROTON_USE_XALIA": "default",
+  "arguments": [
+    "-windowed",
+    "-w",
+    "1280",
+    "-h",
+    "800",
+    "-condebug",
+    "-conclearlog",
+    "+gamemode",
+    "legend_of_deborah",
+    "+maxplayers",
+    "1",
+    "+map",
+    "gm_flatgrass",
+    "+exec",
+    "lod_deck_benchmark.cfg",
+    "-console",
+    "+con_enable",
+    "1"
+  ]
+}

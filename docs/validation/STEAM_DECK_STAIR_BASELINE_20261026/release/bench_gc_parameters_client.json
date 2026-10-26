@@ -1,0 +1,15 @@
+{
+	"running_after": true,
+	"source": "Standardpubliccollectgarbage setpause/setstepmul returnoldvalue,immediatelyrestored; no collect/step/stop/restart",
+	"realm": "client",
+	"passed": true,
+	"setstepmul": {
+		"original": 200,
+		"restored": true
+	},
+	"setpause": {
+		"original": 200,
+		"restored": true
+	},
+	"running_before": true
+}

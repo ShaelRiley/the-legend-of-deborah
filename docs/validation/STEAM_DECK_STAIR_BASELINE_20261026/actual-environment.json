@@ -1,0 +1,42 @@
+{
+  "utc": "2026-10-26T15:07:57.511734+00:00",
+  "os_release": "NAME=\"SteamOS\"\nPRETTY_NAME=\"SteamOS\"\nVERSION_CODENAME=holo\nID=steamos\nID_LIKE=arch\nANSI_COLOR=\"1;35\"\nHOME_URL=\"https://www.steampowered.com/\"\nDOCUMENTATION_URL=\"https://support.steampowered.com/\"\nSUPPORT_URL=\"https://support.steampowered.com/\"\nBUG_REPORT_URL=\"https://support.steampowered.com/\"\nLOGO=steamos\nVARIANT_ID=steamdeck\nVERSION_ID=3.9.5\nBUILD_ID=20261023.100\nSTEAMOS_DEFAULT_UPDATE_BRANCH=stable\n",
+  "kernel": "7.2.7-valve2-2-neptune-72-g31504582a073",
+  "proton_version": "1785139158 proton-10.0-4b",
+  "hwmon": [
+    {
+      "name": "amdgpu",
+      "temp1_input": "61000",
+      "power1_cap": "15000000",
+      "power2_cap": "15000000",
+      "power1_average": "9964000"
+    },
+    {
+      "name": "k10temp",
+      "temp1_input": "68500"
+    }
+  ],
+  "cpu": {
+    "scaling_governor": "powersave",
+    "energy_performance_preference": "balance_performance"
+  },
+  "ac": {
+    "/sys/class/power_supply/ACAD/online": "1"
+  },
+  "gmod_executable": {
+    "path": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/gmod_win64.exe",
+    "sha256_after_captures": "fa248f3bf46255c892739c3257a12c92e8b4b958cda8c0999b06a2a6b31f9b19",
+    "receipt_utc": "2026-10-26T15:34:56.593219+00:00",
+    "observed_engine": "2026.09.17 (10175) in native startup",
+    "installed_manifest_buildid": "25375506",
+    "installed_depot_manifests": [
+      "2904029089870460835",
+      "8456439456790142762"
+    ],
+    "scope": "Postcapture executable hash and installedSteammanifest metadata, not proof of depotfile-integrity or performance."
+  },
+  "gpu_perf_level": [
+    "auto"
+  ],
+  "steam_linux_runtime_versions": "#Name\tVersion\t\tRuntime\tRuntime_Version\tComment\ndepot\t3.0.20260928.262393\t\t\t# Overall version number\npressure-vessel\t0.20260925.0\t\t\t\npressure-vessel-arm64\t0.20260925.0\t\t\t\nscripts\t0.20260925.0\t\t\t# from steam-runtime-tools\nsniper\t3.0.20260928.262393\tsniper\t3.0.20260928.262393\t# sniper_platform_3.0.20260928.262393/\n"
+}

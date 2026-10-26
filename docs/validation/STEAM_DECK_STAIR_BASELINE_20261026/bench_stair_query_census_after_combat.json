@@ -1,0 +1,66 @@
+{
+	"level": 20,
+	"rows": [
+		{
+			"hit": true,
+			"start_solid": true,
+			"actual_solid_aabb_candidates": 2,
+			"kind": "current-flat-waypoint-point",
+			"entity": 65,
+			"all_solid": true,
+			"archetype": "warden"
+		},
+		{
+			"hit": true,
+			"start_solid": false,
+			"actual_solid_aabb_candidates": 5,
+			"kind": "nominal-50ms-step",
+			"entity": 65,
+			"all_solid": false,
+			"archetype": "warden"
+		},
+		{
+			"hit": true,
+			"start_solid": false,
+			"actual_solid_aabb_candidates": 4,
+			"kind": "nominal-50ms-step",
+			"entity": 71,
+			"all_solid": false,
+			"archetype": "warden"
+		},
+		{
+			"hit": true,
+			"start_solid": false,
+			"actual_solid_aabb_candidates": 4,
+			"kind": "nominal-50ms-step",
+			"entity": 72,
+			"all_solid": false,
+			"archetype": "warden"
+		},
+		{
+			"hit": false,
+			"start_solid": false,
+			"actual_solid_aabb_candidates": 2,
+			"kind": "current-flat-waypoint-point",
+			"entity": 73,
+			"all_solid": false,
+			"archetype": "warden"
+		},
+		{
+			"hit": true,
+			"start_solid": false,
+			"actual_solid_aabb_candidates": 4,
+			"kind": "nominal-50ms-step",
+			"entity": 73,
+			"all_solid": false,
+			"archetype": "warden"
+		}
+	],
+	"queries": 120,
+	"scope": "One out-of-FPS read-only snapshot of current flat waypoints and nominal 50ms unmodified-speed steps. Actual public TraceStairMovement called without wrappers; actual generated collision bounds with 2-unit conservative padding. Not actual production call frequency, timings, per-rendered-frame cost, throughput or overhead evidence; does not cover dynamic status speed or future combat positions. No actor/resource/AI/provider writes.",
+	"stair_waypoints": 0,
+	"actors": 66,
+	"native_traces": 6,
+	"seconds": 1209.3594486,
+	"provably_empty_conservative_aabb_queries": 0
+}

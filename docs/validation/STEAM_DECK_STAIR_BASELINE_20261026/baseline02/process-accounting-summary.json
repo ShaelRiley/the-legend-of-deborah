@@ -1,0 +1,763 @@
+{
+  "boundary_window_seconds": 64.940178007,
+  "snapshot_duration_ms": [
+    35.798649,
+    37.418265
+  ],
+  "game_pid": [
+    286638,
+    286638
+  ],
+  "processes": [
+    {
+      "pid": 286638,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 78.6,
+      "one_core_percent": 121.03446958757578
+    },
+    {
+      "pid": 83675,
+      "name": "codex",
+      "cpu_seconds": 4.39,
+      "one_core_percent": 6.760067703428215
+    },
+    {
+      "pid": 286580,
+      "name": "winedevice.exe",
+      "cpu_seconds": 3.76,
+      "one_core_percent": 5.789944092230089
+    },
+    {
+      "pid": 286543,
+      "name": "wineserver",
+      "cpu_seconds": 2.36,
+      "one_core_percent": 3.634113845123141
+    },
+    {
+      "pid": 286632,
+      "name": "xalia.exe",
+      "cpu_seconds": 2.19,
+      "one_core_percent": 3.37233445797444
+    },
+    {
+      "pid": 4705,
+      "name": "kwin_wayland",
+      "cpu_seconds": 2.14,
+      "one_core_percent": 3.2953405205777635
+    },
+    {
+      "pid": 5351,
+      "name": "steam",
+      "cpu_seconds": 1.61,
+      "one_core_percent": 2.4792047841729903
+    },
+    {
+      "pid": 80556,
+      "name": "konsole",
+      "cpu_seconds": 1.47,
+      "one_core_percent": 2.2636217594622954
+    },
+    {
+      "pid": 2026,
+      "name": "pipewire-pulse",
+      "cpu_seconds": 1.27,
+      "one_core_percent": 1.9556460098755886
+    },
+    {
+      "pid": 4774,
+      "name": "Xwayland",
+      "cpu_seconds": 1.16,
+      "one_core_percent": 1.7862593476028996
+    },
+    {
+      "pid": 1815,
+      "name": "pipewire",
+      "cpu_seconds": 0.71,
+      "one_core_percent": 1.0933139110328094
+    },
+    {
+      "pid": 5672,
+      "name": "steamwebhelper",
+      "cpu_seconds": 0.57,
+      "one_core_percent": 0.8777308863221144
+    },
+    {
+      "pid": 6343,
+      "name": "Discord",
+      "cpu_seconds": 0.43,
+      "one_core_percent": 0.6621478616114197
+    },
+    {
+      "pid": 80772,
+      "name": "codex",
+      "cpu_seconds": 0.27,
+      "one_core_percent": 0.41576726194205427
+    },
+    {
+      "pid": 285663,
+      "name": "kworker/u32:3-events_unbound",
+      "cpu_seconds": 0.26,
+      "one_core_percent": 0.4003684744627189
+    },
+    {
+      "pid": 1300,
+      "name": "fancontrol.py",
+      "cpu_seconds": 0.24,
+      "one_core_percent": 0.36957089950404826
+    },
+    {
+      "pid": 286428,
+      "name": "kworker/u32:6-gfx_0.0.0",
+      "cpu_seconds": 0.23,
+      "one_core_percent": 0.3541721120247129
+    },
+    {
+      "pid": 283671,
+      "name": "kworker/u32:1-gfx_0.0.0",
+      "cpu_seconds": 0.19,
+      "one_core_percent": 0.2925769621073715
+    },
+    {
+      "pid": 286393,
+      "name": "bash",
+      "cpu_seconds": 0.19,
+      "one_core_percent": 0.2925769621073715
+    },
+    {
+      "pid": 286554,
+      "name": "winedevice.exe",
+      "cpu_seconds": 0.17,
+      "one_core_percent": 0.2617793871487008
+    },
+    {
+      "pid": 4708,
+      "name": "baloo_file",
+      "cpu_seconds": 0.12,
+      "one_core_percent": 0.18478544975202413
+    },
+    {
+      "pid": 286612,
+      "name": "kworker/u32:8-dm_vblank_control_workqueue",
+      "cpu_seconds": 0.12,
+      "one_core_percent": 0.18478544975202413
+    },
+    {
+      "pid": 6168,
+      "name": "Discord",
+      "cpu_seconds": 0.11,
+      "one_core_percent": 0.16938666227268878
+    },
+    {
+      "pid": 1482,
+      "name": "vpower",
+      "cpu_seconds": 0.09,
+      "one_core_percent": 0.1385890873140181
+    },
+    {
+      "pid": 16,
+      "name": "rcu_preempt",
+      "cpu_seconds": 0.07,
+      "one_core_percent": 0.10779151235534741
+    },
+    {
+      "pid": 4867,
+      "name": "plasmashell",
+      "cpu_seconds": 0.05,
+      "one_core_percent": 0.07699393739667672
+    },
+    {
+      "pid": 294744,
+      "name": "python3",
+      "cpu_seconds": 0.05,
+      "one_core_percent": 0.07699393739667672
+    },
+    {
+      "pid": 927,
+      "name": "irq/68-rtw88_pci",
+      "cpu_seconds": 0.04,
+      "one_core_percent": 0.06159514991734137
+    },
+    {
+      "pid": 1813,
+      "name": "python3",
+      "cpu_seconds": 0.04,
+      "one_core_percent": 0.06159514991734137
+    },
+    {
+      "pid": 2588,
+      "name": "upowerd",
+      "cpu_seconds": 0.04,
+      "one_core_percent": 0.06159514991734137
+    },
+    {
+      "pid": 208888,
+      "name": "chrome",
+      "cpu_seconds": 0.04,
+      "one_core_percent": 0.06159514991734137
+    },
+    {
+      "pid": 5925,
+      "name": "steamwebhelper",
+      "cpu_seconds": 0.03,
+      "one_core_percent": 0.04619636243800603
+    },
+    {
+      "pid": 285735,
+      "name": "chrome",
+      "cpu_seconds": 0.03,
+      "one_core_percent": 0.04619636243800603
+    },
+    {
+      "pid": 288353,
+      "name": "kworker/u33:5-rtw_tx_wq",
+      "cpu_seconds": 0.03,
+      "one_core_percent": 0.04619636243800603
+    },
+    {
+      "pid": 1260,
+      "name": "dbus-broker",
+      "cpu_seconds": 0.02,
+      "one_core_percent": 0.030797574958670686
+    },
+    {
+      "pid": 3131,
+      "name": "udisksd",
+      "cpu_seconds": 0.02,
+      "one_core_percent": 0.030797574958670686
+    },
+    {
+      "pid": 4820,
+      "name": "kded6",
+      "cpu_seconds": 0.02,
+      "one_core_percent": 0.030797574958670686
+    },
+    {
+      "pid": 4886,
+      "name": "org_kde_powerde",
+      "cpu_seconds": 0.02,
+      "one_core_percent": 0.030797574958670686
+    },
+    {
+      "pid": 5116,
+      "name": "kdeconnectd",
+      "cpu_seconds": 0.02,
+      "one_core_percent": 0.030797574958670686
+    },
+    {
+      "pid": 6274,
+      "name": "Discord",
+      "cpu_seconds": 0.02,
+      "one_core_percent": 0.030797574958670686
+    }
+  ],
+  "tasks": [
+    {
+      "tid": 286638,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 62.76,
+      "one_core_percent": 96.64279022030861,
+      "run_seconds": 62.757761238,
+      "runqueue_wait_seconds": 0.171186998,
+      "timeslices": 86901
+    },
+    {
+      "tid": 287134,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 8.13,
+      "one_core_percent": 12.519214220699636,
+      "run_seconds": 8.12536399,
+      "runqueue_wait_seconds": 0.052242415,
+      "timeslices": 3343
+    },
+    {
+      "tid": 286678,
+      "name": "dxvk-cs",
+      "cpu_seconds": 2.97,
+      "one_core_percent": 4.573439881362597,
+      "run_seconds": 2.96283983,
+      "runqueue_wait_seconds": 0.042244125,
+      "timeslices": 22603
+    },
+    {
+      "tid": 286793,
+      "name": "wine_dsound_mix",
+      "cpu_seconds": 1.2,
+      "one_core_percent": 1.8478544975202411,
+      "run_seconds": 1.204562605,
+      "runqueue_wait_seconds": 0.017074102,
+      "timeslices": 6880
+    },
+    {
+      "tid": 286676,
+      "name": "dxvk-submit",
+      "cpu_seconds": 0.97,
+      "one_core_percent": 1.4936823854955283,
+      "run_seconds": 0.982266583,
+      "runqueue_wait_seconds": 0.014838426,
+      "timeslices": 9125
+    },
+    {
+      "tid": 286733,
+      "name": "audio_client_ma",
+      "cpu_seconds": 0.83,
+      "one_core_percent": 1.2780993607848334,
+      "run_seconds": 0.828642277,
+      "runqueue_wait_seconds": 0.010372526,
+      "timeslices": 12774
+    },
+    {
+      "tid": 286704,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.38,
+      "one_core_percent": 0.585153924214743,
+      "run_seconds": 0.37340885,
+      "runqueue_wait_seconds": 0.004167968,
+      "timeslices": 15322
+    },
+    {
+      "tid": 286705,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.38,
+      "one_core_percent": 0.585153924214743,
+      "run_seconds": 0.373185048,
+      "runqueue_wait_seconds": 0.005752727,
+      "timeslices": 15344
+    },
+    {
+      "tid": 286706,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.37,
+      "one_core_percent": 0.5697551367354077,
+      "run_seconds": 0.374314019,
+      "runqueue_wait_seconds": 0.004377946,
+      "timeslices": 15373
+    },
+    {
+      "tid": 286677,
+      "name": "dxvk-queue",
+      "cpu_seconds": 0.34,
+      "one_core_percent": 0.5235587742974016,
+      "run_seconds": 0.338356991,
+      "runqueue_wait_seconds": 0.006363345,
+      "timeslices": 12267
+    },
+    {
+      "tid": 286740,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.11,
+      "one_core_percent": 0.16938666227268878,
+      "run_seconds": 0.106595435,
+      "runqueue_wait_seconds": 0.004233203,
+      "timeslices": 6513
+    },
+    {
+      "tid": 286702,
+      "name": "WSI swapchain q",
+      "cpu_seconds": 0.06,
+      "one_core_percent": 0.09239272487601206,
+      "run_seconds": 0.057513812,
+      "runqueue_wait_seconds": 0.000854077,
+      "timeslices": 1282
+    },
+    {
+      "tid": 286703,
+      "name": "WSI swapchain e",
+      "cpu_seconds": 0.05,
+      "one_core_percent": 0.07699393739667672,
+      "run_seconds": 0.049907839,
+      "runqueue_wait_seconds": 0.001139739,
+      "timeslices": 2549
+    },
+    {
+      "tid": 286683,
+      "name": "dxvk-frame",
+      "cpu_seconds": 0.02,
+      "one_core_percent": 0.030797574958670686,
+      "run_seconds": 0.011910226,
+      "runqueue_wait_seconds": 0.000307187,
+      "timeslices": 1276
+    },
+    {
+      "tid": 286709,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.02,
+      "one_core_percent": 0.030797574958670686,
+      "run_seconds": 0.024959633,
+      "runqueue_wait_seconds": 0.000597669,
+      "timeslices": 1303
+    },
+    {
+      "tid": 286666,
+      "name": "wine_xinput_hid",
+      "cpu_seconds": 0.01,
+      "one_core_percent": 0.015398787479335343,
+      "run_seconds": 0.006359572,
+      "runqueue_wait_seconds": 4.937e-05,
+      "timeslices": 482
+    },
+    {
+      "tid": 286710,
+      "name": "wine_threadpool",
+      "cpu_seconds": 0.01,
+      "one_core_percent": 0.015398787479335343,
+      "run_seconds": 0.015957714,
+      "runqueue_wait_seconds": 0.000330649,
+      "timeslices": 453
+    },
+    {
+      "tid": 286745,
+      "name": "CrBrowserMain",
+      "cpu_seconds": 0.01,
+      "one_core_percent": 0.015398787479335343,
+      "run_seconds": 0.005149995,
+      "runqueue_wait_seconds": 0.0001846,
+      "timeslices": 81
+    },
+    {
+      "tid": 286655,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.001076894,
+      "runqueue_wait_seconds": 0.00013089,
+      "timeslices": 65
+    },
+    {
+      "tid": 286656,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.000272657,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 15
+    },
+    {
+      "tid": 286661,
+      "name": "gmod_wi:disk$0",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286662,
+      "name": "gmod_wi:disk$0",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286668,
+      "name": "wine_sechost_de",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286675,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286688,
+      "name": "dxvk-shader-l",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286689,
+      "name": "dxvk-shader-l",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286690,
+      "name": "dxvk-shader-n",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286691,
+      "name": "dxvk-shader-n",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286692,
+      "name": "dxvk-shader-n",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286693,
+      "name": "dxvk-shader-h",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286694,
+      "name": "dxvk-shader-h",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286695,
+      "name": "dxvk-shader-h",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286707,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286728,
+      "name": "dxvk-worker",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286739,
+      "name": "wine_mmdevapi_n",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286741,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286742,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286743,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286744,
+      "name": "BrokerEvent",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286748,
+      "name": "ThreadPoolServi",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286749,
+      "name": "ThreadPoolForeg",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 5.781e-05,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 2
+    },
+    {
+      "tid": 286752,
+      "name": "Chrome_IOThread",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286753,
+      "name": "MemoryInfra",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286766,
+      "name": "wine_threadpool",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286767,
+      "name": "ThreadPoolSingl",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286768,
+      "name": "ThreadPoolSingl",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286770,
+      "name": "CompositorTileW",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286771,
+      "name": "ThreadPoolSingl",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286772,
+      "name": "VideoCaptureThr",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286773,
+      "name": "ThreadPoolSingl",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286774,
+      "name": "ThreadPoolSingl",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286775,
+      "name": "ThreadPoolBackg",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 4.018e-05,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 2
+    },
+    {
+      "tid": 286776,
+      "name": "VizCompositorTh",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286795,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    },
+    {
+      "tid": 286797,
+      "name": "gmod_win64.exe",
+      "cpu_seconds": 0.0,
+      "one_core_percent": 0.0,
+      "run_seconds": 0.0,
+      "runqueue_wait_seconds": 0.0,
+      "timeslices": 0
+    }
+  ],
+  "gpu": [
+    {
+      "engine": "drm-engine-gfx",
+      "seconds": 3.896068208,
+      "busy_percent": 5.999472633998688
+    },
+    {
+      "engine": "drm-engine-compute",
+      "seconds": 0.0,
+      "busy_percent": 0.0
+    }
+  ],
+  "scope": "Diagnostic counters read only before capture command and after completed artifact. Window includes command dispatch/poll delay. No in-window sampler. CPU execution and scheduler wait are separate; neither alone establishes a frame bottleneck or FPS acceptance."
+}

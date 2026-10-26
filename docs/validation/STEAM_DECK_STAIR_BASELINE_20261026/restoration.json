@@ -1,0 +1,19 @@
+{
+  "verified_utc": "2026-10-26T15:31:38.783044+00:00",
+  "runtime_source_sha": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+  "tested_installed_checkpoint": "8b2661ad92f3caf4bb6763304f747587cc03dbf7",
+  "runtime_tools_identical_to_stair_source": true,
+  "source_hashes_verified": 120,
+  "owned_games_stopped": true,
+  "release_developer_lease_restored": {
+    "scope": "Single120s authorized observation lease: developer0 during gameplay; private server bridge retains developer1 access gate. Post recorded before restoring setup cvar. No recurringobserver/file polling during FPS.",
+    "developer_restored": true,
+    "passed": true,
+    "seconds": 120.01432790000001
+  },
+  "new_DATA_scripts_removed": true,
+  "all_temporary_profile_bindings": "No profiler installed; HUD source-proof owner cleared for eachcompleted run, manuallyclearedafterfailedrun2; processretirementretiresinput/bridge/proofs",
+  "display": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n",
+  "background_media": "Observed MPRIS Stopped beforecaptures; playback unchanged bythischeckpoint",
+  "remaining": "Full boss AI/hulls and ordinaryfullplay notfullyverified; completeFPSacceptance unmet/unverified."
+}

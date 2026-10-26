@@ -1,0 +1,25 @@
+from pathlib import Path
+import subprocess,os,json,datetime,time,hashlib,shutil
+r=Path('/home/deck/deborah-recovery'); repo=Path('/home/deck/Downloads/the-legend-of-deborah'); d=Path('/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/data/legend_of_deborah'); sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip(); assert sha=='8b2661ad92f3caf4bb6763304f747587cc03dbf7'; assert not subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True)
+out=Path('/home/deck/deborah-benchmarks/stair-corrected-baseline')/sha[:8]/'warmed-three60'; out.mkdir(parents=True,exist_ok=False)
+unit='lod-deck-stair-baseline-20261026'; progress={'status':'preparing','sha':sha,'unit':unit,'completed':[],'start_utc':'2026-10-26T15:03:04+00:00','hard_deadline_utc':'2026-10-26T15:48:04+00:00'}
+def save():progress['utc']=datetime.datetime.now(datetime.timezone.utc).isoformat();(out/'progress.json').write_text(json.dumps(progress,indent=2)+'\n')
+save(); (out/'plan.json').write_text(json.dumps({'source':sha,'runtime_source':'54bf069863ceb69b7f7bb98c3b547793a7335f5a','scope':'Corrected-stair-build baseline ONLY, no performance candidate/no before-afterclaim','warmup':'600s unchanged ordinaryD20 entrance, then3x60s frozen D20developer-density physicalorbit, resetcanonicalcampaign/resourcesperarm in sameownedprocess','controls':'ActualDeck/SP1listenhost,1280x800,bothdisplaysON,15WAC,existinggraphics/software/resources/population/cadence. Profilers/native samplersdisabled;sourceproofbeforeafteronly. Postprocessingoutsidecapture. No 40acceptance fromshortstressruns.','sequence':['baseline1','baseline2','baseline3'],'deadline':'2026-10-26T15:48:04+00:00'},indent=2)+'\n')
+with(out/'install.log').open('w')as f:subprocess.run(['bash','tools/install_dev.sh'],cwd=repo,stdout=f,stderr=subprocess.STDOUT,check=True)
+path='gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed_semantics.lua'; src=(repo/path).read_bytes();s=src.decode();(d/'bench_hud_raster_arm.json').write_text(json.dumps({'mode':'candidate','sha':sha,'path':path,'sha256':hashlib.sha256(src).hexdigest(),'hud_line':s[:s.index('hook.Add("HUDPaint", "LOD_CombatRollFeed", function()')].count('\n')+1,'public_line':s[:s.index('function Feed:DrawLines(')].count('\n')+1}))
+src=(repo/'gamemodes/legend_of_deborah/entities/entities/lod_static_box/cl_init.lua').read_bytes();s=src.decode();markers={'Draw':'function ENT:Draw()','Pre':'hook.Add("PreDrawOpaqueRenderables", "LOD_StaticBoxNativeVisibility", function','Post':'hook.Add("PostDrawOpaqueRenderables", "LOD.DrawGeneratedStaticGeometry", function'};(d/'bench_native_selection_arm.json').write_text(json.dumps({'mode':'retained-stairfix','sha':sha,'sha256':hashlib.sha256(src).hexdigest(),'lines':{k:s[:s.index(v)].count('\n')+1 for k,v in markers.items()}}))
+(out/'display-layout.json').write_bytes(subprocess.check_output(['kscreen-doctor','-j']));shutil.copy2(r/'run-stair-corrected-baseline.py',out/'run-stair-corrected-baseline.py')
+subprocess.run(['systemd-run','--user','--unit='+unit,'--collect','--service-type=exec','--property=RuntimeMaxSec=2400','--property=TimeoutStopSec=20','--property=KillMode=control-group','--setenv=LOD_MANGOHUD=0','--setenv=LOD_START_CONSOLE=1','--setenv=LOD_PROTON_TOOL=Proton 10.0','--setenv=LOD_COMPAT_DATA=/home/deck/deborah-recovery/compatdata-proton10','/usr/bin/python3',str(r/'start-gmod64.py')],check=True)
+env={**os.environ,'LOD_HUD_RASTER_SOURCE_PROOF':'1','LOD_NATIVE_SELECTION_SOURCE_PROOF':'1','LOD_EXTERNAL_DPMS':'on','LOD_NET_GRAPH_EXPECT':'1','LOD_PROCESS_ACCOUNTING':'1','LOD_NATIVE_PERF_SAMPLE':'0'}
+try:
+ warm=out/'warmup';warm.mkdir();progress.update(status='warmup',active='warmup');save()
+ with(warm/'controller.log').open('w')as f:subprocess.run(['python3',str(r/'run-ready-finale.py'),sha,str(warm),'--seconds','60'],env={**env,'LOD_PREWARM_ONLY':'600'},stdout=f,stderr=subprocess.STDOUT,check=True)
+ progress.update(status='measuring');save()
+ for i in range(1,4):
+  assert not subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True)
+  assert (datetime.datetime.fromisoformat('2026-10-26T15:42:00+00:00')-datetime.datetime.now(datetime.timezone.utc)).total_seconds()>240
+  arm=out/('baseline%02d'%i);arm.mkdir();progress['active']=arm.name;save()
+  with(arm/'controller.log').open('w')as f:subprocess.run(['python3',str(r/'run-finale-arm.py'),str(arm),'--seconds','60'],env=env,stdout=f,stderr=subprocess.STDOUT,check=True)
+  analysis=json.loads((arm/'analysis.json').read_text());progress['completed'].append({'arm':arm.name,'analysis':analysis});save();print('BASELINE_COMPLETE',i,analysis['active']['fps'],flush=True)
+ progress.update(status='complete',active=None);save();subprocess.run(['systemctl','--user','stop',unit],check=True,timeout=35);(out/'display-after.txt').write_bytes(subprocess.check_output(['kscreen-doctor','--dpms','show']));print('BASELINE_SERIES_COMPLETE',out,flush=True)
+except Exception as e:progress.update(status='controller_terminal_failure; inspect live owned game before recovery',error=str(e));save();raise
