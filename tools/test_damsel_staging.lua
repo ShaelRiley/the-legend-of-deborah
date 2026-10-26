@@ -131,3 +131,102 @@ assert(not firstFrame.valid and panels[9].model==LOD.Config.Models.Deborah)
 local finalFrame=D.DialogueFrame
 KEY_E=18;finalFrame.OnKeyCodePressed(nil,KEY_E);assert(not finalFrame.valid and D.DialogueFrame==nil)
 print('DAMSEL_DIALOGUE_PASS: native panel hierarchy, upper-left portrait, name/text/receipt and E dismissal')
+
+-- BUG-003: native GetKeyValues contains compiled flags and ITexture/VMatrix
+-- handles, not a CreateMaterial-ready table. Exercise the actual appearance
+-- authority used by jailed/rescued actors, victory actors and dialogue portraits.
+local nativeType=type
+type=function(value)
+ if nativeType(value)=='table' then
+  if value.nativeTexture then return 'ITexture' end
+  if value.nativeMatrix then return 'VMatrix' end
+  if getmetatable(value)==V then return 'Vector' end
+ end
+ return nativeType(value)
+end
+local function texture(name,isError)
+ return {nativeTexture=true,GetName=function() return name end,IsError=function() return isError==true end}
+end
+local clothPath='models/humans/female/group01/citizen_sheet'
+local transform={nativeMatrix=true,identity=true}
+local raw={['$flags']=134217728,['$flags2']=262226,['$flags_defined']=134217728,['$flags_defined2']=0,
+ ['$basetexture']=texture(clothPath),['$bumpmap']=texture(clothPath..'_normal'),
+ ['$phong']=1,['$phongboost']=.5,['$envmaptint']=Vector(.25,.5,.75),['$basetexturetransform']=transform}
+local source={GetTexture=function(_,key) assert(key=='$basetexture');return raw[key] end,
+ GetKeyValues=function() return raw end,GetShader=function() return 'VertexLitGeneric' end}
+local materialCount,clones=0,{}
+Material=function(path) assert(path:find('sheet',1,true));return source end
+local oldCRC=util.CRC;util.CRC=function(id) return id:gsub('[^%w]','_') end
+CreateMaterial=function(name,shader,params)
+ for _,key in ipairs({'$flags','$flags2','$flags_defined','$flags_defined2'}) do
+  assert(params[key]==nil,'compiled shader metadata passed to CreateMaterial: '..key)
+ end
+ for _,value in pairs(params) do
+  assert(type(value)~='ITexture' and type(value)~='VMatrix' and type(value)~='Vector',
+   'native handle passed without serialization')
+ end
+ assert(not clones[name],'same appearance allocated twice')
+ materialCount=materialCount+1
+ local m={params=params,shader=shader,matrices={},GetName=function() return name end}
+ function m:SetMatrix(key,value) assert(type(value)=='VMatrix');self.matrices[key]=value end
+ clones[name]=m;return m
+end
+local function appearanceActor(model)
+ local actor={model=model or D.Models[1],slots={},draws=0}
+ function actor:GetModel() return self.model end
+ function actor:GetMaterials() return {clothPath,'models/humans/female/face_sheet','models/humans/female/head_sheet','models/humans/female/eyeball'} end
+ function actor:SetSubMaterial(slot,value) assert(slot==0,'skin, face or eyes were tinted');self.slots[slot]=value end
+ function actor:GetNW2Int(key) return key=='LOD_DamselLevel' and 1 or 6102601 end
+ function actor:GetPos() return Vector(10000,0,0) end
+ function actor:DrawModel() self.draws=self.draws+1 end
+ return actor
+end
+D.Materials={}
+local actor=appearanceActor();D:ApplyAppearance(actor,1,6102601)
+local clone=assert(clones[assert(actor.slots[0]):sub(2)])
+assert(clone.shader=='VertexLitGeneric' and clone.params['$basetexture']==clothPath)
+assert(clone.params['$bumpmap']==clothPath..'_normal','source normal map was lost')
+assert(clone.params['$halflambert']=='1' and clone.params['$model']=='1','source shading/model flags were lost')
+assert(clone.params['$phong']==1 and clone.params['$phongboost']==.5,'source shader parameters were retuned')
+assert(clone.params['$envmaptint']=='[0.25 0.5 0.75]' and clone.matrices['$basetexturetransform']==transform)
+assert(clone.params['$color2']=='[0.392157 0.588235 0.823529]','cloth palette changed')
+assert(type(raw['$basetexture'])=='ITexture' and type(raw['$bumpmap'])=='ITexture' and raw['$flags']==134217728,
+ 'stock material values were mutated')
+for _=1,100 do D:ApplyAppearance(actor,1,6102601) end
+local other=appearanceActor(D.Models[2]);D:ApplyAppearance(other,2,6102601)
+assert(materialCount==1 and other.slots[0]==actor.slots[0],'shared cloth/colour failed to reuse material')
+local legacy={GetName=function() return 'old_malformed_clone' end}
+D.Materials[clothPath..':100:150:210']=legacy
+local retained=appearanceActor();retained.LODDamselAppearance='6102601:1:'..retained:GetModel()
+D:ApplyAppearance(retained,1,6102601)
+assert(retained.slots[0]==actor.slots[0],'retained entity reused old appearance cache or malformed clone')
+local names={'$selfillum','$additive','$alphatest','$nocull','$basealphaenvmapmask','$translucent','$normalmapalphaenvmapmask','$halflambert'}
+local masks={64,128,256,8192,1048576,2097152,4194304,134217728}
+for index,mask in ipairs(masks) do
+ raw['$flags']=mask
+ local test=appearanceActor();test.GetMaterials=function() return {'models/humans/test_'..index..'_sheet'} end
+ D:ApplyAppearance(test,1,6102601)
+ local m=assert(clones[test.slots[0]:sub(2)])
+ for j,name in ipairs(names) do assert((m.params[name]=='1')==(j==index),'source flag was changed or invented: '..name) end
+end
+raw['$flags']=134217728
+local count=materialCount
+for level=17,20 do
+ local untouched=appearanceActor();D:ApplyAppearance(untouched,level,6102601)
+ assert(next(untouched.slots)==nil,'last four stock appearances changed')
+end
+EyePos=function() return Vector() end
+local world=appearanceActor();D:DrawActor(world,false);D:DrawActor(world,true)
+assert(world.draws==2 and world.slots[0]==actor.slots[0] and materialCount==count)
+local create=vgui.Create
+vgui.Create=function(kind,parent)
+ local p=create(kind,parent);if kind=='DModelPanel' then p.Entity=appearanceActor() end;return p
+end
+D:ShowDialogue(1,'Complete dialogue remains available.','Separate actual receipt.')
+assert(materialCount==count,'portrait allocated instead of reusing the actor material')
+local materialStore=D.Materials;dofile(root..'cl_damsels.lua')
+local reloaded=appearanceActor();D:ApplyAppearance(reloaded,1,6102601)
+assert(D.Materials==materialStore and materialCount==count and reloaded.slots[0]==actor.slots[0],
+ 'Lua reload discarded the valid appearance cache or allocated a duplicate')
+util.CRC=oldCRC
+print('DAMSEL_MATERIAL_CLONE_PASS: compiled metadata excluded; native normal/texture/vector/matrix values and source flags preserved; palette/skin/final-four unchanged; actor/portrait/cache/reload identity')

@@ -1,0 +1,1 @@
+DEBORAH_FINALE_CLIENT_PASS: bounded canonical tableau, nonreplaying snapshots, original server timing/late joins, missing actors, partial model faults, reduced effects, death/revival, freshness expiry, reset/hot reload, camera/HUD/resource restoration

@@ -1,0 +1,117 @@
+{
+  "source_before": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_damsels.lua": "35e7a3ecac241e48bef33ebe6afe7575f336f29b34fbca89998010a814343ad9",
+    "tools/test_damsel_staging.lua": "f1f87f733eba6c7b29c6df34987c400b8336b04b7c695586ae7c4356f99e35a1"
+  },
+  "source_after": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_damsels.lua": "35e7a3ecac241e48bef33ebe6afe7575f336f29b34fbca89998010a814343ad9",
+    "tools/test_damsel_staging.lua": "f1f87f733eba6c7b29c6df34987c400b8336b04b7c695586ae7c4356f99e35a1"
+  },
+  "source_unchanged": true,
+  "dialogue_section_unchanged": true,
+  "native_expected_source_crc32": "97551537",
+  "results": [
+    {
+      "name": "damsel_staging",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_damsel_staging.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.09278864599764347
+    },
+    {
+      "name": "damsel_staging_luajit",
+      "command": [
+        "luajit",
+        "tools/test_damsel_staging.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.0171824439894408
+    },
+    {
+      "name": "staging_lore_ui",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_staging_lore_ui.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.4384201829961967
+    },
+    {
+      "name": "damsel_progression",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_damsel_progression.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.39984803399420343
+    },
+    {
+      "name": "deborah_succession",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_deborah_succession.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.08076745699509047
+    },
+    {
+      "name": "deborah_finale",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_deborah_finale_presentation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.08438187499996275
+    },
+    {
+      "name": "adventure_presentation",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_adventure_presentation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07339266201597638
+    },
+    {
+      "name": "friendly_idle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_friendly_idle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07111090500256978
+    },
+    {
+      "name": "syntax",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_damsels.lua",
+        "tools/test_damsel_staging.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07210028101690114
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.009268238005461171
+    }
+  ],
+  "native_acceptance": false
+}

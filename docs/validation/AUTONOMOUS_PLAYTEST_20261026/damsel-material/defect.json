@@ -1,0 +1,15 @@
+{
+  "id": "BUG-003",
+  "build": "e76659db9d99360f557252faf2f6455d32d8c0c5",
+  "setup": "Ordinary seed6102601 deployment; jailed Nessa citizen clothing material",
+  "expected": "Recolor clothing without losing stock normal/shading or feeding compiled metadata to CreateMaterial; faces/eyes/teeth unchanged.",
+  "actual": "Duplicate $flags/$flags2/$flags_defined/$flags_defined2 warnings; stock half-Lambert134217728 and citizen_sheet_normal absent from generated clone.",
+  "source": "Accepted damsel appearance and lore presentation; live GDD05/06/07; native source-material parameters",
+  "severity": "Presentation defect and attributable shader warnings",
+  "status": "implemented and10 focused checks pass; fresh native recheck pending",
+  "independent_review": "No actionable BUG-003 source finding; typed textures/vectors/matrices/flags match primary engine APIs; dialogue code unchanged.",
+  "evidence": [
+    "native-parameters.before.txt",
+    "static-repair/receipt.json"
+  ]
+}

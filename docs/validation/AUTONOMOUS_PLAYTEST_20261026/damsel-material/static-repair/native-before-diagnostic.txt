@@ -1,0 +1,115 @@
+LOD_MAT	models/weapons/v_357/357_sheet	VertexLitGeneric
+LOD_MAT	models/weapons/w_pistol/pistol	VertexLitGeneric
+LOD_MAT	models/weapons/v_pistol/v_pistol_sheet	VertexLitGeneric
+LOD_MAT	models/weapons/w_pistol/pistol:tint-v2:b	VertexLitGeneric
+LOD_MAT	models/weapons/v_357/357_sheet	VertexLitGeneric
+LOD_VAR	models/weapons/v_357/357_sheet	$basetexture	ITexture	Texture [models/weapons/v_357/357_sheet]
+LOD_VAR	models/weapons/v_357/357_sheet	$bumpmap	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet	$envmap	ITexture	Texture [maps/gm_flatgrass/c0_-31_-12736.hdr]
+LOD_VAR	models/weapons/v_357/357_sheet	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet	$phong	number	0
+LOD_MAT	models/weapons/w_pistol/pistol	VertexLitGeneric
+LOD_VAR	models/weapons/w_pistol/pistol	$basetexture	ITexture	Texture [models/weapons/w_pistol/pistol]
+LOD_VAR	models/weapons/w_pistol/pistol	$bumpmap	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$envmap	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$phong	number	0
+LOD_MAT	models/weapons/w_pistol/pistol:tint-v2:b	VertexLitGeneric
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$basetexture	ITexture	Texture [models/weapons/w_pistol/pistol]
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$bumpmap	ITexture	Texture [error]
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$envmap	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$phong	string	1
+LOD_MAT	models/weapons/v_357/357_sheet:tint-v2:a	VertexLitGeneric
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$basetexture	ITexture	Texture [models/weapons/v_357/357_sheet]
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$bumpmap	ITexture	Texture [error]
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$envmap	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$phong	string	1
+LOD_MAT	models/weapons/w_357/w_357:tint-v2:a	VertexLitGeneric
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$basetexture	ITexture	Texture [models/weapons/w_357/w_357]
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$bumpmap	ITexture	Texture [models/weapons/w_357/w_357_normal]
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$envmap	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$phong	string	1
+LOD_MAT	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	VertexLitGeneric
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$basetexture	ITexture	Texture [models/weapons/v_pistol/v_pistol_sheet]
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$bumpmap	ITexture	Texture [models/weapons/v_pistol/v_pistol_sheet_normal]
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$envmap	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$phong	string	1
+LOD_MAT	models/weapons/w_357/w_357:tint-v2:b	VertexLitGeneric
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$basetexture	ITexture	Texture [models/weapons/w_357/w_357]
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$bumpmap	ITexture	Texture [models/weapons/w_357/w_357_normal]
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$envmap	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$phong	string	1
+LOD_MAT	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	VertexLitGeneric
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$basetexture	ITexture	Texture [models/weapons/v_pistol/v_pistol_sheet]
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$bumpmap	ITexture	Texture [models/weapons/v_pistol/v_pistol_sheet_normal]
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$envmap	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$phong	string	1
+LOD_MAT	models/weapons/w_pistol/pistol:tint-v2:a	VertexLitGeneric
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$basetexture	ITexture	Texture [models/weapons/w_pistol/pistol]
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$bumpmap	ITexture	Texture [error]
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$envmap	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$phong	string	1
+LOD_MAT	models/weapons/v_357/357_sheet:tint-v2:b	VertexLitGeneric
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$basetexture	ITexture	Texture [models/weapons/v_357/357_sheet]
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$bumpmap	ITexture	Texture [error]
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$envmap	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$phong	string	1
+LOD_DAMSEL_SOURCE	models/humans/female/group01/citizen_sheet:209:108:180	lod_damsel_2040183950
+LOD_MAT	models/humans/female/group01/citizen_sheet:209:108:180	VertexLitGeneric
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$flags	number	2048
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$flags2	number	262146
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$flags_defined	number	2048
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$flags_defined2	number	0
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$basetexture	ITexture	Texture [models/humans/female/group01/citizen_sheet]
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$bumpmap	nil	nil
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$model	nil	nil
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$alphatest	nil	nil
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$translucent	nil	nil
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$vertexcolor	nil	nil
+LOD_VAR	models/humans/female/group01/citizen_sheet:209:108:180	$selfillum	nil	nil
+LOD_MAT	models/humans/female/group01/citizen_sheet	VertexLitGeneric
+LOD_VAR	models/humans/female/group01/citizen_sheet	$flags	number	134217728
+LOD_VAR	models/humans/female/group01/citizen_sheet	$flags2	number	262226
+LOD_VAR	models/humans/female/group01/citizen_sheet	$flags_defined	number	134217728
+LOD_VAR	models/humans/female/group01/citizen_sheet	$flags_defined2	number	0
+LOD_VAR	models/humans/female/group01/citizen_sheet	$basetexture	ITexture	Texture [models/humans/female/group01/citizen_sheet]
+LOD_VAR	models/humans/female/group01/citizen_sheet	$bumpmap	ITexture	Texture [models/humans/female/group01/citizen_sheet_normal]
+LOD_VAR	models/humans/female/group01/citizen_sheet	$model	nil	nil
+LOD_VAR	models/humans/female/group01/citizen_sheet	$alphatest	nil	nil
+LOD_VAR	models/humans/female/group01/citizen_sheet	$translucent	nil	nil
+LOD_VAR	models/humans/female/group01/citizen_sheet	$vertexcolor	nil	nil
+LOD_VAR	models/humans/female/group01/citizen_sheet	$selfillum	nil	nil
+LOD_MAP_POS	-2999.968262 -3383.882568 -12245.360352
+LOD_MAP_POS	-1847.968262 -2231.882568 -11861.360352
+LOD_MAP_POS	456.031738 456.117401 -11477.360352
+LOD_MAP_POS	1992.031738 -3383.882568 -11093.360352
+LOD_MAP_POS	5448.031738 1608.117432 -10709.360352
+setpos -3714.132812 -2303.527344 -12207.937500;setang 11.985600 90.324005 0.000000

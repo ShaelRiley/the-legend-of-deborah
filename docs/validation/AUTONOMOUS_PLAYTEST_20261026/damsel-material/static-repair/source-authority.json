@@ -1,0 +1,18 @@
+{
+  "engine_sources": [
+    "https://wiki.facepunch.com/gmod/IMaterial:GetKeyValues",
+    "https://wiki.facepunch.com/gmod/Global.CreateMaterial",
+    "https://wiki.facepunch.com/gmod/Material_Flags",
+    "https://raw.githubusercontent.com/ValveSoftware/source-sdk-2013/master/src/public/shaderlib/BaseShader.h"
+  ],
+  "native_finding": "citizen_sheet source has flag134217728 ($halflambert) and real citizen_sheet_normal ITexture; original clone has only model flag2048 and no normal. CreateMaterial input rejected compiled $flags/$flags2/$flags_defined/$flags_defined2 metadata and native ITexture handles.",
+  "repair": "Reconstruct documented named flags before shader initialization; serialize texture/vector values; restore VMatrix transforms through typed setter; retain source parameters and existing palette/model behaviour. Version cache identity to avoid retained malformed clones.",
+  "shared_callers": [
+    "jailed target DrawActor",
+    "rescued staging NPC DrawActor",
+    "victory celebration ApplyAppearance",
+    "dialogue portrait ApplyAppearance"
+  ],
+  "other_bulk_clone_sites": "Repository gamemodes/lua search finds no second raw GetKeyValues-to-CreateMaterial copy; weapon material authority now selects typed values explicitly.",
+  "native_recheck_pending": true
+}

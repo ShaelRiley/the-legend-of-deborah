@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_damsel_staging.lua"
+  ],
+  "returncode": 1,
+  "seconds": 0.08463507000124082
+}

@@ -1,9 +1,43 @@
 local D=LOD.Damsels
 D.Materials=D.Materials or {}
+local appearanceRevision='native-material-v2'
+-- Named inputs for successive bits of the engine's $flags integer:
+-- https://wiki.facepunch.com/gmod/Material_Flags
+local materialFlags={
+    '$debug','$no_fullbright','$no_draw','$use_in_fillrate_mode','$vertexcolor','$vertexalpha',
+    '$selfillum','$additive','$alphatest','$multipass','$znearer','$model','$flat','$nocull',
+    '$nofog','$ignorez','$decal','$envmapsphere','$noalphamod','$envmapcameraspace',
+    '$basealphaenvmapmask','$translucent','$normalmapalphaenvmapmask','$softwareskin',
+    '$opaquetexture','$envmapmode','$nodecal','$halflambert','$wireframe','$allowalphatocoverage'
+}
+local compiledFields={['$flags']=true,['$flags2']=true,['$flags_defined']=true,['$flags_defined2']=true}
+local function materialValues(source)
+    local raw=source:GetKeyValues() or {}
+    local values,matrices={},{}
+    for key,value in pairs(raw) do
+        if not compiledFields[key] then
+            local kind=type(value)
+            if kind=='ITexture' then
+                local name=value:GetName()
+                if not value:IsError() and name~='' and name~='error' then values[key]=name end
+            elseif kind=='Vector' then
+                values[key]=string.format('[%.9g %.9g %.9g]',value.x,value.y,value.z)
+            elseif kind=='VMatrix' then matrices[key]=value
+            else values[key]=value end
+        end
+    end
+    -- Compiled bookkeeping is not a VMT declaration. Reconstruct its actual
+    -- named flags before shader initialization; flags2 is derived by Source.
+    local flags=tonumber(raw['$flags']) or 0
+    for index,name in ipairs(materialFlags) do
+        if math.floor(flags/2^(index-1))%2==1 then values[name]='1' end
+    end
+    return values,matrices
+end
 function D:ApplyAppearance(ent,level,seed)
     local def=self.Definitions[level]
     if not def or not def.recolor then return end
-    local cacheKey=tostring(seed)..':'..level..':'..ent:GetModel()
+    local cacheKey=appearanceRevision..':'..tostring(seed)..':'..level..':'..ent:GetModel()
     if ent.LODDamselAppearance==cacheKey then return end
     ent.LODDamselAppearance=cacheKey
     local cloth,accent=self:Palette(seed,def.family)
@@ -12,15 +46,16 @@ function D:ApplyAppearance(ent,level,seed)
         local lower=string.lower(path)
         -- Citizen face sheets are separate. Do not tint faces, eyes or teeth.
         if lower:find('sheet',1,true) and not lower:find('head',1,true) and not lower:find('face',1,true) then
-            local id=path..':'..cloth.r..':'..cloth.g..':'..cloth.b
+            local id=appearanceRevision..':'..path..':'..cloth.r..':'..cloth.g..':'..cloth.b
             local material=self.Materials[id]
             if not material then
                 local source=Material(path);local texture=source:GetTexture('$basetexture')
                 if texture then
-                    local values=table.Copy(source:GetKeyValues() or {})
+                    local values,matrices=materialValues(source)
                     values['$basetexture']=texture:GetName();values['$model']='1'
                     values['$color2']=string.format('[%f %f %f]',cloth.r/255,cloth.g/255,cloth.b/255)
                     material=CreateMaterial('LOD_Damsel_'..util.CRC(id),source:GetShader() or 'VertexLitGeneric',values)
+                    for key,matrix in pairs(matrices) do material:SetMatrix(key,matrix) end
                     self.Materials[id]=material
                 end
             end

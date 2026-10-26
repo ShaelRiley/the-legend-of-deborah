@@ -1,0 +1,1 @@
+ADVENTURE_PRESENTATION_PASS — event policy, priority, mute, bounded effects, visible ornament, depth and lifecycle

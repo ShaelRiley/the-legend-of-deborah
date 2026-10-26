@@ -1,0 +1,2 @@
+PASS /home/deck/Downloads/the-legend-of-deborah/gamemodes/legend_of_deborah/gamemode/lod/cl_damsels.lua
+PASS /home/deck/Downloads/the-legend-of-deborah/tools/test_damsel_staging.lua

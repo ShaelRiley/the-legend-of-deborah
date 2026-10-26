@@ -1,0 +1,1 @@
+/home/deck/Downloads/the-legend-of-deborah/tools/test_damsel_staging.lua: ...oads/the-legend-of-deborah/tools/test_damsel_staging.lua:162: compiled shader metadata passed to CreateMaterial: $flags
