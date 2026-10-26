@@ -1,0 +1,16 @@
+LOD_GUN_FLAGS	models/weapons/w_pistol/pistol:tint-v2:b	2048	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/w_pistol/pistol	0	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/v_357/357_sheet:tint-v2:a	2048	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/v_357/357_sheet	1050624	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/w_357/w_357:tint-v2:a	2048	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/w_357/w_357	4194304	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	2048	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/v_pistol/v_pistol_sheet	4194368	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/w_357/w_357:tint-v2:b	2048	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/w_357/w_357	4194304	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	2048	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/v_pistol/v_pistol_sheet	4194368	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/w_pistol/pistol:tint-v2:a	2048	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/w_pistol/pistol	0	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/v_357/357_sheet:tint-v2:b	2048	nil	nil	nil
+LOD_GUN_FLAGS	models/weapons/v_357/357_sheet	1050624	nil	nil	nil

@@ -1,0 +1,19 @@
+{
+  "documentId": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+  "tabId": "t.bff19dm33vvw",
+  "navigation": "00 → 01 inherited current navigation; targeted live07 source appearance/budget rows read for this correction.",
+  "rules": [
+    {
+      "startIndex": 387043,
+      "text": "Equipment / Procedural weapon appearance | AUTHOR-DIRECTED SYSTEM | Supersedes the cosmetic attachment system. Keep each native gun silhouette and its base surface detail; never add cosmetic plates, frames, cores, ornaments, glyph geometry or other gun attachments. Convey the stored properties through restrained elemental tint, sparse procedural surface patches, a radiant aura and elemental muzzle-blast color. Retexture only parts of the gun, never replace its whole base texture or tint its hands. The immutable property IDs and magnitudes, seed, rarity and quality determine the finish, pattern and glow variation without gameplay RNG. Equipment and inventory retain exact textual properties and magnitude marks; color is supplemental. Frozen DFT rolls and selected same-family copies keep their identity. Ice flavor uses the exact spelling Wintery, including Wintery Warding and Wintery Frailty; Ice remains the mechanical element."
+    },
+    {
+      "startIndex": 387982,
+      "text": "Equipment / Weapon appearance transport and budgets | AUTHOR-DIRECTED TUNING | Retain the version-1 numeric descriptor <=480 characters and maximum eight properties, replicated only on record changes. First-person, visible third-person weapons, owner-visible pickups and inventory use the same frozen style. Four bundled 64x64 mipmapped detail textures have approximately 15% marked texels in a neutral field; keep the original base texture beneath detail blend mode 0. Select one gun material region and exclude hands, arms, gloves and glass; unknown or externally skinned surfaces retain their native material. Use a maximum of 128 reusable stock-surface/finish materials, never per-item material creation. Scoped submaterial overrides restore after rendering and on cleanup; no global material override, native geometry/scale changes, emitters, dynamic lights or extra entities. Aura: one sprite reduced, two normal, <=1200 units; world draw cap four reduced/eight normal per frame. Rarity sets restrained tint and glow strength; frozen hash varies finish, detail scale and glow phase. Reduced mode stops pulsing. Native shot observation adds a 0.075-second elemental muzzle burst, with pellet and prediction deduplication; do not change bullets, damage, ammo or shot cadence. Preserve the generator crash workaround and validate material ownership, stock hands/base detail, cleanup, packet identity and shot deduplication. Actual GMod visuals require human acceptance."
+    }
+  ],
+  "engineFlags": "https://wiki.facepunch.com/gmod/Material_Flags",
+  "nativeGetInt": "https://wiki.facepunch.com/gmod/IMaterial:GetInt",
+  "scope": "Restore only the four flags already intended by the accepted production clone seam; no new envmaps, shader tuning, geometry, gameplay or GDD edit."
+}

@@ -80,9 +80,11 @@ local function material(name,params,stock)
     function m:GetShader() return profile.shader or 'VertexLitGeneric' end
     function m:IsError() return profile.errorMaterial==true end
     function m:GetString() return '' end
-    function m:GetInt(key) return profile.ints and profile.ints[key] or 0 end
+    -- Native material flags are packed in $flags. Named flag queries return
+    -- nil, even when their bit is set; the former double hid this defect.
+    function m:GetInt(key) if key=='$flags' then return profile.flags or 0 end end
     function m:GetKeyValues()
-        local values={['$basetexture']=self.base}
+        local values={['$basetexture']=self.base,['$flags']=profile.flags or 0}
         for key,value in pairs(profile.optional or {}) do values[key]=value end
         return values
     end
@@ -104,9 +106,17 @@ function CreateMaterial(name,_,params)
     created=created+1;materials[name]=material(name,params);return materials[name]
 end
 local legacyPath='models/weapons/v_357/357_sheet'
+local legacyFlagPath='models/weapons/w_357/w_357'
+materialProfiles[legacyPath]={flags=1050624}
+materialProfiles[legacyFlagPath]={flags=4194304,
+    optional={['$bumpmap']=texture(legacyFlagPath..'_normal')}}
 local legacy=material('old_invalid_weapon_surface',{['$basetexture']='legacy_base',['$bumpmap']='error'})
-materials[legacy:GetName()]=legacy;created=1
-LOD.WeaponSurfacePool={rows={[legacyPath..':tint-v2:a']={material=legacy}},count=1}
+local legacyFlags=material('old_missing_flags_surface',{['$basetexture']='legacy_base',
+    ['$bumpmap']=legacyFlagPath..'_normal',['$model']='1'})
+materials[legacy:GetName()]=legacy;materials[legacyFlags:GetName()]=legacyFlags;created=2
+LOD.WeaponSurfacePool={rows={
+    [legacyPath..':tint-v2:a']={material=legacy},
+    [legacyFlagPath..':tint-v3:a']={material=legacyFlags}},count=2}
 util.CRC=function(s) return s:gsub('[^%w]','_') end
 dofile(root..'cl_weapon_appearance.lua')
 local function entity(paths)
@@ -259,7 +269,7 @@ print('WEAPON_SEGMENTS_PASS: all six families/view-world meshes, two-plane ceili
 -- Native BUG-002: missing optional vars are not textures, while actual normal
 -- maps, separate masks and authored mask flags retain their original meaning.
 local function surface(path,profile)
-    materialProfiles[path]=profile or {}
+    if profile or not materialProfiles[path] then materialProfiles[path]=profile or {} end
     local result=assert(V:Surface(path,style))
     return assert(materials[result:sub(2)]),result
 end
@@ -267,19 +277,44 @@ local repaired,repairedName=surface(legacyPath)
 assert(repaired~=legacy and repaired.params['$bumpmap']==nil and repaired.params['$envmapmask']==nil,
     'hot reload reused the invalid v2 clone or copied a nonexistent optional map')
 assert(repaired.params['$normalmapalphaenvmapmask']==nil,'repair invented an alpha-mask flag')
+assert(repaired.params['$basealphaenvmapmask']=='1','native v_357 base-alpha flag stored in $flags was lost')
 assert(legacy.params['$bumpmap']=='error','repair mutated an already-created native material')
 for index,value in ipairs({false,0,1,'','unloaded/texture/path',{},texture('broken',true),texture('error',false),texture('',false)}) do
     local m=surface('models/weapons/optional_invalid_'..index,{optional={['$bumpmap']=value,['$envmapmask']=value}})
     assert(m.params['$bumpmap']==nil and m.params['$envmapmask']==nil,'nontexture/error optional map reached clone')
 end
 local normal=surface('models/weapons/real_normal',{optional={['$bumpmap']=texture('stock/normal')},
-    ints={['$normalmapalphaenvmapmask']=1}})
+    flags=4194304})
 assert(normal.params['$bumpmap']=='stock/normal' and normal.params['$envmapmask']==nil)
 assert(normal.params['$normalmapalphaenvmapmask']=='1','authored normal-alpha flag was lost')
 local mask=surface('models/weapons/real_mask',{optional={['$envmapmask']=texture('stock/mask')},
-    ints={['$basealphaenvmapmask']=1,['$selfillum']=1,['$alphatest']=1}})
+    flags=1048576})
 assert(mask.params['$envmapmask']=='stock/mask' and mask.params['$bumpmap']==nil)
-for _,key in ipairs({'$basealphaenvmapmask','$selfillum','$alphatest'}) do assert(mask.params[key]=='1') end
+assert(mask.params['$basealphaenvmapmask']=='1')
+local namedFlags={'$basealphaenvmapmask','$normalmapalphaenvmapmask','$selfillum','$alphatest'}
+for _,case in ipairs({
+    {path=legacyFlagPath,flags=4194304,expected={['$normalmapalphaenvmapmask']=true}},
+    {path='models/weapons/v_pistol/v_pistol_sheet',flags=4194368,
+        expected={['$normalmapalphaenvmapmask']=true,['$selfillum']=true}},
+    {path=legacyPath,flags=1050624,expected={['$basealphaenvmapmask']=true}},
+    {path='models/weapons/alpha_test',flags=256,expected={['$alphatest']=true}}
+}) do
+    local m=surface(case.path,{flags=case.flags,optional={
+        ['$bumpmap']=case.expected['$normalmapalphaenvmapmask'] and texture(case.path..'_normal') or nil,
+        ['$envmap']=texture('maps/gm_flatgrass/stock_cubemap')}})
+    local stock=Material(case.path)
+    assert(stock:GetInt('$flags')==case.flags)
+    for _,name in ipairs(namedFlags) do
+        assert(stock:GetInt(name)==nil,'fixture incorrectly exposes named native flags')
+        assert((m.params[name]=='1')==(case.expected[name]==true),'native flag was lost or invented: '..name)
+    end
+    assert(m.params['$envmap']==nil,'repair imported an extra environment map')
+    if case.path==legacyFlagPath then assert(m~=legacyFlags,'retained v3 clone lost its normal-alpha flag') end
+end
+local unrelated=surface('models/weapons/unrelated_flags',{flags=134217728+8192+16})
+assert(unrelated.params['$halflambert']==nil and unrelated.params['$nocull']==nil and unrelated.params['$vertexcolor']==nil,
+    'weapon repair inherited flags outside the intended four')
+assert(legacyFlags.params['$normalmapalphaenvmapmask']==nil,'repair mutated the existing v3 clone')
 for _,m in ipairs({repaired,normal,mask}) do
     assert(m.params['$model']=='1' and m.params['$phong']=='1' and m.params['$phongboost']=='.25')
     assert(m.params['$basetexture']:find('_base',1,true) and m.params['$color2'],
@@ -296,7 +331,7 @@ dofile(root..'cl_weapon_appearance.lua')
 assert(LOD.WeaponSurfacePool==pool and pool.count==countBeforeReload)
 assert(V:Surface(legacyPath,style)==repairedName and created==countBeforeReload,
     'reloading discarded the bounded pool or allocated a duplicate corrected clone')
-print('WEAPON_MATERIAL_TYPES_PASS: absent/nontexture/error optional maps rejected; real normal/mask and authored flags preserved; v2 clone excluded; corrected pool reused across reload')
+print('WEAPON_MATERIAL_TYPES_PASS: absent/nontexture/error optional maps rejected; real normal/mask and packed native flags preserved; v2/v3 clones excluded; corrected pool reused across reload')
 -- Pool reaches its hard native allocation ceiling across many source paths.
 for i=1,200 do V:Surface('models/weapons/custom_'..i,style) end
 assert(created==128 and pool.count==128)
@@ -307,11 +342,11 @@ assert(created==128 and legacy.params['$bumpmap']=='error','reload exceeded shar
 -- A process whose entire budget predates the fix must fall back to the stock
 -- material, never reuse an invalid old clone or allocate material129.
 local fullLegacyPool={rows={},count=pool.count}
-for key,row in pairs(pool.rows) do fullLegacyPool.rows[(key:gsub(':tint%-v3:',':tint-v2:'))]=row end
-fullLegacyPool.rows[legacyPath..':tint-v2:a']={material=legacy}
-for key in pairs(fullLegacyPool.rows) do assert(not key:find(':tint-v3:',1,true)) end
+for key,row in pairs(pool.rows) do fullLegacyPool.rows[(key:gsub(':tint%-v4:',':tint-v3:'))]=row end
+fullLegacyPool.rows[legacyFlagPath..':tint-v3:a']={material=legacyFlags}
+for key in pairs(fullLegacyPool.rows) do assert(not key:find(':tint-v4:',1,true)) end
 LOD.WeaponSurfacePool=fullLegacyPool;dofile(root..'cl_weapon_appearance.lua')
-assert(V:Surface(legacyPath,style)==nil and created==128 and fullLegacyPool.count==128,
+assert(V:Surface(legacyFlagPath,style)==nil and created==128 and fullLegacyPool.count==128,
     'saturated legacy pool reused an invalid clone or exceeded native allocation ceiling')
 LOD.WeaponSurfacePool=pool;dofile(root..'cl_weapon_appearance.lua')
 -- Frozen names are display-migrated, never rewritten.

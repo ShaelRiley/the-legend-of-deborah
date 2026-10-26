@@ -20,5 +20,6 @@
     "Failed earlier console probes produced tool-authored Lua syntax errors; these are preserved, not game bugs or clean-pass evidence.",
     "Native query finally used unquoted Lua without semicolons below Source console text limit.",
     "hideconsole plus gameui_hide resolves automation input focus; actual native movement/relative mouse now available."
-  ]
+  ],
+  "adjacent_native_finding": "Named GetInt(flag) returned nil for real stock sources; compiled $flags carried authored normal/base alpha masks and selfillum that prior clones lost. Corrected native-shaped regression and same four intended flag extraction; fresh native recheck remains pending."
 }

@@ -1,0 +1,1 @@
+/home/deck/Downloads/the-legend-of-deborah/tools/test_weapon_appearance.lua: ...s/the-legend-of-deborah/tools/test_weapon_appearance.lua:280: native v_357 base-alpha flag stored in $flags was lost

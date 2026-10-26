@@ -1,0 +1,7 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 114
+[AUDIT] Implementation Feats Count: 114
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+[LOD:LOOT] rejected reward after equipment preparation error: ...e-legend-of-deborah/tools/test_pickup_native_handoff.lua:97: injected preparation failure
+PICKUP_NATIVE_HANDOFF_PASS: real initialization and director registration, native model scale, overlap guard, deferred removal and duplicate touch isolation

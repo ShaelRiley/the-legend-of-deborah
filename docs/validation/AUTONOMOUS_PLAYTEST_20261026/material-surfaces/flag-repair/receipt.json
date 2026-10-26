@@ -1,0 +1,116 @@
+{
+  "source_before": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_weapon_appearance.lua": "7d0b66d61f5cc46604dbc63f4411556489c9fe3d8d23f4a54fecfe361b65cc1d",
+    "tools/test_weapon_appearance.lua": "88f76cece6d69fdbd4d3bf2329ee3987560250d07ee0137c02eeba85e6dbb2c9"
+  },
+  "source_after": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_weapon_appearance.lua": "7d0b66d61f5cc46604dbc63f4411556489c9fe3d8d23f4a54fecfe361b65cc1d",
+    "tools/test_weapon_appearance.lua": "88f76cece6d69fdbd4d3bf2329ee3987560250d07ee0137c02eeba85e6dbb2c9"
+  },
+  "source_unchanged": true,
+  "native_expected_source_crc32": "2873846432",
+  "results": [
+    {
+      "name": "weapon_appearance",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_weapon_appearance.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.2667873429891188
+    },
+    {
+      "name": "weapon_appearance_luajit",
+      "command": [
+        "luajit",
+        "tools/test_weapon_appearance.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.6335840440005995
+    },
+    {
+      "name": "weapon_equip_settlement",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_weapon_equip_settlement.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.08476800000062212
+    },
+    {
+      "name": "equipment_inventory_ui",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_equipment_inventory_ui.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.4673858490132261
+    },
+    {
+      "name": "pickup_native_handoff",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_pickup_native_handoff.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.42258156900061294
+    },
+    {
+      "name": "native_resource_lifecycle",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_native_resource_lifecycle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.20299715298460796
+    },
+    {
+      "name": "equipment_jit_guard",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_equipment_jit_guard.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.11640291899675503
+    },
+    {
+      "name": "damsel_staging",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_damsel_staging.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.10743407299742103
+    },
+    {
+      "name": "syntax",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_weapon_appearance.lua",
+        "tools/test_weapon_appearance.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.08645501601858996
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.01068312200368382
+    }
+  ],
+  "native_acceptance": false
+}

@@ -12,6 +12,10 @@ local worldDraws=setmetatable({}, {__mode='k'})
 -- keys depend on stock material + four finishes, never on a random item ID.
 LOD.WeaponSurfacePool=LOD.WeaponSurfacePool or {rows={},count=0}
 local pool=LOD.WeaponSurfacePool
+-- These intended inherited flags live in $flags, not named GetInt variables.
+-- Bit values: https://wiki.facepunch.com/gmod/Material_Flags
+local inheritedFlags={['$basealphaenvmapmask']=1048576,['$normalmapalphaenvmapmask']=4194304,
+    ['$selfillum']=64,['$alphatest']=256}
 local colors={};for name,c in pairs(V.Colors) do colors[name]=Color(c[1],c[2],c[3]) end
 local pale,ink=Color(218,225,227),Color(23,29,36)
 local glow=Material('sprites/light_glow02_add')
@@ -61,9 +65,9 @@ local function gunSurface(path)
 end
 function V:Surface(path,style,region)
     region=region or 'a'
-    -- Do not reuse malformed optional maps retained by an earlier Lua reload.
+    -- Do not reuse malformed maps or missing flags from an earlier Lua reload.
     -- Old and new clones still share the same 128-material allocation ceiling.
-    local key=path..':tint-v3:'..region
+    local key=path..':tint-v4:'..region
     local row=pool.rows[key]
     if row==false then return nil end
     if not row then
@@ -83,8 +87,9 @@ function V:Surface(path,style,region)
                 if textureName~='' and textureName~='error' then params[name]=textureName end
             end
         end
-        for _,name in ipairs({'$basealphaenvmapmask','$normalmapalphaenvmapmask','$selfillum','$alphatest'}) do
-            local v=source:GetInt(name);if v and v~=0 then params[name]=tostring(v) end
+        local flags=tonumber(values['$flags']) or 0
+        for name,mask in pairs(inheritedFlags) do
+            if math.floor(flags/mask)%2==1 then params[name]='1' end
         end
         pool.count=pool.count+1
         row={material=CreateMaterial('LOD_WeaponSurface_'..util.CRC(key),'VertexLitGeneric',params)}
