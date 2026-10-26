@@ -1,0 +1,1 @@
+EQUIPMENT_JIT_GUARD_PASS: both realms, seven VM capability cases, exact recorded items, function-only load-time guard

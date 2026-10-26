@@ -1,0 +1,1 @@
+WEAPON_EQUIP_SETTLEMENT_PASS: real SMG hook performs zero synchronous native access and preserves 25/75 accounting

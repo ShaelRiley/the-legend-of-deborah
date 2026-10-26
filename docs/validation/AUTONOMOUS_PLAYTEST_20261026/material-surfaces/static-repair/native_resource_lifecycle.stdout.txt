@@ -1,0 +1,1 @@
+NATIVE_RESOURCE_LIFECYCLE_PASS: mesh and ghost bounds/cleanup, invalid geometry, mirror error unwinding, deferred starter grant/removal, safe celebration, loaded build receipts

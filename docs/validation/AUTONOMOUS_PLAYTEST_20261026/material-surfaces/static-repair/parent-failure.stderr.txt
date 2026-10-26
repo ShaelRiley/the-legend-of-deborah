@@ -1,0 +1,1 @@
+/home/deck/Downloads/the-legend-of-deborah/tools/test_weapon_appearance.lua: ...s/the-legend-of-deborah/tools/test_weapon_appearance.lua:148: undefined/nontexture optional shader variable queried as a texture

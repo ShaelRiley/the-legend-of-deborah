@@ -1,0 +1,504 @@
+Attempting to load Chromium...
+Adding Filesystem Addon 'addons/gm_crab_invaders'
+Adding Filesystem Addon 'addons/the-legend-of-deborah-dev'
+Adding Filesystem Addon 'addons/vrmod-x64'
+Mounted 0 of 0 workshop addons!
+No Kinect SDK
+Unknown command "con_enable"
+Changing gamemode to The Legend of Deborah (legend_of_deborah)
+Network: IP 192.168.12.140, mode MP, dedicated No, ports 27015 SV / 56673 CL
+[VRMod] Subsystem initialized: API
+[VRMod] Subsystem initialized: UTILS
+[VRMod] Subsystem initialized: CORE
+[VRMod] Subsystem initialized: NETWORK
+[VRMod] Subsystem initialized: INPUT
+[VRMod] Subsystem initialized: PLAYER
+[VRMod] Subsystem initialized: PHYSICS
+[VRMod] Subsystem initialized: PICKUP
+[VRMod] Subsystem initialized: COMBAT
+[VRMod] Subsystem initialized: UI
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[LOD:RPG-E] custom AR2 rate-of-fire transaction bridge armed; revision=gate_e_ar2_one_ammo_per_burst_v2
+[LOD:WATCHER-TEST] deterministic post-console cycle test armed
+[LOD:WATCHER-UNIFIED] v2 complete-routine controller armed
+[LOD:WATCHER-HANDOFF] scan escape + concealment integrity armed
+[LOD:WATCHER-UNIFIED] pre-spawn router + Initialize final-method binding armed
+Making workshop gamemode available for client download
+Using map cycle file cfg/mapcycle.txt.
+[LOD VR] Server runtime ready: vrmod-x64 2bddbfb96dac7820bcf8e0bcb90a6d27fc3a0dcc, 5 channels, 11 content files
+No account token specified; logging into anonymous game server account.  (Use sv_setsteamaccount to login to a persistent account.)
+Server ranking in server browser will be negatively impacted due to sv_setsteamaccount not being set.
+[LOD] Procedural midnight sky applied: seed=1 layers=3 starScale=0.956 starFade=0.910 starSpeed=0.0032
+[LOD:RPG-E] custom AR2 BeginAR2Burst wrapped with one-ammo burst authority
+[LOD:RPG-E] custom AR2 FireAR2Round wrapped with committed-ammo preservation
+[LOD:WATCHER-UNIFIED] startup status next-tick ready=false
+
+My Garry's Mod Server
+Gamemode: [L] The Legend of Deborah (legend_of_deborah)
+Map: gm_flatgrass
+Players: 1 / 10
+Build: 2026.09.17 (10175)
+Server Number: 1
+76561198025505071
+
+WorkshopDL: Querying 1 addons for info..
+Warning: WorldTwoTextureBlend found on a non-displacement surface (material: gm_construct/flatgrass). This wastes perf for no benefit.
+Lua cache is up to date
+Clientside Lua startup!
+[VRMod] Subsystem initialized: API
+[VRMod] Subsystem initialized: UTILS
+[VRMod] Subsystem initialized: CORE
+[VRMod] Subsystem initialized: NETWORK
+[VRMod] Subsystem initialized: INPUT
+[VRMod] Subsystem initialized: PLAYER
+[VRMod] Subsystem initialized: PHYSICS
+[VRMod] Subsystem initialized: PICKUP
+[VRMod] Subsystem initialized: COMBAT
+[VRMod] Subsystem initialized: UI
+Reloaded Control: VoiceNotify
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+[LOD:BOOTSTRAP] campaign initialization start reason=PlayerInitialSpawn attempt=1
+[LOD:RPG] lod_roster_seed ignored because developer mode is disabled.
+[LOD] Level-0 anchor source=map-spawn-world-trace floorZ=-12287.97 originZ=-12271.97 spawnpoints=56
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+[LOD] Wall visuals published: logicalSegments=881 modelInstances=1762 compressedBytes=1463
+[LOD:GEOMETRY-AUDIT] valid=true checked=1120 wallBoxes=608 collisionMismatch=0 visualMismatch=0
+[LOD:VERTICAL-AUDIT] valid=true edges=5 checked=5 stairBoxes=120/120 errors=0
+[LOD:RPG-ABILITIES] Starting abilities: raw total 79 >= 74; STR 4d6[3+1+6+5] drop lowest = 14; DEX 4d6[5+6+5+3] drop lowest = 16; CON 4d6[4+1+4+3] drop lowest = 11; INT 4d6[6+6+1+2] drop lowest = 14; WIS 4d6[4+3+5+2] drop lowest = 12; CHA 4d6[4+6+2+1] drop lowest = 12; CON 11 - 2d2[1+2] = 8; CHA 12 - 1d3[3] = 9; WIS 12 - 1d3[1] = 11; final total 72. No post-weakness reroll.
+[LOD] Level 1 ready. campaign=6102601 levelSeed=1694580310 layoutAttempt=4 cells=660 entities=1208 vertical=3 mazeAttempt=2 gen+progression=1.014s build=2.466s total=3.480s boss-assets=0.000s
+[LOD:STAGING] canonical native room pos=(-704.0 0.0 -12766.0) yaw=90.0 spanForward=895.9 spanRight=575.9 sourceSpawn=info_player_start
+[LOD:BOOTSTRAP] recovery complete seed=6102601 buildReady=true recoveries=1
+[LOD:WANDER] spawned #1276 floor=1 archetype=soldier cell=4:6:0 reason=initial
+[LOD:WANDER] spawned #1315 floor=1 archetype=shambler cell=5:1:0 reason=initial
+[LOD:WANDER] spawned #1316 floor=1 archetype=seeker cell=8:5:0 reason=initial
+[LOD:WANDER] spawned #1317 floor=1 archetype=bioblaster cell=8:4:0 reason=initial
+[LOD:WANDER] spawned #1318 floor=1 archetype=soldier cell=9:5:0 reason=initial
+[LOD:WANDER] spawned #1320 floor=1 archetype=deadcrab cell=9:4:0 reason=initial
+[LOD:WANDER] spawned #1321 floor=1 archetype=drubber cell=8:6:0 reason=initial
+[LOD:WANDER] spawned #1322 floor=1 archetype=reaper cell=9:3:0 reason=initial
+[LOD:WANDER] spawned #1323 floor=1 archetype=runner cell=9:6:0 reason=initial
+[LOD:WANDER] spawned #1324 floor=1 archetype=afterburst cell=6:3:0 reason=initial
+[LOD:WANDER] spawned #1325 floor=1 archetype=soldier cell=7:3:0 reason=initial
+[LOD:WANDER] spawned #1327 floor=1 archetype=caromer cell=6:2:0 reason=initial
+[LOD:WANDER] spawned #1328 floor=1 archetype=deadcrab cell=9:7:0 reason=initial
+[LOD:WANDER] spawned #1329 floor=1 archetype=bioblaster cell=9:8:0 reason=initial
+[LOD:WANDER] spawned #1330 floor=1 archetype=deadcrab cell=12:6:0 reason=initial
+[LOD:WANDER] spawned #1331 floor=1 archetype=watcher cell=10:4:0 reason=initial
+[LOD:WANDER] spawned #1332 floor=2 archetype=bioblaster cell=13:8:1 reason=initial
+[LOD:WANDER] spawned #1333 floor=2 archetype=soldier cell=11:7:1 reason=initial
+[LOD:WANDER] spawned #1335 floor=2 archetype=watcher cell=11:10:1 reason=initial
+[LOD:WANDER] spawned #1336 floor=2 archetype=deadcrab cell=12:7:1 reason=initial
+[LOD:WANDER] spawned #1337 floor=2 archetype=caromer cell=11:8:1 reason=initial
+[LOD:WANDER] spawned #1338 floor=2 archetype=listener cell=10:11:1 reason=initial
+[LOD:WANDER] spawned #1339 floor=2 archetype=shambler cell=10:8:1 reason=initial
+[LOD:WANDER] spawned #1340 floor=2 archetype=repulsor cell=11:11:1 reason=initial
+[LOD:WANDER] spawned #1341 floor=2 archetype=arccaster cell=10:7:1 reason=initial
+[LOD:WANDER] spawned #1342 floor=2 archetype=reaper cell=12:8:1 reason=initial
+[LOD:WANDER] spawned #1343 floor=2 archetype=bioblaster cell=11:6:1 reason=initial
+[LOD:WANDER] spawned #1344 floor=2 archetype=runner cell=10:13:1 reason=initial
+[LOD:WANDER] spawned #1345 floor=2 archetype=deadcrab cell=12:10:1 reason=initial
+[LOD:WANDER] spawned #1346 floor=2 archetype=soldier cell=11:2:1 reason=initial
+[LOD:WANDER] spawned #1348 floor=2 archetype=runner cell=17:9:1 reason=initial
+[LOD:WANDER] spawned #1349 floor=2 archetype=seeker cell=1:12:1 reason=initial
+[LOD:WANDER] spawned #1350 floor=3 archetype=soldier cell=9:9:2 reason=initial
+[LOD:WANDER] spawned #1352 floor=3 archetype=repriser cell=12:11:2 reason=initial
+[LOD:WANDER] spawned #1353 floor=3 archetype=shambler cell=11:10:2 reason=initial
+[LOD:WANDER] spawned #1354 floor=3 archetype=deadcrab cell=12:9:2 reason=initial
+[LOD:WANDER] spawned #1355 floor=3 archetype=flamer cell=10:9:2 reason=initial
+[LOD:WANDER] spawned #1356 floor=3 archetype=waylayer cell=10:10:2 reason=initial
+[LOD:WANDER] spawned #1357 floor=3 archetype=watcher cell=11:11:2 reason=initial
+[LOD:WANDER] spawned #1358 floor=3 archetype=shambler cell=12:10:2 reason=initial
+[LOD:WANDER] spawned #1359 floor=3 archetype=deadcrab cell=9:13:2 reason=initial
+[LOD:WANDER] spawned #1360 floor=3 archetype=blitzer cell=11:6:2 reason=initial
+[LOD:WANDER] spawned #1362 floor=3 archetype=runner cell=10:8:2 reason=initial
+[LOD:WANDER] spawned #1363 floor=3 archetype=pavise cell=16:2:2 reason=initial
+[LOD:WANDER] spawned #1364 floor=3 archetype=arccaster cell=10:11:2 reason=initial
+[LOD:WANDER] spawned #1365 floor=3 archetype=redliner cell=9:12:2 reason=initial
+[LOD:WANDER] spawned #1366 floor=3 archetype=soldier cell=15:3:2 reason=initial
+[LOD:WANDER] spawned #1368 floor=3 archetype=bioblaster cell=18:4:2 reason=initial
+[LOD:WANDER] spawned #1369 floor=4 archetype=watcher cell=15:11:3 reason=initial
+[LOD:WANDER] spawned #1370 floor=4 archetype=flamer cell=17:12:3 reason=initial
+[LOD:WANDER] spawned #1371 floor=4 archetype=shambler cell=16:13:3 reason=initial
+[LOD:WANDER] spawned #1372 floor=4 archetype=waylayer cell=16:12:3 reason=initial
+[LOD:WANDER] spawned #1373 floor=4 archetype=soldier cell=16:5:3 reason=initial
+[LOD:WANDER] spawned #1375 floor=4 archetype=deadcrab cell=15:17:3 reason=initial
+[LOD:WANDER] spawned #1376 floor=4 archetype=silencer cell=16:14:3 reason=initial
+[LOD:WANDER] spawned #1377 floor=4 archetype=redliner cell=16:16:3 reason=initial
+[LOD:WANDER] spawned #1378 floor=4 archetype=accumulator cell=16:15:3 reason=initial
+[LOD:WANDER] spawned #1379 floor=4 archetype=bioblaster cell=14:16:3 reason=initial
+[LOD:WANDER] spawned #1380 floor=4 archetype=shambler cell=17:16:3 reason=initial
+[LOD:WANDER] spawned #1381 floor=4 archetype=blitzer cell=15:8:3 reason=initial
+[LOD:WANDER] spawned #1383 floor=4 archetype=seeker cell=14:5:3 reason=initial
+[LOD:WANDER] spawned #1384 floor=4 archetype=bioblaster cell=17:6:3 reason=initial
+[LOD:WANDER] spawned #1385 floor=4 archetype=soldier cell=16:6:3 reason=initial
+[LOD:WANDER] spawned #1387 floor=4 archetype=runner cell=21:17:3 reason=initial
+[LOD:WANDER] initialized floors=4 target=64
+NextBot tickrate changed from 0 (0.000ms) to 7 (0.105ms)
+[LOD:TOPOLOGY] client identity build=1 epoch=1 level=1 seed=102935261 layoutAttempt=4 mazeAttempt=2
+DUNGEON HERMIT: It's dangerous to go alone. Take this.
+Press P to choose your Class and Level-1 Feat, take your weapon, then use the blue portal.
+Compact freed 561152 bytes
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Redownloading all lightmaps
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/v_pistol/v_pistol_sheet)
+material lod_weaponsurface_2263936921 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/v_pistol/v_pistol_sheet)
+material lod_weaponsurface_536460835 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+[LOD:WATCHER-UNIFIED] startup status one-second ready=true
+[LOD BUILD_IDENTITY] build=generator-jit-20260917-01 realm=server install=e76659db9d99360f557252faf2f6455d32d8c0c5 clean  missing=none architecture=x86 branch=unknown engine=2026.09.17 lua_errors=1 lua_kb=28085 entities=1380 meshes=0 wall_models=0 loot_entities=0 jit_version=LuaJIT 2.0.4 equipment_generation=interpreter-generator damsels=damsels-20261012-lore feedback_audio=feedback-20260919-01
+[LOD] Procedural midnight sky applied: seed=1694580310 layers=3 starScale=0.881 starFade=0.956 starSpeed=0.0044
+Requesting texture value from var "$bumpmap" which is not a texture value (material: models/weapons/w_pistol/pistol)
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/w_pistol/pistol)
+material lod_weaponsurface_1111889832 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+Requesting texture value from var "$bumpmap" which is not a texture value (material: models/weapons/w_pistol/pistol)
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/w_pistol/pistol)
+material lod_weaponsurface_3679405586 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+[LOD BUILD_IDENTITY] build=generator-jit-20260917-01 realm=client install=e76659db9d99360f557252faf2f6455d32d8c0c5 clean  missing=none architecture=x86 branch=unknown engine=2026.09.17 lua_errors=0 lua_kb=23812 entities=1245 meshes=1 wall_models=1 loot_entities=0 jit_version=LuaJIT 2.0.4 equipment_generation=interpreter-generator damsels=damsels-20261012-lore feedback_audio=feedback-20260919-01
+[LOD:CRATE-SUMMARY] {"grateStyle":"solid-collision-steel-grating","sampler":"missing","candidateSamplerValid":true,"gate":{"loaded":false,"stockBodies":0,"model":"models/props_lab/blastdoor001c.mdl","fallbackBodies":1,"fallbackMaterial":"models/props_c17/FurnitureMetal001a"},"floorStyle":"continuous-concrete","meshCache":1,"tint":{"r":249,"b":9,"a":255,"g":9},"normal":"models/props_wasteland/cargo_container01_normal","materialError":true,"brand":{"safeWidth":240,"draws":10,"geometryBlocked":52,"safeHeight":78,"branded":683,"material":"legend_of_deborah/container_brands/container_brand_090.png","renderMilliseconds":0.8628000000001634,"cap":683,"shader":"UnlitGeneric","renderer":"source-front-face-20260924","estimatedTextureMiB":2.6666666666666665,"brandID":90,"candidates":38,"company":"QuantumTrench Fiber","observations":1764,"containers":1708,"margin":0.94,"maxDraws":64,"skipped":0,"shaderSlots":1,"loadedTextures":1,"culled":28,"materialOK":true,"coverage":1248,"admitted":38},"floor":"legend_of_deborah/crate/concrete","floorFallback":false,"clientFrameMilliseconds":23.516900837421417,"hull":"legend_of_deborah/crate/hull_c2","override":"","stockSlots":["models/props_wasteland/cargo_container01","models/props_wasteland/cargo_container02","models/props_wasteland/cargo_container03"],"hullRepair":"c3-repair-native-retest-pending","grates":0,"candidateFallback":false,"model":"models/props_wasteland/cargo_container01.mdl","shader":"missing","seed":102935261,"candidateEnabled":true}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"built","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":11.009999753907323,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":51.01499885972589,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":91.01999796554446,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":131.0099970716983,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":171.01499617751688,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":211.01999528333545,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":251.0099943894893,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":291.01499349530786,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":331.01999260112643,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":371.0099917072803,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":411.01499081309885,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":451.0199899189174,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":491.00998902507126,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":531.0149881308898,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":571.0199872367084,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":611.0099863428622,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":651.0149854486808,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":691.0199845544994,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":731.0099836606532,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":771.0149827664718,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":811.0199818722904,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":851.0099809784442,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":891.0149800842628,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":931.0199791900814,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":971.0099782962352,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1011.0149774020538,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1051.0199765078723,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1091.0099756140262,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1131.0149747198448,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1171.0199738256633,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1211.0099729318172,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1251.0149720376357,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1291.0199711434543,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1331.0099702496082,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1371.0149693554267,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1411.0199684612453,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1451.0099675673991,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1491.0149666732177,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1531.0199657790363,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1571.0099648851901,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1611.0149639910087,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1651.0199630968273,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1691.0099622029811,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1731.0149613087997,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1771.0199604146183,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1811.009959520772,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1851.0149586265907,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1891.0199577324092,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1931.009956838563,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":1971.0149559443817,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2011.0199550502002,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2051.009954156354,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2091.0149532621726,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2131.019952367991,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2171.009951474145,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2211.0149505799636,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2251.019949685782,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2291.009948791936,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2331.0149478977546,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2371.019947003573,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2411.009946109727,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2451.0149452155456,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2491.019944321364,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2531.009943427518,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2571.0149425333366,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2611.019941639155,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2651.009940745309,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2691.0149398511276,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2731.019938956946,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2771.0099380631,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2811.0149371689186,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2851.019936274737,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2891.009935380891,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2931.0149344867095,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":2971.019933592528,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3011.009932698682,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3051.0149318045005,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3091.019930910319,"ceiling":96,"observer":"b29-entry-safety"}
+Requesting texture value from var "$bumpmap" which is not a texture value (material: models/weapons/v_357/357_sheet)
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/v_357/357_sheet)
+material lod_weaponsurface_883149872 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+Requesting texture value from var "$bumpmap" which is not a texture value (material: models/weapons/v_357/357_sheet)
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/v_357/357_sheet)
+material lod_weaponsurface_2913639818 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+material lod_weaponsurface_3038593880 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+material lod_weaponsurface_739513058 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3131.009930016473,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3171.0149291222915,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3211.01992822811,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3251.009927334264,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3291.0149264400825,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3331.019925545901,"ceiling":96,"observer":"b29-entry-safety"}
+Server cvar 'sv_allowcslua' changed to 1
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3371.009924652055,"ceiling":96,"observer":"b29-entry-safety"}
+Unknown command: local
+Unknown command: print
+Unknown command: for
+Server cvar 'sv_allowcslua' changed to 0
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3411.0149237578735,"ceiling":96,"observer":"b29-entry-safety"}
+Server cvar 'sv_allowcslua' changed to 1
+
+[ERROR] LuaCmd:1: unfinished string near '<eof>'
+
+SendLua/BroadcastLua/lua_run_cl failed with code: "local keys={'$basetexture','$bumpmap','$envmap','$envmapmask','$normalmapalphaenvmapmask','$basealphaenvmapmask','$phong'}; local function inspect(label,m) local kv=m:GetKeyValues(); print('LOD_MATERIAL_DIAG',label,m:GetShader()); for _,k in i
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: unfinished string near '<eof>'
+
+
+Server cvar 'sv_allowcslua' changed to 0
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3451.019922863692,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3491.009921969846,"ceiling":96,"observer":"b29-entry-safety"}
+Server cvar 'sv_allowcslua' changed to 1
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagK={'$basetexture','$bumpmap','$envmap','$envmapmask','$normalmapalphaenvmapmask','$basealphaenvmapmask','$phong'}"'
+
+SendLua/BroadcastLua/lua_run_cl failed with code: "LOD.DiagK={'$basetexture','$bumpmap','$envmap','$envmapmask','$normalmapalphaenvmapmask','$basealphaenvmapmask','$phong'}"
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagK={'$basetexture','$bumpmap','$envmap','$envmapmask','$normalmapalphaenvmapmask','$basealphaenvmapmask','$phong'}"'
+
+
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagM=function(n,m) m=m or Material(n) print('LOD_MAT',n,m:GetShader()) local kv=m:GetKeyValues() for _,k in ipairs(LOD.DiagK) do print('LOD_VAR',n,k,type(kv[k]),tostring(kv[k])) end end"'
+
+SendLua/BroadcastLua/lua_run_cl failed with code: "LOD.DiagM=function(n,m) m=m or Material(n) print('LOD_MAT',n,m:GetShader()) local kv=m:GetKeyValues() for _,k in ipairs(LOD.DiagK) do print('LOD_VAR',n,k,type(kv[k]),tostring(kv[k])) end end"
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagM=function(n,m) m=m or Material(n) print('LOD_MAT',n,m:GetShader()) local kv=m:GetKeyValues() for _,k in ipairs(LOD.DiagK) do print('LOD_VAR',n,k,type(kv[k]),tostring(kv[k])) end end"'
+
+
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagM('models/weapons/v_357/357_sheet')"'
+
+SendLua/BroadcastLua/lua_run_cl failed with code: "LOD.DiagM('models/weapons/v_357/357_sheet')"
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagM('models/weapons/v_357/357_sheet')"'
+
+
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagM('models/weapons/w_pistol/pistol')"'
+
+SendLua/BroadcastLua/lua_run_cl failed with code: "LOD.DiagM('models/weapons/w_pistol/pistol')"
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagM('models/weapons/w_pistol/pistol')"'
+
+
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagM('models/weapons/v_pistol/v_pistol_sheet')"'
+
+SendLua/BroadcastLua/lua_run_cl failed with code: "LOD.DiagM('models/weapons/v_pistol/v_pistol_sheet')"
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: unexpected symbol near '"LOD.DiagM('models/weapons/v_pistol/v_pistol_sheet')"'
+
+
+
+[ERROR] LuaCmd:1: unexpected symbol near '"for k,r in pairs(LOD.WeaponSurfacePool.rows) do if r then LOD.DiagM(k,r.material) end end"'
+
+SendLua/BroadcastLua/lua_run_cl failed with code: "for k,r in pairs(LOD.WeaponSurfacePool.rows) do if r then LOD.DiagM(k,r.material) end end"
+Server cvar 'sv_allowcslua' changed to 0
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3531.0149210756645,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3571.019920181483,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3611.009919287637,"ceiling":96,"observer":"b29-entry-safety"}
+Server cvar 'sv_allowcslua' changed to 1
+LOD_CONTROL_PROBE	-704.000000 -14.000000 -12767.276367
+"m_rawinput" = "0"
+ client archive
+ - Use Raw Input for mouse input.
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3651.0149183934554,"ceiling":96,"observer":"b29-entry-safety"}
+Unknown command: dlua_run_cl
+LOD_MAT	models/weapons/v_357/357_sheet	VertexLitGeneric
+
+[ERROR] LuaCmd:1: bad argument #1 to 'ipairs' (table expected, got nil)
+  1. ipairs - [C]:-1
+   2. DiagM - LuaCmd:1
+    3. unknown - LuaCmd:1
+
+SendLua/BroadcastLua/lua_run_cl failed with code: LOD.DiagM('models/weapons/v_357/357_sheet')
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: bad argument #1 to 'ipairs' (table expected, got nil)
+  1. ipairs - [C]:-1
+   2. DiagM - LuaCmd:1
+    3. unknown - LuaCmd:1
+
+
+LOD_MAT	models/weapons/w_pistol/pistol	VertexLitGeneric
+
+[ERROR] LuaCmd:1: bad argument #1 to 'ipairs' (table expected, got nil)
+  1. ipairs - [C]:-1
+   2. DiagM - LuaCmd:1
+    3. unknown - LuaCmd:1
+
+SendLua/BroadcastLua/lua_run_cl failed with code: LOD.DiagM('models/weapons/w_pistol/pistol')
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: bad argument #1 to 'ipairs' (table expected, got nil)
+  1. ipairs - [C]:-1
+   2. DiagM - LuaCmd:1
+    3. unknown - LuaCmd:1
+
+
+LOD_MAT	models/weapons/v_pistol/v_pistol_sheet	VertexLitGeneric
+
+[ERROR] LuaCmd:1: bad argument #1 to 'ipairs' (table expected, got nil)
+  1. ipairs - [C]:-1
+   2. DiagM - LuaCmd:1
+    3. unknown - LuaCmd:1
+
+SendLua/BroadcastLua/lua_run_cl failed with code: LOD.DiagM('models/weapons/v_pistol/v_pistol_sheet')
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: bad argument #1 to 'ipairs' (table expected, got nil)
+  1. ipairs - [C]:-1
+   2. DiagM - LuaCmd:1
+    3. unknown - LuaCmd:1
+
+
+LOD_MAT	models/weapons/w_pistol/pistol:tint-v2:b	VertexLitGeneric
+
+[ERROR] LuaCmd:1: bad argument #1 to 'ipairs' (table expected, got nil)
+  1. ipairs - [C]:-1
+   2. DiagM - LuaCmd:1
+    3. unknown - LuaCmd:1
+
+SendLua/BroadcastLua/lua_run_cl failed with code: for k,r in pairs(LOD.WeaponSurfacePool.rows) do if r then LOD.DiagM(k,r.material) end end
+[Shael Riley|2|STEAM_0:1:32619671] Lua Error:
+
+[ERROR] LuaCmd:1: bad argument #1 to 'ipairs' (table expected, got nil)
+  1. ipairs - [C]:-1
+   2. DiagM - LuaCmd:1
+    3. unknown - LuaCmd:1
+
+
+LOD_INPUT_PROBE	true	false	2	true
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3691.019917499274,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3731.009916605428,"ceiling":96,"observer":"b29-entry-safety"}
+LOD_MAT	models/weapons/v_357/357_sheet	VertexLitGeneric
+LOD_VAR	models/weapons/v_357/357_sheet	$basetexture	ITexture	Texture [models/weapons/v_357/357_sheet]
+LOD_VAR	models/weapons/v_357/357_sheet	$bumpmap	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet	$envmap	ITexture	Texture [maps/gm_flatgrass/c0_-31_-12736.hdr]
+LOD_VAR	models/weapons/v_357/357_sheet	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet	$phong	number	0
+LOD_MAT	models/weapons/w_pistol/pistol	VertexLitGeneric
+LOD_VAR	models/weapons/w_pistol/pistol	$basetexture	ITexture	Texture [models/weapons/w_pistol/pistol]
+LOD_VAR	models/weapons/w_pistol/pistol	$bumpmap	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$envmap	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol	$phong	number	0
+LOD_MAT	models/weapons/w_pistol/pistol:tint-v2:b	VertexLitGeneric
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$basetexture	ITexture	Texture [models/weapons/w_pistol/pistol]
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$bumpmap	ITexture	Texture [error]
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$envmap	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:b	$phong	string	1
+LOD_MAT	models/weapons/v_357/357_sheet:tint-v2:a	VertexLitGeneric
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$basetexture	ITexture	Texture [models/weapons/v_357/357_sheet]
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$bumpmap	ITexture	Texture [error]
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$envmap	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:a	$phong	string	1
+LOD_MAT	models/weapons/w_357/w_357:tint-v2:a	VertexLitGeneric
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$basetexture	ITexture	Texture [models/weapons/w_357/w_357]
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$bumpmap	ITexture	Texture [models/weapons/w_357/w_357_normal]
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$envmap	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:a	$phong	string	1
+LOD_MAT	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	VertexLitGeneric
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$basetexture	ITexture	Texture [models/weapons/v_pistol/v_pistol_sheet]
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$bumpmap	ITexture	Texture [models/weapons/v_pistol/v_pistol_sheet_normal]
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$envmap	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:a	$phong	string	1
+LOD_MAT	models/weapons/w_357/w_357:tint-v2:b	VertexLitGeneric
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$basetexture	ITexture	Texture [models/weapons/w_357/w_357]
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$bumpmap	ITexture	Texture [models/weapons/w_357/w_357_normal]
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$envmap	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_357/w_357:tint-v2:b	$phong	string	1
+LOD_MAT	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	VertexLitGeneric
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$basetexture	ITexture	Texture [models/weapons/v_pistol/v_pistol_sheet]
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$bumpmap	ITexture	Texture [models/weapons/v_pistol/v_pistol_sheet_normal]
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$envmap	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_pistol/v_pistol_sheet:tint-v2:b	$phong	string	1
+LOD_MAT	models/weapons/w_pistol/pistol:tint-v2:a	VertexLitGeneric
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$basetexture	ITexture	Texture [models/weapons/w_pistol/pistol]
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$bumpmap	ITexture	Texture [error]
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$envmap	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$envmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/w_pistol/pistol:tint-v2:a	$phong	string	1
+LOD_MAT	models/weapons/v_357/357_sheet:tint-v2:b	VertexLitGeneric
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$basetexture	ITexture	Texture [models/weapons/v_357/357_sheet]
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$bumpmap	ITexture	Texture [error]
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$envmap	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$envmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$normalmapalphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$basealphaenvmapmask	nil	nil
+LOD_VAR	models/weapons/v_357/357_sheet:tint-v2:b	$phong	string	1
+LOD_INPUT_AFTER	false	false	nil
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3771.0149157112464,"ceiling":96,"observer":"b29-entry-safety"}
+[LOD:POPULATION] {"seed":1882387544,"gates":[false,false,false,false],"developerDense":false,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":2,"source":{"installLabel":"e76659db9d99360f557252faf2f6455d32d8c0c5 clean ","verified":true,"checked":114,"mismatches":0,"missing":0},"layoutAttempt":4,"theme":"occupation","plannedBodies":48,"aliveWanderers":64,"level":1,"developerMode":false,"campaign":6102601,"layoutSeed":102935261,"aliveBodies":64,"reason":"heartbeat","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":3811.019914817065,"ceiling":96,"observer":"b29-entry-safety"}

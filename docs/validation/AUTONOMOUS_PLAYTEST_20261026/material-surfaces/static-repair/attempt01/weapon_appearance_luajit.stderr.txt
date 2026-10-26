@@ -1,0 +1,5 @@
+luajit: tools/test_weapon_appearance.lua:313: saturated legacy pool reused an invalid clone or exceeded native allocation ceiling
+stack traceback:
+	[C]: in function 'assert'
+	tools/test_weapon_appearance.lua:313: in main chunk
+	[C]: at 0x56103413ded0

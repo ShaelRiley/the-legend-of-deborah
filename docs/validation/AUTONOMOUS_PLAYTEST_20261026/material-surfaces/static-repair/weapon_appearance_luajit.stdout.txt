@@ -1,0 +1,10 @@
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[AUDIT] Expected Implemented Feats Count: 114
+[AUDIT] Implementation Feats Count: 114
+[CHECKPOINT_D_CLOSURE] PASS — Implemented inventory: 114 ordinary feats and 9 capstones checked. Live-GDD completeness is a separate release gate.
+PROCEDURAL_RUNTIME_PASS: real ownership/Give/deferred native settlement/atomic replacement/ammo preservation/restore; active-only stats; shared save/element/cap authorities; sealed attacks/Magic; real Held/save/duplicate/lifecycle gates; worn Bloodletting and regeneration without feats; natural reward distribution
+APPEARANCE_DATA_PASS: 2500 distinct sampled fingerprints; all 60 properties; max packet 78 bytes; frozen/order identity; copy selection; unchanged sends
+WEAPON_SEGMENTS_PASS: all six families/view-world meshes, two-plane ceiling, three disjoint regions, hands, external ownership and error cleanup
+WEAPON_MATERIAL_TYPES_PASS: absent/nontexture/error optional maps rejected; real normal/mask and authored flags preserved; v2 clone excluded; corrected pool reused across reload
+APPEARANCE_RENDER_PASS: no attachments; native base/hand preservation; two tint regions plus control; 128-material ceiling; hooks/restoration; visibility/budgets; muzzle dedup/fade; frozen name migration
+APPEARANCE_SERVER_PASS: no procedural pattern textures; native shot observer; 36-pellet coalescing; unstyled exclusion

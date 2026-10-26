@@ -61,16 +61,38 @@ local hooks,receivers={},{}
 hook.Add=function(_,id,fn) hooks[id]=fn end
 net.Receive=function(id,fn) receivers[id]=fn end
 local created,materials=0,{}
+local nativeType=type
+-- GMod's type() reports ITexture; keep that exact engine boundary while the
+-- standalone Lua harness represents native handles with tagged tables.
+type=function(value)
+    if nativeType(value)=='table' and value.nativeTexture then return 'ITexture' end
+    return nativeType(value)
+end
+local function texture(name,isError)
+    return {nativeTexture=true,GetName=function() return name end,
+        IsError=function() return isError==true end}
+end
+local materialProfiles,invalidTextureQueries={},{}
 local function material(name,params,stock)
-    local m={params=params or {},name=name}
+    local profile=materialProfiles[name] or {}
+    local m={params=params or {},name=name,base=profile.base or texture(name..'_base')}
     function m:GetName() return self.name end
-    function m:GetShader() return 'VertexLitGeneric' end
-    function m:IsError() return false end
+    function m:GetShader() return profile.shader or 'VertexLitGeneric' end
+    function m:IsError() return profile.errorMaterial==true end
     function m:GetString() return '' end
-    function m:GetInt() return 0 end
+    function m:GetInt(key) return profile.ints and profile.ints[key] or 0 end
+    function m:GetKeyValues()
+        local values={['$basetexture']=self.base}
+        for key,value in pairs(profile.optional or {}) do values[key]=value end
+        return values
+    end
     function m:GetTexture(key)
-        if key~='$basetexture' then return nil end
-        return {GetName=function() return name..'_base' end,IsError=function() return false end}
+        local value=self:GetKeyValues()[key]
+        if type(value)=='ITexture' then return value end
+        invalidTextureQueries[#invalidTextureQueries+1]={material=name,key=key}
+        -- The native warning path can return Texture[error] that passes the
+        -- old IsError check; it must never become a clone's optional map.
+        return texture('error',false)
     end
     function m:SetVector(k,v) assert(not stock,'Mutated shared stock material');self.params[k]=v end
     function m:SetFloat(k,v) assert(not stock);self.params[k]=v end
@@ -81,6 +103,10 @@ function CreateMaterial(name,_,params)
     assert(not materials[name],'Unbounded duplicate native material allocation')
     created=created+1;materials[name]=material(name,params);return materials[name]
 end
+local legacyPath='models/weapons/v_357/357_sheet'
+local legacy=material('old_invalid_weapon_surface',{['$basetexture']='legacy_base',['$bumpmap']='error'})
+materials[legacy:GetName()]=legacy;created=1
+LOD.WeaponSurfacePool={rows={[legacyPath..':tint-v2:a']={material=legacy}},count=1}
 util.CRC=function(s) return s:gsub('[^%w]','_') end
 dofile(root..'cl_weapon_appearance.lua')
 local function entity(paths)
@@ -119,6 +145,7 @@ for _,m in pairs(materials) do
     assert(m.params['$basetexture']:find('_base',1,true),'Native base map discarded')
     assert(m.params['$detail']==nil,'Retired surface patterns must never be applied')
 end
+assert(#invalidTextureQueries==0,'undefined/nontexture optional shader variable queried as a texture')
 local n=created
 for i=1,1000 do
     local st=V:Compile({1,i,1,100,{{1,2}}});V:Apply(ent,st,nil,true);V:Restore(ent)
@@ -229,9 +256,64 @@ LOD.MagicFX={ViewModelHidden=function() return true end}
 local before=vm.drawn;assert(hooks.LOD_ProceduralWeaponSurface(vm,owner,held,0)==true and vm.drawn==before)
 LOD.MagicFX=nil;clipping=false;owner.weapon=ent
 print('WEAPON_SEGMENTS_PASS: all six families/view-world meshes, two-plane ceiling, three disjoint regions, hands, external ownership and error cleanup')
+-- Native BUG-002: missing optional vars are not textures, while actual normal
+-- maps, separate masks and authored mask flags retain their original meaning.
+local function surface(path,profile)
+    materialProfiles[path]=profile or {}
+    local result=assert(V:Surface(path,style))
+    return assert(materials[result:sub(2)]),result
+end
+local repaired,repairedName=surface(legacyPath)
+assert(repaired~=legacy and repaired.params['$bumpmap']==nil and repaired.params['$envmapmask']==nil,
+    'hot reload reused the invalid v2 clone or copied a nonexistent optional map')
+assert(repaired.params['$normalmapalphaenvmapmask']==nil,'repair invented an alpha-mask flag')
+assert(legacy.params['$bumpmap']=='error','repair mutated an already-created native material')
+for index,value in ipairs({false,0,1,'','unloaded/texture/path',{},texture('broken',true),texture('error',false),texture('',false)}) do
+    local m=surface('models/weapons/optional_invalid_'..index,{optional={['$bumpmap']=value,['$envmapmask']=value}})
+    assert(m.params['$bumpmap']==nil and m.params['$envmapmask']==nil,'nontexture/error optional map reached clone')
+end
+local normal=surface('models/weapons/real_normal',{optional={['$bumpmap']=texture('stock/normal')},
+    ints={['$normalmapalphaenvmapmask']=1}})
+assert(normal.params['$bumpmap']=='stock/normal' and normal.params['$envmapmask']==nil)
+assert(normal.params['$normalmapalphaenvmapmask']=='1','authored normal-alpha flag was lost')
+local mask=surface('models/weapons/real_mask',{optional={['$envmapmask']=texture('stock/mask')},
+    ints={['$basealphaenvmapmask']=1,['$selfillum']=1,['$alphatest']=1}})
+assert(mask.params['$envmapmask']=='stock/mask' and mask.params['$bumpmap']==nil)
+for _,key in ipairs({'$basealphaenvmapmask','$selfillum','$alphatest'}) do assert(mask.params[key]=='1') end
+for _,m in ipairs({repaired,normal,mask}) do
+    assert(m.params['$model']=='1' and m.params['$phong']=='1' and m.params['$phongboost']=='.25')
+    assert(m.params['$basetexture']:find('_base',1,true) and m.params['$color2'],
+        'repair changed native base texture or tint application')
+end
+local beforeRejected=created
+for index,profile in ipairs({{errorMaterial=true},{shader='UnlitGeneric'},{base=texture('broken_base',true)}}) do
+    local path='models/weapons/rejected_'..index;materialProfiles[path]=profile
+    assert(V:Surface(path,style)==nil)
+end
+assert(created==beforeRejected and #invalidTextureQueries==0,'invalid source was admitted or optional texture queried')
+local pool,countBeforeReload=LOD.WeaponSurfacePool,created
+dofile(root..'cl_weapon_appearance.lua')
+assert(LOD.WeaponSurfacePool==pool and pool.count==countBeforeReload)
+assert(V:Surface(legacyPath,style)==repairedName and created==countBeforeReload,
+    'reloading discarded the bounded pool or allocated a duplicate corrected clone')
+print('WEAPON_MATERIAL_TYPES_PASS: absent/nontexture/error optional maps rejected; real normal/mask and authored flags preserved; v2 clone excluded; corrected pool reused across reload')
 -- Pool reaches its hard native allocation ceiling across many source paths.
 for i=1,200 do V:Surface('models/weapons/custom_'..i,style) end
-assert(created==128)
+assert(created==128 and pool.count==128)
+dofile(root..'cl_weapon_appearance.lua')
+assert(LOD.WeaponSurfacePool==pool and pool.count==128)
+assert(V:Surface(legacyPath,style)==repairedName and V:Surface('models/weapons/over_capacity',style)==nil)
+assert(created==128 and legacy.params['$bumpmap']=='error','reload exceeded shared material ceiling or mutated old clone')
+-- A process whose entire budget predates the fix must fall back to the stock
+-- material, never reuse an invalid old clone or allocate material129.
+local fullLegacyPool={rows={},count=pool.count}
+for key,row in pairs(pool.rows) do fullLegacyPool.rows[(key:gsub(':tint%-v3:',':tint-v2:'))]=row end
+fullLegacyPool.rows[legacyPath..':tint-v2:a']={material=legacy}
+for key in pairs(fullLegacyPool.rows) do assert(not key:find(':tint-v3:',1,true)) end
+LOD.WeaponSurfacePool=fullLegacyPool;dofile(root..'cl_weapon_appearance.lua')
+assert(V:Surface(legacyPath,style)==nil and created==128 and fullLegacyPool.count==128,
+    'saturated legacy pool reused an invalid clone or exceeded native allocation ceiling')
+LOD.WeaponSurfacePool=pool;dofile(root..'cl_weapon_appearance.lua')
 -- Frozen names are display-migrated, never rewritten.
 local old={definition=copy.definition,name='Watery Revolver of Watery Warding'}
 assert(E:ItemName(old)=='Wintery Revolver of Wintery Warding' and old.name:find('Watery'))

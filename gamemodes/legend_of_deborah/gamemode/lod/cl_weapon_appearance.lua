@@ -61,7 +61,9 @@ local function gunSurface(path)
 end
 function V:Surface(path,style,region)
     region=region or 'a'
-    local key=path..':tint-v2:'..region
+    -- Do not reuse malformed optional maps retained by an earlier Lua reload.
+    -- Old and new clones still share the same 128-material allocation ceiling.
+    local key=path..':tint-v3:'..region
     local row=pool.rows[key]
     if row==false then return nil end
     if not row then
@@ -71,8 +73,15 @@ function V:Surface(path,style,region)
         local texture=source:GetTexture('$basetexture')
         if not texture or texture:IsError() then pool.rows[key]=false;return nil end
         local params={['$basetexture']=texture:GetName(),['$model']='1',['$phong']='1',['$phongboost']='.25'}
+        local values=source:GetKeyValues()
         for _,name in ipairs({'$bumpmap','$envmapmask'}) do
-            local t=source:GetTexture(name);if t and not t:IsError() then params[name]=t:GetName() end
+            -- GetTexture on an undefined/nontexture var warns and can return
+            -- Texture[error] without IsError identifying that fallback.
+            local t=values[name]
+            if type(t)=='ITexture' and not t:IsError() then
+                local textureName=t:GetName()
+                if textureName~='' and textureName~='error' then params[name]=textureName end
+            end
         end
         for _,name in ipairs({'$basealphaenvmapmask','$normalmapalphaenvmapmask','$selfillum','$alphatest'}) do
             local v=source:GetInt(name);if v and v~=0 then params[name]=tostring(v) end

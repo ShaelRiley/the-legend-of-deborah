@@ -1,0 +1,10 @@
+{
+  "command": [
+    "python3",
+    "tools/run_lua54.py",
+    "tools/test_weapon_appearance.lua"
+  ],
+  "returncode": 1,
+  "seconds": 1.0178199079819024,
+  "scope": "New native-boundary fixture against unchanged parent production source"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "BUG-002",
+  "build": "e76659db9d99360f557252faf2f6455d32d8c0c5",
+  "environment": "Steam Deck, Windows x86/Proton10, gm_flatgrass, production seed6102601",
+  "reproduction": [
+    "Start campaign; ordinary generated starter pistol/revolver and class choice",
+    "Observe client console texture-parameter and incompatible mask warnings",
+    "Read native stock/clone material key-value types without requesting optional texture values"
+  ],
+  "expected": "Surface identity retains valid stock textures and legal shader configuration without manufacturing absent optional maps.",
+  "authority": "Active unified procedural equipment/weapon presentation; accepted native models/materials and 07 LOD-IMPL-004 resource bounds",
+  "actual": "Absent stock bumpmap/envmapmask queried as textures. Native clones contain Texture[error] bumpmap; shader rejects incompatible mask combination.",
+  "severity": "Presentation defect and attributable runtime warning",
+  "status": "implemented; nine focused/static checks pass; parent reviewed; fresh native repaired-source recheck pending",
+  "evidence": [
+    "native-parameter-types.before.txt",
+    "console.before.txt"
+  ],
+  "diagnostic_qualifications": [
+    "Failed earlier console probes produced tool-authored Lua syntax errors; these are preserved, not game bugs or clean-pass evidence.",
+    "Native query finally used unquoted Lua without semicolons below Source console text limit.",
+    "hideconsole plus gameui_hide resolves automation input focus; actual native movement/relative mouse now available."
+  ]
+}
