@@ -86,6 +86,7 @@ SUITES = [
     ("Big Loot Reward Ecology & Lifecycle", ["python3", "tools/run_lua54.py", "tools/test_big_loot_ecology.lua"]),
     ("Big Loot Natural Campaign Coverage", ["python3", "tools/run_lua54.py", "tools/test_big_loot_campaign.lua"]),
     ("Standing Stair Headroom & Upper Crossover", ["python3", "tools/run_lua54.py", "tools/test_stair_headroom.lua"]),
+    ("Hostile Stair Collision & Supported Flights", ["python3", "tools/run_lua54.py", "tools/test_hostile_stair_collision.lua"]),
     ("SPOT-05 Canonical Die Logger", ["python3", "tools/run_lua54.py", "tools/validate_spot05_die_logger.lua"]),
     ("SPOT-04 Enemy Loop Audio Lifecycle", ["python3", "tools/run_lua54.py", "tools/validate_spot04_audio.lua"]),
     ("SPOT-03 Razor Presentation, Pursuit & Release Diagnostics", ["python3", "tools/run_lua54.py", "tools/validate_spot03_razor.lua"]),

@@ -206,6 +206,7 @@ function MazeNavigator:_AppendVerticalWaypoints(graph, fromCell, toCell, out)
         return lowerCenter + dir * along + Vector(0, 0, i * rise + 3)
     end
 
+    local firstStairWaypoint = #out + 1
     if ascending then
         append(out, approach, 16, true)
         for i = 1, steps do append(out, treadPoint(i), 5, true) end
@@ -214,6 +215,12 @@ function MazeNavigator:_AppendVerticalWaypoints(graph, fromCell, toCell, out)
         append(out, upperLanding, 16, true)
         for i = steps, 1, -1 do append(out, treadPoint(i), 5, true) end
         append(out, approach, 16, true)
+    end
+    -- Bind every approach, tread and landing to its authored flight. Movement
+    -- resolves hull support against that current flight's real colliders.
+    for i = firstStairWaypoint, #out do
+        out[i].stairGraph = graph
+        out[i].stairEdge = edge
     end
 end
 
