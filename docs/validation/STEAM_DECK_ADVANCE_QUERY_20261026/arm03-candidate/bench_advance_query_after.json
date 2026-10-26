@@ -1,0 +1,32 @@
+{
+	"phase": "after",
+	"sha": "2a3485c5ce517e8a9150694d09854a1db47229a2",
+	"tick_line": 636,
+	"native_guard_active": true,
+	"archetypes": {
+		"razor": 1,
+		"sentry": 4,
+		"shy": 1,
+		"silencer": 1,
+		"arccaster": 1,
+		"caromer": 2,
+		"forker": 1,
+		"reaper": 2,
+		"afterburst": 1,
+		"reeler": 1,
+		"repulsor": 1,
+		"pincer": 1,
+		"flamer": 2,
+		"drubber": 1,
+		"redliner": 1,
+		"fencer": 1
+	},
+	"variant": "candidate",
+	"roster_alive": 22,
+	"scope": "Read-only source/function/upvalue-provider proof and boundary state snapshot. No query/body wrappers, timers, per-call counters or gameplay mutation. Snapshot is not frequency/cost evidence.",
+	"advancing_snapshot": 0,
+	"profiler_absent": true,
+	"actual_sha256": "c6cc0fff6a396fa648e76b941786547f4e02b920be9687df33f20cc6e351bcf0",
+	"query_line": 607,
+	"passed": true
+}

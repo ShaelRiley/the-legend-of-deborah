@@ -74,6 +74,7 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/init.lua \
     gamemodes/legend_of_deborah/entities/entities/lod_neil_release_button/shared.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_combat_roll_feed.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/cl_feedback_language.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_die_logger.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_feedback_language.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_combat_feed_semantics.lua \
@@ -88,6 +89,7 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/gamemode/lod/cl_loop_audio.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_boss_encounter.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_boss_encounter.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_chuck.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_wall_batch.lua \
     gamemodes/legend_of_deborah/gamemode/lod/cl_container_section_recolor.lua \
@@ -114,9 +116,12 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_rpg_schema.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_character_progression.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_e_feats.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_feat_card_text.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_warden_turrets.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_animation.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_gps_feat.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_gps_voice.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sh_gps_praise.lua \
@@ -165,6 +170,7 @@ POPULATION_MANIFEST="$RPG_DATA_DIR/dev_population_sources.txt"
     gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster_placement.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua \
+    gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua \
     gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_no_progress_recovery.lua \

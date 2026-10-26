@@ -1,4 +1,844 @@
-# Current checkpoint — Steam Deck baseline access and pacing evidence
+# Current checkpoint — corrected stair baseline fails 40 FPS; no new optimization retained
+
+Tested `8b2661ad` (gameplay `54bf0698`) after a 602-second device warm-up. Three short frozen D20 stress attempts record 20.450 FPS, a failed 49.666-active-second attempt at 17.819 FPS after hero death, and 20.393 FPS. No failed sample was replaced; no mean mixes partial and complete runs. Full-duration p95 96.336/88.920 ms and longest below40 episodes 29.392/59.059 seconds fail badly. The separate ordinary release-mode capture records23.862FPS/p9575.303ms/p9996.915ms/1%low7.620FPS/longestdrop11.378s and remains belowtarget; hero aliveat61.466sinputstop, later120sleasepoststatedeath separate. Raw captures, all metrics, failure/restoration records and CI are in [the decision checkpoint](validation/STEAM_DECK_STAIR_BASELINE_20261026.json). No source performance gain or causal regression against older code is claimed.
+
+Existing ready/focus/resume tooling restored the previously unconsumed bridge command; no framework/software change. Three out-of-FPS stair geometry snapshots found 0/0/6 native queries, with zero provably empty actual-solid broad phases. Do not implement the speculative per-solid filter: substantial recoverable cost is not established. Previous protected NextBot/Lua attribution remains coarse; BeforeAI/VProf refinements and rejected families stay closed. This does not prove 40 FPS impossible.
+
+Current runtime retains the stair correctness fix and accepted HUD work. Owned games/helpers retired, installed-source hashes verified, both displays ON. Current source CI328/337; new stair/headroom/performance-source/VR/audio gates pass; nine baseline named failures/error signatures unchanged. PR7 stays draft; main unchanged. Full five-scenario warmed repeated180s, ordinary fullplay/boss progression and40cap acceptance UNVERIFIED. Stop after this bounded explicitly resumed checkpoint; no automatic next investigation. Further source work needs an independently evidenced reducible mechanism or materially better available attribution capability, not another equivalent aggregate profiling cycle.
+
+# Current checkpoint — stair collision repaired; corrected performance baseline pending
+
+User-prioritized shared stair walking bypass is fixed in54bf0698. Actualgenerated-collider nativevalidation passes9 physicalcases (ordinary/legacybossflags+ordinary/genericfullup/down);56-case L54/LJ geometricgate coversfourorientations,large-step/Zsnap,completeflights/detours andlifecycleinvalidation. [Source, rawnativechecks, limitations and failedbaselineattempt](validation/STAIR_COLLISION_FIX_20261026.json).
+
+MotionusesactualgeneratedBBoxindex+worldgrid/stairsweepsforallgroundactors, physicallysupportedwaypoint/up-across-downstairmovement, two-cornerdetours, staircommitmentpreservation andnonpenetratingrecovery. Geometry/content/cadence unchanged. Native test pausesownAIanduses32x72hulls ononeflight; fullbossAI/allauthoredhulls/ordinaryplay stillunverified. Initialfixturepublicwrapperassertionfailedbeforemovement/preserved/corrected; productioncodehashesverified. Ownedgame/helpers restored;120hashes/bothdisplaysON.
+
+Optimizationresumedwithonecorrected-buildD20profiler-offbaselineattempt; clientbridge renewal failedBEFORE FPS. No newbaseline/performancegain/40FPSclaim. Resumebaselineonfixedsourcebeforefurtheroptimization; donotapplyoldsourcecomparisonsacrossthecollisionchange. Current45mincheckpoint04:25:52–05:10:52UTC endsafterpublication; noautomaticnextcheckpoint. PR7draft/mainunchanged/SP40UNMET/fullfivewarmed180s/ordinaryplay/fullboss/40capUNVERIFIED.
+
+# Current checkpoint — forced-advance query not retained; stair collision bug prioritized
+
+The resumed checkpoint runs03:31:29–04:16:29UTC. One source candidate completed four profiler-off P,C,C,P captures; fifth parent failed focus BEFORE FPS, preserved/no replacement; sixth not started. [Raw evidence, metrics, regression results and bug handoff](validation/STEAM_DECK_ADVANCE_QUERY_20261026.json).
+
+Omitting unused geometry queries during existing forced-advance windows raised descriptive mean FPS22.628→23.176, but p99106.780→125.316ms,1%low7.221→6.165 and longest drop9.073→10.536s worsen. No retention. Experiment2a3485c5 is preserved on perf/experimental-forced-advance-query-20261026. Runtime/tools restored byte-exactfcdf6f03/fdd75bfc/4b682;197cases/1037checksL54/LJ plusroster/trace/B29/120manifest pass. No claim of statistical significance or40acceptance.
+
+User now prioritizes enemies/bosses walking through stairs, then optimization. MotionV2 SetPos bypasses generated solid stair collision for ordinary/legacy bosses; onlyLODBossEncounter gets hullsweep. Same-cell chase can replace staircommitment; flat Zsnap can enter treads. Boundary-double repro confirms branch bypass, notnativephysics. BUG UNFIXED: preserve staircommitments plus shared collision/nonstair routing needs correct tests/native ordinary+boss verification. Blanketblocking all diagonal stairnodes can produce stuck routes. Separate bug-fix budget question pending; no clock reset or automatic extension. PR7draft/mainunchanged/SP40UNMET/fullacceptanceUNVERIFIED. Fixstairs before newperformancebaseline.
+
+# Current checkpoint — native VProf has reached its attribution limit
+
+The resumed checkpoint keeps the 45-minute cap from the resume first recorded at 23:57:20 UTC, with a conservative 00:40 UTC cutoff. Steering did not reset the clock. One additional series of two later-phase native VProf captures is complete. [Decision, metrics, raw reports and restoration](validation/STEAM_DECK_VPROF_PHASE_20261026.json).
+
+The largest full-capture frames, 311.530/339.969 ms, occurred near +1 second. The native windows from approximately 15.07–59.54 seconds did not reproduce the historical 149–150 ms direct filesystem-open peak beneath server gamemode protected calls: one reported 3.84 ms and the other no such node. This does not identify the resource or establish when the historical peak occurred. Later matched rendered maxima remain 204.815/140.516 ms, with prolonged below-target episodes of 11.721/10.475 seconds. Protected NextBot averages remain opaque at 11.947/11.280 ms per native reported frame, inclusive; no conversion to rendered cost or additive budget is justified.
+
+No removable operation or source candidate was identified. Stop this aggregate VProf approach at its current limit. BeforeAI wrappers, alignment and children stay closed; no calibration or rejected-family implementation was reopened. Gameplay/tools remain byte-identical to retained 26ccc4d/fdd75bfc/4b682. No experimental SHA or uninstrumented gain. Native integrity/restoration and all 120 installed-hash checks pass; automatic acceptance failures are preserved. Retained CI is 327/336 with the same nine baseline failures; new documentation CI is recorded in PR #7.
+
+PR #7 stays draft, `main` unchanged, SP40 UNMET. Full five-scenario warmed repeated 180-second, ordinary-play, boss-progression and capped acceptance remain UNVERIFIED. Do not automatically start another checkpoint. Require a concrete algorithmic mechanism or an identified new attribution capability before funding more equivalent captures.
+
+# Current checkpoint — BeforeAI observer gate unresolved; retained source unchanged
+
+The October 25 BeforeAI-only checkpoint started at 22:36:58 UTC and has a hard 23:36:58 UTC deadline. Eight fresh 60-second captures (off/on/on/off, then reversed confirmation) are complete; substantive measurement stopped at 23:13:54 UTC. [Decision, all metrics, failed evidence and raw captures](validation/STEAM_DECK_BEFOREAI_20261025.json).
+
+Outcome **C**: stop this measurement approach after one refinement. Small mean throughput penalties do not resolve the 5% bound under variation; confirmation also has a 20.944-second below-target episode. Qualified BeforeAI inclusive wall estimates are 2.538–2.730 ms per corresponding rendered frame, not validated production CPU time or recoverable cost. Endpoint-local clock brackets replace a rejected whole-window constant-offset assumption; nonlinear drift remains unresolved. No child probe, implementation or new experimental source SHA is justified.
+
+All eight runs loaded retained a4ccd068 source, with gameplay/tools byte-identical to fdd75bfc / 4b68237f. Source/HUD/renderer/resources/input/display checks are separate from failed automatic acceptance checks, which include budget, prolonged-drop and unrendered-terminal-interval flags. No uninstrumented source gain. Restore helpers, verify installation, commit/push this diagnostic checkpoint and stop before the deadline. PR #7 stays draft; main unchanged; SP40 **UNMET**, full five-scenario warmed repeated 180-second, ordinary-play and capped acceptance **UNVERIFIED**. Multiplayer/future features/Workshop/VPS deferred.
+
+One future decision only if separately commissioned: use the already-working native VProf path to localize the largest recurring stalls within existing engine scopes, without more per-call Lua wrappers or a new symbols project. These findings do not establish that 40 FPS is impossible or that no economical remedy exists. No automatic new tranche.
+
+# Current checkpoint — bounded low-overhead diagnostic; retained source unchanged
+
+The new diagnostic tranche began October25 at20:54:04UTC with a hard22:24:04UTC deadline. Two instrumentation approaches were selected within18minutes; no implementation candidate was justified. [Decision, conditions, overhead screens, raw captures and restoration](validation/STEAM_DECK_LOW_OVERHEAD_20261025.json).
+
+Native99HzIP/context-switch sampling observed a busy main thread and about44%ofuserCPU samples inlua_shared.dll. Actualframe-window alignment excludes setup/warmup/teardown. The cleanfinaloff/on/off bracket has observedoverhead below5%, butwidecontrolvariationpreventsastrictbound; useonlyqualifiedcoarsefindings. Oneearliersampleoverlappedhostpostprocessing andisexplicitlyexcludedfromcalibration/preserved. NativeengineVProf receivedeightmatched/reversed60sruns: matchingwindowmeanFPSpenalty0.94%, p95+1.57%,p99+0.37%,1%low−4.07%; taildirectionsmixedandallrawretained. Coarseenginehierarchyusablewithlimits, notunbiasedexclusiveLuaCPU.
+
+NextBotprotectedbehavioris10.7–11.1ms/nativeframeinclusive; identifiednativegroundlocomotion~1.25msinclusive. Theseoverlaptheirchildren andmustnotbesummedwithothertimingbudgets. No substantialredundantalgorithmisidentifiedinsidetheLuabehaviorboundary. Thisdoesnotshowthat40FPSisimpossible ornoeconomicalremedyexists. No newsourcegain/experimentalimplementation; retainedgameplay/toolstreesmatchfdd75bfc/4b682, includingretainedHUDwork. All15capturesloadedtheexpectedsource withzeroLuaerrors; helperprovidersrestoredandownedgamesretired. Privatecaptureextensionsarchivedandrestored.
+
+Nextrecommendedactiononlyifanothertrancheisexplicitlycommissioned: onecoarsebracketedmeasurementofEntrySafety:BeforeAIalone, withtheexisting5%/pacingobserver screen. No sourcecandidateuntilasubstantialrecoverablecostandnewmechanismareproved. Do notreopenfailedcontext/lookup/dispatch/movement/preloadfamiliesfromaggregatecosts alone. PR7remainsdraft/mainunchanged/SP40UNMET; fullfivewarmed180s/40capacceptanceUNVERIFIED. Publishthischeckpointandstopwithinoriginal90minutes; noautomaticextension.
+
+# Current checkpoint — remaining-budget attribution recorded; source unchanged
+
+The original October25 deadline remains20:34:30UTC; no new tranche or source hypothesis. After the earlier decision checkpoint, the remaining budget captured four fresh30s C/P/P/C diagnostic runs on07cc818d. Two selected-service selfwall profiles balance all38providers/allcompletedcalls/zeroopenframes/exactroot-selfsum, with zero Lua errors and completeownedrestoration. Movement self44.78/44.49ms/s, entry admission41.36/40.79, close defense27.22/27.63 repeat closely. However the observer reducesFPS22.54→17.89 (20.6%); these are perturbed wall times exclusive only of nestedselectedcalls, notexclusiveCPU/productioncost/predictedsavings. [Raw captures, method, qualifications and ranking](validation/STEAM_DECK_SELECTED_SELF_20261025.json).
+
+No further runtime change is justified by these values alone. Retainedruntime/tools remain byte-exact07cc818d/4b682; earlierHUDgain preserved, movement/preload experiments remainexcluded. FullfiveSP/40capUNVERIFIED/SP40UNMET/bothdisplaysONalways. Finish publication and stop bytheoriginaldeadline. Futureboundedworkmustlowerattributionoverhead andfinda substantial algorithmic/native-movement orentry/close-defensecost beforeanotherimplementationcycle. Do not invent an additiveCPUbudget from these scopes orrevisitfailedmicrofamiliesbasedonlyonstableinstrumentedrankings.
+
+# Current checkpoint — bounded tranche closed; retain measured source
+
+SP40 remains **UNMET**. Both displays stayed ON. The October25 tranche used one new hypothesis and stops after this pushed decision checkpoint; do not automatically launch another tranche. Future gameplay features, multiplayer and Workshop/VPS remain deferred. [Current scorecard and decision](validation/STEAM_DECK_TRANCHE_20261025.json).
+
+Movement-sweep source was rejected after twelve captures with mixed pacing, and preserved on `perf/experimental-movement-sweep-0d247f72`. The new seeded Warden preload experiment also received twelve actual-source unprofiled60s D20 captures in two counterbalanced series. Mean maximum frames improved372.391→223.572ms and352.203→235.450ms, paying~125ms during existing loading. AverageFPS22.947→23.127 and22.878→22.867 establishes no throughput gain. Confirmation longest below40 episodes worsened9.980→12.692s with p95/p99 also worse. Pacing safety is not established, so preserve candidate `d55cbb06` separately on `perf/experimental-warden-precache-d55cbb06`; restore its runtime and tests byte-exact retained `4b68237f`. [All measurements, decisions and published raw frames](validation/STEAM_DECK_WARDEN_PRECACHE_20261025.json).
+
+Retainedruntime remains equivalent to4b07f6b/HUDcd37397. Six fresh current-environment retained controls average22.9125FPS/p9577.0717ms/p99111.923ms/1%low6.6317, longest observed drop13.1213s. SteamOS changed externally to3.9.5/kernel7.2.7; previous3.8.28 measurements remain separate. Original-main cumulative improvement is unquantified because matching the valid fixture would require gameplay backports and runtime reconstruction. No percentages compounded.
+
+Candidate/parent GitHubmatrix have the same nine failing rows out of336; no fullgreen claim. Targeted boss/Warden/manifest checks and all twelve native source/model/HUD/renderer/resources/input/display gates pass. All owned games retired. Complete five-scenario180s acceptance, full boss/ordinary play and40cap remain unverified; PR7 stays draft/main unchanged. No requirement tradeoff is justified by the limited hosting diagnostics.
+
+Highest-value future action, only in a new explicitly bounded tranche: obtain exclusive function-level attribution within the dominant NextBot/server cost and require a plausible multi-millisecond algorithmic saving before source implementation. Current evidence does not establish a credible demonstrated path closing the remaining singleplayer40FPS gap. Do not repeat rejected micro lookup/dispatch/cohort/movement families without new rationale.
+
+# Current checkpoint — seeded Gordon model preparation candidate
+
+The bounded October 25 tranche ends at 20:34:30 UTC. New hypothesis 1 targets the measured encounter-start stall. Two focused profiles reproduced Warden Commit at 244.182/250.515 ms. A counterbalanced feasibility series, with the same observer in every arm, reduced Commit from 260.043/243.904 ms to 132.913/135.983 ms by warming the exact seeded model before capture (123.449/124.382 ms preparation). Nested scopes overlap; these are wall times, not exclusive CPU attribution or proof of throughput gains.
+
+Candidate extends the existing BossEncounter:PrecacheLevel loading seam to the authored Warden and warms only CitizenModel(seed). RunManager already holds players with BuildReady=false. No actors, encounter RNG, AI cadence, resources or gameplay values change. Lua 5.4 boss framework 77/77, Warden and 120-source installation/manifest regressions pass. System Lua 5.5 lacks legacy math.pow and is not the canonical runner. [Finite gate and raw evidence](validation/STEAM_DECK_WARDEN_PRECACHE_20261025.json).
+
+Next: six fresh unprofiled P,C,C,P,P,C 60-second frozen D20 source captures, exact loaded-source/model/loading receipt checks before and after, unchanged HUD/renderer/resources/input/both displays ON. Retain only a repeatable hitch reduction without material regression. This remains experimental pending those captures; retained runtime reference is 4b68237f (runtime identical to 4b07f6b). SteamOS is now 3.9.5/kernel 7.2.7, so older-environment numbers cannot establish this tranche's source effect. SP40 remains UNMET, full five-scenario acceptance and capped verification UNVERIFIED; PR remains draft and main unchanged. No automatic next tranche.
+
+# Current checkpoint — bounded two-hour optimization tranche (October 25)
+
+User limits this tranche to approximatelytwohours from18:34:30UTC/deadline20:34:30UTC, atmostthree new hypotheses; finishpushedcheckpoint/decisionreport, no automaticnexttranche. Futuregameplayfeatures/multiplayer deferred; bothdisplaysONalways/unchangedSP40criteria/mainunaccepted. [Scorecard, costs, baseline limits, stoprules](validation/STEAM_DECK_TRANCHE_20261025.json).
+
+Movement-sweep12sourcecaptures complete: meansFPS+4.693%/+2.698%butoverlapping/mixedpairs, confirmation1%low6.545to5.997(-8.36%)andfirstseriesprolongeddropsworse. Do notretainwithoutpacing safety; runtime/testmatrix restoredexact4b07, candidatepreserved onperf/experimental-movement-sweep-0d247f72. [All12/raw](validation/STEAM_DECK_MOVEMENT_SWEEP_20261024.json). Retainedruntime4b07/HUDcd37397 only; D20sixcontrolsmean22.33FPS/fullfiveSP+cap40UNVERIFIED. Originalmaincomparisonrequiresgameplaybackports dueSentrysupportfailure/differentenvironment; cumulativegainUNQUANTIFIED.
+
+Nextnewhypothesis1: targetobservedWardenService260mscommitspike (serverGMVProfpeak279ms). Useexistingfullprofilestoavoidreaudit, thenfocusedcommit/spawn/progressionallcalltimings/finiteprovidersrestore. Onlysourcechangeifdataidentifiesmaterialreduciblework. NativeNextbotLua10.948ms/frame remainslargeststeadycost; no additivebudgetfromoverlappingprofiles. No morelookup/dispatch/cohort microfamilieswithoutnewrationale.
+
+# Current checkpoint — native-vector swept admission without per-centre tables
+
+MeasuredMovementAllowed~22–24ms/sinclusive inMoveToward~108–113 motivates allocationremoval, no predictedFPSgain. Original createslo/hi/axis tablesforeachcentre/step. Candidate native-vector/plain-centres path retains exactclippingarithmetic/.0001threshold/fullpolicy/currentinputs, removesonlytemporarytables; custom/unknowninputs/centres retainoriginal. L54/LJ12317 fullqueryoracle/denial/boundary/parallel/random/mutation/fallback casespass, existingB29runtime/entryhotpath/120manifest/repeatinstaller/syntax pass. CI337newbehaviorgate/notfullgreen. [Finitegates](validation/STEAM_DECK_MOVEMENT_SWEEP_20261024.json).
+
+Next6freshactualsourceP,C,C,P,P,C60s frozenD20stress; beforeafterexactfile/function/helper/currentnativeVector/fullqueryoracle>=1000/source/HUD/renderer/resources/input/bothON. Restoreonlyownparitydenialcounterincrements synchronously, no gameplay/providers/profilers duringFPS. Rejectnoise/regression, confirmunchangedifpromising. BothmonitorsONalways/SP40UNMET/fivefullSP/fullordinaryplay/40capUNVERIFIED/multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — direct AI-step prototype rejected
+
+FixedC,P,P,C23.323/23.558/21.871/23.328FPS; means23.326/22.714(-2.621%), median34.736/36.137,p9579.524/80.679,p99110.515/104.664,longdrops9.135/10.784s. Reject: removingordinarycoroutine resume/yield via exactsourcebody/directprotectednativecallback doesnot improveoverallperformance. No game sourcecandidate. Same55ordinaryactors/twoWatchersunchanged/57initialhostiles/1820models/seeds/resources/input/AIcadence/settings/bothON; nativecallback/thread/source/HUD/renderer/input/display checks pass, allownedrestored/independentretirement/allownedStop. L54/LJ100-step/order/error/foreignyield fixturespass. [Allrows/raw/contracts/limits](validation/STEAM_DECK_BEHAVIOUR_DIRECT_20261024.json).
+
+Next measured bottleneck remains server AI authority; retain existing cadence/coroutines/content. Do not repeat rejected dispatch/cache/geometry-phase/direct-coroutine approaches. BothmonitorsONalways/SP40UNMET/fivefullSP/fullordinaryplay/40capUNVERIFIED/multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — additional production-plan D20 also fails 40 FPS
+
+Additionalrelease-config/dev0D20/54initialhostiles/67planned/1820models onretainedHUDsource:25.080FPS, median33.767ms,p9568.730,p9992.767,1%low7.712,longestdrop9.542s. Same seeds/legalresources/input/graphics/bothON. Nativeplan/runtime/source/HUD/renderer/input/displaygates pass; 120slease recordsdev0 thenrestores1/allownedStop. Captureendsbeforelease; post120sobservationplayerdead, separatefromactivecapture. Earlierprivatebasename/loadstring mistakes failedbeforeFPS/preserved, fixedwithpublicCompileString andcleanupfixtureL54/LJ. [Raw/allmetrics/limits](validation/STEAM_DECK_RELEASE_D20_20261024.json).
+
+This is additional coverage, not a replacement for frozen developer-density stress or a sourcegain; full ordinaryplay/completebossphases remainunverified. StaticgeometryalreadyusesSOLID_BBOX/noPhysCollide, so no collision representationchange justified. Nativehierarchy stillNextbotLua10.94selfms/frame/serverGM3.05/opaqueLua2.81. Next choose a source change in measured repeated server authority with finite native correctness/FPS gate, avoid rejected caches/dispatch. BothmonitorsONalways/SP40UNMET/fivefullSP/40capUNVERIFIED/multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — progression dispatch micro does not justify source change
+
+Noninstallednative57NextBots57000queriesperarm P,C,C,P,P,C16.423/16.025/15.762/16.129/16.422/16.078ms; only~2.3%time reduction, no meaningful predictedgain claimed. All native profile/Player/null/custompublicproviderparity/restoration checks pass; resolverneverinstalled/allownedStop. No sourcecandidate. [Raw/limits](validation/STEAM_DECK_PROGRESS_DISPATCH_20261024.json).
+
+Next additional ordinary release-configuration D20 capture on current retainedHUDsource: build via canonical BuildCurrentLevel withdeveloper mode0, unchanged release population/planner/configuration/gameplay; same legal20Wizard/resources/physicalcourtinput/graphics/bothON. Separate from frozen developer-density D20stress; never replace/reclassify itsfailedcounts oracceptance. Exactnative releaseplan/runtime/source/HUD/renderer/resources/input/display gates, 60s first finiteobservationalrun; no FPSgain inference acrossdifferentcontent. BothmonitorsONalways; SP40UNMET/fivefullSP/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — bounds polling phases rejected after six source captures
+
+P,C,C,P,P,C22.145/22.645/21.926/21.457/23.035/22.746FPS. Means22.212/22.439(+1.020%), p9583.128/82.669ms, p99118.773/116.457ms, 1%low6.549/6.291, longest10.495/17.727s. Reject: overlapping/mixed FPS and worse prolonged drops despite smaller callback cohorts. Restore runtime and implementation-specific phase test byte-exacteef47658. All native source/deadline/HUD/renderer/resources/input/bothON checks pass; postFPS observers independently restored/allownedStop. [All rows/raw/mechanism/limits](validation/STEAM_DECK_BOUNDS_PHASES_20261024.json).
+
+Next attribute dominant server NextBot Lua cost at current authority; reuse bounded diagnostics and avoid repeated tiny lookup/caching candidates already rejected. No AI cadence/content/collision/graphics changes. Both monitors ON always. SP40UNMET; fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — stagger static bounds polling within existing one-second budget
+
+Hostingdiagnostic L23.648/D32 42.042/D32 45.020/L23.014FPS; dedicatedp9543.578/39.377,longdrops6.665/4.183sFAIL. Differenthosting/runtime/tick/networkconfounds, notSPacceptance. [Rows/limits](validation/STEAM_DECK_HOSTING_HUD_20261024.json). NativeClientSimpeak38.63ms motivates3sThinkobserver:1253staticboxes3759calls/28.448ms, three1372callbackframes8.312–11.387msLua body; all1374providersrestored/ownedStop. Rolefalsefieldmicroonly~6.8%, no candidate. [Diagnostic](validation/STEAM_DECK_CLIENT_THINK_20261024.json).
+
+Focusedsource sets64fixedbinarypollphases perEntIndex, everydeadline0<delta<=1sec; DT/transmit immediate retries unchanged, incompletegettersstayawake. L54simulation1280actors23/60/120FPSpeaks60/40/20vsparent1280, samecadence; existingrenderer/120manifest/syntaxpass. LuaJITweakfixture andgeometryfullupdateerrorssameparent/current, notfullgreen. Next6freshP,C,C,P,P,C60s actualsourcecomparison, beforeafterfile/function/deadline/HUD/renderer/resources/input/bothON; AFTERFPSonly3sclientThinkmechanismprobe/restoreeacharm. No duringFPSobserver. Retainonlyrepeatablepacinggain/avgFPSmaintained, confirmifpromising. [Finitegate](validation/STEAM_DECK_BOUNDS_PHASES_20261024.json). SP40UNMET; fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — native collision groups provide no proven replacement
+
+Actual22group sweep restoredbothactors/allownedStop/bothON. InteractiveDebris3 andScriptedNPC19failfourNPCpairqueries. Traceequal0/5/7/8/9/17notphysicalcontactequivalence; no nativepair/player/loot/Climber/Lurkerbehavior proof or FPSgain. No newsourcecandidate. [Matrix/raw/limits](validation/STEAM_DECK_COLLISION_GROUPS_20261024.json).
+
+Next retainedHUD sameDeck hosting diagnostic withfixedlisten/dedicated/dedicated/listen60s, onehuman andunchangedD20subsetcounts/settings/input/bothON. Olderlocaldedicated32~42avgfailedpacing, predatesretainedHUD. Differentprocess/32bitserverbranch/networkingareexplicitconfounds, notisolatedprocess effect orfrozen singleplayeracceptance. Recordruntime/cadence/source/counts/normalresources andretireallownedprocesses. Usecomparisononlytoassesslargerclient/servercontention; do notreplacefiveSPacceptancescenarios. SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED/multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — exact-cell shortcut rejected after six source captures
+
+P,C,C,P,P,C22.344/22.663/21.820/21.839/25.061/23.233FPS. Means23.082/22.572(-2.208%),p9578.576/85.485ms,p99106.719/115.342ms,longest12.239/9.522s. Reject: avgFPS/tails worse despite native29727queryparity/micro~30% mechanismbenefit. Restoreall4runtimefiles byte-exacte464ba7d; keepuseful9900float32/nativeboundary/custom/config/large/tinycellregressions; removeobsolete implementation-specific no-center assertion. CI336includes new behavior gate. All6source/native/HUD/renderer/resources/input/bothONchecks pass/ownedStop/rootinstallrestore, allFAIL40. EarlierprivateisvectorCassertwrong: failedbeforeFPS, archived/excluded; correctedvalidationrestartedsix, no failedcapture replaced. [Allmetrics/raw/limits](validation/STEAM_DECK_EXACT_INTERIOR_20261024.json).
+
+Next investigate whether native collision rules can remove engine-to-Lua callback cost while preserving the complete current ray/hull/physical/player/loot/world matrix. Prior group19 failsfourNPCraytraces; do not reuse it or alter mechanical collisions on unsupported assumptions. Read current native collision gates first; source changes only after equivalence/measured benefit. BothmonitorsONalways. SP40UNMET; fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — exact-cell interior source candidate
+
+Navigationprofiles repeat~690kExactCell/~70s71.775/71.221ms/sinclusive; nestedcoordinatesoverlap, Distance1.262/2.978. Firstprofilecontroller metadatafloor15vsactual8failed afterFPS despite8restoredtrue; originalfailurequalified/preserved, remaining2completedafterfix. [Rows/raw/limits](validation/STEAM_DECK_NAVIGATION_CPU_20261024.json). Short3sinstructionexposure restored/errors0 but sparse/linecapoverflow/VMbias, notCPUtime. [Census](validation/STEAM_DECK_INSTRUCTION_EXPOSURE_20261024.json).
+
+Noninstallednativeinteriorprototype matches29727queries/all690currentcells+57actors; micro57000calls89.678/62.613ms, mechanismonly. Source validates canonicalprovider/config/key/nativeinput identities and proves strictlyinteriorpoints within conservativefloatbound; allboundaries/custom/unknown/large/tiny cases keep exactnativecenter. No physicalmargin/acceptedvolume/cadence/content/settings change. ExistingB29spatial/dispatch/doors plusnew9900float32oracle+interiorwork/provider/keymutation checks/120manifest/syntax pass. [Finitegate](validation/STEAM_DECK_EXACT_INTERIOR_20261024.json).
+
+Next6fresh actualsourceP,C,C,P,P,C60s sameD20stress, source/nativeprovider/pointparity and HUD/renderer/resources/input/bothON atboundaries. Rejectnoise/regression; confirm promising. SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
+# Current checkpoint — authenticated account cache rejected after six source captures
+
+P,C,C,P,P,C22.909/22.751/22.638/22.702/23.327/24.292FPS; means22.979/23.227(+1.078%), p9581.278/77.369ms,p99114.541/110.835ms,longest10.367/10.238s. Only1/3pairedFPSdirectionspositive, overlappingranges/medianworse/mixedpacing; reject source candidate despite isolatednative micro benefit. Restore RunManager byte-exact9ef11be9/remove obsolete cacheunit/CIrow/matrix335. All source/nativeC/cache/nativeidentity/currentPlayerState/HUD/renderer/resources/input/bothmonitor checks pass, ownedStop/rootinstallrestore, all sixFAIL40. [All rows/raw/limits](validation/STEAM_DECK_ACCOUNT_KEY_20261024.json).
+
+Next boundeddiagnostic mustattribute the remaining NextBot Lua cost more precisely; inspect the earlier public instruction sampling failure before reusing it. No disabledAPI recovery/processmemory/validitycache/AI/content/cadence/settings change. Both monitors ON always. SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
+# Current checkpoint — authenticated account key source candidate
+
+Native read-only micro100000calls means42.201ms parent/17.759ms candidate, one actual authenticated SP player, method/providers unchanged and IDs redacted. Only feasibility evidence, no FPS prediction; observed call frequency makes isolated savings modest. Source weakly caches only a confirmed native account key, keeps current validity/provider/state queries, clears provider/removal/disconnect/reload boundaries, preserves uncached unknown/zero/custom/unauthenticated paths. Lua54/LJ identity/provider/lifecycle plus Soldier lifecycle/15progression/120source/repeatinstaller/syntax/diff pass. [Native evidence, API references, finite source gate](validation/STEAM_DECK_ACCOUNT_KEY_20261024.json).
+
+Next6fresh actualsourceP,C,C,P,P,C60s unchangedD20subset, read-only source/function/nativeC/cache/currentidentity/profile parity before/after plus retainedHUD/renderer/resources/input/display. Reject noise/regression; confirm promising. Both displays ON always. SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
+# Current checkpoint — hurt-pose membership rejected after six source captures
+
+P,C,C,P,P,C23.179/24.023/22.795/22.235/22.515/21.744FPS. Means22.643/22.854(+0.932%), p9582.337/81.186ms, p99117.938/113.984ms, longest11.806/9.483s. Overlapping ranges/mixed pairs do not demonstrate gain; reject and restore hurt-pose byte-exactbf05ad1a, retain three useful reload/reentrant/registry regressions. Source/function/membership/HUD/renderer/resources/input/display checks pass; all owned games stopped/root install restored; all six FAIL40. [All rows/raw/limits](validation/STEAM_DECK_HURT_MEMBERSHIP_20261024.json).
+
+Next inspect repeated progression reconciliation cost at the observed caller before choosing another candidate; unchanged lifetime binder already early-returns. No frame validity/state cache, AI/content/cadence/settings change. Both monitors ON always. SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
+# Current checkpoint — caller census complete; frozen-pose membership candidate
+
+Repeated caller samples identify progression/status/player identity and hurt-pose queries. Four controls/profile21.981–23.914FPS/allFAIL40; count samples are not exclusive CPU cost. Providers restored/owned games stopped/both monitors ON. [Raw results and limits](validation/STEAM_DECK_VALIDITY_CALLERS_20261023.json).
+
+Frozen-pose hook currently checks every registered hostile. Candidate tracks only owned pose membership, retains registry order/same-frame callback freezes, checks active state freshly every frame, seeds on reload and forgets removed actors. Existing23 plus3 lifecycle/reentrancy cases, animation/death/manifest/syntax checks pass. No FPS claim. Next fixed6fresh P,C,C,P,P,C60s actual source comparison with boundary source/ownership/HUD/renderer/resource/input/display checks. Reject noise/regression; confirm promising gain. [Finite gate](validation/STEAM_DECK_HURT_MEMBERSHIP_20261024.json). SP40UNMET; five full SP/release ordinary/40capUNVERIFIED; multiplayer deferred/main unchanged.
+
+# Current checkpoint — validity forwarding rejected after twelve source captures
+
+Readonlysource6P24.384/C21.646/C22.954/P21.929/P21.574/C22.333FPS. MeansP22.6289/C22.3107(−1.406%),p9581.342/81.034,p99116.030/114.295,longest13.771/11.209s. Firstsource6means22.632/22.593(−0.170%). BothactualsourceseriesfailtoshowavgFPSgain; reject/restoreMotionV2byte-exact92290/removeobsoleteunit/matrixrowback335. Earlierprototype+8.289%wasnotconfirmed. All12actualsource/nativeCcallee/owner/result/HUD/renderer/resource/input/displaychecks pass/allownedStop/rootinstallrestore; allFAIL40. No causalclaimaboutreloadinstrumentation: readonlygatesdidnotestablishbenefit. [All12/raw/limits](validation/STEAM_DECK_NATIVE_VALIDITY_20261023.json).
+
+Next boundedpublicEntity.IsValidcaller-sourcecensus usingone-in2048observeddebug.getinfoframes, cappedsitecounts/nolocals/entityrefs/pointers. Native17providerprofilefindsmanyvalidityqueriesbutnotwhichgamecallers. IdentifyrepeatedworkatcanonicalcallersbeforeanotherAPIshim. Preserveargs/results/errors/providers; control/profile/profile/controlmeasureobservereffects; exactrestore/independentinspection/ownedprocessStop. No debug.sethook/jitAPIrestoration, validitycache or gameplay/cadence/content/settingschange. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — first validity source comparison finds no gain
+
+SixP22.699/C22.879/C22.934/P22.066/P23.130/C21.967FPS; meansP22.6316/C22.5932(−0.170%),p9578.375/78.788,p99122.356/109.621,longest11.532/13.868s. Rangesoverlap/mixedpairs; allFAIL40. Prototypegainnotconfirmed; no sourceimprovementretained. Allnativecorrectness/source/provider/HUD/renderer/resource/input/displaywatch checks pass/allownedStop/rootinstallrestore. [Allsix/raw/limits](validation/STEAM_DECK_NATIVE_VALIDITY_20261023.json).
+
+Candidate-onlypreFPSgatechangesmethodownershipthroughreload/foreignowner/reinstallation. PotentialwarmJIT-stateeffectisunmeasured, notclaimedcause. Nativecorrectnessgatealreadyverified; nextfixed6same-game-codeP,C,C,P,P,Cusesreadonlysource/function/Ccallee/result/identitychecksforbothvariants, noreload/reinstallation beforeFPS. Newcomparisongroupkeptseparate; no count/gameplay/setting/FPScriterionchange. Rejectifnogain, confirmifrepeatable. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — native validity forwarding source ready for FPS
+
+Freshprivate4C21.588/P23.729/P23.711/C22.221FPS; meansC21.904/P23.720(+8.289%),p9583.547/75.436ms,p99109.944/105.9415ms,longest13.463/9.853s. Bothcandidatesbeatbothcontrols/allmeanpacingbetter; promisingONLY/all4FAIL40/noformalclaim. Freshnativeparity/owner/retirement/watchchecks pass/allownedStop. EarlierincompletesequenceexcludedaftermissingDPMSline; noactualOFFproven/nooldcapturesalvaged. Newstrictcompleteness+DRMwatchconditionsidenticalallfour; originalinhibitoractive/bothON. [Allrows/raw/limits](validation/STEAM_DECK_NATIVE_VALIDITY_20261023.json).
+
+CanonicalsourceforwardsallvalidityqueriesfreshviaCcallee; noresultcache. Ownedreload/foreignowner/custommetatable/unsupportedruntime guards, no behavior/timing/content/settings changes. Productionunit/B29dispatch/entrylifecontext bothLua54/LJ/manifest/repeatinstaller/syntaxpass. NewCI336notfullgreenclaim. Next6freshactualsourceP,C,C,P,P,C60s against92290, nativehash/function/Cupvalue/owner/allentityparityatboundaries plusHUD/renderer/resources/input/bothON/watch. No observers/JIT/GC/settings changes. Rejectnoise/regression; confirmationifpromising. SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — native C call attribution complete
+
+FourcorrectedC/P/P/C21.772/22.013/22.614/21.738FPS; 17nativeCproviders/one-in128, allrestored/independentinspection/ownedprocessStop. BothprofilesrepeatNextBotvalidity~7.7million/~70sandposition~2.1millioncalls; movementsetters~117-120k/smalltimedrows. ExistingLuaLocalPos/LocalAngleslatchwrappersskipped/preserved; failedv1preFPSgateisqualifiedseparately. Inclusivecostsoverlap/clockhelperoverheadandaliaseslimitcoverage; profiledFPSnotacceptance/nocausalspeedupclaim. [Rows/raw/limits](validation/STEAM_DECK_NATIVE_CALLS_20261023.json).
+
+Next isolateconstantnativeEntity.IsValidcallee forwarding inprivatefourfreshcontrol/candidate/candidate/control60s feasibility. ObserverFPSabovecontrolsdoesnotprovecauseorbenefit; everyquerymuststillcallnativecheckerfresh andpreserveproviders/arguments/results/errors. No frame-validitycache. Retainonlyactualrepeatablegainwithnativeparity/newsourceverification. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — native method fast path rejected after six source captures
+
+P,C,C,P,P,C23.196/22.043/22.839/22.266/22.276/21.153FPS; candidate meansFPSandpacingworse/inconsistentpairs/overlappingranges. Reject andrestore MotionV2 byte-exactb05b; removeunusedimplementation-specificunit/matrixrow. Native519key/currentmethod+field/reload/foreignowner/API fallbackandrestoration atbothboundaries pass. Micro~2x doesnotpredictgameplaygain; all6FAIL40. AllownedgamesStopped/rootinstallrestore. [Allsix/raw/limits](validation/STEAM_DECK_NATIVE_METHOD_SOURCE_20261023.json).
+
+Next fixedcontrol/profiled/profiled/control60s D20onretainedHUDsource: bounded sparsepublicnativeEntity/locomotion/trace methodobserver, timingactualC work insideopaqueLua scopes. Existing service profileMoveToward108-113ms/s includesitsnativeC callees; measureSetPos/SetAngles/GetPos/trace/locomotion beforeanotherfocusedsourcechange. Nativewrapperreturn/error/ownerrestorationandobservereffectcontrolsrequired; inclusivecostsoverlap. No gameplay/settings/AI/cadence/countchange; allownedprocessStop. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — native method lookup candidate; actual source FPS next
+
+Native519methodprecedence keys/57actors/29868currentcasespass; safety38658method+fieldcases/13metadatamutations/5removedNextBotlookups pass. Temporarymetadatarestored/candidatefunctionneverinstalled. Mixed74100lookup loopsPmean10.333ms/C5.011ms motivatesmechanismonly, noFPSclaim. PriorLODfieldindexcachesrejected a differentpath. Base recorder1267samplesmean.0264ms/max.5268ms, terminalsave9.4243ms separately; callbackcostcannotexplainframe deficit. [Diagnostics/raw/limits](validation/STEAM_DECK_METHOD_LOOKUP_DIAGNOSTICS_20261023.json).
+
+Sourcecandidateusescurrentrawmetatablemethods/fallbacks, noactor/table/profile/functionvaluecache; ownreload/foreignowners respected. Onlynative-testedWindowsx64engine2026.09.17 enabled; allotherABIskeepnative. Newproductioninstallerunit+AI/B1/entry/B29dispatch/lifecycle/manifest/syntaxpass; matrix336notfullgreenclaim. [Contracts/frozen6run gate](validation/STEAM_DECK_NATIVE_METHOD_SOURCE_20261023.json).
+
+NextsixfreshoriginalsourceP,C,C,P,P,C60s sameD20stress, exactsource/index/core/liveparity/ownedreload/foreignowner/API-restoration atboundaries plusretainedHUD/renderer/resources/input/bothON. No observers/JIT/GC/settingschanges. Rejectnoise/pacing/correctnessregression; confirmifpromising. BothmonitorsONalways; SP40UNMET/fivefullSP/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — typed Warden dispatch rejected after six source captures
+
+P,C,C,P,P,C24.954/22.051/21.461/22.615/21.849/21.414FPS. Everycandidatebelow everyparent; reject andrestorebothruntimefiles byte-exact14364f8c. Static21phase/dance+foreign/reload andnativefile/function/core/extension/57ordinaryresults checks allpass, butdonotprovea performancegain. Keepusefulpost-coretype-mutation andinitialforeign-providerreloadregressions. AllownedgamesStopped/rootinstallrestored. [Allsixmetrics/proofs/raw](validation/STEAM_DECK_WARDEN_DISPATCH_20261023.json).
+
+RetainedHUD remains partialvalidatedD20gain; noothernewruntimechange retained. Next inspectactualnativeentity-field access shape for scopedcurrentLua-tableborrowing inmeasuredmovementpath; avoidwholeentityindexwrappers/cross-framecaches andmeasurebeforeanyFPSclaim. BothmonitorsONalways; SP40UNMET/fivefullSPgates/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — typed Warden dispatch ready for measured comparison
+
+Four managerobserver runs21.290/20.915/22.413/22.988FPS; controlsmean22.139/profiled21.664, rangesoverlap/allFAIL. Repeated Warden.Tick16.48/26.60ms/s standsaboveotheremptyguards, alongside larger usefulroster/close-defense/movementcosts. All31providers restore/independentinspection andownedprocessStop pass. Inclusive sampledrows overlap/canalias, no additiveCPU/FPSgain claim. [Profile/raw](validation/STEAM_DECK_MANAGER_CPU_20261023.json).
+
+Focused candidate puts Warden-only core/dance behindthepubliccurrenttype guard, withcore-before-dance, late typechanges, reload andforeign-owner fallbacks. Existing21phase/dance checks+foreign/reload andWarden24graphs/clones/fuses/commitment/resupply/boss-feedback gates pass;120-source/repeatinstaller/syntax/diff pass. [Contracts/frozen6run gate](validation/STEAM_DECK_WARDEN_DISPATCH_20261023.json).
+
+Next fixedfresh originalsourceP,C,C,P,P,C60s unchangedD20stress, before/afteractualfile/function/capturedcore/dispatchproof plusretainedHUD/renderer/source/normalresource/input/bothON checks. No observer/JIT/GC/settings changes. Rejectnoise/correctness/pacingregression. Staticchecks are notDeckgain. BothmonitorsONalways; SP40UNMET/fivefullSPgates/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — broad behavior router ruled out; manager attribution next
+
+Actual native census finds55ordinaryactors with onlyvariance→MotionV2, twoWatcherswithsevenlexicallayers. No broad wrapper router is justified. Read-only source/upvalue census makesno callfrequency/CPU/FPS claim; allownedprocesses stopped. [Evidence and limits](validation/STEAM_DECK_BEHAVIOUR_CENSUS_20261023.json).
+
+Next fixedcontrol/profiled/profiled/control60s sameD20stress, extendingexistingone-in128public-method observer toboss/archetype managers andmovement authorities. Inclusive estimatesoverlap/samplingcanalias/providerwrappersaffectJIT; controls measureobservereffect. Exactproviderrestoration plusindependentinspection andwholeprocessretirement required. No gamecodecandidate or predictedgain. RetainedHUDsource unchanged; bothmonitorsONalways. SP40UNMET/fivefullSPgates/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — classification guard rejected; actual behavior ancestry next
+
+Nativeparitypasses57bots/64cases and publictypeerror-restoration; no method everinstalled. Parentflatloopmeans0.233ms/candidate0.276ms per57000calls, order/JIT effects large and pureloop maybeoptimizedaway. No costbenefit; discard without productionchange orFPSclaim. [Rawproof/times/limits](validation/STEAM_DECK_STATEFOR_KIND_20261023.json). ActualsourceHUDgainretained, SP40stillUNMET.
+
+Next readonlyactual_BehaviourTickfunctionancestry/sourcecensus. FreshnativeprofileNextBotLua10.948ms/engineframe motivatesfinding repeated pure archetype-guardwrappers; distinguish mandatory generic/sideeffect work. No functions invoked/replaced oractorfields changed; exactsource/function/upvalue links andeligible guard groups only. Useevidence to decidewhethercanonicaldispatchcanremove redundantguardcalls while preservingcallbackorder/mutabletypeandtable/providerchanges; operationcounts alone are notFPSproof. BothmonitorsON, SPscope/fivefullacceptance/releaseordinary/40capUNVERIFIED, multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — remaining CPU is server/NextBot Lua
+
+Fresh retainedHUD nativeprofile completes903hierarchyrows/1688engineframes/twoENDmarkers. Serverinclusive24.468ms/engineframe, largestNextBotprotectedLua self10.948ms, servergamemodeLua3.047ms, opaqueLua2.814ms, leafclassification1.108ms. HUDtextself0.624ms versus earlier1.24crosscapture (notadditivegain/isolatedcomparison). Instrumented20.937FPS/allFAIL isdiagnosticonly. AllownedgamesStop; currentHUDsourceproofpasses. [Raw/scopes/limits](validation/STEAM_DECK_RETAINED_HUD_CPU_20261023.json).
+
+Next finite read-only nativeStateFor classification mechanism/cost probe, motivated by measured querycosts and actualinstalledtype wrapper. Compareoriginal against existingHostileRegistry membership plus liveNextBotmetatable/MetaName and unchangedpublictypeprovider, without cachingactor/profile/result or overridingmethods. Validateactualbots/player/world/NULL/plainprofiles and directmicrotimings before decidinga sourcecandidate. Microtime cannot proveDeckFPS. BothmonitorsON, SP40UNMET/fivefullSPgates/releaseordinary/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — retain measured HUD reuse; remaining CPU attribution next
+
+Unchanged6confirmationP,C,C,P,P,C21.465/24.986/23.358/21.833/22.456/23.585FPS. Means21.918/23.976(+9.391% arithmetic),p9585.153/74.928ms,p99112.514/100.731ms,longest20.654/16.082s. First6means22.263/23.165(+4.052%). All6pairedFPS/p95directionsfavorcandidate; bothseriesp99/dropmeansimprove, individualtailsmixed. Retain canonicalHUDreuse with limitedD20validation, not universal/noise-free/final40claim. All12FAIL40. Nativevisual/state/lifecycle/provider/source/pool/usage/input/endhealth checks pass, allgamesStop/rootinstallrestored. [All12/raw/CI/limits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next fresh60s nativeVProf flat+completehierarchy on retainedsource, noLuaCPUobserver/sampler. Separateclientrender/text, serverNextBotLua/simulation and othernativecosts; collectorwaits2ENDmarkers. Existing reports includeprep/IPC and perframeinclusiveoverlap; newdiagnosticwillretainthoselimits. Use freshmeasuredremainingbottleneck for nextfocusedchange. BothmonitorsON; SP40UNMET/allfivefullSPgates/releaseordinarycorroboration/40capUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — canonical HUD first source series promising; unchanged confirmation next
+
+SixsourceP,C,C,P,P,C runs22.391/22.798/23.776/21.634/22.764/22.921FPS. Means22.263parent/23.165candidate(+4.052% arithmetic), p9582.072/78.369ms,p99117.183/114.056ms,longestdrop22.519/8.951s. All3adjacent FPS/p95 effects favorcandidate; thirdFPSmarginonly0.69% and ranks nearlytouch, so run unchanged6freshconfirmation before retaining. AllsixFAIL40. Nativebefore/afterfile/function/cache/pool/usage/publicprovider checks and input/endhealth pass, allownedgamesStop/rootinstallrestored. CIcd326/335/source_changed0/same9andfiveanchors/newcachegatepass; sourceVRaudiopass. [Sixrawresults/native/CI limits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next unchangedP,C,C,P,P,C60s samefrozenD20stress againsta135. No further code/setting/instrumentation changes. Confirmation separates variance from usefulgain; no statistical/finalclaim or mainmerge. BothmonitorsON, SP40UNMET/allfivefullSPgates/releaseordinarycorroborationUNVERIFIED; multiplayerdeferred.
+
+# Current checkpoint — canonical HUD native visual/state pass; source FPS next
+
+Freshcd37397f sourcevisual pass: opaque2builds/1hit,fade1nativefallback; exactnativecursor/RGBAallfourframes, hookremoved. Fixedpixelbounds pass: darkmax6/oneOver5,brightmax5/noneOver5,black/fadeexact,backgroundsunchanged. OwnedgameStopped. [RawPNG/state/path proof](validation/STEAM_DECK_HUD_CACHE_20261023.json). No sourceFPSgain claimed. This documentation checkpoint changes no testedgamecode.
+
+Next fixedfresh original-sourceP,C,C,P,P,C60s sameD20stress againsta135fef3. Actualsource/function/line/lexicalcache/6pool/counters checks atbothboundaries; publicDrawLinesunchanged/no privateprototype; normalrenderer/resources/AI/input/cadence/graphics/bothON. Reject noise/pacing/correctnessregression; allfivefullSPacceptance,releaseordinarycorroboration,warmth3x180s/40cap remainunverified. Multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — canonical HUD raster reuse statically validated
+
+Implement onlyownHUDHook rasterreuse; publicDrawLines remainsnativeauthority. SixfixedRTnames, text/font/layout/palette/cleanup invalidation, width/height bounds, fades/nonHUD/foreignprovider fallback, sameframe/reentrantpool safeguards, protectednative-error cleanup and exacttextendstate. No per-callclosureallocation. Lua5.4/LuaJIT cache24command/state comparisons plus saturation/secondview/weakcleanup/provider/reload tests pass; old750text/1200aligned tests,120manifest/installer/syntax/diff pass. NewCItest makes335matrix entries, not a fullgreenclaim. [Sourceplan/contracts/staticlimits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next freshactual-source4background visual/stategate acrossseparateframes; requireactualopaquehit/build and fadefallback so a fallback cannot fakepixelproof. Then original-sourceP,C,C,P,P,C60s sameD20stress, nativeactualfile/function/upvalue/pool/counter/renderer/normalresource/input/cadence/bothON gates. No privateprototype/CPUprofiler/sampler/JIT/GC changes. Prototype+5.365% does not certify changedsource. SP40UNMET/allfivefullSPgates/releasecorroborationUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — opaque HUD prototype promising; canonical implementation next
+
+Four freshcontrol/candidate/candidate/controlD20 captures21.260/22.415/21.979/20.873FPS. Means21.066/22.197(+5.365% arithmetic); bothcandidates abovebothcontrols. Meanp9587.657/83.263ms,p99131.245/130.828ms,longestdrop13.817/11.258s. Onecandidatep99147.733ms; no significance/finalacceptanceclaim. AllfourFAIL. Candidate5719/5660hits,331/313builds,12/13fallbacks; exactfunction/owner/lease restoration and wholeprocessStop pass. [Rawfour/visual/parity/limits](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next canonical HUD-only rastercache, preserving publicDrawLines/foreignproviders/fades/nonHUD/oversize paths. Bound6textures, validate widths/heights/font/palette/reload/layout/cleanup, preserve RT/alpha/blend/clipping and surface-state contract at ownedHUDscope; nativevisual/regression checks before actualsourceP,C,C,P,P,Ccomparison. Prototypeperformance does not certify changedsource. No AI/graphics/content/count/cadence/hostingchange. BothmonitorsON, SP40UNMET/fivefullSPgatesUNVERIFIED/releaseordinarycorroborationUNVERIFIED; multiplayerdeferred/mainunchanged.
+
+# Current checkpoint — opaque HUD prototype fresh visual pass; matched FPS next
+
+Fresh actual-native original/cached four-background comparisons pass predeclared maxchannel8/pixelsOver5<=20: darkmax6/onepixelOver5,brightmax5/noneOver5,black/fadeexact. Backgrounds unchanged. PublicDrawLinesrestored/leasecleared; ownedprocessstopped. No FPScapture/gain fromvisualtest. [Rawimages/metrics/bounds/frozen4armplan](validation/STEAM_DECK_HUD_CACHE_20261023.json).
+
+Next fixedfreshcontrol/candidate/candidate/control60s unchangeddeveloper-densityD20 with existing6slotopaque-onlyprototype, fadeoriginalpath. Verify actualsource/helperhash/native1024x256slots and exact DrawLines/owner/lease restoration; record hits/builds/fallbacks. NoactiveCPUprofiler/sampler/JIT/GC/AI/graphics/countchanges. A measuredbenefitneedsproperproductionbounds/fontreload/state/lifecycleimplementation and newsourcecomparison before retention. BothmonitorsON; singleplayer40UNMET/fivefullSPgatesUNVERIFIED/ordinaryreleasecorroborationUNVERIFIED; multiplayerdeferred; mainunchanged.
+
+# Current checkpoint — namespace binding rejected after six Deck captures
+
+P,C,C,P,P,C60s captures21.604/22.718/20.814/21.489/21.800/22.127FPS. Parentmean21.631/candidatemean21.886(+1.179% arithmetic), overlapping ranges and inconsistent paired effects. Meanp9582.622/82.380ms,p99118.298/112.571ms; longestdrop18.123/19.816s. Reject; restore all four modules byte-exact2ea66fbf. Keep childRunManager regression. Native4function/source/line/upvalue checks pass eachrun; all owned games stopped. [All six results and limits](validation/STEAM_DECK_NAMESPACE_BINDING_20261023.json).
+
+Benchmark qualification: developer fixture doubles discretionary encounter-planning budgets and changes caps/spacing viaM3DenseTesting. Normal-resource records do not establish release-density equivalence. Preserve current stress workload; do not remove counts or revise gates after poor results. Ordinary release-mode corroboration remains separately required/unverified. Both monitors remainON; singleplayer40UNMET/allfivefullSPgatesUNVERIFIED; multiplayerdeferred; maincec10unchanged.
+
+Next: revisit existing opaque-HUD render-target prototype only through fresh visual/lifecycle/bounded-cache gates, then a fixed matched D20 comparison if those pass. Native text CPU is measured; older single candidate38.513FPS atD10 and mixed screenshot evidence do not establish gain or current visual parity. Reuse existing helper; fades retain original native drawing. No HUD change is retained without valid visual/correctness/FPS evidence.
+
+# Current checkpoint — namespace binding candidate ready for measured comparison
+
+Four source modules bind only the existing LOD namespace as a local upvalue. Every child service/actor/profile/provider/lifecycle/graph/result remains live. Status matrix and new child RunManager replacement regression passLua5.4/LuaJIT; entry lifecycle/hotpath with float32 CLI compatibility, sharedAI/B29/roster, Soldier lifecycle, actor progression, routecache,120manifest/installer/syntax/diff pass. Initial CLI harness issues are preserved separately; no fullmatrixgreenclaim. [Candidate, regression receipts and frozen6run gate](validation/STEAM_DECK_NAMESPACE_BINDING_20261023.json).
+
+Next fixed freshP,C,C,P,P,C60s normalD20 source comparison. Native4file/function/line/upvalue namespace proof beforeFPS, actual installed manifest/renderer/normalresources/input/native1tick/GC200/200/bothON gates. No active profiler/sampler or state cache; reject noise/inconsistent benefit/pacing regression. No FPS improvement is claimed yet. Singleplayer40targetUNMET/allfivefullSPgatesUNVERIFIED; multiplayer deferred, maincec10unchanged.
+
+# Current checkpoint — native table identity attribution unavailable
+
+One metadata-only normalD20 control finishes23.045FPS and FAILS pacing. Public tostring(table) uses obfuscated identifiers, so native-register addresses cannot be directly associated. Stop this diagnostic; no decoding or alternate formatter/heap read is attempted, no table owner attribution is claimed. Earlier private loadstring wrapper failed beforeFPS; corrected to supported CompileString and preserved. All owned games stopped; neither profiled arm completed. [Exact attempt/metrics/limits](validation/STEAM_DECK_TABLE_TARGET_20261023.json).
+
+Next focused source hypothesis: bind the existing LOD namespace once in the measured motion, entry, status and roster modules. This removes repeated global namespace reads, while each child service, actor/profile, provider, graph and result is still resolved live. Source never replaces the namespace object during play; reloading a module binds the current namespace. Native shared string-lookup samples motivate a bounded comparison, not a global-lookup CPU total or predicted gain. Run existing lifecycle/sharedAI/entry/motion regressions, then fixed6fresh original-source P,C,C,P,P,C60s D20. Both monitors ON, singleplayer40targetUNMET/allfivefullSPgatesUNVERIFIED; multiplayer deferred; main unchanged.
+
+# Current checkpoint — table-capacity request rejected
+
+Four fresh controls/candidate/candidate/control normal D20 captures measure22.387/21.145/21.429/20.759FPS. Means21.573control/21.287candidate; ranges overlap. Mean p9580.841/85.556ms, p99118.294/124.474ms and longest drop20.702/25.951s all worsen. Reject; no source performance change retained, no significance/causal slowdown claim. Each native proof preserves60tables/57actors, all raw fields/metatables/functions/references, unchanged JIT flags. Candidate setup~10ms with inclusive net heap~2.9MiB; actual capacity and owned allocation are not queried. All owned games stopped, resetting layout. [Exact four runs, receipts and limits](validation/STEAM_DECK_HASH_CAPACITY_20261023.json).
+
+Next: use existing CPU/native evidence to isolate redundant lifecycle work before another focused source candidate. Keep live progression/provider/life transitions authoritative; no per-tick stale-state shortcut. Both monitors stayON. Singleplayer40FPS target UNMET; all five fullSP gates UNVERIFIED; multiplayer deferred; PR7draft/maincec10 unchanged.
+
+# Current checkpoint — native hash-lookup evidence; table-capacity screen
+
+Existing5890CPU samples include2512Lua-module leaves; only270match exact export starts. Current DLL SHA/inode/timestamps and PE unwind ranges improve attribution without disabled APIs. A330sample anonymous interval has reference-compatible table-get branches/node traversal; this is an inference, not a PDB-confirmed symbol. The exact PDB is absent locally and Microsoft returns404; no complete GC/realm/VM-op attribution is claimed. [Metadata, limits and frozen experiment](validation/STEAM_DECK_HASH_CAPACITY_20261023.json).
+
+Next fixed freshcontrol/candidate/candidate/control60s normalD20: one-shot server table reservation via1024private nonnumeric keys, all removed before play. Verify original raw fields/references/functions/metatables unchanged; numeric-key/oversized tables skip. Controls perform same semantic snapshots/key allocations without insertion. Larger memory/cache/GC traversal may offset lookup benefit; actual bucket count is not queried or claimed. No gameplay state cache, recurring instrumentation, forcedGC/JIT knob or count/graphics/cadence change. Private helper passesLua5.4/LuaJIT semantic/partial-cleanup gates; native parity/FPS unverified. Whole owned process retirement resets layout.
+
+Original NPC dispatch runtime is restored; no source gain retained. Both monitors stayON. Target singleplayer40FPS UNMET; five full SP gates UNVERIFIED; multiplayer deferred; PR7draft/maincec10 unchanged.
+
+# Current checkpoint — NPC provider shortcut rejected after six native runs
+
+FreshP,C,C,P,P,C60s normalD20 runs measure21.172/21.414/22.785/20.651/22.425/21.447FPS. Parentmean21.416/candidatemean21.882(+2.176% arithmetic), overlapping ranges. Adjacent differences+1.142%/+10.337%/−4.362% are inconsistent. Meanp9585.291/85.545ms,p99123.440/123.097ms and longestdrop24.958/21.251s are mixed; allsixFAIL. Reject the shortcut and restore exact9b7runtime; keep foreign-provider mutation/removal/fallback regressions. No significance/CPU-cause or gain claim. [All metrics/native receipts/decision](validation/STEAM_DECK_NPC_DISPATCH_20261023.json).
+
+Native file/function/upvalue/provider/state parity passes57actors/60checks perrun; all57candidate predicates match, foreignprovider probes restore synchronously, no profiling inFPS. All owned games stop and root install restores. Both monitors ON. User's goal remains SINGLEPLAYER40FPS; allfivefullSPgatesUNVERIFIED, multiplayer deferred, PR7draft/maincec10 unchanged.
+
+Next: improve native attribution of the remaining Lua-module CPU cost using existing saved samples and the exact public binary's available debug/export symbols. No disabled Lua/JIT API is restored or bypassed. Check feasibility first; no public-symbol availability or function-level attribution is assumed. Preserve current source/settings and prepare the next focused change only from measured evidence.
+
+# Current checkpoint — measured query costs; guarded NPC dispatch candidate
+
+Four fresh controls/profile/profile/control normalD20 runs finish:21.502/21.820/21.169/21.822FPS. Controlmean21.662/profilemean21.494; ranges overlap, no calibrated overhead/significance claim. Both sparse profiles repeat ProgressionState~46.6/48.6ms/s, lifecycleBind~46.6/50.8ms/s and SoldierStateFor~34.8/40.7ms/s; inclusive nested samples overlap. Derived/reconciliation is much smaller. Both20provider identity inspections pass; all owned games stop. [Exact evidence and limits](validation/STEAM_DECK_QUERY_PROFILE_20261023.json).
+
+Candidate avoids the canonical human-Soldier provider's empty NextBot dispatch while its function identity is unchanged. Every query still uses the existing live base resolver. Foreign providers, return/error semantics and callback changes remain. No profile/table/validity cache. New foreign-provider transition tests plus existing Hero/Soldier/removed/inherited/nil/false cases, native-API available/unavailable, Lua5.4/LuaJIT, lifecycle/status/actor/sharedAI B29/120manifest/syntax/diff pass. This is not native performance evidence.
+
+Next fixed freshP,C,C,P,P,C60s original-source comparison, actual native source/provider/result parity before FPS and normal workload/input/settings/bothON proof. No CPU profiler/sampler/JIT/GC/affinity tuning. Reject noise or pacing/correctness regression; no predicted FPS gain. [Candidate finite gate](validation/STEAM_DECK_NPC_DISPATCH_20261023.json). TargetUNMET; all five full singleplayer scenario gates UNVERIFIED; multiplayer deferred; PR7draft/maincec10 unchanged.
+
+# Current checkpoint — singleplayer focus; targeted query attribution
+
+User clarification2026-10-23: current goal is singleplayer40FPS on the actual Deck with both monitors ON, followed by validated publication to main. Defer multiplayer and remote-host access; neither blocks this current scope. All five frozen singleplayer scenarios, normal gameplay/graphics/counts, three warmed180s uncapped repeats, pacing criteria and separate40cap remain required. The preceding six-scenario/access notes are historical; do not ask again for multiplayer access for this current goal.
+
+The maxmcode screen is rejected; stock source/settings retained, all owned games stopped. Current256CI325/334/source_changed0 matches e327's same nine failure names and all five leaf anchors; source/VR/audio pass. c283's source/VR/audio pass; its full matrix is separate/pending. No full green or native40FPS acceptance claim.
+
+Next: fixed fresh control/targeted-query-profile/profile/control60s normalD20. Reuse the finite sparse public-service wrapper mechanism, restricted to status/progression/derived-state queries and movement anchors; no native API/debug hooks or actor-method overrides. Sample one completed callback per128calls, preserve vararg/nil/error/yield behavior, bound lease120s and independently check owned provider restoration. Capture profiler overhead; inclusive sampled estimates can alias and do not prove gross allocation/GC costs. No source optimization or predicted gain is retained from inspection. Both monitors stay ON; target UNMET.
+
+# Current checkpoint — code-byte capacity rejected; external coverage unavailable
+
+Four fresh stock/request/request/stock60s Deck D20 captures measure23.967/22.486/22.165/22.554FPS. Stock mean23.260 versus candidate22.325; p95means75.841/78.565ms, p99means109.108/117.070ms. Mean longest-drop17.023/10.802s improves but all four stillFAIL. Reject maxmcode16384; both candidate FPS averages are below both controls. No statistical significance/cache saturation/cause is inferred. Public option receipts/unchanged JIT flags at request/native source/normal inputs/one-tick startup/all source/workload gates pass. Zero Lua errors at capture boundaries. All owned games stop, clearing temporary options; original code/settings retained. Both monitors ON. [Exact metrics/receipts/retirement/raw locations](validation/STEAM_DECK_JIT_MCODE_20261023.json).
+
+External coverage request is pending: existing dedicated host40.160.86.240 is reachable ongm_flatgrass, zero players/12slots; this Deck has only known_hosts files and no authentication agent. SSH administrative access and three additional actual human Heroes are unavailable. Required four-human test and remote-source identity remain UNVERIFIED. This is separate from local performance, which also remains below target. Existing isolated64server/tooling and frozen scenario are prepared; do not substitute same-Deck dedicated conditions for frozen listen-host conditions. No public server mutation occurred.
+
+TargetUNMET; all six full180s×3/warmed/40cap/fullboss/multiplayer acceptance gates UNVERIFIED. PR7 remains draft, maincec10 unchanged. Continue the measured local source loop; perform remote/multiplayer preparation and tests when actual access/players arrive. Current source/VR/audioCI pass; complete matrix classification is being collected separately.
+
+# Current checkpoint — complete native hierarchy; code-byte capacity screen
+
+Fresh native engine diagnostic contains both completed reports:1589profiled frames, NextBot protected Lua self11.09ms/frame, server inclusive25.469ms/frame; rendering opaqueLua2.8ms, text1.24ms and leafclassification1.19ms. Inclusive scopes overlap and include capture preparation/IPC. Actual active20.543FPS/p9590.791ms/p99132.141ms FAIL is instrumented, not acceptance. Earlier partial hierarchy/21.744FPS is preserved; the collector now waits for both completion markers. Both owned games stopped. [Complete hierarchy/raw paths/limits](validation/STEAM_DECK_NATIVE_HIERARCHY_20261023.json).
+
+No new production optimization is retained. Adjacent movement-field borrowing requires a better correctness/mechanism gate; changing static render group does not bypass the reference leaf pass. Existing incomplete/unlit batches stay excluded. Next: fixed four fresh stock/maxmcode16384/maxmcode16384/stock60s runs, using only the documented public JIT code-byte capacity option. This is independent of previously rejected trace-count/length requests; saturation and unknown native defaults are not assumed. No JIT on/off/flush, flags, GC, AI, content, graphics or source changes. Both realms require fresh option/flag receipts; all game processes retire before next arm. Reject noise/tail regression; no predicted gain claim.
+
+Both monitors stay ON always. Required dedicated-host/four-human access request is pending while local work continues. TargetUNMET; all six full acceptance gates UNVERIFIED; PR7draft/maincec10 unchanged.
+
+# Current checkpoint — timer attribution complete; native hierarchy next
+
+Four fresh normal D20 runs, unprofiled/profiled/profiled/unprofiled, measure22.263/19.375/18.710/21.378FPS. Control mean21.820FPS versus observed19.042FPS: material instrumentation effect; no profiled FPS acceptance. Both profiles receive22timer groups, inclusive sum24.453/23.780ms per second. Weapon-special timer9–10ms/s leads; these rows cannot explain the frame deficit. No timer optimization retained. [Measurements, coverage and retirement](validation/STEAM_DECK_TIMER_PROFILE_20261023.json).
+
+Provider restoration passes; queued wrappers require owned process stop. All four owned games stopped, task autorun and flag removed. Both monitors remain ON. Next: fresh normal D20 native VProf hierarchy without Lua CPU observation, separating simulation/Lua/render costs before another focused change. TargetUNMET; all six full acceptance scenarios UNVERIFIED; PR7draft/maincec10 unchanged.
+
+# Current checkpoint — visibility bookkeeping rejected after twelve runs
+
+Firstseriesmeans19.586parent/20.279candidateFPS(+3.54%); confirmation22.305parent/22.109candidate(−0.88%). Rangesoverlap;averagegaindoesnotrepeat. Confirmationp99improves121.590→104.290ms,butlongestslowepisodeaveragesworseinbothseriesandall12FAIL. Rejectthecandidate; restore rendererbyte-exacte07177e2/SHA2567bec9bbd. Keepusefulregistration/GC/removalregressions,passingLua5.4andLuaJIT. [All12measurements/limits](validation/STEAM_DECK_NATIVE_SELECTION_20261023.json).
+
+Allnativefunction/file/source52client116server/1820models/normalroutechecks pass. Confirmationfreshnativeone-ticklogsarepreserved; exposedfrequency`.1`wasnotchanged. Rebootanddifferentbackgroundloadseparatesessions—nopooledcausalFPSclaim. Allownedgamesstopped. BothmonitorsON/persistentdisplayinhibitionactive. e327CI325/334/source_changed0/sameninefailuresandfiveanchors; source/VR/audiopass.
+
+Next: boundedtimer-callbackCPUattributionusingexistingAuditprofiler. Earlierprofileexcludestimers. Comparefreshunprofiled/profiled/profiled/unprofiled60srunsontheunchangednormalD20route; measureobserveroverheadandcollecttimerrowswithoutclaimingprofiledFPSasacceptance. Preparedproviderproxykeepsregistrationarguments,return/nil/error/yieldsemantics; queuedwrappersrequirewholeownedprocessretirement. No timer instrumentationisinstalledduringcurrentcomparison. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged.
+
+# Current checkpoint — unchanged confirmation resumes after reboot warm-up
+
+Firstsixnative-selectionrunscomplete: parentmean19.586FPS/candidatemean20.279(+3.540% arithmetic), overlappingranges. Meanp9592.286/91.554ms,p99138.672/136.701ms; longestbelow40episode35.850/42.391s. AllsixFAIL. No validatedgainretained. Exactnativefile/functions/source/resources/input/focus/bothONpass. RepeatunchangedP,C,C,P,P,Cusingpinnedsourcee07177e2/e3271bb8. Userpause/rebootinterruptedconfirmationbeforeFPS; rawstartupretained. Ten-minuteordinaryD20devicewarm-upthenfreshprocesses; no content/AI/graphics/hostingchanges.
+
+Cadenceclarification: exposedlisten-hostfrequencyis`.1`,whilefreshnativeengine reportsone-tickscheduling. ThreeordinaryD20BehaveUpdatecallbackseach447times/10.0068s,mostly1/2simulationticksapart. Theinitialliteral`.015`warm-upassertionwaswrongandstoppedbeforeFPS; noCVarwaschanged. Distinguish66Hzsimulation/requestedschedule/observedcallbackrate. Historicalpaireddataremainatmatchedsettings; donotfabricatehistoricalper-actorcadence. [Actualprobe,correctionandlimits](validation/STEAM_DECK_AI_CADENCE_20261023.json). Temporarybindingsrestore; allprofilingmustretirebeforeFPS. Bothdisplayinhibitionnowrestoredasagraphical-sessionuserunit.
+
+TargetUNMET; allsixfullacceptancegatesUNVERIFIED; PR7draft/maincec10unchanged. Next: finishwarm-upandunchangedconfirmation,comparecombinedevidence,thenretainorrevertthecandidateandcontinueoptimization.
+
+# Current checkpoint — native visibility selection bookkeeping candidate
+
+The sampled allocation profile completes inbothrealms; currentmethodinspections1511server/4137clientfindnoprofilingwrappersandoptionalheapsamplingiscleared. Instrumented17.241FPSisnotnormalperformance. Every64samplescanaliasrenderpasses; do notextrapolateallocationtotals. Geometrydrawhaslargesampledheapgrowth. [Nativeattributionandlimits](validation/STEAM_DECK_ALLOCATION_PROFILE_20261023.json).
+
+Candidate replacesperviewgrownentityselectiontableswithaweakentity->exactpasstokenmap. Bothkeysandvaluesareweak,soonlytheactiveviewownsthetoken. ExactstrongvaluecandidatefailsremovedentityownershipunderLuaJITCLI; correctedcasepassesLuaJITandLua5.4. Initial713parentstartupstoppedbeforeFPS;nocandidatetested/logspreserved. Valuescontainviewscalarsonly; new/nestedviewsstillneedtheirownselection. Draws/bounds/camera/NoDraw/fallbacksremain. Nativevisibility,300drawparity,weakcleanup,samepassregistrationreplacement,manifest/syntax/diffpass. NextfixedP,C,C,P,P,C60snormalD20comparisonwithactualfile/functions/source/workload/GC200/200/bothONproof; noactiveprofiling/sampler. [Frozencomparison](validation/STEAM_DECK_NATIVE_SELECTION_20261023.json). NoFPSgainclaimed. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged.
+
+# Current checkpoint — GC step change rejected; sampled allocation attribution next
+
+Four fresh stock/candidate/candidate/stock60s Deck D20 captures measure20.906/20.886/20.728/19.934FPS. Means20.420stock/20.807candidate overlap; p95means89.834/90.230ms and p99means132.657/142.798ms do not improve. AllfourFAIL. Reject publicstepmul100; actualpause200/stepmul200restoredinbothrealmsandallownedgamesstop. NativeAPI/source116server52client/normalresources/input/focus/bothONgatespass. No statistical/causal slowdown claim. [Fullrawmeasurements/restoration](validation/STEAM_DECK_GC_STEP_20261023.json).
+
+The existing opt-in CPU profiler now supports sampled inclusive net heap changes, using two count queries every configured16–4096calls. Default profiling and ordinary gameplay leave this disabled. Positive/negative samples can includeGC and nested scopes; they are not gross allocations or GC CPU time. No result tables are added percall. Cadence, signed deltas, nil/vararg returns, sampled errors, callbackrestoration and invalidoptions pass; capture/profile/5analysis/120manifest/syntax/diff pass. Exactoldsourcefailsnewgate. Nativeattribution remainsUNVERIFIED; next normalD20profile samples every64calls, with normalGC200/200 and bothmonitorsON. Observercost is diagnostic; final ordinary acceptance must disable profiling.
+
+TargetUNMET; allsixfullscenariosUNVERIFIED; PR7draft/maincec10unchanged.
+
+# Current checkpoint — bounded heap evidence; GC step comparison next
+
+Read-only heap/interval traces finish on normal frozen listen-hostD20 with20.201FPS/p9586.942ms/p99122.945ms: instrumenteddiagnosticFAIL. Bothsamplersretire; selftimed bodies average4.04us/client and2.33us/server, excluding hookdispatch/GCfromstorage. Client30of91intervals>80msarewithinonesampleofheapdrops; mostarenot. This is association, not causalGCcost/functionproof. Flattracestorageandprep/postamblesremainexplicitlimitations. [Rawtrace/parameterreceipts](validation/STEAM_DECK_MEMORY_TRACE_20261023.json).
+
+A separatepublicAPIroundtripreadsandimmediatelyrestores pause200/stepmul200inbothrealms,withcollectionrunningbefore/after; noFPS. Next: fixedfreshstock/candidate/candidate/stock60sruns,onlypublicstepmul100versus200aftercanonicalsetup. Pause200remains; no collectorstop/restart/fullcollect/forcedstep,activeprofiler/memorytrace/sampler/JIT/affinity. Requireactualbefore/afterAPI/running/source/resources/input/geometry/bothONandrestorationreceipts. Throughput/memory/finalizerlifetime risks require measuredregressionreview. No gainisclaimed.
+
+BothmonitorsstayONalways. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged.
+
+# Current checkpoint — dedicated64 runtime still fails frame pacing
+
+A separate same-Deck Linux64 dedicated Dungeon20 diagnostic averages40.407FPS, median22.196ms, p9542.534ms, p9956.218ms and max313.020ms. Time below40 is30.694s; longest drop4.339s/five episodes>=2s. FAIL. BothmonitorsstayON1280×800@60/external1920×1080@75. This changes server architecture/JIT/engine branch and privatecheatflag configuration; it does not isolate bitness or replace the frozen listen-host benchmark. Earlier Linux32dedicated42.003FPS also failed tails. [Actual captures and limits](validation/STEAM_DECK_DEDICATED64_20261023.json).
+
+Source52client/116server, normalWizard20/seeds/resources,1820models,57roamers+9bossactors,physicalroute,node207,normalAI66Hz/.015/hosttimescale1/no god/noclip and oneactualhuman/fourslots pass. Engine2026.10.22/x86-64/LuaJIT2.1beta3 requires standardsv_cheats1 for the intendedAIcadence; no gameplay cheats used. AllfourSentryslotsadmitted; the unfiltered postcombat20pointprobe hits17floors/3livehostilebodies, so clean20/20postcombatsupport is unverified. Bothownedprocessesstop. Three setup failures have noFPS and remain preserved. Current670CI325/334/source_changed0 matches previousninefailure names; source/VR/audio pass.
+
+Boundary counters showclient141.46%/server112.19%ofonecore and DRMgraphics17.49% busy. No activeprofiler/sampler/JIT/affinity orsourcechange was used. Next: investigate CPU pacing/allocation behavior before another focused runtime/source comparison. Allsixfullscenarios/threewarmed180sruns/capped40/fullboss/fouractualhumansremainUNVERIFIED. TargetUNMET; PR7draft/maincec10unchanged.
+
+# Current checkpoint — client profile captured; dedicated runtime comparison preparation
+
+Existing bounded client/server CPU profiling completes on normalD20. Instrumented18.395FPS/p9596.628ms/p99126.531ms fails and is not normal performance. Client render phase averages13.95ms/frame; generated-geometry hook2.60ms/frame, hostile Draw1.64ms/frame and combat-feedHUD1.11ms/frame are larger measured rows. Scopes overlap and exclude unwrapped engine/timer work. Server BeforeAI57.27ms/s and CloseDefense38.54ms/s remain substantial. Actual non-VR runtime reports idle with zero active hooks/timers/native resources. [Raw rows/limits](validation/STEAM_DECK_CLIENT_PROFILE_20261023.json).
+
+The post-check flags two permanent server lifecycle callbacks as leftovers; source confirms these are expected static hooks. Server profile/capture state is absent and1511current entity-method checks find no profiling wrappers. Original failed JSON is preserved; the checker is corrected. It halted before client post-inspection, so that receipt remains unverified. The owned process stopped, clearing all observers; no independent client-binding retirement claim is made.
+
+Earlier same-Deck dedicated42.003FPS/p9543.540ms used a32-bit Linux/LuaJIT2.0.4 server. Prepare an isolated64-bit server to compare architecture with normal66HzAI/content/graphics/source. This is a separate hosting diagnostic, never a replacement for the frozen listen-host failure. The first anonymous installer reports Missing configuration; metadata refresh plus explicitLinux retry downloads the64-bit branch. No client/oldserver files are changed.
+
+Both monitors stay ON. Target UNMET; all six full scenarios UNVERIFIED. PR7draft/maincec10 unchanged.
+
+# Current checkpoint — diagnostic overlay does not explain the deficit
+
+Four fresh D20 captures finish at22.007on/21.249off/20.434off/20.961onFPS. Means21.484on versus20.841off (−2.991% arithmetic) provide no supported benefit from disabling Source net_graph. All four fail and ranges overlap; no statistical slowdown cause is claimed. Native preflight/start/end values match1/0/0/1; every other recorded setting is identical. cl_showfps0/cl_showpos0/developer0 remain. Source/resources/input/focus/both-display gates pass. All owned games stop and originalnet_graph1 is restored. [Raw metrics and restoration](validation/STEAM_DECK_OVERLAY_COST_20261023.json).
+
+Keep the useful four start/end diagnostic fields; no per-frame work or normal preference change is retained. Next: same frozen D20 with the existing opt-in bounded client/server CPU profiler. Its FPS is instrumented diagnostic only; inspect hook/entity cost and restoration rather than treating it as acceptance. Preserve normal native visuals, counts, AI and both monitors ON1280×800@60/external1920×1080@75.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR7draft/maincec10 unchanged.
+
+# Current checkpoint — record diagnostic overlays before measuring their cost
+
+Existing capture configuration now records net_graph,cl_showfps,cl_showpos and developer at start/end only. No per-frame work, setting or gameplay changes. Current saved client config has net_graph1, but actual native values still require verification. Capture/profile/analysis,120-source manifest, syntax and diff checks pass. [Plan and scope](validation/STEAM_DECK_OVERLAY_COST_20261023.json).
+
+Next: fresh net_graph1/0/0/1 D20 diagnostics with actual start/end values, all other settings/resources/counts/AI/actions fixed and both monitors ON. Preserve the gameplay HUD and native visuals. This tests instrumentation overhead; no FPS gain or full acceptance follows source inspection/tests. Restore prior overlay preference afterward.
+
+Public host-threading controls remain unavailable. Entry reuse and all other unvalidated candidates remain reverted. Target UNMET; all six full scenarios UNVERIFIED; PR7draft/maincec10 unchanged.
+
+# Current checkpoint — public host-thread mode unavailable
+
+Actual Windows64/P10 native read-only probes find neither host_thread_mode nor host_threaded_sound through GetConVar in either realm. mcore1, queue2 and threaded bones1 are already active. No setting, flag, API or game state was changed; no FPS is measured by this capability check. Both monitors remain ON. [Exact public capability receipts](validation/STEAM_DECK_HOST_THREADS_20261023.json).
+
+Next: client/render cost investigation with normal native walls and presentation intact; check actual diagnostic overlays before measuring their overhead. Existing wall hiding/batch visual-loss experiments remain ineligible. Entry reuse remains reverted. Target UNMET; all six full scenarios UNVERIFIED; PR7draft/maincec10 unchanged.
+
+# Current checkpoint — entry-context reuse rejected after pacing review
+
+Twelve timed Deck captures complete. Candidate average21.970FPS versus21.043control (+4.402% arithmetic) repeats a positive average direction. Pacing remains unsuitable: combined longest below40 episode averages31.952s versus23.181s; confirmation p99 averages120.270ms versus113.456ms. All12fail. Reject the change for this pacing task and restore EntrySafety byte-exactly to f6772638. This is not a causal regression or statistical-significance claim. Keep21behavior/lifecycle cases/71assertions. [Complete evidence/limitations](validation/STEAM_DECK_ENTRY_CONTEXT_20261023.json).
+
+The confirmation helper accidentally renamed its opt-in environment flag, so its extra actual-function/clock receipts are missing. The first six have complete receipts. Every confirmation still has116server/52client verified source hashes, including the correct installed/mounted entryfile, plus normal seeds/resources/input/focus/bothON. Do not fabricate retrospective function proof. The helper is corrected. A fourth-arm startup failure has noFPS and is archived; that unchanged arm succeeds on retry. All owned games stop.
+
+Next: read actual public host-threading ConVars/defaults/flags without changing settings. Native evidence places substantial server and render work on the main thread; current benchmark enables mcore1/queue2/bone1 but has not recorded host_thread_mode. Availability, effect and correctness are unverified. No threading setting is applied yet.
+
+Both monitors remain ON1280×800@60/external1920×1080@75. Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; main stayscec10dc54. No entry reuse, JIT, affinity, key, query or animation candidate remains.
+
+# Current checkpoint — entry source comparison mixed; unchanged confirmation next
+
+Six fresh source runs complete: controls20.954/20.624/21.109FPS average20.896; candidates21.107/22.298/22.450 average21.952 (+5.053% arithmetic). Two candidates exceed the control range and one overlaps. Every capture fails. All three candidate longest drops below40 are longer than their paired controls; average p99 is similar. Do not retain a validated gain from this mixed first series. [All metrics/receipts](validation/STEAM_DECK_ENTRY_CONTEXT_20261023.json).
+
+Actual file CRC, four public function locations, nativeCclock/plain metadata, normal seeds/resources/population, physical input, focus and both-display gates pass. End health211/168/211/160/211/211 varies without a demonstrated cause. All owned games stop and the candidate is reinstalled while quit. CI74e8ec47 is325/334/source_changed0, with the same nine failing names and five file/line anchors as9d2/438/3cf; source, VR and audio pass.
+
+Next: unchanged source/conditions in another fixed fresh P,C,C,P,P,C60s comparison to check repeatability and the pacing concern. Both monitors stay ON1280×800@60/external1920×1080@75; normal AI/resources/counts/actions/graphics/power remain. No active profiler/wrappers/device sampler/JIT setting/affinity. No source gain or full-scenario acceptance is claimed.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; main stayscec10dc54.
+
+# Current checkpoint — guarded reuse of already-serviced admission context
+
+BeforeAI currently services entry ownership, then Claim repeats Service and Context. Candidate extracts the same admission core and borrows the serviced context only while native function/C-clock identities, plain tables, current owner/state/graph/seed/level/epoch/run and future deadline match. Custom providers, metatables, inherited methods, clock changes and lifecycle/deadline changes keep public Claim. Admission results and actor positions are never cached; service cadence, quotas, movement and combat remain.
+
+21cases/71assertions pass; the exact parent fails the redundant-work gate. Existing shared AI, B29 quotas/lifecycle/production coroutine/withdrawal/routes/freeze/UI and spatial/config/refresh gates pass. The selected42check checkpoint has38initial passes, three known parent failures and one missingNode failure; that manual-reader check passes after installing official checksum-verified Node24.22.1. No full green matrix is claimed. [Candidate scope and gates](validation/STEAM_DECK_ENTRY_CONTEXT_20261023.json).
+
+Next: verify actual source/function locations, native clock and metadata, then fixed fresh source P,C,C,P,P,C60s D20 runs. Both monitors remain ON at1280×800@60/external1920×1080@75; same normal resources, counts, AI, actions, graphics and power. No private wrappers/profilers/samplers during FPS. Keep or revert only on supported performance and regression evidence.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR7 stays draft; main remainscec10dc54. Both JIT settings, affinity, key-cache, animation and per-call player-query candidates remain rejected.
+
+# Current checkpoint — trace-length setting rejected; guarded entry candidate next
+
+Four fresh D20 arms finish at22.073stock/22.252candidate/20.755candidate/20.883stockFPS. Means21.478stock and21.504candidate (+0.122% arithmetic) overlap without useful benefit. All captures fail. Public maxrecord16000 requests succeed in both realms with identical optimization flags; no JIT on/off/flush, disabled API, affinity, profiler or active sampler is used. Source, normal seeds/resources/population, physical input, focus and both-display gates pass. Both monitors stay ON at1280×800@60/external1920×1080@75. All four owned games stop, clearing the setting. Reject it. [Evidence](validation/STEAM_DECK_JIT_RECORD_20261023.json).
+
+Next: guarded reuse of the context already serviced by BeforeAI, with current owner/state/graph/seed/level/epoch/run, deadline, original-function and plain-table checks. The isolated candidate passes19cases/65assertions plus existing shared AI/B29 contracts; the exact parent fails its redundant-work gate. This is source preparation and operation evidence only, not a Deck gain. Keep public callbacks, admission decisions, fresh positions and normal service cadence. Native source verification and matched source FPS remain required.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR7 stays draft; canonical main remainscec10dc54. No JIT setting or affinity remains.
+
+# Current checkpoint — thread placement rejected; trace-length comparison next
+
+Both monitors stay ON at internal1280×800@60/external1920×1080@75. Four fresh D20 arms complete: stock21.344, separated22.525, separated20.065, stock21.398FPS. Stock mean21.371 versus candidate21.295 (−0.355% arithmetic) supplies no supported gain; reject the masks. Main CPU2 and worker0,1,4,5,6,7 masks remain exact over both candidate captures; actual siblings2–3 are verified. All owned games stop, clearing masks. Source/function, normal seeds/resources/population, physical input, focus and display gates pass. All four captures fail; end health153/211/154/163 varies without a demonstrated cause. [Full measurements](validation/STEAM_DECK_THREAD_PLACEMENT_20261023.json).
+
+Next: public jit.opt.start maxrecord16000 versus untouched stock, four fresh stock/candidate/candidate/stock60s arms. Native Lua module CPU/table-lookup evidence motivates a trace-length hypothesis; trace aborts and native default numeric limits are not observed. The prior maxtrace cache-count change had no benefit and stays rejected. Require both-realm API/unchanged-flag receipts, source proof and ordinary workload; no disabled API, JIT on/off/flush, profiling wrapper, affinity or active sampler. Boundary counters are uniform. No JIT setting is retained without measured benefit and regressions.
+
+Cell-key runtime remains restored exactly to1ce30e75, with useful28062case tests and120/116/52sourcewatch coverage retained. Target UNMET; all six full scenarios UNVERIFIED. PR7 remains draft; canonical main stayscec10dc54.
+
+# Current checkpoint — cell-key cache rejected after six original-source Deck runs
+
+Both monitors remain ON at internal 1280×800@60 and external 1920×1080@75. Controls21.539/21.033/22.529FPS average21.700; candidates21.446/20.664/19.703 average20.604 (arithmetic−5.05%). All six60s captures complete and fail. Ranges overlap; no general slowdown cause or statistical significance is claimed. The installed key function passes12,864 native comparisons and halves100k-call microcost, but that does not supply a gameplay gain. Reject the cache and restore the generator byte-exactly to1ce30e75. Keep28,062 behavior cases and source coverage120total/116server/52client. [Measurements and decision](validation/STEAM_DECK_CELL_KEYS_20261023.json).
+
+All source/function, normal resources/seeds/population, physical input, focus and display gates pass. End health156/201/160/206/211/211 varies without a demonstrated cause; structured ends60.452–61.420s include post-FPS time. Full fight phases and multiplayer behavior remain unverified. All owned games stop. Candidate43821d1a CI is325/334 with the same nine failing suite names and five file/line anchors as3cf; source, VR and audio pass. No full green claim.
+
+Next: compare stock thread placement with mainCPU2/workers0,1,4,5,6,7, using actual2–3 SMT siblings and boundary-only counters. Earlier D1 all-threads-four-core masking had no benefit; this distinct experiment tests separating the main thread from its own workers, not a measured SMT cause. Preserve normal gameplay, graphics, power and both monitors.
+
+Target UNMET; all six full acceptance scenarios UNVERIFIED. PR7 stays draft; canonical main remainscec10dc54. No key-cache, callback-coalescing, animation, player-query or JIT-setting candidate remains.
+
+# Current checkpoint — cell-key source candidate; native source/FPS validation next
+
+A pure native prototype passes 12,864 key comparisons, including all 690 actual graph cells, signed zero, non-integers, strings, invalid inputs and concatenation metamethods. Six alternating 100,000-call measurements average 12.740 ms for the parent and 5.792 ms for the fixed component lookup. This is narrow prototype evidence, not installed-source or gameplay FPS proof.
+
+The generator now borrows 255 fixed positive integer strings when the runtime uses unified numeric string representations. It retains original operands for zero and all uncached inputs; it stores no graph or actor state. The source manifest now covers the generator: 120 total / 116 server / 52 client. All affected count fixtures explicitly cover the new authority. Key contracts pass 28,062 cases on both Lua and standalone LuaJIT; existing transport, B28 replay/source, shared AI, route and entrance-safety gates pass. [Evidence and limitations](validation/STEAM_DECK_CELL_KEYS_20261023.json).
+
+Next: installed-source value/function receipt, then a fresh original-source parent/candidate/candidate/parent/parent/candidate D20 comparison with matching manifests. Both monitors remain ON at internal 1280×800@60 and external 1920×1080@75; normal graphics, AI, resources, population and frozen physical actions remain.
+
+The JIT-capacity screen is complete with no useful effect (stock mean 20.930 FPS, requested32768 mean 20.913); reject the setting. The later instruction-hook diagnostic severely perturbs gameplay to about 1 FPS and misses capture-duration tolerance. Its hook interval was requested but not independently verified, and no sample/restoration file was collected before the owned process stopped. Do not use it for timing or coverage attribution; no hook survives process cleanup. No callback-coalescing or JIT candidate is retained.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR 7 remains draft; canonical main remains cec10dc54. Source candidate is pending native source/FPS verification and is not a completed performance claim.
+
+# Current checkpoint — callback screen inconclusive; public JIT-capacity comparison
+
+Both displays remain ON at internal 1280×800@60 and external 1920×1080@75. Four fresh-game private callback arms complete: parent 21.559, candidate 22.881, candidate 22.914, parent 22.812 FPS. The arithmetic mean difference is +3.209%, but the final control nearly matches both candidates and control spread exceeds the mean difference. Do not retain a source gain from this screen. All captures fail the budget. Both leases restore original callbacks; all source, normal resource, physical-input, focus and display receipts complete. [Measurements and limits](validation/STEAM_DECK_COLLISION_COALESCE_20261023.json).
+
+End health differs (parents 188/191, candidates 211/211), without an established cause. The direct return matrix does not prove complete hook precedence, physical contacts or multiplayer correctness. The prepared source edits were never installed or committed; they are archived privately and the isolated worktree is clean. Mounted gameplay remains unchanged from 3cf2e875.
+
+The public jit.opt.start API accepts maxtrace=32768 in both realms while reported optimization flags remain identical. No jit.on/off/flush or disabled reflection/profiler workaround is used. Stock numeric capacity is not publicly exposed; saturation or eviction is a hypothesis, not an observed cause. A predeclared fresh-process stock/32768/32768/stock D20 comparison is running with normal gameplay/settings and boundary-only counters. The first stock arm is 21.117 FPS, p95 85.610 ms: FAIL. No JIT configuration or gain is retained yet.
+
+Target UNMET; all six full scenarios UNVERIFIED. PR 7 remains draft; canonical main remains cec10dc54. Finish the capacity comparison, inspect complete source/resource/input/display/flag and memory evidence, then retain or reject on measured effect and continue.
+
+# Current checkpoint — native CPU samples; callback comparison in progress
+
+Both displays stay ON at internal 1280×800@60 and external 1920×1080@75. A native 99 Hz main-thread diagnostic saves 5,890 samples with zero loss. Saved PE image ranges map 42.65% to lua_shared.dll, 15.84% to client.dll, 10.66% to server.dll and 9.95% to engine.dll. These are module shares, not exact Lua-function, realm or GC attribution. Instrumented gameplay still fails: 21.212 FPS, p95 83.325 ms, p99 123.191 ms, longest drop 23.338 seconds. Sampling overhead is unmeasured.
+
+The collector rejected the requested profiler SIGINT after flushing. Intact raw FPS was recovered before another launch; no post-capture CPU snapshot or display check is fabricated. The standard public jit.profile module is unavailable in both realms. No disabled API or native-module workaround was used. Failed startup harness attempts are preserved; their private bridge and stock menu edits are restored exactly. Native launcher command forwarding now resumes the paused failed-menu overlay, with actual client ACK and readiness gates.
+
+A combined collision-callback prototype passes 6,400 return comparisons over 80 cases with zero mismatches and unchanged registrations. A predeclared fresh-game parent/candidate/candidate/parent 60-second screening comparison is running with no profiling or device sampler. Native collision flags/groups, AI, counts, normal resources and frozen actions remain. No source candidate or performance gain follows the value gate alone. [Raw evidence and limitations](validation/STEAM_DECK_NATIVE_CPU_20261022.json).
+
+Target UNMET; all six full acceptance scenarios UNVERIFIED. PR 7 remains draft; main remains cec10dc54. Finish the comparison, check complete receipts and restoration, then retain or reject on measured evidence before the next focused change.
+
+# Current checkpoint — native collision alternatives rejected before source changes
+
+Both monitors remain ON: internal 1280×800@60, external 1920×1080@75. Sparse callback classification restored both bindings after 68.02 seconds. Separation ran 3,573 calls/s and latch handling 3,068 calls/s; most sampled pairs involved static geometry. Callback-body estimates total 13.2 ms/s and do not measure native bridge or broadphase overhead. The diagnostic capture still fails at 22.43 FPS.
+
+The predefined native trace gate rejects group 19 with custom checks disabled: all four NPC-pair traces change, although four player shots, four movement hulls and floor support match. Exact groups, flags, health and positions were restored; no production change follows. Native constraint.NoCollide is unavailable because both actual actors lack the required physics bodies. No constraint was created and state was restored. [Evidence](validation/STEAM_DECK_COLLISION_20261022.json).
+
+Next: sample the main thread at 99 Hz with native user cpu-clock events and no Lua wrappers to separate execution, GC and engine costs. Sampling is diagnostic only. Source 3cf2e875 retains no animation or player-query candidate. Target UNMET; all six full acceptance gates UNVERIFIED. PR 7 remains draft and canonical main remains cec10dc54. CI is 325/334 with the same nine failing names and five leaf anchors as the preceding runs; source, VR and audio checks pass.
+
+# Current checkpoint — player-query candidate rejected after six Deck runs
+
+All six original-source D20 attempts complete with native source/function receipts, normal resources/counts/AI, structured60s+ input endings and BOTHdisplaysON. Controls21.943/22.025/21.671FPS average21.880; candidates21.397/21.046/21.030 average21.158 (arithmetic−3.30%). Every candidate is slower than its adjacent control, tails vary and allcapturesFAIL. No statistical significance or CPUcause is inferred from three pairs. Reject the candidate; restore RunManager and Staging runtime files exactly toafff7087. Keep15behavior-only query cases/55assertions; existingSharedEnemyAIWork/syntax/diff pass.
+
+The native1007case/value/guard/microtiming proof remains valid historical evidence, not a gameplaygain. No private counters, debughooks, provider replacements or device samplers ran in the FPS windows. The manual-stop metadata change only exposes/invokes the existing stop callback afterFPS; CreateMove body is byte-identical. [Raw results/conditions/decision](validation/STEAM_DECK_PLAYER_QUERY_20261022.json).
+
+TargetUNMET; allsixfullacceptancegatesUNVERIFIED; PR7draft/maincec10 unchanged. Allownedgames stopped. Next: native collision callback/broad-phase attribution, then a focused measured change if warranted. BothmonitorsONalways/internal1280×800@60/external1080p75. No unvalidated query/animation candidate remains.
+
+# Current checkpoint — installed active-player query gate passed; source FPS next
+
+Installed73bcd0c0 passes1007native value/state-transition checks with all default/nativeAPI/table guards true. Slot, deployment, missing-profile and same-seed State replacement remain fresh; originals restore. Six100kquery microarms preserve results: parent155.155–158.439ms versus installedcandidate55.448–58.131ms. This is narrow query timing, not gameplayFPS. The first debugcallhook counter undercounts eventheknownparent; retain it as an INVALIDdiagnostic with full restoration/gameStop, neveractualcallcount evidence.
+
+afff7087 fullCI returns325/334FAIL with the same nine names AND allfivefile/lineanchors asf889. The seven sharedB28fixture failures are cleared. Source/VR/audio pass. Current73bcd0c0 CI remains a separate pending gate. [Evidence](validation/STEAM_DECK_PLAYER_QUERY_20261022.json).
+
+Next: frozen freshoriginalsourceP,C,C,P,P,C gameplay comparison with BOTHdisplaysONalways, internal1280×800@60/external1080p75. Preserve normalsource/seed/counts/AI/input/graphics andfailedattempts. No profiler or in-window device sampler. TargetUNMET; allsixfullacceptancegatesUNVERIFIED; PR7draft/maincec10 unchanged.
+
+# Current checkpoint — per-call active-player query candidate; native source timing pending
+
+Both monitors stay ON at all times, external1080p75/internal1280×800@60. The native deployed-Hero probe confirms3identity lookups/1profile query per IsActivePlayer call. Private within-call prototype100kqueries150→47ms; guardedprototype189–192→79–81ms in a separate process. Both pass1006checks andrestoreproviders; this is microevidence only, not gameplayFPS or wholeacceptance.
+
+Candidate shares only original function identities from RunManager, then reads current identity/slot/profile/deployment once per call. It caches no identity, PlayerState or eligibility across calls. Custom provider/validity/nativeAPI/tablemetatable/registry changes retain the existing path, order and results. Staging.IsDeployed and role/life/progression rules remain. LiveGDD06 revision is unchanged;4Hero+6Soldiercap and20srespawn remain. No tuning/GDD edits.
+
+The production-query contract passes17cases/78assertions including removal/reconnect, same-seed state/map replacement, staging, roles, bots, mutable-registry tampering, custom callbacks and native/globalvalidity. Existing SharedEnemyAIWork includes this gate. Deployment, inventory transition, Damsel staging,196Soldierqueue assertions, TimeManagement, stagingevent/SQLite, Crypto/SQLite and syntax/diff gates pass. Next: fresh installed-source nativepath/transition/counter proof, then matched original-source gameplay comparisons. [Evidence](validation/STEAM_DECK_PLAYER_QUERY_20261022.json). TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged. Prior animation candidate remains rejected.
+
+# Current checkpoint — animation candidate rejected; shared fixture repaired
+
+Keep BOTH displays ON always: internal1280×800@60/external1080p75; session blanking inhibition remains held. Six original-source attempts preserve the frozen P,C,C,P,P,C order. Valid controls21.247/22.322/21.942FPS average21.837; valid candidates21.113/21.352 average21.232. Ranges overlap, tails are inconsistent and every run fails. Candidate03 dies ordinarily at47.315s/node157 and has only47.275active seconds; retain it as failed/incomplete with no replacement. This is three valid controls/two valid candidates/one failure, not three complete pairs. No statistically established slowdown is claimed.
+
+The installed native resolver microprobe passes5763checks across57realactors and reduces114000queries from183.576–184.547ms to96.994–99.490ms with equal results and restored cache fields. That narrow cost reduction does not supply a whole-game FPS gain. Reject the candidate and restore sv_hostile_animation.lua exactly to62d587cb. Retain behavior-only cache invalidation tests and source coverage119total/115server/52client. The five completed FPS runs verify actual function/filehashes, normal resources/1820models andbothON. Console ticks>=60s andmanualhookstop corroborate physical input; manual stop produces no structured end receipt. Fullphases remainunverified.
+
+eb1 fullCI is318/334FAIL: seven NEW sharedB28fixture count failures plus nine known parent failures. Repair the fixture to115 and explicitly require the animation source; keep all gameplay assertions. All seven affected gates pass locally, plus animation/skeleton/manifest/transport/syntax/diff checks. NewCI pending; no fullgreen claim. [Complete decision and raw paths](validation/STEAM_DECK_ANIMATION_CACHE_20261022.json).
+
+All owned game processes are stopped. Next: finite native measurement of repeated per-call player/deployment queries; no persistent identity/state cache or skipped callback checks. TargetUNMET; allsixfullacceptancegatesUNVERIFIED; PR7draft/maincec10 unchanged. Continue required ordinary gameplay/fullphase/fourhuman coverage.
+
+# Current checkpoint — animation cache candidate; native timing pending
+
+Both displays remain ON at all times, external1080p75/internal1280×800@60. The normal60s Deck D20 route is22.329FPS,p9577.102ms,p99116.449ms,longest drop25.236s: FAIL. Boundary counters show the main task96.17%ofonecore and0.420srunqueuewait in64.917s; gameGPUgraphicsengine6.28%busy. This points to main-thread CPU work without changing monitor power or graphics.
+
+A bounded broad Lua diagnostic restores2244bindings after skipping68duplicatealiases. Inclusive estimates overlap; wrapping CellCenter changes its identity fallback, so that timing is excluded. The first alias lease failed restoration and its game was stopped; raw failure remains. Animation resolution is a frequent shared query. Candidate borrows the current native instance table only for an owned cache hit; currentmodel/razor/hold checks and original miss/inherited/missing fallback remain. No actor, animation, combat or AI timing changes.
+
+Focused animation/skeleton/fallen/entry/hurt/Razor/lifecycle gates pass; exact parent fails the new native-shaped owned-cache test. Native original-source timing remains PENDING. Next: finite native microdiagnostic, then matched fresh source gameplay measurements; retain only supported benefit. [Evidence](validation/STEAM_DECK_ANIMATION_CACHE_20261022.json). TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged.
+
+# Current checkpoint — both displays stay on; frame budget still fails
+
+Explicit user requirement: keep BOTH monitors ON at all times and achieve40FPS in that configuration. Session idle inhibition is held; external1920×1080@75 is restored and internal1280×800@60 retained. No future monitor-off arm is allowed. Historical off data remains diagnostic only. The final both-on short Dungeon20 arm is21.129FPS,p9587.416ms,p99120.272ms,longest drop15.186s: FAIL. No source improvement is inferred from the display series.
+
+f889bf95 full CI completes325/334FAIL. All nine failing suite names AND exact file/line anchors match bc95; the new8d boss-framework fixture failure is cleared. Source/VR/audio checks pass. No full green matrix or performance acceptance is claimed. [Display/CI evidence](validation/STEAM_DECK_BOTH_DISPLAYS_20261022.json).
+
+No game/server remains active. Next: bounded before/after process/thread CPU and scheduler accounting around the same ordinary gameplay route, preserving both displaysON and all workload/settings. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10 unchanged. Continue measured optimization and missing gameplay/multiplayer coverage.
+
+# Current checkpoint — dedicated finale still fails tails; integration fixture repaired
+
+A separate same-Deck dedicated Dungeon20 diagnostic averages42.003FPS, median19.822ms, p9543.540ms, p9955.264ms, max275.124ms, longest drop4.619s/four episodes>=2s: FAIL. Preserve the frozen listen-host failure at22.934FPS; this variant does not replace it. Exact source,1820clientmodels,normalWizard20/seeds/resources,one human/four slots,66HznativeAI,57roamers and allninebossactors are verified. Native ownership/support passes; one commit and zero retries. Full phases, upper floor, Hector/rescue and four actual humans remain unverified.
+
+Native profiling attributes25.000ms/frame inclusive to server simulation,11.320ms to NextBotLua and12.772ms to rendering; preparation and overlapping scopes are included, so these are diagnostic only. Sparse samples restore173bindings, then detailed entry samples restore162. Movement and entry checks are the larger measured shared costs. Do not cache across callback-bearing admission paths or change cadence without proof. No further runtime candidate follows8b0b531e yet.
+
+The8d478035 full CI run is324/334: one NEW boss-framework fixture failure plus the nine known parent failures. The two finale integration fixtures supplied floors only to ray queries. They now provide native-style point-width vertical hull support; every composition, rollback, exactly-once handoff and rescue assertion remains. All76boss-framework cases pass locally. This is test-only repair; runtime/source8b remains unchanged. New full CI is pending, not claimed green. [Raw evidence and results](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
+
+Both local game/server processes are explicitly stopped after the diagnostic. Next: continue measured shared CPU/client-cost investigation and required coverage. TargetUNMET; allsixfullgatesUNVERIFIED; PR7draft/maincec10unchanged. Restore externalDP1to75Hzafterbenchmarks.
+
+# Current checkpoint — finale composition repaired; functioning fight still fails
+
+Retain 8b0b531e's native floor-support repair. The same frozen Deck route now commits one Gordon, four clones and all four Sentries exactly once, with zero composition retries and zero Lua errors. All four real Sentries pass the post-capture ownership and five-point support gate. Ordinary incoming damage reduces HP211 to192 during the run. The baseline could not commit combat, so its 5.447→22.934 FPS change measures the repaired retry pathology, not identical functioning-fight workloads or acceptance.
+
+The functioning fight still FAILS: 22.934 FPS, median36.877ms, p9576.116ms, p9998.104ms, max468.224ms, longest drop25.195s. Only phase1/lower-court coverage is observed. The later native ownership probe finds the player dead after the capture; that is not hidden or used as performance acceptance. Next: same-route native VProf diagnostic on the functioning fight, preserving source, resources, counts, AI and graphics. [Raw results and coverage](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
+
+Target UNMET; all six full gates UNVERIFIED. PR7 stays draft and canonical main remains cec10dc54. Continue measured optimizations and missing upper-floor, full-phase, Hector/rescue and real four-player coverage. Restore external DP1 to75Hz after benchmarks.
+
+# Current checkpoint — native finale support defect; same-route source validation next
+
+The first clean Deck Dungeon 20 lower-court run fails: 5.447 FPS, median 196.041 ms, p95 305.864 ms, p99 334.240 ms, maximum 387.357 ms, longest drop 58.818 seconds. Input reaches waypoint 187 with zero Lua errors. No encounter commits: 263 complete-group retries each reject all four required Sentries. Combat and phase coverage remain unverified. The private route's incorrect cell-size assumption was corrected before its first timing capture; the clear 640-point, 288-unit-radius route is now frozen.
+
+A bounded native admission probe records 44 support refusals and restores both methods. Native rays miss the generated floors; zero-width, one-unit-tall hulls hit all 20 footprint samples within 0.03125 units of the expected height. Change only T:Supported's query. Preserve its five points, mask, filter, range, normal, height tolerance and non-actor support checks, plus full route, stair and occupancy checks. Preserve the complete composition and existing retry cadence.
+
+SPOT-08 passes 262 assertions; the exact parent fails the new native BBOX floor case. Warden, SPOT-06 (116), SPOT-07 (130), Hector/finale lifecycle, manifest/transport, B28 and syntax checks pass. The manifest now covers 118 total / 114 server / 52 client files. Next: install the committed candidate and repeat the same Deck route. No source FPS gain or encounter acceptance is claimed yet. [Evidence](validation/STEAM_DECK_FINALE_SUPPORT_20261022.json).
+
+bc95 CI source/VR/audio checks pass; the full matrix remains failed at 325/334 (run 39845300211). SteamOS authorization policy denies the optional GameMode governor test; CPU settings remain unchanged. Continue unaffected work. Target UNMET; all six full gates UNVERIFIED; PR 7 stays draft and main remains cec10dc54. Four actual players remain unavailable. Restore external DP1 to 75 Hz after benchmarks.
+
+# Current checkpoint — vector candidate rejected; retained runtime restored
+
+Six frozen fresh-process actualDeck source comparisons finish with no repeatable benefit. Current39.014/36.561/35.921FPS averages37.166; parent37.469/37.877/36.318 averages37.221. Ranges overlap, two adjacent pairs are slower, tails are inconsistent and every run fails the budget. Revert51d8a5a0 movement/B7test changes exactly to32d82a82; no gain or proven slowdown is claimed. Native12000case exact math/input proof and all focused correctness gates remain valid historical evidence, not FPS acceptance.
+
+The sequence was frozen parent/current/current/parent/parent/current before its first parent result, with external sensor monitoring OFF uniformly. Earlier sampler-on/off source runs remain as exploratory diagnostics; one pair does not prove observer overhead and is not mixed into the source comparison. Every source arm verifies its actual native motion algorithm/wrapper chain, normalWizard13/3items/seeds/population/1348models, source hashes and complete60s input/capture; eachprocess is explicitly quit. [Raw metrics, conditions and decision](validation/STEAM_DECK_MOTION_VECTORS_20261022.json).
+
+Candidate51 CI lowend/VR/audio passes. Fullmatrix325/334 has the same9knownparent suite/anchor signatures (raw39841156806), notgreen. Earlier two fixture omissions were repaired in32d82a82; assertions retained. Runtime now keeps the validatedc11historycache/b19modelpreload/77bossdraw repair and earlierCPU/render improvements, with no Motioncandidate. TargetUNMET; sixfullgatesUNVERIFIED; PR7draft/maincec10unchanged. Next: inspect remainingCPU/render scheduling cost and continue fullboss/finale coverage without changing the frozen workload or acceptance limits.
+
+# Current checkpoint — native history serialization hitch reduced; full budget still fails
+
+Retain c11c3567 as a recurring history-save hitch improvement. Six alternating same-process native comparisons preserve identical decoded1000-row history and equal payload sizes: parent44.004–50.333ms (mean46.068), cached3.900–5.600ms (mean4.613). The actual native JSON mutation/order/replacement gate passes320452assertions; originalhistory/writer/encoder restore, and no test rows reach the preferred disk file. Source I/O profiling shows151JSONcalls total10.751ms/max5.251ms(reportexportaftercapture), with no active-gameplay encode>=1ms, versus the earlier1028.736ms/max53.799ms. All three profiling bindings restore.
+
+The original Deck listen-host180s uninstrumented route still FAILS:36.343FPS,median26.121ms,p9539.632ms,p9962.382ms,max168.912ms,longest9.489s/13episodes>=2s. The older36.331FPS average is indistinguishable within noise; do not claim steady FPS or full-tail acceptance from one before/after run. Input completes180s. Exact raw paths and data are in [native cache evidence](validation/STEAM_DECK_HISTORY_CACHE_20261022.json).
+
+A separate68s same-call server diagnostic records1122tiny log appends/305866bytes at1039.757ms total/max33.367ms;233JSONcalls total19.232ms/max1.107ms. Logging cost is observed, not changed. All APIs restore. Next: narrow the normal AI phase cost without changing cadence/condition servicing; remaining bosses/finale/fullphase and four actual players remain unverified. Existing/static cache gates below pass. CI correctly catches two stale capture/profiler fixture manifests missing the new feedback source; both now include it and both local gates pass. This is test-data repair only; runtimec11 remains unchanged. New CI/full matrix is pending; c11 did not reach the full matrix. Target UNMET, all six full acceptance gates UNVERIFIED, PR7draft/maincec10 unchanged.
+
+# Current checkpoint — encounter-entry stall reduced; steady frame budget still fails
+
+Retain b19bccfb as an asset-stall improvement, with no steady FPS claim. Two fresh native source runs (no private precache or extra profiling) move the same eight Chuck/Jane models into the existing held loading period. Loading records 1.196/1.164 seconds of boss asset work; maximum gameplay frames are 117.762/134.200 ms, versus the 1,218.346 ms baseline with the cold commitment measured at 1,175.624 ms. The selected citizen, real encounter RNG, canonical checkpoint, actor counts and render bounds remain correct. Both short runs still fail steady timing: 38.156/37.015 FPS, p95 39.502/40.467 ms, p99 62.301/66.257 ms. Full phases and warmed acceptance remain unverified.
+
+Current runtime b19bccfb (label 0070179c changes tests/docs only) completes the frozen Dungeon10 v5 input for 180.041 seconds through waypoint198. Its unprofiled capture averages36.331FPS, median25.929ms, p9539.986ms, p9973.949ms, max159.411ms and longest below40 episode13.179seconds: FAIL. Compared with the older36.460FPS baseline this supplies no steady gain; do not attribute route/preparation differences to source performance. Raw captures and thresholds remain unchanged.
+
+Model-preload framework76cases and companion118assertions pass. Source-watch and population transport pass after updating their manifest expectation to112server/116total sources. Bootstrap recovers its skeleton timeout in isolation; known quiz164/dodge177 failures remain. Completed0070179c integration remains325/334 with the same nine known parent failure signatures; source/VR/audio CI pass. No full green matrix is claimed. Native bounds proof and ordinary incoming damage are observed; V1 coverage correction below remains binding.
+
+Next: measure a separate same-Deck dedicated configuration with identical normal AI cadence and source, while retaining the frozen listen-host acceptance. Continue later-level/full-phase preparation. Target UNMET; all six complete gates UNVERIFIED; PR7 remains draft and canonical maincec10dc54 is unchanged. Four actual players remain missing. ExternalDP1 must return to75Hz after benchmarks. [Compact measurements](validation/STEAM_DECK_BOSS_PRECACHE_20261022.json).
+
+# Current checkpoint — native boss draw repair proved; performance still fails
+
+Installed77db9cfe normal Chuck/Jane DrawActor returns complete51times. Both actual render bounds match the native-model/scale expansion, the beaver marker remains, the finite probe restores in0.97s, and both realms report zeroLuaerrors. This passes the finite native API/draw-bounds repair gate; full appearance/phase/performance acceptance remains unverified. Its60s orbit is37.533FPS,p9538.551,p9959.781,max1197.560,longest2.659s: FAIL. No FPSgain is attributed to the correctness repair.
+
+A separate75s bounded boss-method profile restores everybinding. BossService7.594inclusive ms/s, routevalidation only7calls/0.471ms/s/max12.590ms; nestedrows overlap. No route rewrite is warranted. The first-entry~1.2s stall is absent in the warmed repeat, but asset loading is not yet proved as cause. Next: a fresh-process native VProf capture of firstentry, then normal later/finale baseline preparation.
+
+Private ordinary behavior dispatch also fails to demonstrate a repeatable gain: parent33.869/36.720FPS versus direct36.989/36.019, overlappingranges. Everydirectcallback runs exactly1canonicalstep (94585/94137), zeroerrors, all34ordinaryactor overrides restore. Watchers/newactors retaincoroutines; cadence/counts unchanged. Rejecttheprototype; no productionAIchange. A separatePlayer-onlylookup microprototype is also leftunadopted: only~0.3ms/10kactualqueries, no wholeFPSclaim.
+
+Current target UNMET, all six complete acceptance gates UNVERIFIED, PR7draft/maincec10 unchanged. Preserve the frozen scenario thresholds/routes and actualfailedcaptures. ExternalDP1 stilltask60Hz, restore75afterbenchmarks. Fouractualplayers remainmissing. Currentgame explicitlyquit17:43UTC beforefresh nativecold-encounterdiagnostic.
+
+# Current checkpoint — native boss draw API repair; source gate passed
+
+The first normal-resource Dungeon14 orbit exposes a production client error at cl_boss_encounter.lua:91: util.GetModelBounds is absent. Native Entity:GetModelBounds is present for both Chuck and Jane. The old code marks the model/size signature before throwing, leaving its intended RenderMultiply and expanded bounds unapplied. Use the native Entity method and publish the signature only after setup completes; preserve scale, origin arithmetic, module drawing and server gameplay.
+
+Both presentation transports pass all18modular bosses. A new existing-harness draw gate verifies native Entity bounds with util API absent, exact scale/origin/render bounds, unchanged setup reuse and model/size invalidation. It fails on the exact parent and passes the repair. Fresh installed native bounds/appearance/no-error verification and equivalent boss profiling follow. This is a rendering correctness repair, not a measured FPS gain.
+
+Normal preparation now proves Wizard17/HP180/AR2clip20/3canonicalitems, Dungeon14 seed1217158876/layout1761773386,54roamers/1748models. A320point radius700 court circuit passes native PlayerHull sweeps before boss commit; dynamic hazards remain. The first60s, sourcecb90f2e7, averages37.585FPS,p9539.403ms,p9956.940ms,max1227.957ms,longest3.702s. FAIL timing and clean runtime; onlyphase1 observed. Raw `/home/deck/deborah-benchmarks/boss-baseline/cb90f2e7/d14-route60-run1/`. This is an iteration, not warmed full acceptance.
+
+Target UNMET; all six complete gates UNVERIFIED. PR7 stays draft/maincec10 unchanged. Previous candidate rejection/evidence below remains authoritative history.
+
+# Current checkpoint — typed component candidate rejected; retained runtime restored
+
+Six matched60-second actual Deck comparisons of a76ef534 complete with fresh native installation/restoration receipts. Current37.985/37.420/37.012FPS averages37.472 versus parent35.589/37.491/35.719 averaging36.266. The positive arithmetic difference3.325% is not separated from observed variation; ranges overlap and one adjacent pair is slightly slower. Tails are inconsistent and all six fail the budget. Do not claim a gain or proven slowdown. Restore both static-box source files exactly to5889d8bf/runtime4d0a6d80; preserve candidate history and evidence.
+
+Native correctness passed1209boxes, raw SetDTVector and custom bounds/pose/angle methods, with synchronous restoration. Candidate scoped checks28/29 retain the exact existing keycard hook.Remove test-double failure. These facts do not establish performance. Raw `/home/deck/deborah-benchmarks/typed-components-source/a76ef534/`; compact receipts accompany the iteration record. Original installed-hook full acceptance was never claimed for the diagnostic clones.
+
+Next: establish the remaining normal boss/later-level baselines and inspect the measured AI/context work for a focused same-call improvement. No across-frame actor/cache shortcut or altered tick/AI cadence is authorized. Target UNMET, all six complete gates UNVERIFIED, PR7 draft, maincec10dc54. Current game was explicitly quit17:00UTC before restoration; start a fresh independently owned unit for next native work.
+
+# Current checkpoint — typed component batching candidate; native timing pending
+
+The raw bounds-notification probe proves native Vector copies and typed setter notifications, but direct SetDTVector does not notify. Cross-frame bounds caching is rejected. This narrower candidate retains every fresh bounds/pose getter and batches components only for proven native return types. Declared Vector getters are verified against their captured native GetDTVector reader; native GetPos/GetAngles method identities verify pose types. Unknown/replaced APIs retain scalar reads. Unlike rejected b04e1224, no per-value native type check is added to the hot path. No cross-frame values, selection, counts, collision or timing are cached/changed.
+
+Existing renderer/geometry regressions pass. Complete scoped gate and native mutation/override/raw-datatable/restore proof precede any gain claim. Compare equivalent actual Deck runs and retain only a repeatable benefit. Current acceptance baseline and all full gates below remain failed/unverified; target UNMET, PR7 draft.
+
+# Current checkpoint — complete physical baseline fails; broad Lua profiling
+
+Current source68a6a9d3 exactly restores runtime4d0a6d80 after rejecting component-read candidate b04e1224. Native use is available in persistent user service `lod-deck-movement-profile-20261022`; no device-access blocker. No production source candidate is active.
+
+The physical Dungeon10 route is now315points. Existing authored upper landings, north-side lower returns and hull-validated corner clearance support ordinary player movement; no collision/AI changes. Native input completed180s alive, health164→102, and cleared both prior stalls. Canonical NewCampaign resets fixtures while retaining the warmed VM/JIT. A strict preflight waits for1348models/materials; playback starts with audit sampling. These preparation corrections are frozen before further performance changes; old failed routes/captures remain.
+
+The first aligned warmed180s baseline is36.460FPS, median25.276ms, p9541.771ms, p9980.233ms, longest below40 5.788s/13episodes>=2s: FAIL. This is one baseline, not complete scenario acceptance. Raw `/home/deck/deborah-benchmarks/dungeon10-physical-v5/68a6a9d3/baseline180-run1/`. Source checks and idleVR hold. Normal Magic casts, shooting, damage/reloads and pickups are logged; exact coverage enumeration remains.
+
+A scalar swept-entry prototype matches2916native cases per arm but supplies no reliable gain in four matched60s arms: parent35.436/37.145FPS vs scalar35.862/33.319 (means36.290vs34.591, overlapping ranges). Every public-method lease restores the original; no production change. The native engine profile instead attributes15.561ms/frame inclusive to Lua calls, including4.711ms NextBot behavior; server10.964ms/render9.454ms overlap these costs. Scope averages include preparation, not acceptance FPS. Next: short bounded FProfiler call trace to identify expensive Lua functions and peaks outside current coverage, restore the debug hook, then optimize the measured larger cost and repeat.
+
+Target UNMET; all six complete acceptance scenarios UNVERIFIED. Keep PR7 draft and maincec10dc54. Four actual players remain unavailable. Preserve all workload/settings/timing criteria and restore external DP1 from task-set60Hz to original75Hz after benchmarks.
+
+# Current checkpoint — actual Dungeon10 gameplay misses frame budget
+
+The Deck rebooted overnight. A persistent user service now keeps the Windows64/Proton10 game alive across tool calls; native captures work. The older unexplained closures are historical evidence, not a current access blocker. No media session survived reboot. External DP1 is temporarily60Hz for matched measurements and must return to75Hz afterward.
+
+Installed282451f5 has runtime source4d0a6d80. Fresh normal Dungeon10 is Wizard13/HP164/164/AR2clip20 with exactly3 canonical equipment items, campaign654759232/level1217158872/layout306806046,36roamers/18planned groups/59planned bodies/1348native models. The earlier six-item/Magnum checkpoint has unexplained equipment provenance; its normal-resource claim is unverified. Do not grant those extra weapons.
+
+The first warmed180s gameplay capture averaged42.899FPS but failed p9531.420ms, p9950.403ms, longest slow episode2.721s/four episodes>=2s. Coverage also failed: the NPC-derived route hit an authored stair guard at waypoint60 after65s. Private playback now uses the existing Navigator upper landings at six points; actual normal input clears that guard in2.612s and hull sweeps are clear. No production collision/AI/source change or source gain is attributed to this preparation fix. Later playback stalls at waypoint90, so full route coverage remains incomplete.
+
+The first60s corrected-route unprofiled baseline is39.251FPS, p9534.561ms/p9953.708ms, longest below40 1.957s: FAIL. Separate full profiling costs material FPS (33.502) and identifies generated geometry, combat-feed drawing and repeated entry-safety checks; those inclusive rows overlap and are not acceptance timing. Next: use a bounded detailed profile to isolate a focused canonical improvement, regression-check it, then compare equivalent uninstrumented source builds. Raw records: `/home/deck/deborah-benchmarks/dungeon10-diagnostic/282451f5/`; resumable private state: `/home/deck/deborah-recovery/CHECKPOINT.json` and `RESUME.md`.
+
+The last retained optimization4d0a6d80 remains validated only for its matched arrival gain (+2.007%,33.979vs33.310FPS). Seven scoped checks/native dispatch pass; full matrix325/334 has nine exact baseline failures. All six complete scenarios, three warmed180s repeats each, separate40cap verification and four actual players remain UNVERIFIED. Target UNMET; keep PR7 draft and do not promote to main as completed40FPS work.
+
+# Previous checkpoint — missing-target admission candidate; target unmet
+
+Fresh uninstrumented8a012398 arrival is32.431FPS, p9537.459ms/p9944.027ms;
+the separate full profile is29.172FPS and materially perturbs performance. A finite
+one-in64 service sample restored all29bindings. A two-second target counter found
+2,880 close-defense admission calls, all with invalid targets. Rejecting that
+impossible admission before repeated permissions/geometry gives33.056versus
+32.518FPS mean in four short wrapper arms (+1.655%), all failing40FPS.
+
+The source candidate adds only the early native-invalid-target return to canonical
+BeginCloseDefense. TickCloseDefense still services status/life; valid-target
+commitment/timing remains unchanged. Seven scoped checks pass, including actual
+close-defense/Watcher dispatch, status expiry/callbacks and B7 visibility. Next:
+fresh installed-source six-arm comparison with exact old function reconstructed
+from8a012398; retain only a reproducible gain. No production performance claim yet.
+All six full scenarios, warmed180s triplicates, capped play and four actual players
+remain unverified. Keep frozen listen-host criteria and normal population/graphics.
+
+# Previous checkpoint — fresh broader profile required; target unmet
+
+The retained live NextBot progression lookup4a6b4aa2 remains the latest source
+optimization (+2.458% in the recorded fresh six-arm comparison, all failing40FPS).
+Subsequent native32, entity-index, close-defense, affinity and Xalia experiments
+showed no reliable useful gain; all were restored. The existing experimental
+wall-batch path also misses the budget and visibly omits wall faces; rejected.
+Native32's hidden locale-warning modal was diagnosed, allowing actual30.649/30.474FPS
+measurements; runtime/visual/shutdown limitations prevent recommending it.
+See the current iteration record for exact comparisons and raw locations.
+
+No production change follows4a6b4aa2. Restart the long-lived Windows64/Proton10
+process, verify normal native renderer/source/settings/counts, establish a fresh
+baseline, and profile broader simulation/rendering cost before another candidate.
+Preserve frozen listen-host conditions; the local dedicated candidate remains
+separate. All six complete scenarios, three warmed180s repetitions each, capped
+verification and four actual players remain unverified. Do not merge as completed
+40FPS acceptance. Hosting and four-player access questions remain pending while
+independent profiling and scenario preparation continue.
+
+# Previous checkpoint — live NextBot state lookup candidate; target unmet
+
+Clean685 native readback verified111server/51client source hashes and authoritative
+cadence/topology metadata. A fresh native32 startup with+nb_update_frequency0.015
+before+map retains one tick withsv_cheats0 after a real client joins, despite a
+startup protected-cvar warning. A20s counter confirms71,868movement calls and
+194,051travel units, then restores its wrapper. The separate local-dedicated
+candidate remains outside frozen listen-host acceptance:48.456FPS stationary
+misses tails; ordinary first-sector input reaches46.856FPS over80.886active seconds,
+p9533.534ms/p9951.083ms and a3.454s slow episode before normal death. It fails.
+
+A finite control/candidate/candidate/control Deck listen-host probe of direct live
+NextBot progression lookup measured32.646/32.729 versus33.352/33.217FPS. The small
+signal justifies a source candidate, not a completed gain or40FPS acceptance.
+The canonical lookup now borrows the live native instance table per call, after
+validity; Player incarnation handling and absent/inherited/API-missing fallbacks
+remain. Replacement/removal, ordinary AI and human Soldier/Hero lifecycle checks
+pass. Eight selected checks pass; the dodge migration assertion at177 reproduces
+on parent1335 and matches the prior known matrix failure. No full-green claim.
+Fresh installed4a6b4aa2 native checks confirm61NextBots own the expected profile,
+the real Player matches, and deferred native removal returns no stale state. Six
+alternating30s listen-host arms measure33.649FPS current source versus32.842FPS
+old authority (+2.458%), with disjoint FPS ranges; retain the focused change.
+Tail latency is not consistently improved and every arm fails40FPS. Next: diagnose
+the previously unmeasured native Linux32 startup hang while preserving the frozen
+listen-host condition, then resume heavier gameplay profiling. All six scenario gates,
+three warmed repeats, capped play and four actual players remain unverified.
+
+# Current checkpoint — server cadence evidence; target unmet
+
+The local native-server candidate now connects through127.0.0.1 with documented
+socket-loopback mode. A material correction: native default NextBot updates were
+seven ticks, versus one in the listen-host log. Controlled20s counters show
+10,756 movement calls/98,691 travel units at the default, versus67,066/217,258 at
+one tick. Earlier53–54FPS dedicated results are **not comparable AI workloads**.
+A new one-tick30s diagnostic reaches51.566FPS, p9523.887ms/p9928.753ms, but uses
+sv_cheats1 solely to set the protected cadence cvar; normal production hosting,
+full gameplay coverage and frozen listen-host acceptance remain unverified.
+
+Capture support now records authoritative server topology/human count, tick/time
+scale, NextBot cadence/budget and cheat/AI/transport settings; client capture also
+records multicore, threaded bones and socket-loopback mode. Five targeted suites
+and changed-file syntax pass. This is source-validated diagnostic support, not a
+performance gain. Next: install the exact clean checkpoint, verify native metadata
+readback, then investigate a cadence-preserving production candidate without
+quietly slowing AI. Keep required workloads/thresholds fixed. Hosting and actual
+four-player session questions remain pending; independent preparation continues.
+
+# Previous checkpoint — focused Deck comparison; target unmet
+
+The floor candidate48740b24 improved mean FPS5.70% in three matched30-second
+stationary Deck diagnostics: baseline21.68–21.81FPS, candidate22.67–23.13FPS.
+Separate profiles agree on lower floor-rendering cost. Native walls, normal
+population, graphics and collision remain. The first normal17-node route and
+red-card pickup completed; later visibility/cleanup coverage is still required.
+The distinct multicore1 diagnostic reached26.77FPS and was restored to0.
+A second candidate now removes known invisible collision boxes from the client
+render queue after alternating prototype measurements improved about4%; focused
+regressions and923-file syntax pass; installed collision, full-update recovery
+and the normal red-card route were observed. A source-only repeat comparison is
+still pending. Separate stable-Proton10/threaded-rendering diagnostics reach
+33.28–33.61FPS in three fresh stationary repeats, still failing the frame budget.
+Native CPU samples and bounded query timing point to remaining main-thread Lua /
+simulation cost; GPU telemetry does not establish saturation. The static-wall
+native Think experiment produced no measurable benefit and was rejected.
+The separate native Linux64 investigation found and isolated a compiler code
+allocation loop; a bounded allocator setting removed it, but native still reaches
+only31.24–31.40FPS. Larger compiler caches/traces gave no measurable gain. Restore
+the faster Proton10 condition: fresh fullscreen1280×800 controls reach32.68–32.93FPS.
+The next focused candidate rejects ordinary NPC kinds before redundant native
+lookups in the Player-only human-Soldier provider. Soldier/AI/status regressions
+pass; source fingerprint coverage is expanded. Fresh installed repeats reach33.21–33.49FPS with reduced sampled query cost,
+but later32.06FPS controls show session variation larger than the small gain.
+A subsequent fresh alternating candidate/old/old/candidate/candidate/old
+comparison confirms33.098 versus32.416FPS mean (+2.104%), disjoint FPS ranges.
+Retain the guarded provider; tail latency still fails and is not consistently
+improved. These short mechanism comparisons are not acceptance scenarios.
+Slab batching, native mesh submission, engine fullscreen and compiler-cache
+reset prototypes gave no useful gain and were restored; no such prototype ships.
+A separate same-Deck nativeLinux32 dedicated server with publicWin64/P10 client
+reaches53.29–54.23FPS in four30s stationary diagnostics, p9521.54–22.55ms and
+p9926.52–26.89ms. This changes hosting/server VM together and does NOT satisfy
+the frozen listen-host or full gameplay gates. Windows beta64/P10 was slower
+(31.63–31.83FPS) and public is restored. PublicWindows32/P10 listen host was slower (29.60–29.77FPS); restored public64.
+Bounded MotionV2/entry/animation profiling identifies repeated server Lua updates.
+Native movement suppression and allocation-free entry sweep prototypes gave no
+useful gain and were restored. A longer normal-input first-sector diagnostic reached83.95 active seconds before
+normal death:27.11FPS, p9571.04ms, p99115.30ms. It fails duration and performance
+and remains partial coverage. A separate combat profile confirms continued entry/close-defense/native behavior
+cost and combat-feed drawing; normal death leaves only16.4 active seconds, so it
+is diagnostic only. No further source shortcut was retained. Resume the measured
+loop after the pending hosting decision; arrange three additional real clients
+for the required multiplayer gate. Exact failure/profile/controller receipts are
+in the iteration record. Temporary controllers are removed and processes stopped
+while awaiting that information. Same-Deck dedicated hosting is a pending
+explicit criterion decision. The public server currently has zero actual players,
+so four-player native coverage remains unavailable.
+The independent follow-up rejected native-validity and collector-pause probes.
+It also corrected a restart setting mismatch: df106dc1's combat profile and the
+first31a09219 control used multicore0, while all earlier source comparisons and
+unprofiled gameplay used1. Optional checked-in benchmark settings and a validated
+post-map launch order preserve1 on restart; a preflight rejects mismatches.
+The complete31a09219 matrix is325/334, all nine failure anchors matching parent;
+no additional production Lua change is retained. Exact receipts are in the record.
+Full40FPS acceptance remains **unmet/unverified**. See the
+[iteration record](validation/STEAM_DECK_20261021_ITERATIONS.md) for raw locations,
+focus/environment corrections, regressions and interpretation. Next: isolate
+remaining simulation/rendering cost, finish frozen gameplay checkpoints, and
+continue equivalent measurements. All required scenarios, three warm repeats
+and capped verification remain open; no completed40FPS claim is authorized by
+these stationary results.
+
+# Previous checkpoint — Steam Deck baseline access and pacing evidence
 
 The October21 optimization request requires measured native Steam Deck≥40FPS
 and verified publication, including three warm uncapped repeats per required

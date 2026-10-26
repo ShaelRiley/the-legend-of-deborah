@@ -1,0 +1,216 @@
+{
+  "status": "REJECT no repeatableFPSbenefit; all4capturesFAIL; targetUNMET/all6fullscenariosUNVERIFIED",
+  "plan": {
+    "sha": "9d2a5d5b29c88a39e9b856af054b60942b1b2e72",
+    "utc": "2026-10-23T01:06:22.979239+00:00",
+    "sequence": [
+      "stock",
+      "separate-main-core1",
+      "separate-main-core1",
+      "stock"
+    ],
+    "seconds_each": 60,
+    "hypothesis": "Main task previously executes96%ofonecore while gameworkers use otherCPUtime. Sharing aphysicalcorewith ownworkers maylimit its throughput despite little runqueuewait. NoSMT contention orcausalCPUplacementhasbeenmeasured. Compare stockmasks against mainCPU2/workerCPUs0,1,4,5,6,7; actualsysfssiblings2-3. This doesnotreservecoresfromOS/otherapps.",
+    "conditions": "Samefreshprocesssource, normalfrozenD20lowercourt-v1, exactseeds/resources/57roamers+9boss/1820models/66HzAI/actions/graphics/power; BOTHmonitorsONalways1280x800@60+1920x1080@75. No JIToptions/Luawrapper/deviceprofiler. IdenticalconsoleandboundednativeResumefallback. Boundaryonlyprocess/task/DRMcounters/masks; noperframeobserver.",
+    "prior": "D1stationary5969f57e allgame-threads maskedtophysicalrepresentatives had31.166controlvs31.138physicalFPS (-0.091%),rejected. CurrenthypothesisandD20workloadaredifferent: mainthread isolatedfromownworkers onphysicalcore,notmerelysharedmask.",
+    "gate": "NativePIDownedserviceguard;stockallthreadmasks0-7beforechange;actualSMTtopology;allstart/endmasksexact;late-threadmaskmismatchinvalidatesarmandpreservesraw. FreshprocessStopremovesmasks. Allsource/settings/input/resources/displays gatesapply.",
+    "retention": "Diagnostic4armscreen;noacceptanceorperformanceclaimwithinnoise. Aclearrepeatablebenefitrequiresfurtherregressions/repeats. Final3x180sallrequiredscenarios/capped/nativephase/multiplayergatesunchanged."
+  },
+  "rows": [
+    {
+      "variant": "stock",
+      "raw": "/home/deck/deborah-benchmarks/thread-affinity/9d2a5d5b/main-core1-series-v1/arm01-stock",
+      "active": {
+        "frames": 1280,
+        "seconds": 59.970976,
+        "fps": 21.343657972149728,
+        "median_ms": 37.972,
+        "p95_ms": 87.188,
+        "p99_ms": 118.003,
+        "max_ms": 415.906,
+        "one_percent_low_fps": 6.218634760924586,
+        "below_budget_seconds": 59.08584600000008,
+        "longest_below_budget_seconds": 16.23551899999999,
+        "below_budget_runs_ge2s": 5
+      },
+      "gates_passed": true,
+      "ending": {
+        "reason": "external stop",
+        "duration": 61.467594146728516,
+        "node": 211
+      },
+      "end_health": 153,
+      "main_thread": {
+        "tid": 186237,
+        "name": "gmod_win64.exe",
+        "cpu_seconds": 62.44,
+        "one_core_percent": 96.19006214862699,
+        "run_seconds": 62.444886781,
+        "runqueue_wait_seconds": 0.36276009,
+        "timeslices": 87259
+      },
+      "gpu": [
+        {
+          "engine": "drm-engine-gfx",
+          "seconds": 3.977514434,
+          "busy_percent": 6.127440112164013
+        },
+        {
+          "engine": "drm-engine-compute",
+          "seconds": 0.001565343,
+          "busy_percent": 0.00241144203161304
+        }
+      ],
+      "mask_threads": 55,
+      "new_threads": []
+    },
+    {
+      "variant": "separate-main-core1",
+      "raw": "/home/deck/deborah-benchmarks/thread-affinity/9d2a5d5b/main-core1-series-v1/arm02-separate-main-core1",
+      "active": {
+        "frames": 1350,
+        "seconds": 59.932824000000004,
+        "fps": 22.525219235456017,
+        "median_ms": 35.948,
+        "p95_ms": 76.906,
+        "p99_ms": 114.457,
+        "max_ms": 348.077,
+        "one_percent_low_fps": 6.525717386095933,
+        "below_budget_seconds": 59.08482200000001,
+        "longest_below_budget_seconds": 19.594410000000007,
+        "below_budget_runs_ge2s": 5
+      },
+      "gates_passed": true,
+      "ending": {
+        "reason": "external stop",
+        "duration": 60.452796936035156,
+        "node": 207
+      },
+      "end_health": 211,
+      "main_thread": {
+        "tid": 188422,
+        "name": "gmod_win64.exe",
+        "cpu_seconds": 62.38,
+        "one_core_percent": 96.82011253478012,
+        "run_seconds": 62.380960392,
+        "runqueue_wait_seconds": 0.22716121,
+        "timeslices": 80417
+      },
+      "gpu": [
+        {
+          "engine": "drm-engine-gfx",
+          "seconds": 4.296644015,
+          "busy_percent": 6.6688290646712005
+        },
+        {
+          "engine": "drm-engine-compute",
+          "seconds": 0.000865574,
+          "busy_percent": 0.0013434589946646326
+        }
+      ],
+      "mask_threads": 55,
+      "new_threads": []
+    },
+    {
+      "variant": "separate-main-core1",
+      "raw": "/home/deck/deborah-benchmarks/thread-affinity/9d2a5d5b/main-core1-series-v1/arm03-separate-main-core1",
+      "active": {
+        "frames": 1203,
+        "seconds": 59.95653,
+        "fps": 20.06453675688036,
+        "median_ms": 38.992,
+        "p95_ms": 93.194,
+        "p99_ms": 125.619,
+        "max_ms": 344.106,
+        "one_percent_low_fps": 6.314882380458062,
+        "below_budget_seconds": 59.28314000000005,
+        "longest_below_budget_seconds": 58.81276700000005,
+        "below_budget_runs_ge2s": 1
+      },
+      "gates_passed": true,
+      "ending": {
+        "reason": "external stop",
+        "duration": 60.48978042602539,
+        "node": 207
+      },
+      "end_health": 154,
+      "main_thread": {
+        "tid": 190651,
+        "name": "gmod_win64.exe",
+        "cpu_seconds": 61.23,
+        "one_core_percent": 95.05906599680364,
+        "run_seconds": 61.224704822,
+        "runqueue_wait_seconds": 1.290433938,
+        "timeslices": 116746
+      },
+      "gpu": [
+        {
+          "engine": "drm-engine-gfx",
+          "seconds": 3.891091184,
+          "busy_percent": 6.040886716632971
+        },
+        {
+          "engine": "drm-engine-compute",
+          "seconds": 9.076e-05,
+          "busy_percent": 0.00014090414551477868
+        }
+      ],
+      "mask_threads": 55,
+      "new_threads": []
+    },
+    {
+      "variant": "stock",
+      "raw": "/home/deck/deborah-benchmarks/thread-affinity/9d2a5d5b/main-core1-series-v1/arm04-stock",
+      "active": {
+        "frames": 1283,
+        "seconds": 59.95975,
+        "fps": 21.397687615442027,
+        "median_ms": 38.35,
+        "p95_ms": 82.407,
+        "p99_ms": 117.909,
+        "max_ms": 355.355,
+        "one_percent_low_fps": 6.370753341582642,
+        "below_budget_seconds": 58.98525899999992,
+        "longest_below_budget_seconds": 21.132014,
+        "below_budget_runs_ge2s": 4
+      },
+      "gates_passed": true,
+      "ending": {
+        "reason": "external stop",
+        "duration": 61.42851257324219,
+        "node": 210
+      },
+      "end_health": 163,
+      "main_thread": {
+        "tid": 192830,
+        "name": "gmod_win64.exe",
+        "cpu_seconds": 62.54,
+        "one_core_percent": 96.34215593436288,
+        "run_seconds": 62.538185,
+        "runqueue_wait_seconds": 0.36878144,
+        "timeslices": 87877
+      },
+      "gpu": [
+        {
+          "engine": "drm-engine-gfx",
+          "seconds": 4.148435404,
+          "busy_percent": 6.390617374093376
+        },
+        {
+          "engine": "drm-engine-compute",
+          "seconds": 0.00081625,
+          "busy_percent": 0.0012574238052674082
+        }
+      ],
+      "mask_threads": 55,
+      "new_threads": []
+    }
+  ],
+  "means": {
+    "stock": 21.370672793795876,
+    "separate-main-core1": 21.29487799616819
+  },
+  "arithmetic_percent": -0.35466734416377266,
+  "decision": "Reject affinity: onecandidateimprovesandoneslows. Stockmeans21.371/candidate21.295; no supportedFPSgain. No processmasks retained; all4ownedgamesStop. BothmonitorsONalways.",
+  "limits": "ShortD20lowercourtonly; nofullphases/capped/ordinaryallscenarios/fourhumans/3x180sacceptance. MainCPU/schedwaitcountersarenotcausalSMTproof; OS/otherWineprocesseswerenotreserved."
+}

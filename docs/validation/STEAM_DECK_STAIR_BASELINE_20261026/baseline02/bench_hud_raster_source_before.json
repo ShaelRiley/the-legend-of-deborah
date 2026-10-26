@@ -1,0 +1,49 @@
+{
+	"phase": "before",
+	"slots": [
+		{
+			"width": 1024,
+			"height": 256,
+			"building": false
+		},
+		{
+			"width": 1024,
+			"height": 256,
+			"building": false
+		},
+		{
+			"width": 1024,
+			"height": 256,
+			"building": false
+		},
+		{
+			"width": 1024,
+			"height": 256,
+			"building": false
+		},
+		{
+			"width": 1024,
+			"height": 256,
+			"building": false
+		},
+		{
+			"width": 1024,
+			"height": 256,
+			"building": false
+		}
+	],
+	"sha": "8b2661ad92f3caf4bb6763304f747587cc03dbf7",
+	"passed": true,
+	"cache_matches_lexical": true,
+	"scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+	"public_provider_unchanged": true,
+	"hud_line": 309,
+	"public_line": 63,
+	"counters": {
+		"fallbacks": 82,
+		"hits": 3621,
+		"builds": 327
+	},
+	"mode": "candidate",
+	"actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+}

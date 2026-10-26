@@ -1,0 +1,35 @@
+{
+	"scope": "First/last actualPreRender sample timestamps, withSysTime brackets around DATA writes. Hostusesfilemtime andbracketedrealtime-monotonic mapping toalignnative trace toactualframeintervals; exclude setup/warmup/teardown. One firstframe mark andone stopprovider, no per-AI wrappers. Same marker inoff/on controls.",
+	"created": 95.2531408,
+	"frames": 1394,
+	"last": {
+		"filename": "bench_aligned_last.json",
+		"sys_before": 158.3122512,
+		"boundary_sys": 158.2733039,
+		"sys_after": 158.3137489
+	},
+	"first": {
+		"filename": "bench_aligned_first.json",
+		"sys_before": 98.3681825,
+		"boundary_sys": 98.339142,
+		"sys_after": 98.3693209
+	},
+	"variant": "on",
+	"reason": "complete",
+	"restored": true,
+	"engine_last": {
+		"filename": "bench_aligned_engine_last.json",
+		"sys_before": 157.8922245,
+		"boundary_sys": 157.8922233,
+		"sys_after": 157.8935859
+	},
+	"passed": true,
+	"engine_first": {
+		"filename": "bench_aligned_engine_first.json",
+		"sys_before": 98.3797928,
+		"boundary_sys": 98.3797921,
+		"sys_after": 98.3812693
+	},
+	"planned_finish": 158.2994598,
+	"planned_start": 98.2994598
+}

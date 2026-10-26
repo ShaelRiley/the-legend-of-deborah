@@ -1,0 +1,185 @@
+{
+  "checked_utc": "2026-10-26 15:11:07 UTC",
+  "repository": "ShaelRiley/the-legend-of-deborah",
+  "head": {
+    "sha": "8b2661ad92f3caf4bb6763304f747587cc03dbf7",
+    "matrix_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40272652178",
+    "job_id": 121408618180,
+    "passed": 328,
+    "total": 337,
+    "source_changed": 0,
+    "performance_sources": "PASS",
+    "VR": "PASS",
+    "audio": "PASS"
+  },
+  "source": {
+    "sha": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+    "matrix_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40272309901",
+    "job_id": 121407560527,
+    "passed": 328,
+    "total": 337,
+    "source_changed": 0,
+    "performance_sources": "PASS",
+    "VR": "PASS",
+    "audio": "PASS"
+  },
+  "parent": {
+    "sha": "b2f21822fbf67be8b28c61ca7b1244b11c02dfdd",
+    "matrix_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40267980704",
+    "job_id": 121394443411,
+    "passed": 327,
+    "total": 336,
+    "source_changed": 0
+  },
+  "stair_gate": {
+    "name": "Hostile Stair Collision & Supported Flights",
+    "head": "PASS 60/337,0.829s",
+    "source": "PASS 60/337,0.600s"
+  },
+  "headroom_gate": {
+    "name": "Standing Stair Headroom & Upper Crossover",
+    "head": "PASS 59/337,3.478s",
+    "source": "PASS 59/337,2.769s",
+    "parent": "PASS 59/336,1.974s"
+  },
+  "failure_count": 9,
+  "new_named_failures": [],
+  "removed_named_failures": [],
+  "failure_signatures": [
+    {
+      "name": "Bestiary B29 Bilateral Combat Seams",
+      "parent_signature": [
+        "<ROOT>/tools/test_bestiary_b29_combat.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "head_signature": [
+        "<ROOT>/tools/test_bestiary_b29_combat.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "source_signature": [
+        "<ROOT>/tools/test_bestiary_b29_combat.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "same_head": true,
+      "same_source": true
+    },
+    {
+      "name": "Active Event Catalog, Bribe Removal & Quiz Placement",
+      "parent_signature": [
+        "tools/test_event_quiz_generation.lua:164: assertion failed!"
+      ],
+      "head_signature": [
+        "tools/test_event_quiz_generation.lua:164: assertion failed!"
+      ],
+      "source_signature": [
+        "tools/test_event_quiz_generation.lua:164: assertion failed!"
+      ],
+      "same_head": true,
+      "same_source": true
+    },
+    {
+      "name": "Minigame Shell & Equipment UI Restrictions",
+      "parent_signature": [
+        "<ROOT>/tools/test_minigame_ui.lua: ...deborah/the-legend-of-deborah/tools/test_minigame_ui.lua:106: assertion failed!"
+      ],
+      "head_signature": [
+        "<ROOT>/tools/test_minigame_ui.lua: ...deborah/the-legend-of-deborah/tools/test_minigame_ui.lua:106: assertion failed!"
+      ],
+      "source_signature": [
+        "<ROOT>/tools/test_minigame_ui.lua: ...deborah/the-legend-of-deborah/tools/test_minigame_ui.lua:106: assertion failed!"
+      ],
+      "same_head": true,
+      "same_source": true
+    },
+    {
+      "name": "Client Geometry Full-Update Recovery",
+      "parent_signature": [
+        "<ROOT>/tools/test_geometry_fullupdate.lua: ...end_of_deborah/entities/entities/lod_keycard/cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+      ],
+      "head_signature": [
+        "<ROOT>/tools/test_geometry_fullupdate.lua: ...end_of_deborah/entities/entities/lod_keycard/cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+      ],
+      "source_signature": [
+        "<ROOT>/tools/test_geometry_fullupdate.lua: ...end_of_deborah/entities/entities/lod_keycard/cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+      ],
+      "same_head": true,
+      "same_source": true
+    },
+    {
+      "name": "Shared Native DamageInfo Lifetime",
+      "parent_signature": [
+        "<ROOT>/tools/test_shared_damage_lifetime.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "head_signature": [
+        "<ROOT>/tools/test_shared_damage_lifetime.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "source_signature": [
+        "<ROOT>/tools/test_shared_damage_lifetime.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "same_head": true,
+      "same_source": true
+    },
+    {
+      "name": "Shotgun Native Bullet Aggregation",
+      "parent_signature": [
+        "<ROOT>/tools/test_shotgun_native_path.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "head_signature": [
+        "<ROOT>/tools/test_shotgun_native_path.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "source_signature": [
+        "<ROOT>/tools/test_shotgun_native_path.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "same_head": true,
+      "same_source": true
+    },
+    {
+      "name": "Feat: rebalance_20261002",
+      "parent_signature": [
+        "<ROOT>/tools/test_checkpoint_d_rebalance_20261002.lua: ...f-deborah/tools/test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+      ],
+      "head_signature": [
+        "<ROOT>/tools/test_checkpoint_d_rebalance_20261002.lua: ...f-deborah/tools/test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+      ],
+      "source_signature": [
+        "<ROOT>/tools/test_checkpoint_d_rebalance_20261002.lua: ...f-deborah/tools/test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+      ],
+      "same_head": true,
+      "same_source": true
+    },
+    {
+      "name": "Retired Cross Feats & Shared Dodge",
+      "parent_signature": [
+        "<ROOT>/tools/test_cross_feats_dodge.lua: ...h/the-legend-of-deborah/tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "head_signature": [
+        "<ROOT>/tools/test_cross_feats_dodge.lua: ...h/the-legend-of-deborah/tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "source_signature": [
+        "<ROOT>/tools/test_cross_feats_dodge.lua: ...h/the-legend-of-deborah/tools/test_cross_feats_dodge.lua:177: assertion failed!"
+      ],
+      "same_head": true,
+      "same_source": true
+    },
+    {
+      "name": "Live-GDD Feat Release Gate",
+      "parent_signature": [
+        "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+        "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER",
+        "FEAT_RELEASE_GATE_BLOCKED — no human-acceptance candidate may be claimed."
+      ],
+      "head_signature": [
+        "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+        "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER",
+        "FEAT_RELEASE_GATE_BLOCKED — no human-acceptance candidate may be claimed."
+      ],
+      "source_signature": [
+        "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+        "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER",
+        "FEAT_RELEASE_GATE_BLOCKED — no human-acceptance candidate may be claimed."
+      ],
+      "same_head": true,
+      "same_source": true
+    }
+  ],
+  "signature_normalization": "Strip UTC/runner-root prefixes and compare sorted error/blocker lines. Live-GDD prints the same two noncanonical blockers in different order; no new blocker.",
+  "all_baseline_signatures_match": true,
+  "conclusion": "No new stair-fix failing gate or changed error/blocker set. Full matrix still FAIL on nine inherited failures. CI does not establish native acceptance or 40 FPS. Read-only API check; no tests/benchmarks."
+}

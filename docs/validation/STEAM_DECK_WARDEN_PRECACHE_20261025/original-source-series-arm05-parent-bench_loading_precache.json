@@ -1,0 +1,65 @@
+{
+	"scope": "Preparation-only publicmodelprecache observer. Records currentlevel/seed/build-ready/calltime; no entities or gameplaystate retained. Nativeprovider restoredbeforeFPS; no FPSinstrumentation. Max32assetcalls.",
+	"reason": "before FPS",
+	"rows": [
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/Humans/Group01/male_07.mdl",
+			"milliseconds": 788.5704999999916,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/Humans/Group01/male_02.mdl",
+			"milliseconds": 135.66090000000486,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_junk/propane_tank001a.mdl",
+			"milliseconds": 23.878000000010502,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_c17/FurnitureShelf001a.mdl",
+			"milliseconds": 33.880199999998695,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_c17/concrete_barrier001a.mdl",
+			"milliseconds": 28.510699999998224,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_debris/wood_board04a.mdl",
+			"milliseconds": 23.721800000004123,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_debris/wood_board07a.mdl",
+			"milliseconds": 16.867699999991714,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_debris/wood_board06a.mdl",
+			"milliseconds": 17.19020000000171,
+			"build_ready": false
+		}
+	],
+	"seconds": 22.92196720000001,
+	"passed": true,
+	"restored": true
+}

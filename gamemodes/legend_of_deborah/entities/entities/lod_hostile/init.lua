@@ -499,7 +499,14 @@ function ENT:_AdvanceWaypoint()
     local waypoint = self.LODWaypoints and self.LODWaypoints[self.LODWaypointIndex or 1]
     if not waypoint then return nil end
     local tolerance = waypoint.tolerance or 40
-    if self:GetPos():DistToSqr(waypoint.pos) <= tolerance * tolerance then
+    local goal = waypoint.pos
+    local motion = LOD and LOD.HostileMotionV2
+    if motion and type(motion.WaypointPosition) == "function" then
+        goal = motion:WaypointPosition(self, waypoint)
+        -- An unresolved or obstructed stair goal must retain its route index.
+        if not goal then return waypoint end
+    end
+    if self:GetPos():DistToSqr(goal) <= tolerance * tolerance then
         self.LODWaypointIndex = (self.LODWaypointIndex or 1) + 1
         waypoint = self.LODWaypoints[self.LODWaypointIndex]
     end

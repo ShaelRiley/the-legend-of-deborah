@@ -1,0 +1,9 @@
+{
+  "actual_sequence": [
+    "on",
+    "on"
+  ],
+  "native_window": "15seconds afterfirstFPSmark throughdeadline-.5seconds",
+  "template_prose_limit": "Original driver inherits references to C/P/P/C and offcontrols in scope/observer prose. Those are stale template text; actual sequence/progress/controller receipts show two ON-only phase captures. No new overhead calibration or OFF-control source comparison was performed.",
+  "not_a_source_experiment": true
+}

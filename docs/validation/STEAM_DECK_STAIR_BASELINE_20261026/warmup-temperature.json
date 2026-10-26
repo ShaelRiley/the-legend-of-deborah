@@ -1,0 +1,34 @@
+[
+  {
+    "utc": "2026-10-26T15:09:40.514809+00:00",
+    "hwmon": [
+      {
+        "name": "amdgpu",
+        "temp1_input": "63000",
+        "power1_cap": "15000000",
+        "power2_cap": "15000000",
+        "power1_average": "10538000"
+      },
+      {
+        "name": "k10temp",
+        "temp1_input": "70750"
+      }
+    ]
+  },
+  {
+    "utc": "2026-10-26T15:17:09.523415+00:00",
+    "hwmon": [
+      {
+        "name": "amdgpu",
+        "temp1_input": "65000",
+        "power1_cap": "15000000",
+        "power2_cap": "15000000",
+        "power1_average": "10316000"
+      },
+      {
+        "name": "k10temp",
+        "temp1_input": "73250"
+      }
+    ]
+  }
+]

@@ -1,0 +1,79 @@
+{
+	"scope": "Preparation-only publicmodelprecache observer. Records currentlevel/seed/build-ready/calltime; no entities or gameplaystate retained. Nativeprovider restoredbeforeFPS; no FPSinstrumentation. Max32assetcalls.",
+	"reason": "before FPS",
+	"rows": [
+		{
+			"level": 1,
+			"seed": 206007348,
+			"model": "models/Humans/Group01/male_06.mdl",
+			"milliseconds": 0.09790000000009513,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/Humans/Group01/male_07.mdl",
+			"milliseconds": 133.75119999999185,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/Humans/Group01/male_02.mdl",
+			"milliseconds": 125.24030000000153,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_junk/propane_tank001a.mdl",
+			"milliseconds": 24.325099999998656,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_c17/FurnitureShelf001a.mdl",
+			"milliseconds": 34.630900000010456,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_c17/concrete_barrier001a.mdl",
+			"milliseconds": 28.941299999999615,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_debris/wood_board04a.mdl",
+			"milliseconds": 23.66779999999835,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_debris/wood_board07a.mdl",
+			"milliseconds": 17.48969999999872,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_debris/wood_board06a.mdl",
+			"milliseconds": 17.423199999996086,
+			"build_ready": false
+		},
+		{
+			"level": 20,
+			"seed": 1217159003,
+			"model": "models/Humans/Group01/male_04.mdl",
+			"milliseconds": 128.53419999999005,
+			"build_ready": false
+		}
+	],
+	"seconds": 22.855711499999998,
+	"passed": true,
+	"restored": true
+}

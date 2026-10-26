@@ -1,0 +1,780 @@
+{
+  "status": "Diagnostic only; no FPSgain oracceptance. Sourcecandidatephasespendingactualsourcecomparisons. SP40UNMET",
+  "source": "eef47658d0b64815395827834eb6cc72dd2b0d35",
+  "raw": "/home/deck/deborah-benchmarks/client-think-short/eef47658/native-readonly-v1",
+  "client_think": {
+    "classes": [
+      {
+        "calls": 3759,
+        "ms": 28.44809999972142,
+        "completed": 3759,
+        "class": "lod_static_box",
+        "max_ms": 0.08189999999785869
+      },
+      {
+        "calls": 6327,
+        "ms": 2.4089000002618377,
+        "completed": 6327,
+        "class": "lod_hostile",
+        "max_ms": 0.03350000000068576
+      },
+      {
+        "calls": 2664,
+        "ms": 1.0365000000831515,
+        "completed": 2664,
+        "class": "lod_loot_pickup",
+        "max_ms": 0.059600000000159525
+      },
+      {
+        "calls": 666,
+        "ms": 0.3546999998746969,
+        "completed": 666,
+        "class": "lod_staging_prop",
+        "max_ms": 0.001900000000887303
+      },
+      {
+        "calls": 777,
+        "ms": 0.32710000013480567,
+        "completed": 777,
+        "class": "lod_floor_map_pedestal",
+        "max_ms": 0.011200000002986599
+      },
+      {
+        "calls": 111,
+        "ms": 0.3142000001048473,
+        "completed": 111,
+        "class": "env_skypaint",
+        "max_ms": 0.04889999999591055
+      },
+      {
+        "calls": 555,
+        "ms": 0.24179999971352117,
+        "completed": 555,
+        "class": "lod_gate",
+        "max_ms": 0.0011000000057492798
+      },
+      {
+        "calls": 333,
+        "ms": 0.1809999998698686,
+        "completed": 333,
+        "class": "lod_keycard",
+        "max_ms": 0.03859999999633601
+      },
+      {
+        "calls": 444,
+        "ms": 0.17000000006817118,
+        "completed": 444,
+        "class": "lod_floor_map",
+        "max_ms": 0.011100000008923416
+      },
+      {
+        "calls": 333,
+        "ms": 0.13819999969655328,
+        "completed": 333,
+        "class": "lod_dungeon_event",
+        "max_ms": 0.0009000000034120603
+      },
+      {
+        "calls": 222,
+        "ms": 0.10150000002795423,
+        "completed": 222,
+        "class": "lod_heroes_of_legend_board",
+        "max_ms": 0.0009999999974752427
+      },
+      {
+        "calls": 111,
+        "ms": 0.04750000000797172,
+        "completed": 111,
+        "class": "lod_jail_door",
+        "max_ms": 0.0008000000093488779
+      },
+      {
+        "calls": 111,
+        "ms": 0.04710000003171899,
+        "completed": 111,
+        "class": "lod_staging_mirror",
+        "max_ms": 0.0008000000093488779
+      },
+      {
+        "calls": 111,
+        "ms": 0.04599999994070458,
+        "completed": 111,
+        "class": "lod_field_manual",
+        "max_ms": 0.0007000000010748408
+      },
+      {
+        "calls": 111,
+        "ms": 0.03809999985548984,
+        "completed": 111,
+        "class": "gmod_hands",
+        "max_ms": 0.0007000000010748408
+      },
+      {
+        "calls": 111,
+        "ms": 0.035800000048880065,
+        "completed": 111,
+        "class": "lod_neil_release_button",
+        "max_ms": 0.0006000000070116585
+      },
+      {
+        "calls": 111,
+        "ms": 0.032200000006810114,
+        "completed": 111,
+        "class": "lod_deborah",
+        "max_ms": 0.0004999999987376214
+      },
+      {
+        "calls": 111,
+        "ms": 0.03170000002228335,
+        "completed": 111,
+        "class": "lod_debbie_statue",
+        "max_ms": 0.0005999999928008037
+      },
+      {
+        "calls": 0,
+        "ms": 0,
+        "completed": 0,
+        "class": "weapon_lod_crowbar",
+        "max_ms": 0
+      },
+      {
+        "calls": 0,
+        "ms": 0,
+        "completed": 0,
+        "class": "weapon_lod_throwable",
+        "max_ms": 0
+      }
+    ],
+    "restored": true,
+    "frames": [
+      {
+        "count": 1372,
+        "ms": 11.387199999973063,
+        "frame": 1724
+      },
+      {
+        "count": 1372,
+        "ms": 8.874799999915695,
+        "frame": 1792
+      },
+      {
+        "count": 1372,
+        "ms": 8.311899999839056,
+        "frame": 1752
+      },
+      {
+        "count": 119,
+        "ms": 0.1455000000447626,
+        "frame": 1783
+      },
+      {
+        "count": 119,
+        "ms": 0.09370000000785694,
+        "frame": 1735
+      },
+      {
+        "count": 119,
+        "ms": 0.0893000000559141,
+        "frame": 1798
+      },
+      {
+        "count": 119,
+        "ms": 0.07730000015726546,
+        "frame": 1794
+      },
+      {
+        "count": 119,
+        "ms": 0.0675000000427417,
+        "frame": 1829
+      },
+      {
+        "count": 119,
+        "ms": 0.06689999996467577,
+        "frame": 1791
+      },
+      {
+        "count": 119,
+        "ms": 0.06500000002063189,
+        "frame": 1834
+      },
+      {
+        "count": 119,
+        "ms": 0.06449999989399657,
+        "frame": 1730
+      },
+      {
+        "count": 119,
+        "ms": 0.05910000004405447,
+        "frame": 1795
+      },
+      {
+        "count": 119,
+        "ms": 0.057500000124832695,
+        "frame": 1763
+      },
+      {
+        "count": 119,
+        "ms": 0.05710000002068227,
+        "frame": 1808
+      },
+      {
+        "count": 119,
+        "ms": 0.056900000018345054,
+        "frame": 1809
+      },
+      {
+        "count": 119,
+        "ms": 0.0569000000041342,
+        "frame": 1771
+      },
+      {
+        "count": 119,
+        "ms": 0.05550000001619537,
+        "frame": 1778
+      },
+      {
+        "count": 119,
+        "ms": 0.05270000005452857,
+        "frame": 1785
+      },
+      {
+        "count": 119,
+        "ms": 0.05240000005812817,
+        "frame": 1801
+      },
+      {
+        "count": 119,
+        "ms": 0.052300000049854134,
+        "frame": 1824
+      },
+      {
+        "count": 119,
+        "ms": 0.051999999968188604,
+        "frame": 1818
+      },
+      {
+        "count": 119,
+        "ms": 0.05170000005705333,
+        "frame": 1811
+      },
+      {
+        "count": 119,
+        "ms": 0.05160000000614673,
+        "frame": 1789
+      },
+      {
+        "count": 119,
+        "ms": 0.051100000121095945,
+        "frame": 1830
+      },
+      {
+        "count": 119,
+        "ms": 0.05099999989965909,
+        "frame": 1822
+      },
+      {
+        "count": 119,
+        "ms": 0.05060000013656918,
+        "frame": 1766
+      },
+      {
+        "count": 119,
+        "ms": 0.050499999929343176,
+        "frame": 1787
+      },
+      {
+        "count": 119,
+        "ms": 0.05010000013783156,
+        "frame": 1729
+      },
+      {
+        "count": 119,
+        "ms": 0.049799999956690044,
+        "frame": 1800
+      },
+      {
+        "count": 119,
+        "ms": 0.049199999921256676,
+        "frame": 1726
+      },
+      {
+        "count": 119,
+        "ms": 0.04900000004681715,
+        "frame": 1779
+      },
+      {
+        "count": 119,
+        "ms": 0.04879999991658224,
+        "frame": 1737
+      },
+      {
+        "count": 119,
+        "ms": 0.04849999993439269,
+        "frame": 1731
+      },
+      {
+        "count": 119,
+        "ms": 0.04840000003980549,
+        "frame": 1774
+      },
+      {
+        "count": 119,
+        "ms": 0.04839999994032951,
+        "frame": 1758
+      },
+      {
+        "count": 119,
+        "ms": 0.04839999992611865,
+        "frame": 1831
+      },
+      {
+        "count": 119,
+        "ms": 0.048099999972350815,
+        "frame": 1760
+      },
+      {
+        "count": 119,
+        "ms": 0.04800000009197447,
+        "frame": 1788
+      },
+      {
+        "count": 119,
+        "ms": 0.04800000004934191,
+        "frame": 1805
+      },
+      {
+        "count": 119,
+        "ms": 0.04789999995580274,
+        "frame": 1768
+      },
+      {
+        "count": 119,
+        "ms": 0.04789999992738103,
+        "frame": 1804
+      },
+      {
+        "count": 119,
+        "ms": 0.047800000075426397,
+        "frame": 1746
+      },
+      {
+        "count": 119,
+        "ms": 0.04769999992504381,
+        "frame": 1821
+      },
+      {
+        "count": 119,
+        "ms": 0.04760000011572174,
+        "frame": 1806
+      },
+      {
+        "count": 119,
+        "ms": 0.0476000000020349,
+        "frame": 1773
+      },
+      {
+        "count": 119,
+        "ms": 0.04759999995940234,
+        "frame": 1750
+      },
+      {
+        "count": 119,
+        "ms": 0.04740000001390854,
+        "frame": 1813
+      },
+      {
+        "count": 119,
+        "ms": 0.047300000048267066,
+        "frame": 1784
+      },
+      {
+        "count": 119,
+        "ms": 0.04729999993458023,
+        "frame": 1816
+      },
+      {
+        "count": 119,
+        "ms": 0.047200000025782174,
+        "frame": 1765
+      },
+      {
+        "count": 119,
+        "ms": 0.04719999992630619,
+        "frame": 1832
+      },
+      {
+        "count": 119,
+        "ms": 0.04709999998908643,
+        "frame": 1776
+      },
+      {
+        "count": 119,
+        "ms": 0.04709999996066472,
+        "frame": 1817
+      },
+      {
+        "count": 119,
+        "ms": 0.04700000008028837,
+        "frame": 1802
+      },
+      {
+        "count": 119,
+        "ms": 0.04699999986712555,
+        "frame": 1807
+      },
+      {
+        "count": 119,
+        "ms": 0.0469999998529147,
+        "frame": 1769
+      },
+      {
+        "count": 119,
+        "ms": 0.04690000000096006,
+        "frame": 1772
+      },
+      {
+        "count": 119,
+        "ms": 0.0468999999583275,
+        "frame": 1754
+      },
+      {
+        "count": 119,
+        "ms": 0.0468999999583275,
+        "frame": 1826
+      },
+      {
+        "count": 119,
+        "ms": 0.046899999944116644,
+        "frame": 1815
+      },
+      {
+        "count": 119,
+        "ms": 0.046800000049529444,
+        "frame": 1825
+      },
+      {
+        "count": 119,
+        "ms": 0.04680000003531859,
+        "frame": 1736
+      },
+      {
+        "count": 119,
+        "ms": 0.04670000006967712,
+        "frame": 1745
+      },
+      {
+        "count": 119,
+        "ms": 0.04660000006140308,
+        "frame": 1786
+      },
+      {
+        "count": 119,
+        "ms": 0.046599999990348806,
+        "frame": 1781
+      },
+      {
+        "count": 119,
+        "ms": 0.04659999994771624,
+        "frame": 1782
+      },
+      {
+        "count": 119,
+        "ms": 0.04649999998207477,
+        "frame": 1757
+      },
+      {
+        "count": 119,
+        "ms": 0.04640000000222244,
+        "frame": 1777
+      },
+      {
+        "count": 119,
+        "ms": 0.046399999888535604,
+        "frame": 1819
+      },
+      {
+        "count": 119,
+        "ms": 0.04630000022132208,
+        "frame": 1810
+      },
+      {
+        "count": 119,
+        "ms": 0.04630000007921353,
+        "frame": 1742
+      },
+      {
+        "count": 119,
+        "ms": 0.04630000006500268,
+        "frame": 1744
+      },
+      {
+        "count": 119,
+        "ms": 0.04629999992289413,
+        "frame": 1770
+      },
+      {
+        "count": 119,
+        "ms": 0.046299999880261566,
+        "frame": 1775
+      },
+      {
+        "count": 119,
+        "ms": 0.04620000005672864,
+        "frame": 1747
+      },
+      {
+        "count": 119,
+        "ms": 0.046100000020032894,
+        "frame": 1833
+      },
+      {
+        "count": 119,
+        "ms": 0.046099999963189475,
+        "frame": 1827
+      },
+      {
+        "count": 119,
+        "ms": 0.04600000001175886,
+        "frame": 1780
+      },
+      {
+        "count": 119,
+        "ms": 0.045999999883861165,
+        "frame": 1725
+      },
+      {
+        "count": 119,
+        "ms": 0.04589999997506311,
+        "frame": 1767
+      },
+      {
+        "count": 119,
+        "ms": 0.0457999998957348,
+        "frame": 1761
+      },
+      {
+        "count": 119,
+        "ms": 0.04579999986731309,
+        "frame": 1790
+      },
+      {
+        "count": 119,
+        "ms": 0.045700000043780165,
+        "frame": 1755
+      },
+      {
+        "count": 119,
+        "ms": 0.045700000015358455,
+        "frame": 1820
+      },
+      {
+        "count": 119,
+        "ms": 0.045699999986936746,
+        "frame": 1793
+      },
+      {
+        "count": 119,
+        "ms": 0.045699999958515036,
+        "frame": 1749
+      },
+      {
+        "count": 119,
+        "ms": 0.04560000000708442,
+        "frame": 1748
+      },
+      {
+        "count": 119,
+        "ms": 0.04549999999881038,
+        "frame": 1743
+      },
+      {
+        "count": 119,
+        "ms": 0.045499999984599526,
+        "frame": 1732
+      },
+      {
+        "count": 119,
+        "ms": 0.04549999994196696,
+        "frame": 1799
+      },
+      {
+        "count": 119,
+        "ms": 0.04549999994196696,
+        "frame": 1753
+      },
+      {
+        "count": 119,
+        "ms": 0.04540000004737976,
+        "frame": 1812
+      },
+      {
+        "count": 119,
+        "ms": 0.04540000003316891,
+        "frame": 1823
+      },
+      {
+        "count": 119,
+        "ms": 0.04540000001895805,
+        "frame": 1796
+      },
+      {
+        "count": 119,
+        "ms": 0.04539999994790378,
+        "frame": 1751
+      },
+      {
+        "count": 119,
+        "ms": 0.045300000010684016,
+        "frame": 1797
+      },
+      {
+        "count": 119,
+        "ms": 0.04529999992541889,
+        "frame": 1759
+      },
+      {
+        "count": 119,
+        "ms": 0.04529999991120803,
+        "frame": 1762
+      },
+      {
+        "count": 119,
+        "ms": 0.045100000036768506,
+        "frame": 1814
+      },
+      {
+        "count": 119,
+        "ms": 0.044899999849690175,
+        "frame": 1764
+      },
+      {
+        "count": 119,
+        "ms": 0.04480000002615725,
+        "frame": 1733
+      },
+      {
+        "count": 119,
+        "ms": 0.04470000001788321,
+        "frame": 1756
+      },
+      {
+        "count": 119,
+        "ms": 0.044699999961039794,
+        "frame": 1739
+      },
+      {
+        "count": 119,
+        "ms": 0.0446999998331421,
+        "frame": 1741
+      },
+      {
+        "count": 119,
+        "ms": 0.04460000016592858,
+        "frame": 1734
+      },
+      {
+        "count": 119,
+        "ms": 0.04459999992434405,
+        "frame": 1828
+      },
+      {
+        "count": 119,
+        "ms": 0.044200000004934736,
+        "frame": 1803
+      },
+      {
+        "count": 119,
+        "ms": 0.04320000002167035,
+        "frame": 1738
+      },
+      {
+        "count": 119,
+        "ms": 0.042700000093987,
+        "frame": 1727
+      },
+      {
+        "count": 119,
+        "ms": 0.04270000003714358,
+        "frame": 1740
+      },
+      {
+        "count": 119,
+        "ms": 0.042299999975625724,
+        "frame": 1728
+      }
+    ],
+    "reason": "lease timer",
+    "scope": "Client-only3s Lua entityThink full body timings and perFrameNumber callback counts. Current existingLuaThink entities only/cap4096/newentities omitted. Per-call clocks/wrappers/allocations/nativeboundary/JIT observation can distort; no ordinaryFPS/exclusiveCPU/acceptanceclaim. Frame sums can overlap reentrantThink. No actor state/provider mutation outside temporary Think; weakentityrefs/ownedcurrentproviderrestore/independentinspection/allownedStop required.",
+    "bindings": 1374,
+    "checked": 1374,
+    "seconds": 2.8698671000000076,
+    "passed": true
+  },
+  "retirement": {
+    "originals_cleared": true,
+    "checked": 1374,
+    "passed": true,
+    "lease_absent": true
+  },
+  "role_lookup": {
+    "scope": "Private synchronous native entity missing-field versus explicit-false lookup micro only. All six fields audited for no explicitnil comparisons in project; no source candidate or gameplay equivalence/FPSclaim. Nil and false raw values differ; class inheritance/reload/default ownership must be preserved before source. Only originallynil effective fields temporarilyfalse, truthiness totals match, restorednil before ordinary simulation resumes. Loop/JIT/hoisting/order bias; no JIT changes/RNG/movement/health/profile/physics/settings mutation.",
+    "keys": [
+      "LODBossEncounter",
+      "LODHector",
+      "LODWarden",
+      "LODNeilBrute",
+      "LODSkeletonHero",
+      "LODWardenTurret"
+    ],
+    "temporary_fields": 342,
+    "rows": [
+      {
+        "variant": "parent",
+        "milliseconds": 74.18559999999275,
+        "index": 1,
+        "truthy_reads": 0,
+        "field_reads": 342000
+      },
+      {
+        "variant": "false",
+        "milliseconds": 69.41869999999994,
+        "index": 2,
+        "truthy_reads": 0,
+        "field_reads": 342000
+      },
+      {
+        "variant": "false",
+        "milliseconds": 67.89990000000046,
+        "index": 3,
+        "truthy_reads": 0,
+        "field_reads": 342000
+      },
+      {
+        "variant": "parent",
+        "milliseconds": 73.67399999999691,
+        "index": 4,
+        "truthy_reads": 0,
+        "field_reads": 342000
+      },
+      {
+        "variant": "parent",
+        "milliseconds": 73.50089999999909,
+        "index": 5,
+        "truthy_reads": 0,
+        "field_reads": 342000
+      },
+      {
+        "variant": "false",
+        "milliseconds": 69.05100000000175,
+        "index": 6,
+        "truthy_reads": 0,
+        "field_reads": 342000
+      }
+    ],
+    "actors": 57,
+    "passed": true,
+    "restored": true
+  },
+  "decisions": "Staticbox3759calls/28.448ms dominate3sLuaThink bodies; 3frames1372callbacks/8.312\u201311.387ms measuredbody. Nativeinterfaceboundaryoverheadexcluded; timers/VM/observer/clocks can distort, stationary/deployednotactiveacceptance; 2.87swall becauseCurTimeleaseexpired before3wall, callbackwalllimit3alsoexists. All1374currentproviders restored/independentchecks/ownedStop/bothON. Nilvsfalse342kreads74ishvs69ishms ~6.8%microonly, rawvalues/classownershipsemantics differ and smallexpectedsaving; do notimplementdefaultfalsecandidate. Nextspreadstaticbox polling overunchangedmax1swindow, nativeparity/mechanism/FPSgate.",
+  "tests": "PrivateobserverLua54/LJ returns/nils/errors/timer/callbackdeadline/inheritedprovider/foreignowner/independentretirement pass. No debughooks/JITchanges/nativeAPIs restored."
+}

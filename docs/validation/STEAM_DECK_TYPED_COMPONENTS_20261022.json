@@ -1,0 +1,237 @@
+{
+  "source": "a76ef534adcadadf7e7454266217bb9c7c5b1be5",
+  "created_utc": "2026-10-22T17:00:18.099966+00:00",
+  "summary": {
+    "current": {
+      "fps": [
+        37.98499062614472,
+        37.41958541100412,
+        37.01234669503513
+      ],
+      "mean": 37.47230757739466,
+      "stdev": 0.4884606169413916,
+      "minimum": 37.01234669503513,
+      "maximum": 37.98499062614472
+    },
+    "parent": {
+      "fps": [
+        35.58931095891946,
+        37.49059963638619,
+        35.719216343072304
+      ],
+      "mean": 36.26637564612599,
+      "stdev": 1.062196844259312,
+      "minimum": 35.58931095891946,
+      "maximum": 37.49059963638619
+    }
+  },
+  "arithmetic_mean_difference_percent": 3.3252066405414116,
+  "decision": "REJECT candidate: positive mean is not separated from observed run variation, one adjacent pair slightly slower, tails inconsistent and all arms fail. No demonstrated performance improvement. No claim of proven slowdown.",
+  "scope": "Six60s isolated snapshot comparisons using same cloned renderer and paint hooks; fresh canonical fixtures/warmVM/aligned v5 normal input. Diagnostic only, not original-hook full acceptance.",
+  "rows": [
+    {
+      "arm": "arm1-current",
+      "mode": "current",
+      "metrics": {
+        "frames": 2278,
+        "seconds": 59.971056,
+        "fps": 37.98499062614472,
+        "median_ms": 23.842,
+        "p95_ms": 41.883,
+        "p99_ms": 83.676,
+        "max_ms": 174.951,
+        "one_percent_low_fps": 9.26535783416218,
+        "below_budget_seconds": 31.590720000000022,
+        "longest_below_budget_seconds": 2.4111969999999996,
+        "below_budget_runs_ge2s": 1
+      },
+      "installation": {
+        "active": true,
+        "public_hook": true,
+        "seconds": 338.71258544921875,
+        "parent": "5889d8bf/68a6a9d3 snapshot body",
+        "checked": 968,
+        "mode": "current",
+        "typed": 968
+      },
+      "restoration": {
+        "seconds": 71.00286865234375,
+        "reason": "capture complete",
+        "mode": "current",
+        "restored": true
+      },
+      "source": "a76ef534adcadadf7e7454266217bb9c7c5b1be5",
+      "acceptance": false
+    },
+    {
+      "arm": "arm2-parent",
+      "mode": "parent",
+      "metrics": {
+        "frames": 2134,
+        "seconds": 59.961824,
+        "fps": 35.58931095891946,
+        "median_ms": 26.996,
+        "p95_ms": 39.132,
+        "p99_ms": 60.83,
+        "max_ms": 94.803,
+        "one_percent_low_fps": 13.496750350608766,
+        "below_budget_seconds": 41.65469700000002,
+        "longest_below_budget_seconds": 6.144071,
+        "below_budget_runs_ge2s": 8
+      },
+      "installation": {
+        "active": true,
+        "public_hook": true,
+        "seconds": 421.7508850097656,
+        "parent": "5889d8bf/68a6a9d3 snapshot body",
+        "checked": 968,
+        "mode": "parent",
+        "typed": 968
+      },
+      "restoration": {
+        "seconds": 69.99417114257812,
+        "reason": "capture complete",
+        "mode": "parent",
+        "restored": true
+      },
+      "source": "a76ef534adcadadf7e7454266217bb9c7c5b1be5",
+      "acceptance": false
+    },
+    {
+      "arm": "arm3-parent",
+      "mode": "parent",
+      "metrics": {
+        "frames": 2249,
+        "seconds": 59.988371,
+        "fps": 37.49059963638619,
+        "median_ms": 24.461,
+        "p95_ms": 39.684,
+        "p99_ms": 81.119,
+        "max_ms": 118.336,
+        "one_percent_low_fps": 10.429282887043158,
+        "below_budget_seconds": 34.724293999999986,
+        "longest_below_budget_seconds": 4.583563999999998,
+        "below_budget_runs_ge2s": 2
+      },
+      "installation": {
+        "active": true,
+        "public_hook": true,
+        "seconds": 504.74664306640625,
+        "parent": "5889d8bf/68a6a9d3 snapshot body",
+        "checked": 968,
+        "mode": "parent",
+        "typed": 968
+      },
+      "restoration": {
+        "seconds": 70.01641845703125,
+        "reason": "capture complete",
+        "mode": "parent",
+        "restored": true
+      },
+      "source": "a76ef534adcadadf7e7454266217bb9c7c5b1be5",
+      "acceptance": false
+    },
+    {
+      "arm": "arm4-current",
+      "mode": "current",
+      "metrics": {
+        "frames": 2244,
+        "seconds": 59.968596,
+        "fps": 37.41958541100412,
+        "median_ms": 25.5,
+        "p95_ms": 36.524,
+        "p99_ms": 64.329,
+        "max_ms": 132.289,
+        "one_percent_low_fps": 12.37795604426357,
+        "below_budget_seconds": 37.68412999999998,
+        "longest_below_budget_seconds": 3.502352,
+        "below_budget_runs_ge2s": 4
+      },
+      "installation": {
+        "active": true,
+        "public_hook": true,
+        "seconds": 587.8820190429688,
+        "parent": "5889d8bf/68a6a9d3 snapshot body",
+        "checked": 968,
+        "mode": "current",
+        "typed": 968
+      },
+      "restoration": {
+        "seconds": 70.9937744140625,
+        "reason": "capture complete",
+        "mode": "current",
+        "restored": true
+      },
+      "source": "a76ef534adcadadf7e7454266217bb9c7c5b1be5",
+      "acceptance": false
+    },
+    {
+      "arm": "arm5-current",
+      "mode": "current",
+      "metrics": {
+        "frames": 2219,
+        "seconds": 59.952966999999994,
+        "fps": 37.01234669503513,
+        "median_ms": 25.965,
+        "p95_ms": 38.437,
+        "p99_ms": 73.954,
+        "max_ms": 110.288,
+        "one_percent_low_fps": 11.908306043465318,
+        "below_budget_seconds": 39.574865999999986,
+        "longest_below_budget_seconds": 3.0177499999999995,
+        "below_budget_runs_ge2s": 5
+      },
+      "installation": {
+        "active": true,
+        "public_hook": true,
+        "seconds": 671.7280883789062,
+        "parent": "5889d8bf/68a6a9d3 snapshot body",
+        "checked": 968,
+        "mode": "current",
+        "typed": 968
+      },
+      "restoration": {
+        "seconds": 69.99957275390625,
+        "reason": "capture complete",
+        "mode": "current",
+        "restored": true
+      },
+      "source": "a76ef534adcadadf7e7454266217bb9c7c5b1be5",
+      "acceptance": false
+    },
+    {
+      "arm": "arm6-parent",
+      "mode": "parent",
+      "metrics": {
+        "frames": 2142,
+        "seconds": 59.967721,
+        "fps": 35.719216343072304,
+        "median_ms": 26.135,
+        "p95_ms": 40.843,
+        "p99_ms": 75.32,
+        "max_ms": 132.628,
+        "one_percent_low_fps": 11.078513424640427,
+        "below_budget_seconds": 39.580825999999924,
+        "longest_below_budget_seconds": 4.540363999999999,
+        "below_budget_runs_ge2s": 6
+      },
+      "installation": {
+        "active": true,
+        "public_hook": true,
+        "seconds": 754.8709716796875,
+        "parent": "5889d8bf/68a6a9d3 snapshot body",
+        "checked": 968,
+        "mode": "parent",
+        "typed": 968
+      },
+      "restoration": {
+        "seconds": 70.992919921875,
+        "reason": "capture complete",
+        "mode": "parent",
+        "restored": true
+      },
+      "source": "a76ef534adcadadf7e7454266217bb9c7c5b1be5",
+      "acceptance": false
+    }
+  ]
+}

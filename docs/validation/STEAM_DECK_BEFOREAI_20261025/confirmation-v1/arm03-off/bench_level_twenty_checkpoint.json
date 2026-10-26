@@ -1,0 +1,980 @@
+{
+	"level": 20,
+	"position": [
+		-3840,
+		-1536,
+		-12271.9375
+	],
+	"campaign": 654759232,
+	"health": 211,
+	"clip": 20,
+	"maximum": 211,
+	"equipment": {
+		"storageCapacity": 32,
+		"items": {
+			"gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_ar2:weapon_ar2": {
+				"economyExcluded": true,
+				"seed": 2014770650,
+				"definitionId": "weapon_ar2",
+				"id": "gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_ar2:weapon_ar2",
+				"dungeonLevel": 1,
+				"properties": [
+					{
+						"amount": -1,
+						"power": 15,
+						"id": "weak_earth"
+					},
+					{
+						"amount": 16.4,
+						"power": 39,
+						"id": "element_dark"
+					},
+					{
+						"amount": 4,
+						"power": 19,
+						"id": "proc_reckless"
+					},
+					{
+						"amount": 1,
+						"power": 31,
+						"id": "save_int"
+					},
+					{
+						"amount": 2,
+						"power": 16,
+						"id": "ability_dex"
+					}
+				],
+				"budget": 90,
+				"rarity": 1,
+				"quality": 90,
+				"version": 2,
+				"count": 1,
+				"name": "Dockworker's Umbral Pulse Rifle of Recklessness and Insight Warding",
+				"provenance": "Dockworker's"
+			},
+			"gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol": {
+				"economyExcluded": true,
+				"seed": 1820781950,
+				"definitionId": "weapon_pistol",
+				"id": "gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol",
+				"dungeonLevel": 1,
+				"properties": [
+					{
+						"amount": -1,
+						"power": 15,
+						"id": "weak_dark"
+					},
+					{
+						"amount": 15.2,
+						"power": 35,
+						"id": "element_ice"
+					},
+					{
+						"amount": 3.8,
+						"power": 18,
+						"id": "proc_reckless"
+					},
+					{
+						"amount": 1,
+						"power": 25,
+						"id": "ward_electric"
+					},
+					{
+						"amount": 13.2,
+						"power": 36,
+						"id": "summon_duration"
+					}
+				],
+				"budget": 99,
+				"rarity": 1,
+				"quality": 99,
+				"version": 2,
+				"count": 1,
+				"name": "Deborah's Wintery Pistol of Recklessness and Crackling Warding",
+				"provenance": "Deborah's"
+			},
+			"gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar": {
+				"economyExcluded": true,
+				"seed": 1526235808,
+				"definitionId": "weapon_lod_crowbar",
+				"id": "gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar",
+				"dungeonLevel": 1,
+				"properties": [
+					{
+						"amount": -15.8,
+						"power": 15,
+						"id": "magic_regen"
+					},
+					{
+						"amount": 12.6,
+						"power": 27,
+						"id": "element_earth"
+					},
+					{
+						"amount": 6.6,
+						"power": 36,
+						"id": "proc_immolated"
+					},
+					{
+						"amount": 14.5,
+						"power": 41,
+						"id": "regen_ceiling"
+					},
+					{
+						"amount": 6.1,
+						"power": 17,
+						"id": "map_efficiency"
+					}
+				],
+				"budget": 106,
+				"rarity": 1,
+				"quality": 106,
+				"version": 2,
+				"count": 1,
+				"name": "Hermit's Earthly Crowbar of Burning and Mending",
+				"provenance": "Hermit's"
+			}
+		},
+		"slots": {
+			"weapon_pistol": "gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol",
+			"weapon_lod_crowbar": "gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar",
+			"weapon_ar2": "gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_ar2:weapon_ar2"
+		},
+		"activeWeaponClass": "weapon_ar2",
+		"blockChance": 0
+	},
+	"levelSeed": 1217159003,
+	"resource_writes": "canonical XP/feat/starter/deployment only; no direct HP/Magic/ammo grant",
+	"profile": {
+		"equipmentAbilityDelta": {
+			"cha": 0,
+			"int": 0,
+			"str": 0,
+			"dex": 2,
+			"wis": 0,
+			"con": 0
+		},
+		"startingHP": 100,
+		"temporaryAbilityDelta": {
+			"cha": 0,
+			"int": 0,
+			"str": 0,
+			"dex": 0,
+			"wis": 0,
+			"con": 0
+		},
+		"statusImmunities": [],
+		"classCapstoneFeatId": "WIZ_CAP_ARCHMAGE",
+		"pendingClassCapstoneDraft": {
+			"selectedFeatId": "WIZ_CAP_ARCHMAGE",
+			"resolved": true,
+			"draftType": "classCapstone",
+			"earnedAtLevel": 20,
+			"offerFeatIds": [
+				"WIZ_CAP_ARCHMAGE",
+				"WIZ_CAP_LIVING_AEGIS",
+				"WIZ_CAP_MANA_ENGINE"
+			]
+		},
+		"hitDieRollsByLevel": {
+			"2": {
+				"capped": false,
+				"seed": 962471461,
+				"total": 3,
+				"formula": "d4",
+				"level": 2,
+				"values": [
+					3
+				],
+				"sides": 4
+			},
+			"3": {
+				"capped": false,
+				"seed": 962471462,
+				"total": 3,
+				"formula": "d4",
+				"level": 3,
+				"values": [
+					3
+				],
+				"sides": 4
+			},
+			"4": {
+				"capped": false,
+				"seed": 962471463,
+				"total": 3,
+				"formula": "d4",
+				"level": 4,
+				"values": [
+					3
+				],
+				"sides": 4
+			},
+			"5": {
+				"capped": false,
+				"seed": 962471464,
+				"total": 3,
+				"formula": "d4",
+				"level": 5,
+				"values": [
+					3
+				],
+				"sides": 4
+			},
+			"6": {
+				"capped": false,
+				"seed": 962471465,
+				"total": 3,
+				"formula": "d4",
+				"level": 6,
+				"values": [
+					3
+				],
+				"sides": 4
+			},
+			"7": {
+				"capped": false,
+				"seed": 962471466,
+				"total": 3,
+				"formula": "d4",
+				"level": 7,
+				"values": [
+					3
+				],
+				"sides": 4
+			},
+			"8": {
+				"capped": false,
+				"seed": 962471467,
+				"total": 3,
+				"formula": "d4",
+				"level": 8,
+				"values": [
+					3
+				],
+				"sides": 4
+			},
+			"9": {
+				"capped": false,
+				"seed": 962471468,
+				"total": 3,
+				"formula": "d4",
+				"level": 9,
+				"values": [
+					3
+				],
+				"sides": 4
+			},
+			"10": {
+				"capped": false,
+				"seed": 1529709782,
+				"total": 1,
+				"formula": "d4",
+				"level": 10,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"11": {
+				"capped": false,
+				"seed": 1529709783,
+				"total": 1,
+				"formula": "d4",
+				"level": 11,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"12": {
+				"capped": false,
+				"seed": 1529709784,
+				"total": 1,
+				"formula": "d4",
+				"level": 12,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"13": {
+				"capped": false,
+				"seed": 1529709785,
+				"total": 1,
+				"formula": "d4",
+				"level": 13,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"14": {
+				"capped": false,
+				"seed": 1529709786,
+				"total": 1,
+				"formula": "d4",
+				"level": 14,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"15": {
+				"capped": false,
+				"seed": 1529709787,
+				"total": 1,
+				"formula": "d4",
+				"level": 15,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"16": {
+				"capped": false,
+				"seed": 1529709788,
+				"total": 1,
+				"formula": "d4",
+				"level": 16,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"17": {
+				"capped": false,
+				"seed": 1529709789,
+				"total": 1,
+				"formula": "d4",
+				"level": 17,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"18": {
+				"capped": false,
+				"seed": 1529709790,
+				"total": 1,
+				"formula": "d4",
+				"level": 18,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"19": {
+				"capped": false,
+				"seed": 1529709791,
+				"total": 1,
+				"formula": "d4",
+				"level": 19,
+				"values": [
+					1
+				],
+				"sides": 4
+			},
+			"20": {
+				"capped": false,
+				"seed": 1529709913,
+				"total": 1,
+				"formula": "d4",
+				"level": 20,
+				"values": [
+					1
+				],
+				"sides": 4
+			}
+		},
+		"featQualificationAbilities": {
+			"cha": 20,
+			"int": 30,
+			"str": 21,
+			"dex": 11,
+			"wis": 24,
+			"con": 18
+		},
+		"primaryAbility": "wis",
+		"progressionHitDieSides": 4,
+		"dungeonEntryLevel": 17,
+		"classId": "wizard",
+		"selectedMagicFormId": "beam",
+		"growthAbilities": {
+			"cha": 5,
+			"int": 10,
+			"str": 10,
+			"dex": 5,
+			"wis": 15,
+			"con": 5
+		},
+		"magicGrantMilestones": {
+			"form:level_5_all": true,
+			"content:level_4_all": true,
+			"form:level_10_wizard": true,
+			"form:level_2_wizard": true,
+			"content:level_8_wizard": true,
+			"content:level_14_wizard": true,
+			"form:level_1_all": true,
+			"content:level_1_wizard": true
+		},
+		"equipmentExtras": {
+			"save_int": 1,
+			"element_dark": 16.4,
+			"proc_reckless": 4,
+			"weak_earth": -1
+		},
+		"equipmentBlockChanceContribution": 0,
+		"contentIds": [
+			"ice",
+			"electric",
+			"dark",
+			"light"
+		],
+		"actorId": "76561198025505071",
+		"identityAbilityDelta": {
+			"cha": 0,
+			"int": 2,
+			"str": 0,
+			"dex": 0,
+			"wis": 0,
+			"con": 0
+		},
+		"usesMagic": false,
+		"featAbilityDelta": {
+			"cha": 0,
+			"int": 0,
+			"str": 0,
+			"dex": 0,
+			"wis": 0,
+			"con": 0
+		},
+		"equipmentKey": "weapon_ar2|gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_ar2:weapon_ar2|||||||||gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol|gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar||||gear2:campaign:156:206007348:76561198025505071:life:0:initial:weapon_ar2:weapon_ar2|",
+		"baseAbilityRollAudit": {
+			"rawTotal": 77,
+			"rawDice": {
+				"cha": [
+					6,
+					4,
+					2,
+					5
+				],
+				"int": [
+					6,
+					2,
+					6,
+					5
+				],
+				"str": [
+					3,
+					5,
+					5,
+					3
+				],
+				"dex": [
+					1,
+					2,
+					3,
+					4
+				],
+				"wis": [
+					2,
+					4,
+					3,
+					3
+				],
+				"con": [
+					6,
+					3,
+					4,
+					3
+				]
+			},
+			"penalties": [
+				{
+					"amount": 3,
+					"after": 6,
+					"before": 9,
+					"dice": [
+						1,
+						2
+					],
+					"ability": "dex"
+				},
+				{
+					"amount": 1,
+					"after": 9,
+					"before": 10,
+					"dice": [
+						1
+					],
+					"ability": "wis"
+				},
+				{
+					"amount": 2,
+					"after": 11,
+					"before": 13,
+					"dice": [
+						2
+					],
+					"ability": "str"
+				}
+			],
+			"rawAbilities": {
+				"cha": 15,
+				"int": 17,
+				"str": 13,
+				"dex": 9,
+				"wis": 10,
+				"con": 13
+			}
+		},
+		"actorType": "hero",
+		"derivedStats": {
+			"minimumMapDrainPerSecond": 0,
+			"breadcrumbCells": 20,
+			"chaHitStunResistanceMultiplier": 0.85,
+			"floatOnEnabled": false,
+			"quantumCostMultiplier": 1,
+			"bigGuyEnabled": false,
+			"reloadTimeMultiplier": 1,
+			"wizardCapstoneMagicDCBonus": 2,
+			"personalLifeCapBonus": 0,
+			"fighterClassStrBonus": 0,
+			"aimSpreadMultiplier": 0.96,
+			"burstSizeBonus": 0,
+			"weaponKnockbackProcChance": 0,
+			"damageRecoveryFraction": 0.5,
+			"rogueAllDamageDiceExplode": false,
+			"healthRegenBaseMaxHPPerSecond": 0.01,
+			"strMod": 5,
+			"quantumRank": 0,
+			"wizardCapstoneDiversionBonus": 0,
+			"effectiveMagicRegenModifier": 10,
+			"movementSpeedMultiplier": 1.055,
+			"mapOpenMovementRank": 0,
+			"arcRecoveryEnabled": false,
+			"conRegenMultiplier": 1.4,
+			"mapDrainFeatMultiplier": 1,
+			"dexMod": 1,
+			"magicSaveAdvantage": false,
+			"hasteEnabled": false,
+			"coreMaxHP": 211,
+			"startingHP": 100,
+			"rateOfFireMultiplier": 1,
+			"bigGuyPhysicalPushMultiplier": 1,
+			"wizardCapstoneMagicPowerMultiplier": 1.2,
+			"fighterCapstoneWallSlamBonusDice": 0,
+			"deathTetrisMaxSeconds": 120,
+			"damageResistancePerDie": 3,
+			"crowbarDamageDieSides": 3,
+			"fighterStrengthBypassesCon": false,
+			"mapOpenMovementMultiplier": 1,
+			"springHeelAirMovementMultiplier": 1,
+			"terrifyingFirstSaveDisadvantage": false,
+			"sizeShifterTransitionSeconds": 3,
+			"wisMod": 7,
+			"rolledHitPointSubtotal": 35,
+			"cloudStepMagicCost": 3,
+			"ammoRegenFloorFraction": 0.44,
+			"intMod": 10,
+			"hasteMovementMultiplier": 1,
+			"wallJumpLateralKick": 160,
+			"ammoRegenSpeedMultiplier": 1.22,
+			"hpConBonusPerLevel": 4,
+			"livingAegisHPPerMagic": 1,
+			"tetrisOverfillMultiplier": 2,
+			"levelProficiency": 4,
+			"strafeSpeedMultiplier": 1,
+			"conMod": 4,
+			"crowbarPushDistance": 0,
+			"sizeShifterEnabled": false,
+			"magicDamageBonus": 7,
+			"frugalMapEnabled": false,
+			"floatOnMaximumSeconds": 6,
+			"hpToMagicDiversionFraction": 0.5,
+			"rogueCapstoneBoomThresholdShift": 0,
+			"blastProofCooldownSeconds": 2,
+			"featHitStunRank": 0,
+			"enemyDefense": false,
+			"internalCompassEnabled": true,
+			"fighterCapstoneOutgoingPushMultiplier": 1,
+			"weaponKnockbackProcDistance": 0,
+			"wallSlamDieSides": 3,
+			"chaHitStunInflictMultiplier": 1.15,
+			"wallSlamExplodes": false,
+			"russianAsset": true,
+			"rogueBackstabEnabled": false,
+			"pusherRank": 0,
+			"academicRegenCHAContribution": 0,
+			"pusherProcTargetCooldownSeconds": 0,
+			"smgOverheatThreshold": 6,
+			"progressionHitDieSides": 4,
+			"rogueAcePrimeSeconds": 0,
+			"boomShift": 0,
+			"utilityMagicCostMultiplier": 0.72,
+			"sizeShifterTargetScale": 0.33,
+			"canActivateWandsScrolls": true,
+			"mapFinderEnabled": false,
+			"equipmentExtras": {
+				"save_int": 1,
+				"element_dark": 16.4,
+				"proc_reckless": 4,
+				"weak_earth": -1
+			},
+			"magicRegenMultiplier": 2,
+			"magicBoomThresholdShift": -1,
+			"manaBarrierFeatDiversionFraction": 0,
+			"maxHP": 211,
+			"springHeelEnabled": false,
+			"steamrollerSuccessfulSaveFraction": 0,
+			"wizardClassHpToMagicDiversionFraction": 0.5,
+			"crowbarDamageRank": 0,
+			"backpedalMovementMultiplier": 1,
+			"strafeRank": 0,
+			"burstBonusRounds": 0,
+			"fighterCapstonePhysicalDamageMultiplier": 1,
+			"ammoRegenFloorRank": 1,
+			"chaMod": 5,
+			"manaSpringEnabled": false,
+			"ammoRegenFloorRoundsByFamily": {
+				"weapon_pistol": 24,
+				"weapon_smg1": 33,
+				"weapon_ar2": 27,
+				"weapon_shotgun": 10,
+				"weapon_357": 8
+			},
+			"healthRegenDamageFreeDelaySeconds": 5,
+			"heroOfLegendPulseRangeCells": 0,
+			"fighterCapstoneMaxHPMultiplier": 1,
+			"feedbackLoopEnabled": false,
+			"crowbarWallSlamBonusDice": 0,
+			"dodgeChanceContribution": 0,
+			"floatOnMagicPerSecond": 1,
+			"wallJumpProbeDistance": 24,
+			"healthRegenRank": 1,
+			"meleeReachMultiplier": 1,
+			"rogueBoomThresholdShift": 0,
+			"heroOfLegendPulseEnabled": false,
+			"manaSpringRegenMultiplier": 1,
+			"fighterCapstoneIncomingPushMultiplier": 1,
+			"physicalDamageBonus": 5,
+			"healthRegenEnabled": true,
+			"smgHeatFeatRank": 0,
+			"winningPersonalityEnabled": false,
+			"magnumAimHoldSeconds": 0.5,
+			"aimHoldSeconds": 0.5,
+			"featHitStunMultiplier": 1,
+			"healthRegenCeilingFraction": 0.22,
+			"wallSlamClassExplosionImmune": false,
+			"academicAchievementEnabled": false,
+			"featExplodingDamageDice": [],
+			"cloudStepEnabled": false,
+			"wizardCapstoneMagicRegenMultiplier": 1,
+			"smgHeatSuppressionChance": 0,
+			"jumpHeightMultiplier": 1,
+			"breadcrumbFeatRank": 0,
+			"littleGuyEnabled": false,
+			"jumpImpulseMultiplier": 1,
+			"breadcrumbFeatBonusCells": 0,
+			"arcaneItemUseChance": 1,
+			"fighterClassConBonus": 0,
+			"wallJumpEnabled": false,
+			"playerTargetScale": 1,
+			"blastProofEnabled": false,
+			"moraleDCBonus": 0
+		},
+		"equipmentShieldEquipped": false,
+		"elementalWeaknesses": [],
+		"secondaryAbilities": [
+			"int",
+			"str"
+		],
+		"featSelectionRevision": "ordinary-unique-20261013-v1",
+		"favoredWeaponStacks": 0,
+		"archetypeId": "hero",
+		"favoredEnemyStacks": 0,
+		"effectiveAbilities": {
+			"cha": 20,
+			"int": 30,
+			"str": 21,
+			"dex": 13,
+			"wis": 24,
+			"con": 18
+		},
+		"moraleBonus": 0,
+		"baseAbilityRollAttempts": 1,
+		"magicContentBindings": {
+			"2": "raw",
+			"4": "raw",
+			"3": "raw",
+			"5": "raw"
+		},
+		"magicFormIds": [
+			"beam",
+			"cone",
+			"summon",
+			"super_ball"
+		],
+		"equipmentMoveGrants": [],
+		"fighterTraining": {
+			"cha": 0,
+			"int": 0,
+			"str": 0,
+			"dex": 0,
+			"wis": 0,
+			"con": 0
+		},
+		"level": 20,
+		"baseAbilityRollMethod": "4d6_drop_lowest_74_then_weakness",
+		"magicBindings": {
+			"2": "beam"
+		},
+		"baseAbilityRollTotal": 71,
+		"characterIdentityPackage": {
+			"motiveIndex": 35,
+			"nickname": "The Backup",
+			"surnameIndex": 45,
+			"heroIdentityId": "76561198025505071",
+			"presentationSex": "female",
+			"resolvedIdentityPerkIds": [
+				"origin:FAVORED_ENEMY:SOLDIER",
+				"background:ABILITY_BONUS:int",
+				"motive:FAVORED_ENEMY:ZOMBIE"
+			],
+			"surname": "Phillips",
+			"nicknameIndex": 62,
+			"originIndex": 10,
+			"firstName": "Jasmine",
+			"identityPerkRecords": [
+				{
+					"targetId": "SOLDIER",
+					"displayName": "Favored Enemy — Soldier",
+					"targetName": "Soldier",
+					"traitName": "Soldier Quarantine Zone",
+					"flavorText": "You grew up behind barricades facing the Soldier family and learned where those creatures are vulnerable.",
+					"seed": 1469058124,
+					"handlerId": "FAVORED_ENEMY",
+					"traitSlot": "origin",
+					"traitIndex": 10
+				},
+				{
+					"targetId": "int",
+					"displayName": "Ability Bonus — +2 INT",
+					"targetName": "+2 INT",
+					"traitName": "Archive Researcher",
+					"flavorText": "Before the labyrinth, you earned your living by solving intricate problems, developing your intelligence.",
+					"abilityBonuses": {
+						"int": 2
+					},
+					"seed": 1962322176,
+					"handlerId": "ABILITY_BONUS",
+					"traitSlot": "background",
+					"traitIndex": 14
+				},
+				{
+					"targetId": "ZOMBIE",
+					"displayName": "Favored Enemy — Zombie",
+					"targetName": "Zombie",
+					"traitName": "Zombie Vendetta",
+					"flavorText": "The Zombie family has already taken too much from you; rescuing Deborah is your refusal to lose anyone else.",
+					"seed": 1477499037,
+					"handlerId": "FAVORED_ENEMY",
+					"traitSlot": "motive",
+					"traitIndex": 35
+				}
+			],
+			"favoredWeaponStacks": [],
+			"favoredEnemyStacks": {
+				"SOLDIER": 1,
+				"ZOMBIE": 1
+			},
+			"identityPerkVersion": "identity-three-handlers-v2",
+			"rosterSeed": 2084084480,
+			"identityAbilityDelta": {
+				"cha": 0,
+				"int": 2,
+				"str": 0,
+				"dex": 0,
+				"wis": 0,
+				"con": 0
+			},
+			"masculineOrFeminineFirstNameIndex": 33,
+			"backgroundIndex": 14,
+			"fullDisplayName": "Jasmine \"The Backup\" Phillips",
+			"portraitCacheKey": "197275769"
+		},
+		"capabilityTags": [],
+		"featIds": [
+			"CON_RUSSIAN_ASSET",
+			"CHA_AGGRESSIVE_PERSONALITY",
+			"STR_BLEED_PROC_1",
+			"INT_AMMO_FLOOR_44",
+			"WIS_ASTRAL_REACH",
+			"CON_REGEN_11",
+			"WIS_INTERNAL_COMPASS"
+		],
+		"baseAbilities": {
+			"cha": 15,
+			"int": 17,
+			"str": 11,
+			"dex": 6,
+			"wis": 9,
+			"con": 13
+		},
+		"featCatalogRevision": "feat-hair-trigger-20261005-v1",
+		"pendingFeatSlots": [
+			{
+				"selectedFeatId": "CON_RUSSIAN_ASSET",
+				"rngSeed": 347720397,
+				"earnedAtLevel": 1,
+				"offerLimit": 4,
+				"resolved": true,
+				"draftType": "ordinary",
+				"exhausted": false,
+				"offerFeatIds": [
+					"CON_RUSSIAN_ASSET",
+					"INT_WAS_DEBORAH",
+					"INT_EXTRACURRICULAR_ACTIVITY",
+					"INT_WORLD_WALKER_1"
+				]
+			},
+			{
+				"selectedFeatId": "CHA_AGGRESSIVE_PERSONALITY",
+				"rngSeed": 59683702,
+				"earnedAtLevel": 3,
+				"offerLimit": 4,
+				"resolved": true,
+				"draftType": "ordinary",
+				"exhausted": false,
+				"offerFeatIds": [
+					"CHA_AGGRESSIVE_PERSONALITY",
+					"CHA_FEAR_PROC_1",
+					"INT_TIME_MANAGEMENT",
+					"INT_MANA_SPRING"
+				]
+			},
+			{
+				"selectedFeatId": "STR_BLEED_PROC_1",
+				"rngSeed": 1775112306,
+				"earnedAtLevel": 6,
+				"offerLimit": 4,
+				"resolved": true,
+				"draftType": "ordinary",
+				"exhausted": false,
+				"offerFeatIds": [
+					"STR_BLEED_PROC_1",
+					"INT_FLOAT_ON",
+					"WIS_RECKLESS_PROC_1",
+					"INT_ARC_RECOVERY"
+				]
+			},
+			{
+				"selectedFeatId": "INT_AMMO_FLOOR_44",
+				"rngSeed": 1343057263,
+				"earnedAtLevel": 9,
+				"offerLimit": 4,
+				"resolved": true,
+				"draftType": "ordinary",
+				"exhausted": false,
+				"offerFeatIds": [
+					"INT_AMMO_FLOOR_44",
+					"WIS_HELD_PROC_1",
+					"WIS_SPATIAL_AWARENESS",
+					"WIS_MAP_FINDER"
+				]
+			},
+			{
+				"selectedFeatId": "WIS_ASTRAL_REACH",
+				"rngSeed": 1330709389,
+				"earnedAtLevel": 12,
+				"offerLimit": 4,
+				"resolved": true,
+				"draftType": "ordinary",
+				"exhausted": false,
+				"offerFeatIds": [
+					"WIS_ASTRAL_REACH",
+					"WIS_FRUGAL_MAP",
+					"STR_STEAMROLLER",
+					"WIS_MAP_FINDER"
+				]
+			},
+			{
+				"selectedFeatId": "CON_REGEN_11",
+				"rngSeed": 898654346,
+				"earnedAtLevel": 15,
+				"offerLimit": 4,
+				"resolved": true,
+				"draftType": "ordinary",
+				"exhausted": false,
+				"offerFeatIds": [
+					"CON_REGEN_11",
+					"WIS_TRUE_FAITH",
+					"WIS_ATTUNEMENT",
+					"INT_FLOAT_ON"
+				]
+			},
+			{
+				"selectedFeatId": "WIS_INTERNAL_COMPASS",
+				"rngSeed": 466599303,
+				"earnedAtLevel": 18,
+				"offerLimit": 4,
+				"resolved": true,
+				"draftType": "ordinary",
+				"exhausted": false,
+				"offerFeatIds": [
+					"WIS_INTERNAL_COMPASS",
+					"INT_AMMO_FLOOR_55",
+					"WIS_CARTOGRAPHER",
+					"WIS_OMNISCIENCE"
+				]
+			}
+		],
+		"replacementXpEarnedThisDungeon": 0,
+		"featSlotsGranted": 7,
+		"classMilestoneAbilityDelta": {
+			"cha": 0,
+			"int": 1,
+			"str": 0,
+			"dex": 0,
+			"wis": 0,
+			"con": 0
+		},
+		"featStackCounts": {
+			"CHA_AGGRESSIVE_PERSONALITY": 1,
+			"INT_AMMO_FLOOR_44": 1,
+			"WIS_ASTRAL_REACH": 1,
+			"WIS_INTERNAL_COMPASS": 1,
+			"CON_REGEN_11": 1,
+			"CON_RUSSIAN_ASSET": 1,
+			"STR_BLEED_PROC_1": 1
+		},
+		"xp": 96000
+	},
+	"normal_resources": true,
+	"choices": [
+		{
+			"level": 18,
+			"offers": [
+				"WIS_INTERNAL_COMPASS",
+				"INT_AMMO_FLOOR_55",
+				"WIS_CARTOGRAPHER",
+				"WIS_OMNISCIENCE"
+			],
+			"feat": "WIS_INTERNAL_COMPASS"
+		},
+		{
+			"level": 20,
+			"capstone": "WIZ_CAP_ARCHMAGE",
+			"offers": [
+				"WIZ_CAP_ARCHMAGE",
+				"WIZ_CAP_LIVING_AEGIS",
+				"WIZ_CAP_MANA_ENGINE"
+			]
+		}
+	],
+	"layoutSeed": 899898795,
+	"seconds": 36.02999919466674,
+	"weapon": "weapon_ar2"
+}

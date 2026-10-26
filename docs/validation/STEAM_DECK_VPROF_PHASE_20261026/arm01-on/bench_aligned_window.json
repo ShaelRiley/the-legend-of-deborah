@@ -1,0 +1,36 @@
+{
+	"scope": "Late-phase native profile only, first15s excluded. First/last actualPreRender sample timestamps, withSysTime brackets around DATA writes. Hostusesfilemtime andbracketedrealtime-monotonic mapping toalignnative trace toactualframeintervals; exclude setup/warmup/teardown. One firstframe mark andone stopprovider, no per-AI wrappers. Same marker inoff/on controls.",
+	"native_start_delay_seconds": 15,
+	"created": 94.8370697,
+	"frames": 1302,
+	"last": {
+		"filename": "bench_aligned_last.json",
+		"sys_before": 157.8943355,
+		"boundary_sys": 157.8802049,
+		"sys_after": 157.8956346
+	},
+	"first": {
+		"filename": "bench_aligned_first.json",
+		"sys_before": 97.9356835,
+		"boundary_sys": 97.8865806,
+		"sys_after": 97.9367871
+	},
+	"variant": "on",
+	"reason": "complete",
+	"restored": true,
+	"engine_last": {
+		"filename": "bench_aligned_engine_last.json",
+		"sys_before": 157.4343102,
+		"boundary_sys": 157.4343096,
+		"sys_after": 157.4358635
+	},
+	"passed": true,
+	"engine_first": {
+		"filename": "bench_aligned_engine_first.json",
+		"sys_before": 112.9550543,
+		"boundary_sys": 112.9550537,
+		"sys_after": 112.9561635
+	},
+	"planned_finish": 157.8843363,
+	"planned_start": 97.8843363
+}

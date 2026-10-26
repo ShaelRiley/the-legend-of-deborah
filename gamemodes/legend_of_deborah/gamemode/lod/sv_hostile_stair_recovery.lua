@@ -139,6 +139,11 @@ function Recovery:Recover(hostile, reason)
 
     local before = hostile:GetPos()
     if LOD.EntrySafety and not LOD.EntrySafety:MovementAllowed(hostile,before,candidate) then return false end
+    local motion = LOD.HostileMotionV2
+    if motion and type(motion.TraceStairMovement) == "function" then
+        local trace = motion:TraceStairMovement(hostile, before, candidate)
+        if trace and (trace.Hit or trace.StartSolid or trace.AllSolid) then return false end
+    end
     hostile:SetPos(candidate)
     hostile:SetVelocity(vector_origin)
     if hostile.loco then

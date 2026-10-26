@@ -1,0 +1,845 @@
+{
+  "status": "REJECTED from retained source: repeated maximum-frame improvement, but confirmation p95/p99 and sustained below-target episodes regressed. Experimental source separately pushed; SP40 UNMET; full five and cap UNVERIFIED.",
+  "parent": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+  "hypothesis": {
+    "family": 1,
+    "observed": "Replicated Warden Commit 244.182/250.515 ms; specific recurring encounter-start wall-time stall.",
+    "plausible_saving": "About 120 ms from one encounter-start frame, paid once during existing loading; cannot close steady-state frame budget.",
+    "evidence": "Same-source, identically profiled C/P/P/C feasibility isolates exact seeded CitizenModel preloading. No additive budget from overlapping scopes.",
+    "invariants": "Same model/seed, no actors or encounter RNG created, BuildReady false, same actors/AI cadence/gates/combat/resources/graphics/display state.",
+    "cheapest_valid_source_test": "Six unprofiled fresh-source P,C,C,P,P,C 60s frozen D20 captures. Observer only during preparation, restored before FPS; current source/functions/models/clones/Sentries checked."
+  },
+  "raw_attribution": "/home/deck/deborah-benchmarks/warden-start-cpu/4b68237f/observer-series-v2",
+  "raw_feasibility": "/home/deck/deborah-benchmarks/warden-model-precache/4b68237f/profiled-feasibility-v1",
+  "feasibility": {
+    "control_commit_ms": [
+      260.0433,
+      243.9036
+    ],
+    "preloaded_commit_ms": [
+      132.9132,
+      135.9834
+    ],
+    "preparation_ms": [
+      123.4486,
+      124.3823
+    ],
+    "control_max_frame_ms": [
+      352.683,
+      320.436
+    ],
+    "preloaded_max_frame_ms": [
+      219.579,
+      203.226
+    ],
+    "limitation": "Identical nine-method all-call observer in all arms; diagnostic FPS and maximum-frame signal require actual unprofiled source confirmation. No 40 FPS proof."
+  },
+  "static": {
+    "boss_framework": "77/77 canonical Lua 5.4 PASS",
+    "warden": "canonical Lua 5.4 PASS, seeded exact model/no actor/no run mutation/missing API",
+    "manifest": "120-source hash/repeat install/symlink/atomic manifest/owned cleanup PASS",
+    "syntax": "luac and git diff --check PASS",
+    "known_failure": "System Lua 5.5 boss suite fails pre-existing math.pow compatibility; canonical tools/run_lua54.py passes. Not full matrix green."
+  },
+  "source_gate": {
+    "sequence": [
+      "parent",
+      "candidate",
+      "candidate",
+      "parent",
+      "parent",
+      "candidate"
+    ],
+    "seconds": 60,
+    "hosting": "Singleplayer listen host, frozen developer-density D20 lowercourt-v1 subset; not complete boss acceptance",
+    "overhead": "Preparation-only PrecacheModel observer, lease and own-provider restoration before FPS. No query/CPU profiler during FPS.",
+    "decision": "No throughput claim from noise. Repeatable hitch reduction with no material pacing/correctness regression may be retained as limited improvement. Preserve all failed attempts."
+  },
+  "candidate": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+  "experimental_branch": "perf/experimental-warden-precache-d55cbb06",
+  "retained_runtime_reference": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+  "decision": {
+    "hitch": "Every candidate maximum (196.604\u2013270.457 ms) below every control maximum (314.307\u2013401.371 ms). Mean max reductions 148.819/116.753 ms in two series. Exact seeded-model preload costs about125ms during existing loading. This limited signal is real and remains preserved experimentally.",
+    "throughput": "Mean FPS 22.947\u219223.127 and22.878\u219222.867: no repeatable throughput gain.",
+    "pacing_risk": "Confirmation mean p95 75.125\u219276.683ms and p99 110.029\u2192112.373ms; mean longest below40 episode9.980\u219212.692s (+2.711s), all three matched confirmation candidate episodes longer. First series11.474\u219211.765s. Overall longest observed control13.121s versus candidate15.064s. No claim of causal regression, but pacing safety is not established.",
+    "retention": "Do not retain under user rule requiring repeatable benefit without material performance regression. Restore two runtime files and their implementation-specific tests byte-exact4b682. Preserve experimental branch and all raw evidence. Do not run a third validation cycle to chase mixed pacing.",
+    "next": "No new micro family. Next valuable bounded task is exclusive attribution of dominant NextBot/server CPU followed by a specific large algorithmic experiment. No demonstrated path closing SP40 gap under unchanged constraints; no requirements tradeoff authorized by inference."
+  },
+  "series": [
+    {
+      "name": "original-source-series",
+      "plan": {
+        "candidate": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+        "parent": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+        "utc": "2026-10-25T19:17:58.929882+00:00",
+        "sequence": [
+          "parent",
+          "candidate",
+          "candidate",
+          "parent",
+          "parent",
+          "candidate"
+        ],
+        "seconds_each": 60,
+        "scope": "Singleplayer normal frozen D20lowercourt-v1. Both displays ON always internal1280x800@60 external1920x1080@75; graphics/nativecargo/AI/cadence/seeds/counts/resources/physicalinput unchanged. No profile/sampler/JIT/GC/affinity changes. Native actual file/function/model/loading-scope proofs before and after capture.",
+        "hypothesis": "Replicated 244-260ms encounter Commit; sameobserver feasibility exactseededmodel warming cut ~120ms. Actualsource warms onlyexactCitizenModel duringexistingBuildReadyfalse loading; no actor/RNG/cadence/gameplay/settingschanges. Six unprofiled source captures to verify specific encounterhitch reduction without material throughput/pacing regression. Loading observer restored beforeFPS; exactsource/currentmodel/fourclones/fourSentries proof beforeafter.",
+        "decision": "Reject noise or correctness/pacing regression. Clear gain requires repeat/affected verification; all five final SP full scenarios3x180s+warmed+40cap remain. Multiplayer deferred by user."
+      },
+      "means": {
+        "parent": {
+          "frames": 1376,
+          "seconds": 59.963923666666666,
+          "fps": 22.946977978296378,
+          "median_ms": 35.71066666666667,
+          "p95_ms": 79.01866666666666,
+          "p99_ms": 113.81666666666666,
+          "max_ms": 372.391,
+          "one_percent_low_fps": 6.611947259299207,
+          "below_budget_seconds": 58.16769166666667,
+          "longest_below_budget_seconds": 11.473968333333332,
+          "below_budget_runs_ge2s": 6.333333333333333,
+          "loading_ms": 0,
+          "runs": 3
+        },
+        "candidate": {
+          "frames": 1386.6666666666667,
+          "seconds": 59.958319333333336,
+          "fps": 23.126959595841047,
+          "median_ms": 36.51033333333333,
+          "p95_ms": 77.344,
+          "p99_ms": 101.90733333333334,
+          "max_ms": 223.57166666666666,
+          "one_percent_low_fps": 7.860344315697666,
+          "below_budget_seconds": 57.802929999999996,
+          "longest_below_budget_seconds": 11.764793666666662,
+          "below_budget_runs_ge2s": 6,
+          "loading_ms": 125.16050000000216,
+          "runs": 3
+        }
+      },
+      "rows": [
+        {
+          "arm": "arm01-parent",
+          "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+          "variant": "parent",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm01-parent",
+          "metrics": {
+            "frames": 1353,
+            "seconds": 59.947853,
+            "fps": 22.569615629103513,
+            "median_ms": 36.615,
+            "p95_ms": 78.595,
+            "p99_ms": 112.025,
+            "max_ms": 379.406,
+            "one_percent_low_fps": 6.691709593187075,
+            "below_budget_seconds": 57.956335999999965,
+            "longest_below_budget_seconds": 11.498961999999999,
+            "below_budget_runs_ge2s": 7
+          },
+          "loading_ms": 0,
+          "loading_calls": 0,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+            "loading_ms": 0,
+            "mode": "parent",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 0,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm02-candidate",
+          "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+          "variant": "candidate",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm02-candidate",
+          "metrics": {
+            "frames": 1448,
+            "seconds": 59.98098,
+            "fps": 24.140986025903544,
+            "median_ms": 34.532,
+            "p95_ms": 75.211,
+            "p99_ms": 99.773,
+            "max_ms": 203.654,
+            "one_percent_low_fps": 7.855776326146694,
+            "below_budget_seconds": 57.78755199999995,
+            "longest_below_budget_seconds": 8.894153999999999,
+            "below_budget_runs_ge2s": 7
+          },
+          "loading_ms": 123.19310000000884,
+          "loading_calls": 1,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+            "loading_ms": 123.19310000000884,
+            "mode": "candidate",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 1,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm03-candidate",
+          "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+          "variant": "candidate",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm03-candidate",
+          "metrics": {
+            "frames": 1350,
+            "seconds": 59.921288,
+            "fps": 22.529555773233714,
+            "median_ms": 36.873,
+            "p95_ms": 80.06,
+            "p99_ms": 109.662,
+            "max_ms": 270.457,
+            "one_percent_low_fps": 7.437088868430991,
+            "below_budget_seconds": 57.609557000000024,
+            "longest_below_budget_seconds": 15.06412199999999,
+            "below_budget_runs_ge2s": 5
+          },
+          "loading_ms": 127.09159999999996,
+          "loading_calls": 1,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+            "loading_ms": 127.09159999999996,
+            "mode": "candidate",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 1,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm04-parent",
+          "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+          "variant": "parent",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm04-parent",
+          "metrics": {
+            "frames": 1412,
+            "seconds": 59.994974,
+            "fps": 23.53530480736603,
+            "median_ms": 33.907,
+            "p95_ms": 79.655,
+            "p99_ms": 112.96,
+            "max_ms": 399.482,
+            "one_percent_low_fps": 6.5162230060031785,
+            "below_budget_seconds": 58.048794000000136,
+            "longest_below_budget_seconds": 13.121274999999997,
+            "below_budget_runs_ge2s": 6
+          },
+          "loading_ms": 0,
+          "loading_calls": 0,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+            "loading_ms": 0,
+            "mode": "parent",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 0,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm05-parent",
+          "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+          "variant": "parent",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm05-parent",
+          "metrics": {
+            "frames": 1363,
+            "seconds": 59.948944000000004,
+            "fps": 22.736013498419588,
+            "median_ms": 36.61,
+            "p95_ms": 78.806,
+            "p99_ms": 116.465,
+            "max_ms": 338.285,
+            "one_percent_low_fps": 6.627909178707368,
+            "below_budget_seconds": 58.49794499999991,
+            "longest_below_budget_seconds": 9.801668000000001,
+            "below_budget_runs_ge2s": 6
+          },
+          "loading_ms": 0,
+          "loading_calls": 0,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+            "loading_ms": 0,
+            "mode": "parent",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 0,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm06-candidate",
+          "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+          "variant": "candidate",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm06-candidate",
+          "metrics": {
+            "frames": 1362,
+            "seconds": 59.97269,
+            "fps": 22.71033698838588,
+            "median_ms": 38.126,
+            "p95_ms": 76.761,
+            "p99_ms": 96.287,
+            "max_ms": 196.604,
+            "one_percent_low_fps": 8.288167752515312,
+            "below_budget_seconds": 58.01168100000001,
+            "longest_below_budget_seconds": 11.336104999999998,
+            "below_budget_runs_ge2s": 6
+          },
+          "loading_ms": 125.19679999999768,
+          "loading_calls": 1,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+            "loading_ms": 125.19679999999768,
+            "mode": "candidate",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 1,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        }
+      ],
+      "retirement": {
+        "all_owned_games_stopped": true,
+        "root_install_restored": true,
+        "root_sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6"
+      }
+    },
+    {
+      "name": "confirmation-source-series",
+      "plan": {
+        "candidate": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+        "parent": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+        "utc": "2026-10-25T19:35:19.606905+00:00",
+        "sequence": [
+          "candidate",
+          "parent",
+          "parent",
+          "candidate",
+          "candidate",
+          "parent"
+        ],
+        "seconds_each": 60,
+        "scope": "Singleplayer normal frozen D20lowercourt-v1. Both displays ON always internal1280x800@60 external1920x1080@75; graphics/nativecargo/AI/cadence/seeds/counts/resources/physicalinput unchanged. No profile/sampler/JIT/GC/affinity changes. Native actual file/function/model/loading-scope proofs before and after capture.",
+        "hypothesis": "Replicated 244-260ms encounter Commit; sameobserver feasibility exactseededmodel warming cut ~120ms. Actualsource warms onlyexactCitizenModel duringexistingBuildReadyfalse loading; no actor/RNG/cadence/gameplay/settingschanges. Six unprofiled source captures to verify specific encounterhitch reduction without material throughput/pacing regression. Loading observer restored beforeFPS; exactsource/currentmodel/fourclones/fourSentries proof beforeafter.",
+        "decision": "Reject noise or correctness/pacing regression. Clear gain requires repeat/affected verification; all five final SP full scenarios3x180s+warmed+40cap remain. Multiplayer deferred by user."
+      },
+      "means": {
+        "parent": {
+          "frames": 1371.6666666666667,
+          "seconds": 59.955517666666665,
+          "fps": 22.87801709197153,
+          "median_ms": 37.219,
+          "p95_ms": 75.12466666666667,
+          "p99_ms": 110.02933333333333,
+          "max_ms": 352.203,
+          "one_percent_low_fps": 6.651385316019181,
+          "below_budget_seconds": 58.02500166666668,
+          "longest_below_budget_seconds": 9.980162333333336,
+          "below_budget_runs_ge2s": 7.333333333333333,
+          "loading_ms": 0,
+          "runs": 3
+        },
+        "candidate": {
+          "frames": 1371,
+          "seconds": 59.95431633333333,
+          "fps": 22.867376658065737,
+          "median_ms": 36.434,
+          "p95_ms": 76.68333333333334,
+          "p99_ms": 112.373,
+          "max_ms": 235.44966666666667,
+          "one_percent_low_fps": 7.053892732517019,
+          "below_budget_seconds": 58.14678600000002,
+          "longest_below_budget_seconds": 12.691558666666669,
+          "below_budget_runs_ge2s": 6.333333333333333,
+          "loading_ms": 125.10806666666478,
+          "runs": 3
+        }
+      },
+      "rows": [
+        {
+          "arm": "arm01-candidate",
+          "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+          "variant": "candidate",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm01-candidate",
+          "metrics": {
+            "frames": 1362,
+            "seconds": 59.951982,
+            "fps": 22.71818136054284,
+            "median_ms": 37.925,
+            "p95_ms": 75.209,
+            "p99_ms": 103.649,
+            "max_ms": 243.072,
+            "one_percent_low_fps": 7.525611267775225,
+            "below_budget_seconds": 58.32690400000006,
+            "longest_below_budget_seconds": 13.46470199999999,
+            "below_budget_runs_ge2s": 7
+          },
+          "loading_ms": 128.53419999999005,
+          "loading_calls": 1,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+            "loading_ms": 128.53419999999005,
+            "mode": "candidate",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 1,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm02-parent",
+          "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+          "variant": "parent",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm02-parent",
+          "metrics": {
+            "frames": 1344,
+            "seconds": 59.937712,
+            "fps": 22.42327835270055,
+            "median_ms": 38.077,
+            "p95_ms": 73.17,
+            "p99_ms": 109.606,
+            "max_ms": 340.931,
+            "one_percent_low_fps": 6.188871083605018,
+            "below_budget_seconds": 58.42968099999999,
+            "longest_below_budget_seconds": 11.024417999999997,
+            "below_budget_runs_ge2s": 7
+          },
+          "loading_ms": 0,
+          "loading_calls": 0,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+            "loading_ms": 0,
+            "mode": "parent",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 0,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm03-parent",
+          "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+          "variant": "parent",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm03-parent",
+          "metrics": {
+            "frames": 1409,
+            "seconds": 59.961597000000005,
+            "fps": 23.49837346727106,
+            "median_ms": 36.023,
+            "p95_ms": 74.954,
+            "p99_ms": 116.205,
+            "max_ms": 314.307,
+            "one_percent_low_fps": 7.007070133764969,
+            "below_budget_seconds": 58.12168600000002,
+            "longest_below_budget_seconds": 9.308464000000004,
+            "below_budget_runs_ge2s": 7
+          },
+          "loading_ms": 0,
+          "loading_calls": 0,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+            "loading_ms": 0,
+            "mode": "parent",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 0,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm04-candidate",
+          "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+          "variant": "candidate",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm04-candidate",
+          "metrics": {
+            "frames": 1370,
+            "seconds": 59.918991999999996,
+            "fps": 22.864203056019367,
+            "median_ms": 34.843,
+            "p95_ms": 78.836,
+            "p99_ms": 118.516,
+            "max_ms": 260.331,
+            "one_percent_low_fps": 6.205376692959733,
+            "below_budget_seconds": 58.099784000000014,
+            "longest_below_budget_seconds": 12.336030000000012,
+            "below_budget_runs_ge2s": 6
+          },
+          "loading_ms": 123.05080000000146,
+          "loading_calls": 1,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+            "loading_ms": 123.05080000000146,
+            "mode": "candidate",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 1,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm05-candidate",
+          "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+          "variant": "candidate",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm05-candidate",
+          "metrics": {
+            "frames": 1381,
+            "seconds": 59.991975,
+            "fps": 23.019745557635,
+            "median_ms": 36.534,
+            "p95_ms": 76.005,
+            "p99_ms": 114.954,
+            "max_ms": 202.946,
+            "one_percent_low_fps": 7.430690236816098,
+            "below_budget_seconds": 58.01366999999998,
+            "longest_below_budget_seconds": 12.273944000000004,
+            "below_budget_runs_ge2s": 6
+          },
+          "loading_ms": 123.73920000000282,
+          "loading_calls": 1,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6",
+            "loading_ms": 123.73920000000282,
+            "mode": "candidate",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 1,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        },
+        {
+          "arm": "arm06-parent",
+          "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+          "variant": "parent",
+          "raw": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm06-parent",
+          "metrics": {
+            "frames": 1362,
+            "seconds": 59.967244,
+            "fps": 22.712399455942982,
+            "median_ms": 37.557,
+            "p95_ms": 77.25,
+            "p99_ms": 104.277,
+            "max_ms": 401.371,
+            "one_percent_low_fps": 6.758214730687557,
+            "below_budget_seconds": 57.523638000000034,
+            "longest_below_budget_seconds": 9.607605000000005,
+            "below_budget_runs_ge2s": 8
+          },
+          "loading_ms": 0,
+          "loading_calls": 0,
+          "after": {
+            "phase": "after",
+            "preparation_observer_retired": true,
+            "sha": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+            "loading_ms": 0,
+            "mode": "parent",
+            "turrets": 4,
+            "scope": "Exactloadedsource/functions andnativeprecache receipt proveoptionalwarming ranwithBuildReadyfalse beforetiming. Currentseededappearance/currentfourclones/fouradmittedSentries checkedafterordinaryplay; no actor/AI/combat/health/phase/RNG/settings changes. Not fullboss or40FPS acceptance.",
+            "profiler_absent": true,
+            "loading_calls": 0,
+            "checked_gordon_models": 5,
+            "passed": true,
+            "clones": 4,
+            "model": "models/Humans/Group01/male_04.mdl"
+          },
+          "issues": [
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ]
+        }
+      ],
+      "retirement": {
+        "all_owned_games_stopped": true,
+        "root_install_restored": true,
+        "root_sha": "d55cbb0633ed8d5d853712b0e9250f030c989ed6"
+      }
+    }
+  ],
+  "published_raw_captures": [
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/original-source-series-arm01-parent.txt.gz",
+      "uncompressed_sha256": "2c417565821dc4f050e6672f2d361bcfc0bc0246af08b5f4773080ece4dd7845",
+      "compressed_sha256": "5fede0feb321d9dc1b09eb159a31b30cb7cf0e25310eba2f43aac358c3c3f26a",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm01-parent/performance_client_latest.txt",
+      "bytes": 77647
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/original-source-series-arm02-candidate.txt.gz",
+      "uncompressed_sha256": "6564667748b7dab58b662e3d9bb6a6de4cdb547b23960b89a64655fefcfbca32",
+      "compressed_sha256": "07cc9c38eb0760de1e0caf191ba6b8342aa1b7edb4f6bd05696a06d1fae4e5a0",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm02-candidate/performance_client_latest.txt",
+      "bytes": 78607
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/original-source-series-arm03-candidate.txt.gz",
+      "uncompressed_sha256": "ef918af80fe2544b272f4d66ac041c789e9e1cdf5ccae45ac3b3144d7e64a157",
+      "compressed_sha256": "18de175e604ddb2f2364c7e6954763f670a234757e14ea7511bca64e3077813c",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm03-candidate/performance_client_latest.txt",
+      "bytes": 77583
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/original-source-series-arm04-parent.txt.gz",
+      "uncompressed_sha256": "53fd7fbf067112c80b2830d15b350704f636ab8a96b6a3687d919235133e7475",
+      "compressed_sha256": "e782533ff693e5a2dde389d6ea5df863ec9ea8f741f2dbea8e898a5bcfaf1cce",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm04-parent/performance_client_latest.txt",
+      "bytes": 78288
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/original-source-series-arm05-parent.txt.gz",
+      "uncompressed_sha256": "a7f8fc0dd2158176bc2722b568eed84f0eb01aa2639a7c5f8bf91c17649cf6ad",
+      "compressed_sha256": "2a6c3c569e95762014fa7a28e138f27058bb4d1eb6fdaf523acd5a781418c371",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm05-parent/performance_client_latest.txt",
+      "bytes": 77724
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/original-source-series-arm06-candidate.txt.gz",
+      "uncompressed_sha256": "7a259f25f902407cef457560df540eeca84731fa525a7d3255985434d8e3d5b3",
+      "compressed_sha256": "9ea20b2d758aaf612989a02f133bea04459bbb0dbdf6d528143cb85fece925d1",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/original-source-series/arm06-candidate/performance_client_latest.txt",
+      "bytes": 77687
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/confirmation-source-series-arm01-candidate.txt.gz",
+      "uncompressed_sha256": "e068785b6366cdcfac3f4d96f16db8eae3149de70abf372866e249db38bae4a9",
+      "compressed_sha256": "5373786c7c168c969b54e854dd9e0f7b1b23a92a2f23b949ad888ebb4abe096d",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm01-candidate/performance_client_latest.txt",
+      "bytes": 77750
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/confirmation-source-series-arm02-parent.txt.gz",
+      "uncompressed_sha256": "a21ec4d8cd27971863422bd9260663c6ad5380aa30b0b5ef7edf44793b0f1ea0",
+      "compressed_sha256": "647d4ccea559aff6129ef2fc3b1e84cdb2d3ab03bca1984dfb473f2c9e9898d6",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm02-parent/performance_client_latest.txt",
+      "bytes": 77472
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/confirmation-source-series-arm03-parent.txt.gz",
+      "uncompressed_sha256": "f4bd12fed0d86aa250fff49bc995013d4fbc56c4faf9f0979d00f9297f9cc79d",
+      "compressed_sha256": "3a2eac7bf110739378cfdbfc5f111b311af9abe2b5ea84e34061f5937ee2f953",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm03-parent/performance_client_latest.txt",
+      "bytes": 78272
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/confirmation-source-series-arm04-candidate.txt.gz",
+      "uncompressed_sha256": "6a50ea74431f4bad19221c6974e337d3d7c9fadf7ed7509c17c79e1d264f813f",
+      "compressed_sha256": "f8c154140f2c36f67bf074329d62f59882cea90a880a50c8f7b72506323b8f50",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm04-candidate/performance_client_latest.txt",
+      "bytes": 77842
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/confirmation-source-series-arm05-candidate.txt.gz",
+      "uncompressed_sha256": "009083876e3ad330cb9ef2abe7bd57b9365458b9d5d39efdaabeada164ac0cee",
+      "compressed_sha256": "1a3382cbe3a110427d1c9e322d2cf0ea119e25c1909e524a568c247935df6650",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm05-candidate/performance_client_latest.txt",
+      "bytes": 77923
+    },
+    {
+      "path": "docs/validation/STEAM_DECK_WARDEN_PRECACHE_20261025/confirmation-source-series-arm06-parent.txt.gz",
+      "uncompressed_sha256": "ea428338a263bcb7006bca07e4bbe07b03f5a654ae26758ac218bbf9c3c73384",
+      "compressed_sha256": "22f6a98da667b01e50ef51f44865df55a3948400f0b3ab04be1c4b8f457c9dcc",
+      "original": "/home/deck/deborah-benchmarks/warden-precache-source/d55cbb06/confirmation-source-series/arm06-parent/performance_client_latest.txt",
+      "bytes": 77698
+    }
+  ],
+  "combined_means": {
+    "parent": {
+      "frames": 1373.8333333333333,
+      "seconds": 59.95972066666667,
+      "fps": 22.91249753513395,
+      "median_ms": 36.46483333333333,
+      "p95_ms": 77.07166666666666,
+      "p99_ms": 111.923,
+      "max_ms": 362.297,
+      "one_percent_low_fps": 6.631666287659194,
+      "below_budget_seconds": 58.096346666666676,
+      "longest_below_budget_seconds": 10.727065333333334,
+      "below_budget_runs_ge2s": 6.833333333333333
+    },
+    "candidate": {
+      "frames": 1378.8333333333333,
+      "seconds": 59.95631783333333,
+      "fps": 22.99716812695339,
+      "median_ms": 36.472166666666666,
+      "p95_ms": 77.01366666666667,
+      "p99_ms": 107.14016666666667,
+      "max_ms": 229.51066666666668,
+      "one_percent_low_fps": 7.457118524107342,
+      "below_budget_seconds": 57.974858000000005,
+      "longest_below_budget_seconds": 12.228176166666666,
+      "below_budget_runs_ge2s": 6.166666666666667
+    }
+  },
+  "aggregation": "Arithmetic means of per-run statistics, not pooled quantiles. Independent series kept separate. No compounded percentages.",
+  "capture_qualification": "Twelve60s active captures, no terminal Lua errors, all source/model/loading-scope/HUD/renderer/resources/input/display gates pass, ownedgames stopped. Capture analyzer FAILS40 in every run; several terminal-unrendered intervals also exceed31ms and are preserved. No final10minwarmup/180s/completeboss or capped acceptance.",
+  "ci": {
+    "rows": {
+      "4b68237f": [
+        "65/336 Bestiary B29 Bilateral Combat Seams",
+        "110/336 Active Event Catalog, Bribe Removal & Quiz Placement",
+        "111/336 Minigame Shell & Equipment UI Restrictions",
+        "144/336 Client Geometry Full-Update Recovery",
+        "152/336 Shared Native DamageInfo Lifetime",
+        "155/336 Shotgun Native Bullet Aggregation",
+        "277/336 Feat: rebalance_20261002",
+        "303/336 Retired Cross Feats & Shared Dodge",
+        "304/336 Live-GDD Feat Release Gate"
+      ],
+      "d55cbb06": [
+        "65/336 Bestiary B29 Bilateral Combat Seams",
+        "110/336 Active Event Catalog, Bribe Removal & Quiz Placement",
+        "111/336 Minigame Shell & Equipment UI Restrictions",
+        "144/336 Client Geometry Full-Update Recovery",
+        "152/336 Shared Native DamageInfo Lifetime",
+        "155/336 Shotgun Native Bullet Aggregation",
+        "277/336 Feat: rebalance_20261002",
+        "303/336 Retired Cross Feats & Shared Dodge",
+        "304/336 Live-GDD Feat Release Gate"
+      ]
+    },
+    "same_failures": true,
+    "full_matrix_green": false,
+    "candidate_run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40225356799",
+    "parent_run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40222484217"
+  },
+  "restoration": "Restored sv_boss_encounter.lua,sv_warden.lua andtwoimplementation-specifictests byte-exact4b682. Targetedboss framework/Warden Lua5.4 and120-source manifest/repeat install PASS; no broad unchanged local matrix rerun."
+}

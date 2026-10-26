@@ -244,4 +244,12 @@ check("dance cleanup preserves phase-two seating and hides expired captions",fun
     local count=draw.count;hook.handlers.LOD_WardenDanceCaptions();assert(draw.count==count)
     hook.handlers.LOD_WardenDanceCleanup()
 end)
+check("core callback changing the archetype prevents post-tick dance",function()
+    local base=W.DancefloorBase.tick
+    local state=W.State;local reads=0
+    W.State=function(...) reads=reads+1;return state(...) end
+    W.DancefloorBase.tick=function(self,e) e.LODArchetypeId="soldier";return "changed" end
+    local e=actor();assert(W:Tick(e)=="changed" and reads==0)
+    W.State=state;W.DancefloorBase.tick=base
+end)
 print(string.format("PASS: %d focused dancefloor behavior checks (mocked engine boundaries)",PASSED))

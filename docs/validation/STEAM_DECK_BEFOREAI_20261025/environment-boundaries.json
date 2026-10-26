@@ -1,0 +1,30 @@
+[
+  {
+    "utc": "2026-10-25T22:52:03.498279+00:00",
+    "kernel": "7.2.7-valve2-2-neptune-72-g31504582a073",
+    "phase": "after_control1_before_profile1",
+    "values": {
+      "/sys/class/hwmon/hwmon6/temp1_input": "62000",
+      "/sys/class/hwmon/hwmon4/temp1_input": "44850",
+      "/sys/class/hwmon/hwmon4/temp2_input": "60850",
+      "/sys/class/hwmon/hwmon5/temp1_input": "70750",
+      "/sys/class/hwmon/hwmon3/temp1_input": "36000",
+      "/sys/class/hwmon/hwmon1/temp1_input": "70000",
+      "/sys/class/hwmon/hwmon6/power1_cap": "15000000",
+      "/sys/class/hwmon/hwmon6/power2_cap": "15000000",
+      "/sys/class/hwmon/hwmon6/power1_average": "7045000",
+      "/sys/class/drm/card0/device/power_dpm_force_performance_level": "auto",
+      "/sys/class/power_supply/ACAD/online": "1"
+    }
+  },
+  {
+    "utc": "2026-10-25T23:08:46.253318+00:00",
+    "phase": "after_confirmation_control2_before_control3",
+    "cpu_temp_millidegreesC": "72750",
+    "gpu_temp_millidegreesC": "62000",
+    "power_caps_microwatts": [
+      "15000000",
+      "15000000"
+    ]
+  }
+]

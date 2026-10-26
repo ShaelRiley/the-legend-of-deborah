@@ -1,0 +1,38 @@
+{
+  "mode": "uncapped",
+  "limiter_tolerance_ms": 0,
+  "active": {
+    "frames": 1332,
+    "seconds": 59.963311999999995,
+    "fps": 22.213582865469473,
+    "median_ms": 35.589,
+    "p95_ms": 82.572,
+    "p99_ms": 116.52,
+    "max_ms": 320.175,
+    "one_percent_low_fps": 6.622218963670033,
+    "below_budget_seconds": 58.88949199999989,
+    "longest_below_budget_seconds": 20.55594400000001,
+    "below_budget_runs_ge2s": 5
+  },
+  "pacing_at_tolerated_budget": {
+    "frames": 1332,
+    "seconds": 59.963311999999995,
+    "fps": 22.213582865469473,
+    "median_ms": 35.589,
+    "p95_ms": 82.572,
+    "p99_ms": 116.52,
+    "max_ms": 320.175,
+    "one_percent_low_fps": 6.622218963670033,
+    "below_budget_seconds": 58.88949199999989,
+    "longest_below_budget_seconds": 20.55594400000001,
+    "below_budget_runs_ge2s": 5
+  },
+  "capture_checks_passed": false,
+  "issues": [
+    "average FPS below budget",
+    "p95 exceeds frame budget",
+    "p99 exceeds spike budget",
+    "continuous drop lasting at least two seconds"
+  ],
+  "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+}

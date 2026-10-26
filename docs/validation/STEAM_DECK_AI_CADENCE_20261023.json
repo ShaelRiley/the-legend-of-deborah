@@ -1,0 +1,67 @@
+{
+  "utc": "2026-10-23T14:44:06.896869+00:00",
+  "state": "Cadencecorroborationobserved;40FPSstillUNMET/allfullacceptanceUNVERIFIED",
+  "tested_source": "e3271bb81b3a51f66db29719e07ec8bfde2a22bc",
+  "raw_directory": "/home/deck/deborah-benchmarks/reboot-warmup/e3271bb8/device600-before-confirmation",
+  "finding": "Listenserver exposes nb_update_frequency=.1 while freshnativeengine reports effectiveone-tick scheduling. ThreeactualBehaveUpdatecallbacks each447times in10.0068seconds,mostly1/2simulationticksapart,twice3ticks. Not10Hzandnotguaranteed66updates/s. Do notinferactualcadencefromconvaralone.",
+  "simulation": "engineTickInterval~.015seconds; one-ticknative schedulingrequest. Actualcallbacks can lagunderload.",
+  "probe": {
+    "calls": 1341,
+    "scope": "Native BehaveUpdate callback observation on three ordinary actors; transparent temporary wrappers outside FPS; not all-AI or performance acceptance",
+    "finished": 120.394432,
+    "started": 110.3876612,
+    "frequency": ".1",
+    "tick_interval": 0.014999999664723873,
+    "bindings_restored": true,
+    "rows": [
+      {
+        "entity": 2716,
+        "archetype": "soldier",
+        "calls": 447,
+        "tick_deltas": {
+          "2": 216,
+          "1": 228,
+          "3": 2
+        }
+      },
+      {
+        "entity": 2718,
+        "archetype": "shambler",
+        "calls": 447,
+        "tick_deltas": {
+          "2": 216,
+          "1": 228,
+          "3": 2
+        }
+      },
+      {
+        "entity": 2719,
+        "archetype": "caromer",
+        "calls": 447,
+        "tick_deltas": {
+          "2": 216,
+          "1": 228,
+          "3": 2
+        }
+      }
+    ],
+    "raw_file": "/home/deck/deborah-benchmarks/reboot-warmup/e3271bb8/device600-before-confirmation/normal-d20-native-cadence-probe.json"
+  },
+  "limits": "Threeordinaryactors/quietD20only; transparenttemporarywrappersoutsideFPS. Not allactorbehavior/fullgameplay/FPSacceptance. Startup-lifecycleprobealso retainedseparately; interrupted actors makeitsrateuninformative.",
+  "cleanup": "Threeinstancebindingsrestoredobserved; probeenabledflagdisabledandglobalstatecleared. Warmdriverwillstopitsprocessbeforefreshconfirmationprocesses; warmcompletion/confirmationstillpending.",
+  "historical_audit_counts": {
+    ".1": 182,
+    "missing": 83,
+    "0.015": 9
+  },
+  "historical_limit": "182captures expose.1,9expose.015,83lackmetadata. Theseareexposedvalues,NOTeffectivecadenceclassification. Earlier66HzAIphrasingconfusedsimulationrate/requestedschedule/observedcallbacks. Rawmeasurementsunchanged; pairedrunsatmatchedexposedsettingsremaindiagnostic. Historicalperactorcadencecannotbefabricated.",
+  "mistaken_gate": "Newpostrebootwarmupinitiallyrequiredliteral.015andstoppedbeforeFPS. Freshnativeoneticklog+actualcallbackscontradictedthatassumption. NoCVarwaschanged; wronggatecorrectedtoexistingbaseline. Failedwarmup/logpreserved.",
+  "frozen_benchmark": "NoAI/timing/content/graphics/hostingrequirementchanged. Freshnativeone-tickstartupreportnowpreservedwithrun; actualAIflags/resources/source/focus/bothONremainrequired.",
+  "display": "KeepbothONuserunitnowenabledforgraphicalsession; existingtransient12hinhibitwaslostatreboot.",
+  "independent_retirement": {
+    "probe_absent": true,
+    "leftovers": 0,
+    "passed": true,
+    "checked": 57
+  }
+}

@@ -42,6 +42,226 @@ local function sameCell(a, b)
     return a and b and a.x == b.x and a.y == b.y and a.z == b.z
 end
 
+-- Collision data is derived from the current graph and its actual immutable
+-- generated boxes. Never scan entities per actor/tick or retain a previous build.
+local stairDirections={N={0,1},E={1,0},S={0,-1},W={-1,0}}
+local function stairIndex()
+    local state,graph=graphState()
+    local builder=LOD.MazeBuilder
+    local entities=builder and builder.Entities
+    if not graph or not entities then return nil end
+    local old=graph.LODHostileStairCollision
+    if old and old.graph==graph and old.version==2 and old.owner==entities and old.count==#entities then return old end
+    local index={graph=graph,version=2,owner=entities,count=#entities,flights={},byEdge={},buckets={},cellSize=math.max(1,MC.CellSize)}
+    graph.LODHostileStairCollision=index
+    local geometry=LOD.Config.Geometry
+    for _,edge in ipairs(graph.VerticalEdges or {}) do
+        local d=stairDirections[edge.LODStairDirection]
+        if d then
+            local lower=edge.a.z<edge.b.z and edge.a or edge.b
+            local base=Navigator:CellCenter(lower)
+            local f={edge=edge,graph=graph,base=base,dx=d[1],dy=d[2],
+                center=base-Vector(d[1],d[2],0)*(geometry.StairRun*.5),uMin=math.huge,uMax=-math.huge,
+                solids={},treads={},lo=Vector(math.huge,math.huge,math.huge),
+                hi=Vector(-math.huge,-math.huge,-math.huge)}
+            index.flights[#index.flights+1]=f;index.byEdge[edge]=f
+        end
+    end
+    for _,e in ipairs(entities) do
+        if IsValid(e) and e.GetBoxKind and e.GetCollisionBounds and e.GetPos then
+            local kind=e:GetBoxKind()
+            if kind==1 or kind==2 or kind==3 then
+                local pos=e:GetPos();local lo,hi=e:GetCollisionBounds()
+                if lo and hi then for _,f in ipairs(index.flights) do
+                    local expected
+                    if kind==2 then expected=f.center
+                    elseif kind==3 then expected=f.center+Vector(0,0,MC.LevelHeight*.5)
+                    else expected=f.base+Vector(0,0,MC.LevelHeight-(geometry.FloorThickness or 16)*.5) end
+                    if pos:DistToSqr(expected)<.01 then
+                        f.solids[#f.solids+1]=e;if kind==2 then f.treads[#f.treads+1]=e end
+                        if kind~=1 then
+                            local a=(pos.x+lo.x-f.base.x)*f.dx+(pos.y+lo.y-f.base.y)*f.dy
+                            local b=(pos.x+hi.x-f.base.x)*f.dx+(pos.y+hi.y-f.base.y)*f.dy
+                            f.uMin=math.min(f.uMin,a,b);f.uMax=math.max(f.uMax,a,b)
+                        end
+                        f.lo.x=math.min(f.lo.x,pos.x+lo.x);f.lo.y=math.min(f.lo.y,pos.y+lo.y);f.lo.z=math.min(f.lo.z,pos.z+lo.z)
+                        f.hi.x=math.max(f.hi.x,pos.x+hi.x);f.hi.y=math.max(f.hi.y,pos.y+hi.y);f.hi.z=math.max(f.hi.z,pos.z+hi.z)
+                    end
+                end end
+            end
+        end
+    end
+    -- A coarse world grid keeps ordinary movement away from stairs out of
+    -- the native trace path; the actual boxes remain collision authority.
+    local size=index.cellSize
+    for _,f in ipairs(index.flights) do
+        if #f.solids>0 then
+            for x=math.floor(f.lo.x/size),math.floor(f.hi.x/size) do
+                for y=math.floor(f.lo.y/size),math.floor(f.hi.y/size) do
+                    for z=math.floor(f.lo.z/size),math.floor(f.hi.z/size) do
+                        local k=x..":"..y..":"..z
+                        local bucket=index.buckets[k] or {};index.buckets[k]=bucket;bucket[#bucket+1]=f
+                    end
+                end
+            end
+        end
+    end
+    return index
+end
+local function nearFlights(index,a,b,lo,hi)
+    local result,seen;local size=index.cellSize
+    for x=math.floor((math.min(a.x,b.x)+lo.x)/size),math.floor((math.max(a.x,b.x)+hi.x)/size) do
+        for y=math.floor((math.min(a.y,b.y)+lo.y)/size),math.floor((math.max(a.y,b.y)+hi.y)/size) do
+            for z=math.floor((math.min(a.z,b.z)+lo.z)/size),math.floor((math.max(a.z,b.z)+hi.z)/size) do
+                local bucket=index.buckets[x..":"..y..":"..z]
+                if bucket then
+                    result=result or {};seen=seen or {}
+                    for _,f in ipairs(bucket) do if not seen[f] then seen[f]=true;result[#result+1]=f end end
+                end
+            end
+        end
+    end
+    return result
+end
+local function actorBounds(e)
+    if not e.GetCollisionBounds then return nil end
+    return e:GetCollisionBounds()
+end
+local function overlapsFlight(f,a,b,lo,hi)
+    return math.min(a.x,b.x)+lo.x<=f.hi.x and math.max(a.x,b.x)+hi.x>=f.lo.x
+        and math.min(a.y,b.y)+lo.y<=f.hi.y and math.max(a.y,b.y)+hi.y>=f.lo.y
+        and math.min(a.z,b.z)+lo.z<=f.hi.z and math.max(a.z,b.z)+hi.z>=f.lo.z
+end
+local function traceList(a,b,lo,hi,list)
+    return util.TraceHull({start=a,endpos=b,mins=lo,maxs=hi,mask=MASK_NPCSOLID,
+        filter=list,whitelist=true,ignoreworld=true})
+end
+local function worldFilter(e)
+    return not e.LODHostile and not (e.IsPlayer and e:IsPlayer())
+end
+local function traceWorld(a,b,lo,hi)
+    return util.TraceHull({start=a,endpos=b,mins=lo,maxs=hi,mask=MASK_NPCSOLID,filter=worldFilter})
+end
+local function clearTrace(tr)
+    return tr and not tr.StartSolid and not tr.AllSolid and not tr.Hit
+end
+function Motion:TraceStairMovement(hostile,from,to)
+    local index=stairIndex();if not index or #index.flights==0 then return nil end
+    local lo,hi=actorBounds(hostile);if not lo or not hi then return nil end
+    local nearby=nearFlights(index,from,to,lo,hi);if not nearby then return nil end
+    local solids={}
+    for _,f in ipairs(nearby) do
+        if overlapsFlight(f,from,to,lo,hi) then
+            for _,e in ipairs(f.solids) do if IsValid(e) then solids[#solids+1]=e end end
+        end
+    end
+    if #solids==0 then return nil end
+    return traceList(from,to,lo,hi,solids)
+end
+local function flightForWaypoint(waypoint)
+    local index=stairIndex()
+    if not index or waypoint.stairGraph~=select(2,graphState()) then return nil end
+    return index.byEdge[waypoint.stairEdge]
+end
+local function supportedPoint(hostile,point,flight)
+    local lo,hi=actorBounds(hostile);if not lo or not hi or #flight.treads==0 then return point end
+    local top=Vector(point.x,point.y,flight.base.z+MC.LevelHeight+FLOOR_LIFT-lo.z)
+    local bottom=Vector(point.x,point.y,flight.base.z+FLOOR_LIFT-lo.z)
+    local tr=traceList(top,bottom,lo,hi,flight.treads)
+    if tr and tr.Hit and not tr.StartSolid and not tr.AllSolid then return tr.HitPos+Vector(0,0,FLOOR_LIFT) end
+    return point
+end
+local function flightForEntity(e)
+    local index=stairIndex();if not index or not IsValid(e) then return nil end
+    for _,f in ipairs(index.flights) do for _,v in ipairs(f.solids) do if v==e then return f end end end
+end
+local function sidePoint(hostile,goal,flight,sign)
+    local lo,hi=actorBounds(hostile);if not lo or not hi then return nil end
+    local tx,ty=-flight.dy,flight.dx
+    local radius=math.max(math.abs(lo.x*tx+lo.y*ty),math.abs(hi.x*tx+hi.y*ty))
+    local side=sign*((LOD.Config.Geometry.StairWidth or 128)*.5+radius+FLOOR_LIFT)
+    local v=(goal.x-flight.base.x)*tx+(goal.y-flight.base.y)*ty
+    return goal+Vector(tx,ty,0)*(side-v)
+end
+function Motion:WaypointPosition(hostile,waypoint)
+    if not waypoint or not waypoint.pos then return nil end
+    local flight=waypoint.stair and flightForWaypoint(waypoint)
+    if flight then return supportedPoint(hostile,waypoint.pos,flight) end
+    local tr=self:TraceStairMovement(hostile,waypoint.pos,waypoint.pos)
+    if not tr or not (tr.Hit or tr.StartSolid or tr.AllSolid) then return waypoint.pos end
+    local f=flightForEntity(tr.Entity);if not f then return nil end
+    local lo,hi=actorBounds(hostile);local p=hostile:GetPos()
+    local side=(p.x-f.base.x)*(-f.dy)+(p.y-f.base.y)*f.dx
+    local first=side<0 and -1 or 1
+    for _,sign in ipairs({first,-first}) do
+        local candidate=sidePoint(hostile,waypoint.pos,f,sign)
+        if candidate and clearTrace(traceWorld(candidate,candidate,lo,hi)) then return candidate end
+    end
+    return nil
+end
+-- Stair movement is an up/across/down path, not a diagonal SetPos through a
+-- riser. The supported waypoint accounts for the actor's whole footprint.
+function Motion:ConstrainStairMovement(hostile,from,to,waypoint,goal)
+    local flight=waypoint.stair and flightForWaypoint(waypoint)
+    local lo,hi=actorBounds(hostile)
+    if flight and lo and hi then
+        local supported=supportedPoint(hostile,to,flight)
+        local raised=Vector(from.x,from.y,math.max(from.z,supported.z))
+        local across=Vector(supported.x,supported.y,raised.z)
+        if not clearTrace(traceWorld(from,raised,lo,hi))
+            or not clearTrace(traceWorld(raised,across,lo,hi))
+            or not clearTrace(traceWorld(across,supported,lo,hi)) then return from,true,true end
+        return supported,false,true
+    end
+    local index=stairIndex()
+    local plan=hostile.LODMotionStairDetour
+    local function sameBounds(p)
+        return lo and hi and p.lo.x==lo.x and p.lo.y==lo.y and p.lo.z==lo.z
+            and p.hi.x==hi.x and p.hi.y==hi.y and p.hi.z==hi.z
+    end
+    if plan and (plan.index~=index or not sameBounds(plan) or plan.target~=hostile.LODTarget
+        or math.abs(plan.goalZ-goal.z)>.05) then plan=nil;hostile.LODMotionStairDetour=nil end
+    local tr=self:TraceStairMovement(hostile,from,plan and goal or to)
+    if not tr or not (tr.Hit or tr.StartSolid or tr.AllSolid) then
+        hostile.LODMotionStairDetour=nil;return to,false,false
+    end
+    if tr.StartSolid or tr.AllSolid then return from,true,false end
+    local f=flightForEntity(tr.Entity)
+    if not f or not lo or not hi or not tr.HitNormal or math.abs(tr.HitNormal.z)>.5 then return from,true,false end
+    local tx,ty=-f.dy,f.dx
+    local goalV=(goal.x-f.base.x)*tx+(goal.y-f.base.y)*ty
+    local goalSide=goalV<0 and -1 or 1
+    if plan and (plan.flight~=f or plan.goalSide~=goalSide) then plan=nil;hostile.LODMotionStairDetour=nil end
+    if not plan then
+        local v=(from.x-f.base.x)*tx+(from.y-f.base.y)*ty
+        local fromSide=v<0 and -1 or 1
+        local radius=math.max(math.abs(lo.x*f.dx+lo.y*f.dy),math.abs(hi.x*f.dx+hi.y*f.dy))
+        local bestCost
+        for _,u in ipairs({f.uMin-radius-FLOOR_LIFT,f.uMax+radius+FLOOR_LIFT}) do
+            local axis=f.base+Vector(f.dx,f.dy,0)*u;axis.z=from.z
+            local one=sidePoint(hostile,axis,f,fromSide)
+            local two=sidePoint(hostile,axis,f,goalSide)
+            if clearTrace(traceWorld(from,one,lo,hi)) and clearTrace(traceWorld(one,two,lo,hi))
+                and clearTrace(traceWorld(two,goal,lo,hi)) then
+                local cost=(one-from):Length()+(two-one):Length()+(goal-two):Length()
+                if not bestCost or cost<bestCost then
+                    bestCost=cost;plan={index=index,flight=f,target=hostile.LODTarget,goalZ=goal.z,
+                        goalSide=goalSide,lo=lo,hi=hi,points={one,two},at=1}
+                end
+            end
+        end
+        if not plan then return from,true,false end
+        hostile.LODMotionStairDetour=plan
+    end
+    while plan.points[plan.at] and from:DistToSqr(plan.points[plan.at])<=.05*.05 do plan.at=plan.at+1 end
+    local point=plan.points[plan.at]
+    if not point then hostile.LODMotionStairDetour=nil;return from,true,false end
+    local delta=point-from;local distance=(to-from):Length();local length=delta:Length()
+    local candidate=from+delta*(math.min(distance,length)/length)
+    if clearTrace(traceWorld(from,candidate,lo,hi)) then return candidate,true,false end
+    hostile.LODMotionStairDetour=nil;return from,true,false
+end
+
 local function currentWaypoint(hostile)
     local waypoints = hostile.LODWaypoints or {}
     return waypoints[hostile.LODWaypointIndex or 1]
@@ -79,6 +299,7 @@ end
 
 function Motion:Stop(hostile)
     if not IsValid(hostile) then return end
+    hostile.LODMotionStairDetour = nil
     hostile.LODMotionSpeed = 0
     hostile.LODMotionVelocity = vector_origin
     hostile.LODMotionMode = "hold"
@@ -165,6 +386,8 @@ function Motion:SnapSpawn(hostile)
     end
     if hostile.LODWallInitialized then return true end
     local safe = self:CellFloorPoint(cell, hostile:GetPos())
+    safe = self:WaypointPosition(hostile,{pos=safe})
+    if not safe then return false end
     local yaw = hostile:GetAngles().y
     hostile:SetPos(safe)
     -- SOLID_BBOX entities can have angles disturbed by SetPos; restore yaw after
@@ -223,7 +446,8 @@ function Motion:MoveToward(hostile, waypoint)
     quiesceEngineLocomotion(hostile)
 
     local pos = hostile:GetPos()
-    local goal = waypoint.pos
+    local goal = self:WaypointPosition(hostile,waypoint)
+    if not goal then self:Stop(hostile);hostile.LODNextRouteRefresh=0;return false end
     local delta = goal - pos
 
     -- Ordinary graph travel is mathematically planar. Only an explicit stair
@@ -259,7 +483,10 @@ function Motion:MoveToward(hostile, waypoint)
     -- response. The graph and validated local waypoint compiler are the movement
     -- authority; SetPos cannot become stuck while trying to resolve generated
     -- floor/wall contacts.
-    if hostile.LODBossEncounter and LOD.BossEncounter then
+    local stairBlocked,stairWorldChecked
+    nextPos,stairBlocked,stairWorldChecked=self:ConstrainStairMovement(hostile,pos,nextPos,waypoint,goal)
+    wallBlocked=wallBlocked or stairBlocked
+    if hostile.LODBossEncounter and LOD.BossEncounter and not stairWorldChecked then
         local lo,hi=LOD.BossEncounter:Hull(hostile)
         local tr=util.TraceHull({start=pos,endpos=nextPos,mins=lo,maxs=hi,mask=MASK_NPCSOLID,
             filter=function(e) return e~=hostile and not e:IsPlayer() and not e.LODHostile end})
@@ -405,7 +632,7 @@ local function installPatch()
             -- player's raw wall-hugging coordinates. Clamp the engagement point to
             -- the cell's guaranteed interior so a melee enemy cannot repeatedly
             -- drive its hull into a closed container wall.
-            local localGoal = sameCellTargetGoal(self, graph, target)
+            local localGoal = not (waypoint and waypoint.stair) and sameCellTargetGoal(self, graph, target)
             local moveWaypoint = localGoal and {
                 pos = localGoal,
                 tolerance = 18,

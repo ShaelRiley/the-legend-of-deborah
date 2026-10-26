@@ -1,0 +1,196 @@
+{
+  "scope": "Main-thread scheduler state inside eachactualslowframe/prolongedbelow25ms-budget episode. Timestampmidpoint reconstruction withalignment+1msrounding guardtrimmedfrombothedges; onlyinsideactualtracewindow. OffCPUincludeskernelblocking/wakeuprunqueue; no namedwaitcause orLuaCPU/additivebudgetclaim.",
+  "prolonged_below40_episodes": [
+    {
+      "frame_seconds": 8.288386,
+      "measured_seconds": 8.281120710758842,
+      "off_cpu_seconds": 0.19436393240175676,
+      "on_cpu_percent": 97.6529271919773
+    },
+    {
+      "frame_seconds": 2.4199680000000003,
+      "measured_seconds": 2.412702710716985,
+      "off_cpu_seconds": 0.07165073981741443,
+      "on_cpu_percent": 97.03027067946876
+    },
+    {
+      "frame_seconds": 2.854427999999999,
+      "measured_seconds": 2.847162710764678,
+      "off_cpu_seconds": 0.07240684686985333,
+      "on_cpu_percent": 97.45687710097866
+    },
+    {
+      "frame_seconds": 5.826810999999997,
+      "measured_seconds": 5.81954571067763,
+      "off_cpu_seconds": 0.13813414526521228,
+      "on_cpu_percent": 97.6263758009192
+    },
+    {
+      "frame_seconds": 3.051223,
+      "measured_seconds": 3.0439577107026707,
+      "off_cpu_seconds": 0.0909901020640973,
+      "on_cpu_percent": 97.01079611769333
+    },
+    {
+      "frame_seconds": 8.331269999999996,
+      "measured_seconds": 8.324004710753798,
+      "off_cpu_seconds": 0.21255622572789434,
+      "on_cpu_percent": 97.44646677754407
+    },
+    {
+      "frame_seconds": 8.728283999999999,
+      "measured_seconds": 8.721018710741191,
+      "off_cpu_seconds": 0.20129650564922486,
+      "on_cpu_percent": 97.69182348615651
+    },
+    {
+      "frame_seconds": 9.214788000000004,
+      "measured_seconds": 9.207522710756166,
+      "off_cpu_seconds": 0.23447377052798402,
+      "on_cpu_percent": 97.45345433409496
+    },
+    {
+      "frame_seconds": 5.1621570000000006,
+      "measured_seconds": 5.1548917108011665,
+      "off_cpu_seconds": 0.14813734161725733,
+      "on_cpu_percent": 97.12627636179317
+    }
+  ],
+  "frames_ge100ms": [
+    {
+      "frame_ms": 324.427,
+      "measured_seconds": 0.31716171074367594,
+      "off_cpu_seconds": 0.00780142484290991,
+      "on_cpu_percent": 97.54023749442604
+    },
+    {
+      "frame_ms": 197.068,
+      "measured_seconds": 0.18980271073814947,
+      "off_cpu_seconds": 0.003605541933211498,
+      "on_cpu_percent": 98.10037384651177
+    },
+    {
+      "frame_ms": 115.416,
+      "measured_seconds": 0.10815071074466687,
+      "off_cpu_seconds": 0.0018470419745426625,
+      "on_cpu_percent": 98.29215918987038
+    },
+    {
+      "frame_ms": 124.216,
+      "measured_seconds": 0.1169507107406389,
+      "off_cpu_seconds": 0.004746915059513412,
+      "on_cpu_percent": 95.94109772445879
+    },
+    {
+      "frame_ms": 139.004,
+      "measured_seconds": 0.13173871074104682,
+      "off_cpu_seconds": 0.009319929115008563,
+      "on_cpu_percent": 92.92544381026443
+    },
+    {
+      "frame_ms": 118.582,
+      "measured_seconds": 0.11131671073962934,
+      "off_cpu_seconds": 0.005427929121651687,
+      "on_cpu_percent": 95.12388653456743
+    },
+    {
+      "frame_ms": 106.848,
+      "measured_seconds": 0.09958271073992364,
+      "off_cpu_seconds": 0.0019329960196046159,
+      "on_cpu_percent": 98.05890399523975
+    },
+    {
+      "frame_ms": 111.308,
+      "measured_seconds": 0.10404271075094584,
+      "off_cpu_seconds": 0.001713943958748132,
+      "on_cpu_percent": 98.35265349549483
+    },
+    {
+      "frame_ms": 123.659,
+      "measured_seconds": 0.11639371074852534,
+      "off_cpu_seconds": 0.0022054038709029555,
+      "on_cpu_percent": 98.10522075744467
+    },
+    {
+      "frame_ms": 123.974,
+      "measured_seconds": 0.11670871074602474,
+      "off_cpu_seconds": 0.005491545962286182,
+      "on_cpu_percent": 95.2946563052722
+    },
+    {
+      "frame_ms": 105.594,
+      "measured_seconds": 0.09832871073740534,
+      "off_cpu_seconds": 0.003960850037401542,
+      "on_cpu_percent": 95.97182754894519
+    },
+    {
+      "frame_ms": 106.596,
+      "measured_seconds": 0.09933071074192412,
+      "off_cpu_seconds": 0.0044128069712314755,
+      "on_cpu_percent": 95.55745958297167
+    },
+    {
+      "frame_ms": 116.613,
+      "measured_seconds": 0.1093477107497165,
+      "off_cpu_seconds": 0.0011365940008545294,
+      "on_cpu_percent": 98.96056900225734
+    },
+    {
+      "frame_ms": 118.293,
+      "measured_seconds": 0.11102771075093187,
+      "off_cpu_seconds": 0.0014953049831092358,
+      "on_cpu_percent": 98.653214613725
+    },
+    {
+      "frame_ms": 106.295,
+      "measured_seconds": 0.09902971074916422,
+      "off_cpu_seconds": 0.011126902914838865,
+      "on_cpu_percent": 88.76407612355591
+    },
+    {
+      "frame_ms": 112.599,
+      "measured_seconds": 0.10533371074416209,
+      "off_cpu_seconds": 0.00796923620509915,
+      "on_cpu_percent": 92.4342965335617
+    },
+    {
+      "frame_ms": 151.982,
+      "measured_seconds": 0.14471671073988546,
+      "off_cpu_seconds": 0.010910915181739256,
+      "on_cpu_percent": 92.460500846132
+    },
+    {
+      "frame_ms": 109.911,
+      "measured_seconds": 0.10264571075094864,
+      "off_cpu_seconds": 0.0009619230113457888,
+      "on_cpu_percent": 99.06287071879729
+    },
+    {
+      "frame_ms": 143.092,
+      "measured_seconds": 0.13582671074254904,
+      "off_cpu_seconds": 0.006971616021473892,
+      "on_cpu_percent": 94.86727169982925
+    },
+    {
+      "frame_ms": 106.675,
+      "measured_seconds": 0.09940971074684057,
+      "off_cpu_seconds": 0.004145421073189937,
+      "on_cpu_percent": 95.82996365038545
+    },
+    {
+      "frame_ms": 101.457,
+      "measured_seconds": 0.09419171074114274,
+      "off_cpu_seconds": 0.0035638661065604538,
+      "on_cpu_percent": 96.21636970119944
+    }
+  ],
+  "episode_on_cpu_percent_range": [
+    97.01079611769333,
+    97.69182348615651
+  ],
+  "slow_frame_on_cpu_percent_range": [
+    88.76407612355591,
+    99.06287071879729
+  ],
+  "slow_frame_off_cpu_seconds_total": 0.10074810836522374
+}

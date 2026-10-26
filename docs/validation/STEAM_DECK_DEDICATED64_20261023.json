@@ -1,0 +1,218 @@
+{
+  "recorded_utc": "2026-10-23T03:53:33.846042+00:00",
+  "state": "UNMET; all six complete frozen acceptance scenarios UNVERIFIED",
+  "tested_commit": "670a0965d60db4a2dfbbcb42f9843a62e51b8b2f",
+  "classification": "Separate same-Deck Linux64 dedicated runtime diagnostic; does not replace frozen listen-host benchmark. Not a controlled architecture-only comparison.",
+  "raw_directory": "/home/deck/deborah-benchmarks/current-dedicated64-d20/670a0965/normal60-run1",
+  "device": "LCD Jupiter512GB SteamDeck SteamOS3.8.28 kernel6.18.50-valve2-1-neptune-618-gc7289a96b14d",
+  "client_runtime": "Windows64 GMod2026.09.17/public25375506 Proton10.0-4b/sniper LuaJIT2.1beta3",
+  "server_runtime": {
+    "human_count": 1,
+    "engine": "2026.10.22",
+    "jit_enabled": true,
+    "max_players": 4,
+    "passed": true,
+    "players": [
+      {
+        "alive": true,
+        "move_type": 2,
+        "connected": true,
+        "bot": false,
+        "health": 206,
+        "god": false
+      }
+    ],
+    "jit_version": "LuaJIT 2.1.0-beta3",
+    "jit_os": "Linux",
+    "tick_interval": 0.01515151560306549,
+    "convars": {
+      "nb_update_frequency": "0.015",
+      "ai_disabled": "0",
+      "sv_lan": "1",
+      "net_usesocketsforloopback": "1",
+      "host_timescale": "1.0",
+      "sv_cheats": "1",
+      "sv_hibernate_think": "1",
+      "nb_update_framelimit": "15",
+      "nb_stop": "0"
+    },
+    "jit_arch": "x64",
+    "branch": "x86-64",
+    "dedicated": true
+  },
+  "previous_dedicated_runtime": "Linux32 GMod2026.09.17 LuaJIT2.0.4,sv_cheats0; earlier42.003FPS/p9543.540/p9955.264/longest4.619s alsoFAIL. Different source checkpoint and engine/JIT/config; no controlled benefit inferred.",
+  "installation": "Isolated Steam app4020 x86-64 build26137544; originalclient/old32serverinstallunchanged. MALLOC_ARENA_MAX2 retained as explicit runtime diagnostic from prior native64allocation diagnosis.",
+  "settings": "1280x800,internal60Hz/external1920x1080@75 BOTHONthroughout,AC15W,originalgraphics/fps300/vsync0/net_graph1; no sampler,profiler,JIT option or affinity.",
+  "scenario": "Frozen normal D20 lowercourt-v1 60s/onehuman/fourslots; seeds1217159003/899898795,normalWizard20HP211/clip20/threeitems,57roamers+9bossactors,1820wallmodels,physical640pointcourtinput. Iteration warmup only; not final10min/3x180s qualification.",
+  "measurement": {
+    "mode": "uncapped",
+    "limiter_tolerance_ms": 0,
+    "active": {
+      "frames": 2424,
+      "seconds": 59.988952,
+      "fps": 40.40744035668435,
+      "median_ms": 22.196,
+      "p95_ms": 42.534,
+      "p99_ms": 56.218,
+      "max_ms": 313.02,
+      "one_percent_low_fps": 12.97505571488924,
+      "below_budget_seconds": 30.693697999999983,
+      "longest_below_budget_seconds": 4.339333,
+      "below_budget_runs_ge2s": 5
+    },
+    "pacing_at_tolerated_budget": {
+      "frames": 2424,
+      "seconds": 59.988952,
+      "fps": 40.40744035668435,
+      "median_ms": 22.196,
+      "p95_ms": 42.534,
+      "p99_ms": 56.218,
+      "max_ms": 313.02,
+      "one_percent_low_fps": 12.97505571488924,
+      "below_budget_seconds": 30.693697999999983,
+      "longest_below_budget_seconds": 4.339333,
+      "below_budget_runs_ge2s": 5
+    },
+    "capture_checks_passed": false,
+    "issues": [
+      "p95 exceeds frame budget",
+      "p99 exceeds spike budget",
+      "continuous drop lasting at least two seconds"
+    ],
+    "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+  },
+  "source": {
+    "client": {
+      "verified": true,
+      "checked": 52,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "server": {
+      "installLabel": "670a0965d60db4a2dfbbcb42f9843a62e51b8b2f clean ",
+      "missing": 0,
+      "mismatches": 0,
+      "checked": 116,
+      "verified": true
+    },
+    "manifest_total": 120
+  },
+  "normal_runtime_before": {
+    "human_count": 1,
+    "engine": "2026.10.22",
+    "jit_enabled": true,
+    "max_players": 4,
+    "passed": true,
+    "players": [
+      {
+        "alive": true,
+        "move_type": 2,
+        "connected": true,
+        "bot": false,
+        "health": 211,
+        "god": false
+      }
+    ],
+    "jit_version": "LuaJIT 2.1.0-beta3",
+    "jit_os": "Linux",
+    "tick_interval": 0.01515151560306549,
+    "convars": {
+      "nb_update_frequency": "0.015",
+      "ai_disabled": "0",
+      "sv_lan": "1",
+      "net_usesocketsforloopback": "1",
+      "host_timescale": "1.0",
+      "sv_cheats": "1",
+      "sv_hibernate_think": "1",
+      "nb_update_framelimit": "15",
+      "nb_stop": "0"
+    },
+    "jit_arch": "x64",
+    "branch": "x86-64",
+    "dedicated": true
+  },
+  "normal_runtime_after": {
+    "human_count": 1,
+    "engine": "2026.10.22",
+    "jit_enabled": true,
+    "max_players": 4,
+    "passed": true,
+    "players": [
+      {
+        "alive": true,
+        "move_type": 2,
+        "connected": true,
+        "bot": false,
+        "health": 206,
+        "god": false
+      }
+    ],
+    "jit_version": "LuaJIT 2.1.0-beta3",
+    "jit_os": "Linux",
+    "tick_interval": 0.01515151560306549,
+    "convars": {
+      "nb_update_frequency": "0.015",
+      "ai_disabled": "0",
+      "sv_lan": "1",
+      "net_usesocketsforloopback": "1",
+      "host_timescale": "1.0",
+      "sv_cheats": "1",
+      "sv_hibernate_think": "1",
+      "nb_update_framelimit": "15",
+      "nb_stop": "0"
+    },
+    "jit_arch": "x64",
+    "branch": "x86-64",
+    "dedicated": true
+  },
+  "support_probe": {
+    "samples": 20,
+    "unfiltered_postcombat": true,
+    "floor_hits_with_0_03125_error": 17,
+    "live_hostile_occupancy_StartSolid": 3,
+    "limit": "Probe omits production actor filter and runs after combat. Allfouractualslotsadmitted, but clean20pointpostcombatfloorproofNOTestablished. Do notclaim20/20supportPASS or regression from livebodyocclusion."
+  },
+  "raw_sha256": {
+    "performance_client_latest.txt": "22b7c766f24b7b8800820addbc37fa3242835e44e1e1da860eab519579bec9f2",
+    "analysis.json": "de2c31c174f7e2b995df39064827a5cbf45131c1b77ea3edb2ac79131a6c7e01",
+    "bench_dedicated_runtime_gate.json": "c95967b3f66aed97061cebe9225cb7ae7b5a413ef2405312340c51a50f64461b",
+    "server-runtime-before.json": "a6e6c8ba379469ad1c2ce437b8217e1365e43fdc6f44853a2149eb85929a696f"
+  },
+  "startup_failures": [
+    "startup-failed-no-local-operator",
+    "startup-failed-frozen-seed-config",
+    "startup-failed-seed-convar-init-order"
+  ],
+  "startup_limits": "All fail beforeFPS; savedrawnotreplaced. Freshserver required same privateLANoperatorrole, normal savedserver.vdf seeds/settings and frozen equipment JSON. Earliercfgexec occurredbeforeLuaCVarscreation,reportedUnknowncommand; correctedusingnormalCVarsserver.vdf.",
+  "cleanup": "Bothownedserver/clientunitsstopped; bothdisplaysONafter.",
+  "coverage": "Only phase1 lowercourt; upperfloor/fullGordon/Hector/rescue and fouractualhumans/expectedhumanSoldiersUNVERIFIED.",
+  "decision": "No supported useful gain from new64server; bothmean-over40dedicateddiagnosticsfailtails. No change to frozenhosting/graphics/content/AI requirements. Continue measured client/render CPU investigation.",
+  "CI": {
+    "sha": "670a0965d60db4a2dfbbcb42f9843a62e51b8b2f",
+    "run_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39894546561",
+    "matrix": "325/334",
+    "source_changed": 0,
+    "failing_names": [
+      "Bestiary B29 Bilateral Combat Seams",
+      "Active Event Catalog, Bribe Removal & Quiz Placement",
+      "Minigame Shell & Equipment UI Restrictions",
+      "Client Geometry Full-Update Recovery",
+      "Shared Native DamageInfo Lifetime",
+      "Shotgun Native Bullet Aggregation",
+      "Feat: rebalance_20261002",
+      "Retired Cross Feats & Shared Dodge",
+      "Live-GDD Feat Release Gate"
+    ],
+    "previous_failing_names_match": true,
+    "performance_sources": "PASS",
+    "VR": "PASS",
+    "ambient_audio": "PASS"
+  },
+  "cpu_gpu_evidence": {
+    "boundary_window_seconds": 64.435314901,
+    "client_one_core_percent": 141.45969510670523,
+    "dedicated_server_one_core_percent": 112.19003136877369,
+    "DRM_gfx_busy_percent": 17.488244387900274,
+    "scope": "TaskCPUandDRMboundarycounters\u2014not utilization samples or CPUfunction/GC attribution. Supports continuedCPUinvestigation."
+  }
+}

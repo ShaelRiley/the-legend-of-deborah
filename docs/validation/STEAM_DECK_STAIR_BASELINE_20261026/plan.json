@@ -1,0 +1,13 @@
+{
+  "source": "8b2661ad92f3caf4bb6763304f747587cc03dbf7",
+  "runtime_source": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+  "scope": "Corrected-stair-build baseline ONLY, no performance candidate/no before-afterclaim",
+  "warmup": "600s unchanged ordinaryD20 entrance, then3x60s frozen D20developer-density physicalorbit, resetcanonicalcampaign/resourcesperarm in sameownedprocess",
+  "controls": "ActualDeck/SP1listenhost,1280x800,bothdisplaysON,15WAC,existinggraphics/software/resources/population/cadence. Profilers/native samplersdisabled;sourceproofbeforeafteronly. Postprocessingoutsidecapture. No 40acceptance fromshortstressruns.",
+  "sequence": [
+    "baseline1",
+    "baseline2",
+    "baseline3"
+  ],
+  "deadline": "2026-10-26T15:48:04+00:00"
+}

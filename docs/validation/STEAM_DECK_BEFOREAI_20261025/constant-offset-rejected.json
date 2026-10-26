@@ -1,0 +1,33 @@
+{
+  "status": "REJECTED: whole-window constant hostoffset not supported; unchanged2msguard",
+  "evidence": [
+    {
+      "arm": "arm02-on",
+      "bounds_seconds": [
+        [
+          105570.23592602358,
+          105570.24109573092
+        ],
+        [
+          105570.22906531465,
+          105570.2339267683
+        ]
+      ],
+      "constant_offset_intersection_exists": false
+    },
+    {
+      "arm": "arm03-on",
+      "bounds_seconds": [
+        [
+          105740.02033139563,
+          105740.0257573798
+        ],
+        [
+          105740.01602170581,
+          105740.0209333979
+        ]
+      ],
+      "constant_offset_intersection_exists": true
+    }
+  ]
+}

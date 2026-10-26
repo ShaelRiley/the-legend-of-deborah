@@ -83,9 +83,14 @@ end
 function System:StateFor(actor)
     -- GMod type(player) is "Player", not "table". Plain profiles remain useful
     -- for automatic generation/validation, but are never mistaken for controllers.
-    if not IsValid(actor) and type(actor) ~= "table" then return nil end
-    local state = actor.LODHumanSoldierProgressionState or actor
-    if state.actorType == "human_soldier" and state.soldierIncarnation == true then return state end
+    -- Every ordinary AI progression query also reaches this provider. Only
+    -- Players can own Attach's incarnation; avoid native validity/field queries
+    -- on NPCs, and never treat a controller itself as a plain profile.
+    local kind = type(actor)
+    if kind ~= "table" and (kind ~= "Player" or not IsValid(actor)) then return nil end
+    local state = actor.LODHumanSoldierProgressionState
+    if not state and kind == "table" then state = actor end
+    if state and state.actorType == "human_soldier" and state.soldierIncarnation == true then return state end
 end
 
 function System:_Advance(state)

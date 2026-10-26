@@ -1,0 +1,14 @@
+--- process_accounting.pre-low-overhead.py
++++ process_accounting.py
+@@ -7,6 +7,11 @@
+ def snapshot(out,stage):
+     start=time.monotonic_ns()
+     d={'stage':stage,'utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'monotonic_ns':start,'hz':os.sysconf('SC_CLK_TCK'),'processes':{},'game_tasks':{},'game_drm':[]}
++    d['thermal_boundary']={}
++    for sensor in Path('/sys/class/hwmon').glob('hwmon*'):
++        try:
++            name=(sensor/'name').read_text().strip();d['thermal_boundary'][name]={k.name:k.read_text().strip()for k in sensor.glob('temp*_input')}
++        except OSError:pass
+     for name in ['stat','meminfo','pressure/cpu','pressure/memory','pressure/io']:
+         try:d[name]=Path('/proc',name).read_text()
+         except OSError:pass

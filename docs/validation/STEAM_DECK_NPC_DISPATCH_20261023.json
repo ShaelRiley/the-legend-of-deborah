@@ -1,0 +1,262 @@
+{
+  "status": "REJECT; exact parent runtime restored; useful foreign-provider tests retained; target40FPS UNMET",
+  "basis": "STEAM_DECK_QUERY_PROFILE_20261023.json",
+  "hypothesis": {
+    "file": "gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+    "function": "Rules:ProgressionState",
+    "change": "Skip canonical StateFor empty NextBot dispatch only while provider identity is unchanged. Still call existing base resolver on every query. Foreign providers stay live, including callbacks mutating ordinary progression. No cross-call/profile/table/validity cache.",
+    "expected": "Remove one redundant Lua provider dispatch on frequent native NPC queries. Type/validity/base resolution remains, so the entire sampled StateFor row is not a predicted saving. Added guard costs must be measured.",
+    "risks": "Custom provider behavior, callback ordering, invalid/removed actors, false/nil/inherited profiles, Hero/Soldier incarnation and Lua-refresh fallback.",
+    "static_checks": "HumanSoldier progression15requirements underLua5.4/LuaJIT, nativeAPI available/unavailable variants; foreign-provider override/removal/callback replacement; actor progression/status elements/Soldier lifecycle/sharedAI B29/source120/syntax/diff pass. Native timing unverified.",
+    "comparison": "Freeze six fresh P,C,C,P,P,C60s normalD20 on exact original source. Native actual provider/upvalue/file/function/result parity proof before FPS, all source/runtime/normal resources/input/bothON, no profiler/sampler/JIT/GC/affinity changes. Retain only a repeatable measured gain without correctness/pacing regression; final five SP scenarios still3x180s+warmed+40cap."
+  },
+  "sequence": [
+    "parent",
+    "candidate",
+    "candidate",
+    "parent",
+    "parent",
+    "candidate"
+  ],
+  "seconds_each": 60,
+  "acceptance_scope": "Singleplayer40FPS with both monitors ON; user explicitly deferred multiplayer. Five full scenarios unchanged; targetUNMET.",
+  "comparison": {
+    "candidate": "8a7b324d60a34a3023625108f9fbceaae7bc543f",
+    "parent": "9b7f7d0e",
+    "raw": "/home/deck/deborah-benchmarks/npc-dispatch/8a7b324d/original-source-series",
+    "runs": [
+      {
+        "index": 1,
+        "variant": "parent",
+        "metrics": {
+          "frames": 1270,
+          "seconds": 59.985535000000006,
+          "fps": 21.17177082775039,
+          "median_ms": 39.163,
+          "p95_ms": 86.307,
+          "p99_ms": 119.405,
+          "max_ms": 438.714,
+          "one_percent_low_fps": 6.168522126488868,
+          "below_budget_seconds": 59.086249000000024,
+          "longest_below_budget_seconds": 13.509044,
+          "below_budget_runs_ge2s": 6
+        },
+        "native_proof": {
+          "passed": true,
+          "linedefined": 152,
+          "profiler_absent": true,
+          "sha": "9b7f7d0e504300889246c94aba78fce41efa0c2f",
+          "foreign_probe_ok": true,
+          "actual_sha256": "f4512a048055bec94ef055616b2fd0454b0e06aa70731f530cc2888d706ce3fc",
+          "mode": "parent",
+          "scope": "Actual file/function/provider identity and returned-state parity only; no native call-count or FPS inference. No actor profile/health/position writes. Temporary foreign provider restored synchronously before gameplay.",
+          "native_shortcut_predicates": 0,
+          "parity_checks": 60,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+          "what": "Lua",
+          "provider_restored": true,
+          "actors": 57,
+          "canonical_provider_matches": false
+        }
+      },
+      {
+        "index": 2,
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1284,
+          "seconds": 59.961855,
+          "fps": 21.413613704912898,
+          "median_ms": 36.533,
+          "p95_ms": 90.733,
+          "p99_ms": 134.313,
+          "max_ms": 340.379,
+          "one_percent_low_fps": 5.862172214385951,
+          "below_budget_seconds": 58.950691000000006,
+          "longest_below_budget_seconds": 20.853452999999995,
+          "below_budget_runs_ge2s": 5
+        },
+        "native_proof": {
+          "passed": true,
+          "linedefined": 153,
+          "profiler_absent": true,
+          "sha": "8a7b324d60a34a3023625108f9fbceaae7bc543f",
+          "foreign_probe_ok": true,
+          "actual_sha256": "4b589981aebeb8d25cff76ab0fbb2d647d5ace4f114d24d92a71549a9241b888",
+          "mode": "candidate",
+          "scope": "Actual file/function/provider identity and returned-state parity only; no native call-count or FPS inference. No actor profile/health/position writes. Temporary foreign provider restored synchronously before gameplay.",
+          "native_shortcut_predicates": 57,
+          "parity_checks": 60,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+          "what": "Lua",
+          "provider_restored": true,
+          "actors": 57,
+          "canonical_provider_matches": true
+        }
+      },
+      {
+        "index": 3,
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1366,
+          "seconds": 59.950986,
+          "fps": 22.785279961867516,
+          "median_ms": 36.808,
+          "p95_ms": 79.522,
+          "p99_ms": 107.463,
+          "max_ms": 353.333,
+          "one_percent_low_fps": 6.956407671327626,
+          "below_budget_seconds": 59.10429100000002,
+          "longest_below_budget_seconds": 22.178797000000007,
+          "below_budget_runs_ge2s": 5
+        },
+        "native_proof": {
+          "passed": true,
+          "linedefined": 153,
+          "profiler_absent": true,
+          "sha": "8a7b324d60a34a3023625108f9fbceaae7bc543f",
+          "foreign_probe_ok": true,
+          "actual_sha256": "4b589981aebeb8d25cff76ab0fbb2d647d5ace4f114d24d92a71549a9241b888",
+          "mode": "candidate",
+          "scope": "Actual file/function/provider identity and returned-state parity only; no native call-count or FPS inference. No actor profile/health/position writes. Temporary foreign provider restored synchronously before gameplay.",
+          "native_shortcut_predicates": 57,
+          "parity_checks": 60,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+          "what": "Lua",
+          "provider_restored": true,
+          "actors": 57,
+          "canonical_provider_matches": true
+        }
+      },
+      {
+        "index": 4,
+        "variant": "parent",
+        "metrics": {
+          "frames": 1238,
+          "seconds": 59.949578,
+          "fps": 20.650687482737577,
+          "median_ms": 39.786,
+          "p95_ms": 91.147,
+          "p99_ms": 133.657,
+          "max_ms": 338.321,
+          "one_percent_low_fps": 6.053623932117455,
+          "below_budget_seconds": 59.506264000000016,
+          "longest_below_budget_seconds": 42.23567699999999,
+          "below_budget_runs_ge2s": 3
+        },
+        "native_proof": {
+          "passed": true,
+          "linedefined": 152,
+          "profiler_absent": true,
+          "sha": "9b7f7d0e504300889246c94aba78fce41efa0c2f",
+          "foreign_probe_ok": true,
+          "actual_sha256": "f4512a048055bec94ef055616b2fd0454b0e06aa70731f530cc2888d706ce3fc",
+          "mode": "parent",
+          "scope": "Actual file/function/provider identity and returned-state parity only; no native call-count or FPS inference. No actor profile/health/position writes. Temporary foreign provider restored synchronously before gameplay.",
+          "native_shortcut_predicates": 0,
+          "parity_checks": 60,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+          "what": "Lua",
+          "provider_restored": true,
+          "actors": 57,
+          "canonical_provider_matches": false
+        }
+      },
+      {
+        "index": 5,
+        "variant": "parent",
+        "metrics": {
+          "frames": 1344,
+          "seconds": 59.934084000000006,
+          "fps": 22.424635704785278,
+          "median_ms": 37.15,
+          "p95_ms": 78.419,
+          "p99_ms": 117.257,
+          "max_ms": 340.73,
+          "one_percent_low_fps": 6.308230032311656,
+          "below_budget_seconds": 59.25168400000004,
+          "longest_below_budget_seconds": 19.129361000000003,
+          "below_budget_runs_ge2s": 6
+        },
+        "native_proof": {
+          "passed": true,
+          "linedefined": 152,
+          "profiler_absent": true,
+          "sha": "9b7f7d0e504300889246c94aba78fce41efa0c2f",
+          "foreign_probe_ok": true,
+          "actual_sha256": "f4512a048055bec94ef055616b2fd0454b0e06aa70731f530cc2888d706ce3fc",
+          "mode": "parent",
+          "scope": "Actual file/function/provider identity and returned-state parity only; no native call-count or FPS inference. No actor profile/health/position writes. Temporary foreign provider restored synchronously before gameplay.",
+          "native_shortcut_predicates": 0,
+          "parity_checks": 60,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+          "what": "Lua",
+          "provider_restored": true,
+          "actors": 57,
+          "canonical_provider_matches": false
+        }
+      },
+      {
+        "index": 6,
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1285,
+          "seconds": 59.916407,
+          "fps": 21.446546352487392,
+          "median_ms": 36.467,
+          "p95_ms": 86.38,
+          "p99_ms": 127.515,
+          "max_ms": 442.24,
+          "one_percent_low_fps": 5.530069968146797,
+          "below_budget_seconds": 59.11493499999997,
+          "longest_below_budget_seconds": 20.721916,
+          "below_budget_runs_ge2s": 4
+        },
+        "native_proof": {
+          "passed": true,
+          "linedefined": 153,
+          "profiler_absent": true,
+          "sha": "8a7b324d60a34a3023625108f9fbceaae7bc543f",
+          "foreign_probe_ok": true,
+          "actual_sha256": "4b589981aebeb8d25cff76ab0fbb2d647d5ace4f114d24d92a71549a9241b888",
+          "mode": "candidate",
+          "scope": "Actual file/function/provider identity and returned-state parity only; no native call-count or FPS inference. No actor profile/health/position writes. Temporary foreign provider restored synchronously before gameplay.",
+          "native_shortcut_predicates": 57,
+          "parity_checks": 60,
+          "function_source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+          "what": "Lua",
+          "provider_restored": true,
+          "actors": 57,
+          "canonical_provider_matches": true
+        }
+      }
+    ],
+    "means": {
+      "parent": {
+        "fps": 21.41569800509108,
+        "median_ms": 38.699666666666666,
+        "p95_ms": 85.291,
+        "p99_ms": 123.43966666666667,
+        "longest_below_budget_seconds": 24.95802733333333
+      },
+      "candidate": {
+        "fps": 21.881813339755936,
+        "median_ms": 36.602666666666664,
+        "p95_ms": 85.545,
+        "p99_ms": 123.097,
+        "longest_below_budget_seconds": 21.251388666666667
+      }
+    },
+    "arithmetic_fps_percent": 2.1765124562087568,
+    "adjacent_fps_percent": [
+      1.142289320671841,
+      10.336665454427596,
+      -4.361673318461834
+    ],
+    "decision": "REJECT. Adjacent gains are inconsistent, ranges overlap, tails mixed and all six FAIL. No repeatable useful source gain established; no statistical-significance or CPU-cause claim. Restore exact parent runtime file, keep useful foreign-provider behavior tests. Native proof confirms57actors/60parity checks each run and synchronous provider restoration; not FPS proof.",
+    "retirement": {
+      "all_owned_games_stopped": true,
+      "root_install_restored": true,
+      "root_sha": "8a7b324d60a34a3023625108f9fbceaae7bc543f"
+    }
+  }
+}

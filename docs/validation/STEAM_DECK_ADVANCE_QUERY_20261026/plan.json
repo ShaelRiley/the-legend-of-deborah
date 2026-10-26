@@ -1,0 +1,19 @@
+{
+  "parent": "fcdf6f037c51ccbabc120a1b88e6c7b0e937cf08",
+  "candidate": "2a3485c5ce517e8a9150694d09854a1db47229a2",
+  "start_utc": "2026-10-26T03:31:29+00:00",
+  "deadline_utc": "2026-10-26T04:16:29+00:00",
+  "capture_cutoff_utc": "2026-10-26T04:07:30+00:00",
+  "sequence": [
+    "parent",
+    "candidate",
+    "candidate",
+    "parent",
+    "parent",
+    "candidate"
+  ],
+  "seconds_each": 60,
+  "hypothesis": "Eliminate only unused present-position geometry for mobile nonbeam actors already in an existing forcedadvance window; CanCast/AcquireTarget remain, publicqueries/foreignproviders retain fullquery, no cache/cadence/movement/attack change. Materialbenefit hypothetical; sourcecomparison decides.",
+  "conditions": "ActualDeck/SP1humanlistenhost/gm_flatgrass/D20phase1lowercourt57initialhostiles1820walls/1280x800+externalbothON/15WAC/fixedsoftwaregraphicsresourcesseedsphysicalrouteAIcadence. All temporaryprofilers/samplers disabled; boundednative source/state proofonlybeforeafterFPS.",
+  "retention": "Require repeatablethroughput/pacing benefit; ambiguous/correctnessregression/unconfirmed=>parentrestore andexperimentpreserved. No full40acceptanceclaim orautomaticnewcheckpoint."
+}

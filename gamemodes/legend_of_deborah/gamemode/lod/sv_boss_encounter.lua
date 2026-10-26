@@ -13,6 +13,13 @@ function B:Register(id,d)
     d.id=id;d.name=d.name or LOD.BossRegistry.Names[id];d.deathDuration=d.deathDuration or 4;self.Modules[id]=d;self:RegisterArchetype(id,d,true)
 end
 function B:RegisterSupport(id,d) d.id=id;self.Support[id]=d;self:RegisterArchetype(id,d,false) end
+function B:PrecacheLevel(level,seed)
+    local d=self.Modules[LOD.BossRegistry:Modular(level)]
+    if not d or not d.Precache then return false end
+    local ok,result=pcall(d.Precache,d,seed)
+    if not ok then ErrorNoHalt('[LOD:BOSS] Model precache failed: '..tostring(result)..'\n');return false end
+    return result~=false
+end
 function B:RegisterArchetype(id,d,primary)
     LOD.Config.Encounter.Archetypes[id]={class='lod_hostile',name=d.name or LOD.BossRegistry.Names[id] or id,
         model=d.model or 'models/Humans/Group01/male_02.mdl',baseHP=d.baseHP or 700,speed=d.speed or 150,

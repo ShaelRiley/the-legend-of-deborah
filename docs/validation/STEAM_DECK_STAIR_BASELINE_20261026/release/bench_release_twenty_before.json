@@ -1,0 +1,52 @@
+{
+	"discretionary": [
+		4,
+		6,
+		6,
+		6
+	],
+	"encounters": 25,
+	"passed": true,
+	"players": 1,
+	"planned_composition_count": 67,
+	"normal_AI": true,
+	"spacing": 4,
+	"no_god_noclip": true,
+	"level": 20,
+	"phase": "before",
+	"campaign": 654759232,
+	"health": 211,
+	"maximum": 211,
+	"archetypes": {
+		"gaoler": 1,
+		"bioblaster": 5,
+		"arccaster": 1,
+		"deadcrab": 7,
+		"caromer": 3,
+		"repulsor": 1,
+		"pincer": 1,
+		"soldier": 9,
+		"seeker": 4,
+		"redliner": 1,
+		"runner": 5,
+		"flamer": 3,
+		"watcher": 4,
+		"shambler": 5,
+		"reaper": 2,
+		"blitzer": 1,
+		"reeler": 1
+	},
+	"scope": "Additional ordinary release-configuration D20 subset. Current production planner/configuration, no actor count edits. Not the frozen developer-density stress benchmark; cannot substitute for its failed acceptance. Before-after counts reflect normal spawning/combat, not manual resets.",
+	"level_seed": 1217159003,
+	"developer_dense": false,
+	"layout_seed": 899898795,
+	"threat": [
+		12,
+		24,
+		27,
+		30
+	],
+	"developer_mode": false,
+	"hostiles": 54,
+	"singleplayer": true
+}

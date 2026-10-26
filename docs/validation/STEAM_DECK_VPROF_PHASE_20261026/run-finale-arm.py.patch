@@ -1,0 +1,30 @@
+--- run-finale-arm.pre-vprof-phase.py
++++ run-finale-arm.py
+@@ -265,6 +265,9 @@
+ if os.environ.get('LOD_WARDEN_MODEL_PRECACHE_VARIANT'):
+  fresh('server','bench_warden_model_precache.txt','bench_warden_model.json',lambda j:j['passed'] and j['variant']==os.environ['LOD_WARDEN_MODEL_PRECACHE_VARIANT'] and j['actors_unchanged']==57)
+  shutil.copy2(D/'bench_warden_model_precache.txt',out/'bench_warden_model_precache.txt')
++if os.environ.get('LOD_ALIGNED_WINDOW')=='1':
++ fresh('client',os.environ.get('LOD_ALIGNED_WINDOW_SCRIPT','bench_aligned_window.txt'),'bench_aligned_window_started.json',lambda j:j['passed'] and j['active'])
++ shutil.copy2(D/os.environ.get('LOD_ALIGNED_WINDOW_SCRIPT','bench_aligned_window.txt'),out/'bench_aligned_window.txt')
+ if os.environ.get('LOD_QUERY_PROFILE_VARIANT'):
+  if os.environ['LOD_QUERY_PROFILE_VARIANT']=='profiled':fresh('server',os.environ.get('LOD_QUERY_PROFILE_START_SCRIPT','bench_query_profile_start.txt'),'bench_query_profile_started.json',lambda j:j['started'] and j['bindings']>=8 and j['sampling']==(1 if os.environ.get('LOD_QUERY_PROFILE_SCOPE')in['warden-start-v1','managers-self-v1'] else 128))
+  fresh('server','bench_query_profile_state.txt','bench_query_profile_state.json',lambda j:j['passed'] and j['variant']==os.environ['LOD_QUERY_PROFILE_VARIANT'])
+@@ -326,6 +329,17 @@
+  fresh('server','bench_native_calls_retirement.txt','bench_native_calls_retirement.json',lambda j:j['passed'] and j['checked']==17 and j['originals_cleared'])
+ if os.environ.get('LOD_WARDEN_PRECACHE_SOURCE_PROOF')=='1':
+  fresh('server','bench_warden_precache_after.txt','bench_warden_precache_after.json',lambda j:j['passed'] and j['phase']=='after' and j['profiler_absent'])
++if os.environ.get('LOD_ALIGNED_WINDOW')=='1':
++ for name in ['bench_aligned_first.json','bench_aligned_last.json','bench_aligned_window.json']:
++  shutil.copy2(D/name,out/name)
++  lo=time.monotonic_ns();realtime=time.time_ns();hi=time.monotonic_ns()
++  (out/(name+'.mtime.json')).write_text(json.dumps({'mtime_ns':(D/name).stat().st_mtime_ns,'host_realtime_ns':realtime,'host_monotonic_lo_ns':lo,'host_monotonic_hi_ns':hi})+'\n')
++ assert json.loads((out/'bench_aligned_window.json').read_text())['passed']
++ if os.environ.get('LOD_ENGINE_WINDOW')=='1':
++  for name in ['bench_aligned_engine_first.json','bench_aligned_engine_last.json']:shutil.copy2(D/name,out/name)
++  fresh('client','bench_engine_report.txt','bench_engine_report_requested.json',lambda j:j['passed'])
++  time.sleep(.2)
++  (out/'native-vprof-aligned.log').write_bytes(log.read_bytes()[offset:])
+ if os.environ.get('LOD_QUERY_PROFILE_VARIANT')=='profiled':
+  fresh('server','bench_query_profile_stop.txt','bench_query_profile.json',lambda j:j['restored'] and j['reason']=='explicit')
+  fresh('server','bench_query_profile_retirement.txt','bench_query_profile_retirement.json',lambda j:j['passed'] and j['checked']>=8 and j['lease_absent'] and j['originals_cleared'])

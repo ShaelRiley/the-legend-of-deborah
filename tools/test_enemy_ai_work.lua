@@ -76,6 +76,19 @@ do
         'expired status cleanup/primary commitment changed')
     note('expired',clears,Status.Active[e]==nil,data.LODSniperShot~=nil)
     hook.Run=hookRun
+
+    -- Missing native targets cannot acquire a commitment. TickCloseDefense
+    -- still services actor status/life above; the failed admission itself needs
+    -- neither a second permission pass nor source body geometry.
+    local canClose=E.CanCloseDefend
+    E.CanCloseDefend=function() error('invalid target repeated actor permission') end
+    e,data=actor('arccaster')
+    data.WorldSpaceCenter=function() error('invalid target queried body geometry') end
+    assert(not E:BeginCloseDefense(e,nil,10000))
+    assert(not E:BeginCloseDefense(e,NULL,10000))
+    assert(not E:BeginCloseDefense(e,{valid=false},10000))
+    assert(not data.LODRosterAttack,'invalid target committed a strike')
+    E.CanCloseDefend=canClose
 end
 
 local cellQueries,positionQueries,decisions=0,0,0
@@ -127,9 +140,17 @@ do
     actor.LODDead=true;events={};assert(not S:BeforeAI(actor));note('dead',table.concat(events,','))
 end
 if not probe then
-    assert(closeReads<=134400 and statusCalls==12000,'close defense repeats native Lua-field reads or skips status queries')
+    assert(closeReads<=134400 and statusCalls==7200,'close defense repeats native Lua-field reads or skips required status queries')
     assert(cellQueries==2001 and positionQueries==12003,'admission still performs unused cell/position queries')
 end
 if tracePath then local f=assert(io.open(tracePath,'w'));f:write(table.concat(trace,'\n'));f:close() end
 print(string.format('ENEMY_AI_WORK_PASS close_lua_field_reads=%d status_queries=%d ticks=3600 admission_decisions=%d cell_queries=%d position_queries=%d trace_rows=%d; callback/expiry/primary/fresh-position/lifecycle parity; not native FPS',
     closeReads,statusCalls,decisions,cellQueries,positionQueries,#trace))
+
+-- Keep the current native-shaped player/deployment query contract in this
+-- existing shared-AI integration gate; trace/probe modes retain their old scope.
+if not probe and not tracePath then dofile("tools/test_player_active_query.lua") end
+
+if not probe and not tracePath then dofile("tools/test_cell_key_strings.lua") end
+
+if not probe and not tracePath then dofile("tools/test_entry_context_lifecycle.lua") end

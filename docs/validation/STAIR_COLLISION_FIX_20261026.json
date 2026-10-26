@@ -1,0 +1,341 @@
+{
+  "status": "Staircollision sharedmovementbypass FIXED; nativephysicalgateway validated9cases. FullordinarybossAI/completegameplay/40FPSacceptanceNOTverified.",
+  "tested_source": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+  "parent": "b2f21822fbf67be8b28c61ca7b1244b11c02dfdd",
+  "budget": {
+    "start_utc": "2026-10-26T04:25:52+00:00",
+    "hard_deadline_utc": "2026-10-26T05:10:52+00:00",
+    "prepared_utc": "2026-10-26T05:08:29.426398+00:00",
+    "elapsed_minutes": 42.6237733,
+    "basis": "Explicitgoalresume; carryprevious45mincap. Stairfixfirstthenperformancebaseline; noautomaticnextcheckpoint."
+  },
+  "changes": [
+    "Currentgraph/actualgeneratedBBox collisionindex with worldgrid; no peractorentityscans and graph/build/hull cacheinvalidation.",
+    "Stair-only sweptmovementforallgroundfamilies includinglegacybosses. Blockedflatpathsdetouraroundactualstairendsinsteadoffreezing.",
+    "Generatedstairwaypoints carrygraph/edgeidentity; supportedhullpositions andup/across/downworldsweepspreservefullascent/descent withoutdiagonalriserpenetration.",
+    "Preserveactivestairwaypointagainstsame-cellflatgoal; usephysicalsupportedgoalforwaypointadvancement/spawn; recoverycannotteleportthroughstairsolids."
+  ],
+  "static_tests": {
+    "new_gate": "56cases/1084completeflightsteps/9138geometricboundarytraces L54/LuaJIT PASS",
+    "scope": "Allfourorientations,ordinary+legacyboss flags,fullup/down,sameXYwrongZ,Zsnap,large-steptunneling,longcrossingdetour,hullandgraph/geometryreplacement. Boundarydoubles, notnativephysics.",
+    "other": "Existingheadroom98flights/enemyupdate/B29dispatch/roster/tracesource/120manifest PASS. NewCIrowregistered; no broadunchangedlocalmatrix rerun.",
+    "negative_control": "Retainedfcdf productionMotionpenetrates actualgeneratedboxgeometryatordinaryspeed in boundarydoubletest; preservedprivate/reviewrecord."
+  },
+  "native": {
+    "results": [
+      {
+        "allSolid": false,
+        "waypointIndex": 1,
+        "reason": "crossed_with_clear_hull",
+        "hull": {
+          "mins": [
+            -16,
+            -16,
+            0
+          ],
+          "maxs": [
+            16,
+            16,
+            72
+          ]
+        },
+        "mode": "horizontal",
+        "steps": 50,
+        "finalDistance": 8.665868759155273,
+        "maxDisplacement": 292.808837890625,
+        "kind": "ordinary",
+        "passed": true,
+        "travel": 354.35593271255493,
+        "seconds": 1.5149999661371112,
+        "startSolid": false
+      },
+      {
+        "allSolid": false,
+        "waypointIndex": 1,
+        "reason": "crossed_with_clear_hull",
+        "hull": {
+          "mins": [
+            -16,
+            -16,
+            0
+          ],
+          "maxs": [
+            16,
+            16,
+            72
+          ]
+        },
+        "mode": "horizontal",
+        "steps": 50,
+        "finalDistance": 8.665868759155273,
+        "maxDisplacement": 292.808837890625,
+        "kind": "warden",
+        "passed": true,
+        "travel": 354.35593271255493,
+        "seconds": 1.5149999661371112,
+        "startSolid": false
+      },
+      {
+        "allSolid": false,
+        "waypointIndex": 1,
+        "reason": "crossed_with_clear_hull",
+        "hull": {
+          "mins": [
+            -16,
+            -16,
+            0
+          ],
+          "maxs": [
+            16,
+            16,
+            72
+          ]
+        },
+        "mode": "horizontal",
+        "steps": 50,
+        "finalDistance": 8.665868759155273,
+        "maxDisplacement": 292.808837890625,
+        "kind": "hector",
+        "passed": true,
+        "travel": 354.35593271255493,
+        "seconds": 1.5149999661371112,
+        "startSolid": false
+      },
+      {
+        "allSolid": false,
+        "waypointIndex": 1,
+        "reason": "crossed_with_clear_hull",
+        "hull": {
+          "mins": [
+            -16,
+            -16,
+            0
+          ],
+          "maxs": [
+            16,
+            16,
+            72
+          ]
+        },
+        "mode": "horizontal",
+        "steps": 50,
+        "finalDistance": 8.665868759155273,
+        "maxDisplacement": 292.808837890625,
+        "kind": "neil",
+        "passed": true,
+        "travel": 354.35593271255493,
+        "seconds": 1.5149999661371112,
+        "startSolid": false
+      },
+      {
+        "allSolid": false,
+        "waypointIndex": 1,
+        "reason": "crossed_with_clear_hull",
+        "hull": {
+          "mins": [
+            -16,
+            -16,
+            0
+          ],
+          "maxs": [
+            16,
+            16,
+            72
+          ]
+        },
+        "mode": "horizontal",
+        "steps": 50,
+        "finalDistance": 8.665868759155273,
+        "maxDisplacement": 292.808837890625,
+        "kind": "generic_boss",
+        "passed": true,
+        "travel": 354.35593271255493,
+        "seconds": 1.5149999661371112,
+        "startSolid": false
+      },
+      {
+        "allSolid": false,
+        "waypointIndex": 27,
+        "reason": "complete_flight",
+        "hull": {
+          "mins": [
+            -16,
+            -16,
+            0
+          ],
+          "maxs": [
+            16,
+            16,
+            72
+          ]
+        },
+        "mode": "up",
+        "steps": 85,
+        "finalDistance": 13.222173690795898,
+        "maxDisplacement": 553.6142578125,
+        "waypointCount": 26,
+        "kind": "ordinary",
+        "passed": true,
+        "travel": 702.373538017273,
+        "seconds": 2.579999942332506,
+        "startSolid": false
+      },
+      {
+        "allSolid": false,
+        "waypointIndex": 27,
+        "reason": "complete_flight",
+        "hull": {
+          "mins": [
+            -16,
+            -16,
+            0
+          ],
+          "maxs": [
+            16,
+            16,
+            72
+          ]
+        },
+        "mode": "down",
+        "steps": 112,
+        "finalDistance": 11.489230155944824,
+        "maxDisplacement": 551.8959350585938,
+        "waypointCount": 26,
+        "kind": "ordinary",
+        "passed": true,
+        "travel": 729.4008188247681,
+        "seconds": 3.3899999242275953,
+        "startSolid": false
+      },
+      {
+        "allSolid": false,
+        "waypointIndex": 27,
+        "reason": "complete_flight",
+        "hull": {
+          "mins": [
+            -16,
+            -16,
+            0
+          ],
+          "maxs": [
+            16,
+            16,
+            72
+          ]
+        },
+        "mode": "up",
+        "steps": 85,
+        "finalDistance": 13.222173690795898,
+        "maxDisplacement": 553.6142578125,
+        "waypointCount": 26,
+        "kind": "generic_boss",
+        "passed": true,
+        "travel": 702.373538017273,
+        "seconds": 2.579999942332506,
+        "startSolid": false
+      },
+      {
+        "allSolid": false,
+        "waypointIndex": 27,
+        "reason": "complete_flight",
+        "hull": {
+          "mins": [
+            -16,
+            -16,
+            0
+          ],
+          "maxs": [
+            16,
+            16,
+            72
+          ]
+        },
+        "mode": "down",
+        "steps": 112,
+        "finalDistance": 11.489230155944824,
+        "maxDisplacement": 551.8959350585938,
+        "waypointCount": 26,
+        "kind": "generic_boss",
+        "passed": true,
+        "travel": 729.4008188247681,
+        "seconds": 3.3899999242275953,
+        "startSolid": false
+      }
+    ],
+    "sha": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+    "scope": "Native TraceHull against actual generated tread/rail/landing colliders after every production MoveToward step, actual _AdvanceWaypoint and real server time. Disposable frozen scene; test actors have paused own AI coroutine, neutral status/entry wrappers and 32x72 hull, boss flags exercise physical gateway only. This is NOT ordinary boss AI, full gameplay, FPS or all-orientation acceptance.",
+    "cases": 9,
+    "passed": true,
+    "restored": true,
+    "reason": "complete",
+    "expected_cases": 9,
+    "edge": {
+      "direction": "W",
+      "entry": "E",
+      "lower": {
+        "y": 19,
+        "x": 4,
+        "z": 0
+      }
+    },
+    "steps": 448,
+    "functions": {
+      "TraceStairMovement": {
+        "last": 160,
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+        "first": 148
+      },
+      "MoveToward": {
+        "last": 51,
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_device_motion_safety.lua",
+        "first": 47
+      },
+      "WaypointPosition": {
+        "last": 201,
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+        "first": 186
+      },
+      "ConstrainStairMovement": {
+        "last": 263,
+        "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+        "first": 204
+      }
+    },
+    "seconds": 13.439440100000013,
+    "source_files": [
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+        "sha256": "a1cab80b004743fe756c2772342fa0a9aee8e738cf4f78411a0c3147c2046764"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua",
+        "sha256": "5b99d4e86ced2dd28fe81db1c9cd5eabb7f6c800de41c22607204bfb393fea0b"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_stair_recovery.lua",
+        "sha256": "c696f69b085d5b4c94ecb04c377f3da4e10f604526760954f0fb957c9056aaf2"
+      },
+      {
+        "path": "gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua",
+        "sha256": "2ac3ca1b2e8c88ab54691ed0e08e55b8b7c11a0cf04698d6e680fdd4bcd9f6b3"
+      }
+    ]
+  },
+  "native_limits": "OneactualgeneratedW-orientedflight andrealSourcecolliders; fivehorizontalordinary/Warden/Hector/Neil/genericbosscases plusordinary/genericcompleteup/down. TestactorspausedownAI,neutraltest-onlyentry/statusandbossHullwrappers32x72,removedandprovidersrestored. NotfullbossAI/allbossauthoredhulls/allorientations/ordinaryplay/FPSacceptance. Fullgeometryunitcoversallorientations/widehulls safelyblock.",
+  "failed_preflight": "Initialnativefixture incorrectlyrequiredpublicMoveTowardtosourcefromcorefile; actualpublicwrapperissv_device_motion_safety.lua. AssertionstoppedBEFORElease/movement. Preservedandcorrectedfixture; fourloadedfilehashes andnewphysicalmethodidentitiesstillverified. No sourcechange required.",
+  "performance_resumption": {
+    "status": "Attempted corrected-build profiler-offD20baseline afterphysicsvalidation; failedclientbench_renew_bridgecommandbeforeFPScapture. No newFPSresult orperformancegainclaimed; preservefailure.",
+    "older_comparisons": "Beforestairfixsourcebenchmarks remainseparate. Reestablishbaselineonthisfixedmovementbeforefutureoptimization.",
+    "overall": "SP40UNMET;fullfivewarmed3x180s/ordinaryplay/fullboss/40capUNVERIFIED."
+  },
+  "restoration": {
+    "native_providers_restored": true,
+    "owned_game_stopped": true,
+    "owned_testactors_removed": true,
+    "new_DATA_scripts_removed": true,
+    "runtime_hashes_verified": 120,
+    "bothdisplays": "ON; preservealways"
+  },
+  "publication": "perf/deck-20261021; PR7draft/mainunchanged. ActualfinalCIstatusrecordedinPR; nofullygreenclaim.",
+  "next_action": "Resumeperformancefromcorrectedsourcewitha successfulprofiler-offbaseline; preservealloriginalacceptanceconstraints. Noautomaticcheckpointafter45mincap."
+}

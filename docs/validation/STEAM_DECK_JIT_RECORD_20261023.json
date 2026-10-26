@@ -1,0 +1,613 @@
+{
+  "status": "REJECT no supportedFPSbenefit; all4capturesFAIL; targetUNMET/all6fullscenariosUNVERIFIED",
+  "plan": {
+    "sha": "da31216acdb563a9fa2eee12be3e825fab9efb79",
+    "utc": "2026-10-23T01:18:37.608790+00:00",
+    "sequence": [
+      "stock",
+      "16000",
+      "16000",
+      "stock"
+    ],
+    "seconds_each": 60,
+    "hypothesis": "Native mainthread CPU sampling maps42.65%toLuaShared with frequent table-lookup instructions; it doesnot prove Lua-function/realm/GC/trace-abort attribution. Long callback paths might exceed the per-trace recorded-IR limit. Request maxrecord16000 via documented publicAPI to test netgameplayeffect; aborts/defaultnativevalue are NOT observed or assumed.",
+    "prior": "Earlier maxtrace32768 changed cache-count capacity and had noeffect (stock20.92982/request20.91272); rejected. This changes only recorded-instruction trace length,notcachecapacity orotheroptimizationflags.",
+    "conditions": "Freshprocess perarm; fixedsource; normalfrozenD20lowercourt-v1 seeds/resources/57roamers+9boss/1820models/66HzAI/actions/graphics/AC15W; bothmonitorsONalways internal1280x800@60/external1920x1080@75. Stockthreadmasks0-7; noaffinityrequest. Sameconsole/boundednativeResume fallback.",
+    "observer": "Onlypublicjit.opt.start invalid-option rejection+maxrecord request beforecanonicalsetup inbothrealms; before/afterflagsmustmatch with JITenabled. SourceCRC/functionline proof. Nojit.on/off/flush, disabledAPIs/nativeworkarounds, Lua wrappers, profiler or active device sampler. Uniformboundary-onlyprocess/task/DRMcounters. FreshprocessStop removesoption; noexactinprocessrestoreclaim.",
+    "gate": "Allsource/settings/normalresources/physicalinput/focus/bothdisplaygates; freshbothrealmpublicAPIreceipts. Failedincompleteattemptpreservedwithoutreplacement; noexpectationofgainfromAPIacceptance.",
+    "retention": "No gainwithinnoise,regressionorframe-tailworsening. Fourshortarmscreenonly; furthercomparisons/regressionsrequiredforclearbenefit. Final3x180s/fullphases/ordinarygameplay/capped/multiplayergatesunchanged.",
+    "sources": [
+      "https://wiki.facepunch.com/gmod/jit.opt.start",
+      "https://luajit.org/running.html"
+    ]
+  },
+  "rows": [
+    {
+      "variant": "stock",
+      "raw": "/home/deck/deborah-benchmarks/jit-record-length/da31216a/public-option-series-v1/arm01-stock",
+      "active": {
+        "frames": 1324,
+        "seconds": 59.983667000000004,
+        "fps": 22.07267521673858,
+        "median_ms": 37.95,
+        "p95_ms": 78.597,
+        "p99_ms": 114.104,
+        "max_ms": 366.52,
+        "one_percent_low_fps": 6.280429240422458,
+        "below_budget_seconds": 58.961886000000014,
+        "longest_below_budget_seconds": 19.51915999999998,
+        "below_budget_runs_ge2s": 5
+      },
+      "gates_passed": true,
+      "both_realm_api": {
+        "client": {
+          "requested": "stock",
+          "scope": "Public jit.opt.start only; one requested maximum-recorded-instruction parameter. No disabled reflection/profiler/native-module workaround; no JIT on/off/flush, optimization flag/AI/simulation/RNG/content/graphics change. Stock numeric maximum-recorded-instruction limit cannot be queried. Fresh process cleanup required; no exact in-process restore claim.",
+          "baseline_record_length": "Not exposed by public API; unchanged stock state in parent",
+          "invalid_option_rejected": true,
+          "flags_unchanged": true,
+          "no_jit_on_or_flush": true,
+          "request_succeeded": true,
+          "api_available": true,
+          "realm": "client",
+          "before_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "after_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "ok": true,
+          "invalid_option_error": "unknown or malformed optimization flag 'lod_invalid_option_probe'"
+        },
+        "server": {
+          "requested": "stock",
+          "scope": "Public jit.opt.start only; one requested maximum-recorded-instruction parameter. No disabled reflection/profiler/native-module workaround; no JIT on/off/flush, optimization flag/AI/simulation/RNG/content/graphics change. Stock numeric maximum-recorded-instruction limit cannot be queried. Fresh process cleanup required; no exact in-process restore claim.",
+          "baseline_record_length": "Not exposed by public API; unchanged stock state in parent",
+          "invalid_option_rejected": true,
+          "flags_unchanged": true,
+          "no_jit_on_or_flush": true,
+          "request_succeeded": true,
+          "api_available": true,
+          "realm": "server",
+          "before_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "after_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "ok": true,
+          "invalid_option_error": "unknown or malformed optimization flag 'lod_invalid_option_probe'"
+        }
+      },
+      "ending": {
+        "reason": "external stop",
+        "duration": 60.443363189697266,
+        "node": 207
+      },
+      "end_health": 211,
+      "main_thread": {
+        "tid": 195370,
+        "name": "gmod_win64.exe",
+        "cpu_seconds": 62.09,
+        "one_core_percent": 96.3847360745042,
+        "run_seconds": 62.092073172,
+        "runqueue_wait_seconds": 0.34661463,
+        "timeslices": 85392
+      },
+      "gpu": [
+        {
+          "engine": "drm-engine-gfx",
+          "seconds": 3.898723204,
+          "busy_percent": 6.052140554760595
+        },
+        {
+          "engine": "drm-engine-compute",
+          "seconds": 0.00019552,
+          "busy_percent": 0.00030351334510045195
+        }
+      ]
+    },
+    {
+      "variant": "16000",
+      "raw": "/home/deck/deborah-benchmarks/jit-record-length/da31216a/public-option-series-v1/arm02-16000",
+      "active": {
+        "frames": 1333,
+        "seconds": 59.903782,
+        "fps": 22.25235127892259,
+        "median_ms": 37.044,
+        "p95_ms": 82.951,
+        "p99_ms": 111.297,
+        "max_ms": 367.534,
+        "one_percent_low_fps": 7.0067124305084265,
+        "below_budget_seconds": 59.10160400000006,
+        "longest_below_budget_seconds": 22.23450900000001,
+        "below_budget_runs_ge2s": 4
+      },
+      "gates_passed": true,
+      "both_realm_api": {
+        "client": {
+          "requested": "16000",
+          "scope": "Public jit.opt.start only; one requested maximum-recorded-instruction parameter. No disabled reflection/profiler/native-module workaround; no JIT on/off/flush, optimization flag/AI/simulation/RNG/content/graphics change. Stock numeric maximum-recorded-instruction limit cannot be queried. Fresh process cleanup required; no exact in-process restore claim.",
+          "invalid_option_rejected": true,
+          "baseline_record_length": "Not exposed by public API; unchanged stock state in parent",
+          "flags_unchanged": true,
+          "request_succeeded": true,
+          "no_jit_on_or_flush": true,
+          "api_available": true,
+          "realm": "client",
+          "before_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "after_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "ok": true,
+          "invalid_option_error": "unknown or malformed optimization flag 'lod_invalid_option_probe'"
+        },
+        "server": {
+          "requested": "16000",
+          "scope": "Public jit.opt.start only; one requested maximum-recorded-instruction parameter. No disabled reflection/profiler/native-module workaround; no JIT on/off/flush, optimization flag/AI/simulation/RNG/content/graphics change. Stock numeric maximum-recorded-instruction limit cannot be queried. Fresh process cleanup required; no exact in-process restore claim.",
+          "invalid_option_rejected": true,
+          "baseline_record_length": "Not exposed by public API; unchanged stock state in parent",
+          "flags_unchanged": true,
+          "request_succeeded": true,
+          "no_jit_on_or_flush": true,
+          "api_available": true,
+          "realm": "server",
+          "before_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "after_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "ok": true,
+          "invalid_option_error": "unknown or malformed optimization flag 'lod_invalid_option_probe'"
+        }
+      },
+      "ending": {
+        "reason": "external stop",
+        "duration": 61.440406799316406,
+        "node": 211
+      },
+      "end_health": 211,
+      "main_thread": {
+        "tid": 197617,
+        "name": "gmod_win64.exe",
+        "cpu_seconds": 62.39,
+        "one_core_percent": 96.10378139594715,
+        "run_seconds": 62.381680387,
+        "runqueue_wait_seconds": 0.424662089,
+        "timeslices": 85711
+      },
+      "gpu": [
+        {
+          "engine": "drm-engine-gfx",
+          "seconds": 3.997919721,
+          "busy_percent": 6.158281822496074
+        },
+        {
+          "engine": "drm-engine-compute",
+          "seconds": 0.001177646,
+          "busy_percent": 0.0018140124017600831
+        }
+      ]
+    },
+    {
+      "variant": "16000",
+      "raw": "/home/deck/deborah-benchmarks/jit-record-length/da31216a/public-option-series-v1/arm03-16000",
+      "active": {
+        "frames": 1244,
+        "seconds": 59.936576,
+        "fps": 20.75527304062214,
+        "median_ms": 39.589,
+        "p95_ms": 87.516,
+        "p99_ms": 122.841,
+        "max_ms": 351.262,
+        "one_percent_low_fps": 6.180040750237932,
+        "below_budget_seconds": 58.98302900000003,
+        "longest_below_budget_seconds": 21.881369000000007,
+        "below_budget_runs_ge2s": 4
+      },
+      "gates_passed": true,
+      "both_realm_api": {
+        "client": {
+          "requested": "16000",
+          "scope": "Public jit.opt.start only; one requested maximum-recorded-instruction parameter. No disabled reflection/profiler/native-module workaround; no JIT on/off/flush, optimization flag/AI/simulation/RNG/content/graphics change. Stock numeric maximum-recorded-instruction limit cannot be queried. Fresh process cleanup required; no exact in-process restore claim.",
+          "invalid_option_rejected": true,
+          "baseline_record_length": "Not exposed by public API; unchanged stock state in parent",
+          "flags_unchanged": true,
+          "request_succeeded": true,
+          "no_jit_on_or_flush": true,
+          "api_available": true,
+          "realm": "client",
+          "before_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "after_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "ok": true,
+          "invalid_option_error": "unknown or malformed optimization flag 'lod_invalid_option_probe'"
+        },
+        "server": {
+          "requested": "16000",
+          "scope": "Public jit.opt.start only; one requested maximum-recorded-instruction parameter. No disabled reflection/profiler/native-module workaround; no JIT on/off/flush, optimization flag/AI/simulation/RNG/content/graphics change. Stock numeric maximum-recorded-instruction limit cannot be queried. Fresh process cleanup required; no exact in-process restore claim.",
+          "invalid_option_rejected": true,
+          "baseline_record_length": "Not exposed by public API; unchanged stock state in parent",
+          "flags_unchanged": true,
+          "request_succeeded": true,
+          "no_jit_on_or_flush": true,
+          "api_available": true,
+          "realm": "server",
+          "before_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "after_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "ok": true,
+          "invalid_option_error": "unknown or malformed optimization flag 'lod_invalid_option_probe'"
+        }
+      },
+      "ending": {
+        "reason": "external stop",
+        "duration": 61.43540573120117,
+        "node": 211
+      },
+      "end_health": 211,
+      "main_thread": {
+        "tid": 199766,
+        "name": "gmod_win64.exe",
+        "cpu_seconds": 62.51,
+        "one_core_percent": 96.28423766651743,
+        "run_seconds": 62.512526701,
+        "runqueue_wait_seconds": 0.400593459,
+        "timeslices": 87371
+      },
+      "gpu": [
+        {
+          "engine": "drm-engine-gfx",
+          "seconds": 4.052304817,
+          "busy_percent": 6.2417705982595
+        },
+        {
+          "engine": "drm-engine-compute",
+          "seconds": 0.001298125,
+          "busy_percent": 0.0019995036957422482
+        }
+      ]
+    },
+    {
+      "variant": "stock",
+      "raw": "/home/deck/deborah-benchmarks/jit-record-length/da31216a/public-option-series-v1/arm04-stock",
+      "active": {
+        "frames": 1252,
+        "seconds": 59.954043,
+        "fps": 20.882661741427516,
+        "median_ms": 38.022,
+        "p95_ms": 87.895,
+        "p99_ms": 115.071,
+        "max_ms": 369.735,
+        "one_percent_low_fps": 6.305240576454194,
+        "below_budget_seconds": 59.412951999999954,
+        "longest_below_budget_seconds": 25.37300599999999,
+        "below_budget_runs_ge2s": 3
+      },
+      "gates_passed": true,
+      "both_realm_api": {
+        "client": {
+          "requested": "stock",
+          "scope": "Public jit.opt.start only; one requested maximum-recorded-instruction parameter. No disabled reflection/profiler/native-module workaround; no JIT on/off/flush, optimization flag/AI/simulation/RNG/content/graphics change. Stock numeric maximum-recorded-instruction limit cannot be queried. Fresh process cleanup required; no exact in-process restore claim.",
+          "baseline_record_length": "Not exposed by public API; unchanged stock state in parent",
+          "invalid_option_rejected": true,
+          "flags_unchanged": true,
+          "no_jit_on_or_flush": true,
+          "request_succeeded": true,
+          "api_available": true,
+          "realm": "client",
+          "before_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "after_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "ok": true,
+          "invalid_option_error": "unknown or malformed optimization flag 'lod_invalid_option_probe'"
+        },
+        "server": {
+          "requested": "stock",
+          "scope": "Public jit.opt.start only; one requested maximum-recorded-instruction parameter. No disabled reflection/profiler/native-module workaround; no JIT on/off/flush, optimization flag/AI/simulation/RNG/content/graphics change. Stock numeric maximum-recorded-instruction limit cannot be queried. Fresh process cleanup required; no exact in-process restore claim.",
+          "baseline_record_length": "Not exposed by public API; unchanged stock state in parent",
+          "invalid_option_rejected": true,
+          "flags_unchanged": true,
+          "no_jit_on_or_flush": true,
+          "request_succeeded": true,
+          "api_available": true,
+          "realm": "server",
+          "before_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "after_flags": [
+            true,
+            "SSE2",
+            "SSE3",
+            "SSE4.1",
+            "AMD",
+            "BMI2",
+            "fold",
+            "cse",
+            "dce",
+            "fwd",
+            "dse",
+            "narrow",
+            "loop",
+            "abc",
+            "sink",
+            "fuse"
+          ],
+          "ok": true,
+          "invalid_option_error": "unknown or malformed optimization flag 'lod_invalid_option_probe'"
+        }
+      },
+      "ending": {
+        "reason": "external stop",
+        "duration": 61.45032501220703,
+        "node": 209
+      },
+      "end_health": 204,
+      "main_thread": {
+        "tid": 201929,
+        "name": "gmod_win64.exe",
+        "cpu_seconds": 62.44,
+        "one_core_percent": 96.18979033489695,
+        "run_seconds": 62.433444781,
+        "runqueue_wait_seconds": 0.39923742,
+        "timeslices": 87149
+      },
+      "gpu": [
+        {
+          "engine": "drm-engine-gfx",
+          "seconds": 4.117680648,
+          "busy_percent": 6.343351028141938
+        },
+        {
+          "engine": "drm-engine-compute",
+          "seconds": 0.001347614,
+          "busy_percent": 0.0020760203092948723
+        }
+      ]
+    }
+  ],
+  "means_fps": {
+    "stock": 21.47766847908305,
+    "16000": 21.503812159772366
+  },
+  "arithmetic_percent": 0.12172494754156826,
+  "decision": "Reject maxrecord16000. Meanswithinnoise; firstcandidateimproves.18FPSwhile secondslows.13FPSversusadjacentstock. All4ownedgamesStop clearoptions. Source/gameplayunchanged; noJITsettingretained. BothmonitorsONalways.",
+  "limits": "ShortD20lowercourtonly; nofullphases/allscenarios/ordinaryplay/capped/fourhumans/3x180sacceptance. Native defaultlimit/recordingabortswerenotobserved. Differentendhealthnotcausallyattributed."
+}

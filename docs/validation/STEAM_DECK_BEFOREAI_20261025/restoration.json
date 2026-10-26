@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-25T23:18:22.666384+00:00",
+  "installed_runtime_hashes_verified": 120,
+  "gameplay_and_tools_byte_equal_retained": true,
+  "all_owned_games_perf_stopped": true,
+  "controller_restored_byte_exact": true,
+  "new_beforeai_DATA_scripts_removed": true,
+  "bothdisplays_on": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on",
+  "probe_fixtures": [
+    "Lua5.4 PASS",
+    "LuaJIT PASS"
+  ],
+  "acceptance": "FAIL/UNVERIFIED as stated; no fresh gameplay source change"
+}

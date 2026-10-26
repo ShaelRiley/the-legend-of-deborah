@@ -1,0 +1,214 @@
+{
+  "scope": "Main-thread scheduler state inside eachactualslowframe/prolongedbelow25ms-budget episode. Timestampmidpoint reconstruction withalignment+1msrounding guardtrimmedfrombothedges; onlyinsideactualtracewindow. OffCPUincludeskernelblocking/wakeuprunqueue; no namedwaitcause orLuaCPU/additivebudgetclaim.",
+  "prolonged_below40_episodes": [
+    {
+      "frame_seconds": 19.52132999999998,
+      "measured_seconds": 19.514432435156778,
+      "off_cpu_seconds": 0.48451089444279205,
+      "on_cpu_percent": 97.51716635340156
+    },
+    {
+      "frame_seconds": 2.6627609999999997,
+      "measured_seconds": 2.65586343529867,
+      "off_cpu_seconds": 0.08327795819786843,
+      "on_cpu_percent": 96.86437348053992
+    },
+    {
+      "frame_seconds": 8.563110000000002,
+      "measured_seconds": 8.556212435258203,
+      "off_cpu_seconds": 0.22157188470009714,
+      "on_cpu_percent": 97.41039757513441
+    },
+    {
+      "frame_seconds": 8.663698,
+      "measured_seconds": 8.656800435201149,
+      "off_cpu_seconds": 0.18102943983103614,
+      "on_cpu_percent": 97.90881814607951
+    },
+    {
+      "frame_seconds": 9.477423000000002,
+      "measured_seconds": 9.470525435244781,
+      "off_cpu_seconds": 0.25451067855465226,
+      "on_cpu_percent": 97.31260234403167
+    },
+    {
+      "frame_seconds": 3.225812,
+      "measured_seconds": 3.2189144353178563,
+      "off_cpu_seconds": 0.06871810455049854,
+      "on_cpu_percent": 97.86517765751941
+    }
+  ],
+  "frames_ge100ms": [
+    {
+      "frame_ms": 322.545,
+      "measured_seconds": 0.3156474352872465,
+      "off_cpu_seconds": 0.005467680035508238,
+      "on_cpu_percent": 98.26778886052645
+    },
+    {
+      "frame_ms": 190.043,
+      "measured_seconds": 0.1831454352795845,
+      "off_cpu_seconds": 0.0037708259478677064,
+      "on_cpu_percent": 97.94107565819958
+    },
+    {
+      "frame_ms": 131.705,
+      "measured_seconds": 0.12480743529158644,
+      "off_cpu_seconds": 0.0024310510780196637,
+      "on_cpu_percent": 98.0521584532684
+    },
+    {
+      "frame_ms": 100.987,
+      "measured_seconds": 0.09408943528251257,
+      "off_cpu_seconds": 0.0033978449646383524,
+      "on_cpu_percent": 96.38870723962154
+    },
+    {
+      "frame_ms": 117.478,
+      "measured_seconds": 0.11058043528464623,
+      "off_cpu_seconds": 0.005192725919187069,
+      "on_cpu_percent": 95.30411875679417
+    },
+    {
+      "frame_ms": 101.223,
+      "measured_seconds": 0.09432543528964743,
+      "off_cpu_seconds": 0.004605348178301938,
+      "on_cpu_percent": 95.11759668623826
+    },
+    {
+      "frame_ms": 109.044,
+      "measured_seconds": 0.10214643528161105,
+      "off_cpu_seconds": 0.006143595746834762,
+      "on_cpu_percent": 93.98550156948966
+    },
+    {
+      "frame_ms": 113.756,
+      "measured_seconds": 0.10685843529063277,
+      "off_cpu_seconds": 0.006693842020467855,
+      "on_cpu_percent": 93.73578510459937
+    },
+    {
+      "frame_ms": 106.2,
+      "measured_seconds": 0.09930243527924176,
+      "off_cpu_seconds": 0.004803082993021235,
+      "on_cpu_percent": 95.16317703637901
+    },
+    {
+      "frame_ms": 109.432,
+      "measured_seconds": 0.10253443528199568,
+      "off_cpu_seconds": 0.0010440560290589929,
+      "on_cpu_percent": 98.98175083698703
+    },
+    {
+      "frame_ms": 106.302,
+      "measured_seconds": 0.09940443528466858,
+      "off_cpu_seconds": 0.0014252749679144472,
+      "on_cpu_percent": 98.56618574027122
+    },
+    {
+      "frame_ms": 121.156,
+      "measured_seconds": 0.11425843527831603,
+      "off_cpu_seconds": 0.005911704138270579,
+      "on_cpu_percent": 94.82602389585453
+    },
+    {
+      "frame_ms": 108.706,
+      "measured_seconds": 0.10180843528360128,
+      "off_cpu_seconds": 0.002628000103868544,
+      "on_cpu_percent": 97.41868137296493
+    },
+    {
+      "frame_ms": 101.012,
+      "measured_seconds": 0.0941144352837,
+      "off_cpu_seconds": 0.0008213719556806609,
+      "on_cpu_percent": 99.12726251482601
+    },
+    {
+      "frame_ms": 110.024,
+      "measured_seconds": 0.10312643527868204,
+      "off_cpu_seconds": 0.001361323898890987,
+      "on_cpu_percent": 98.67994671277812
+    },
+    {
+      "frame_ms": 108.361,
+      "measured_seconds": 0.10146343529049773,
+      "off_cpu_seconds": 0.0008482549601467326,
+      "on_cpu_percent": 99.1639796565944
+    },
+    {
+      "frame_ms": 113.996,
+      "measured_seconds": 0.10709843528456986,
+      "off_cpu_seconds": 0.011134336105897091,
+      "on_cpu_percent": 89.60364259635335
+    },
+    {
+      "frame_ms": 110.05,
+      "measured_seconds": 0.10315243528748397,
+      "off_cpu_seconds": 0.008262702976935543,
+      "on_cpu_percent": 91.98981298511515
+    },
+    {
+      "frame_ms": 100.972,
+      "measured_seconds": 0.09407443528471049,
+      "off_cpu_seconds": 0.0021404170693131164,
+      "on_cpu_percent": 97.72476224509317
+    },
+    {
+      "frame_ms": 119.33,
+      "measured_seconds": 0.11243243528588209,
+      "off_cpu_seconds": 0.001300985983107239,
+      "on_cpu_percent": 98.84287307323797
+    },
+    {
+      "frame_ms": 107.87,
+      "measured_seconds": 0.1009724352916237,
+      "off_cpu_seconds": 0.0011975528614129871,
+      "on_cpu_percent": 98.8139804116299
+    },
+    {
+      "frame_ms": 111.103,
+      "measured_seconds": 0.1042054352874402,
+      "off_cpu_seconds": 0.0014048870070837438,
+      "on_cpu_percent": 98.65181024079166
+    },
+    {
+      "frame_ms": 101.336,
+      "measured_seconds": 0.09443843529152218,
+      "off_cpu_seconds": 0.0011068139865528792,
+      "on_cpu_percent": 98.8280047386043
+    },
+    {
+      "frame_ms": 104.9,
+      "measured_seconds": 0.09800243529025465,
+      "off_cpu_seconds": 0.000919433994567953,
+      "on_cpu_percent": 99.06182535990574
+    },
+    {
+      "frame_ms": 102.527,
+      "measured_seconds": 0.09562943527998868,
+      "off_cpu_seconds": 0.000794582039816305,
+      "on_cpu_percent": 99.1691030721975
+    },
+    {
+      "frame_ms": 142.819,
+      "measured_seconds": 0.1359214352851268,
+      "off_cpu_seconds": 0.004102493025129661,
+      "on_cpu_percent": 96.98171740423155
+    },
+    {
+      "frame_ms": 108.879,
+      "measured_seconds": 0.10198143529123627,
+      "off_cpu_seconds": 0.0013569540460593998,
+      "on_cpu_percent": 98.66941071952533
+    }
+  ],
+  "episode_on_cpu_percent_range": [
+    96.86437348053992,
+    97.90881814607951
+  ],
+  "slow_frame_on_cpu_percent_range": [
+    89.60364259635335,
+    99.1691030721975
+  ],
+  "slow_frame_off_cpu_seconds_total": 0.09026714203355368
+}

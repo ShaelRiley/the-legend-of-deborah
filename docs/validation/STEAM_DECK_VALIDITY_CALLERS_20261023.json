@@ -1,0 +1,403 @@
+{
+  "status": "Diagnostic complete, not acceptance; SP40 UNMET; full five SP/release ordinary/40cap UNVERIFIED; multiplayer deferred",
+  "source": "bf05ad1ad37dd846356a5879da5cd0cbfe1d67f0",
+  "raw": "/home/deck/deborah-benchmarks/validity-callers/bf05ad1a/observer-series-v2",
+  "rows": [
+    {
+      "arm": "arm01-control",
+      "directory": "/home/deck/deborah-benchmarks/validity-callers/bf05ad1a/observer-series-v2/arm01-control",
+      "metrics": {
+        "frames": 1397,
+        "seconds": 59.96091199999999,
+        "fps": 23.298511536982627,
+        "median_ms": 34.951,
+        "p95_ms": 78.457,
+        "p99_ms": 120.837,
+        "max_ms": 350.528,
+        "one_percent_low_fps": 6.564464210775568,
+        "below_budget_seconds": 58.661927999999925,
+        "longest_below_budget_seconds": 11.389849999999997,
+        "below_budget_runs_ge2s": 6
+      }
+    },
+    {
+      "arm": "arm02-profiled",
+      "directory": "/home/deck/deborah-benchmarks/validity-callers/bf05ad1a/observer-series-v2/arm02-profiled",
+      "metrics": {
+        "frames": 1328,
+        "seconds": 59.940939,
+        "fps": 22.155141747112104,
+        "median_ms": 36.856,
+        "p95_ms": 81.157,
+        "p99_ms": 105.432,
+        "max_ms": 414.689,
+        "one_percent_low_fps": 6.532382653911101,
+        "below_budget_seconds": 58.61986000000002,
+        "longest_below_budget_seconds": 10.505304000000004,
+        "below_budget_runs_ge2s": 7
+      },
+      "profile": {
+        "nextbot": {
+          "calls": 7668279,
+          "game_samples": 3744,
+          "samples": 3744
+        },
+        "overflow": 0,
+        "other": {
+          "calls": 3654068,
+          "game_samples": 1783,
+          "samples": 1784
+        },
+        "restored": true,
+        "scope": "Observed public Entity.IsValid call-site samples, selectedfirst visiblegame-sourceframe from levels2-6 via public numericdebug.getinfo underpcall. No hooks/jitAPI/locals/upvaluevalues/entityrefs/pointers captured. Deterministicsamplingcanalias and JIT/tailcalls/inlining mayomitcallerframes; notcompletecallgraph/exclusiveCPUorFPSproof. Counts/metadatawrapperaffectJIT; bracketedcontrolsrequired. Everycallstillnative/fresh; no resultcache. Nativealiasesbypassthispublicprovider.",
+        "limit": 128,
+        "reason": "explicit",
+        "site_count": 127,
+        "errors": 0,
+        "sampling": 2048,
+        "seconds": 68.98268150000001
+      },
+      "top_sites": [
+        {
+          "line": 43,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 42,
+          "samples": 623
+        },
+        {
+          "line": 34,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 33,
+          "samples": 470
+        },
+        {
+          "line": 60,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "group": "other",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 59,
+          "samples": 377
+        },
+        {
+          "line": 416,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_bioblaster.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 413,
+          "samples": 170
+        },
+        {
+          "line": 167,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 164,
+          "samples": 161
+        },
+        {
+          "line": 90,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+          "group": "other",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 83,
+          "samples": 157
+        },
+        {
+          "line": 33,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_separation.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 32,
+          "samples": 140
+        },
+        {
+          "line": 231,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 230,
+          "samples": 135
+        },
+        {
+          "line": 15,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 15,
+          "samples": 130
+        },
+        {
+          "line": 114,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 111,
+          "samples": 129
+        },
+        {
+          "line": 288,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 286,
+          "samples": 128
+        },
+        {
+          "line": 831,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 830,
+          "samples": 121
+        },
+        {
+          "line": 245,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/shared.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 240,
+          "samples": 111
+        },
+        {
+          "line": 241,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/shared.lua",
+          "group": "other",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 240,
+          "samples": 110
+        },
+        {
+          "line": 241,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/shared.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 240,
+          "samples": 109
+        }
+      ],
+      "retirement": {
+        "originals_cleared": true,
+        "passed": true,
+        "lease_absent": true
+      }
+    },
+    {
+      "arm": "arm03-profiled",
+      "directory": "/home/deck/deborah-benchmarks/validity-callers/bf05ad1a/observer-series-v2/arm03-profiled",
+      "metrics": {
+        "frames": 1434,
+        "seconds": 59.96551,
+        "fps": 23.913746418566273,
+        "median_ms": 36.491,
+        "p95_ms": 70.819,
+        "p99_ms": 90.374,
+        "max_ms": 376.076,
+        "one_percent_low_fps": 7.281949309865391,
+        "below_budget_seconds": 59.099830000000075,
+        "longest_below_budget_seconds": 24.051809999999982,
+        "below_budget_runs_ge2s": 5
+      },
+      "profile": {
+        "nextbot": {
+          "calls": 7609391,
+          "game_samples": 3715,
+          "samples": 3715
+        },
+        "overflow": 0,
+        "other": {
+          "calls": 3608260,
+          "game_samples": 1760,
+          "samples": 1761
+        },
+        "restored": true,
+        "scope": "Observed public Entity.IsValid call-site samples, selectedfirst visiblegame-sourceframe from levels2-6 via public numericdebug.getinfo underpcall. No hooks/jitAPI/locals/upvaluevalues/entityrefs/pointers captured. Deterministicsamplingcanalias and JIT/tailcalls/inlining mayomitcallerframes; notcompletecallgraph/exclusiveCPUorFPSproof. Counts/metadatawrapperaffectJIT; bracketedcontrolsrequired. Everycallstillnative/fresh; no resultcache. Nativealiasesbypassthispublicprovider.",
+        "limit": 128,
+        "reason": "explicit",
+        "site_count": 121,
+        "errors": 0,
+        "sampling": 2048,
+        "seconds": 69.0203757
+      },
+      "top_sites": [
+        {
+          "line": 43,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 42,
+          "samples": 635
+        },
+        {
+          "line": 34,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 33,
+          "samples": 484
+        },
+        {
+          "line": 60,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+          "group": "other",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 59,
+          "samples": 389
+        },
+        {
+          "line": 90,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+          "group": "other",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 83,
+          "samples": 164
+        },
+        {
+          "line": 167,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 164,
+          "samples": 164
+        },
+        {
+          "line": 114,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_deadcrab.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 111,
+          "samples": 159
+        },
+        {
+          "line": 416,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_bioblaster.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 413,
+          "samples": 159
+        },
+        {
+          "line": 15,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 15,
+          "samples": 135
+        },
+        {
+          "line": 231,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 230,
+          "samples": 133
+        },
+        {
+          "line": 288,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 286,
+          "samples": 132
+        },
+        {
+          "line": 33,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_separation.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 32,
+          "samples": 130
+        },
+        {
+          "line": 241,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/shared.lua",
+          "group": "other",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 240,
+          "samples": 125
+        },
+        {
+          "line": 33,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_separation.lua",
+          "group": "other",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 32,
+          "samples": 120
+        },
+        {
+          "line": 124,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+          "group": "nextbot",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 123,
+          "samples": 111
+        },
+        {
+          "line": 831,
+          "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
+          "group": "other",
+          "what": "Lua",
+          "game_frame": true,
+          "defined": 830,
+          "samples": 109
+        }
+      ],
+      "retirement": {
+        "originals_cleared": true,
+        "passed": true,
+        "lease_absent": true
+      }
+    },
+    {
+      "arm": "arm04-control",
+      "directory": "/home/deck/deborah-benchmarks/validity-callers/bf05ad1a/observer-series-v2/arm04-control",
+      "metrics": {
+        "frames": 1317,
+        "seconds": 59.914372,
+        "fps": 21.981370346333595,
+        "median_ms": 36.095,
+        "p95_ms": 81.729,
+        "p99_ms": 115.886,
+        "max_ms": 416.99,
+        "one_percent_low_fps": 6.184657983995872,
+        "below_budget_seconds": 58.224897000000006,
+        "longest_below_budget_seconds": 10.445637000000001,
+        "below_budget_runs_ge2s": 7
+      }
+    }
+  ],
+  "limitations": "Public Entity.IsValid only; one in2048 deterministic samples, first visible game source frame at public numericdebug.getinfo levels2-6 underpcall, capped128sites. Native aliases bypass; JIT/inlining/tailcalls omit callers, counts not exclusive CPU. Bracketed FPS ranges overlap; no causal benefit/zero observer overhead claim. All provider restores and independent retirement checks pass, owned games stopped. Both monitors observed ON throughout.",
+  "decision": "Repeated top callers include progression, status, player identity and hurt-pose. Lifetime binder already returns early unchanged; allocation hypothesis rejected by complete source. Frozen pose fields have two owned writes, Freeze/Clear. First focused candidate uses weak membership to skip ordinary hostile native checks while retaining registry traversal order, same-frame callbacks, active per-frame pose enforcement and current validity. No state/validity cache, cadence/content/settings change."
+}

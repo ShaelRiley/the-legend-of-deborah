@@ -1,0 +1,77 @@
+{
+  "status": "Address attribution UNAVAILABLE, no source optimization/gain. Goal SINGLEPLAYER40UNMET.",
+  "source": "2ea66fbf66ba9d57167943a1a9a5477bee7e3a07",
+  "failed_wrapper_attempt": "/home/deck/deborah-benchmarks/native-table-targets/2ea66fbf/observer-series-v1",
+  "raw": "/home/deck/deborah-benchmarks/native-table-targets/2ea66fbf/observer-series-v2",
+  "result": {
+    "status": "stopped-capability-unavailable",
+    "completed": [
+      {
+        "index": 1,
+        "variant": "control",
+        "exit_code": 0,
+        "directory": "/home/deck/deborah-benchmarks/native-table-targets/2ea66fbf/observer-series-v2/arm01-control",
+        "analysis": {
+          "mode": "uncapped",
+          "limiter_tolerance_ms": 0,
+          "active": {
+            "frames": 1381,
+            "seconds": 59.926487,
+            "fps": 23.04490166426742,
+            "median_ms": 36.711,
+            "p95_ms": 76.856,
+            "p99_ms": 98.147,
+            "max_ms": 401.762,
+            "one_percent_low_fps": 7.210859967159683,
+            "below_budget_seconds": 58.98760799999994,
+            "longest_below_budget_seconds": 11.047111000000001,
+            "below_budget_runs_ge2s": 7
+          },
+          "pacing_at_tolerated_budget": {
+            "frames": 1381,
+            "seconds": 59.926487,
+            "fps": 23.04490166426742,
+            "median_ms": 36.711,
+            "p95_ms": 76.856,
+            "p99_ms": 98.147,
+            "max_ms": 401.762,
+            "one_percent_low_fps": 7.210859967159683,
+            "below_budget_seconds": 58.98760799999994,
+            "longest_below_budget_seconds": 11.047111000000001,
+            "below_budget_runs_ge2s": 7
+          },
+          "capture_checks_passed": false,
+          "issues": [
+            "unrendered terminal interval exceeds spike budget or is unknown",
+            "average FPS below budget",
+            "p95 exceeds frame budget",
+            "p99 exceeds spike budget",
+            "continuous drop lasting at least two seconds"
+          ],
+          "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+        }
+      }
+    ],
+    "utc": "2026-10-23T18:01:50.952330+00:00",
+    "active": null,
+    "unit": "lod-deck-native-table-target-2-20261023",
+    "reason": "Public tostring table identifiers are obfuscated/noncanonical; no direct native-pointer association. Do not decode or bypass. One complete metadata-only control; arm2startup stopped before FPS/native samples. No register profiling arms completed."
+  },
+  "metadata": {
+    "server_tables": 879,
+    "client_tables": 280,
+    "server_actors": 57,
+    "limit_reached": false,
+    "fields_changed": false
+  },
+  "limitation": "Public tostring(table) produces obfuscated/noncanonical identifiers. No direct native register matching is possible from these strings. No decoding, formatter bypass, process memory read, disabled API restoration or native pointer reflection is attempted. Prepared offline association parser is NOT run, no table-identity attribution claimed. No native register-sampling arm completed.",
+  "retirement": {
+    "owned_games_stopped": true,
+    "no_live_instrumentation": true
+  },
+  "reference_inference": {
+    "scope": "Existing saved leaf IPs plus exact DLL first4assembly starts match unique97entry older BC offset table at file0x90430, baseRVA1000. Shared string lookup physical interval1e75..1f06contains285leafsamples; GGET/TGETVenter sharedbody too, so not285source-TGETS or Lua-function proof. Old reference is not exact GMod source/fork/PDB.",
+    "url": "https://raw.githubusercontent.com/LuaJIT/LuaJIT/71ff7ef8a7e0592dedb3527d4aacc68bf04af0bd/src/lj_bc.h"
+  },
+  "next": "Test namespace binding in measured movement/entry/status/roster services, preserving live child-service and lifecycle resolution. No cache of actor, profile, state, provider or result."
+}

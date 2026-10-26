@@ -1,0 +1,79 @@
+{
+	"scope": "Preparation-only publicmodelprecache observer. Records currentlevel/seed/build-ready/calltime; no entities or gameplaystate retained. Nativeprovider restoredbeforeFPS; no FPSinstrumentation. Max32assetcalls.",
+	"reason": "before FPS",
+	"rows": [
+		{
+			"level": 1,
+			"seed": 206007348,
+			"model": "models/Humans/Group01/male_06.mdl",
+			"milliseconds": 0.08739999999818338,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/Humans/Group01/male_07.mdl",
+			"milliseconds": 132.6696999999939,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/Humans/Group01/male_02.mdl",
+			"milliseconds": 124.77880000000141,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_junk/propane_tank001a.mdl",
+			"milliseconds": 23.9550999999949,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_c17/FurnitureShelf001a.mdl",
+			"milliseconds": 33.560699999995336,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_c17/concrete_barrier001a.mdl",
+			"milliseconds": 28.155900000001566,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_debris/wood_board04a.mdl",
+			"milliseconds": 23.310499999993795,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_debris/wood_board07a.mdl",
+			"milliseconds": 17.07660000000999,
+			"build_ready": false
+		},
+		{
+			"level": 14,
+			"seed": 1217158876,
+			"model": "models/props_debris/wood_board06a.mdl",
+			"milliseconds": 16.819400000002815,
+			"build_ready": false
+		},
+		{
+			"level": 20,
+			"seed": 1217159003,
+			"model": "models/Humans/Group01/male_04.mdl",
+			"milliseconds": 127.09159999999997,
+			"build_ready": false
+		}
+	],
+	"seconds": 23.215494199999995,
+	"passed": true,
+	"restored": true
+}

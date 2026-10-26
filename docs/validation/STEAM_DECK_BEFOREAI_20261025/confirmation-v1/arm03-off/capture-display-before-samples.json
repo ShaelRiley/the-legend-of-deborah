@@ -1,0 +1,19 @@
+[
+  {
+    "attempt": 0,
+    "text": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n",
+    "drm": {
+      "eDP-1": {
+        "status": "connected",
+        "enabled": "enabled",
+        "dpms": "On"
+      },
+      "DP-1": {
+        "status": "connected",
+        "enabled": "enabled",
+        "dpms": "On"
+      }
+    },
+    "monotonic": 106665.432226068
+  }
+]

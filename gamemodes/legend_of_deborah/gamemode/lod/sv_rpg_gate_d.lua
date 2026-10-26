@@ -36,8 +36,20 @@ local function runManager()
     return LOD.RunManager
 end
 
+local entityMeta = FindMetaTable and FindMetaTable("Entity")
+local nativeEntityTable = entityMeta and entityMeta.GetTable
+
 function AbilityRules:ProgressionState(actor)
     if not IsValid(actor) then return nil end
+    -- NextBots own their live progression in the instance Lua table. Borrow it
+    -- for this call only, avoiding another native kind query and field lookup.
+    -- Missing/inherited fields and unavailable native APIs retain the ordinary
+    -- authority below; validity and Player incarnation handling remain live.
+    if nativeEntityTable and type(actor) == "NextBot" then
+        local fields = nativeEntityTable(actor)
+        local profile = fields and fields.LODProgressionState
+        if profile ~= nil then return profile end
+    end
     if actor:IsPlayer() then
         local run = runManager()
         local ps = run and run.GetPlayerState and run:GetPlayerState(actor) or nil

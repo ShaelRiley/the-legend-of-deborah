@@ -1,0 +1,22 @@
+{
+	"last": {
+		"filename": "bench_aligned_last.json",
+		"sys_before": 158.9179152,
+		"boundary_sys": 158.9065325,
+		"sys_after": 158.9196697
+	},
+	"restored": true,
+	"frames": 1370,
+	"reason": "complete",
+	"scope": "First/last actualPreRender sample timestamps, withSysTime brackets around DATA writes. Hostusesfilemtime andbracketedrealtime-monotonic mapping toalignnative trace toactualframeintervals; exclude setup/warmup/teardown. One firstframe mark andone stopprovider, no per-AI wrappers. Same marker inoff/on controls.",
+	"created": 95.863919,
+	"first": {
+		"filename": "bench_aligned_first.json",
+		"sys_before": 98.9835979,
+		"boundary_sys": 98.9559886,
+		"sys_after": 98.9847654
+	},
+	"passed": true,
+	"planned_finish": 158.9110139,
+	"planned_start": 98.9110139
+}

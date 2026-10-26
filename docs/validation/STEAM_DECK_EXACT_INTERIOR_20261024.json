@@ -1,0 +1,754 @@
+{
+  "status": "REJECTED: source mean FPS -2.208%, p95/p99 worse. All six FAIL40; SP40 UNMET; five full SP/release ordinary/40cap UNVERIFIED.",
+  "parent": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+  "hypothesis": "Two navigation profiles repeat ExactCell~690k/~70s (~71ms/sinclusive). Decode fractional lattice coordinates once. With current declared canonical cell providers/config/keys/nativevectors and <2^20 intermediate magnitude, a point >1worldunit inside idealcellfaces is guaranteed inside nativefloat32centerbounds; skip redundant centerlookup. Exact fallback preserves all faces/unknown/mutated/customprovider inputs. No across-call membership/validity cache/physicalmargin/AI/content/cadence/settings change.",
+  "float_reasoning": "For offset magnitude<2^20, float32 constructor rounding <=2^-5; rounded offset+native origin sum magnitude<2^20 has final rounding <=2^-5. Two-stage center error <=1/16worldunit (conservative margin1). Lua double grid arithmetic at these bounded coordinates adds much less than margin. Native point components read freshly. Far coordinates, tinycells, unknown providers and within1unit of anyface use original exact center and bounds. This is an optimization certificate, not changed accepted volume.",
+  "native_prototype": {
+    "raw": "/home/deck/deborah-benchmarks/exact-interior-probe/e464ba7d/native-readonly-v1",
+    "report": {
+      "fast_parity": 3163,
+      "rows": [
+        {
+          "variant": "parent",
+          "milliseconds": 89.7389000000004,
+          "calls": 57000,
+          "index": 1
+        },
+        {
+          "variant": "candidate",
+          "milliseconds": 63.4490999999997,
+          "calls": 57000,
+          "index": 2
+        },
+        {
+          "variant": "candidate",
+          "milliseconds": 62.053499999990436,
+          "calls": 57000,
+          "index": 3
+        },
+        {
+          "variant": "parent",
+          "milliseconds": 89.55620000000408,
+          "calls": 57000,
+          "index": 4
+        },
+        {
+          "variant": "parent",
+          "milliseconds": 89.74030000000255,
+          "calls": 57000,
+          "index": 5
+        },
+        {
+          "variant": "candidate",
+          "milliseconds": 62.336599999994746,
+          "calls": 57000,
+          "index": 6
+        }
+      ],
+      "scope": "Private noninstalled interior proof prototype, no source gain. Current nativevector/canonical providers only; integer grid candidate certified at least1worldunit inside all idealcellfaces, center input/output magnitude<2^20 bounds nativefloat rounding farbelowmargin. Boundary/unknown/mutated/custom cases delegate original; real source needs explicit provider ownership proofs and mutable input regressions. Actual all671cells faceepsilon nativeparity, current57actors, syntheticmicro/JIT/order not FPS. No actors/config/providers mutated; no random/RNG calls.",
+      "actors": 57,
+      "cases": 29727,
+      "passed": true,
+      "method_unchanged": true
+    },
+    "mean_ms_per57000": {
+      "parent": 89.67846666666901,
+      "candidate": 62.61306666666163
+    },
+    "qualification": "Rawscope text says671cells but codecases count29727 includes57actorcases +43percell =>690actualcells. All current graphcells were iterated; record this correction without editing raw report. Synthetic flatloop/JIT/order and candidatecounter limit inference; no FPS gain. Candidate never installed/providers unchanged/ownedgameStop/bothON."
+  },
+  "source": "Canonical builder/navigator declare current lattice providers/config; generatordeclarespureCellKey. ExactCell validatescurrentproviders/config/key/nativefloor/inputs/ownedcellcoords, recomputeslivecoordinates everycall; no extra vector allocations. Existing center/cache/route APIs unchanged.",
+  "static": "ExistingB29spatial5145/nativequeries/directsources/coordinatescache/mutableproviders/weaklifetime/reload plusdispatch/door gates pass. New9900nativefloat oraclecases +callhookproof interioravoids centerlookup; custom coordinate/key/config/unknownprovider fallback pass. Exact120manifest/repeatinstall/syntax/diff pass. Lua54floatfixture not native acceptance. NewCI336gate not fullgreen claim.",
+  "frozen_gate": {
+    "sequence": [
+      "parent",
+      "candidate",
+      "candidate",
+      "parent",
+      "parent",
+      "candidate"
+    ],
+    "seconds_each": 60,
+    "scope": "Same frozen actual Deck Windows64/Proton10 D20lowercourt-v1 stress57roamers/1820models/seeds/Wizardresources/physicalinputs/settings/15WAC/bothdisplays ON always. Sourcehash/function/provider/canonicalmetadata/nativepointparity and HUD/renderer/resource/input/displaygates before/after. No observers/JIT/GC/affinitychanges.",
+    "decision": "Rejectnoise/correctness/pacingregression; unchangedconfirmationifpromising. AllfivefullSP3x180swarmed/ordinaryrelease/40capseparate remain."
+  },
+  "candidate": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+  "results": {
+    "rows": [
+      {
+        "variant": "parent",
+        "metrics": {
+          "frames": 1340,
+          "seconds": 59.971598,
+          "fps": 22.343910195622936,
+          "median_ms": 37.779,
+          "p95_ms": 80.465,
+          "p99_ms": 113.604,
+          "max_ms": 333.114,
+          "one_percent_low_fps": 6.423871841921361,
+          "below_budget_seconds": 58.16567899999998,
+          "longest_below_budget_seconds": 12.260069999999997,
+          "below_budget_runs_ge2s": 6
+        },
+        "raw": "/home/deck/deborah-benchmarks/exact-interior-source/366fc7e2/original-source-series-v2/arm01-parent",
+        "bench_exact_interior_before": {
+          "phase": "before",
+          "parity_cases": 29727,
+          "sha": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+          "mode": "parent",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": false,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 57,
+          "source_hashes": {
+            "builder": "95db5ef334ce36b39bd7ddb597a6999a54074fc0aa868cf852aac539ca33d0b5",
+            "navigator": "af06a0ccbf3b00860878ce254518660afac593d2c3323d7f023ea22e1cbca0a2",
+            "entry": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+            "generator": "af5ab9166444d184d84bfe0142ead5931e6fa97425308d92ac55852af3287c21"
+          }
+        },
+        "bench_exact_interior_after": {
+          "phase": "after",
+          "parity_cases": 29736,
+          "sha": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+          "mode": "parent",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": false,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 66,
+          "source_hashes": {
+            "builder": "95db5ef334ce36b39bd7ddb597a6999a54074fc0aa868cf852aac539ca33d0b5",
+            "navigator": "af06a0ccbf3b00860878ce254518660afac593d2c3323d7f023ea22e1cbca0a2",
+            "entry": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+            "generator": "af5ab9166444d184d84bfe0142ead5931e6fa97425308d92ac55852af3287c21"
+          }
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3495,
+            "builds": 291
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3495,
+            "builds": 291
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1358,
+          "seconds": 59.921364000000004,
+          "fps": 22.663035507669683,
+          "median_ms": 35.308,
+          "p95_ms": 86.727,
+          "p99_ms": 121.337,
+          "max_ms": 361.379,
+          "one_percent_low_fps": 6.3136694099560255,
+          "below_budget_seconds": 57.57523600000001,
+          "longest_below_budget_seconds": 9.202155999999995,
+          "below_budget_runs_ge2s": 7
+        },
+        "raw": "/home/deck/deborah-benchmarks/exact-interior-source/366fc7e2/original-source-series-v2/arm02-candidate",
+        "bench_exact_interior_before": {
+          "phase": "before",
+          "parity_cases": 29727,
+          "sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+          "mode": "candidate",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": true,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 57,
+          "source_hashes": {
+            "builder": "a26a078f5ef0aba33e081587a9839092eaf4d3565a105643af83c16f8437b29b",
+            "navigator": "eab3e6816fbd2169e8d368e621507ee614426042d31d28e1aa4c8dd6d1623c91",
+            "entry": "196c7ddb0e7618ac53e7b834ecd20d1eb02bc03e91d4ac816d4240b7ec20678d",
+            "generator": "f9a0cee7e33181bf928885230e6eceebd20618ec516654469f2b9b38702f3e79"
+          }
+        },
+        "bench_exact_interior_after": {
+          "phase": "after",
+          "parity_cases": 29736,
+          "sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+          "mode": "candidate",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": true,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 66,
+          "source_hashes": {
+            "builder": "a26a078f5ef0aba33e081587a9839092eaf4d3565a105643af83c16f8437b29b",
+            "navigator": "eab3e6816fbd2169e8d368e621507ee614426042d31d28e1aa4c8dd6d1623c91",
+            "entry": "196c7ddb0e7618ac53e7b834ecd20d1eb02bc03e91d4ac816d4240b7ec20678d",
+            "generator": "f9a0cee7e33181bf928885230e6eceebd20618ec516654469f2b9b38702f3e79"
+          }
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3608,
+            "builds": 306
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3608,
+            "builds": 306
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1308,
+          "seconds": 59.945461,
+          "fps": 21.819833865319676,
+          "median_ms": 36.044,
+          "p95_ms": 88.92,
+          "p99_ms": 121.276,
+          "max_ms": 346.41,
+          "one_percent_low_fps": 6.292477029087874,
+          "below_budget_seconds": 58.42397900000001,
+          "longest_below_budget_seconds": 10.594110999999995,
+          "below_budget_runs_ge2s": 6
+        },
+        "raw": "/home/deck/deborah-benchmarks/exact-interior-source/366fc7e2/original-source-series-v2/arm03-candidate",
+        "bench_exact_interior_before": {
+          "phase": "before",
+          "parity_cases": 29727,
+          "sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+          "mode": "candidate",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": true,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 57,
+          "source_hashes": {
+            "builder": "a26a078f5ef0aba33e081587a9839092eaf4d3565a105643af83c16f8437b29b",
+            "navigator": "eab3e6816fbd2169e8d368e621507ee614426042d31d28e1aa4c8dd6d1623c91",
+            "entry": "196c7ddb0e7618ac53e7b834ecd20d1eb02bc03e91d4ac816d4240b7ec20678d",
+            "generator": "f9a0cee7e33181bf928885230e6eceebd20618ec516654469f2b9b38702f3e79"
+          }
+        },
+        "bench_exact_interior_after": {
+          "phase": "after",
+          "parity_cases": 29736,
+          "sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+          "mode": "candidate",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": true,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 66,
+          "source_hashes": {
+            "builder": "a26a078f5ef0aba33e081587a9839092eaf4d3565a105643af83c16f8437b29b",
+            "navigator": "eab3e6816fbd2169e8d368e621507ee614426042d31d28e1aa4c8dd6d1623c91",
+            "entry": "196c7ddb0e7618ac53e7b834ecd20d1eb02bc03e91d4ac816d4240b7ec20678d",
+            "generator": "f9a0cee7e33181bf928885230e6eceebd20618ec516654469f2b9b38702f3e79"
+          }
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3483,
+            "builds": 367
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3483,
+            "builds": 367
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "parent",
+        "metrics": {
+          "frames": 1310,
+          "seconds": 59.98391,
+          "fps": 21.8391898760851,
+          "median_ms": 37.185,
+          "p95_ms": 80.736,
+          "p99_ms": 97.803,
+          "max_ms": 368.329,
+          "one_percent_low_fps": 6.723299257411597,
+          "below_budget_seconds": 58.798651,
+          "longest_below_budget_seconds": 12.438781000000002,
+          "below_budget_runs_ge2s": 7
+        },
+        "raw": "/home/deck/deborah-benchmarks/exact-interior-source/366fc7e2/original-source-series-v2/arm04-parent",
+        "bench_exact_interior_before": {
+          "phase": "before",
+          "parity_cases": 29727,
+          "sha": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+          "mode": "parent",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": false,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 57,
+          "source_hashes": {
+            "builder": "95db5ef334ce36b39bd7ddb597a6999a54074fc0aa868cf852aac539ca33d0b5",
+            "navigator": "af06a0ccbf3b00860878ce254518660afac593d2c3323d7f023ea22e1cbca0a2",
+            "entry": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+            "generator": "af5ab9166444d184d84bfe0142ead5931e6fa97425308d92ac55852af3287c21"
+          }
+        },
+        "bench_exact_interior_after": {
+          "phase": "after",
+          "parity_cases": 29736,
+          "sha": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+          "mode": "parent",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": false,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 66,
+          "source_hashes": {
+            "builder": "95db5ef334ce36b39bd7ddb597a6999a54074fc0aa868cf852aac539ca33d0b5",
+            "navigator": "af06a0ccbf3b00860878ce254518660afac593d2c3323d7f023ea22e1cbca0a2",
+            "entry": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+            "generator": "af5ab9166444d184d84bfe0142ead5931e6fa97425308d92ac55852af3287c21"
+          }
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3492,
+            "builds": 300
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3492,
+            "builds": 300
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "parent",
+        "metrics": {
+          "frames": 1503,
+          "seconds": 59.972627,
+          "fps": 25.06143344362754,
+          "median_ms": 33.162,
+          "p95_ms": 74.527,
+          "p99_ms": 108.749,
+          "max_ms": 350.195,
+          "one_percent_low_fps": 6.6385964679347484,
+          "below_budget_seconds": 58.416363,
+          "longest_below_budget_seconds": 12.019467999999991,
+          "below_budget_runs_ge2s": 9
+        },
+        "raw": "/home/deck/deborah-benchmarks/exact-interior-source/366fc7e2/original-source-series-v2/arm05-parent",
+        "bench_exact_interior_before": {
+          "phase": "before",
+          "parity_cases": 29727,
+          "sha": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+          "mode": "parent",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": false,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 57,
+          "source_hashes": {
+            "builder": "95db5ef334ce36b39bd7ddb597a6999a54074fc0aa868cf852aac539ca33d0b5",
+            "navigator": "af06a0ccbf3b00860878ce254518660afac593d2c3323d7f023ea22e1cbca0a2",
+            "entry": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+            "generator": "af5ab9166444d184d84bfe0142ead5931e6fa97425308d92ac55852af3287c21"
+          }
+        },
+        "bench_exact_interior_after": {
+          "phase": "after",
+          "parity_cases": 29736,
+          "sha": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+          "mode": "parent",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": false,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 66,
+          "source_hashes": {
+            "builder": "95db5ef334ce36b39bd7ddb597a6999a54074fc0aa868cf852aac539ca33d0b5",
+            "navigator": "af06a0ccbf3b00860878ce254518660afac593d2c3323d7f023ea22e1cbca0a2",
+            "entry": "b149079da8c5f19bda45cf5e15f2a72febd5cab195ed128ba5a84ff3e2182f26",
+            "generator": "af5ab9166444d184d84bfe0142ead5931e6fa97425308d92ac55852af3287c21"
+          }
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 4132,
+            "builds": 297
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 4132,
+            "builds": 297
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      },
+      {
+        "variant": "candidate",
+        "metrics": {
+          "frames": 1393,
+          "seconds": 59.958363,
+          "fps": 23.232789060635294,
+          "median_ms": 35.05,
+          "p95_ms": 80.808,
+          "p99_ms": 103.414,
+          "max_ms": 341.401,
+          "one_percent_low_fps": 7.112458639782928,
+          "below_budget_seconds": 58.50103699999999,
+          "longest_below_budget_seconds": 8.769801000000001,
+          "below_budget_runs_ge2s": 9
+        },
+        "raw": "/home/deck/deborah-benchmarks/exact-interior-source/366fc7e2/original-source-series-v2/arm06-candidate",
+        "bench_exact_interior_before": {
+          "phase": "before",
+          "parity_cases": 29727,
+          "sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+          "mode": "candidate",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": true,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 57,
+          "source_hashes": {
+            "builder": "a26a078f5ef0aba33e081587a9839092eaf4d3565a105643af83c16f8437b29b",
+            "navigator": "eab3e6816fbd2169e8d368e621507ee614426042d31d28e1aa4c8dd6d1623c91",
+            "entry": "196c7ddb0e7618ac53e7b834ecd20d1eb02bc03e91d4ac816d4240b7ec20678d",
+            "generator": "f9a0cee7e33181bf928885230e6eceebd20618ec516654469f2b9b38702f3e79"
+          }
+        },
+        "bench_exact_interior_after": {
+          "phase": "after",
+          "parity_cases": 29736,
+          "sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+          "mode": "candidate",
+          "scope": "Read-only actual fourfiles/sixloadedfunctions/canonicalprovider/config/key/nativefloor/isvector metadata, independent nativecenter oracle for allcurrentcell faces and epsilon +actualactorpositions. No providers/actors/config/state/JIThooks mutated; nativevectors allocated only at boundary. No sampling/counters during FPS. Full runtimeboss/ordinaryplay/capped acceptance remains separate.",
+          "canonical_declarations": true,
+          "profiler_absent": true,
+          "cells": 690,
+          "passed": true,
+          "hostiles": 66,
+          "source_hashes": {
+            "builder": "a26a078f5ef0aba33e081587a9839092eaf4d3565a105643af83c16f8437b29b",
+            "navigator": "eab3e6816fbd2169e8d368e621507ee614426042d31d28e1aa4c8dd6d1623c91",
+            "entry": "196c7ddb0e7618ac53e7b834ecd20d1eb02bc03e91d4ac816d4240b7ec20678d",
+            "generator": "f9a0cee7e33181bf928885230e6eceebd20618ec516654469f2b9b38702f3e79"
+          }
+        },
+        "bench_hud_raster_source_after": {
+          "phase": "after",
+          "slots": [
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            },
+            {
+              "width": 1024,
+              "height": 256,
+              "building": false
+            }
+          ],
+          "sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c",
+          "probe_owner_cleared": true,
+          "passed": true,
+          "cache_matches_lexical": true,
+          "scope": "Read-only actual source/function/line/cache-upvalue/pool/counter check. Public DrawLines never wrapped, no private prototype/profile/sampler. Whole game stop retires production RTs. Counters are not FPS proof.",
+          "public_provider_unchanged": true,
+          "delta": {
+            "fallbacks": 0,
+            "hits": 3680,
+            "builds": 277
+          },
+          "hud_line": 309,
+          "public_line": 63,
+          "counters": {
+            "fallbacks": 0,
+            "hits": 3680,
+            "builds": 277
+          },
+          "mode": "candidate",
+          "actual_sha256": "a47272dec7376683fb013aee11f4fa9269fe236b203b347a72eac4509274691c"
+        }
+      }
+    ],
+    "means": {
+      "parent": {
+        "fps": 23.081511171778526,
+        "median_ms": 36.042,
+        "p95_ms": 78.57600000000001,
+        "p99_ms": 106.71866666666666,
+        "longest_below_budget_seconds": 12.239439666666664
+      },
+      "candidate": {
+        "fps": 22.57188614454155,
+        "median_ms": 35.46733333333333,
+        "p95_ms": 85.485,
+        "p99_ms": 115.34233333333333,
+        "longest_below_budget_seconds": 9.522022666666663
+      }
+    },
+    "retirement": {
+      "all_owned_games_stopped": true,
+      "root_install_restored": true,
+      "root_sha": "366fc7e23576e47069cb52ef9b1480fd6acbe79c"
+    },
+    "excluded_preFPS_failure": {
+      "status": "FAILED before first timed capture; no FPSdata/replacement or source/settingschange",
+      "reason": "Private proof line16 incorrectly required isvector to be C, while production requires only callable isvector/currentnativevectors. Record exact failed script/console. Correct metadata contract and restart all6 in new outputgroup; do not salvage firstattempt."
+    },
+    "decision": "Restore allfourruntimefiles byte-exacte464ba7d. Keep useful independent9900float32boundary/customprovider/config/large/tinycell regressions, remove implementation-specific no-center-call assertion; CI336includesbehaviorgate. Native micro gain did not establish game improvement. All6fourfile/sixfunction/realpoint/nativevector/canonicalmetadata/HUD/renderer/resource/input/bothONchecks pass, allownedStop/rootinstallrestored. No cause inferred from JIT/provider branching."
+  }
+}

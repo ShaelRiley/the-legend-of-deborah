@@ -1,0 +1,75 @@
+{
+  "status": "PUBLIChost_thread_mode/host_threaded_soundUNAVAILABLEbothrealms; no settingapplied,noFPS.40FPSUNMET/all6fullscenariosUNVERIFIED",
+  "tested_source": "f61c0bc7bc943380c836824e9c41b15428ab8258",
+  "raw": "/home/deck/deborah-benchmarks/host-thread-mode/f61c0bc7/public-readonly-capability-run1",
+  "realms": {
+    "server": {
+      "scope": "Read-only allowlisted ConVars. No settings, Lua methods, AI, counters or gameplay changed; not FPS or threading-effect proof.",
+      "rows": {
+        "mat_queue_mode": {
+          "value": "2",
+          "help": "The queue/thread mode the material system should use: -1=default, 0=synchronous single thread, 2=queued multithreaded",
+          "flags": 128,
+          "available": true,
+          "default": "-1"
+        },
+        "host_thread_mode": {
+          "available": false
+        },
+        "gmod_mcore_test": {
+          "value": "1",
+          "help": "Toggle on experimental multicore rendering. If you find this, don't go around enabling it and then complaining about issues.",
+          "flags": 0,
+          "available": true,
+          "default": "0"
+        },
+        "cl_threaded_bone_setup": {
+          "value": "1",
+          "help": "Enable parallel processing of C_BaseAnimating::SetupBones()",
+          "flags": 8,
+          "available": true,
+          "default": "0"
+        },
+        "host_threaded_sound": {
+          "available": false
+        }
+      },
+      "realm": "server"
+    },
+    "client": {
+      "scope": "Read-only allowlisted ConVars. No settings, Lua methods, AI, counters or gameplay changed; not FPS or threading-effect proof.",
+      "rows": {
+        "mat_queue_mode": {
+          "value": "2",
+          "help": "The queue/thread mode the material system should use: -1=default, 0=synchronous single thread, 2=queued multithreaded",
+          "flags": 128,
+          "available": true,
+          "default": "-1"
+        },
+        "host_thread_mode": {
+          "available": false
+        },
+        "gmod_mcore_test": {
+          "value": "1",
+          "help": "Toggle on experimental multicore rendering. If you find this, don't go around enabling it and then complaining about issues.",
+          "flags": 0,
+          "available": true,
+          "default": "0"
+        },
+        "cl_threaded_bone_setup": {
+          "value": "1",
+          "help": "Enable parallel processing of C_BaseAnimating::SetupBones()",
+          "flags": 8,
+          "available": true,
+          "default": "0"
+        },
+        "host_threaded_sound": {
+          "available": false
+        }
+      },
+      "realm": "client"
+    }
+  },
+  "cleanup": "OwnedgameStop;bothmonitorsON1280x800@60/external1920x1080@75;nomediachanges.",
+  "next": "Investigatemeasuredrender/clientCPU withoutrevivingknownvisual-lossbatches. Checkactualdiagnosticoverlaysbeforeanyoverheadcomparison."
+}

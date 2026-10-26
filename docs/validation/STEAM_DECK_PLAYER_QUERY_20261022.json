@@ -1,0 +1,324 @@
+{
+  "status": "REJECTED;runtimeRunManagerandStagingrestoredexactlytoafff7087.TargetUNMET/sixfullgatesUNVERIFIED.",
+  "parent": "afff7087a7e814c2014775c613686110df36e461",
+  "device": "ActualLCDDeck/SteamOS3.8.28/Windows64Gmod25375506/Proton10.0-4b;1280x800internal60/external1080p75,BOTHONALWAYS;15WACautoGPU",
+  "observed_bottleneck": "EarlierCPUboundarymeasurementmain96.17%onecore; broadsharedqueryprofilepointsatRunManager.IsActivePlayer. Nativecounterconfirms3IdentityOf+1GetPlayerState percurrentdeployedquery.",
+  "prototype": {
+    "unguarded_raw": "/home/deck/deborah-benchmarks/player-query-cost/afff7087/native-query-probe-run1",
+    "unguarded_ms_per100k": {
+      "parent": [
+        150.8564,
+        148.6555,
+        149.3116
+      ],
+      "prototype": [
+        46.7724,
+        46.9517,
+        47.6382
+      ]
+    },
+    "guarded_raw": "/home/deck/deborah-benchmarks/player-query-cost/afff7087/native-guarded-probe-run1",
+    "guarded_ms_per100k": {
+      "parent": [
+        188.8515,
+        189.4386,
+        192.2192
+      ],
+      "prototype": [
+        78.7492,
+        80.5365,
+        79.4101
+      ]
+    },
+    "assertions_each": 1006,
+    "restored": true,
+    "scope": "PrivateprototypeONLYcurrentnormaldeployedHero pluscustomIdentity/GetPlayerState fallback. No wholeFPSgain or finalacceptance."
+  },
+  "change": "Within one IsActivePlayer call resolve live identity/slot/deployment once ONLY originalcapturedproviders/nativePlayerAPIs/ordinarytables. Capturedfunctionidentitymetadata only; no persisted playeridentity/state/profile cache. All customproviders/validity/SteamID/index/metatable/registry changes retain original callback path/order/results. Staging.IsDeployed and role rules unchanged.",
+  "gdd": {
+    "id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "tab": "06 \u2014 MULTIPLAYER, LIFECYCLE & UI",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "preserved": "4Hero+6Soldieractivecap;actual20srespawn;currentrole/life/deployment/identity/state/owner/sync;no GDD edits/tuning"
+  },
+  "regressions": [
+    "productionquery17cases78assertionsPASS; existingSharedEnemyAIWorkgateincludescontract",
+    "devIngressPASS",
+    "DungeonTransitioninventoryPASS",
+    "DamselStagingPASS",
+    "SoldierQueue196PASS",
+    "TimeManagementPASS",
+    "StagingEventSpawn/SQLitePASS",
+    "CryptoRuntime/SQLitePASS",
+    "syntax/diffPASS"
+  ],
+  "sourcewatch": "Same119total/115server/52client;bothchangedauthoritiesalreadywatched",
+  "next": "Profile native collision callback/broad-phase work before choosing another change. BothmonitorsONalways.",
+  "updated_utc": "2026-10-22T22:47:15.594340+00:00",
+  "native_source": {
+    "commit": "73bcd0c001f10152d09b70f6506056e9c26c4648",
+    "raw": "/home/deck/deborah-benchmarks/player-query-cost/73bcd0c0/native-source-probe-run2",
+    "assertions": 1007,
+    "all_native_default_guards": true,
+    "state_restored": true,
+    "parent_ms_per100k": [
+      155.6509,
+      155.1555,
+      158.4392
+    ],
+    "candidate_ms_per100k": [
+      55.7734,
+      55.4477,
+      58.1311
+    ],
+    "scope": "Actualinstalledsource vsdetachedexactaffparentwrapper. Synchronousslot/deployment/profile/same-seedState replacementvalueparity; originalsrestored. No debughook/providerreplacementduringtiming; notFPSacceptance.",
+    "failed_counter_probe": "run1retained: hookundercountsevenknownparent(2instead3)andcandidate0,soinvalidcounterdiagnostic; allhooks/state restore/gameStop. Do nottreatasactualoperationcounts orcorrectnessfailure."
+  },
+  "ci_parent": {
+    "commit": "afff7087",
+    "full": "325/334FAIL,same9namesANDall5filelineanchorsasf889;7newB28fixturefailurescleared",
+    "run": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/39861460964",
+    "comparison": "/home/deck/deborah-recovery/evidence/afff7087-ci/comparison.json",
+    "source_vr_audio": "PASS"
+  },
+  "source_comparison": {
+    "decision": "REJECT; restorebothruntimeauthoritiesexactlytoafff7087. Eachcandidateisslowerthanadjacentcontrols;nogameplaybenefit,allcapturesFAIL. NoCPUcauseorstatisticalsignificanceinferredfromthreepairs.",
+    "sequence": "P,C,C,P,P,C;all6complete,no replacement/death/focusloss",
+    "parent_mean_fps": 21.879736265294614,
+    "candidate_mean_fps": 21.157740646394252,
+    "arithmetic_difference_percent": -3.299836936542888,
+    "results": [
+      {
+        "arm": "01-parent",
+        "sha": "3ed7a07a8de124e882112a2ef17842835ecb90c6",
+        "metrics": {
+          "frames": 1316,
+          "seconds": 59.972388,
+          "fps": 21.943431700601952,
+          "median_ms": 37.693,
+          "p95_ms": 81.105,
+          "p99_ms": 106.31,
+          "max_ms": 354.023,
+          "one_percent_low_fps": 7.003750508397246,
+          "below_budget_seconds": 59.00221200000006,
+          "longest_below_budget_seconds": 25.588631000000007,
+          "below_budget_runs_ge2s": 3
+        },
+        "receipt": {
+          "reason": "external stop",
+          "duration": 60.406044006347656,
+          "node": 207
+        },
+        "source_verified": true,
+        "both_on": true,
+        "raw": "/home/deck/deborah-benchmarks/player-query-cost/f247d3a6/original-source-series/01-parent",
+        "runtime": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "focus": true,
+          "width": 1280,
+          "mcore": "1",
+          "height": 800,
+          "vsync": "0"
+        }
+      },
+      {
+        "arm": "02-candidate",
+        "sha": "f247d3a6641265f962cb753fadda687812262feb",
+        "metrics": {
+          "frames": 1282,
+          "seconds": 59.91518,
+          "fps": 21.396914771849136,
+          "median_ms": 38.794,
+          "p95_ms": 78.519,
+          "p99_ms": 109.315,
+          "max_ms": 450.35,
+          "one_percent_low_fps": 6.274379584520236,
+          "below_budget_seconds": 59.53478900000013,
+          "longest_below_budget_seconds": 42.30798100000008,
+          "below_budget_runs_ge2s": 3
+        },
+        "receipt": {
+          "reason": "external stop",
+          "duration": 60.43280792236328,
+          "node": 207
+        },
+        "source_verified": true,
+        "both_on": true,
+        "raw": "/home/deck/deborah-benchmarks/player-query-cost/f247d3a6/original-source-series/02-candidate",
+        "runtime": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "focus": true,
+          "width": 1280,
+          "mcore": "1",
+          "height": 800,
+          "vsync": "0"
+        }
+      },
+      {
+        "arm": "03-candidate",
+        "sha": "f247d3a6641265f962cb753fadda687812262feb",
+        "metrics": {
+          "frames": 1261,
+          "seconds": 59.916349000000004,
+          "fps": 21.046008661175264,
+          "median_ms": 37.31,
+          "p95_ms": 88.148,
+          "p99_ms": 124.592,
+          "max_ms": 369.039,
+          "one_percent_low_fps": 5.885138395819921,
+          "below_budget_seconds": 59.10879599999997,
+          "longest_below_budget_seconds": 19.671463999999983,
+          "below_budget_runs_ge2s": 6
+        },
+        "receipt": {
+          "reason": "external stop",
+          "duration": 61.43722152709961,
+          "node": 210
+        },
+        "source_verified": true,
+        "both_on": true,
+        "raw": "/home/deck/deborah-benchmarks/player-query-cost/f247d3a6/original-source-series/03-candidate",
+        "runtime": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "focus": true,
+          "width": 1280,
+          "mcore": "1",
+          "height": 800,
+          "vsync": "0"
+        }
+      },
+      {
+        "arm": "04-parent",
+        "sha": "3ed7a07a8de124e882112a2ef17842835ecb90c6",
+        "metrics": {
+          "frames": 1321,
+          "seconds": 59.977417,
+          "fps": 22.0249564932081,
+          "median_ms": 37.069,
+          "p95_ms": 83.111,
+          "p99_ms": 110.453,
+          "max_ms": 365.454,
+          "one_percent_low_fps": 6.661226664890339,
+          "below_budget_seconds": 59.267793999999945,
+          "longest_below_budget_seconds": 24.247536999999994,
+          "below_budget_runs_ge2s": 4
+        },
+        "receipt": {
+          "reason": "external stop",
+          "duration": 60.417110443115234,
+          "node": 207
+        },
+        "source_verified": true,
+        "both_on": true,
+        "raw": "/home/deck/deborah-benchmarks/player-query-cost/f247d3a6/original-source-series/04-parent",
+        "runtime": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "focus": true,
+          "width": 1280,
+          "mcore": "1",
+          "height": 800,
+          "vsync": "0"
+        }
+      },
+      {
+        "arm": "05-parent",
+        "sha": "3ed7a07a8de124e882112a2ef17842835ecb90c6",
+        "metrics": {
+          "frames": 1299,
+          "seconds": 59.942354,
+          "fps": 21.670820602073785,
+          "median_ms": 36.838,
+          "p95_ms": 85.275,
+          "p99_ms": 129.185,
+          "max_ms": 389.612,
+          "one_percent_low_fps": 5.632711669722052,
+          "below_budget_seconds": 59.289980000000035,
+          "longest_below_budget_seconds": 21.823023000000006,
+          "below_budget_runs_ge2s": 3
+        },
+        "receipt": {
+          "reason": "external stop",
+          "duration": 61.433067321777344,
+          "node": 210
+        },
+        "source_verified": true,
+        "both_on": true,
+        "raw": "/home/deck/deborah-benchmarks/player-query-cost/f247d3a6/original-source-series/05-parent",
+        "runtime": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "focus": true,
+          "width": 1280,
+          "mcore": "1",
+          "height": 800,
+          "vsync": "0"
+        }
+      },
+      {
+        "arm": "06-candidate",
+        "sha": "f247d3a6641265f962cb753fadda687812262feb",
+        "metrics": {
+          "frames": 1261,
+          "seconds": 59.961108,
+          "fps": 21.03029850615836,
+          "median_ms": 38.897,
+          "p95_ms": 84.586,
+          "p99_ms": 120.879,
+          "max_ms": 366.454,
+          "one_percent_low_fps": 5.942414348096576,
+          "below_budget_seconds": 58.82533900000004,
+          "longest_below_budget_seconds": 23.377991000000023,
+          "below_budget_runs_ge2s": 5
+        },
+        "receipt": {
+          "reason": "external stop",
+          "duration": 61.4417839050293,
+          "node": 211
+        },
+        "source_verified": true,
+        "both_on": true,
+        "raw": "/home/deck/deborah-benchmarks/player-query-cost/f247d3a6/original-source-series/06-candidate",
+        "runtime": {
+          "nofocus": "20",
+          "arch": "x64",
+          "fps": "300",
+          "queue": "2",
+          "bone": "1",
+          "os": "Windows",
+          "focus": true,
+          "width": 1280,
+          "mcore": "1",
+          "height": 800,
+          "vsync": "0"
+        }
+      }
+    ],
+    "scope": "MicroquerycostimprovesbutwholegameFPSdoesnot. BothmonitorsON/internal1280x80060/external1080p75;normalfrozenD20listenhost;3validshortcontroland3candidateiterationsarenotfinal180swarmedacceptance.",
+    "updated_utc": "2026-10-22T22:46:46.859875+00:00"
+  },
+  "retained": "Behavior-only15case/55assertionquerylifecycle/callbackcontracts inexistingSharedEnemyAIWorkgate. No playerqueryoptimization/functionidentityregistry remains."
+}

@@ -1,0 +1,464 @@
+{
+  "status": "No actionable removable mechanism found; existing aggregate nativeVProf approach has reached its current attribution limit. Retain gameplay source; no candidate/no observer-off source improvement. SP40 UNMET/full acceptance UNVERIFIED; PR7draft/mainunchanged.",
+  "tested_retained_sha": "26ccc4d06aff1f385e1e2743b048d5577435329f",
+  "gameplay_and_tools_equal": "fdd75bfc42d60ca15b11441a40489c64334cb9a7",
+  "runtime_equal": "4b68237f60175379c3f1f088e0d67993602b8b0c",
+  "new_experimental_sha": null,
+  "candidates_implemented": 0,
+  "budget": {
+    "resume_first_recorded_utc": "2026-10-25T23:57:20+00:00",
+    "steering_first_observed_utc": "2026-10-26T00:15:34+00:00",
+    "maximum_minutes_since_resume": 45,
+    "conservative_hard_cutoff_utc": "2026-10-26T00:40:00+00:00",
+    "clock_qualification": "First recorded resume is an upper bound on actual resume; cutoff is2min20s earlier than firstrecorded+45min. Steering does not reset clock. Prior CIclosure/wait time is included.",
+    "capture_series_stopped_utc": "2026-10-26T00:24:56+00:00",
+    "analysis_decision_utc": "2026-10-26T00:26:49+00:00",
+    "checkpoint_prepared_utc": "2026-10-26T00:30:10.498065+00:00",
+    "elapsed_minutes_since_first_recorded_resume": 32.841634416666665,
+    "additional_capture_series": 1,
+    "capture_count": 2,
+    "new_beforeai_or_child_probes": 0,
+    "new_calibration_cycles": 0,
+    "automatic_next_checkpoint": false
+  },
+  "question": "Does the previously identified~149\u2013150ms directserverGMprotected filesystemOpen peak recur during latercombat (15\u201359.5s), rather than merely appearing in whole60saggregate reports?",
+  "environment": {
+    "utc": "2026-10-25T23:18:22.665148+00:00",
+    "kernel": "7.2.7-valve2-2-neptune-72-g31504582a073",
+    "os_release": "NAME=\"SteamOS\"\nPRETTY_NAME=\"SteamOS\"\nVERSION_CODENAME=holo\nID=steamos\nID_LIKE=arch\nANSI_COLOR=\"1;35\"\nHOME_URL=\"https://www.steampowered.com/\"\nDOCUMENTATION_URL=\"https://support.steampowered.com/\"\nSUPPORT_URL=\"https://support.steampowered.com/\"\nBUG_REPORT_URL=\"https://support.steampowered.com/\"\nLOGO=steamos\nVARIANT_ID=steamdeck\nVERSION_ID=3.9.5\nBUILD_ID=20261023.100\nSTEAMOS_DEFAULT_UPDATE_BRANCH=stable\n",
+    "proton_version": "1785139158 proton-10.0-4b",
+    "gmod_buildid": "25375506",
+    "cpu_policy": {
+      "policy6": {
+        "scaling_governor": "powersave",
+        "energy_performance_preference": "balance_performance",
+        "scaling_min_freq": "1702569",
+        "scaling_max_freq": "3501250"
+      },
+      "policy4": {
+        "scaling_governor": "powersave",
+        "energy_performance_preference": "balance_performance",
+        "scaling_min_freq": "1702569",
+        "scaling_max_freq": "3501250"
+      },
+      "policy2": {
+        "scaling_governor": "powersave",
+        "energy_performance_preference": "balance_performance",
+        "scaling_min_freq": "1702569",
+        "scaling_max_freq": "3501250"
+      },
+      "policy0": {
+        "scaling_governor": "powersave",
+        "energy_performance_preference": "balance_performance",
+        "scaling_min_freq": "1702569",
+        "scaling_max_freq": "3501250"
+      },
+      "policy7": {
+        "scaling_governor": "powersave",
+        "energy_performance_preference": "balance_performance",
+        "scaling_min_freq": "1702569",
+        "scaling_max_freq": "3501250"
+      },
+      "policy5": {
+        "scaling_governor": "powersave",
+        "energy_performance_preference": "balance_performance",
+        "scaling_min_freq": "1702569",
+        "scaling_max_freq": "3501250"
+      },
+      "policy3": {
+        "scaling_governor": "powersave",
+        "energy_performance_preference": "balance_performance",
+        "scaling_min_freq": "1702569",
+        "scaling_max_freq": "3501250"
+      },
+      "policy1": {
+        "scaling_governor": "powersave",
+        "energy_performance_preference": "balance_performance",
+        "scaling_min_freq": "1702569",
+        "scaling_max_freq": "3501250"
+      }
+    },
+    "gpu": {
+      "/sys/class/drm/card0/device/power_dpm_force_performance_level": "auto"
+    },
+    "thermal": {
+      "amdgpu": {
+        "temp1_input": "62000",
+        "power1_cap": "15000000",
+        "power2_cap": "15000000"
+      },
+      "nvme": {
+        "temp1_input": "45850",
+        "temp2_input": "61850"
+      },
+      "BAT1": {},
+      "ACAD": {},
+      "k10temp": {
+        "temp1_input": "74250"
+      },
+      "steamdeck_hwmon": {
+        "temp1_input": "35000"
+      },
+      "acpitz": {
+        "temp1_input": "75000"
+      }
+    },
+    "power": {
+      "BAT1": {
+        "type": "Battery",
+        "status": "Not charging",
+        "capacity": "93"
+      },
+      "ACAD": {
+        "type": "Mains",
+        "online": "1"
+      }
+    }
+  },
+  "conditions": "SameactualLCDDeck/SP1humanlistenhost/gm_flatgrass/1280x800+external1920x1080/bothON/15WAC/Proton10.0-4b/GModWin64build25375506/SteamOS3.9.5kernel7.2.7; unchangedgraphics/population57initialhostiles/1820walls/legalWizard20resources/AIcadence/frozenphysicalD20phase1route/seeds. Iterationwarmup, not10minwarmedacceptance; no historicalCPU/GPUmean equivalence orsourcegain inferred. Softwarefixed, no installs/updates.",
+  "method": "Reuse existing nativeVProf path. Only change is delaying engine first boundary15s via existing clienttimer; engineprocessedon/off stamps inside actualrendered capture. Native reports generatedaftercapture; all hostpostprocessing afterbothownedgamesstopped. No LuaAIwrappers/sampling/symbolwork/newcalibration. Native averages retainownreportedglobalframesamples; matchingwhole-rendered-interval subset remainsseparate. First15sobserveroff does not makewhole60s an uninstrumentedsourcecomparison.",
+  "findings": {
+    "early_rendered_stalls": "Largestfullcapture frames311.530ms at+1.138s and339.969ms at+1.021s; bothoutside laternativeprofilewindows. These are temporal facts fromactualframeintervals, not proof ofWarden/resourceownership.",
+    "later_stalls": "Matchedlater renderedsubsets max204.815/140.516ms, FPS21.265/22.770, prolongedbelow40episodes11.721/10.475s. Persistentdeficitandlaterexpensiveframesremain.",
+    "filesystem_scope": "Exact directchild under serverGMprotectedcall: laterarm01 count16,total14.134ms,peak3.84ms; arm02node not reported. Historicalwholewindow directchildpeaks149.02\u2013150.28ms do not recur inthese2latewindows. Other filesystemscopes remain; no claim ofzeroI/O or no future recurrence. No resource/path/callsite orperframepeaktimestamps fromVProf.",
+    "GM_scope": "Later serverGMprotectedpeak46.53/20.86ms vs historicalwhole-window242.52\u2013250.11ms. Differentwindows/runs, so this does not prove when historicalnativepeaks occurred orassign them to newearlyrenderedstalls.",
+    "persistent_boundary": "ProtectedNextBotLua mean11.947/11.280ms per nativeglobalreportedframe, inclusivewithunprofilednativework, notexclusiveLuaCPU/renderedframecost. Scope remainsopaque; cannotidentifyremovableoperation.",
+    "source_check": "Staticwall nativeleafphase name isnot actionable evidence: prior plan already saysrendergroupchange doesnot bypassreferenceleaf; generatedgeometryopaque/invisiblecollisionkindSetNoDrawalready. No reopening orcandidate.",
+    "beforeai": "Closed;2.538\u20132.730ms/renderedframe remains qualifiedinclusivewallunderobserver, notproductionCPU/recoverablecost;~235000calls doesnot implyredundancy. No wrapper/alignment/child revisits."
+  },
+  "decision": "No implementation justified. The newseries separatesobservedearlyrenderedmaxima fromlaterdeficit, butneithernativeaggregatepeaks norrelevantsource identifies unnecessarywork withsafe removal. Do notrepeatthisaggregateVProf approach merely toconfirmexpensiveprotectedLua. Thisis an attributionlimit, not evidence that no economicalremedyexists or40FPSisimpossible.",
+  "observer_off_performance_change": null,
+  "retention": "No candidate, no parent/candidatecomparisons, no sourcegain claimed; all runtime/toolbytes retained. Old failedexperiments remainexcluded.",
+  "rows": [
+    {
+      "arm": "arm01-on",
+      "source": "26ccc4d06aff1f385e1e2743b048d5577435329f",
+      "native_start_seconds_after_first_frame": 15.068473099999991,
+      "native_stop_seconds_after_first_frame": 59.547729000000004,
+      "native_window_seconds": 44.47925590000001,
+      "native_reported_global_frame_samples": 946,
+      "engine_frame_calls": 945,
+      "matching_rendered_subset": {
+        "frames": 945,
+        "seconds": 44.439212,
+        "fps": 21.265003528865453,
+        "median_ms": 38.366,
+        "p95_ms": 84.113,
+        "p99_ms": 141.054,
+        "one_percent_low_fps": 5.970527090072566,
+        "max_ms": 204.815,
+        "below40_seconds": 43.96695499999997,
+        "longest_below40_seconds": 11.72119900000001
+      },
+      "full_capture_mixed_observer": {
+        "frames": 1302,
+        "seconds": 59.993635999999995,
+        "fps": 21.702301890820554,
+        "median_ms": 38.026,
+        "p95_ms": 81.966,
+        "p99_ms": 128.919,
+        "max_ms": 311.53,
+        "one_percent_low_fps": 5.782655585446378,
+        "below_budget_seconds": 58.64402600000003,
+        "longest_below_budget_seconds": 11.721198999999999,
+        "below_budget_runs_ge2s": 7
+      },
+      "largest_rendered_frames": [
+        {
+          "start_seconds": 1.1379169999999996,
+          "end_seconds": 1.4494469999999997,
+          "frame_ms": 311.53
+        },
+        {
+          "start_seconds": 48.596285999999985,
+          "end_seconds": 48.80110099999999,
+          "frame_ms": 204.815
+        },
+        {
+          "start_seconds": 47.63953699999999,
+          "end_seconds": 47.83566599999999,
+          "frame_ms": 196.129
+        },
+        {
+          "start_seconds": 48.40660399999999,
+          "end_seconds": 48.596285999999985,
+          "frame_ms": 189.682
+        },
+        {
+          "start_seconds": 47.45141999999999,
+          "end_seconds": 47.63953699999999,
+          "frame_ms": 188.117
+        },
+        {
+          "start_seconds": 48.233789999999985,
+          "end_seconds": 48.40660399999999,
+          "frame_ms": 172.814
+        },
+        {
+          "start_seconds": 1.4494469999999997,
+          "end_seconds": 1.6195999999999997,
+          "frame_ms": 170.153
+        },
+        {
+          "start_seconds": 47.15814999999999,
+          "end_seconds": 47.308392999999995,
+          "frame_ms": 150.243
+        },
+        {
+          "start_seconds": 47.010431999999994,
+          "end_seconds": 47.15814999999999,
+          "frame_ms": 147.718
+        },
+        {
+          "start_seconds": 47.308392999999995,
+          "end_seconds": 47.45141999999999,
+          "frame_ms": 143.027
+        }
+      ],
+      "native_root": {
+        "name": "CEngine::Frame",
+        "inclusive_ms": 44190.144,
+        "self_ms": 577.2,
+        "per_frame_ms": 46.713,
+        "self_per_frame_ms": 0.61,
+        "count": 945,
+        "peak_ms": 211.37,
+        "path": "CEngine::Frame"
+      },
+      "server_GM_protected": {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 3476.78,
+        "self_ms": 3287.59,
+        "per_frame_ms": 3.675,
+        "self_per_frame_ms": 3.48,
+        "count": 40715,
+        "peak_ms": 46.53,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CLuaGamemode::Call > CLuaInterface::CallFunctionProtected"
+      },
+      "direct_server_GM_protected_filesystem_open": {
+        "name": "CBaseFileSystem::Open",
+        "inclusive_ms": 14.134,
+        "self_ms": 14.13,
+        "per_frame_ms": 0.015,
+        "self_per_frame_ms": 0.01,
+        "count": 16,
+        "peak_ms": 3.84,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CLuaGamemode::Call > CLuaInterface::CallFunctionProtected > CBaseFileSystem::Open"
+      },
+      "nextbot_protected": {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 11302.153,
+        "self_ms": 11230.13,
+        "per_frame_ms": 11.947,
+        "self_per_frame_ms": 11.87,
+        "count": 112148,
+        "peak_ms": 71.02,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CBaseEntity::PhysicsDispatchThink > NextBotCombatCharacter::DoThink > INextBot::Update > LuaBotBehaviour > CLuaInterface::CallFunctionProtected"
+      },
+      "all_acceptance_checks_passed": false,
+      "acceptance_issues": [
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "integrity": {
+        "actual_capture_source": {
+          "verified": true,
+          "checked": 52,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "lua_errors_start_end": [
+          0,
+          0
+        ],
+        "window_restored": true,
+        "native_VR_idle": true
+      }
+    },
+    {
+      "arm": "arm02-on",
+      "source": "26ccc4d06aff1f385e1e2743b048d5577435329f",
+      "native_start_seconds_after_first_frame": 15.078230199999993,
+      "native_stop_seconds_after_first_frame": 59.54331060000001,
+      "native_window_seconds": 44.46508040000002,
+      "native_reported_global_frame_samples": 1012,
+      "engine_frame_calls": 1011,
+      "matching_rendered_subset": {
+        "frames": 1011,
+        "seconds": 44.400222,
+        "fps": 22.770156419488174,
+        "median_ms": 36.072,
+        "p95_ms": 76.012,
+        "p99_ms": 97.864,
+        "one_percent_low_fps": 8.751586225003281,
+        "max_ms": 140.516,
+        "below40_seconds": 44.04614300000004,
+        "longest_below40_seconds": 10.475260999999998
+      },
+      "full_capture_mixed_observer": {
+        "frames": 1344,
+        "seconds": 59.92868,
+        "fps": 22.42665782059608,
+        "median_ms": 36.417,
+        "p95_ms": 77.243,
+        "p99_ms": 104.139,
+        "max_ms": 339.969,
+        "one_percent_low_fps": 7.030032297976958,
+        "below_budget_seconds": 58.96767699999999,
+        "longest_below_budget_seconds": 10.475261000000003,
+        "below_budget_runs_ge2s": 7
+      },
+      "largest_rendered_frames": [
+        {
+          "start_seconds": 1.020812,
+          "end_seconds": 1.360781,
+          "frame_ms": 339.969
+        },
+        {
+          "start_seconds": 1.360781,
+          "end_seconds": 1.565001,
+          "frame_ms": 204.22
+        },
+        {
+          "start_seconds": 57.75873800000001,
+          "end_seconds": 57.899254000000006,
+          "frame_ms": 140.516
+        },
+        {
+          "start_seconds": 58.02858400000001,
+          "end_seconds": 58.16460700000001,
+          "frame_ms": 136.023
+        },
+        {
+          "start_seconds": 3.5772009999999996,
+          "end_seconds": 3.708169,
+          "frame_ms": 130.968
+        },
+        {
+          "start_seconds": 57.899254000000006,
+          "end_seconds": 58.02858400000001,
+          "frame_ms": 129.33
+        },
+        {
+          "start_seconds": 3.449016,
+          "end_seconds": 3.5772009999999996,
+          "frame_ms": 128.185
+        },
+        {
+          "start_seconds": 1.565001,
+          "end_seconds": 1.689399,
+          "frame_ms": 124.398
+        },
+        {
+          "start_seconds": 58.16460700000001,
+          "end_seconds": 58.28605100000001,
+          "frame_ms": 121.444
+        },
+        {
+          "start_seconds": 57.64552300000001,
+          "end_seconds": 57.75873800000001,
+          "frame_ms": 113.215
+        }
+      ],
+      "native_root": {
+        "name": "CEngine::Frame",
+        "inclusive_ms": 44161.407,
+        "self_ms": 617.36,
+        "per_frame_ms": 43.638,
+        "self_per_frame_ms": 0.61,
+        "count": 1011,
+        "peak_ms": 142.7,
+        "path": "CEngine::Frame"
+      },
+      "server_GM_protected": {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 3279.307,
+        "self_ms": 3211.34,
+        "per_frame_ms": 3.24,
+        "self_per_frame_ms": 3.17,
+        "count": 40739,
+        "peak_ms": 20.86,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CLuaGamemode::Call > CLuaInterface::CallFunctionProtected"
+      },
+      "direct_server_GM_protected_filesystem_open": null,
+      "nextbot_protected": {
+        "name": "CLuaInterface::CallFunctionProtected",
+        "inclusive_ms": 11415.121,
+        "self_ms": 11338.58,
+        "per_frame_ms": 11.28,
+        "self_per_frame_ms": 11.2,
+        "count": 112452,
+        "peak_ms": 45.94,
+        "path": "CEngine::Frame > _Host_RunFrame_Server > CBaseEntity::PhysicsDispatchThink > NextBotCombatCharacter::DoThink > INextBot::Update > LuaBotBehaviour > CLuaInterface::CallFunctionProtected"
+      },
+      "all_acceptance_checks_passed": false,
+      "acceptance_issues": [
+        "unrendered terminal interval exceeds spike budget or is unknown",
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "integrity": {
+        "actual_capture_source": {
+          "verified": true,
+          "checked": 52,
+          "mismatches": 0,
+          "missing": 0
+        },
+        "lua_errors_start_end": [
+          0,
+          0
+        ],
+        "window_restored": true,
+        "native_VR_idle": true
+      }
+    }
+  ],
+  "restoration": {
+    "utc": "2026-10-26T00:30:10.498065+00:00",
+    "runtime_hashes_verified": 120,
+    "source_and_tools_equal_retained": true,
+    "private_controller_restored_byte_exact": true,
+    "new_late_DATA_script_removed": true,
+    "owned_games_profiler_processes_stopped": true,
+    "both_displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on",
+    "temporary_helper_syntax": "luac PASS; actualruntimeboundary/restoregates PASS"
+  },
+  "CI": {
+    "tested26ccc4d": {
+      "head": "26ccc4d06aff1f385e1e2743b048d5577435329f",
+      "run_id": 40244337464,
+      "job_id": 121322619490,
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40244337464",
+      "completed_utc": "2026-10-25T23:31:57Z",
+      "reviewed_utc": "2026-10-25 23:59:25 UTC",
+      "passed": 327,
+      "total": 336,
+      "failures": [
+        "65/336 Bestiary B29 Bilateral Combat Seams",
+        "110/336 Active Event Catalog, Bribe Removal & Quiz Placement",
+        "111/336 Minigame Shell & Equipment UI Restrictions",
+        "144/336 Client Geometry Full-Update Recovery",
+        "152/336 Shared Native DamageInfo Lifetime",
+        "155/336 Shotgun Native Bullet Aggregation",
+        "277/336 Feat: rebalance_20261002",
+        "303/336 Retired Cross Feats & Shared Dodge",
+        "304/336 Live-GDD Feat Release Gate"
+      ],
+      "same_as_retained": true,
+      "new_failures": [],
+      "removed_failures": [],
+      "source_changed": 0,
+      "full_matrix_green": false,
+      "diagnostic_status": "No new benchmark or source work; closes CI that was pending at original53.1minute checkpoint."
+    },
+    "publication_commit": "Docs/evidenceonly; actualnewworkflowstatus recordedinPR atdelivery, notassumedgreen. No broad unchangedlocalmatrix rerun."
+  },
+  "acceptance": "AllnewautomaticacceptanceanalysesFAIL; preserve rawbudget/prolongeddrop/unrenderedterminalflags. Fullfivewarmed3x180s/ordinaryrelease/fullbossprogression/40capverificationUNVERIFIED. Multiplayer/futurefeatures/Workshop/VPS deferred.",
+  "recommended_next_decision": "Close this coarse nativeVProf approach and retain the measured source. Require an identified new attribution capability or concrete source-level algorithmic mechanism before funding more equivalent aggregate captures; no automatically commissioned tranche.",
+  "raw_original_root": "/home/deck/deborah-benchmarks/low-overhead-native/26ccc4d0/native-engine-late-phase-v1",
+  "artifacts": "docs/validation/STEAM_DECK_VPROF_PHASE_20261026"
+}

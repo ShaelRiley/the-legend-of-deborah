@@ -1,0 +1,175 @@
+Attempting to load Chromium...
+Adding Filesystem Addon 'addons/gm_crab_invaders'
+Adding Filesystem Addon 'addons/the-legend-of-deborah-dev'
+Adding Filesystem Addon 'addons/vrmod-x64'
+Mounted 0 of 1 workshop addons!
+No Kinect SDK
+Changing gamemode to The Legend of Deborah (legend_of_deborah)
+Addons have changes - remounting
+Mounted 1 of 1 workshop addons!
+LOD_BENCH_BRIDGE_READY	server
+[VRMod] Subsystem initialized: API
+[VRMod] Subsystem initialized: UTILS
+[VRMod] Subsystem initialized: CORE
+[VRMod] Subsystem initialized: NETWORK
+[VRMod] Subsystem initialized: INPUT
+[VRMod] Subsystem initialized: PLAYER
+[VRMod] Subsystem initialized: PHYSICS
+[VRMod] Subsystem initialized: PICKUP
+[VRMod] Subsystem initialized: COMBAT
+[VRMod] Subsystem initialized: UI
+[LOD:WORKSHOP] marked canonical Workshop item 3791535712 for client download
+[LOD:RPG-E] custom AR2 rate-of-fire transaction bridge armed; revision=gate_e_ar2_one_ammo_per_burst_v2
+[LOD:WATCHER-TEST] deterministic post-console cycle test armed
+[LOD:WATCHER-UNIFIED] v2 complete-routine controller armed
+[LOD:WATCHER-HANDOFF] scan escape + concealment integrity armed
+[LOD:WATCHER-UNIFIED] pre-spawn router + Initialize final-method binding armed
+Making workshop gamemode available for client download
+Using map cycle file cfg/mapcycle.txt.
+[LOD VR] Server runtime ready: vrmod-x64 2bddbfb96dac7820bcf8e0bcb90a6d27fc3a0dcc, 5 channels, 11 content files
+[LOD:RPG-E] custom AR2 BeginAR2Burst wrapped with one-ammo burst authority
+[LOD:RPG-E] custom AR2 FireAR2Round wrapped with committed-ammo preservation
+[LOD:RPG] integrated Checkpoint C validation PASS — forms=6 contents=6 arcaneCap=0.50
+[LOD] Procedural midnight sky applied: seed=1 layers=3 starScale=0.956 starFade=0.910 starSpeed=0.0032
+[LOD:WATCHER-UNIFIED] startup status next-tick ready=false
+[LOD:RPG-LOG] writing data/legend_of_deborah/rpg_test_log.txt
+
+My Garry's Mod Server
+Gamemode: [L] The Legend of Deborah (legend_of_deborah)
+Map: gm_flatgrass
+Players: Singleplayer
+Build: 2026.09.17 (10175)
+Server Number: 1
+76561198025505071
+
+Warning: WorldTwoTextureBlend found on a non-displacement surface (material: gm_construct/flatgrass). This wastes perf for no benefit.
+Clientside Lua startup!
+LOD_BENCH_BRIDGE_READY	client
+[VRMod] Subsystem initialized: API
+[VRMod] Subsystem initialized: UTILS
+[VRMod] Subsystem initialized: CORE
+[VRMod] Subsystem initialized: NETWORK
+[VRMod] Subsystem initialized: INPUT
+[VRMod] Subsystem initialized: PLAYER
+[VRMod] Subsystem initialized: PHYSICS
+[VRMod] Subsystem initialized: PICKUP
+[VRMod] Subsystem initialized: COMBAT
+[VRMod] Subsystem initialized: UI
+Reloaded Control: VoiceNotify
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+[LOD:BOOTSTRAP] campaign initialization start reason=PlayerInitialSpawn attempt=1
+[LOD] Level-0 anchor source=map-spawn-world-trace floorZ=-12287.97 originZ=-12271.97 spawnpoints=56
+[LOD:CRATE-FLOOR] style=continuous-concrete tile=512 grates=0 maxPerFloor=1 collision=unchanged
+[LOD] Wall visuals published: logicalSegments=895 modelInstances=1790 compressedBytes=1539
+[LOD:GEOMETRY-AUDIT] valid=true checked=1031 wallBoxes=590 collisionMismatch=0 visualMismatch=0
+[LOD:VERTICAL-AUDIT] valid=true edges=7 checked=7 stairBoxes=168/168 errors=0
+[LOD:M3-DENSE] dense developer encounter plan enabled: encounters=18 spacing=2 budgets=2.0x
+[LOD:RPG-ABILITIES] Starting abilities: raw total 77 >= 74; STR 4d6[3+5+5+3] drop lowest = 13; DEX 4d6[1+2+3+4] drop lowest = 9; CON 4d6[6+3+4+3] drop lowest = 13; INT 4d6[6+2+6+5] drop lowest = 17; WIS 4d6[2+4+3+3] drop lowest = 10; CHA 4d6[6+4+2+5] drop lowest = 15; DEX 9 - 2d2[1+2] = 6; WIS 10 - 1d3[1] = 9; STR 13 - 1d3[2] = 11; final total 71. No post-weakness reroll.
+[LOD] Level 1 ready. campaign=654759232 levelSeed=206007348 layoutAttempt=7 cells=633 entities=1226 vertical=3 mazeAttempt=4 gen+progression=0.502s build=2.536s total=3.039s boss-assets=0.000s
+[LOD:STAGING] canonical native room pos=(-704.0 0.0 -12766.0) yaw=90.0 spanForward=895.9 spanRight=575.9 sourceSpawn=info_player_start
+[LOD:BOOTSTRAP] recovery complete seed=654759232 buildReady=true recoveries=1
+[LOD:WANDER] spawned #1290 floor=1 archetype=soldier cell=1:12:0 reason=initial
+[LOD:WANDER] spawned #1325 floor=1 archetype=shambler cell=3:10:0 reason=initial
+[LOD:WANDER] spawned #1326 floor=1 archetype=watcher cell=6:18:0 reason=initial
+[LOD:WANDER] spawned #1327 floor=1 archetype=seeker cell=4:18:0 reason=initial
+[LOD:WANDER] spawned #1328 floor=1 archetype=pavise cell=4:17:0 reason=initial
+[LOD:WANDER] spawned #1329 floor=1 archetype=runner cell=5:19:0 reason=initial
+[LOD:WANDER] spawned #1330 floor=1 archetype=harrier cell=5:18:0 reason=initial
+[LOD:WANDER] spawned #1331 floor=1 archetype=flamer cell=15:7:0 reason=initial
+[LOD:WANDER] spawned #1332 floor=1 archetype=afterburst cell=14:10:0 reason=initial
+[LOD:WANDER] spawned #1333 floor=1 archetype=accumulator cell=14:7:0 reason=initial
+[LOD:WANDER] spawned #1334 floor=1 archetype=redliner cell=14:6:0 reason=initial
+[LOD:WANDER] spawned #1335 floor=1 archetype=deadcrab cell=15:9:0 reason=initial
+[LOD:WANDER] spawned #1336 floor=1 archetype=runner cell=14:9:0 reason=initial
+[LOD:WANDER] spawned #1337 floor=1 archetype=bioblaster cell=13:8:0 reason=initial
+[LOD:WANDER] spawned #1338 floor=1 archetype=shambler cell=13:7:0 reason=initial
+[LOD:WANDER] spawned #1339 floor=1 archetype=runner cell=6:9:0 reason=initial
+[LOD:WANDER] spawned #1340 floor=1 archetype=bioblaster cell=5:7:0 reason=initial
+[LOD:WANDER] spawned #1341 floor=1 archetype=soldier cell=5:8:0 reason=initial
+[LOD:WANDER] spawned #1343 floor=1 archetype=deadcrab cell=6:11:0 reason=initial
+[LOD:WANDER] spawned #1344 floor=1 archetype=bioblaster cell=6:10:0 reason=initial
+[LOD:WANDER] spawned #1345 floor=2 archetype=seeker cell=6:20:1 reason=initial
+[LOD:WANDER] spawned #1346 floor=2 archetype=runner cell=12:7:1 reason=initial
+[LOD:WANDER] spawned #1347 floor=2 archetype=bioblaster cell=7:19:1 reason=initial
+[LOD:WANDER] spawned #1348 floor=2 archetype=pincer cell=2:20:1 reason=initial
+[LOD:WANDER] spawned #1349 floor=2 archetype=runner cell=3:20:1 reason=initial
+[LOD:WANDER] spawned #1350 floor=2 archetype=razor cell=5:19:1 reason=initial
+[LOD:WANDER] spawned #1351 floor=2 archetype=redliner cell=6:19:1 reason=initial
+[LOD:WANDER] spawned #1352 floor=2 archetype=flamer cell=5:20:1 reason=initial
+[LOD:WANDER] spawned #1353 floor=2 archetype=deadcrab cell=1:18:1 reason=initial
+[LOD:WANDER] spawned #1354 floor=2 archetype=repulsor cell=3:19:1 reason=initial
+[LOD:WANDER] spawned #1355 floor=2 archetype=deadcrab cell=6:18:1 reason=initial
+[LOD:WANDER] spawned #1356 floor=2 archetype=watcher cell=3:18:1 reason=initial
+[LOD:WANDER] spawned #1357 floor=2 archetype=shambler cell=4:21:1 reason=initial
+[LOD:WANDER] spawned #1358 floor=2 archetype=bioblaster cell=2:18:1 reason=initial
+[LOD:WANDER] spawned #1359 floor=2 archetype=listener cell=4:18:1 reason=initial
+[LOD:WANDER] spawned #1360 floor=2 archetype=shambler cell=4:15:1 reason=initial
+[LOD:WANDER] spawned #1361 floor=2 archetype=deadcrab cell=3:17:1 reason=initial
+[LOD:WANDER] spawned #1362 floor=2 archetype=runner cell=12:9:1 reason=initial
+[LOD:WANDER] spawned #1363 floor=2 archetype=deadcrab cell=5:15:1 reason=initial
+[LOD:WANDER] spawned #1364 floor=2 archetype=runner cell=4:17:1 reason=initial
+[LOD:WANDER] spawned #1365 floor=3 archetype=runner cell=5:7:2 reason=initial
+[LOD:WANDER] spawned #1366 floor=3 archetype=seeker cell=6:10:2 reason=initial
+[LOD:WANDER] spawned #1367 floor=3 archetype=flamer cell=8:7:2 reason=initial
+[LOD:WANDER] spawned #1368 floor=3 archetype=listener cell=8:9:2 reason=initial
+[LOD:WANDER] spawned #1369 floor=3 archetype=harrier cell=5:8:2 reason=initial
+[LOD:WANDER] spawned #1370 floor=3 archetype=waylayer cell=6:9:2 reason=initial
+[LOD:WANDER] spawned #1371 floor=3 archetype=fencer cell=7:7:2 reason=initial
+[LOD:WANDER] spawned #1372 floor=3 archetype=watcher cell=8:8:2 reason=initial
+[LOD:WANDER] spawned #1373 floor=3 archetype=shambler cell=6:7:2 reason=initial
+[LOD:WANDER] spawned #1374 floor=3 archetype=deadcrab cell=5:9:2 reason=initial
+[LOD:WANDER] spawned #1375 floor=3 archetype=accumulator cell=6:11:2 reason=initial
+[LOD:WANDER] spawned #1376 floor=3 archetype=bioblaster cell=7:8:2 reason=initial
+[LOD:WANDER] spawned #1377 floor=3 archetype=runner cell=9:7:2 reason=initial
+[LOD:WANDER] spawned #1378 floor=3 archetype=soldier cell=10:5:2 reason=initial
+[LOD:WANDER] spawned #1380 floor=3 archetype=deadcrab cell=9:4:2 reason=initial
+[LOD:WANDER] spawned #1381 floor=3 archetype=shambler cell=6:5:2 reason=initial
+[LOD:WANDER] spawned #1382 floor=3 archetype=bioblaster cell=7:5:2 reason=initial
+[LOD:WANDER] spawned #1383 floor=3 archetype=soldier cell=6:4:2 reason=initial
+[LOD:WANDER] spawned #1385 floor=3 archetype=runner cell=5:3:2 reason=initial
+[LOD:WANDER] spawned #1386 floor=3 archetype=bioblaster cell=8:6:2 reason=initial
+[LOD:WANDER] initialized floors=3 target=60
+NextBot tickrate changed from 0 (0.000ms) to 1 (0.015ms)
+[LOD:TOPOLOGY] client identity build=1 epoch=1 level=1 seed=236920976 layoutAttempt=7 mazeAttempt=4
+DUNGEON HERMIT: It's dangerous to go alone. Take this.
+Press P to choose your Class and Level-1 Feat, take your weapon, then use the blue portal.
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Couldn't find/load font 'Trebuchet MS', falling back to 'Tahoma'..
+Compact freed 311296 bytes
+[LOD] Procedural midnight sky applied: seed=206007348 layers=3 starScale=0.870 starFade=0.980 starSpeed=0.0038
+Redownloading all lightmaps
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/v_pistol/v_pistol_sheet)
+material lod_weaponsurface_2263936921 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/v_pistol/v_pistol_sheet)
+material lod_weaponsurface_536460835 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+Requesting texture value from var "$bumpmap" which is not a texture value (material: models/weapons/w_pistol/pistol)
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/w_pistol/pistol)
+material lod_weaponsurface_1111889832 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+Requesting texture value from var "$bumpmap" which is not a texture value (material: models/weapons/w_pistol/pistol)
+Requesting texture value from var "$envmapmask" which is not a texture value (material: models/weapons/w_pistol/pistol)
+material lod_weaponsurface_3679405586 has a normal map and an envmapmask.  Must use $normalmapalphaenvmapmask.
+
+[LOD:WATCHER-UNIFIED] startup status one-second ready=true
+[LOD BUILD_IDENTITY] build=generator-jit-20260917-01 realm=server install=8b2661ad92f3caf4bb6763304f747587cc03dbf7 clean  missing=none architecture=x64 branch=unknown engine=2026.09.17 lua_errors=0 lua_kb=53078 entities=1387 meshes=0 wall_models=0 loot_entities=0 jit_version=LuaJIT 2.1.0-beta3 equipment_generation=interpreter-generator damsels=damsels-20261012-lore feedback_audio=feedback-20260919-01
+[LOD BUILD_IDENTITY] build=generator-jit-20260917-01 realm=client install=8b2661ad92f3caf4bb6763304f747587cc03dbf7 clean  missing=none architecture=x64 branch=unknown engine=2026.09.17 lua_errors=0 lua_kb=38186 entities=1455 meshes=1 wall_models=49 loot_entities=0 jit_version=LuaJIT 2.1.0-beta3 equipment_generation=interpreter-generator damsels=damsels-20261012-lore feedback_audio=feedback-20260919-01
+LOD_BENCH_ACK	client	1793028436419237324	true	
+[LOD:CRATE-SUMMARY] {"grateStyle":"solid-collision-steel-grating","sampler":"missing","candidateSamplerValid":true,"gate":{"loaded":false,"stockBodies":0,"model":"models/props_lab/blastdoor001c.mdl","fallbackBodies":2,"fallbackMaterial":"models/props_c17/FurnitureMetal001a"},"floorStyle":"continuous-concrete","meshCache":1,"tint":{"r":4,"b":209,"a":255,"g":89},"normal":"models/props_wasteland/cargo_container01_normal","materialError":true,"brand":{"safeWidth":240,"draws":8,"geometryBlocked":38,"safeHeight":78,"branded":694,"material":"legend_of_deborah/container_brands/container_brand_233.png","renderMilliseconds":0.6757999999962294,"cap":694,"shader":"UnlitGeneric","renderer":"source-front-face-20260924","estimatedTextureMiB":2.6666666666666665,"brandID":233,"candidates":37,"company":"National Consignment Freight","observations":1323,"containers":1736,"margin":0.94,"maxDraws":64,"skipped":0,"shaderSlots":1,"loadedTextures":1,"culled":29,"materialOK":true,"coverage":1149,"admitted":37},"floor":"legend_of_deborah/crate/concrete","floorFallback":false,"clientFrameMilliseconds":24.688800796866417,"hull":"legend_of_deborah/crate/hull_c2","override":"","stockSlots":["models/props_wasteland/cargo_container01","models/props_wasteland/cargo_container02","models/props_wasteland/cargo_container03"],"hullRepair":"c3-repair-native-retest-pending","grates":0,"candidateFallback":false,"model":"models/props_wasteland/cargo_container01.mdl","shader":"missing","seed":236920976,"candidateEnabled":true}
+[LOD:POPULATION] {"server_runtime":{"architecture":"x64","engine":"2026.09.17","human_players":1,"max_players":1,"os":"Windows","jit_version":"LuaJIT 2.1.0-beta3","time_scale":1,"convars":{"nb_stop":"0","ai_disabled":"0","sv_lan":"0","net_usesocketsforloopback":"0","host_timescale":"1.0","sv_cheats":"1","sv_hibernate_think":"0","nb_update_frequency":".1","nb_update_framelimit":"15"},"singleplayer":true,"tick_interval":0.014999999664723873,"dedicated":false},"seed":1463751064,"gates":[false,false,false,false],"developerDense":true,"revision":"b28","entry":{"ready":true,"eventSerial":0,"version":"b29-entry-safety","stats":{"admissionDenied":0,"movementDenied":0,"statusDenied":0,"damageDenied":0,"correctedIngress":0}},"mazeAttempt":4,"source":{"installLabel":"8b2661ad92f3caf4bb6763304f747587cc03dbf7 clean ","verified":true,"checked":116,"mismatches":0,"missing":0},"layoutAttempt":7,"theme":"hunting","plannedBodies":46,"aliveWanderers":60,"level":1,"developerMode":true,"campaign":654759232,"layoutSeed":236920976,"aliveBodies":60,"reason":"built","console_detail_omitted":true,"ready":true,"frozen":false,"seconds":11.009999753907323,"ceiling":96,"observer":"b29-entry-safety"}

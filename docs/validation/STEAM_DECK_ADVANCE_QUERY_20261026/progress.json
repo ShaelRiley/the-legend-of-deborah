@@ -1,0 +1,198 @@
+{
+  "status": "error",
+  "completed": [
+    {
+      "index": 1,
+      "variant": "parent",
+      "tested": "fcdf6f037c51ccbabc120a1b88e6c7b0e937cf08",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/advance-query-source/2a3485c5/original-source-series/arm01-parent",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1356,
+          "seconds": 59.960425,
+          "fps": 22.614916421956647,
+          "median_ms": 34.762,
+          "p95_ms": 82.979,
+          "p99_ms": 108.02,
+          "max_ms": 325.084,
+          "one_percent_low_fps": 7.170599313568772,
+          "below_budget_seconds": 58.16542700000005,
+          "longest_below_budget_seconds": 9.079869000000002,
+          "below_budget_runs_ge2s": 6
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1356,
+          "seconds": 59.960425,
+          "fps": 22.614916421956647,
+          "median_ms": 34.762,
+          "p95_ms": 82.979,
+          "p99_ms": 108.02,
+          "max_ms": 325.084,
+          "one_percent_low_fps": 7.170599313568772,
+          "below_budget_seconds": 58.16542700000005,
+          "longest_below_budget_seconds": 9.079869000000002,
+          "below_budget_runs_ge2s": 6
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    },
+    {
+      "index": 2,
+      "variant": "candidate",
+      "tested": "2a3485c5ce517e8a9150694d09854a1db47229a2",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/advance-query-source/2a3485c5/original-source-series/arm02-candidate",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1369,
+          "seconds": 59.969551,
+          "fps": 22.828251623894932,
+          "median_ms": 36.345,
+          "p95_ms": 80.693,
+          "p99_ms": 135.031,
+          "max_ms": 324.132,
+          "one_percent_low_fps": 5.943599486303188,
+          "below_budget_seconds": 58.27663399999989,
+          "longest_below_budget_seconds": 9.112239000000002,
+          "below_budget_runs_ge2s": 7
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1369,
+          "seconds": 59.969551,
+          "fps": 22.828251623894932,
+          "median_ms": 36.345,
+          "p95_ms": 80.693,
+          "p99_ms": 135.031,
+          "max_ms": 324.132,
+          "one_percent_low_fps": 5.943599486303188,
+          "below_budget_seconds": 58.27663399999989,
+          "longest_below_budget_seconds": 9.112239000000002,
+          "below_budget_runs_ge2s": 7
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    },
+    {
+      "index": 3,
+      "variant": "candidate",
+      "tested": "2a3485c5ce517e8a9150694d09854a1db47229a2",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/advance-query-source/2a3485c5/original-source-series/arm03-candidate",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1411,
+          "seconds": 59.981703,
+          "fps": 23.52384026175449,
+          "median_ms": 35.146,
+          "p95_ms": 76.353,
+          "p99_ms": 115.601,
+          "max_ms": 313.325,
+          "one_percent_low_fps": 6.3857395367529115,
+          "below_budget_seconds": 58.802958999999966,
+          "longest_below_budget_seconds": 11.960595000000005,
+          "below_budget_runs_ge2s": 8
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1411,
+          "seconds": 59.981703,
+          "fps": 23.52384026175449,
+          "median_ms": 35.146,
+          "p95_ms": 76.353,
+          "p99_ms": 115.601,
+          "max_ms": 313.325,
+          "one_percent_low_fps": 6.3857395367529115,
+          "below_budget_seconds": 58.802958999999966,
+          "longest_below_budget_seconds": 11.960595000000005,
+          "below_budget_runs_ge2s": 8
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    },
+    {
+      "index": 4,
+      "variant": "parent",
+      "tested": "fcdf6f037c51ccbabc120a1b88e6c7b0e937cf08",
+      "exit_code": 0,
+      "directory": "/home/deck/deborah-benchmarks/advance-query-source/2a3485c5/original-source-series/arm04-parent",
+      "analysis": {
+        "mode": "uncapped",
+        "limiter_tolerance_ms": 0,
+        "active": {
+          "frames": 1357,
+          "seconds": 59.934987,
+          "fps": 22.641199538426527,
+          "median_ms": 36.589,
+          "p95_ms": 78.119,
+          "p99_ms": 105.541,
+          "max_ms": 320.594,
+          "one_percent_low_fps": 7.271560045686173,
+          "below_budget_seconds": 58.29275400000002,
+          "longest_below_budget_seconds": 9.065849000000002,
+          "below_budget_runs_ge2s": 7
+        },
+        "pacing_at_tolerated_budget": {
+          "frames": 1357,
+          "seconds": 59.934987,
+          "fps": 22.641199538426527,
+          "median_ms": 36.589,
+          "p95_ms": 78.119,
+          "p99_ms": 105.541,
+          "max_ms": 320.594,
+          "one_percent_low_fps": 7.271560045686173,
+          "below_budget_seconds": 58.29275400000002,
+          "longest_below_budget_seconds": 9.065849000000002,
+          "below_budget_runs_ge2s": 7
+        },
+        "capture_checks_passed": false,
+        "issues": [
+          "unrendered terminal interval exceeds spike budget or is unknown",
+          "average FPS below budget",
+          "p95 exceeds frame budget",
+          "p99 exceeds spike budget",
+          "continuous drop lasting at least two seconds"
+        ],
+        "scope": "One capture only. Independently verify actual device/runtime, external limiter, exact build, warmup, frozen scenario, normal workload, regression observations and three repetitions of every required scenario. No hardware or whole-task acceptance is inferred."
+      }
+    },
+    {
+      "index": 5,
+      "variant": "parent",
+      "tested": "fcdf6f037c51ccbabc120a1b88e6c7b0e937cf08",
+      "exit_code": 1,
+      "directory": "/home/deck/deborah-benchmarks/advance-query-source/2a3485c5/original-source-series/arm05-parent"
+    }
+  ],
+  "active": "arm05-parent",
+  "unit": "lod-deck-advance-query-5-20261026",
+  "utc": "2026-10-26T04:05:11.335019+00:00",
+  "error": "('Failedarm; preserve/no replacement', {'index': 5, 'variant': 'parent', 'tested': 'fcdf6f037c51ccbabc120a1b88e6c7b0e937cf08', 'exit_code': 1, 'directory': '/home/deck/deborah-benchmarks/advance-query-source/2a3485c5/original-source-series/arm05-parent'})"
+}

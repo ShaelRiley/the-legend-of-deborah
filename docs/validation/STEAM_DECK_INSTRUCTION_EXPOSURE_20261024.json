@@ -1,0 +1,940 @@
+{
+  "status": "Diagnostic only, no ordinaryCPU/FPS or optimizationclaim",
+  "source": "e464ba7dba96e0228619ee7a3bbffa39f41a435a",
+  "earlier_failure": "Old50k/60s exposure caused1.07FPS; capturecontroller failed before90s lease/profile save. No proof disabledAPI. Kept raw interpreted-lua-d20/1ce30e75/server-instruction60-run1.",
+  "rows": [
+    {
+      "raw": "/home/deck/deborah-benchmarks/instruction-short/e464ba7d/native-readonly-v1",
+      "report": {
+        "game_samples": 20,
+        "overflow": 0,
+        "rows": [
+          {
+            "line": 89,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+            "defined": 83
+          },
+          {
+            "line": 53,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+            "defined": 42
+          },
+          {
+            "line": 90,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+            "defined": 83
+          },
+          {
+            "line": 831,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
+            "defined": 830
+          },
+          {
+            "line": 30,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_animation.lua",
+            "defined": 28
+          },
+          {
+            "line": 272,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 271
+          },
+          {
+            "line": 298,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 286
+          },
+          {
+            "line": 291,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 286
+          },
+          {
+            "line": 484,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 459
+          },
+          {
+            "line": 143,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_sixth_sense_feat.lua",
+            "defined": 143
+          },
+          {
+            "line": 521,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 506
+          },
+          {
+            "line": 337,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 332
+          },
+          {
+            "line": 335,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 332
+          },
+          {
+            "line": 20,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_visibility_safety.lua",
+            "defined": 11
+          },
+          {
+            "line": 94,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 88
+          },
+          {
+            "line": 292,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_combat_audio.lua",
+            "defined": 283
+          },
+          {
+            "line": 78,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua",
+            "defined": 72
+          },
+          {
+            "line": 33,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_separation.lua",
+            "defined": 32
+          },
+          {
+            "line": 36,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+            "defined": 35
+          }
+        ],
+        "passed": true,
+        "restored": true,
+        "scope": "Three-second public count-hook interpreted instruction exposure only. Original public debug hook must be absent; owned hook removed before serialization, timer and SysTime sample deadline, no functions/entityrefs/locals/pointers retained. Count-hook VM/JIT perturbation can be severe; native C/compiled paths underrepresented. Not wall CPU/callcount, ordinary gameplay FPS, or acceptance; no production functions/settings/JIT APIs changed.",
+        "reason": "sample SysTime deadline",
+        "owned_hook": true,
+        "sampling": 1000000,
+        "samples": 20,
+        "callback_body_seconds": 0.00043330000001162716,
+        "seconds": 3.081649900000002,
+        "errors": 0
+      },
+      "retirement": {
+        "hook_absent": true,
+        "scope": "Independent public gethook and lease inspection after diagnostic. All owned processes still retired by controller.",
+        "passed": true,
+        "lease_absent": true
+      }
+    },
+    {
+      "raw": "/home/deck/deborah-benchmarks/instruction-short/e464ba7d/native-readonly-50k-v2",
+      "report": {
+        "game_samples": 397,
+        "overflow": 127,
+        "rows": [
+          {
+            "line": 89,
+            "samples": 13,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+            "defined": 83
+          },
+          {
+            "line": 48,
+            "samples": 11,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+            "defined": 42
+          },
+          {
+            "line": 831,
+            "samples": 8,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
+            "defined": 830
+          },
+          {
+            "line": 95,
+            "samples": 7,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 88
+          },
+          {
+            "line": 153,
+            "samples": 7,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+            "defined": 152
+          },
+          {
+            "line": 154,
+            "samples": 7,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+            "defined": 152
+          },
+          {
+            "line": 43,
+            "samples": 7,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+            "defined": 42
+          },
+          {
+            "line": 90,
+            "samples": 6,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_human_soldier_progression.lua",
+            "defined": 83
+          },
+          {
+            "line": 272,
+            "samples": 5,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 271
+          },
+          {
+            "line": 73,
+            "samples": 5,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 72
+          },
+          {
+            "line": 79,
+            "samples": 4,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 72
+          },
+          {
+            "line": 100,
+            "samples": 4,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 88
+          },
+          {
+            "line": 290,
+            "samples": 4,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 286
+          },
+          {
+            "line": 64,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua",
+            "defined": 53
+          },
+          {
+            "line": 44,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_killer_instinct_feat.lua",
+            "defined": 43
+          },
+          {
+            "line": 34,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 33
+          },
+          {
+            "line": 20,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_device_motion_safety.lua",
+            "defined": 19
+          },
+          {
+            "line": 132,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua",
+            "defined": 120
+          },
+          {
+            "line": 339,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 332
+          },
+          {
+            "line": 48,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua",
+            "defined": 36
+          },
+          {
+            "line": 94,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 88
+          },
+          {
+            "line": 20,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_visibility_safety.lua",
+            "defined": 11
+          },
+          {
+            "line": 16,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 16
+          },
+          {
+            "line": 32,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_animation.lua",
+            "defined": 28
+          },
+          {
+            "line": 281,
+            "samples": 3,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 276
+          },
+          {
+            "line": 35,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 33
+          },
+          {
+            "line": 527,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 506
+          },
+          {
+            "line": 478,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua",
+            "defined": 477
+          },
+          {
+            "line": 13,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 13
+          },
+          {
+            "line": 290,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 288
+          },
+          {
+            "line": 242,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/shared.lua",
+            "defined": 240
+          },
+          {
+            "line": 44,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua",
+            "defined": 36
+          },
+          {
+            "line": 61,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+            "defined": 59
+          },
+          {
+            "line": 46,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua",
+            "defined": 44
+          },
+          {
+            "line": 21,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_equipment_stomp.lua",
+            "defined": 14
+          },
+          {
+            "line": 49,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+            "defined": 42
+          },
+          {
+            "line": 296,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 286
+          },
+          {
+            "line": 117,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_animation.lua",
+            "defined": 113
+          },
+          {
+            "line": 93,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 88
+          },
+          {
+            "line": 145,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua",
+            "defined": 113
+          },
+          {
+            "line": 232,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 230
+          },
+          {
+            "line": 220,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 218
+          },
+          {
+            "line": 45,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua",
+            "defined": 36
+          },
+          {
+            "line": 42,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua",
+            "defined": 36
+          },
+          {
+            "line": 416,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_bioblaster.lua",
+            "defined": 413
+          },
+          {
+            "line": 93,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua",
+            "defined": 92
+          },
+          {
+            "line": 221,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 218
+          },
+          {
+            "line": 167,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_hurt_pose.lua",
+            "defined": 164
+          },
+          {
+            "line": 110,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
+            "defined": 107
+          },
+          {
+            "line": 900,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 898
+          },
+          {
+            "line": 298,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 286
+          },
+          {
+            "line": 83,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua",
+            "defined": 80
+          },
+          {
+            "line": 53,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+            "defined": 42
+          },
+          {
+            "line": 74,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 72
+          },
+          {
+            "line": 112,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 106
+          },
+          {
+            "line": 131,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 126
+          },
+          {
+            "line": 519,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 506
+          },
+          {
+            "line": 46,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua",
+            "defined": 36
+          },
+          {
+            "line": 241,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/shared.lua",
+            "defined": 240
+          },
+          {
+            "line": 899,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 898
+          },
+          {
+            "line": 102,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 88
+          },
+          {
+            "line": 103,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 88
+          },
+          {
+            "line": 76,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua",
+            "defined": 72
+          },
+          {
+            "line": 43,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua",
+            "defined": 36
+          },
+          {
+            "line": 125,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua",
+            "defined": 113
+          },
+          {
+            "line": 111,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 106
+          },
+          {
+            "line": 342,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 336
+          },
+          {
+            "line": 291,
+            "samples": 2,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 286
+          },
+          {
+            "line": 514,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 506
+          },
+          {
+            "line": 121,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_personality_aura_feats.lua",
+            "defined": 115
+          },
+          {
+            "line": 114,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_roster.lua",
+            "defined": 114
+          },
+          {
+            "line": 335,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 323
+          },
+          {
+            "line": 83,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 72
+          },
+          {
+            "line": 853,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua",
+            "defined": 847
+          },
+          {
+            "line": 338,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 336
+          },
+          {
+            "line": 122,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+            "defined": 121
+          },
+          {
+            "line": 34,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua",
+            "defined": 11
+          },
+          {
+            "line": 614,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua",
+            "defined": 606
+          },
+          {
+            "line": 280,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 194
+          },
+          {
+            "line": 221,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hector.lua",
+            "defined": 220
+          },
+          {
+            "line": 289,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 286
+          },
+          {
+            "line": 231,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 223
+          },
+          {
+            "line": 40,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sh_equipment.lua",
+            "defined": 38
+          },
+          {
+            "line": 22,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hector.lua",
+            "defined": 21
+          },
+          {
+            "line": 62,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_navigator.lua",
+            "defined": 53
+          },
+          {
+            "line": 521,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 506
+          },
+          {
+            "line": 131,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua",
+            "defined": 120
+          },
+          {
+            "line": 56,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+            "defined": 42
+          },
+          {
+            "line": 337,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 336
+          },
+          {
+            "line": 75,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_warden_arena.lua",
+            "defined": 72
+          },
+          {
+            "line": 460,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 459
+          },
+          {
+            "line": 234,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 194
+          },
+          {
+            "line": 61,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 50
+          },
+          {
+            "line": 106,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_magic_progression.lua",
+            "defined": 100
+          },
+          {
+            "line": 93,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua",
+            "defined": 92
+          },
+          {
+            "line": 461,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 459
+          },
+          {
+            "line": 124,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_animation.lua",
+            "defined": 113
+          },
+          {
+            "line": 295,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 286
+          },
+          {
+            "line": 335,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 332
+          },
+          {
+            "line": 334,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 323
+          },
+          {
+            "line": 417,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_bioblaster.lua",
+            "defined": 413
+          },
+          {
+            "line": 37,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua",
+            "defined": 36
+          },
+          {
+            "line": 221,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 194
+          },
+          {
+            "line": 7,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_faction_manager.lua",
+            "defined": 6
+          },
+          {
+            "line": 631,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_event_director.lua",
+            "defined": 629
+          },
+          {
+            "line": 268,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/entities/entities/lod_hostile/init.lua",
+            "defined": 267
+          },
+          {
+            "line": 122,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_melee.lua",
+            "defined": 113
+          },
+          {
+            "line": 280,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_multiplayer_hardening.lua",
+            "defined": 279
+          },
+          {
+            "line": 285,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_combat_audio.lua",
+            "defined": 283
+          },
+          {
+            "line": 47,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_maze_builder.lua",
+            "defined": 36
+          },
+          {
+            "line": 31,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_phase_zero_runtime_optimization.lua",
+            "defined": 30
+          },
+          {
+            "line": 473,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 459
+          },
+          {
+            "line": 339,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 323
+          },
+          {
+            "line": 563,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_wandering_director.lua",
+            "defined": 533
+          },
+          {
+            "line": 273,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 271
+          },
+          {
+            "line": 645,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_event_director.lua",
+            "defined": 637
+          },
+          {
+            "line": 337,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_status_elements.lua",
+            "defined": 332
+          },
+          {
+            "line": 143,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_checkpoint_d_sixth_sense_feat.lua",
+            "defined": 143
+          },
+          {
+            "line": 51,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+            "defined": 42
+          },
+          {
+            "line": 501,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_entry_safety.lua",
+            "defined": 496
+          },
+          {
+            "line": 147,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_update.lua",
+            "defined": 146
+          },
+          {
+            "line": 40,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua",
+            "defined": 39
+          },
+          {
+            "line": 277,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 276
+          },
+          {
+            "line": 33,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_separation.lua",
+            "defined": 32
+          },
+          {
+            "line": 288,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_enemy_variance.lua",
+            "defined": 286
+          },
+          {
+            "line": 416,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 336
+          },
+          {
+            "line": 340,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_hostile_motion_v2.lua",
+            "defined": 336
+          },
+          {
+            "line": 415,
+            "samples": 1,
+            "source": "@addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_bioblaster.lua",
+            "defined": 413
+          }
+        ],
+        "passed": true,
+        "restored": true,
+        "scope": "Three-second public count-hook interpreted instruction exposure only. Original public debug hook must be absent; owned hook removed before serialization, timer and SysTime sample deadline, no functions/entityrefs/locals/pointers retained. Count-hook VM/JIT perturbation can be severe; native C/compiled paths underrepresented. Not wall CPU/callcount, ordinary gameplay FPS, or acceptance; no production functions/settings/JIT APIs changed.",
+        "reason": "sample SysTime deadline",
+        "owned_hook": true,
+        "sampling": 50000,
+        "samples": 409,
+        "callback_body_seconds": 0.009178599999941639,
+        "seconds": 3.0076467000000093,
+        "errors": 0
+      },
+      "retirement": {
+        "hook_absent": true,
+        "scope": "Independent public gethook and lease inspection after diagnostic. All owned processes still retired by controller.",
+        "passed": true,
+        "lease_absent": true
+      }
+    }
+  ],
+  "limits": "Public count hook can severely perturb VM/JIT; compiled/native paths underrepresented; not ordinaryCPUtime/callcount/wholeLua graph. Three-second SysTime/timer/ownership stop and independentgethook/lease inspection plusownedStop/bothON pass. First1mcount20samples toofew; finer50k409samples/397game/128linecap127overflow incompletebiasedranking. No sourcegain from exposure; use targeted directtiming for next bottleneck. No disabledAPI restoration/JITcalls/processmemory/actors/functionsretained."
+}

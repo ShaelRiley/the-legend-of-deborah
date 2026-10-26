@@ -1,0 +1,6 @@
+{
+	"scope": "Single120s authorized observation lease: developer0 during gameplay; private server bridge retains developer1 access gate. Post recorded before restoring setup cvar. No recurringobserver/file polling during FPS.",
+	"developer_restored": true,
+	"passed": true,
+	"seconds": 120.01432790000001
+}

@@ -1,0 +1,324 @@
+{
+  "purpose": "Devicewarmup-only; noFPSacceptance; ordinaryD20noresource/AIwrites",
+  "samples": [
+    {
+      "elapsed": 1.6093761849915609,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 91.7649409,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 92.3788302,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 61.59153706600773,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 151.7630025,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 152.3683878,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 121.59440156200435,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 211.7653819,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 212.3640344,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 181.59147242701147,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 271.7621851,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 272.3791937,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 241.58955930700176,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 331.7583404,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 332.3629711,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 301.5896841310023,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 391.7588291,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 392.380176,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 361.59128916298505,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 451.7666768,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 452.3694413,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 421.59343075798824,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 511.7665293,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 512.3789384,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 481.58982713200385,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 571.7600295,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 572.3598871,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 541.5948027969862,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 631.7657922,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 632.3681229,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    },
+    {
+      "elapsed": 601.588340458984,
+      "state": {
+        "server": {
+          "level": 20,
+          "health": 211,
+          "failed": false,
+          "passed": true,
+          "ai": 0.10000000149011612,
+          "alive": true,
+          "hostiles": 57,
+          "realm": "server",
+          "ready": true,
+          "frozen": false,
+          "seconds": 691.7653868,
+          "god": false
+        },
+        "client": {
+          "width": 1280,
+          "passed": true,
+          "realm": "client",
+          "menu": false,
+          "height": 800,
+          "seconds": 692.3694336,
+          "focus": true
+        }
+      },
+      "displays": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n"
+    }
+  ]
+}

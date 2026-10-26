@@ -1,0 +1,146 @@
+{
+  "date": "2026-10-23",
+  "tested_source": "dd05a648fe71233a1c482541fd150c94b1492c93",
+  "status": "Read-only native census complete; broad behavior wrapper router rejected before implementation",
+  "device": "Actual Steam Deck LCD, singleplayer, both displays ON; frozen developer-density D20 preparation",
+  "raw": "/home/deck/deborah-benchmarks/behaviour-chain-census/dd05a648/native-readonly-v1",
+  "groups": {
+    "bioblaster": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 9,
+      "depth": 18
+    },
+    "shy": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "arccaster": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "deadcrab": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 4,
+      "depth": 8
+    },
+    "afterburst": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 2,
+      "depth": 4
+    },
+    "caromer": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 2,
+      "depth": 4
+    },
+    "repulsor": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "pincer": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "soldier": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 11,
+      "depth": 22
+    },
+    "seeker": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 4,
+      "depth": 8
+    },
+    "redliner": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "runner": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 5,
+      "depth": 10
+    },
+    "silencer": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "forker": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "reeler": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "watcher": {
+      "pure_guards": 6,
+      "nonmatching": 2,
+      "actors": 2,
+      "depth": 14
+    },
+    "flamer": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 2,
+      "depth": 4
+    },
+    "razor": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "shambler": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 3,
+      "depth": 6
+    },
+    "drubber": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    },
+    "reaper": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 2,
+      "depth": 4
+    },
+    "fencer": {
+      "pure_guards": 0,
+      "nonmatching": 0,
+      "actors": 1,
+      "depth": 2
+    }
+  },
+  "unique_functions": 9,
+  "finding": "55 ordinary bots have two lexical behavior layers: variance then MotionV2. Two Watchers have seven layers, three recognized pure guards each. The ordinary path does not traverse the proposed broad chain. No broad dispatch router will be built from historical source wrappers.",
+  "limits": "Lexical ancestry, not call frequency or exclusive CPU attribution. No methods invoked/replaced or actor fields changed. No FPS gain claim. Owned process stopped.",
+  "next": "Four fresh control/profiled/profiled/control 60s D20 runs. Existing sparse public-method observer adds boss/archetype manager and movement authority rows. One-in128 inclusive estimates overlap and may alias; controls measure observer effects. Restore exact providers, inspect independently, then stop owned processes. Choose source change only from measured cost.",
+  "acceptance": "40FPS UNMET; five full SP scenarios, release-mode ordinary corroboration and capped acceptance UNVERIFIED. Multiplayer explicitly deferred."
+}

@@ -1,0 +1,564 @@
+{
+  "status": "Corrected-stair-source baseline recorded; sustained40FPSUNMET. No optimization candidate implemented or retained. Full five-scenario warmed3x180s/ordinaryfullplay/bossprogression/40cap acceptanceUNVERIFIED.",
+  "tested_checkpoint": "8b2661ad92f3caf4bb6763304f747587cc03dbf7",
+  "retained_runtime_source": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+  "experimental_source": null,
+  "budget": {
+    "start_utc": "2026-10-26T15:03:04+00:00",
+    "deadline_utc": "2026-10-26T15:48:04+00:00",
+    "prepared_utc": "2026-10-26T15:31:38.926038+00:00",
+    "elapsed_minutes": 28.582100633333333,
+    "scope": "Explicit goal resume; carry45minute boundedcheckpoint, stopafterpublication/noautomaticnexttranche."
+  },
+  "bridge_recovery": {
+    "prior_failure": "Client renew command unconsumed; ackolder; timer not executing, likelypausedSP; exactcauseunproven. Fresh ownedlaunchplus existingready/focus/forward-resume machinery restoredfreshacks. No newinstrumentation framework orsoftware update.",
+    "new_stress_failure": "Second60sattempt controller terminal duehero death; verifiednativegame live, restoredHUDproof/input, thencompletedthird originallyplannedattempt without replacing failedsecond. No observation timeout used asgame-terminal proof."
+  },
+  "conditions": {
+    "device": "ActualLCDJupiterSteamDeck",
+    "host": "SP1humanlistenhost/gm_flatgrass; no dedicatedserver",
+    "display": "1280x800internal60Hz plus1920x1080external75Hz BOTHON always; actualendpointandwatchrecords",
+    "power": "15WAC/GPUauto/CPUgovernorpowersave/EPPbalance_performance",
+    "software": "SteamOS3.9.5 build20261023.100/kernel7.2.7-valve2-2-neptune-72-g31504582a073/GModWin64engine2026.09.17 Steampublic25375506/Proton10.0-4b/LuaJIT2.1beta3; no runtime updates",
+    "stress": "Sameownedprocess; canonicalcampaign/D1/D10/D14/D20 resetperattempt,57initialhostiles/1820wallmodels/legalWizard20HP211clip20threeitems/seeds654759232,1217159003,899898795,588052291;640point288radiusphysicalorbit. Inputandcombatnormal. No enemycount/cadence/resource/graphics changes.",
+    "warmup": "602seconds D20devicewarmup with11freshserver/clientproofs. Quietentranceunderload, notfullcombatthermalstabilityproof. GPU61\u219265C/CPU68.5\u219273.25C; recordavailabletemperatureswithoutclaimingstrictplateau.",
+    "release": "Separateordinaryproductionplanner, developer0duringcapture, samelegalresources/seeds/route/graphics;120srestorationlease. Freshprocessafterstress; precedingdevicewarmupbutno separate10minreleasewarmup. Oneobservational60scapture, notacceptance.",
+    "observer": "No new per-call profiler/nativeVProf/native sampler. Existingframe recorderand1Hzbridge reused; processaccounting snapshotsoutsidecapture. Three one-shotgeometrycensuses outsideFPSwindows. No newobserver-overheadbound, exclusiveCPU estimate, orinstrumentedcostclaim."
+  },
+  "stress_attempts": [
+    {
+      "arm": "baseline01",
+      "condition": "frozen developer-density D20 stress",
+      "requested_seconds": 60,
+      "active_duration_complete": true,
+      "controller_exit": 0,
+      "metrics": {
+        "frames": 1226,
+        "seconds": 59.950741,
+        "fps": 20.45012254310585,
+        "median_ms": 38.26,
+        "p95_ms": 96.336,
+        "p99_ms": 140.86,
+        "max_ms": 325.079,
+        "one_percent_low_fps": 4.812732862228487,
+        "below_budget_seconds": 59.42776900000002,
+        "longest_below_budget_seconds": 29.391794000000004,
+        "below_budget_runs_ge2s": 4
+      },
+      "acceptance_checks_passed": false,
+      "issues": [
+        "unrendered terminal interval exceeds spike budget or is unknown",
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "failure": null
+    },
+    {
+      "arm": "baseline02",
+      "condition": "frozen developer-density D20 stress",
+      "requested_seconds": 60,
+      "active_duration_complete": false,
+      "controller_exit": 1,
+      "metrics": {
+        "frames": 885,
+        "seconds": 49.666149,
+        "fps": 17.818977670284042,
+        "median_ms": 50.374,
+        "p95_ms": 104.503,
+        "p99_ms": 145,
+        "max_ms": 213.575,
+        "one_percent_low_fps": 5.770562437485573,
+        "below_budget_seconds": 49.14336099999993,
+        "longest_below_budget_seconds": 48.52621099999995,
+        "below_budget_runs_ge2s": 1
+      },
+      "acceptance_checks_passed": false,
+      "issues": [
+        "insufficient active gameplay duration",
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "failure": "hero died at49.718s; only49.666active seconds; excluded from complete-run comparison, preserved/no replacement"
+    },
+    {
+      "arm": "baseline03",
+      "condition": "frozen developer-density D20 stress",
+      "requested_seconds": 60,
+      "active_duration_complete": true,
+      "controller_exit": 0,
+      "metrics": {
+        "frames": 1223,
+        "seconds": 59.972147,
+        "fps": 20.39280001097843,
+        "median_ms": 40.586,
+        "p95_ms": 88.92,
+        "p99_ms": 115.174,
+        "max_ms": 176.072,
+        "one_percent_low_fps": 7.869849637442081,
+        "below_budget_seconds": 59.83025200000006,
+        "longest_below_budget_seconds": 59.05911700000005,
+        "below_budget_runs_ge2s": 1
+      },
+      "acceptance_checks_passed": false,
+      "issues": [
+        "unrendered terminal interval exceeds spike budget or is unknown",
+        "average FPS below budget",
+        "p95 exceeds frame budget",
+        "p99 exceeds spike budget",
+        "continuous drop lasting at least two seconds"
+      ],
+      "failure": null
+    }
+  ],
+  "release_observation": {
+    "condition": "separate ordinary release-config D20, not stress fixture replacement or before-after optimization comparison",
+    "metrics": {
+      "frames": 1430,
+      "seconds": 59.928540999999996,
+      "fps": 23.861752282606048,
+      "median_ms": 35.279,
+      "p95_ms": 75.303,
+      "p99_ms": 96.915,
+      "max_ms": 311.304,
+      "one_percent_low_fps": 7.620007498087379,
+      "below_budget_seconds": 57.972862000000056,
+      "longest_below_budget_seconds": 11.378094999999995,
+      "below_budget_runs_ge2s": 7
+    },
+    "issues": [
+      "unrendered terminal interval exceeds spike budget or is unknown",
+      "average FPS below budget",
+      "p95 exceeds frame budget",
+      "p99 exceeds spike budget",
+      "continuous drop lasting at least two seconds"
+    ],
+    "acceptance_checks_passed": false,
+    "before": {
+      "discretionary": [
+        4,
+        6,
+        6,
+        6
+      ],
+      "encounters": 25,
+      "passed": true,
+      "players": 1,
+      "planned_composition_count": 67,
+      "normal_AI": true,
+      "spacing": 4,
+      "no_god_noclip": true,
+      "level": 20,
+      "phase": "before",
+      "campaign": 654759232,
+      "health": 211,
+      "maximum": 211,
+      "archetypes": {
+        "gaoler": 1,
+        "bioblaster": 5,
+        "arccaster": 1,
+        "deadcrab": 7,
+        "caromer": 3,
+        "repulsor": 1,
+        "pincer": 1,
+        "soldier": 9,
+        "seeker": 4,
+        "redliner": 1,
+        "runner": 5,
+        "flamer": 3,
+        "watcher": 4,
+        "shambler": 5,
+        "reaper": 2,
+        "blitzer": 1,
+        "reeler": 1
+      },
+      "scope": "Additional ordinary release-configuration D20 subset. Current production planner/configuration, no actor count edits. Not the frozen developer-density stress benchmark; cannot substitute for its failed acceptance. Before-after counts reflect normal spawning/combat, not manual resets.",
+      "level_seed": 1217159003,
+      "developer_dense": false,
+      "layout_seed": 899898795,
+      "threat": [
+        12,
+        24,
+        27,
+        30
+      ],
+      "developer_mode": false,
+      "hostiles": 54,
+      "singleplayer": true
+    },
+    "after": {
+      "discretionary": [
+        4,
+        6,
+        6,
+        6
+      ],
+      "encounters": 25,
+      "passed": true,
+      "players": 1,
+      "planned_composition_count": 67,
+      "normal_AI": true,
+      "spacing": 4,
+      "no_god_noclip": true,
+      "level": 20,
+      "phase": "after",
+      "campaign": 654759232,
+      "health": -8,
+      "maximum": 211,
+      "archetypes": {
+        "gaoler": 1,
+        "bioblaster": 5,
+        "arccaster": 1,
+        "deadcrab": 7,
+        "caromer": 3,
+        "repulsor": 1,
+        "reaper": 2,
+        "soldier": 9,
+        "seeker": 4,
+        "redliner": 1,
+        "warden": 5,
+        "runner": 5,
+        "flamer": 3,
+        "reeler": 1,
+        "pincer": 1,
+        "watcher": 4,
+        "shambler": 5,
+        "blitzer": 1,
+        "sentry": 4
+      },
+      "scope": "Additional ordinary release-configuration D20 subset. Current production planner/configuration, no actor count edits. Not the frozen developer-density stress benchmark; cannot substitute for its failed acceptance. Before-after counts reflect normal spawning/combat, not manual resets.",
+      "level_seed": 1217159003,
+      "developer_dense": false,
+      "layout_seed": 899898795,
+      "threat": [
+        12,
+        24,
+        27,
+        30
+      ],
+      "developer_mode": false,
+      "hostiles": 63,
+      "singleplayer": true
+    },
+    "restoration": {
+      "scope": "Single120s authorized observation lease: developer0 during gameplay; private server bridge retains developer1 access gate. Post recorded before restoring setup cvar. No recurringobserver/file polling during FPS.",
+      "developer_restored": true,
+      "passed": true,
+      "seconds": 120.01432790000001
+    },
+    "capture_survival": {
+      "input_stop_seconds": 61.46577453613281,
+      "stop_reason": "external stop",
+      "stop_health": 184,
+      "postlease_death": "after.health=-8 belongs to the120s restorationlease observation, later than the60s activecapture/inputstop; do not classify release as death-shortened or fullordinaryplayaccepted."
+    }
+  },
+  "comparisons": "No newsourceperformance improvement claimed. Oldsource/runtime/hosting results remain separate. No aggregate includingpartial run2, no causalregressionpercentage againstoldercheckpoints; cumulativehistoricalgainunquantified here.",
+  "stair_candidate_screen": {
+    "mechanism": "New54bf TraceStairMovement selectswhole-flightunion inclupperfloor; possibleunnecessarynativequeryifactualsolidsallmiss. Conservativeper-solidbroadphasewouldpreservecollisionsonlyifproperbounds/nativeepsilon/removal/cacheinvalidation preserved.",
+    "censuses": [
+      {
+        "level": 20,
+        "rows": [],
+        "queries": 100,
+        "scope": "One out-of-FPS read-only snapshot of current flat waypoints and nominal 50ms unmodified-speed steps. Actual public TraceStairMovement called without wrappers; actual generated collision bounds with 2-unit conservative padding. Not actual production call frequency, timings, per-rendered-frame cost, throughput or overhead evidence; does not cover dynamic status speed or future combat positions. No actor/resource/AI/provider writes.",
+        "stair_waypoints": 0,
+        "actors": 57,
+        "native_traces": 0,
+        "seconds": 568.7621137,
+        "provably_empty_conservative_aabb_queries": 0
+      },
+      {
+        "level": 20,
+        "rows": [],
+        "queries": 108,
+        "scope": "One out-of-FPS read-only snapshot of current flat waypoints and nominal 50ms unmodified-speed steps. Actual public TraceStairMovement called without wrappers; actual generated collision bounds with 2-unit conservative padding. Not actual production call frequency, timings, per-rendered-frame cost, throughput or overhead evidence; does not cover dynamic status speed or future combat positions. No actor/resource/AI/provider writes.",
+        "stair_waypoints": 0,
+        "actors": 66,
+        "native_traces": 0,
+        "seconds": 1046.2174608,
+        "provably_empty_conservative_aabb_queries": 0
+      },
+      {
+        "level": 20,
+        "rows": [
+          {
+            "hit": true,
+            "start_solid": true,
+            "actual_solid_aabb_candidates": 2,
+            "kind": "current-flat-waypoint-point",
+            "entity": 65,
+            "all_solid": true,
+            "archetype": "warden"
+          },
+          {
+            "hit": true,
+            "start_solid": false,
+            "actual_solid_aabb_candidates": 5,
+            "kind": "nominal-50ms-step",
+            "entity": 65,
+            "all_solid": false,
+            "archetype": "warden"
+          },
+          {
+            "hit": true,
+            "start_solid": false,
+            "actual_solid_aabb_candidates": 4,
+            "kind": "nominal-50ms-step",
+            "entity": 71,
+            "all_solid": false,
+            "archetype": "warden"
+          },
+          {
+            "hit": true,
+            "start_solid": false,
+            "actual_solid_aabb_candidates": 4,
+            "kind": "nominal-50ms-step",
+            "entity": 72,
+            "all_solid": false,
+            "archetype": "warden"
+          },
+          {
+            "hit": false,
+            "start_solid": false,
+            "actual_solid_aabb_candidates": 2,
+            "kind": "current-flat-waypoint-point",
+            "entity": 73,
+            "all_solid": false,
+            "archetype": "warden"
+          },
+          {
+            "hit": true,
+            "start_solid": false,
+            "actual_solid_aabb_candidates": 4,
+            "kind": "nominal-50ms-step",
+            "entity": 73,
+            "all_solid": false,
+            "archetype": "warden"
+          }
+        ],
+        "queries": 120,
+        "scope": "One out-of-FPS read-only snapshot of current flat waypoints and nominal 50ms unmodified-speed steps. Actual public TraceStairMovement called without wrappers; actual generated collision bounds with 2-unit conservative padding. Not actual production call frequency, timings, per-rendered-frame cost, throughput or overhead evidence; does not cover dynamic status speed or future combat positions. No actor/resource/AI/provider writes.",
+        "stair_waypoints": 0,
+        "actors": 66,
+        "native_traces": 6,
+        "seconds": 1209.3594486,
+        "provably_empty_conservative_aabb_queries": 0
+      }
+    ],
+    "decision": "Do notimplement. Warm57actor100queries0native; afterfailedcombat66actor108queries0native; afterthirdcombat66actor120queries6native, allhaveactualsolidcandidates. Zero observedprovablyemptyqueries inthesethreestate snapshots. This is NOTactualcallfrequencyorfullcapturecoverage; materialrecoverablecostnotestablished. No nativequerytiming/callcount\u2192ms conversion.",
+    "hypothesis_status": "Screenedoutforimplementation thischeckpoint; notprovenabsentatotherpositions/scenarios.",
+    "timestamp_note": "Census seconds fields are snapshot/gameclocktimestamps, not durations."
+  },
+  "attribution_limit": "Priorqualifiednative sampling/VProfsupportsbusyserver/NextBotLua boundary. Thischeckpointdidnotreprofile/exclusivelyattributeit, and currentstaircensusfoundno specificsubstantialremovableoperation. We cannotmeasure namedproductionCPUcostadequatelywithclosedexistingapproaches; thisdoesNOTprove40FPSimpossible orno economicalremedy. BeforeAI/nativeVProf refinementclosed, no rejectedfamily reopened.",
+  "CI": {
+    "checked_utc": "2026-10-26 15:11:07 UTC",
+    "repository": "ShaelRiley/the-legend-of-deborah",
+    "head": {
+      "sha": "8b2661ad92f3caf4bb6763304f747587cc03dbf7",
+      "matrix_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40272652178",
+      "job_id": 121408618180,
+      "passed": 328,
+      "total": 337,
+      "source_changed": 0,
+      "performance_sources": "PASS",
+      "VR": "PASS",
+      "audio": "PASS"
+    },
+    "source": {
+      "sha": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+      "matrix_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40272309901",
+      "job_id": 121407560527,
+      "passed": 328,
+      "total": 337,
+      "source_changed": 0,
+      "performance_sources": "PASS",
+      "VR": "PASS",
+      "audio": "PASS"
+    },
+    "parent": {
+      "sha": "b2f21822fbf67be8b28c61ca7b1244b11c02dfdd",
+      "matrix_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40267980704",
+      "job_id": 121394443411,
+      "passed": 327,
+      "total": 336,
+      "source_changed": 0
+    },
+    "stair_gate": {
+      "name": "Hostile Stair Collision & Supported Flights",
+      "head": "PASS 60/337,0.829s",
+      "source": "PASS 60/337,0.600s"
+    },
+    "headroom_gate": {
+      "name": "Standing Stair Headroom & Upper Crossover",
+      "head": "PASS 59/337,3.478s",
+      "source": "PASS 59/337,2.769s",
+      "parent": "PASS 59/336,1.974s"
+    },
+    "failure_count": 9,
+    "new_named_failures": [],
+    "removed_named_failures": [],
+    "failure_signatures": [
+      {
+        "name": "Bestiary B29 Bilateral Combat Seams",
+        "parent_signature": [
+          "<ROOT>/tools/test_bestiary_b29_combat.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "head_signature": [
+          "<ROOT>/tools/test_bestiary_b29_combat.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "source_signature": [
+          "<ROOT>/tools/test_bestiary_b29_combat.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "same_head": true,
+        "same_source": true
+      },
+      {
+        "name": "Active Event Catalog, Bribe Removal & Quiz Placement",
+        "parent_signature": [
+          "tools/test_event_quiz_generation.lua:164: assertion failed!"
+        ],
+        "head_signature": [
+          "tools/test_event_quiz_generation.lua:164: assertion failed!"
+        ],
+        "source_signature": [
+          "tools/test_event_quiz_generation.lua:164: assertion failed!"
+        ],
+        "same_head": true,
+        "same_source": true
+      },
+      {
+        "name": "Minigame Shell & Equipment UI Restrictions",
+        "parent_signature": [
+          "<ROOT>/tools/test_minigame_ui.lua: ...deborah/the-legend-of-deborah/tools/test_minigame_ui.lua:106: assertion failed!"
+        ],
+        "head_signature": [
+          "<ROOT>/tools/test_minigame_ui.lua: ...deborah/the-legend-of-deborah/tools/test_minigame_ui.lua:106: assertion failed!"
+        ],
+        "source_signature": [
+          "<ROOT>/tools/test_minigame_ui.lua: ...deborah/the-legend-of-deborah/tools/test_minigame_ui.lua:106: assertion failed!"
+        ],
+        "same_head": true,
+        "same_source": true
+      },
+      {
+        "name": "Client Geometry Full-Update Recovery",
+        "parent_signature": [
+          "<ROOT>/tools/test_geometry_fullupdate.lua: ...end_of_deborah/entities/entities/lod_keycard/cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+        ],
+        "head_signature": [
+          "<ROOT>/tools/test_geometry_fullupdate.lua: ...end_of_deborah/entities/entities/lod_keycard/cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+        ],
+        "source_signature": [
+          "<ROOT>/tools/test_geometry_fullupdate.lua: ...end_of_deborah/entities/entities/lod_keycard/cl_init.lua:6: attempt to call a nil value (field 'Remove')"
+        ],
+        "same_head": true,
+        "same_source": true
+      },
+      {
+        "name": "Shared Native DamageInfo Lifetime",
+        "parent_signature": [
+          "<ROOT>/tools/test_shared_damage_lifetime.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "head_signature": [
+          "<ROOT>/tools/test_shared_damage_lifetime.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "source_signature": [
+          "<ROOT>/tools/test_shared_damage_lifetime.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "same_head": true,
+        "same_source": true
+      },
+      {
+        "name": "Shotgun Native Bullet Aggregation",
+        "parent_signature": [
+          "<ROOT>/tools/test_shotgun_native_path.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "head_signature": [
+          "<ROOT>/tools/test_shotgun_native_path.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "source_signature": [
+          "<ROOT>/tools/test_shotgun_native_path.lua: tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "same_head": true,
+        "same_source": true
+      },
+      {
+        "name": "Feat: rebalance_20261002",
+        "parent_signature": [
+          "<ROOT>/tools/test_checkpoint_d_rebalance_20261002.lua: ...f-deborah/tools/test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+        ],
+        "head_signature": [
+          "<ROOT>/tools/test_checkpoint_d_rebalance_20261002.lua: ...f-deborah/tools/test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+        ],
+        "source_signature": [
+          "<ROOT>/tools/test_checkpoint_d_rebalance_20261002.lua: ...f-deborah/tools/test_checkpoint_d_rebalance_20261002.lua:6: stable order and finite Not Yet migration"
+        ],
+        "same_head": true,
+        "same_source": true
+      },
+      {
+        "name": "Retired Cross Feats & Shared Dodge",
+        "parent_signature": [
+          "<ROOT>/tools/test_cross_feats_dodge.lua: ...h/the-legend-of-deborah/tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "head_signature": [
+          "<ROOT>/tools/test_cross_feats_dodge.lua: ...h/the-legend-of-deborah/tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "source_signature": [
+          "<ROOT>/tools/test_cross_feats_dodge.lua: ...h/the-legend-of-deborah/tools/test_cross_feats_dodge.lua:177: assertion failed!"
+        ],
+        "same_head": true,
+        "same_source": true
+      },
+      {
+        "name": "Live-GDD Feat Release Gate",
+        "parent_signature": [
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER",
+          "FEAT_RELEASE_GATE_BLOCKED \u2014 no human-acceptance candidate may be claimed."
+        ],
+        "head_signature": [
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER",
+          "FEAT_RELEASE_GATE_BLOCKED \u2014 no human-acceptance candidate may be claimed."
+        ],
+        "source_signature": [
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_INTERNAL_COMPASS",
+          "BLOCKER: NONCANONICAL_EXPOSED WIS_MAP_FINDER",
+          "FEAT_RELEASE_GATE_BLOCKED \u2014 no human-acceptance candidate may be claimed."
+        ],
+        "same_head": true,
+        "same_source": true
+      }
+    ],
+    "signature_normalization": "Strip UTC/runner-root prefixes and compare sorted error/blocker lines. Live-GDD prints the same two noncanonical blockers in different order; no new blocker.",
+    "all_baseline_signatures_match": true,
+    "conclusion": "No new stair-fix failing gate or changed error/blocker set. Full matrix still FAIL on nine inherited failures. CI does not establish native acceptance or 40 FPS. Read-only API check; no tests/benchmarks."
+  },
+  "restoration": {
+    "verified_utc": "2026-10-26T15:31:38.783044+00:00",
+    "runtime_source_sha": "54bf069863ceb69b7f7bb98c3b547793a7335f5a",
+    "tested_installed_checkpoint": "8b2661ad92f3caf4bb6763304f747587cc03dbf7",
+    "runtime_tools_identical_to_stair_source": true,
+    "source_hashes_verified": 120,
+    "owned_games_stopped": true,
+    "release_developer_lease_restored": {
+      "scope": "Single120s authorized observation lease: developer0 during gameplay; private server bridge retains developer1 access gate. Post recorded before restoring setup cvar. No recurringobserver/file polling during FPS.",
+      "developer_restored": true,
+      "passed": true,
+      "seconds": 120.01432790000001
+    },
+    "new_DATA_scripts_removed": true,
+    "all_temporary_profile_bindings": "No profiler installed; HUD source-proof owner cleared for eachcompleted run, manuallyclearedafterfailedrun2; processretirementretiresinput/bridge/proofs",
+    "display": "dpms mode for screen eDP-1: on\ndpms mode for screen DP-1: on\n",
+    "background_media": "Observed MPRIS Stopped beforecaptures; playback unchanged bythischeckpoint",
+    "remaining": "Full boss AI/hulls and ordinaryfullplay notfullyverified; completeFPSacceptance unmet/unverified."
+  },
+  "next_decision": "Pause equivalent aggregate profiling and speculative micro-optimizations. Further source work needs an independent concrete algorithmic mechanism or an available attribution capability that resolves work inside protectedNextBotLua without another broad observer calibration. Keep staircorrectnessfix. No requirement tradeoffauthorized/implemented; userdecideswhetherfundnewcapability/architecturalinvestigation.",
+  "publication": "perf/deck-20261021 only; PR7draft/mainunchanged; finalcommit/actualCIverificationinPRandhandoff.",
+  "observer_limits": "Existing ordered frame-recorder overhead not recalibrated here. No new profiling observer during FPS; no overhead penalty or cost attribution inferred from out-of-FPS geometry snapshots."
+}
