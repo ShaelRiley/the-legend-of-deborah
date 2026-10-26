@@ -1,0 +1,131 @@
+{
+  "base_commit": "8bea782c7b0b237a4ee7ad624c0077112b1b37a3",
+  "results": [
+    {
+      "name": "timeout-lua",
+      "command": [
+        "lua",
+        "tools/test_campaign_timeout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.01,
+      "log": "timeout-lua.log"
+    },
+    {
+      "name": "timeout-luajit",
+      "command": [
+        "luajit",
+        "tools/test_campaign_timeout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.012,
+      "log": "timeout-luajit.log"
+    },
+    {
+      "name": "integrated-refresh",
+      "command": [
+        "lua",
+        "tools/test_integrated_refresh.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.377,
+      "log": "integrated-refresh.log"
+    },
+    {
+      "name": "cleanup-contracts",
+      "command": [
+        "lua",
+        "tools/test_cleanup_contracts.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.418,
+      "log": "cleanup-contracts.log"
+    },
+    {
+      "name": "cleanup-lifecycle",
+      "command": [
+        "lua",
+        "tools/test_cleanup_lifecycle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.435,
+      "log": "cleanup-lifecycle.log"
+    },
+    {
+      "name": "syntax",
+      "command": [
+        "luac",
+        "-p",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_campaign_timeout.lua",
+        "tools/test_campaign_timeout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.007,
+      "log": "syntax.log"
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_campaign_timeout.lua",
+        "tools/test_campaign_timeout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.008,
+      "log": "diff-check.log"
+    },
+    {
+      "name": "refresh-ui",
+      "command": [
+        "lua",
+        "tools/test_refresh_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.003,
+      "log": "refresh-ui.log"
+    },
+    {
+      "name": "presentation-polish",
+      "command": [
+        "lua",
+        "tools/test_presentation_polish.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.005,
+      "log": "presentation-polish.log"
+    },
+    {
+      "name": "character-sheet-layout",
+      "command": [
+        "lua",
+        "tools/test_character_sheet_layout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.821,
+      "log": "character-sheet-layout.log"
+    }
+  ],
+  "passed": 10,
+  "total": 10,
+  "source_before": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_campaign_timeout.lua": "a083be8593d021900f265594189c88cbe07cca07898bb6c54fd61cfbd3fd479d",
+    "tools/test_campaign_timeout.lua": "a147f1a4b6c1899a0b60ccc5c6da18003ec77e57706d8f95b8e61a5a43b8a4c2"
+  },
+  "source_after": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_campaign_timeout.lua": "a083be8593d021900f265594189c88cbe07cca07898bb6c54fd61cfbd3fd479d",
+    "tools/test_campaign_timeout.lua": "a147f1a4b6c1899a0b60ccc5c6da18003ec77e57706d8f95b8e61a5a43b8a4c2"
+  },
+  "source_unchanged": true,
+  "only_expected_production_edit": true,
+  "production_crc32": "1789208541",
+  "coverage_state": "STATIC ONLY; parent owns required native recheck",
+  "negative_control": "negative-control-final.log",
+  "defect_id": "BUG-005",
+  "primary_references": [
+    "https://wiki.facepunch.com/gmod/HUD_Element_List",
+    "https://wiki.facepunch.com/gmod/GM:HUDShouldDraw"
+  ]
+}

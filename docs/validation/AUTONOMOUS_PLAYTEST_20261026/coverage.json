@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "e76659db9d99360f557252faf2f6455d32d8c0c5",
+  "current_candidate": "19feeda8",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -15,8 +15,9 @@
       "source": "05 LOD-STAGE-001; 06 LOD-LORE-UI-001",
       "expected": "Startup/title, role and class selection, Hermit chapter, one identity-bound starter, ready portal",
       "scenario": "Fresh session; create disposable Hero, talk/read/manual, select class and legal feat; ordinary portal Use",
-      "result": "partially observed: complete Hermit dialogue repaired/rechecked; class selection in progress; portal/ordinary progression pending",
+      "result": "Observed actual Hero creation, Rogue class/four distinct feat choices and Russian Asset selection, identity starter claim and ordinary portal entry; one chapter natively repaired. Other roles/classes remain.",
       "evidence": [
+        "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png",
         "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png"
       ]
     },
@@ -89,7 +90,7 @@
       "source": "Author request; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
       "expected": "Native visible map/cards/Jail Key remain collectible from normal views",
       "scenario": "Near/far and above/below orbit, touch, receipt and entity cleanup",
-      "result": "pending",
+      "result": "Observed native floor1 map binder/pedestal during ordinary walking; touched pickup removed body and revealed floor. Keycards/JailKey and angle/distance samples pending.",
       "evidence": []
     },
     {
@@ -132,7 +133,7 @@
       "source": "00 LOD-FLOOR-MAP-001; approved FLOOR_MAP_PANEL_20261013 and NAVIGATION_FEATS_20261013",
       "expected": "Per-floor maps shared by party; personal Magic drain; unfound panel and navigation feats",
       "scenario": "Open Q/M before/after pickup; two clients on different floors; Compass/Finder/GPS",
-      "result": "pending",
+      "result": "Observed unfound-floor panel and Magic drain on actual Q/M hold; walked to map (read-only route assisted), pickup then Floor1/5 map and RedKey guidance. Footer clipping BUG004 repaired statically; fresh visual and party sharing pending.",
       "evidence": []
     },
     {
@@ -260,8 +261,10 @@
       "source": "05 LOD-TIMER-001; active LOD-HOURGLASS-001",
       "expected": "Timeout/explosion/reset current timing and subsequent fresh campaign",
       "scenario": "Force near-deadline setup only; observe genuine failure sequence and ordinary restart",
-      "result": "pending",
-      "evidence": []
+      "result": "Observed natural30min expiry, approved low-final collapse, automatic in-place reset and new staging epoch. BUG005 confirmed missing failure/restart HUD in two scenes. Timings/manual reset and repaired native HUD pending.",
+      "evidence": [
+        "timeout-hud/defect.json"
+      ]
     },
     {
       "id": "PERF-01",
@@ -276,9 +279,10 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "pass for e76659db:336/336 suites, source unchanged,925 Lua syntax files",
+      "result": "336/336 suites on frozen e76659db with925 Lua files; later material/minimap repairs pass focused gates, combined fresh gate pending.",
       "evidence": [
-        "/tmp/deborah-playtest-e76659db-frozen-gate/receipt.json"
+        "/tmp/deborah-playtest-e76659db-frozen-gate/receipt.json",
+        "integration-gate/receipt.json"
       ]
     },
     {
@@ -305,15 +309,36 @@
   ],
   "environment_notes": [
     "Existing configuration, LoD data, saves and settings copied to /tmp/deborah-playtest-20261026-preserved before launch.",
-    "Existing console evidence predates candidate; no current runtime claim.",
-    "Workshop 3791535712 duplicate exists; launch requests use -noworkshop; actual mounted identity still pending.",
-    "Native baseline launched after Steam shader processing/Proton prefix migration. x86 client; exact114 source hashes match. Baseline developerDense=true is diagnostic, not a production acceptance pass."
+    "Native baseline launched after Steam shader processing/Proton prefix migration. x86 client; exact114 source hashes match. Baseline developerDense=true is diagnostic, not a production acceptance pass.",
+    "For automated native mouse input, m_rawinput1 plus guarded finite UInput movement works. Original m_rawinput0 is preserved in pretest cfg backup; restore user preference after campaign. Console resumes use hideconsole;gameui_hide to release engine input focus.",
+    "Production e766 session confirms0/0 Workshop mounted,114 source checks. Ordinary floor1 walking used no teleport/noclip; read-only server route hints accelerated navigation. No co-op/audio/full-campaign claim.",
+    "Pre-reload30s staging capture:985 frames,32.88FPS all-frames, no active-play frames. Mounted source observer reports2mismatches because checkout advanced while client stayed open; do not attribute improvement/regression or use as verified final performance evidence."
   ],
   "defects": [
     {
       "id": "BUG-001",
       "record": "hermit-dialogue/defect.json",
-      "status": "repaired; complete native opening chapter and separate receipt observed on fresh committed production-settings build"
+      "status": "repaired and native rechecked"
+    },
+    {
+      "id": "BUG-002",
+      "record": "material-surfaces/defect.json",
+      "status": "repaired including raw-flag native follow-up; fresh native check pending"
+    },
+    {
+      "id": "BUG-003",
+      "record": "damsel-material/defect.json",
+      "status": "repaired, static validated; native check pending"
+    },
+    {
+      "id": "BUG-004",
+      "record": "map-footer/defect.json",
+      "status": "repaired, static validated; native check pending"
+    },
+    {
+      "id": "BUG-005",
+      "record": "timeout-hud/defect.json",
+      "status": "implemented19feeda8;10/10 focused checks; fresh native pending"
     }
   ],
   "static_fixture_checkpoint": {
@@ -326,5 +351,9 @@
     "commit": "e76659db9d99360f557252faf2f6455d32d8c0c5",
     "receipt": "/tmp/deborah-playtest-e76659db-frozen-gate/receipt.json",
     "native_gmod_accepted": false
-  }
+  },
+  "installed_loaded_build": null,
+  "last_checkpoint_utc": "2026-10-26T23:35:30.239942+00:00",
+  "next_action": "Install19feeda8 successor on fully closed native client; production prep; source-verified native rechecks BUG002-005; ordinary dungeon progression. Combined frozen integration gate pending.",
+  "last_runtime_build": "e76659db9d99360f557252faf2f6455d32d8c0c5"
 }

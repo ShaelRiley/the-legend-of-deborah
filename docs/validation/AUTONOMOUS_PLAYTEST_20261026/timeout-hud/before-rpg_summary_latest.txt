@@ -1,0 +1,93 @@
+# The Legend of Deborah RPG current-session summary
+# schema=rpg-test-summary-v1
+# generated_utc=2026-10-26T20:59:44Z
+# map=gm_flatgrass
+# gamemode=legend_of_deborah
+# session_reason=server instrumentation installed
+# event_count=138
+# last_sequence=138
+
+[MARKS]
+sequence=000136	time=962.685	player=player:Shael Riley#1	text=TEST_END autonomous-baseline-dialogue
+
+[EVENT_COUNTS]
+BUILD_IDENTITY=33
+DEBBIE_STATUE_POSE=1
+FEEDBACK_CLIENT_ACK=45
+FEEDBACK_DISPATCH=44
+HERO_ABILITY_ROLL=1
+MARK=1
+PROFILE=6
+RPG_VALIDATE=1
+SNAPSHOT_SEND=6
+
+[FEEDBACK_DELIVERY]
+dispatched=44
+received=44
+drawn=1
+sound_requested=1
+throttled=0
+# drawn = client reports first feed/notice draw; crowded feed may retain without drawing
+# sound_requested = client called playback; audibility requires human confirmation
+
+[LATEST_PROFILES]
+player=player:Shael Riley#1	class=	level=1	hp=100	max_hp=100	magic=100	str_bonus=-1	aimx=1.08	movex=0.9	dr_per_die=1	regenx=1.4	wis_bonus=-1	mapx=1.04	crumbs=4	stun_inflict_x=1.06	stun_resist_x=0.94	diversion=0	rogue_explodes=false	boom_shift=0	rogue_boom_shift=0	rogue_capstone_shift=0	ace_prime_seconds=0	fighter_capstone_x=1	wizard_capstone_magic_x=1
+
+[PLAYER_DICE]
+none
+
+[SNAPSHOT_TRAFFIC]
+# counters since server initialization; reliable sheet/book snapshots only
+requested=28
+coalesced=18
+unchanged=4
+sent=6
+bytes=23469
+maxFlushBytes=15021
+
+[LATEST_GATE_D_VALIDATE]
+none
+
+# current-session event stream: garrysmod/data/legend_of_deborah/rpg_test_session.txt
+# cumulative archive: garrysmod/data/legend_of_deborah/rpg_test_log.txt
+
+[OBSERVABILITY]
+retention=console:per-GMod-launch;session:current-server-session;summary:overwrite-every-10s;archive:rolling-4MiB
+physical_upload_dir=garrysmod/data/legend_of_deborah/
+recommended_upload=console_latest.txt + rpg_summary_latest.txt
+detailed_upload_when_needed=rpg_session_latest.txt
+archive_upload_only_on_request=rpg_archive_latest.txt
+last_mark=TEST_END autonomous-baseline-dialogue
+last_rpg_validate=PASS
+last_rpg_validate_errors=
+reload_scale_events=0
+last_reload_weapon=
+last_reload_channel=
+last_reload_multiplier=
+last_reload_authored_seconds=
+last_reload_scaled_seconds=
+last_reload_saved_seconds=
+smg_heat_shots=0
+smg_heat_suppressed=0
+smg_heat_added=0
+smg_heat_overheats=0
+smg_heat_last_chance=
+smg_heat_last_threshold=
+smg_heat_last_lock_seconds=
+smg_heat_acceptance=
+
+[RATE_OF_FIRE_OBSERVABILITY]
+rate_of_fire_sessions=0
+rate_of_fire_scale_events=0
+rate_of_fire_confirmed_attacks=0
+rate_of_fire_preexisting_locks_preserved=0
+rate_of_fire_deadline_misses=0
+last_rate_of_fire_weapon=
+last_rate_of_fire_channel=
+last_rate_of_fire_multiplier=
+last_rate_of_fire_authored_seconds=
+last_rate_of_fire_scaled_seconds=
+last_rate_of_fire_saved_seconds=
+last_rate_of_fire_confirmation=
+last_rate_of_fire_miss_weapon=
+last_rate_of_fire_miss_confirmation=

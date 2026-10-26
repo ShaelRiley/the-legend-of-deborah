@@ -6,23 +6,29 @@ matrix, and require three consecutive varied clean final-candidate passes before
 completion. Workshop/VPS and the sustained40-FPS goal remain outside this campaign;
 the October23 timer/countdown/hourglass/inventory/reward choices stay deferred.
 
-Baseline remote main85894115 was clean. Fixture checkpoint9f698856 repairs all
-nine inherited regression failures without gameplay changes. Native Steam Deck
-play found BUG-001: the Hermit's opening chapter was silently truncated by the
-native1023-byte Label limit. Source repair e76659db preserves complete UTF-8 text
-in the existing scroll canvas. Fresh production-settings gm_flatgrass evidence
-shows the full chapter, ordinary scroll and separate receipt; the portrait has no
-scripted-only animation API error. Exact e76659db passes336/336 suites with925 Lua
-files and unchanged source. Evidence and current coverage:
-[autonomous playtest](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
+Baseline remote main85894115 was clean. Fixture checkpoint9f698856 repairs nine
+inherited regression failures. Native Steam Deck play found and preserved five
+presentation/usability defects: truncated Hermit chapters; invalid optional weapon
+textures and dropped compiled shader flags; damsel clothing normals/flags lost by
+bulk cloning; clipped map legend; timeout HUD suppressing its own native dispatcher.
+Repairs are integrated through19feeda8. BUG001 has fresh native recheck; BUG002–005
+pass focused static/regression gates and still require a fully restarted combined
+build. Frozen e76659db passed336/336 suites; a current combined gate is pending.
 
-Current native session: actual Steam Deck, Windows x86/Proton10, seed6102601,
-levelSeed1694580310, layoutSeed102935261;114 source hashes match. The stale
-benchmark roster seed produced one diagnosed startup warning; clear it before a
-fresh clean pass. Rogue class selection is observed; ordinary feat/portal/dungeon
-play is next. No full campaign, cooperative client or clean-pass completion claim;
-clean streak remains0. Preserve accepted collision/performance work and all open
-coverage. Use the matrix/defect records for the next exact action after interruption.
+Actual hardware is Valve Jupiter Steam Deck, Windows x86 GMod through Proton10.
+Production-settings seed6102601/levelSeed1694580310/layoutSeed102935261 verified
+114 mounted sources and no Workshop mounts. Actual Rogue/class/feat/starter/portal
+and ordinary floor1 walking/map pickup occurred. Read-only route hints assisted
+navigation; no teleport/noclip proved those routes. A natural thirty-minute timeout
+and automatic new staging epoch occurred. Missing failure feedback is BUG005;
+September17 approved five-shot camera supersedes the older oblique framing.
+No full-campaign, cooperative-client or clean-pass completion claim; streak remains0.
+
+Next: closed-client install and production prep, verify exact loaded sources and
+native BUG002–005 behavior, then continue ordinary campaign and bounded fixtures.
+Keep co-op access clarification pending; single-client evidence cannot accept it.
+Durable defects, evidence, coverage and next action:
+[autonomous playtest](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
 
 # Current checkpoint — integrate retained partial performance improvements
 
