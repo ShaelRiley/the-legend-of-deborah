@@ -1,0 +1,147 @@
+{
+  "arm": "arm01-on",
+  "source": "26ccc4d06aff1f385e1e2743b048d5577435329f",
+  "native_start_seconds_after_first_frame": 15.068473099999991,
+  "native_stop_seconds_after_first_frame": 59.547729000000004,
+  "native_window_seconds": 44.47925590000001,
+  "native_reported_global_frame_samples": 946,
+  "engine_frame_calls": 945,
+  "matching_rendered_subset": {
+    "frames": 945,
+    "seconds": 44.439212,
+    "fps": 21.265003528865453,
+    "median_ms": 38.366,
+    "p95_ms": 84.113,
+    "p99_ms": 141.054,
+    "one_percent_low_fps": 5.970527090072566,
+    "max_ms": 204.815,
+    "below40_seconds": 43.96695499999997,
+    "longest_below40_seconds": 11.72119900000001
+  },
+  "full_capture_mixed_observer": {
+    "frames": 1302,
+    "seconds": 59.993635999999995,
+    "fps": 21.702301890820554,
+    "median_ms": 38.026,
+    "p95_ms": 81.966,
+    "p99_ms": 128.919,
+    "max_ms": 311.53,
+    "one_percent_low_fps": 5.782655585446378,
+    "below_budget_seconds": 58.64402600000003,
+    "longest_below_budget_seconds": 11.721198999999999,
+    "below_budget_runs_ge2s": 7
+  },
+  "largest_rendered_frames": [
+    {
+      "start_seconds": 1.1379169999999996,
+      "end_seconds": 1.4494469999999997,
+      "frame_ms": 311.53
+    },
+    {
+      "start_seconds": 48.596285999999985,
+      "end_seconds": 48.80110099999999,
+      "frame_ms": 204.815
+    },
+    {
+      "start_seconds": 47.63953699999999,
+      "end_seconds": 47.83566599999999,
+      "frame_ms": 196.129
+    },
+    {
+      "start_seconds": 48.40660399999999,
+      "end_seconds": 48.596285999999985,
+      "frame_ms": 189.682
+    },
+    {
+      "start_seconds": 47.45141999999999,
+      "end_seconds": 47.63953699999999,
+      "frame_ms": 188.117
+    },
+    {
+      "start_seconds": 48.233789999999985,
+      "end_seconds": 48.40660399999999,
+      "frame_ms": 172.814
+    },
+    {
+      "start_seconds": 1.4494469999999997,
+      "end_seconds": 1.6195999999999997,
+      "frame_ms": 170.153
+    },
+    {
+      "start_seconds": 47.15814999999999,
+      "end_seconds": 47.308392999999995,
+      "frame_ms": 150.243
+    },
+    {
+      "start_seconds": 47.010431999999994,
+      "end_seconds": 47.15814999999999,
+      "frame_ms": 147.718
+    },
+    {
+      "start_seconds": 47.308392999999995,
+      "end_seconds": 47.45141999999999,
+      "frame_ms": 143.027
+    }
+  ],
+  "native_root": {
+    "name": "CEngine::Frame",
+    "inclusive_ms": 44190.144,
+    "self_ms": 577.2,
+    "per_frame_ms": 46.713,
+    "self_per_frame_ms": 0.61,
+    "count": 945,
+    "peak_ms": 211.37,
+    "path": "CEngine::Frame"
+  },
+  "server_GM_protected": {
+    "name": "CLuaInterface::CallFunctionProtected",
+    "inclusive_ms": 3476.78,
+    "self_ms": 3287.59,
+    "per_frame_ms": 3.675,
+    "self_per_frame_ms": 3.48,
+    "count": 40715,
+    "peak_ms": 46.53,
+    "path": "CEngine::Frame > _Host_RunFrame_Server > CLuaGamemode::Call > CLuaInterface::CallFunctionProtected"
+  },
+  "direct_server_GM_protected_filesystem_open": {
+    "name": "CBaseFileSystem::Open",
+    "inclusive_ms": 14.134,
+    "self_ms": 14.13,
+    "per_frame_ms": 0.015,
+    "self_per_frame_ms": 0.01,
+    "count": 16,
+    "peak_ms": 3.84,
+    "path": "CEngine::Frame > _Host_RunFrame_Server > CLuaGamemode::Call > CLuaInterface::CallFunctionProtected > CBaseFileSystem::Open"
+  },
+  "nextbot_protected": {
+    "name": "CLuaInterface::CallFunctionProtected",
+    "inclusive_ms": 11302.153,
+    "self_ms": 11230.13,
+    "per_frame_ms": 11.947,
+    "self_per_frame_ms": 11.87,
+    "count": 112148,
+    "peak_ms": 71.02,
+    "path": "CEngine::Frame > _Host_RunFrame_Server > CBaseEntity::PhysicsDispatchThink > NextBotCombatCharacter::DoThink > INextBot::Update > LuaBotBehaviour > CLuaInterface::CallFunctionProtected"
+  },
+  "all_acceptance_checks_passed": false,
+  "acceptance_issues": [
+    "average FPS below budget",
+    "p95 exceeds frame budget",
+    "p99 exceeds spike budget",
+    "continuous drop lasting at least two seconds"
+  ],
+  "integrity": {
+    "actual_capture_source": {
+      "verified": true,
+      "checked": 52,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "lua_errors_start_end": [
+      0,
+      0
+    ],
+    "window_restored": true,
+    "native_VR_idle": true
+  }
+}

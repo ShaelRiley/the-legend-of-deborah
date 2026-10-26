@@ -1,3 +1,13 @@
+# Current checkpoint — native VProf has reached its attribution limit
+
+The resumed checkpoint keeps the 45-minute cap from the resume first recorded at 23:57:20 UTC, with a conservative 00:40 UTC cutoff. Steering did not reset the clock. One additional series of two later-phase native VProf captures is complete. [Decision, metrics, raw reports and restoration](validation/STEAM_DECK_VPROF_PHASE_20261026.json).
+
+The largest full-capture frames, 311.530/339.969 ms, occurred near +1 second. The native windows from approximately 15.07–59.54 seconds did not reproduce the historical 149–150 ms direct filesystem-open peak beneath server gamemode protected calls: one reported 3.84 ms and the other no such node. This does not identify the resource or establish when the historical peak occurred. Later matched rendered maxima remain 204.815/140.516 ms, with prolonged below-target episodes of 11.721/10.475 seconds. Protected NextBot averages remain opaque at 11.947/11.280 ms per native reported frame, inclusive; no conversion to rendered cost or additive budget is justified.
+
+No removable operation or source candidate was identified. Stop this aggregate VProf approach at its current limit. BeforeAI wrappers, alignment and children stay closed; no calibration or rejected-family implementation was reopened. Gameplay/tools remain byte-identical to retained 26ccc4d/fdd75bfc/4b682. No experimental SHA or uninstrumented gain. Native integrity/restoration and all 120 installed-hash checks pass; automatic acceptance failures are preserved. Retained CI is 327/336 with the same nine baseline failures; new documentation CI is recorded in PR #7.
+
+PR #7 stays draft, `main` unchanged, SP40 UNMET. Full five-scenario warmed repeated 180-second, ordinary-play, boss-progression and capped acceptance remain UNVERIFIED. Do not automatically start another checkpoint. Require a concrete algorithmic mechanism or an identified new attribution capability before funding more equivalent captures.
+
 # Current checkpoint — BeforeAI observer gate unresolved; retained source unchanged
 
 The October 25 BeforeAI-only checkpoint started at 22:36:58 UTC and has a hard 23:36:58 UTC deadline. Eight fresh 60-second captures (off/on/on/off, then reversed confirmation) are complete; substantive measurement stopped at 23:13:54 UTC. [Decision, all metrics, failed evidence and raw captures](validation/STEAM_DECK_BEFOREAI_20261025.json).

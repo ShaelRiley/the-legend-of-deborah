@@ -1,0 +1,139 @@
+{
+  "arm": "arm02-on",
+  "source": "26ccc4d06aff1f385e1e2743b048d5577435329f",
+  "native_start_seconds_after_first_frame": 15.078230199999993,
+  "native_stop_seconds_after_first_frame": 59.54331060000001,
+  "native_window_seconds": 44.46508040000002,
+  "native_reported_global_frame_samples": 1012,
+  "engine_frame_calls": 1011,
+  "matching_rendered_subset": {
+    "frames": 1011,
+    "seconds": 44.400222,
+    "fps": 22.770156419488174,
+    "median_ms": 36.072,
+    "p95_ms": 76.012,
+    "p99_ms": 97.864,
+    "one_percent_low_fps": 8.751586225003281,
+    "max_ms": 140.516,
+    "below40_seconds": 44.04614300000004,
+    "longest_below40_seconds": 10.475260999999998
+  },
+  "full_capture_mixed_observer": {
+    "frames": 1344,
+    "seconds": 59.92868,
+    "fps": 22.42665782059608,
+    "median_ms": 36.417,
+    "p95_ms": 77.243,
+    "p99_ms": 104.139,
+    "max_ms": 339.969,
+    "one_percent_low_fps": 7.030032297976958,
+    "below_budget_seconds": 58.96767699999999,
+    "longest_below_budget_seconds": 10.475261000000003,
+    "below_budget_runs_ge2s": 7
+  },
+  "largest_rendered_frames": [
+    {
+      "start_seconds": 1.020812,
+      "end_seconds": 1.360781,
+      "frame_ms": 339.969
+    },
+    {
+      "start_seconds": 1.360781,
+      "end_seconds": 1.565001,
+      "frame_ms": 204.22
+    },
+    {
+      "start_seconds": 57.75873800000001,
+      "end_seconds": 57.899254000000006,
+      "frame_ms": 140.516
+    },
+    {
+      "start_seconds": 58.02858400000001,
+      "end_seconds": 58.16460700000001,
+      "frame_ms": 136.023
+    },
+    {
+      "start_seconds": 3.5772009999999996,
+      "end_seconds": 3.708169,
+      "frame_ms": 130.968
+    },
+    {
+      "start_seconds": 57.899254000000006,
+      "end_seconds": 58.02858400000001,
+      "frame_ms": 129.33
+    },
+    {
+      "start_seconds": 3.449016,
+      "end_seconds": 3.5772009999999996,
+      "frame_ms": 128.185
+    },
+    {
+      "start_seconds": 1.565001,
+      "end_seconds": 1.689399,
+      "frame_ms": 124.398
+    },
+    {
+      "start_seconds": 58.16460700000001,
+      "end_seconds": 58.28605100000001,
+      "frame_ms": 121.444
+    },
+    {
+      "start_seconds": 57.64552300000001,
+      "end_seconds": 57.75873800000001,
+      "frame_ms": 113.215
+    }
+  ],
+  "native_root": {
+    "name": "CEngine::Frame",
+    "inclusive_ms": 44161.407,
+    "self_ms": 617.36,
+    "per_frame_ms": 43.638,
+    "self_per_frame_ms": 0.61,
+    "count": 1011,
+    "peak_ms": 142.7,
+    "path": "CEngine::Frame"
+  },
+  "server_GM_protected": {
+    "name": "CLuaInterface::CallFunctionProtected",
+    "inclusive_ms": 3279.307,
+    "self_ms": 3211.34,
+    "per_frame_ms": 3.24,
+    "self_per_frame_ms": 3.17,
+    "count": 40739,
+    "peak_ms": 20.86,
+    "path": "CEngine::Frame > _Host_RunFrame_Server > CLuaGamemode::Call > CLuaInterface::CallFunctionProtected"
+  },
+  "direct_server_GM_protected_filesystem_open": null,
+  "nextbot_protected": {
+    "name": "CLuaInterface::CallFunctionProtected",
+    "inclusive_ms": 11415.121,
+    "self_ms": 11338.58,
+    "per_frame_ms": 11.28,
+    "self_per_frame_ms": 11.2,
+    "count": 112452,
+    "peak_ms": 45.94,
+    "path": "CEngine::Frame > _Host_RunFrame_Server > CBaseEntity::PhysicsDispatchThink > NextBotCombatCharacter::DoThink > INextBot::Update > LuaBotBehaviour > CLuaInterface::CallFunctionProtected"
+  },
+  "all_acceptance_checks_passed": false,
+  "acceptance_issues": [
+    "unrendered terminal interval exceeds spike budget or is unknown",
+    "average FPS below budget",
+    "p95 exceeds frame budget",
+    "p99 exceeds spike budget",
+    "continuous drop lasting at least two seconds"
+  ],
+  "integrity": {
+    "actual_capture_source": {
+      "verified": true,
+      "checked": 52,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "lua_errors_start_end": [
+      0,
+      0
+    ],
+    "window_restored": true,
+    "native_VR_idle": true
+  }
+}

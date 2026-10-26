@@ -1,0 +1,15 @@
+{
+  "sha": "26ccc4d06aff1f385e1e2743b048d5577435329f",
+  "utc": "2026-10-26T00:19:16.784274+00:00",
+  "sequence": [
+    "on",
+    "on"
+  ],
+  "seconds_each": 60,
+  "scope": "FrozenD20lowercourt stress/SP listenhost/oneplayer/1280x800/57initialhostiles/1820models/legalresources/unchangedAIgraphics15WAC/bothdisplaysON; matchedC/P/P/C freshprocesses. Actualfirst/lastPreRenderframewindowalignmentmarkersinbothconditions.",
+  "approach": "OnefocusedlatephaseVProfseries: Does~149msfilesystemOpen/serverGMpeak recur afterfirst15s, versusoccurringoutside latercombat? Existingfullprofiles lacktimestamps; noresource/causalclaim.",
+  "observer": "ExistingnativeengineVProf only. Queueonthenprivate2-callstamp AFTERfirstactualFPSframe; queueoffthenstamp0.5sBEFOREcapturedeadline. Assertbothactualengine-processedstampsinsiderawframewindow; reconstructmatchingwholeframe subsetbetweenstamps. Engineownrecordedframecount onlydenominator for nativeVProf averages; no different-windowFPSconversion. Samequeuedstamps/timerIOinoffcontrols. No per-AI wrappers, no nativeCPU sampler. Reportsaftercapture. Exactsubwindow/queuedboundary uncertaintyqualified.",
+  "screen": "No newcalibration. ExistingnativeVProf qualifiescoarseattribution; discloseuncertainty. Twoononly60sfullFPSruns, native15s-to59.5s, no sourcegaininference.",
+  "deadline": "Resume firstobserved2026-10-25T23:57:20Z; conservativehardcutoff2026-10-26T00:40:00Z, includesalreadyelapsedtime. Reserve8minpublication/restoration.",
+  "failed_preFPS_attempt": null
+}
