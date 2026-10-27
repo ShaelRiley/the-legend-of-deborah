@@ -1,0 +1,6222 @@
+{
+  "source": "normal production DATA legend_of_deborah/die_logger_history.json",
+  "source_sha256": "3b8af0d58de9bb9c7930670bdbfd458db58eb29d618a1ff1375c2967e62d7f99",
+  "source_bytes": 827076,
+  "filter": "Contiguous current Blake profile session records, first through last current-profile record, retaining intervening NPC defense/context rows. Unrelated earlier history omitted.",
+  "records": [
+    {
+      "source_array_index": 926,
+      "row": {
+        "segments": [
+          {
+            "role": "progress",
+            "text": "[PROGRESS]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": DUNGEON "
+          },
+          {
+            "role": "total",
+            "text": "1"
+          },
+          {
+            "role": "prose",
+            "text": " READY — staging"
+          }
+        ],
+        "cue": 0,
+        "family": "progress",
+        "serial": 2,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "[PROGRESS] Shael Riley as Blake \"Slow Burn\" Garcia: DUNGEON 1 READY — staging"
+      }
+    },
+    {
+      "source_array_index": 927,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Soldier health "
+          },
+          {
+            "role": "dice",
+            "text": "4d4+5"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "15"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,3,2,3"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.11"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "17"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 3,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Soldier health 4d4+5 (15) [rolls 2,3,2,3; size x1.11; campaign x1.00] = 17 HP"
+      }
+    },
+    {
+      "source_array_index": 928,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Runner health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "4,1,2"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.89"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "9"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 4,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Runner health 3d4+3 (10) [rolls 4,1,2; size x0.89; campaign x1.00] = 9 HP"
+      }
+    },
+    {
+      "source_array_index": 929,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Watcher health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "11"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "3,1,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.98"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "11"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 5,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Watcher health 3d4+3 (11) [rolls 3,1,4; size x0.98; campaign x1.00] = 11 HP"
+      }
+    },
+    {
+      "source_array_index": 930,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Shambler health "
+          },
+          {
+            "role": "dice",
+            "text": "4d4+5"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "14"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "14.1"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,1,2,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.82"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "12"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 6,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Shambler health 4d4+5 (14 -> 14.1) [rolls 2,1,2,4; size x0.82; campaign x1.00] = 12 HP"
+      }
+    },
+    {
+      "source_array_index": 931,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Seeker health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "13"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "11.1"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,4,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.22"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "14"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 7,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Seeker health 3d4+3 (13 -> 11.1) [rolls 2,4,4; size x1.22; campaign x1.00] = 14 HP"
+      }
+    },
+    {
+      "source_array_index": 932,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Runner health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "11"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "1,3,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.86"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 8,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Runner health 3d4+3 (11) [rolls 1,3,4; size x0.86; campaign x1.00] = 10 HP"
+      }
+    },
+    {
+      "source_array_index": 933,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Runner health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "12"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "11.1"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "3,2,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.78"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "9"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 9,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Runner health 3d4+3 (12 -> 11.1) [rolls 3,2,4; size x0.78; campaign x1.00] = 9 HP"
+      }
+    },
+    {
+      "source_array_index": 934,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Bio Blaster health "
+          },
+          {
+            "role": "dice",
+            "text": "5d4+6"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "20"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "19.6"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "4,2,3,1,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.86"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "17"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 10,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Bio Blaster health 5d4+6 (20 -> 19.6) [rolls 4,2,3,1,4; size x0.86; campaign x1.00] = 17 HP"
+      }
+    },
+    {
+      "source_array_index": 935,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Runner health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "12"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "11.1"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,3,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.78"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "9"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 11,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Runner health 3d4+3 (12 -> 11.1) [rolls 2,3,4; size x0.78; campaign x1.00] = 9 HP"
+      }
+    },
+    {
+      "source_array_index": 936,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Bio Blaster health "
+          },
+          {
+            "role": "dice",
+            "text": "5d4+6"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "17"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "17.4"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "4,1,1,3,2"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.80"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "14"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 12,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Bio Blaster health 5d4+6 (17 -> 17.4) [rolls 4,1,1,3,2; size x0.80; campaign x1.00] = 14 HP"
+      }
+    },
+    {
+      "source_array_index": 937,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Blitzer health "
+          },
+          {
+            "role": "dice",
+            "text": "4d4+5"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "13"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "14.1"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "1,3,2,2"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.28"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "18"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 13,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Blitzer health 4d4+5 (13 -> 14.1) [rolls 1,3,2,2; size x1.28; campaign x1.00] = 18 HP"
+      }
+    },
+    {
+      "source_array_index": 938,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Soldier health "
+          },
+          {
+            "role": "dice",
+            "text": "4d4+5"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "13"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "14.1"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,1,3,2"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.33"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 14,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Soldier health 4d4+5 (13 -> 14.1) [rolls 2,1,3,2; size x0.33; campaign x1.00] = 5 HP"
+      }
+    },
+    {
+      "source_array_index": 939,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Deadcrab health "
+          },
+          {
+            "role": "dice",
+            "text": "2d4+1"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,3"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.49"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "3"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 15,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Deadcrab health 2d4+1 (6) [rolls 2,3; size x0.49; campaign x1.00] = 3 HP"
+      }
+    },
+    {
+      "source_array_index": 940,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Bio Blaster health "
+          },
+          {
+            "role": "dice",
+            "text": "5d4+6"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "21"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "19.6"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,2,3,4,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.28"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "25"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 16,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Bio Blaster health 5d4+6 (21 -> 19.6) [rolls 2,2,3,4,4; size x1.28; campaign x1.00] = 25 HP"
+      }
+    },
+    {
+      "source_array_index": 941,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Seeker health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "11"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "1,4,3"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.74"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "8"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 17,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Seeker health 3d4+3 (11) [rolls 1,4,3; size x0.74; campaign x1.00] = 8 HP"
+      }
+    },
+    {
+      "source_array_index": 942,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Runner health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "11"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "3,2,3"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.87"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 18,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Runner health 3d4+3 (11) [rolls 3,2,3; size x0.87; campaign x1.00] = 10 HP"
+      }
+    },
+    {
+      "source_array_index": 943,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Soldier health "
+          },
+          {
+            "role": "dice",
+            "text": "4d4+5"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "15"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "1,2,3,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.16"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "17"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 19,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Soldier health 4d4+5 (15) [rolls 1,2,3,4; size x1.16; campaign x1.00] = 17 HP"
+      }
+    },
+    {
+      "source_array_index": 944,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Bio Blaster health "
+          },
+          {
+            "role": "dice",
+            "text": "5d4+6"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "25"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "19.6"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "4,4,4,4,3"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.24"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "24"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 20,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Bio Blaster health 5d4+6 (25 -> 19.6) [rolls 4,4,4,4,3; size x1.24; campaign x1.00] = 24 HP"
+      }
+    },
+    {
+      "source_array_index": 945,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Shambler health "
+          },
+          {
+            "role": "dice",
+            "text": "4d4+5"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "14.1"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "1,1,1,2"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.48"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "7"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 21,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Shambler health 4d4+5 (10 -> 14.1) [rolls 1,1,1,2; size x0.48; campaign x1.00] = 7 HP"
+      }
+    },
+    {
+      "source_array_index": 946,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Watcher health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,3,2"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.26"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "13"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 22,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Watcher health 3d4+3 (10) [rolls 2,3,2; size x1.26; campaign x1.00] = 13 HP"
+      }
+    },
+    {
+      "source_array_index": 947,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Soldier health "
+          },
+          {
+            "role": "dice",
+            "text": "4d4+5"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "11"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "14.1"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,1,2,1"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.17"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "17"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 23,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Soldier health 4d4+5 (11 -> 14.1) [rolls 2,1,2,1; size x1.17; campaign x1.00] = 17 HP"
+      }
+    },
+    {
+      "source_array_index": 948,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Deadcrab health "
+          },
+          {
+            "role": "dice",
+            "text": "2d4+1"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "4,1"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.77"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 24,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Deadcrab health 2d4+1 (6) [rolls 4,1; size x0.77; campaign x1.00] = 5 HP"
+      }
+    },
+    {
+      "source_array_index": 949,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Bio Blaster health "
+          },
+          {
+            "role": "dice",
+            "text": "5d4+6"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "18"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "3,3,2,1,3"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "0.86"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "15"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 25,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Bio Blaster health 5d4+6 (18) [rolls 3,3,2,1,3; size x0.86; campaign x1.00] = 15 HP"
+      }
+    },
+    {
+      "source_array_index": 950,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Deadcrab health "
+          },
+          {
+            "role": "dice",
+            "text": "2d4+1"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "5.6"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "1,3"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.28"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "7"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 26,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Deadcrab health 2d4+1 (5 -> 5.6) [rolls 1,3; size x1.28; campaign x1.00] = 7 HP"
+      }
+    },
+    {
+      "source_array_index": 951,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Runner health "
+          },
+          {
+            "role": "dice",
+            "text": "3d4+3"
+          },
+          {
+            "role": "prose",
+            "text": " ("
+          },
+          {
+            "role": "total",
+            "text": "13"
+          },
+          {
+            "role": "prose",
+            "text": " -"
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "11.1"
+          },
+          {
+            "role": "prose",
+            "text": ") [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2,4,4"
+          },
+          {
+            "role": "prose",
+            "text": "; size x"
+          },
+          {
+            "role": "total",
+            "text": "1.21"
+          },
+          {
+            "role": "prose",
+            "text": "; campaign x"
+          },
+          {
+            "role": "total",
+            "text": "1.00"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "13"
+          },
+          {
+            "role": "prose",
+            "text": " HP"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 27,
+        "category": 2,
+        "cueVariant": 0,
+        "stamp": "10-27 12:08:45",
+        "text": "Runner health 3d4+3 (13 -> 11.1) [rolls 2,4,4; size x1.21; campaign x1.00] = 13 HP"
+      }
+    },
+    {
+      "source_array_index": 952,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "FEAT CHOSEN — Pusher"
+          }
+        ],
+        "cue": 0,
+        "family": "progression",
+        "serial": 28,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:25:00",
+        "text": "FEAT CHOSEN — Pusher"
+      }
+    },
+    {
+      "source_array_index": 953,
+      "row": {
+        "segments": [
+          {
+            "role": "objective",
+            "text": "[OBJECTIVE]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": PRISON COLLAPSE IN "
+          },
+          {
+            "role": "total",
+            "text": "30"
+          },
+          {
+            "role": "prose",
+            "text": ":"
+          },
+          {
+            "role": "total",
+            "text": "00"
+          },
+          {
+            "role": "prose",
+            "text": " — DUNGEON CLOCK STARTED"
+          }
+        ],
+        "cue": 0,
+        "family": "objective",
+        "serial": 29,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:23",
+        "text": "[OBJECTIVE] Shael Riley as Blake \"Slow Burn\" Garcia: PRISON COLLAPSE IN 30:00 — DUNGEON CLOCK STARTED"
+      }
+    },
+    {
+      "source_array_index": 954,
+      "row": {
+        "segments": [
+          {
+            "role": "resource",
+            "text": "[RESOURCE]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": "
+          },
+          {
+            "role": "total",
+            "text": "+3"
+          },
+          {
+            "role": "prose",
+            "text": " ."
+          },
+          {
+            "role": "total",
+            "text": "357"
+          },
+          {
+            "role": "prose",
+            "text": " Magnum ammo"
+          }
+        ],
+        "cue": 0,
+        "family": "resource",
+        "serial": 30,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:30",
+        "text": "[RESOURCE] Shael Riley as Blake \"Slow Burn\" Garcia: +3 .357 Magnum ammo"
+      }
+    },
+    {
+      "source_array_index": 955,
+      "row": {
+        "segments": [
+          {
+            "role": "resist",
+            "text": "[RESIST]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": Waylayer — CONSTITUTION resisted: "
+          },
+          {
+            "role": "total",
+            "text": "-1"
+          },
+          {
+            "role": "prose",
+            "text": " per die. Backstabs bypass it; favor stronger hits."
+          }
+        ],
+        "cue": 0,
+        "family": "resist",
+        "serial": 31,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:40",
+        "text": "[RESIST] Shael Riley as Blake \"Slow Burn\" Garcia: Waylayer — CONSTITUTION resisted: -1 per die. Backstabs bypass it; favor stronger hits."
+      }
+    },
+    {
+      "source_array_index": 956,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Waylayer DODGE SUCCESS — roll "
+          },
+          {
+            "role": "total",
+            "text": "0.065945918733203712"
+          },
+          {
+            "role": "prose",
+            "text": " / chance "
+          },
+          {
+            "role": "total",
+            "text": "0.22"
+          },
+          {
+            "role": "prose",
+            "text": " (elevated); "
+          },
+          {
+            "role": "total",
+            "text": "0"
+          },
+          {
+            "role": "prose",
+            "text": " HP DAMAGE"
+          }
+        ],
+        "cue": 0,
+        "family": "resist",
+        "serial": 32,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:40",
+        "text": "Waylayer DODGE SUCCESS — roll 0.065945918733203712 / chance 0.22 (elevated); 0 HP DAMAGE"
+      }
+    },
+    {
+      "source_array_index": 957,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(0)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "recipient",
+            "text": "Waylayer"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "."
+          },
+          {
+            "role": "total",
+            "text": "357"
+          },
+          {
+            "role": "source",
+            "text": " Magnum"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!"
+          },
+          {
+            "role": "prose",
+            "text": " favored enemy [chamber "
+          },
+          {
+            "role": "total",
+            "text": "1"
+          },
+          {
+            "role": "prose",
+            "text": "/"
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+0"
+          },
+          {
+            "role": "prose",
+            "text": " empty; boom "
+          },
+          {
+            "role": "dice",
+            "text": "11@8+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 12@7+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 1@6+ + 5@8+ "
+          },
+          {
+            "role": "total",
+            "text": "= 29 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+1"
+          },
+          {
+            "role": "prose",
+            "text": " favored-enemy primary dice included; CON "
+          },
+          {
+            "role": "total",
+            "text": "-1"
+          },
+          {
+            "role": "prose",
+            "text": "/die: "
+          },
+          {
+            "role": "total",
+            "text": "12"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "11"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "1"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "4"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "28"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 31.8648"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 33,
+        "category": 0,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:40",
+        "text": "(0) DAMAGE — Shael Riley as Blake \"Slow Burn\" Garcia → Waylayer, via .357 Magnum; 1d12! + 1d12! favored enemy [chamber 1/6; +0 empty; boom 11@8+ > 12@7+ > 1@6+ + 5@8+ = 29 rolled; +1 favored-enemy primary dice included; CON -1/die: 12 + 11 + 1 + 4 = 28; resolved 31.8648]"
+      }
+    },
+    {
+      "source_array_index": 958,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(31.9)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "recipient",
+            "text": "Runner"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "."
+          },
+          {
+            "role": "total",
+            "text": "357"
+          },
+          {
+            "role": "source",
+            "text": " Magnum"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [chamber "
+          },
+          {
+            "role": "total",
+            "text": "2"
+          },
+          {
+            "role": "prose",
+            "text": "/"
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+1"
+          },
+          {
+            "role": "prose",
+            "text": " empty; boom "
+          },
+          {
+            "role": "dice",
+            "text": "12@8+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 7@7+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 6@6+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 4@5+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 30 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; CON "
+          },
+          {
+            "role": "total",
+            "text": "-1"
+          },
+          {
+            "role": "prose",
+            "text": "/die: "
+          },
+          {
+            "role": "total",
+            "text": "13"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "3"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "1"
+          },
+          {
+            "role": "prose",
+            "text": " bonus "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "28"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 31.8648"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 34,
+        "category": 0,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:40",
+        "text": "(31.9) DAMAGE — Shael Riley as Blake \"Slow Burn\" Garcia → Runner, via .357 Magnum; 1d12!+1 [chamber 2/6; +1 empty; boom 12@8+ > 7@7+ > 6@6+ > 4@5+ + 1 bonus = 30 rolled; CON -1/die: 13 + 6 + 5 + 3 + 1 bonus = 28; resolved 31.8648]"
+      }
+    },
+    {
+      "source_array_index": 959,
+      "row": {
+        "segments": [
+          {
+            "role": "resource",
+            "text": "[RESOURCE]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": "
+          },
+          {
+            "role": "total",
+            "text": "+15"
+          },
+          {
+            "role": "prose",
+            "text": " Hero XP ("
+          },
+          {
+            "role": "total",
+            "text": "15"
+          },
+          {
+            "role": "prose",
+            "text": " total)"
+          }
+        ],
+        "cue": 0,
+        "family": "resource",
+        "serial": 35,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:40",
+        "text": "[RESOURCE] Shael Riley as Blake \"Slow Burn\" Garcia: +15 Hero XP (15 total)"
+      }
+    },
+    {
+      "source_array_index": 960,
+      "row": {
+        "segments": [
+          {
+            "role": "resource",
+            "text": "[RESOURCE]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": "
+          },
+          {
+            "role": "total",
+            "text": "+10"
+          },
+          {
+            "role": "prose",
+            "text": " Hero XP ("
+          },
+          {
+            "role": "total",
+            "text": "25"
+          },
+          {
+            "role": "prose",
+            "text": " total)"
+          }
+        ],
+        "cue": 0,
+        "family": "resource",
+        "serial": 36,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:40",
+        "text": "[RESOURCE] Shael Riley as Blake \"Slow Burn\" Garcia: +10 Hero XP (25 total)"
+      }
+    },
+    {
+      "source_array_index": 961,
+      "row": {
+        "segments": [
+          {
+            "role": "kill",
+            "text": "[DEFEATED]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": Runner"
+          }
+        ],
+        "cue": 0,
+        "family": "kill",
+        "serial": 37,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:40",
+        "text": "[DEFEATED] Shael Riley as Blake \"Slow Burn\" Garcia: Runner"
+      }
+    },
+    {
+      "source_array_index": 962,
+      "row": {
+        "segments": [
+          {
+            "role": "resist",
+            "text": "[RESIST]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": Waylayer — CONSTITUTION resisted: "
+          },
+          {
+            "role": "total",
+            "text": "-1"
+          },
+          {
+            "role": "prose",
+            "text": " per die. Backstabs bypass it; favor stronger hits."
+          }
+        ],
+        "cue": 0,
+        "family": "resist",
+        "serial": 38,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:41",
+        "text": "[RESIST] Shael Riley as Blake \"Slow Burn\" Garcia: Waylayer — CONSTITUTION resisted: -1 per die. Backstabs bypass it; favor stronger hits."
+      }
+    },
+    {
+      "source_array_index": 963,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Waylayer DODGE SUCCESS — roll "
+          },
+          {
+            "role": "total",
+            "text": "0.14370947670536999"
+          },
+          {
+            "role": "prose",
+            "text": " / chance "
+          },
+          {
+            "role": "total",
+            "text": "0.22"
+          },
+          {
+            "role": "prose",
+            "text": " (elevated); "
+          },
+          {
+            "role": "total",
+            "text": "0"
+          },
+          {
+            "role": "prose",
+            "text": " HP DAMAGE"
+          }
+        ],
+        "cue": 0,
+        "family": "resist",
+        "serial": 39,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:41",
+        "text": "Waylayer DODGE SUCCESS — roll 0.14370947670536999 / chance 0.22 (elevated); 0 HP DAMAGE"
+      }
+    },
+    {
+      "source_array_index": 964,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(0)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "recipient",
+            "text": "Waylayer"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "."
+          },
+          {
+            "role": "total",
+            "text": "357"
+          },
+          {
+            "role": "source",
+            "text": " Magnum"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!+2"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!"
+          },
+          {
+            "role": "prose",
+            "text": " favored enemy [chamber "
+          },
+          {
+            "role": "total",
+            "text": "3"
+          },
+          {
+            "role": "prose",
+            "text": "/"
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+2"
+          },
+          {
+            "role": "prose",
+            "text": " empty; boom "
+          },
+          {
+            "role": "dice",
+            "text": "3@8+ + 11@8+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 1@7+ + 2 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 17 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+1"
+          },
+          {
+            "role": "prose",
+            "text": " favored-enemy primary dice included; CON "
+          },
+          {
+            "role": "total",
+            "text": "-1"
+          },
+          {
+            "role": "prose",
+            "text": "/die: "
+          },
+          {
+            "role": "total",
+            "text": "4"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "1"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "2"
+          },
+          {
+            "role": "prose",
+            "text": " bonus "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "17"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 20.181"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 40,
+        "category": 0,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:41",
+        "text": "(0) DAMAGE — Shael Riley as Blake \"Slow Burn\" Garcia → Waylayer, via .357 Magnum; 1d12!+2 + 1d12! favored enemy [chamber 3/6; +2 empty; boom 3@8+ + 11@8+ > 1@7+ + 2 bonus = 17 rolled; +1 favored-enemy primary dice included; CON -1/die: 4 + 10 + 1 + 2 bonus = 17; resolved 20.181]"
+      }
+    },
+    {
+      "source_array_index": 965,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Waylayer DODGE FAILED — roll "
+          },
+          {
+            "role": "total",
+            "text": "0.84575572548970179"
+          },
+          {
+            "role": "prose",
+            "text": " / chance "
+          },
+          {
+            "role": "total",
+            "text": "0.22"
+          },
+          {
+            "role": "prose",
+            "text": " (elevated)"
+          }
+        ],
+        "cue": 0,
+        "family": "resist",
+        "serial": 41,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:42",
+        "text": "Waylayer DODGE FAILED — roll 0.84575572548970179 / chance 0.22 (elevated)"
+      }
+    },
+    {
+      "source_array_index": 966,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Waylayer MORALE "
+          },
+          {
+            "role": "dice",
+            "text": "1d20"
+          },
+          {
+            "role": "prose",
+            "text": " ["
+          },
+          {
+            "role": "total",
+            "text": "9"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "total",
+            "text": "+6"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "15"
+          },
+          {
+            "role": "prose",
+            "text": " vs DC "
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": " — SAVE; cooldown "
+          },
+          {
+            "role": "total",
+            "text": "30+"
+          },
+          {
+            "role": "dice",
+            "text": "3d20"
+          },
+          {
+            "role": "prose",
+            "text": " ["
+          },
+          {
+            "role": "total",
+            "text": "15+10+10"
+          },
+          {
+            "role": "prose",
+            "text": "] x"
+          },
+          {
+            "role": "total",
+            "text": "0.25"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "16.25"
+          },
+          {
+            "role": "prose",
+            "text": " seconds"
+          }
+        ],
+        "cue": 0,
+        "family": "status",
+        "serial": 42,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:42",
+        "text": "Waylayer MORALE 1d20 [9] +6 = 15 vs DC 10 — SAVE; cooldown 30+3d20 [15+10+10] x0.25 = 16.25 seconds"
+      }
+    },
+    {
+      "source_array_index": 967,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(19.1)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "recipient",
+            "text": "Waylayer"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "."
+          },
+          {
+            "role": "total",
+            "text": "357"
+          },
+          {
+            "role": "source",
+            "text": " Magnum"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!+3"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!"
+          },
+          {
+            "role": "prose",
+            "text": " favored enemy [chamber "
+          },
+          {
+            "role": "total",
+            "text": "4"
+          },
+          {
+            "role": "prose",
+            "text": "/"
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+3"
+          },
+          {
+            "role": "prose",
+            "text": " empty; boom "
+          },
+          {
+            "role": "dice",
+            "text": "10@8+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 2@7+ + 1@8+ + 3 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 16 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+1"
+          },
+          {
+            "role": "prose",
+            "text": " favored-enemy primary dice included; CON "
+          },
+          {
+            "role": "total",
+            "text": "-1"
+          },
+          {
+            "role": "prose",
+            "text": "/die: "
+          },
+          {
+            "role": "total",
+            "text": "11"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "1"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "1"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "3"
+          },
+          {
+            "role": "prose",
+            "text": " bonus "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "16"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 19.1189"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 43,
+        "category": 0,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:42",
+        "text": "(19.1) DAMAGE — Shael Riley as Blake \"Slow Burn\" Garcia → Waylayer, via .357 Magnum; 1d12!+3 + 1d12! favored enemy [chamber 4/6; +3 empty; boom 10@8+ > 2@7+ + 1@8+ + 3 bonus = 16 rolled; +1 favored-enemy primary dice included; CON -1/die: 11 + 1 + 1 + 3 bonus = 16; resolved 19.1189]"
+      }
+    },
+    {
+      "source_array_index": 968,
+      "row": {
+        "segments": [
+          {
+            "role": "resist",
+            "text": "[RESIST]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": Waylayer — CONSTITUTION resisted: "
+          },
+          {
+            "role": "total",
+            "text": "-1"
+          },
+          {
+            "role": "prose",
+            "text": " per die. Backstabs bypass it; favor stronger hits."
+          }
+        ],
+        "cue": 0,
+        "family": "resist",
+        "serial": 44,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:43",
+        "text": "[RESIST] Shael Riley as Blake \"Slow Burn\" Garcia: Waylayer — CONSTITUTION resisted: -1 per die. Backstabs bypass it; favor stronger hits."
+      }
+    },
+    {
+      "source_array_index": 969,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Waylayer DODGE FAILED — roll "
+          },
+          {
+            "role": "total",
+            "text": "0.96021255195160637"
+          },
+          {
+            "role": "prose",
+            "text": " / chance "
+          },
+          {
+            "role": "total",
+            "text": "0.22"
+          },
+          {
+            "role": "prose",
+            "text": " (elevated)"
+          }
+        ],
+        "cue": 0,
+        "family": "resist",
+        "serial": 45,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:43",
+        "text": "Waylayer DODGE FAILED — roll 0.96021255195160637 / chance 0.22 (elevated)"
+      }
+    },
+    {
+      "source_array_index": 970,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(94.5)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "recipient",
+            "text": "Waylayer"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "."
+          },
+          {
+            "role": "total",
+            "text": "357"
+          },
+          {
+            "role": "source",
+            "text": " Magnum"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!+4"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!"
+          },
+          {
+            "role": "prose",
+            "text": " favored enemy [chamber "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": "/"
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+4"
+          },
+          {
+            "role": "prose",
+            "text": " empty; boom "
+          },
+          {
+            "role": "dice",
+            "text": "8@8+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 11@7+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 6@6+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 6@5+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 11@5+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 12@5+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 5@5+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 11@5+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 1@5+ + 8@8+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 10@7+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 3@6+ + 4 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 96 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+1"
+          },
+          {
+            "role": "prose",
+            "text": " favored-enemy primary dice included; CON "
+          },
+          {
+            "role": "total",
+            "text": "-1"
+          },
+          {
+            "role": "prose",
+            "text": "/die: "
+          },
+          {
+            "role": "total",
+            "text": "9"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "11"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "4"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "1"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "7"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "9"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "2"
+          },
+          {
+            "role": "prose",
+            "text": " + "
+          },
+          {
+            "role": "total",
+            "text": "4"
+          },
+          {
+            "role": "prose",
+            "text": " bonus "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "87"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 94.5322"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 46,
+        "category": 0,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:43",
+        "text": "(94.5) DAMAGE — Shael Riley as Blake \"Slow Burn\" Garcia → Waylayer, via .357 Magnum; 1d12!+4 + 1d12! favored enemy [chamber 5/6; +4 empty; boom 8@8+ > 11@7+ > 6@6+ > 6@5+ > 11@5+ > 12@5+ > 5@5+ > 11@5+ > 1@5+ + 8@8+ > 10@7+ > 3@6+ + 4 bonus = 96 rolled; +1 favored-enemy primary dice included; CON -1/die: 9 + 10 + 5 + 5 + 10 + 11 + 4 + 10 + 1 + 7 + 9 + 2 + 4 bonus = 87; resolved 94.5322]"
+      }
+    },
+    {
+      "source_array_index": 971,
+      "row": {
+        "segments": [
+          {
+            "role": "resource",
+            "text": "[RESOURCE]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": "
+          },
+          {
+            "role": "total",
+            "text": "+33"
+          },
+          {
+            "role": "prose",
+            "text": " Hero XP ("
+          },
+          {
+            "role": "total",
+            "text": "58"
+          },
+          {
+            "role": "prose",
+            "text": " total)"
+          }
+        ],
+        "cue": 0,
+        "family": "resource",
+        "serial": 47,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:43",
+        "text": "[RESOURCE] Shael Riley as Blake \"Slow Burn\" Garcia: +33 Hero XP (58 total)"
+      }
+    },
+    {
+      "source_array_index": 972,
+      "row": {
+        "segments": [
+          {
+            "role": "resource",
+            "text": "[RESOURCE]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": "
+          },
+          {
+            "role": "total",
+            "text": "+22"
+          },
+          {
+            "role": "prose",
+            "text": " Hero XP ("
+          },
+          {
+            "role": "total",
+            "text": "80"
+          },
+          {
+            "role": "prose",
+            "text": " total)"
+          }
+        ],
+        "cue": 0,
+        "family": "resource",
+        "serial": 48,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:43",
+        "text": "[RESOURCE] Shael Riley as Blake \"Slow Burn\" Garcia: +22 Hero XP (80 total)"
+      }
+    },
+    {
+      "source_array_index": 973,
+      "row": {
+        "segments": [
+          {
+            "role": "kill",
+            "text": "[DEFEATED]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": Waylayer"
+          }
+        ],
+        "cue": 0,
+        "family": "kill",
+        "serial": 49,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:43",
+        "text": "[DEFEATED] Shael Riley as Blake \"Slow Burn\" Garcia: Waylayer"
+      }
+    },
+    {
+      "source_array_index": 974,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(0)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "recipient",
+            "text": "No Damageable Target"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "MAGNUM"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!+4"
+          },
+          {
+            "role": "prose",
+            "text": " [chamber "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": "/"
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+4"
+          },
+          {
+            "role": "prose",
+            "text": " empty; boom "
+          },
+          {
+            "role": "dice",
+            "text": "1@8+ + 4 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 5 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 50,
+        "category": 0,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:43",
+        "text": "(0) DAMAGE — Shael Riley as Blake \"Slow Burn\" Garcia → No Damageable Target, via MAGNUM; 1d12!+4 [chamber 5/6; +4 empty; boom 1@8+ + 4 bonus = 5 rolled]"
+      }
+    },
+    {
+      "source_array_index": 975,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Blitzer DODGE FAILED — roll "
+          },
+          {
+            "role": "total",
+            "text": "0.33783297318763378"
+          },
+          {
+            "role": "prose",
+            "text": " / chance "
+          },
+          {
+            "role": "total",
+            "text": "0.22"
+          },
+          {
+            "role": "prose",
+            "text": " (elevated)"
+          }
+        ],
+        "cue": 0,
+        "family": "resist",
+        "serial": 51,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:44",
+        "text": "Blitzer DODGE FAILED — roll 0.33783297318763378 / chance 0.22 (elevated)"
+      }
+    },
+    {
+      "source_array_index": 976,
+      "row": {
+        "segments": [
+          {
+            "role": "prose",
+            "text": "Blitzer MORALE "
+          },
+          {
+            "role": "dice",
+            "text": "1d20"
+          },
+          {
+            "role": "prose",
+            "text": " ["
+          },
+          {
+            "role": "total",
+            "text": "3"
+          },
+          {
+            "role": "prose",
+            "text": "] "
+          },
+          {
+            "role": "total",
+            "text": "+5"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "8"
+          },
+          {
+            "role": "prose",
+            "text": " vs DC "
+          },
+          {
+            "role": "total",
+            "text": "10"
+          },
+          {
+            "role": "prose",
+            "text": " — FAIL; cooldown "
+          },
+          {
+            "role": "total",
+            "text": "30+"
+          },
+          {
+            "role": "dice",
+            "text": "3d20"
+          },
+          {
+            "role": "prose",
+            "text": " ["
+          },
+          {
+            "role": "total",
+            "text": "11+12+15"
+          },
+          {
+            "role": "prose",
+            "text": "] x"
+          },
+          {
+            "role": "total",
+            "text": "0.25"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "continuation",
+            "text": "="
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "total",
+            "text": "17"
+          },
+          {
+            "role": "prose",
+            "text": " seconds"
+          }
+        ],
+        "cue": 0,
+        "family": "status",
+        "serial": 52,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:44",
+        "text": "Blitzer MORALE 1d20 [3] +5 = 8 vs DC 10 — FAIL; cooldown 30+3d20 [11+12+15] x0.25 = 17 seconds"
+      }
+    },
+    {
+      "source_array_index": 977,
+      "row": {
+        "segments": [
+          {
+            "role": "status",
+            "text": "[STATUS +]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Blitzer"
+          },
+          {
+            "role": "prose",
+            "text": ": MORALE_FLEE "
+          },
+          {
+            "role": "status",
+            "text": "APPLIED"
+          }
+        ],
+        "cue": 0,
+        "family": "status",
+        "serial": 53,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:44",
+        "text": "[STATUS +] Blitzer: MORALE_FLEE APPLIED"
+      }
+    },
+    {
+      "source_array_index": 978,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(15.9)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "recipient",
+            "text": "Blitzer"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "."
+          },
+          {
+            "role": "total",
+            "text": "357"
+          },
+          {
+            "role": "source",
+            "text": " Magnum"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!+4"
+          },
+          {
+            "role": "prose",
+            "text": " [chamber "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": "/"
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+4"
+          },
+          {
+            "role": "prose",
+            "text": " empty; boom "
+          },
+          {
+            "role": "dice",
+            "text": "7@8+ + 4 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 11 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 15.9324"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 54,
+        "category": 0,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:44",
+        "text": "(15.9) DAMAGE — Shael Riley as Blake \"Slow Burn\" Garcia → Blitzer, via .357 Magnum; 1d12!+4 [chamber 5/6; +4 empty; boom 7@8+ + 4 bonus = 11 rolled; resolved 15.9324]"
+      }
+    },
+    {
+      "source_array_index": 979,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(31.9)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "recipient",
+            "text": "Blitzer"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "."
+          },
+          {
+            "role": "total",
+            "text": "357"
+          },
+          {
+            "role": "source",
+            "text": " Magnum"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d12!+4"
+          },
+          {
+            "role": "prose",
+            "text": " [chamber "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": "/"
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "+4"
+          },
+          {
+            "role": "prose",
+            "text": " empty; boom "
+          },
+          {
+            "role": "dice",
+            "text": "8@8+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 9@7+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 5@6+ + 4 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 26 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 31.8648"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 55,
+        "category": 0,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:44",
+        "text": "(31.9) DAMAGE — Shael Riley as Blake \"Slow Burn\" Garcia → Blitzer, via .357 Magnum; 1d12!+4 [chamber 5/6; +4 empty; boom 8@8+ > 9@7+ > 5@6+ + 4 bonus = 26 rolled; resolved 31.8648]"
+      }
+    },
+    {
+      "source_array_index": 980,
+      "row": {
+        "segments": [
+          {
+            "role": "resource",
+            "text": "[RESOURCE]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": "
+          },
+          {
+            "role": "total",
+            "text": "+24"
+          },
+          {
+            "role": "prose",
+            "text": " Hero XP ("
+          },
+          {
+            "role": "total",
+            "text": "104"
+          },
+          {
+            "role": "prose",
+            "text": " total)"
+          }
+        ],
+        "cue": 0,
+        "family": "resource",
+        "serial": 56,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:44",
+        "text": "[RESOURCE] Shael Riley as Blake \"Slow Burn\" Garcia: +24 Hero XP (104 total)"
+      }
+    },
+    {
+      "source_array_index": 981,
+      "row": {
+        "segments": [
+          {
+            "role": "resource",
+            "text": "[RESOURCE]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": "
+          },
+          {
+            "role": "total",
+            "text": "+16"
+          },
+          {
+            "role": "prose",
+            "text": " Hero XP ("
+          },
+          {
+            "role": "total",
+            "text": "120"
+          },
+          {
+            "role": "prose",
+            "text": " total)"
+          }
+        ],
+        "cue": 0,
+        "family": "resource",
+        "serial": 57,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:44",
+        "text": "[RESOURCE] Shael Riley as Blake \"Slow Burn\" Garcia: +16 Hero XP (120 total)"
+      }
+    },
+    {
+      "source_array_index": 982,
+      "row": {
+        "segments": [
+          {
+            "role": "kill",
+            "text": "[DEFEATED]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": Blitzer"
+          }
+        ],
+        "cue": 0,
+        "family": "kill",
+        "serial": 58,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:44",
+        "text": "[DEFEATED] Shael Riley as Blake \"Slow Burn\" Garcia: Blitzer"
+      }
+    },
+    {
+      "source_array_index": 983,
+      "row": {
+        "segments": [
+          {
+            "role": "clear",
+            "text": "[STATUS -]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Blitzer"
+          },
+          {
+            "role": "prose",
+            "text": ": MORALE_FLEE "
+          },
+          {
+            "role": "resource",
+            "text": "ENDED"
+          },
+          {
+            "role": "prose",
+            "text": " (actor_lifecycle)"
+          }
+        ],
+        "cue": 0,
+        "family": "clear",
+        "serial": 59,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:44",
+        "text": "[STATUS -] Blitzer: MORALE_FLEE ENDED (actor_lifecycle)"
+      }
+    },
+    {
+      "source_array_index": 984,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(20.4)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "10@10+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 8@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 19 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 20.3557"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "19"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 60,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:57",
+        "text": "(20.4) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 10@10+ > 8@10+ + 1 bonus = 19 rolled; resolved 20.3557; base 19 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 985,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(2.1)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "1@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 2 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 2.14271"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "2"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 61,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:57",
+        "text": "(2.1) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 1@10+ + 1 bonus = 2 rolled; resolved 2.14271; base 2 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 986,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(9.6)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "8@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 9 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 9.64218"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "9"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 62,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:28:57",
+        "text": "(9.6) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 8@10+ + 1 bonus = 9 rolled; resolved 9.64218; base 9 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 987,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(6.4)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "5@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 6 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 6.42812"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "6"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 63,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:00",
+        "text": "(6.4) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 5@10+ + 1 bonus = 6 rolled; resolved 6.42812; base 6 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 988,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(3.2)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "2@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 3 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 3.21406"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "3"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 64,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:00",
+        "text": "(3.2) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 2@10+ + 1 bonus = 3 rolled; resolved 3.21406; base 3 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 989,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(12.9)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "10@10+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 1@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 12 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 12.8562"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "12"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 65,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:00",
+        "text": "(12.9) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 10@10+ > 1@10+ + 1 bonus = 12 rolled; resolved 12.8562; base 12 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 990,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(8.6)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "7@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 8 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 8.57083"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "8"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 66,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:03",
+        "text": "(8.6) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 7@10+ + 1 bonus = 8 rolled; resolved 8.57083; base 8 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 991,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(5.4)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "4@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 5 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 5.35677"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "5"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 67,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:03",
+        "text": "(5.4) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 4@10+ + 1 bonus = 5 rolled; resolved 5.35677; base 5 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 992,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(2.1)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "1@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 2 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 2.14271"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "2"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 68,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:04",
+        "text": "(2.1) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 1@10+ + 1 bonus = 2 rolled; resolved 2.14271; base 2 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 993,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(9.6)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "8@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 9 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 9.64218"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "9"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 69,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:06",
+        "text": "(9.6) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 8@10+ + 1 bonus = 9 rolled; resolved 9.64218; base 9 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 994,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(7.5)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "6@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 7 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 7.49948"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "7"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 70,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:06",
+        "text": "(7.5) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 6@10+ + 1 bonus = 7 rolled; resolved 7.49948; base 7 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 995,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(7.5)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "6@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 7 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 7.49948"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "7"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 71,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:07",
+        "text": "(7.5) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 6@10+ + 1 bonus = 7 rolled; resolved 7.49948; base 7 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 996,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(4.3)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "3@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 4 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 4.28542"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "4"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 72,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:09",
+        "text": "(4.3) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 3@10+ + 1 bonus = 4 rolled; resolved 4.28542; base 4 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 997,
+      "row": {
+        "segments": [
+          {
+            "role": "total",
+            "text": "(16.1)"
+          },
+          {
+            "role": "prose",
+            "text": " DAMAGE — "
+          },
+          {
+            "role": "identity",
+            "text": "Soldier"
+          },
+          {
+            "role": "prose",
+            "text": " → "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ", via "
+          },
+          {
+            "role": "source",
+            "text": "soldier bolt"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "dice",
+            "text": "1d10!+1"
+          },
+          {
+            "role": "prose",
+            "text": " [rolls "
+          },
+          {
+            "role": "dice",
+            "text": "10@10+ "
+          },
+          {
+            "role": "continuation",
+            "text": ">"
+          },
+          {
+            "role": "dice",
+            "text": " 4@10+ + 1 bonus "
+          },
+          {
+            "role": "total",
+            "text": "= 15 rolled"
+          },
+          {
+            "role": "prose",
+            "text": "; "
+          },
+          {
+            "role": "total",
+            "text": "resolved 16.0703"
+          },
+          {
+            "role": "prose",
+            "text": "; base "
+          },
+          {
+            "role": "total",
+            "text": "15"
+          },
+          {
+            "role": "prose",
+            "text": " x"
+          },
+          {
+            "role": "total",
+            "text": "1.07"
+          },
+          {
+            "role": "prose",
+            "text": "]"
+          }
+        ],
+        "cue": 0,
+        "family": "routine",
+        "serial": 73,
+        "category": 1,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:09",
+        "text": "(16.1) DAMAGE — Soldier → Shael Riley as Blake \"Slow Burn\" Garcia, via soldier bolt; 1d10!+1 [rolls 10@10+ > 4@10+ + 1 bonus = 15 rolled; resolved 16.0703; base 15 x1.07]"
+      }
+    },
+    {
+      "source_array_index": 998,
+      "row": {
+        "segments": [
+          {
+            "role": "danger",
+            "text": "[DANGER]"
+          },
+          {
+            "role": "prose",
+            "text": " "
+          },
+          {
+            "role": "identity",
+            "text": "Shael Riley"
+          },
+          {
+            "role": "prose",
+            "text": " as "
+          },
+          {
+            "role": "character",
+            "text": "Blake \"Slow Burn\" Garcia"
+          },
+          {
+            "role": "prose",
+            "text": ": LIFE LOST — "
+          },
+          {
+            "role": "total",
+            "text": "2"
+          },
+          {
+            "role": "prose",
+            "text": " remaining"
+          }
+        ],
+        "cue": 0,
+        "family": "danger",
+        "serial": 74,
+        "category": 3,
+        "cueVariant": 0,
+        "stamp": "10-27 12:29:09",
+        "text": "[DANGER] Shael Riley as Blake \"Slow Burn\" Garcia: LIFE LOST — 2 remaining"
+      }
+    }
+  ]
+}

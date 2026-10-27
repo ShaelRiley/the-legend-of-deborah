@@ -55,6 +55,15 @@
   "native_repaired_candidate_pending": true,
   "clean_pass_streak": 0,
   "latest_full_integration": "../gate-precache/ci-fixture/successor-3d33-remote.json",
-  "full_candidate_integration_pending": true,
-  "no_full_campaign_or_cooperative_acceptance": true
+  "full_candidate_integration_pending": false,
+  "no_full_campaign_or_cooperative_acceptance": true,
+  "native_4322_partial_receipt": "native-4322/receipt.json",
+  "native_pending_note": "BUG012 did not trigger; BUG013 bolt-icon/lookup gates pass narrowly, generic glyph/broad lifecycle pending; BUG014 new label repair awaits fresh native.",
+  "full_candidate_integration": "../remote-ci-4322/proof.json",
+  "later_source_checkpoint": {
+    "commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+    "defect": "BUG-014.json",
+    "native_pending": true,
+    "full_ci_pending": true
+  }
 }

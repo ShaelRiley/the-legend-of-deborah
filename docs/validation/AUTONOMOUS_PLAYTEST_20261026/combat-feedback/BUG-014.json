@@ -1,0 +1,81 @@
+{
+  "id": "BUG-014",
+  "recorded_utc": "2026-10-27T17:45:34.105554+00:00",
+  "repair_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "remote_main_verified_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "baseline_source_commit": "aa200b27597ce3f9df7b54777d7d7d8f8b2ef24f",
+  "native_reproduction_commit": "4322f105e519fec53c469877998eecd5b4d06a34",
+  "severity": "Presentation/usability: native stock kill feed exposes raw localization key #lod_hostile",
+  "source": {
+    "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "gdd_revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": [
+      "00 AI ENTRYPOINT",
+      "01 AI RULE INDEX",
+      "06 MULTIPLAYER, LIFECYCLE & UI: LOD-UI-005 actor/name presentation"
+    ],
+    "canonical_fallback": "Existing sv_combat_feed_semantics.lua52 already uses Hostile for missing configured/archetype names. Native class-only fallback cannot identify all archetypes as Soldier.",
+    "native_api": [
+      "https://wiki.facepunch.com/gmod/language.Add",
+      "https://wiki.facepunch.com/gmod/language.GetPhrase",
+      "https://wiki.facepunch.com/gmod/GM:GetDeathNoticeEntityName"
+    ]
+  },
+  "reproduction": [
+    "Fresh4322 first natural Soldier-bolt death",
+    "Inspect top-right native stock death notice beside the now-correct crossbow glyph",
+    "Observe raw #lod_hostile attacker label; no project language key exists"
+  ],
+  "expected": "Known generic hostile class is readable when native notice carries no archetype identity; keep actual names, native feed and unknown fallback intact.",
+  "actual": "Root and independent agent saw #lod_hostile on the actual native death screenshot. The shared class serves multiple enemy archetypes.",
+  "cause": "Base GetDeathNoticeEntityName falls back to # plus entity class; stock client retains that string for native text drawing. The project registered kill icons but no corresponding language phrase.",
+  "repair": "Register language.Add(\"lod_hostile\",\"Hostile\") beside existing native icon aliases in the already-distributed client presentation authority. No transport, death-notice hooks, damage, authored archetype names, unknown-class fallback or global translation function changes.",
+  "candidate_source": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_hostile_presentation_safety.lua": {
+      "sha256": "9d9d9db507eac8c03d09c3cfd8ec9acf4d5d4b03521f5f2fdf30cbebc9c6f27d",
+      "crc32": "2978872520"
+    },
+    "tools/test_hostile_kill_icons.lua": {
+      "sha256": "f63d616d930b0beda4cc7508da6b1de4a98bf5cae24d8ac010933f80056ca78b",
+      "crc32": "3632219791"
+    }
+  },
+  "static": {
+    "focused_commands_passed": 6,
+    "lua_syntax_files": 927,
+    "changed_file_luajit_compile": 2,
+    "exact_original_negative_control": "Final fixture against exact aa200b27 client authority fails Known hostile class must resolve to a readable generic label before first death.",
+    "source_scope": "All gamemodes,lua,tools and.github files; concurrent documentation excluded",
+    "source_before": "64be7fc6b27ab80da6f00f647ce19b530dc37ddb48189a727ff1ed292c65165d",
+    "source_after": "64be7fc6b27ab80da6f00f647ce19b530dc37ddb48189a727ff1ed292c65165d",
+    "source_changed": [],
+    "registry_suites": 336,
+    "independent_review": {
+      "reviewer": "root",
+      "result": "clear",
+      "scope": "Actual2 production lines and17 fixture lines; entire Feedback suite independently rerun exit0, preserving all prior history/cache/icon checks and new label pass",
+      "raw_independent_output_separately_archived": false
+    }
+  },
+  "evidence": {
+    "native": "native-4322/receipt.json",
+    "screenshot": "native-4322/deborah-4322-live-corridor-combat.png",
+    "static_archive": "hostile-label-static.tar.xz",
+    "static_archive_sha256": "1790cc0fac948108154b4b6c913e382f27bc739915072019acfa5424cc70afba",
+    "static_manifest": "hostile-label-static-manifest.json",
+    "native_api_source_hashes": "archive:native-api-reconciliation.json"
+  },
+  "status": "Implemented/statically validated/independently reviewed on verified main8a9; repaired native class label remains pending.",
+  "limits": [
+    "Fixture models the inspected native language API boundary; it does not establish native rendered phrase/glyph layout.",
+    "Current compiled4322 has automatic Lua refresh disabled; a changed on-disk CRC is not proof the client loaded BUG014.",
+    "This generic native class fallback does not rename every actual enemy Soldier or replace existing RPG archetype/identity formatting."
+  ],
+  "next_native_gate": [
+    "Fresh-start source8a9 and verify HostilePresentationCRC2978872520 plus prior GateD/Feedback CRCs",
+    "Check cold native language.GetPhrase(\"#lod_hostile\") returns Hostile before first death",
+    "Observe actual native kill/death notice with a readable generic class label; confirm stock glyph and unrelated/unknown name behavior remain intact"
+  ],
+  "native_repair_accepted": false,
+  "clean_pass_streak": 0
+}

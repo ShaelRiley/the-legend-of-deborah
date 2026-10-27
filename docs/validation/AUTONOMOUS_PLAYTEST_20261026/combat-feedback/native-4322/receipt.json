@@ -1,0 +1,62 @@
+{
+  "recorded_utc": "2026-10-27T17:45:34.105554+00:00",
+  "actual_native_commit": "4322f105e519fec53c469877998eecd5b4d06a34",
+  "hardware": "Actual Valve Jupiter Steam Deck; AMD Custom APU0405; amdgpu1002:163F",
+  "client": "Windows x86 Garry’s Mod/Proton10; gm_flatgrass;1280x800 game viewport",
+  "setup": "Fresh installed clean4322; both-realm startup identity and0 Lua errors/0 Workshop mounts; dev0/cheats0, screenshot UNRANKED. Blake Slow Burn Garcia selected Fighter normally. One actual client/account.",
+  "matching_source_crcs": {
+    "sv_rpg_gate_d.lua": 164367339,
+    "sv_feedback_language.lua": 266214824,
+    "cl_hostile_presentation_safety.lua": 3365012306
+  },
+  "checksum_timing": "Queries were recorded after fresh4322 startup and before BUG014 disk edit. Later mounted client-source CRC becomes2978872520; auto Lua refresh is disabled and does not make current compiled4322 into the8a9 candidate.",
+  "observed": [
+    "Cold known-icon lookup before first death: Soldier bolt exists with width84; generic hostile exists with width/height47.25. Bolt height was not retained by the non-final Lua multiple-return call.",
+    "Actual ordinary .357 Magnum firing/kills reported by root and recorded in current normal client history: Runner, Waylayer, Blitzer; XP total120 observed. This does not accept the XP formula or every combat/feat interaction.",
+    "Natural Soldier-bolt Hero death/lives3-to2 is observed. Actual top-right native kill feed displays the stock crossbow icon; captured complete console has no missing-killicon warning.",
+    "Waylayer success/failure Dodge context is retained. The two0-damage rows follow explicit successful Dodges; they are not recorded as unexplained damage bugs.",
+    "Same actual native screenshot exposes new raw #lod_hostile class-label defect BUG014."
+  ],
+  "finite_results": {
+    "BUG-012": "Three relevant source identities match, but no actual BACKSTAB toast triggered in these73 current session records. Repaired native subject attribution remains pending.",
+    "BUG-013": "Finite native Soldier-bolt icon and cold known-class lookup gates passed. Generic hostile actual kill-icon drawing, broad death/kill feed and cooperative cases remain pending.",
+    "BUG-014": "Native raw class placeholder confirmed; source8a9 repairs it but repaired native label remains pending."
+  },
+  "not_accepted": [
+    "Full combat/XP/feat math, authored enemy families, controller/audio and co-op",
+    "BUG012 actual repaired Backstab HUD/history attribution",
+    "Generic-hostile native kill/death glyph, BUG014 repaired label",
+    "Any clean campaign pass or start-to-finish campaign progression"
+  ],
+  "raw_console_sha256": "771c6c0060066273a386b52aa20f3aae1cdbe4ea599a37f77dd8cb753ef2bed3",
+  "raw_console_bytes": 153920,
+  "normalized_console_note": "Exact original CRLF bytes are in console-original.txt.xz. Human-readable derivative converts line endings and strips trailing whitespace; line order/count retained. Both forms have separate hashes.",
+  "history_note": "73 contiguous current Blake session rows retain NPC defense/context events. Earlier unrelated retained history and developer-only stale RPG logs are excluded.",
+  "files": {
+    "console-normalized.txt": {
+      "bytes": 153705,
+      "sha256": "d4259f1fa139ef7c7589ac6b2ae347335e1311118ea59e0c3650144362edd223"
+    },
+    "deborah-4322-live-corridor-combat.png": {
+      "bytes": 1077032,
+      "sha256": "267a53d53b00a07895f0a6c3d7b2349674c6c06cd105f388f10d01eb2f349fac"
+    },
+    "console-original.txt.xz": {
+      "bytes": 6392,
+      "sha256": "516d516ae26e5b73c769219e69e343a36601c6883add8650acac1c5722ee0f56"
+    },
+    "normal-history-excerpt.json": {
+      "bytes": 137996,
+      "sha256": "738f954d0c76cc6a248527747a1c40790ea7b30460fae18fc3913e679d1a5d44"
+    }
+  },
+  "clean_pass_streak": 0,
+  "seeds": {
+    "campaign": 6102602,
+    "level_seed": 1550561962,
+    "client_topology_seed": 1967490589,
+    "layout_attempt": 3,
+    "maze_attempt": 1,
+    "source": "Captured native console lines74/76/115"
+  }
+}

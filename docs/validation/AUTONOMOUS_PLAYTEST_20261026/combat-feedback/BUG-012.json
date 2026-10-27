@@ -92,5 +92,12 @@
     "Fully restart installed4322 and verify GateDCRC164367339 and FeedbackCRC266214824; confirm normal dev0 settings or explicitly label a dev1 fixture",
     "Observe an actual AI Rogue rear hit and the Soldier-prefixed Backstab on rendered HUD and identical retained history; verify appropriate front/non-Rogue adjacency",
     "Observe ordinary player Rogue attack attribution and preserve damage/life/replay behavior; native cooperative coverage remains separate"
-  ]
+  ],
+  "native_4322_partial": {
+    "receipt": "native-4322/receipt.json",
+    "matching_gate_d_crc": 164367339,
+    "matching_feedback_crc": 266214824,
+    "actual_backstab_toasts": 0,
+    "result": "Source matched and ordinary combat recorded; repaired Backstab attribution remains native-pending."
+  }
 }
