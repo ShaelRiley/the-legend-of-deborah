@@ -1,0 +1,31 @@
+{
+  "uncompressed_sha256": "62edfe45f5b102a1aade5b2689a5e45c0229c891a5724f193d90106a4e11e5fa",
+  "uncompressed_bytes": 196760,
+  "line_count": 388,
+  "markers": [
+    {
+      "line": 6,
+      "text": "Unknown command \"con_enable\""
+    },
+    {
+      "line": 8,
+      "text": "Unknown command \"con_enable\""
+    },
+    {
+      "line": 262,
+      "text": "FRESH_CAMPAIGN18B\ttrue\ttable: 0xc2d94a2a"
+    },
+    {
+      "line": 327,
+      "text": "Unknown command: psv_allowcslua"
+    },
+    {
+      "line": 329,
+      "text": "SOURCE18_NATIVE_GEOMETRY={\"synthetic_supplement_only\":true,\"gates\":{\"open\":true,\"closed\":true},\"realm\":\"server\",\"samples\":8,\"cargo\":1555}"
+    },
+    {
+      "line": 334,
+      "text": "SOURCE18_NATIVE_GEOMETRY={\"synthetic_supplement_only\":true,\"gates\":{\"open\":true,\"closed\":true},\"realm\":\"client\",\"samples\":8,\"cargo\":1555}"
+    }
+  ]
+}

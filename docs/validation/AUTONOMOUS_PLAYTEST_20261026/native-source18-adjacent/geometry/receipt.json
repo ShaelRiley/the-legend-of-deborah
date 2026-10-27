@@ -1,0 +1,92 @@
+{
+  "kind": "source18 native analytic geometry supplement, separate from rendered acceptance",
+  "recorded_utc": "2026-10-27T23:38:17.829950+00:00",
+  "status": "Observed native trace/predicate controls agree across both realms; supplemental scope only.",
+  "tested_gameplay_commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "prepared_and_rendered_build_label": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b",
+  "source_provenance": "../../loot-label-occlusion/native-repaired/source-provenance.json",
+  "NearLookCRC": "84557611",
+  "helper_sha256": "0884f2f8ddbff1683fe2f6a8a2fe9fd166790ddbcb94e4eafa9cad3dad0017c0",
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+    "client": "Windows x86 Garrys Mod2026.09.17 / LuaJIT2.0.4 / Proton10",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "host_pid_root_verified": 95782,
+    "host_birth_root_verified": "6693172",
+    "server_campaign_seed": 6102623,
+    "server_level_seed": 673660301,
+    "client_campaign_field": "Not emitted by this helper; matched actual IDs/births and same real running client pair the observations.",
+    "developer_mode": 1,
+    "unranked": true,
+    "qualification": "Root created this new campaign through the canonical NewCampaign authority after changing the seed. No same-campaign-claim reset or ordinary full-run assertion is made."
+  },
+  "finite_observation": {
+    "actual_native_samples_per_realm": 8,
+    "matched_actual_entity_ids_and_births": true,
+    "corrected_hits_per_realm": 3,
+    "corrected_no_hits_per_realm": 5,
+    "raw_MONSTER_physical_hits_per_realm": 6,
+    "raw_visible_ray_and_hull_hits_per_realm": 0,
+    "actual_open_SOLID_NONE_samples_per_realm": 2,
+    "actual_full_Visible_eye_proxy_true_per_realm": 0,
+    "rendered_HUD_input_acceptance": false,
+    "transparent_native_positive_acceptance": false,
+    "Omniscience_eligibility_or_HUD_acceptance": false,
+    "interpretation": "interpretation.json"
+  },
+  "warnings": {
+    "Lua_exception_signatures_in_frozen_console": 0,
+    "retained_bootstrap": [
+      "Unknown command con_enable at lines6/8."
+    ],
+    "retained_root_input_retry": {
+      "line": 327,
+      "text": "Unknown command: psv_allowcslua",
+      "classification": "Root console-input typo/retry; it did not enable client Lua. Correct sv_allowcslua1/client helper/sv_allowcslua0 follows at333-335. No gameplay defect or warning-free-session claim."
+    }
+  },
+  "actual_HUD_acceptance": "../../loot-label-occlusion/native-repaired/receipt.json separately records original Health hidden behind closed Redgate and same-pickup visible/open controls on seed6102602, including actual player input/visuals. Do not substitute this analytic supplement for those tests.",
+  "limits": [
+    "Only the bounded existing eight cases were evaluated; no additional scene or content was fabricated.",
+    "Actual native trace/predicate agreement is not rendered cargo-band/gap, NPC-animation, sound, controller or actual player-camera acceptance.",
+    "Open-gate role is unrecorded; its open flag must not be used as campaign progression or cleanup proof.",
+    "No transparent-world/Omniscience, full authored campaign, ending/reset/replay, cooperative or three varied clean-pass acceptance.",
+    "No native FPS or performance-causality claim. Source18 performance remains qualified in the separate closed-gate bank.",
+    "Only the scoped native-source18-adjacent geometry files were authored; no GDD, production, private installation/DATA, root plan or matrix change."
+  ],
+  "clean_pass_streak": 0,
+  "artifact_manifest": {
+    "server.json": {
+      "sha256": "99cec26f450211ab2ade4f1551ac39729ebd57a9293631dad252ed818fcee0e5",
+      "bytes": 20757,
+      "origin": ".build/autonomous-playtest-20261027/source18-native/source18_native_geometry_server_latest.json"
+    },
+    "client.json": {
+      "sha256": "250ac01b9c0e120bdc71af00d041686977a47f75b95ffb7ee6c00acc5c593d34",
+      "bytes": 20617,
+      "origin": ".build/autonomous-playtest-20261027/source18-native/source18_native_geometry_client_latest.json"
+    },
+    "helper.lua.txt": {
+      "sha256": "0884f2f8ddbff1683fe2f6a8a2fe9fd166790ddbcb94e4eafa9cad3dad0017c0",
+      "bytes": 7344,
+      "origin": ".build/autonomous-playtest-20261027/source18_native_geometry_controls.lua"
+    },
+    "console.log.xz": {
+      "sha256": "048ec038a68d3c682777d1a7280615fd587e3279e5bbff65761467cb338240db",
+      "bytes": 10108,
+      "origin": ".build/autonomous-playtest-20261027/source18-native/console-through-geometry.log"
+    },
+    "console-markers.json": {
+      "sha256": "a6b510492965c50d981f9dd1193ca16f8ca4ef99dfe0dc9cb926f2ee32118ce2",
+      "bytes": 897,
+      "origin": "Selected exact native warning/fixture lines; later console content is preserved, not reclassified as geometry coverage"
+    },
+    "interpretation.json": {
+      "sha256": "4493e65f5d9147fda40c596c3a5c367ff8ede9774da3f1397b522780a705512f",
+      "bytes": 9365,
+      "origin": "Independent comparison of the two frozen raw results and current unchanged implementation authority"
+    }
+  }
+}

@@ -1,0 +1,1288 @@
+{
+	"actualPlayer": {
+		"center": [
+			-3840,
+			-1920,
+			-12235.376953125
+		],
+		"angles": [
+			0,
+			0,
+			0
+		],
+		"id": 1,
+		"solid": 2,
+		"class": "player",
+		"valid": true,
+		"pos": [
+			-3840,
+			-1920,
+			-12271.376953125
+		],
+		"mins": [
+			-16,
+			-16,
+			0
+		],
+		"birth": 285,
+		"maxs": [
+			16,
+			16,
+			72
+		],
+		"noDraw": false
+	},
+	"proxyTargetRole": "actual Health pickup; analytic eye is not player input",
+	"sourceCRC": "84557611",
+	"actualOmniscienceTarget": {
+		"valid": false
+	},
+	"actualGateStatesAvailable": {
+		"open": true,
+		"closed": true
+	},
+	"proxyTarget": {
+		"center": [
+			-3912,
+			-1920,
+			-12229.96875
+		],
+		"angles": [
+			0,
+			106,
+			0
+		],
+		"id": 79,
+		"solid": 2,
+		"class": "lod_loot_pickup",
+		"valid": true,
+		"pos": [
+			-3912,
+			-1920,
+			-12243.96875
+		],
+		"mins": [
+			-16,
+			-16,
+			0
+		],
+		"birth": 2358,
+		"maxs": [
+			16,
+			16,
+			28
+		],
+		"noDraw": false
+	},
+	"realm": "server",
+	"transparentWorldCandidates": [],
+	"omniscienceQualification": "Only an already-owned live readout can supply this target; no feat/eligibility or readout was granted. Invalid target is uncovered, not passed.",
+	"at": 1219.4343129,
+	"qualification": "Actual entities/native traces and unmodified production predicate. Both endpoints of band tests are analytic. Eye-proxy Visible uses a separately recorded actual target center. No synthetic result proves rendered HUD/input/Omniscience acceptance.",
+	"levelSeed": 673660301,
+	"kind": "source18_native_analytic_geometry_supplement",
+	"transparentControlQualification": "Presence/metadata only. No actual transparency or visibility pass inferred and no pane spawned.",
+	"samples": [
+		{
+			"eyeProxyTargetCenter": [
+				-3912,
+				-1920,
+				-12229.96875
+			],
+			"monsterHull": {
+				"hit": true,
+				"fraction": 0.16650390625,
+				"hitPos": [
+					-4096.03125,
+					-576,
+					-12220.3125
+				],
+				"contents": 1,
+				"entity": {
+					"center": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"angles": [
+						0,
+						0,
+						0
+					],
+					"id": 1555,
+					"solid": 2,
+					"class": "lod_static_box",
+					"valid": true,
+					"pos": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"kind": 4,
+					"mins": [
+						-64,
+						-3072,
+						-14327.984375
+					],
+					"birth": 1777,
+					"maxs": [
+						64,
+						3072,
+						14327.984375
+					],
+					"noDraw": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"visibleLine": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12220.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"entity": {
+				"center": [
+					-4032,
+					-576,
+					2056.015625
+				],
+				"angles": [
+					0,
+					0,
+					0
+				],
+				"id": 1555,
+				"solid": 2,
+				"class": "lod_static_box",
+				"valid": true,
+				"pos": [
+					-4032,
+					-576,
+					2056.015625
+				],
+				"kind": 4,
+				"mins": [
+					-64,
+					-3072,
+					-14327.984375
+				],
+				"birth": 1777,
+				"maxs": [
+					64,
+					3072,
+					14327.984375
+				],
+				"noDraw": false
+			},
+			"eyeProxyQualification": "Different endpoint from the analytic body test; may encounter other native geometry. No expected HUD pass inferred.",
+			"eyeProxyVisible": false,
+			"label": "actual first cargo body analytic midpoint",
+			"correctedHull": {
+				"hit": true,
+				"fraction": 0.16650390625,
+				"hitPos": [
+					-4096.03125,
+					-576,
+					-12220.3125
+				],
+				"contents": 1,
+				"entity": {
+					"center": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"angles": [
+						0,
+						0,
+						0
+					],
+					"id": 1555,
+					"solid": 2,
+					"class": "lod_static_box",
+					"valid": true,
+					"pos": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"kind": 4,
+					"mins": [
+						-64,
+						-3072,
+						-14327.984375
+					],
+					"birth": 1777,
+					"maxs": [
+						64,
+						3072,
+						14327.984375
+					],
+					"noDraw": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"analyticEnd": [
+				-3936,
+				-576,
+				-12220.3125
+			],
+			"analyticStart": [
+				-4128,
+				-576,
+				-12220.3125
+			],
+			"visibleHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12220.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"productionBodyClassifier": true
+		},
+		{
+			"eyeProxyTargetCenter": [
+				-3912,
+				-1920,
+				-12229.96875
+			],
+			"monsterHull": {
+				"hit": true,
+				"fraction": 0.16650390625,
+				"hitPos": [
+					-4096.03125,
+					-576,
+					-12088.3125
+				],
+				"contents": 1,
+				"entity": {
+					"center": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"angles": [
+						0,
+						0,
+						0
+					],
+					"id": 1555,
+					"solid": 2,
+					"class": "lod_static_box",
+					"valid": true,
+					"pos": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"kind": 4,
+					"mins": [
+						-64,
+						-3072,
+						-14327.984375
+					],
+					"birth": 1777,
+					"maxs": [
+						64,
+						3072,
+						14327.984375
+					],
+					"noDraw": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"visibleLine": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12088.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"entity": {
+				"center": [
+					-4032,
+					-576,
+					2056.015625
+				],
+				"angles": [
+					0,
+					0,
+					0
+				],
+				"id": 1555,
+				"solid": 2,
+				"class": "lod_static_box",
+				"valid": true,
+				"pos": [
+					-4032,
+					-576,
+					2056.015625
+				],
+				"kind": 4,
+				"mins": [
+					-64,
+					-3072,
+					-14327.984375
+				],
+				"birth": 1777,
+				"maxs": [
+					64,
+					3072,
+					14327.984375
+				],
+				"noDraw": false
+			},
+			"eyeProxyQualification": "Different endpoint from the analytic body test; may encounter other native geometry. No expected HUD pass inferred.",
+			"eyeProxyVisible": false,
+			"label": "actual second cargo body analytic midpoint",
+			"correctedHull": {
+				"hit": true,
+				"fraction": 0.16650390625,
+				"hitPos": [
+					-4096.03125,
+					-576,
+					-12088.3125
+				],
+				"contents": 1,
+				"entity": {
+					"center": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"angles": [
+						0,
+						0,
+						0
+					],
+					"id": 1555,
+					"solid": 2,
+					"class": "lod_static_box",
+					"valid": true,
+					"pos": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"kind": 4,
+					"mins": [
+						-64,
+						-3072,
+						-14327.984375
+					],
+					"birth": 1777,
+					"maxs": [
+						64,
+						3072,
+						14327.984375
+					],
+					"noDraw": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"analyticEnd": [
+				-3936,
+				-576,
+				-12088.3125
+			],
+			"analyticStart": [
+				-4128,
+				-576,
+				-12088.3125
+			],
+			"visibleHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12088.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"productionBodyClassifier": true
+		},
+		{
+			"eyeProxyTargetCenter": [
+				-3912,
+				-1920,
+				-12229.96875
+			],
+			"monsterHull": {
+				"hit": true,
+				"fraction": 0.16650390625,
+				"hitPos": [
+					-4096.03125,
+					-576,
+					-12154.3125
+				],
+				"contents": 1,
+				"entity": {
+					"center": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"angles": [
+						0,
+						0,
+						0
+					],
+					"id": 1555,
+					"solid": 2,
+					"class": "lod_static_box",
+					"valid": true,
+					"pos": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"kind": 4,
+					"mins": [
+						-64,
+						-3072,
+						-14327.984375
+					],
+					"birth": 1777,
+					"maxs": [
+						64,
+						3072,
+						14327.984375
+					],
+					"noDraw": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"visibleLine": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12154.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"entity": {
+				"center": [
+					-4032,
+					-576,
+					2056.015625
+				],
+				"angles": [
+					0,
+					0,
+					0
+				],
+				"id": 1555,
+				"solid": 2,
+				"class": "lod_static_box",
+				"valid": true,
+				"pos": [
+					-4032,
+					-576,
+					2056.015625
+				],
+				"kind": 4,
+				"mins": [
+					-64,
+					-3072,
+					-14327.984375
+				],
+				"birth": 1777,
+				"maxs": [
+					64,
+					3072,
+					14327.984375
+				],
+				"noDraw": false
+			},
+			"eyeProxyQualification": "Different endpoint from the analytic body test; may encounter other native geometry. No expected HUD pass inferred.",
+			"eyeProxyVisible": false,
+			"label": "actual four-unit visual gap analytic midpoint",
+			"correctedHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12154.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"analyticEnd": [
+				-3936,
+				-576,
+				-12154.3125
+			],
+			"analyticStart": [
+				-4128,
+				-576,
+				-12154.3125
+			],
+			"visibleHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12154.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"productionBodyClassifier": false
+		},
+		{
+			"eyeProxyTargetCenter": [
+				-3912,
+				-1920,
+				-12229.96875
+			],
+			"monsterHull": {
+				"hit": true,
+				"fraction": 0.16650390625,
+				"hitPos": [
+					-4096.03125,
+					-576,
+					-12000.3125
+				],
+				"contents": 1,
+				"entity": {
+					"center": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"angles": [
+						0,
+						0,
+						0
+					],
+					"id": 1555,
+					"solid": 2,
+					"class": "lod_static_box",
+					"valid": true,
+					"pos": [
+						-4032,
+						-576,
+						2056.015625
+					],
+					"kind": 4,
+					"mins": [
+						-64,
+						-3072,
+						-14327.984375
+					],
+					"birth": 1777,
+					"maxs": [
+						64,
+						3072,
+						14327.984375
+					],
+					"noDraw": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"visibleLine": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12000.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"entity": {
+				"center": [
+					-4032,
+					-576,
+					2056.015625
+				],
+				"angles": [
+					0,
+					0,
+					0
+				],
+				"id": 1555,
+				"solid": 2,
+				"class": "lod_static_box",
+				"valid": true,
+				"pos": [
+					-4032,
+					-576,
+					2056.015625
+				],
+				"kind": 4,
+				"mins": [
+					-64,
+					-3072,
+					-14327.984375
+				],
+				"birth": 1777,
+				"maxs": [
+					64,
+					3072,
+					14327.984375
+				],
+				"noDraw": false
+			},
+			"eyeProxyQualification": "Different endpoint from the analytic body test; may encounter other native geometry. No expected HUD pass inferred.",
+			"eyeProxyVisible": false,
+			"label": "invisible anti-bypass header analytic slice",
+			"correctedHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12000.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"analyticEnd": [
+				-3936,
+				-576,
+				-12000.3125
+			],
+			"analyticStart": [
+				-4128,
+				-576,
+				-12000.3125
+			],
+			"visibleHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-3936,
+					-576,
+					-12000.3125
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"productionBodyClassifier": false
+		},
+		{
+			"eyeProxyTargetCenter": [
+				-3912,
+				-1920,
+				-12229.96875
+			],
+			"monsterHull": {
+				"hit": true,
+				"fraction": 0.3474864065647125,
+				"hitPos": [
+					-2126.03125,
+					-1152,
+					-11695.96875
+				],
+				"contents": 1,
+				"entity": {
+					"center": [
+						-2112,
+						-1152,
+						2248.015625
+					],
+					"angles": [
+						0,
+						0,
+						0
+					],
+					"id": 2057,
+					"solid": 2,
+					"class": "lod_gate",
+					"valid": true,
+					"opened": false,
+					"pos": [
+						-2112,
+						-1152,
+						-11695.96875
+					],
+					"mins": [
+						-14,
+						-192,
+						-192
+					],
+					"birth": 2279,
+					"maxs": [
+						14,
+						192,
+						28079.96875
+					],
+					"noDraw": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"visibleLine": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-2066,
+					-1152,
+					-11695.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"entity": {
+				"center": [
+					-2112,
+					-1152,
+					2248.015625
+				],
+				"angles": [
+					0,
+					0,
+					0
+				],
+				"id": 2057,
+				"solid": 2,
+				"class": "lod_gate",
+				"valid": true,
+				"opened": false,
+				"pos": [
+					-2112,
+					-1152,
+					-11695.96875
+				],
+				"mins": [
+					-14,
+					-192,
+					-192
+				],
+				"birth": 2279,
+				"maxs": [
+					14,
+					192,
+					28079.96875
+				],
+				"noDraw": false
+			},
+			"eyeProxyQualification": "Different endpoint from the analytic body test; may encounter other native geometry. No expected HUD pass inferred.",
+			"eyeProxyVisible": false,
+			"label": "actual closed gate rendered body analytic slice",
+			"correctedHull": {
+				"hit": true,
+				"fraction": 0.3474864065647125,
+				"hitPos": [
+					-2126.03125,
+					-1152,
+					-11695.96875
+				],
+				"contents": 1,
+				"entity": {
+					"center": [
+						-2112,
+						-1152,
+						2248.015625
+					],
+					"angles": [
+						0,
+						0,
+						0
+					],
+					"id": 2057,
+					"solid": 2,
+					"class": "lod_gate",
+					"valid": true,
+					"opened": false,
+					"pos": [
+						-2112,
+						-1152,
+						-11695.96875
+					],
+					"mins": [
+						-14,
+						-192,
+						-192
+					],
+					"birth": 2279,
+					"maxs": [
+						14,
+						192,
+						28079.96875
+					],
+					"noDraw": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"analyticEnd": [
+				-2066,
+				-1152,
+				-11695.96875
+			],
+			"analyticStart": [
+				-2158,
+				-1152,
+				-11695.96875
+			],
+			"visibleHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-2066,
+					-1152,
+					-11695.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"productionBodyClassifier": true
+		},
+		{
+			"eyeProxyTargetCenter": [
+				-3912,
+				-1920,
+				-12229.96875
+			],
+			"monsterHull": {
+				"hit": true,
+				"fraction": 0.3474864065647125,
+				"hitPos": [
+					-2126.03125,
+					-1152,
+					-11479.96875
+				],
+				"contents": 1,
+				"entity": {
+					"center": [
+						-2112,
+						-1152,
+						2248.015625
+					],
+					"angles": [
+						0,
+						0,
+						0
+					],
+					"id": 2057,
+					"solid": 2,
+					"class": "lod_gate",
+					"valid": true,
+					"opened": false,
+					"pos": [
+						-2112,
+						-1152,
+						-11695.96875
+					],
+					"mins": [
+						-14,
+						-192,
+						-192
+					],
+					"birth": 2279,
+					"maxs": [
+						14,
+						192,
+						28079.96875
+					],
+					"noDraw": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"visibleLine": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-2066,
+					-1152,
+					-11479.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"entity": {
+				"center": [
+					-2112,
+					-1152,
+					2248.015625
+				],
+				"angles": [
+					0,
+					0,
+					0
+				],
+				"id": 2057,
+				"solid": 2,
+				"class": "lod_gate",
+				"valid": true,
+				"opened": false,
+				"pos": [
+					-2112,
+					-1152,
+					-11695.96875
+				],
+				"mins": [
+					-14,
+					-192,
+					-192
+				],
+				"birth": 2279,
+				"maxs": [
+					14,
+					192,
+					28079.96875
+				],
+				"noDraw": false
+			},
+			"eyeProxyQualification": "Different endpoint from the analytic body test; may encounter other native geometry. No expected HUD pass inferred.",
+			"eyeProxyVisible": false,
+			"label": "actual closed gate invisible header analytic slice",
+			"correctedHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-2066,
+					-1152,
+					-11479.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"analyticEnd": [
+				-2066,
+				-1152,
+				-11479.96875
+			],
+			"analyticStart": [
+				-2158,
+				-1152,
+				-11479.96875
+			],
+			"visibleHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					-2066,
+					-1152,
+					-11479.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"productionBodyClassifier": false
+		},
+		{
+			"eyeProxyTargetCenter": [
+				-3912,
+				-1920,
+				-12229.96875
+			],
+			"monsterHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					4078,
+					384,
+					-11695.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"visibleLine": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					4078,
+					384,
+					-11695.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"entity": {
+				"center": [
+					4032,
+					384,
+					2248.015625
+				],
+				"angles": [
+					0,
+					0,
+					0
+				],
+				"id": 2071,
+				"solid": 0,
+				"class": "lod_gate",
+				"valid": true,
+				"opened": true,
+				"pos": [
+					4032,
+					384,
+					-11695.96875
+				],
+				"mins": [
+					-14,
+					-192,
+					-192
+				],
+				"birth": 2293,
+				"maxs": [
+					14,
+					192,
+					28079.96875
+				],
+				"noDraw": false
+			},
+			"eyeProxyQualification": "Different endpoint from the analytic body test; may encounter other native geometry. No expected HUD pass inferred.",
+			"eyeProxyVisible": false,
+			"label": "actual open gate rendered body analytic slice",
+			"correctedHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					4078,
+					384,
+					-11695.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"analyticEnd": [
+				4078,
+				384,
+				-11695.96875
+			],
+			"analyticStart": [
+				3986,
+				384,
+				-11695.96875
+			],
+			"visibleHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					4078,
+					384,
+					-11695.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"productionBodyClassifier": false
+		},
+		{
+			"eyeProxyTargetCenter": [
+				-3912,
+				-1920,
+				-12229.96875
+			],
+			"monsterHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					4078,
+					384,
+					-11479.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"visibleLine": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					4078,
+					384,
+					-11479.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"entity": {
+				"center": [
+					4032,
+					384,
+					2248.015625
+				],
+				"angles": [
+					0,
+					0,
+					0
+				],
+				"id": 2071,
+				"solid": 0,
+				"class": "lod_gate",
+				"valid": true,
+				"opened": true,
+				"pos": [
+					4032,
+					384,
+					-11695.96875
+				],
+				"mins": [
+					-14,
+					-192,
+					-192
+				],
+				"birth": 2293,
+				"maxs": [
+					14,
+					192,
+					28079.96875
+				],
+				"noDraw": false
+			},
+			"eyeProxyQualification": "Different endpoint from the analytic body test; may encounter other native geometry. No expected HUD pass inferred.",
+			"eyeProxyVisible": false,
+			"label": "actual open gate invisible header analytic slice",
+			"correctedHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					4078,
+					384,
+					-11479.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"analyticEnd": [
+				4078,
+				384,
+				-11479.96875
+			],
+			"analyticStart": [
+				3986,
+				384,
+				-11479.96875
+			],
+			"visibleHull": {
+				"hit": false,
+				"fraction": 1,
+				"hitPos": [
+					4078,
+					384,
+					-11479.96875
+				],
+				"contents": 0,
+				"entity": {
+					"valid": false
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"productionBodyClassifier": false
+		}
+	],
+	"campaign": 6102623,
+	"map": "gm_flatgrass"
+}

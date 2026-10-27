@@ -1,0 +1,118 @@
+-- One-shot native geometry supplement. Analytic rays/eye proxies are not HUD,
+-- visual, input, ordinary traversal, Omniscience eligibility or FPS acceptance.
+assert(util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/sh_near_look.lua", "GAME")) == "84557611", "wrong source18 NearLook")
+local p = SERVER and player.GetHumans()[1] or LocalPlayer()
+assert(IsValid(p), "actual player unavailable")
+local look, gc, crate = LOD.NearLook, LOD.Config.Geometry, LOD.CrateVisuals
+local body
+for i = 1,debug.getinfo(look.Visible,"u").nups do
+    local name, value = debug.getupvalue(look.Visible,i)
+    if name == "generatedBody" then body = value break end
+end
+assert(type(body) == "function", "production body classifier unavailable; do not replace it")
+local function vec(v) return {v.x,v.y,v.z} end
+local function entity(e)
+    if not IsValid(e) then return {valid=false} end
+    local lo,hi = e:GetCollisionBounds()
+    local r = {valid=true,id=e:EntIndex(),birth=e:GetCreationID(),class=e:GetClass(),
+        pos=vec(e:GetPos()),angles={e:GetAngles().p,e:GetAngles().y,e:GetAngles().r},
+        center=vec(e:WorldSpaceCenter()),mins=vec(lo),maxs=vec(hi),noDraw=e:GetNoDraw(),solid=e:GetSolid()}
+    if e.GetOpened then r.opened=e:GetOpened() end
+    if e.GetBoxKind then r.kind=e:GetBoxKind() end
+    return r
+end
+local function trace(t)
+    return {hit=t.Hit==true,startSolid=t.StartSolid==true,allSolid=t.AllSolid==true,
+        fraction=t.Fraction,contents=t.Contents,entity=entity(t.Entity),hitPos=t.HitPos and vec(t.HitPos)}
+end
+local realm = SERVER and "server" or "client"
+local result = {kind="source18_native_analytic_geometry_supplement",realm=realm,at=SysTime(),
+    map=game.GetMap(),sourceCRC="84557611",actualPlayer=entity(p),samples={},
+    qualification="Actual entities/native traces and unmodified production predicate. Both endpoints of band tests are analytic. Eye-proxy Visible uses a separately recorded actual target center. No synthetic result proves rendered HUD/input/Omniscience acceptance."}
+if SERVER then result.campaign=LOD.RunManager.State.CampaignSeed result.levelSeed=LOD.RunManager.State.LevelSeed end
+local target = p
+for _, e in ipairs(ents.FindByClass("lod_loot_pickup")) do
+    if e:GetNW2String("LOD_LootName","") == "Health" then target=e break end
+end
+result.proxyTarget=entity(target)
+result.proxyTargetRole=target==p and "actual player geometric target only; not a valid monster/drop HUD claim" or "actual Health pickup; analytic eye is not player input"
+local function sample(e,label,z)
+    local lo,hi = e:GetCollisionBounds()
+    local xNormal = hi.x-lo.x < hi.y-lo.y
+    local a = Vector(xNormal and lo.x-32 or 0,xNormal and 0 or lo.y-32,z)
+    local b = Vector(xNormal and hi.x+32 or 0,xNormal and 0 or hi.y+32,z)
+    a,b=e:LocalToWorld(a),e:LocalToWorld(b)
+    local only=function(candidate) return candidate==e end
+    local q={start=a,endpos=b,filter=only,ignoreworld=true,mask=MASK_VISIBLE}
+    local row={label=label,entity=entity(e),analyticStart=vec(a),analyticEnd=vec(b),
+        productionBodyClassifier=body(e,a,b),visibleLine=trace(util.TraceLine(q))}
+    q.mins,q.maxs=Vector(0,0,0),Vector(0,0,1)
+    row.visibleHull=trace(util.TraceHull(q))
+    q.mask=bit.bor(MASK_VISIBLE,CONTENTS_MONSTER)
+    row.monsterHull=trace(util.TraceHull(q))
+    q.filter=function(candidate) return candidate==e and body(candidate,a,b) end
+    row.correctedHull=trace(util.TraceHull(q))
+    -- Raw filter entries contain only the actual player. The analytic EyePos
+    -- method is inherited, so no non-entity is inserted in a native filter list.
+    local proxy=setmetatable({p},{__index={EyePos=function() return a end}})
+    row.eyeProxyVisible=look:Visible(proxy,target)
+    row.eyeProxyTargetCenter=vec(target:WorldSpaceCenter())
+    row.eyeProxyQualification="Different endpoint from the analytic body test; may encounter other native geometry. No expected HUD pass inferred."
+    result.samples[#result.samples+1]=row
+end
+local nearest,distance
+local feet=p:GetPos()
+for _, e in ipairs(ents.FindByClass("lod_static_box")) do
+    if e.GetBoxKind and e:GetBoxKind()==4 then
+        local lo,hi=e:GetBoxMins(),e:GetBoxMaxs()
+        if math.abs(e:GetPos().z+lo.z-feet.z)<8 then
+            local a,b=e:WorldSpaceAABB()
+            local x,y=math.Clamp(feet.x,a.x,b.x),math.Clamp(feet.y,a.y,b.y)
+            local d=(x-feet.x)^2+(y-feet.y)^2
+            if not distance or d<distance then nearest,distance=e,d end
+        end
+    end
+end
+if nearest then
+    local lo,hi=nearest:GetBoxMins(),nearest:GetBoxMaxs()
+    local center=lo.z+gc.ContainerHeight*.5-gc.ContainerVisualEmbed
+    local firstLo,firstHi=center+crate.CargoMins.z,center+crate.CargoMaxs.z
+    local secondLo,secondHi=firstLo+gc.ContainerHeight+gc.StackVisualGap,firstHi+gc.ContainerHeight+gc.StackVisualGap
+    sample(nearest,"actual first cargo body analytic midpoint",(firstLo+firstHi)*.5)
+    sample(nearest,"actual second cargo body analytic midpoint",(secondLo+secondHi)*.5)
+    sample(nearest,"actual four-unit visual gap analytic midpoint",(firstHi+secondLo)*.5)
+    if hi.z>secondHi+32 then sample(nearest,"invisible anti-bypass header analytic slice",secondHi+24) end
+else result.cargoUnavailable="No transmitted kind4 body anchored to the actual player's floor; no substitute spawned." end
+local gateKinds={}
+for _, e in ipairs(ents.FindByClass("lod_gate")) do
+    if e.GetOpened then
+        local kind=e:GetOpened() and "open" or "closed"
+        if not gateKinds[kind] then
+            gateKinds[kind]=true
+            sample(e,"actual "..kind.." gate rendered body analytic slice",0)
+            local _,hi=e:GetCollisionBounds()
+            local half=LOD.Config.Progression.GateBlockerHeight*.5
+            if hi.z>half+32 then sample(e,"actual "..kind.." gate invisible header analytic slice",half+24) end
+        end
+    end
+end
+result.actualGateStatesAvailable=gateKinds
+result.transparentWorldCandidates={}
+for _, class in ipairs({"func_breakable_surf","func_brush"}) do
+    for _, e in ipairs(ents.FindByClass(class)) do
+        if #result.transparentWorldCandidates<4 then
+            local row=entity(e);row.material=e:GetMaterial();row.renderMode=e:GetRenderMode();row.alpha=e:GetColor().a
+            result.transparentWorldCandidates[#result.transparentWorldCandidates+1]=row
+        end
+    end
+end
+result.transparentControlQualification="Presence/metadata only. No actual transparency or visibility pass inferred and no pane spawned."
+local omni=SERVER and p.LODWisOmniscienceTarget or CLIENT and LOD.RPGWisInformation and LOD.RPGWisInformation.Omniscience and LOD.RPGWisInformation.Omniscience.target
+result.actualOmniscienceTarget=entity(omni)
+result.omniscienceQualification="Only an already-owned live readout can supply this target; no feat/eligibility or readout was granted. Invalid target is uncovered, not passed."
+LODNativeGeometry18Serial=(LODNativeGeometry18Serial or 0)+1
+local text=util.TableToJSON(result,true)
+local base="legend_of_deborah/source18_native_geometry_"..realm
+file.Write(base.."_"..LODNativeGeometry18Serial.."_"..math.floor(SysTime()*1000)..".json",text)
+file.Write(base.."_latest.json",text)
+print("SOURCE18_NATIVE_GEOMETRY="..util.TableToJSON({realm=realm,samples=#result.samples,cargo=nearest and nearest:EntIndex(),gates=gateKinds,synthetic_supplement_only=true}))
