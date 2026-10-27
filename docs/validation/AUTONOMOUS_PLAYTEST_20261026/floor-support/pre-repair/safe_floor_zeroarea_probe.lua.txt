@@ -1,0 +1,38 @@
+local humans=player.GetHumans()
+if #humans~=1 then print("SAFE_FLOOR_PROBE_DENIED") return end
+local p=humans[1]
+local T,N,R=LOD.SafeTeleport,LOD.MazeNavigator,LOD.RunManager
+local g=R.State.Graph
+local function v(a) return {a.x,a.y,a.z} end
+local function tr(a)
+ local e=a.Entity
+ return {hit=a.Hit,startSolid=a.StartSolid,allSolid=a.AllSolid,pos=a.HitPos and v(a.HitPos),normal=a.HitNormal and v(a.HitNormal),entity=IsValid(e) and e:EntIndex() or -1,class=IsValid(e) and e:GetClass() or "none",generated=IsValid(e) and e.LODGeneratedGeometry or false,kind=IsValid(e) and e.GetBoxKind and e:GetBoxKind() or -1}
+end
+local jobs={{name="current_standing_Hero",pos=p:GetPos()}}
+if P12 and IsValid(P12.e) then
+ local c=T:CellAt(g,P12.e:GetPos())
+ local center=c and N:CellCenter(c)
+ if center then for i,o in ipairs(P12.O or {}) do jobs[#jobs+1]={name="Rogue_candidate_"..i,pos=center+o} end end
+end
+local mins,maxs=p:GetHull()
+local result={kind="native_readonly_safe_floor_probe",campaign=R.State.CampaignSeed,seed=R.State.LevelSeed,epoch=R.State.CampaignEpoch,hullMins=v(mins),hullMaxs=v(maxs),jobs={}}
+for _,j in ipairs(jobs) do
+ local c=T:CellAt(g,j.pos)
+ local center=c and N:CellCenter(c)
+ local row={name=j.name,pos=v(j.pos),cell=c and {c.x,c.y,c.z},flat=c and T:FlatCell(g,c),feet={}}
+ if center then
+  local landing=T:Landing(p,g,c,j.pos)
+  row.landing=landing and v(landing) or false
+  for _,o in ipairs({Vector(0,0,0),Vector(mins.x,mins.y,0),Vector(mins.x,maxs.y,0),Vector(maxs.x,mins.y,0),Vector(maxs.x,maxs.y,0)}) do
+   local foot=Vector(j.pos.x+o.x,j.pos.y+o.y,center.z+8)
+   local args={start=foot,endpos=foot-Vector(0,0,16),mask=MASK_PLAYERSOLID,filter=p}
+   local line=util.TraceLine(args)
+   args.mins=Vector(0,0,0) args.maxs=Vector(0,0,1)
+   local hull=util.TraceHull(args)
+   row.feet[#row.feet+1]={line=tr(line),hull=tr(hull)}
+  end
+ end
+ result.jobs[#result.jobs+1]=row
+end
+file.Write("legend_of_deborah/safe_floor_zeroarea_probe_latest.json",util.TableToJSON(result))
+print("SAFE_FLOOR_ZEROAREA_PROBE="..util.TableToJSON(result))

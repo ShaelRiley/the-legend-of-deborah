@@ -1,0 +1,213 @@
+{
+  "id": "BUG-015",
+  "recorded_utc": "2026-10-27T19:31:46.589Z",
+  "title": "Canonical foot-support rays reject native generated floors",
+  "severity": "Major gameplay: safe landing requests fail on demonstrably supported generated floors; shared charge/stomp/event consumers are at risk. No campaign-ending failure is inferred from this fixture.",
+  "status": "Implemented and statically validated on verified main74415d1a with independent review; original native defect preserved. Repaired native acceptance remains pending.",
+  "baseline": {
+    "gameplay_source_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+    "private_install_receipt_commit": "2b2f7501f04f847448b3f5fc6bd5865f7a9b57ad",
+    "evidence_prepared_at_head": "4048e7ac5a015939982cfbeaf6f295bd18cfa4c5",
+    "installed_addon": "./.build/lod-gmod/garrysmod/addons/the-legend-of-deborah-dev",
+    "canonical_module": "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua",
+    "installed_and_source14_sha256": "7981b5200ebc1e8f7f7438671733b1c2d58281a55dea7c108dbc76d9c2dd5701",
+    "source_identity_qualification": "Read-back installed addon file matched exact source14 Git bytes before repair installation. Private prepared receipt and current BUILD_IDENTITY report the docs successor2b2f7501; its production trees match8a9. This record does not assert a new compiled-source hash probe."
+  },
+  "environment": {
+    "hardware": "Valve Jupiter Steam Deck / AMD Custom APU0405; this is the same actual Deck used by root for the native campaign",
+    "native_client": "Windows x86 Garry's Mod under Proton; runtime BUILD_IDENTITY reports LuaJIT2.0.4, engine2026.09.17",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "developer_mode": 1,
+    "unranked_fixture": true,
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "campaign_epoch": 2,
+    "cell_size": 384,
+    "hero_hull_mins": [
+      -16,
+      -16,
+      0
+    ],
+    "hero_hull_maxs": [
+      16,
+      16,
+      72
+    ],
+    "setup_limits": "Developer setup/probes are explicitly supplementary, not ordinary traversal or multiplayer acceptance. Root extended the private campaign clock under developer mode and marked the run unranked. Only this Deck/account is available."
+  },
+  "source_authority": {
+    "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "document_url": "https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": "Previously read live00 then01. Revisited exact03 rule and live05 normalized subsystem;06 exact runtime safety/card paragraphs are needed for the shared relocation consumers. No HUMAN fallback or design changes.",
+    "rules": [
+      {
+        "tab": "03 \u2014 COMBAT, MAGIC & STATUS",
+        "tab_id": "t.qt6qa9saeusi",
+        "anchor": "LOD-THUNDER-HAT-001",
+        "start": 83782,
+        "end": 85002,
+        "expected": "Thunder Charge retains full standing-footprint generated-flat-floor support; center/corner graph transitions, swept collision, hazard and locked-boundary guards. Safe supported routes must remain usable; unsafe or stale routes reject."
+      },
+      {
+        "tab": "03 \u2014 COMBAT, MAGIC & STATUS",
+        "tab_id": "t.qt6qa9saeusi",
+        "anchor": "LOD-HEAVY-PLUMBER-001",
+        "start": 87507,
+        "end": 89481,
+        "expected": "Heavy Stomp requires current exact-cell flat generated support under the complete standing footprint, preserving overhead clearance, native gravity/collision, gate/jail/Warden, stair, void and hazard rejection."
+      },
+      {
+        "tab": "05 \u2014 CORE LOOP & WORLD",
+        "tab_id": "t.8p7v8fnmr641",
+        "anchor": "LOD-EVENT-WARP-001",
+        "start": 183285,
+        "end": 184871,
+        "expected": "Optional Dungeon5+ paired warp endpoints occupy ordinary flat optional cells, preserve equal access/bidirectional ordinary routes at each progression stage, and offer free safe E traversal without bypassing gates/objectives."
+      },
+      {
+        "tab": "05 \u2014 CORE LOOP & WORLD",
+        "tab_id": "t.8p7v8fnmr641",
+        "anchor": "LOD-EVENT-FALSE-FLOOR-001",
+        "start": 184873,
+        "end": 185924,
+        "expected": "Optional physical native-gravity drop to aligned ordinary floor, preserving flat-cell/protected/stair/void exclusions, gate-stage reachability and an ordinary bidirectional return route."
+      },
+      {
+        "tab": "06 \u2014 MULTIPLAYER, LIFECYCLE & UI",
+        "tab_id": "t.5ffvxbn7lbs",
+        "anchor": "LOD-EVENT-WARP-001",
+        "start": 46324,
+        "end": 46937,
+        "expected": "Canonical SafeTeleport owns complete generated-floor support/full standing hull, hazards/occupancy and clearing movement; exact actor/account/state/life/endpoints/graph/generation/run/clock/route revalidate after clearance and immediately before move. Unsafe/stale arrivals must not displace anyone."
+      },
+      {
+        "tab": "06 \u2014 MULTIPLAYER, LIFECYCLE & UI",
+        "tab_id": "t.5ffvxbn7lbs",
+        "anchor": "LOD-SAFE-TRAVEL-001",
+        "start": 55905,
+        "end": 56580,
+        "expected": "Only another eligible living active deployed Hero can be summoned to a safe destination; unsafe/cancelled/expired/replaced targets spend no card. Success uses shared relocation, consumes exactly one card and no Magic."
+      }
+    ]
+  },
+  "reproduction": [
+    "Fresh private source14: ordinary Hero character/feat selection and entry deployment, with developer instrumentation enabled. Verify one human, active built graph, no failure/clear/freeze, seed1550561962.",
+    "The bounded BUG012 native setup selected real generated Soldier1907, actor skeleton:91352027, class rogue, canonical rogueBackstabEnabled=true. Its source/Hero life bindings were valid. Its four candidate offsets were +/-160 within the actual384-unit cell.",
+    "Call canonical SafeTeleport:Landing during setup. PT12_D is nil, so no relocation, burst or Backstab event is attempted. Preserve this failed setup; it is not BUG012 runtime acceptance.",
+    "Run read-only safe_floor_probe.lua. For the current standing Hero and all four in-cell candidates, compare identical MASK_PLAYERSOLID downward ray and tiny-hull traces at center and four standing-hull corners.",
+    "Run safe_floor_zeroarea_probe.lua with exactly zero horizontal extent and one-unit vertical extent. Repeat the same per-sample line/hull comparison, avoiding horizontal support expansion.",
+    "Preserve both raw JSONs plus scripts, failed setup packet and current private logs before installing the repair."
+  ],
+  "actual": {
+    "initial_Hero": {
+      "cell": [
+        1,
+        4,
+        0
+      ],
+      "flat": true,
+      "canonical_landing": false,
+      "feet": 5,
+      "rays_hit": 0,
+      "tiny_hulls_valid_generated_floor": 5,
+      "entity": 1009
+    },
+    "zeroXY_Hero": {
+      "cell": [
+        2,
+        4,
+        0
+      ],
+      "flat": true,
+      "canonical_landing": false,
+      "feet": 5,
+      "rays_hit": 0,
+      "zeroXY_hulls_valid_generated_floor": 5,
+      "entity": 1009
+    },
+    "rogue_candidates": {
+      "cell": [
+        6,
+        12,
+        1
+      ],
+      "flat": true,
+      "positive_controls": "Candidates3/4 (+Y160/-Y160): each of five samples misses with a line and hits generated lod_static_box kind1, normal(0,0,1), not StartSolid/AllSolid with either tiny or zeroXY hull.",
+      "negative_controls": "Candidates1/2 (+X160/-X160): hulls hit generated wallkind4 with StartSolid, so floorHit correctly rejects. The repair must preserve rejection.",
+      "floor_entity": 1174,
+      "wall_entities": [
+        1420,
+        1650
+      ]
+    },
+    "height_observation": "Hero's generated floor center is approximately -12271.96875; zeroXY hull hits -12271.9375, within existing tolerance. No height tolerance change is proposed.",
+    "ordinary_context": "Root reports the first five ordinary route waypoints walked in12.876s atHP100 and an ammo pickup; no pilot shots. Later idle outside entry allowed a natural death3->2, invalidating oldP12 life binding. This is context, not a clean campaign pass or a map test."
+  },
+  "cause": "The canonical ChargeSupport center/corner checks and Landing corner checks depended on native TraceLine results. On these actual generated floors all sampled lines miss while exact-point vertical hulls identify the expected safe floor. The Source-internal reason for the line/hull discrepancy is not asserted.",
+  "implementation_scope": {
+    "owner": "native_environment_recovery",
+    "candidate_source_sha256": "a615b9ada3d78710e56d8c9b5f451278542c4977bea6cd0eaa7f650301f5dc3e",
+    "repair_commit": "74415d1a3f135052de467286a08ebc1907b1608a",
+    "active_callers": [
+      {
+        "file": "sv_equipment_thunder.lua",
+        "use": "ChargePath/ChargeSupport"
+      },
+      {
+        "file": "sv_equipment_stomp.lua",
+        "use": "ContactBounce -> ChargeSupport"
+      },
+      {
+        "file": "sv_event_warp_hole.lua",
+        "use": "Landing/MoveBound"
+      },
+      {
+        "file": "sv_summon_card.lua",
+        "use": "Relocate -> Resolve -> Landing"
+      },
+      {
+        "file": "sv_event_false_floor.lua",
+        "use": "DropLanding -> Landing"
+      },
+      {
+        "file": "sv_fallen_heroes.lua",
+        "use": "Landing for safe skeleton spawn position"
+      }
+    ],
+    "caller_qualification": "These are current production call paths, not claims that every consumer has been reproduced failing or accepted natively.",
+    "remote_main_source_commit_verified": "74415d1a3f135052de467286a08ebc1907b1608a",
+    "repair": "Implemented one shared zeroXY/one-Z foot-support hull helper used by Landing corners and ChargeSupport. Preserve floor entity/kind/normal/solid checks, height tolerances, full standing hull, footprint cells, hazards, locks, route admission, occupancy and lifecycle revalidation."
+  },
+  "evidence": {
+    "trace_manifest": "pre-repair-manifest.json",
+    "log_manifest": "pre-repair-log-manifest.json",
+    "native_initial": "pre-repair/safe_floor_probe_latest.json",
+    "native_zeroXY": "pre-repair/safe_floor_zeroarea_probe_latest.json",
+    "fixture": "pre-repair/bug012-real-rogue-proposal.json",
+    "console": "pre-repair/console.log.xz",
+    "die_logger": "pre-repair/die_logger_history.json.xz",
+    "rpg_summary": "pre-repair/rpg_summary_latest.txt.xz",
+    "rpg_session": "pre-repair/rpg_session_latest.txt.xz",
+    "raw_log_policy": "XZ archives decompress to exact captured bytes; source mtimes and raw/archive hashes are explicit. Files were captured individually as the live developer logger continued, not atomically. No cfg/db/prefix/credentials were copied.",
+    "failed_setup_image": "pre-repair/failed-setup-entry.png",
+    "failed_setup_image_qualification": "Independently viewed: unchanged blue entry corridor, HP100/lives3, UNRANKED, .3576/0. It supports scene context; PT12_Dnil in exact console is the no-relocation proof. This frame does not visualize collision traces or establish Backstab acceptance."
+  },
+  "next_finite_gate": "After source checkpoint installation and fresh native startup, repeat exact zeroXY probe and canonical Landing/ChargeSupport checks for new current Hero life. Valid generated floors must pass; wallkind4/StartSolid and missing-corner/unsafe/stale checks must still reject. Rebind P12 after prior death before any bounded genuine attack fixture. Resume actual ordinary progression afterward.",
+  "remaining_coverage": [
+    "Native repaired landing/charge support and movement are pending.",
+    "Warp-hole/False-floor/Heavy Stomp/Thunder Charge integrated native acceptance remains separate from this diagnostic.",
+    "Summon Card/cooperative synchronization requires a second real client/identity, unavailable.",
+    "BUG012 natural Backstab presentation and BUG014 rendered native label are not accepted by this failed setup.",
+    "Three clean varied final campaign passes remain0."
+  ],
+  "clean_pass_streak": 0,
+  "static_evidence": {
+    "receipt": "static/receipt.json",
+    "archive": "static/focused-evidence.tar.xz",
+    "qualification": "Source owner ran13 applicable adjacent commands plus118-source manifest validator,927-file Lua parse and production LuaJIT. Original Landing, Charge-ray and horizontally-widened-corner negative controls fail intended assertions. Independent reviewer reran core consumers and three negatives; root reviewed actual diff. This record references their preserved receipt, not an additional test run by the evidence author.",
+    "legacy_failure": "Extra retired test_event_bribe_blockade.lua fails seed11 before and after repair; retained in source static receipt/archive. Live05 LOD-EVENT-BRIBE-001181060-181948 removes Bribe from active gameplay; no reactivation or hidden passing claim."
+  }
+}

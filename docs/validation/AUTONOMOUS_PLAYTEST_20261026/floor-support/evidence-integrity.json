@@ -1,0 +1,21 @@
+{
+  "kind": "evidence integrity only; not gameplay acceptance",
+  "checked_utc": "2026-10-27T19:33:43.067664+00:00",
+  "status": "pass",
+  "checks": [
+    "hash:pre-repair/safe_floor_probe.lua.txt",
+    "hash:pre-repair/safe_floor_zeroarea_probe.lua.txt",
+    "hash:pre-repair/safe_floor_probe_latest.json",
+    "hash:pre-repair/safe_floor_zeroarea_probe_latest.json",
+    "hash:pre-repair/bug012-real-rogue-proposal.json",
+    "hash:pre-repair/failed-setup-entry.png",
+    "hash:pre-repair/console.log.xz",
+    "hash:pre-repair/die_logger_history.json.xz",
+    "hash:pre-repair/rpg_summary_latest.txt.xz",
+    "hash:pre-repair/rpg_session_latest.txt.xz",
+    "native-probe-positive-and-wall-negative:safe_floor_probe_latest.json",
+    "native-probe-positive-and-wall-negative:safe_floor_zeroarea_probe_latest.json"
+  ],
+  "source_production_untouched_by_this_agent": true,
+  "raw_probe_source_extension": "Archived as .lua.txt with exact original bytes to avoid adding unrelated executable Lua fixtures to integration syntax counts."
+}

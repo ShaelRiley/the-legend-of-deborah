@@ -1,0 +1,47 @@
+{
+  "kind": "BUG015 exact pre-repair native trace sources and unexecuted/failed fixture setup packet",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/safe_floor_probe.lua",
+      "archived_as": "pre-repair/safe_floor_probe.lua.txt",
+      "bytes": 2034,
+      "sha256": "958ae6b61ae788f9432fef1d3ab56ec6174b982e95c7dc9256a84eb79bb19bbc",
+      "source_mtime_ns": 1793128782911631866
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/safe_floor_zeroarea_probe.lua",
+      "archived_as": "pre-repair/safe_floor_zeroarea_probe.lua.txt",
+      "bytes": 2050,
+      "sha256": "f2e4f032e81ab1d3ace2148599837325dbcf9322da1fb65ef6156121c0e29396",
+      "source_mtime_ns": 1793129002152281872
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/safe_floor_probe_latest.json",
+      "archived_as": "pre-repair/safe_floor_probe_latest.json",
+      "bytes": 8983,
+      "sha256": "68fa853fe942143918223ed67f756947c494804d8b09d06d68606a27d071a889",
+      "source_mtime_ns": 1793128783573640411
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/safe_floor_zeroarea_probe_latest.json",
+      "archived_as": "pre-repair/safe_floor_zeroarea_probe_latest.json",
+      "bytes": 9121,
+      "sha256": "a25fa2e134eadfb9b11ef4bbc147015618b60147172932e57cd150a0844da50d",
+      "source_mtime_ns": 1793129036490732628
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/bug012-real-rogue-proposal.json",
+      "archived_as": "pre-repair/bug012-real-rogue-proposal.json",
+      "bytes": 6872,
+      "sha256": "d8a592841095175617cebcafaffcdcd1d49230f87cc1e25b4dbd353b661cad31",
+      "source_mtime_ns": 1793127471016568285
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793128508782056319-deborah-native-backstab-5.png",
+      "archived_as": "pre-repair/failed-setup-entry.png",
+      "bytes": 1318973,
+      "sha256": "c97cd0afa1df233004e0a7f384f1a496a36eee361a1417639e93595bf3e0e861",
+      "source_mtime_ns": 1793128508741922407
+    }
+  ]
+}

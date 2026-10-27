@@ -1,0 +1,43 @@
+{
+  "kind": "exact native pre-repair private-profile logs; RPG logger enabled in this dev1 fixture; no repaired acceptance",
+  "captured_utc": "2026-10-27T19:28:05.974184+00:00",
+  "secret_audit": "Only stock anonymous-server no-account-token notices matched credential keywords; no credential assignments found. No cfg/db/prefix files included.",
+  "files": [
+    {
+      "source": ".build/lod-gmod/garrysmod/console.log",
+      "archived_as": "pre-repair/console.log.xz",
+      "raw_bytes": 183405,
+      "raw_sha256": "e2d0f32575f870b59f1c726bab90404460ac588ff719e7bc3c513e8b5e181260",
+      "xz_bytes": 10364,
+      "xz_sha256": "7873922761c783db38da378c7fe7ed1902669442989c596afedbecfd9ac237a6",
+      "source_mtime_ns": 1793129268001626588
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/die_logger_history.json",
+      "archived_as": "pre-repair/die_logger_history.json.xz",
+      "raw_bytes": 94810,
+      "raw_sha256": "a35b8ea9097a01a367273cadf59b1a7dfd32d1e443ecc85a689db86602180736",
+      "xz_bytes": 4324,
+      "xz_sha256": "68b1d12d99c61a7781bace51d65397a0dff707038af6e6b91e2ef2b2363baf99",
+      "source_mtime_ns": 1793128989510994759
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_summary_latest.txt",
+      "archived_as": "pre-repair/rpg_summary_latest.txt.xz",
+      "raw_bytes": 2921,
+      "raw_sha256": "9efd2bc8c024a180747edc9a9c22be71047c54be52819751aad319b435268a8d",
+      "xz_bytes": 1472,
+      "xz_sha256": "37a25e44c5b5a181eb67447dc50dcbaa83ae833d3c5d9086f830cca441f1df39",
+      "source_mtime_ns": 1793129277644766367
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_session_latest.txt",
+      "archived_as": "pre-repair/rpg_session_latest.txt.xz",
+      "raw_bytes": 150549,
+      "raw_sha256": "772ba43f6729296d702056da84d308694e1494416f423986dd37525d041c516b",
+      "xz_bytes": 8752,
+      "xz_sha256": "d9d40b4f1825b172b2ea2009e5f26dfa83527ffa2a6563432b440cb13eb0c2db",
+      "source_mtime_ns": 1793129277645766367
+    }
+  ]
+}

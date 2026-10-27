@@ -1,0 +1,90 @@
+{
+  "purpose": "Assisted native BUG012/014 recheck using a real generated Rogue Soldier",
+  "status": "Reviewed proposal, syntax checked; not executed in a native client by this agent",
+  "source_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "expected_client_crc": 2978872520,
+  "commands": [
+    "lua_run_cl print(\"PT14\",language.GetPhrase(\"#lod_hostile\"),killicon.Exists(\"lod_hostile\"),killicon.Exists(\"lod_soldier_bolt\"))",
+    "lua_run_cl print(\"PT14_CRC\",util.CRC(file.Read(\"gamemodes/legend_of_deborah/gamemode/lod/cl_hostile_presentation_safety.lua\",\"GAME\")))",
+    "lua_run local s=LOD.RunManager.State local v=GetConVar(\"lod_developer_mode\") print(\"PT12_PRE\",#player.GetHumans(),v and v:GetInt(),s.BuildReady,s.Failed,s.LevelCleared,s.SimulationFrozen,s.LevelSeed,not(s.Graph==nil))",
+    "lua_run P12={p=player.GetHumans()[1],R=LOD.RPGAbilityRules,T=LOD.SafeTeleport,E=LOD.EntrySafety,S=LOD.RunManager.State}",
+    "lua_run local f=P12 f.eligible=function(e) local q=f.R:ProgressionState(e) return q and q.classId==\"rogue\" and e.LODArchetypeId==\"soldier\" and e.LODActivated and not e.LODDead and e:Health()>0 end",
+    "lua_run for _,e in ipairs(LOD.HostileRegistry:List()) do if P12.eligible(e) then P12.e=e break end end print(\"PT12_SOURCE\",P12.e)",
+    "lua_run local f=P12 if IsValid(f.p) then f.b=f.T:Bind(f.p) f.home=f.p:GetPos() f.hc=f.T:CellAt(f.S.Graph,f.home) end print(\"PT12_HERO\",not(f.b==nil),not(f.hc==nil))",
+    "lua_run local f=P12 if f.b and IsValid(f.e) then f.l=LOD.EnemyRoster:CaptureLife(f.e,f.p) f.q=f.l and f.l.sourceState end print(\"PT12_BIND\",not(f.l==nil))",
+    "lua_run local f=P12 f.live=function() return P12==f and f.q and f.q.derivedStats and f.T:Matches(f.b) and LOD.EnemyRoster:ValidLife(f.l) and f.q.classId==\"rogue\" and f.q.derivedStats.rogueBackstabEnabled==true end",
+    "lua_run local f=P12 if f.live() then local q=f.l.sourceState print(\"PT12_CLASS\",f.e:EntIndex(),q.actorId,q.classId,q.derivedStats.rogueBackstabEnabled) end",
+    "lua_run P12.O={Vector(160,0,0),Vector(-160,0,0),Vector(0,160,0),Vector(0,-160,0)}",
+    "lua_run local f=P12 f.locate=function() f.d=nil f.c=f.T:CellAt(f.S.Graph,f.e:GetPos()) if f.c then f.v=LOD.MazeNavigator:CellCenter(f.c) end end",
+    "lua_run local f=P12 f.land=function(v) local d=f.T:Landing(f.p,f.S.Graph,f.c,v) return d and d:DistToSqr(f.e:GetPos())>16384 and not f.E:ProtectedPosition(d) and d end",
+    "lua_run local f=P12 f.pick=function() f.locate() if not f.c then return end for _,v in ipairs(f.O) do local d=f.land(f.v+v) if d then f.d=d break end end end",
+    "lua_run local f=P12 f.dot=function() local v=f.e:GetPos()-f.p:GetPos() v.z=0 local a=f.p:EyeAngles():Forward() a.z=0 return v:GetNormalized():Dot(a:GetNormalized()) end",
+    "lua_run local f=P12 f.ready=function() return f.live() and f.E:Claim(f.e)==f.p and f.E:CombatAllowed(f.p,f.e) and LOD.RPGStatusElements:CanInitiateAttack(f.e) and f.dot()<=-.5 end",
+    "lua_run local f=P12 f.fire=function() local ok=f.ready() print(\"PT12_GATES\",ok) if ok then print(\"PT12_REAR\",f.dot()) print(\"PT12_BURST\",f.e:_BeginSoldierBurst(f.p),not(f.e.LODSoldierBurst==nil)) end end",
+    "lua_run local f=P12 f.back=function() if not(P12==f) then return end if f.T:Matches(f.b) then print(\"PT12_RETURN\",f.T:MoveBound(f.b,f.home,nil,f.hc)) end P12=nil end",
+    "lua_run local f=P12 if f.live() then f.pick() print(\"PT12_D\",f.d) if f.d and f.T:MoveBound(f.b,f.d,f.live,f.c) then f.p:SetEyeAngles((f.p:GetPos()-f.e:GetPos()):Angle()) timer.Simple(.3,f.fire) timer.Simple(8,f.back) print(\"PT12_MOVED\") end end"
+  ],
+  "stages": [
+    {
+      "commands_1_based": [
+        1,
+        2,
+        3
+      ],
+      "require": "Fresh private profile, correct native phrase/CRC, exactly one human, developer mode1 for this explicitly assisted fixture, BuildReady true, Failed/LevelCleared/SimulationFrozen false, nonnil graph."
+    },
+    {
+      "commands_1_based": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "require": "Ordinary Hero selection and portal deployment completed. A real existing live/activated Rogue Soldier is selected. Hero and home-cell bindings true, source-life binding true, actorId is generated monster identity, class Rogue and existing derived capability true. Stop and change setup if any condition fails."
+    },
+    {
+      "commands_1_based": [
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "require": "Preparation only. No actor/class/health/protection changes; helpers capture exact fixture ownership and canonical Hero/source life/graph bindings."
+    },
+    {
+      "commands_1_based": [
+        19
+      ],
+      "require": "Release ordinary movement/attack input, run final action and immediately hide console. SafeTeleport checks supported standing clearance at one of four160-unit offsets, outside sanctuary and128+ units from enemy. Actual EntrySafety Claim/CombatAllowed and attack-status eligibility are preserved. One normal burst attempt at0.3s, owner-bound home return/cleanup at8s."
+    }
+  ],
+  "expected_native_evidence": [
+    "Record real source EntIndex, generated actorId, Rogue class and true existing capability.",
+    "PT12_MOVED, PT12_GATES true, PT12_REAR at most -0.5, then normal warning/bolts and actual Backstab notice naming Soldier.",
+    "Capture rendered notice and identical normal retained-history text with adjacent Soldier damage. A successful API call alone is not acceptance.",
+    "Native kill/death can additionally demonstrate BUG014 readable Hostile label. Cold phrase lookup alone is API evidence.",
+    "PT12_RETURN true if original Hero remains alive; death/role/life/graph replacement prevents moving its replacement. P12 is cleared after the8-second callback."
+  ],
+  "limits": [
+    "Assisted relocation/attack fixture does not prove ordinary traversal, natural AI acquisition, complete Backstab cone/cache behavior or cooperative acceptance.",
+    "If no real eligible Rogue Soldier, no safe landing, entry admission or real hit exists, report the exact setup gap and choose a different setup. Do not force class, weaken protection, change health or inject presentation events.",
+    "Current burst may retain Backstab after turning because qualification is cached per target/attack. Use a fresh burst for a front-facing negative case.",
+    "If preparation fails before the final action, abort with lua_run P12=nil. Do not clear P12 during the active8-second window because it intentionally retires its ownership token."
+  ],
+  "static_validation": {
+    "Lua5.4_compile_only": true,
+    "LuaJIT_compile_only": true,
+    "commands": 19,
+    "maximum_characters": 244,
+    "no_internal_semicolons": true,
+    "no_tilde_characters": true,
+    "native_execution_claimed": false
+  }
+}
