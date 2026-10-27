@@ -1,0 +1,5 @@
+local old=LODNativeFallen17
+if old and old.active then print("FALLEN17_RESTART_REFUSED: observer still active") return end
+LODNativeFallen17=nil
+RunString(file.Read("legend_of_deborah/source17_fallen_observer_source.txt","DATA"),"FallenObserver17Ranged")
+if LODNativeFallen17 and LODNativeFallen17.active then RunString(file.Read("legend_of_deborah/source17_fallen_exposure_source.txt","DATA"),"FallenExposure17") end

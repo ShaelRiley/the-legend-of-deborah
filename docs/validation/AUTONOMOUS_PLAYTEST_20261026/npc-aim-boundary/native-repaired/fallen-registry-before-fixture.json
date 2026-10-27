@@ -1,0 +1,78 @@
+{
+	"records": [
+		{
+			"position": [
+				-3843.5166015625,
+				-801.262939453125,
+				-12271.9375
+			],
+			"id": 1,
+			"entity": 1095,
+			"owned": true,
+			"profileClass": "fighter",
+			"targetValid": false,
+			"weaponClass": "weapon_lod_crowbar",
+			"live": true,
+			"entityValid": true,
+			"attackSerial": 30,
+			"birth": 1311,
+			"weapons": {
+				"weapon_pistol": {
+					"clip": 18,
+					"clipSize": 18,
+					"ammoType": 3
+				},
+				"weapon_lod_crowbar": {
+					"clip": 0,
+					"clipSize": 1,
+					"ammoType": -1
+				},
+				"weapon_357": {
+					"clip": 0,
+					"clipSize": 6,
+					"ammoType": 5
+				}
+			},
+			"name": "Jonah \"The Knife\" Hughes"
+		},
+		{
+			"position": [
+				-3836.727783203125,
+				-723.8706665039063,
+				-12269.96875
+			],
+			"id": 2,
+			"entity": 1099,
+			"owned": true,
+			"profileClass": "fighter",
+			"targetValid": false,
+			"live": true,
+			"entityValid": true,
+			"attackSerial": 0,
+			"birth": 1338,
+			"weapons": {
+				"weapon_pistol": {
+					"clip": 18,
+					"clipSize": 18,
+					"ammoType": 3
+				},
+				"weapon_lod_crowbar": {
+					"clip": 0,
+					"clipSize": 1,
+					"ammoType": -1
+				},
+				"weapon_357": {
+					"clip": 6,
+					"clipSize": 6,
+					"ammoType": 5
+				}
+			},
+			"name": "Jonah \"The Knife\" Hughes"
+		}
+	],
+	"aimCRC": "966710964",
+	"heroLives": 1,
+	"errors": 2,
+	"heroAlive": true,
+	"kind": "actual_source17_fallen_registry"
+}

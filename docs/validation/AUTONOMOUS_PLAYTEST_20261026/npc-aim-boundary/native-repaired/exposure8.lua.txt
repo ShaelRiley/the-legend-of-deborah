@@ -1,0 +1,93 @@
+-- Explicit setup fixture: move only the same Hero, observe natural AI for8s,
+-- and attempt canonical return. This does not prove ordinary route traversal.
+assert(SERVER and GetConVar("lod_developer_mode"):GetBool(), "private server fixture only")
+assert(util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua", "GAME")) == "966710964", "wrong Aim source")
+assert(util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua", "GAME")) == "377454284", "wrong safe movement source")
+assert(not LODNativeFallen17Exposure, "archive previous setup before another exposure")
+local O = assert(LODNativeFallen17, "load the reviewed read-only observer first")
+assert(O.active and O.recordId == 2 and SysTime() - O.started < O.ttl - 9, "observer must cover the whole window")
+local R, F, T, N, E = LOD.RunManager, LOD.FallenHeroes, LOD.SafeTeleport, LOD.MazeNavigator, LOD.EntrySafety
+assert(R.State.Ranked == false, "fixture requires an already-unranked private run")
+local record
+for _, r in ipairs(F.Records) do if r.id == 2 then record = r break end end
+assert(record and IsValid(record.entity), "actual captured record2 is unavailable")
+local actor, hero = record.entity, assert(player.GetHumans()[1])
+assert(actor:EntIndex() == 1099 and actor:GetCreationID() == 1338 and F:Live(actor), "native copy body changed")
+assert(record.profile == actor.LODProgressionState and record.weapons.weapon_357 and record.weapons.weapon_pistol, "copied kit/profile changed")
+local b = assert(T:Bind(hero), "living deployed Hero required")
+if O.initial.heroSpawn then assert(hero.LODRunSpawnSerial == O.initial.heroSpawn, "observer Hero life changed") end
+local run, graph, seed, epoch, campaign = R.State, R.State.Graph, R.State.LevelSeed, R.State.CampaignEpoch, R.State.CampaignSeed
+local home = Vector(hero:GetPos().x, hero:GetPos().y, hero:GetPos().z)
+local homeCell = assert(T:CellAt(graph, home), "home is not an exact dungeon cell")
+assert(E:ProtectedPosition(home) and T:Landing(hero, graph, homeCell, home), "start from a supported sanctuary home")
+assert(not E:ProtectedPosition(actor:GetPos()) and E:SpawnPositionAllowed(actor:GetPos()), "copy is inside entry protection")
+local function current()
+    return R.State == run and R.State.Graph == graph and R.State.LevelSeed == seed
+        and R.State.CampaignEpoch == epoch and R.State.CampaignSeed == campaign
+        and T:Matches(b) and IsValid(actor) and actor:EntIndex() == 1099
+        and actor:GetCreationID() == 1338 and actor.LODFallenHero == record
+        and actor.LODProgressionState == record.profile and F:Live(actor)
+end
+local function vec(v) return {v.x, v.y, v.z} end
+local sourceCell = assert(T:CellAt(graph, actor:GetPos()), "copy is not in a legal cell")
+local function key(c) return LOD.MazeGenerator.CellKey(c.x, c.y, c.z) end
+local offsets = {}
+for _, distance in ipairs({320, 384, 448}) do
+    for _, xy in ipairs({{1,0},{-1,0},{0,1},{0,-1}}) do offsets[#offsets + 1] = Vector(xy[1] * distance, xy[2] * distance, 0) end
+end
+for _, xy in ipairs({{1,1},{1,-1},{-1,1},{-1,-1}}) do offsets[#offsets + 1] = Vector(xy[1] * 240, xy[2] * 240, 0) end
+local dest, destCell
+for _, offset in ipairs(offsets) do
+    local point = actor:GetPos() + offset
+    local cell = T:CellAt(graph, point)
+    if cell and cell.z == sourceCell.z and (cell == sourceCell or N:CanTraverse(graph, key(sourceCell), key(cell))) then
+        local d = T:Landing(hero, graph, cell, point)
+        if d and not E:ProtectedPosition(d) and E:SpawnPositionAllowed(d)
+            and d:DistToSqr(actor:GetPos()) >= 300 * 300 and d:DistToSqr(actor:GetPos()) <= 450 * 450 then
+            local _, maxs = hero:GetHull()
+            local start, finish = actor:WorldSpaceCenter() + Vector(0,0,12), d + Vector(0,0,maxs.z * .5)
+            local blocked = LOD.GeneratedGeometryBallistics:SegmentBlocked(start, finish, actor, nil, hero)
+            local trace = util.TraceHull({start = start, endpos = finish, mins = Vector(-1,-1,-1), maxs = Vector(1,1,1), mask = MASK_SHOT, filter = {actor, hero}})
+            if not blocked and not trace.Hit and not trace.StartSolid and not trace.AllSolid then dest, destCell = d, cell break end
+        end
+    end
+end
+local output = "legend_of_deborah/source17_fallen_exposure_latest.json"
+assert(not file.Exists(output, "DATA"), "archive the existing exposure result first")
+local result = {kind = "explicit_source17_fallen8_setup", recordId = 2, entity = 1099, birth = 1338,
+    started = SysTime(), home = vec(home), heroSpawn = hero.LODRunSpawnSerial,
+    heroHPBefore = hero:Health(), copyHPBefore = actor:Health(), duration = 8,
+    qualification = "Only canonical Hero relocation; natural AI/ordinary player input. No NPC, class, equipment, HP, damage or attack-state edits; no route traversal acceptance."}
+if not dest then
+    result.setupRejected = "No supported, unprotected, legal adjacent-cell300–450-unit clear-LOS destination"
+    file.Write(output, util.TableToJSON(result, true)); print("SOURCE17_FALLEN_EXPOSURE=" .. util.TableToJSON(result))
+    return
+end
+result.destination = vec(dest)
+LODNativeFallen17Exposure = result
+local finished = false
+local function back(reason)
+    if finished then return end
+    finished = true
+    -- Enemy death/removal or observer expiry must not suppress a still-valid
+    -- Hero's safe return. Replacement Hero lives are never moved.
+    result.returnReason = reason
+    result.sameHeroAtReturn = T:Matches(b) and R.State == run and R.State.Graph == graph
+        and R.State.LevelSeed == seed and R.State.CampaignEpoch == epoch and R.State.CampaignSeed == campaign
+    if result.sameHeroAtReturn then
+        result.returnAccepted, result.returnDetail = T:MoveBound(b, home, nil, homeCell)
+        result.returnDetail = tostring(result.returnDetail)
+        result.returnedPosition, result.heroHPAfter = vec(hero:GetPos()), hero:Health()
+    end
+    result.finished = SysTime()
+    file.Write(output, util.TableToJSON(result, true))
+    print("SOURCE17_FALLEN_EXPOSURE=" .. util.TableToJSON(result))
+end
+timer.Simple(8, function() back("fixed8-second return") end)
+result.moveAccepted, result.moveDetail = T:MoveBound(b, dest, current, destCell)
+result.moveDetail = tostring(result.moveDetail)
+if not result.moveAccepted then back("setup move rejected") return end
+result.nativeLOSAfterMove = actor:_HasLineOfSight(hero)
+if not result.nativeLOSAfterMove then back("actual native LOS rejected") return end
+file.Write(output, util.TableToJSON(result, true))
+print("SOURCE17_FALLEN_EXPOSURE_STARTED=" .. util.TableToJSON(result))

@@ -1,0 +1,13 @@
+local F,R=LOD.FallenHeroes,LOD.RunManager
+local rows={}
+for _,r in ipairs(F.Records) do
+ local e=r.entity
+ local row={id=r.id,name=r.name,weaponClass=r.weaponClass,retired=r.retired,entityValid=IsValid(e),weapons={},inventoryWeapons=r.inventory and r.inventory.weapons,attackSerial=r.attackSerial or 0}
+ for class,w in pairs(r.weapons or {}) do row.weapons[class]={clip=w.clip,clipSize=w.clipSize,ammoType=w.ammoType} end
+ if IsValid(e) then row.entity=e:EntIndex() row.birth=e:GetCreationID() row.owned=F:Owned(e)~=nil row.live=F:Live(e) row.position={e:GetPos().x,e:GetPos().y,e:GetPos().z} row.targetValid=IsValid(e.LODTarget) row.profileClass=r.profile and r.profile.classId end
+ rows[#rows+1]=row
+end
+local p=player.GetHumans()[1]
+local out={kind="actual_source17_fallen_registry",records=rows,heroAlive=IsValid(p) and p:Alive(),heroLives=IsValid(p) and R:GetPlayerState(p).lives,errors=LOD.RuntimeAudit.ErrorCount,aimCRC=util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua","GAME"))}
+file.Write("legend_of_deborah/source17_fallen_registry.json",util.TableToJSON(out,true))
+print("SOURCE17_FALLEN_REGISTRY="..util.TableToJSON(out))

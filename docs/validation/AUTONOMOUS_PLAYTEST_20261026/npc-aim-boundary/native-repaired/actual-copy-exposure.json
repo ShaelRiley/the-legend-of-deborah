@@ -1,0 +1,36 @@
+{
+	"returnedPosition": [
+		-3840,
+		-2688,
+		-12269.9375
+	],
+	"heroHPBefore": 100,
+	"returnAccepted": true,
+	"moveAccepted": true,
+	"returnReason": "fixed8-second return",
+	"started": 1223.6079329,
+	"heroSpawn": 6,
+	"finished": 1231.5966668,
+	"duration": 8,
+	"heroHPAfter": 97,
+	"entity": 1099,
+	"moveDetail": "-3516.727783 -723.870667 -12269.937500",
+	"recordId": 2,
+	"sameHeroAtReturn": true,
+	"returnDetail": "-3840.000000 -2688.000000 -12269.937500",
+	"home": [
+		-3840,
+		-2688,
+		-12271.376953125
+	],
+	"birth": 1338,
+	"nativeLOSAfterMove": true,
+	"destination": [
+		-3516.727783203125,
+		-723.8706665039063,
+		-12269.9375
+	],
+	"copyHPBefore": 100,
+	"kind": "explicit_source17_fallen8_setup",
+	"qualification": "Only canonical Hero relocation; natural AI/ordinary player input. No NPC, class, equipment, HP, damage or attack-state edits; no route traversal acceptance."
+}

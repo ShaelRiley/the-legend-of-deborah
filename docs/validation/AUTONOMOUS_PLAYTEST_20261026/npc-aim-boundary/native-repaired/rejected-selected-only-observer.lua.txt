@@ -1,0 +1,114 @@
+-- Read-only native observation. Root loads once after an actual ranged copy exists.
+-- No FireWeapon wrapper, attack injection, gameplay mutation or recurring sampler.
+assert(SERVER and GetConVar("lod_developer_mode"):GetBool(), "private server diagnostic only")
+assert(util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua", "GAME")) == "966710964", "wrong source17 Aim")
+assert(not LODNativeFallen17, "archive the prior observation; do not replay this fixture implicitly")
+local F, R, T, Aim = LOD.FallenHeroes, LOD.RunManager, LOD.SafeTeleport, LOD.UniversalAim
+local chosen
+for _, r in ipairs(F.Records) do
+    if F:Owned(r.entity) and r.weapons[r.weaponClass or ""]
+        and r.weaponClass ~= "weapon_lod_crowbar" and r.weaponClass ~= "weapon_crowbar"
+        and r.weaponClass ~= "weapon_lod_wand"
+        and (not LOD_NATIVE_FALLEN17_RECORD_ID or r.id == LOD_NATIVE_FALLEN17_RECORD_ID)
+        and (not chosen or r.id > chosen.id) then chosen = r end
+end
+assert(chosen, "no actual owned ranged Fallen Hero; use ordinary death/respawn first")
+local actor, hero = chosen.entity, assert(player.GetHumans()[1])
+local heroBinding = assert(T:Bind(hero), "living deployed Hero required")
+local birth, run, graph = actor:GetCreationID(), R.State, R.State.Graph
+local Q = {active = true, started = SysTime(), ttl = 90, recordId = chosen.id,
+    safeSourceCRC = "966710964", shots = {}, hits = {}, errors = {},
+    copyFire = 0, playerFire = 0, copyHeroHits = 0, overflow = 0}
+local output = "legend_of_deborah/source17_fallen_observer_latest.json"
+assert(not file.Exists(output, "DATA"), "archive the existing observer output before another observation")
+LODNativeFallen17 = Q
+local function stats()
+    local s = LOD.MagnumSuperExplosive.Stats
+    return {locks = s.aimLocks or 0, shots = s.aimShots or 0,
+        lastMultiplier = s.lastAimMultiplier, errors = LOD.RuntimeAudit.ErrorCount or 0}
+end
+local function sameCopy()
+    return R.State == run and R.State.Graph == graph and IsValid(actor)
+        and actor:GetCreationID() == birth and actor.LODFallenHero == chosen and F:Owned(actor)
+end
+local function snapshot()
+    local w = IsValid(hero) and hero:GetActiveWeapon() or nil
+    local a = Aim.States[hero]
+    local result = {at = SysTime(), stats = stats(), heroBindingCurrent = T:Matches(heroBinding),
+        heroAlive = IsValid(hero) and hero:Alive(), heroHP = IsValid(hero) and hero:Health(),
+        playerWeapon = IsValid(w) and w:GetClass(), playerClip = IsValid(w) and w:Clip1(),
+        playerAimArmed = a and a.armed == true or false,
+        playerAimMultiplier = a and a.multiplier, copyCurrent = sameCopy(),
+        copiedWeapons = {}, recordAttackSerial = chosen.attackSerial or 0}
+    for class, item in pairs(chosen.weapons) do result.copiedWeapons[class] = {clip = item.clip, ammoType = item.ammoType} end
+    if IsValid(actor) then
+        local p = actor:GetPos()
+        result.copy = {entity = actor:EntIndex(), birth = actor:GetCreationID(), name = chosen.name,
+            classId = chosen.profile.classId, live = F:Live(actor), hp = actor:Health(),
+            position = {p.x, p.y, p.z}, weaponClass = chosen.weaponClass,
+            isPlayer = actor:IsPlayer(), activeWeaponMethod = type(actor.GetActiveWeapon),
+            targetIsBoundHero = actor.LODTarget == hero and T:Matches(heroBinding)}
+    end
+    return result
+end
+local function append(list, row)
+    if #list < 96 then list[#list + 1] = row else Q.overflow = Q.overflow + 1 end
+end
+local ids = {fire = "LOD_Source17_FallenObserverFire", hit = "LOD_Source17_FallenObserverHit",
+    errors = "LOD_Source17_FallenObserverError"}
+function Q.Finish(reason)
+    if not Q.active then return end
+    Q.active = false
+    hook.Remove("EntityFireBullets", ids.fire)
+    hook.Remove("PostEntityTakeDamage", ids.hit)
+    hook.Remove("OnLuaError", ids.errors)
+    Q.finished, Q.reason, Q.final = SysTime(), reason or "explicit finish", snapshot()
+    Q.cleanupEmissionObserved = false
+    for _, shot in ipairs(Q.shots) do
+        if shot.owner == "player" and shot.markerAtFire ~= "nil" and shot.markerAfterDelay == "nil" then
+            Q.cleanupEmissionObserved = true
+        end
+    end
+    Q.playerAimShotDelta = Q.final.stats.shots - Q.initial.stats.shots
+    Q.playerAimLockDelta = Q.final.stats.locks - Q.initial.stats.locks
+    Q.luaErrorDelta = Q.final.stats.errors - Q.initial.stats.errors
+    Q.Finish = nil -- serialize only diagnostic primitives/tables, never closures/entities
+    file.Write(output, util.TableToJSON(Q, true))
+    print("SOURCE17_FALLEN_OBSERVER=" .. util.TableToJSON({copyFire = Q.copyFire,
+        copyHeroHits = Q.copyHeroHits, playerFire = Q.playerFire,
+        playerAimShotDelta = Q.playerAimShotDelta, cleanupEmissionObserved = Q.cleanupEmissionObserved,
+        luaErrorDelta = Q.luaErrorDelta, reason = Q.reason}))
+end
+hook.Add("EntityFireBullets", ids.fire, function(shooter, bullet)
+    if not Q.active then return end
+    if shooter == actor and sameCopy() then
+        Q.copyFire = Q.copyFire + 1
+        append(Q.shots, {owner = "actual copy", at = SysTime(), serial = chosen.attackSerial or 0,
+            pellets = bullet.Num, state = snapshot()})
+    elseif shooter == hero and T:Matches(heroBinding) then
+        Q.playerFire = Q.playerFire + 1
+        local w = hero:GetActiveWeapon()
+        local row = {owner = "player", at = SysTime(), weapon = IsValid(w) and w:GetClass(),
+            markerAtFire = tostring(IsValid(w) and w.LODMagnumAimConsumedMultiplier or nil), state = snapshot()}
+        append(Q.shots, row)
+        timer.Simple(.2, function()
+            if not Q.active then return end
+            row.markerAfterDelay = tostring(IsValid(w) and w.LODMagnumAimConsumedMultiplier or nil)
+            row.afterDelay = snapshot()
+        end)
+    end
+end)
+hook.Add("PostEntityTakeDamage", ids.hit, function(target, info, took)
+    if not Q.active or not sameCopy() or info:GetAttacker() ~= actor then return end
+    if took and target == hero and T:Matches(heroBinding) then Q.copyHeroHits = Q.copyHeroHits + 1 end
+    append(Q.hits, {at = SysTime(), took = took == true, resolvedDamage = info:GetDamage(),
+        target = IsValid(target) and target:EntIndex(), targetHPAfter = IsValid(target) and target:Health(),
+        targetIsBoundHero = target == hero and T:Matches(heroBinding), state = snapshot()})
+end)
+hook.Add("OnLuaError", ids.errors, function(message, realm)
+    if Q.active then append(Q.errors, {at = SysTime(), realm = tostring(realm), message = string.sub(tostring(message), 1, 2048)}) end
+end)
+Q.initial = snapshot()
+file.Write(output, util.TableToJSON({kind = "source17_fallen_observation_in_progress", initial = Q.initial, ttl = Q.ttl}, true))
+timer.Simple(Q.ttl, function() if Q.active then Q.Finish("90-second TTL") end end)
+print("SOURCE17_FALLEN_OBSERVER_STARTED=" .. util.TableToJSON({recordId = chosen.id, entity = actor:EntIndex(), birth = birth, ttl = Q.ttl, initial = Q.initial}))

@@ -2,7 +2,7 @@
   "id": "BUG-017",
   "recorded_utc": "2026-10-27T21:46:25.144623+00:00",
   "title": "Player Aim wrapper calls Player:GetActiveWeapon on a Fallen Hero NextBot",
-  "status": "Confirmed native defect; smallest shared repair and strengthened regression pass static gates and independent review. Fresh repaired native acceptance remains pending.",
+  "status": "Repaired on verified main6ac; static gates and independent review pass; finite fresh source17 native actual-NPC repeated ranged release/contact and actual-player Aim/cleanup acceptance passed. Broad campaign/cooperative acceptance remains pending.",
   "severity": "Major autonomous-enemy combat coroutine failure. The native NextBot reports an exception; independent fallen-enemy attacks can cease. No whole-client crash, guaranteed progression block or universal NPC failure is claimed.",
   "baseline": {
     "native_prepared_commit": "2fcea7259728cef381e447395d93335f6df85382",
@@ -83,17 +83,19 @@
     "original_negative": "static/original-negative.json; exact native source fails271",
     "adjacent_cleanup_negative": "static/cleanup-negative.json; wrapper-only repair fails323",
     "independent_review": "static/independent-review.json; clear; independently reran original/hybrid negatives and final Lua5.4/LuaJIT positives",
-    "native_repaired_acceptance": false,
-    "full_combined_ci": "Pending source checkpoint publication and frozen full matrix; targeted passes are not a full-matrix claim."
+    "native_repaired_acceptance": true,
+    "full_combined_ci": "../ci-source17/proof.json: exact gameplay6ac frozen336/336,927Lua,576production, independently verified; no source drift.",
+    "native_repaired_receipt": "native-repaired/receipt.json"
   },
   "evidence": "manifest.json",
-  "next_native_gate": "Freshly install/verify the repaired combined source, restart the actual client, create or encounter an ordinary ranged Fallen Hero, and observe actual copied firearm release/contact over repeated cycles with no attributed Lua error. Verify real-player Aim/fire and adjacent lifecycle behavior; then continue authored exploration.",
+  "next_native_gate": "Resume varied authored exploration and remaining campaign/event/endings/reset/cooperative gates. Preserve this finite actual-NPC gunfire/contact and separate real-player Aim/cleanup proof; no identical retest is required absent contradictory evidence or a relevant gameplay change.",
   "limits": [
     "Native source16 error is confirmed; eventual gameplay consequences beyond the failing enemy coroutine are not directly measured.",
     "The second cleanup access was independently exposed statically after the first repair; it is not mislabeled as a native screenshot result.",
     "One real client only; cooperative acceptance remains blocked.",
-    "Fresh repaired native acceptance, authored campaign/endings, three clean varied final passes and full final-candidate review remain open.",
+    "Finite fresh native BUG017 acceptance passed; authored campaign/endings, three clean varied final passes and full final-candidate review remain open.",
     "Clean streak stays0. October23 changes,40FPS,Workshop and VPS remain separate deferred scope."
   ],
-  "clean_pass_streak": 0
+  "clean_pass_streak": 0,
+  "native_repaired_evidence": "native-repaired/receipt.json"
 }

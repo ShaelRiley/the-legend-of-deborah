@@ -1,0 +1,83 @@
+{
+  "kind": "prepared_standalone_private_profile",
+  "commit": "94f3e07eef149a8bc35b165d654078d42e8274a4",
+  "production_tree_identity": {
+    "gamemodes": "3fbcc4f741d3bd77fd7c0fedb08ccb8e255769ed",
+    "lua": "e2ab4ef2e3ef451336fa4c60d06dbd9fdac1cf45",
+    "sound": "600815fef14f7b13e7ba2d93d0090d8c3025b14b"
+  },
+  "installation": "/home/deck/Downloads/the-legend-of-deborah/.build/lod-gmod",
+  "source_proofs": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua": "e9596992404d719b5264bf039b55dc49dfac7467eb19085ce9f464b84febac48",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_language.lua": "2a040aaaef05e2b96ffb0bc4cd57c5500ca8db1e151f2ee51ccbf71031f0327d",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_hostile_presentation_safety.lua": "9d9d9db507eac8c03d09c3cfd8ec9acf4d5d4b03521f5f2fdf30cbebc9c6f27d",
+    "gamemodes/legend_of_deborah/entities/entities/lod_gate/init.lua": "e4851567b9948e2723813157cd04e7bbed89809947b0ac5df30b4dd4c048ed4e",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua": "d6bf46baa9034c70c4fe3d3bf5ac139705431e91833bbec2d0d78fa84f220866",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua": "db9ad30b329aac69dd27ed262085e9d080b5b7c54bf4876c089b89a435384f60"
+  },
+  "source17_sha256": "db9ad30b329aac69dd27ed262085e9d080b5b7c54bf4876c089b89a435384f60",
+  "source17_crc32": 966710964,
+  "startup_manifest_entries": 118,
+  "startup_manifest_sha256": "013bbb187d92269d9f5463571ee6aa1b0ca9afb534bae2e9ef3abcf0fe5e3634",
+  "developer_fixtures": true,
+  "compatdata_initially_empty": true,
+  "qualification": "Source17 private developer fixtures, fresh prefix. No repaired native acceptance or normal final campaign pass inferred.",
+  "prior15_shutdown_qualification": {
+    "kind": "root_observed_host_closure",
+    "utc": "2026-10-27T21:08:00.690885+00:00",
+    "native_pid": 64241,
+    "initial_owned_identity": {
+      "pid": 64241,
+      "birth": "5539993",
+      "kind": "owned_task_marker"
+    },
+    "initial_identity_source": "Exact PRIVATE_NATIVE_IDENTITY stdout read from owned launch tool session22504 before gameplay; preserved here from that tool observation.",
+    "normal_quit": "Root typed quit from visually confirmed GMod console; session22504 returned finished_unaccepted.",
+    "host_process_query": {
+      "command": "ps -eo pid,comm",
+      "sandbox_permissions": "require_escalated",
+      "exit_code": 0,
+      "gmod_processes": []
+    },
+    "launch_result_sha256": "c38764b9339884e366065b7cfc64b1b5f0761502b41e72652e667ae79dddd6ea",
+    "launch_result_flags_preserved": {
+      "remaining_owned_pids": [],
+      "unproven_native_pids": [
+        64241
+      ],
+      "cleanup_errors": [],
+      "original_config_unchanged": true
+    },
+    "qualification": "The same PID/birth was proven owned while live. Final reclassification during shutdown is consistent with loss of argv/environment, but exact timing/cause is not proven. The original unproven flag is not erased. No clean unproven[] receipt is claimed."
+  },
+  "prior16_shutdown_qualification": {
+    "kind": "root_observed_host_closure",
+    "utc": "2026-10-27T22:05:21.799048+00:00",
+    "native_pid": 74708,
+    "initial_owned_identity": {
+      "pid": 74708,
+      "birth": "6014333",
+      "kind": "owned_task_marker"
+    },
+    "initial_identity_source": "Exact PRIVATE_NATIVE_IDENTITY stdout from owned launch tool session3916, consistent with terminal launch-result native identity evidence.",
+    "normal_quit": "Root typed quit after visually confirmed native StrengthPress result console; control92979 and launch3916 returned finished.",
+    "host_process_query": {
+      "command": "ps -eo pid,comm",
+      "sandbox_permissions": "require_escalated",
+      "exit_code": 0,
+      "gmod_processes": []
+    },
+    "launch_result_sha256": "5f6a29ee1dc4668730d5b025331e729eb4601b54b92a822b6c654f0a0c2cb9f3",
+    "launch_result_flags_preserved": {
+      "remaining_owned_pids": [],
+      "unproven_native_pids": [],
+      "cleanup_errors": [],
+      "original_config_unchanged": true
+    },
+    "qualification": "This source16 terminal receipt has no remaining/unproven PIDs or cleanup errors. Prior source15 final unproven qualification remains preserved separately."
+  },
+  "host_closure_evidence_sha256": "27c1ef49cef29f65e2d31673acb0b57b600e2e745bdad057cc29e1e01d5edef1",
+  "source16_host_closure_sha256": "f27ebbe4640aaa89faa29f4a7fced661628e64630527237f6d50963a1a90f2bb",
+  "prepared_sha256": "c4e381a2a25187034c13a1d003852821315152801b203eb75a98af5d55fd8d68",
+  "all576_current_repository_and_private_hashes_match": true
+}

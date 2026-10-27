@@ -1,0 +1,407 @@
+{
+	"copyHeroHits": 1,
+	"active": false,
+	"initial": {
+		"playerAimMultiplier": 2,
+		"copy": {
+			"position": [
+				-3836.727783203125,
+				-723.8706665039063,
+				-12269.96875
+			],
+			"entity": 1099,
+			"hp": 100,
+			"activeWeaponMethod": "nil",
+			"targetIsBoundHero": false,
+			"presentedWeapon": "",
+			"isPlayer": false,
+			"live": true,
+			"birth": 1338,
+			"name": "Jonah \"The Knife\" Hughes",
+			"classId": "fighter"
+		},
+		"at": 1223.6038944,
+		"playerClip": 5,
+		"stats": {
+			"lastMultiplier": 2,
+			"shots": 1,
+			"locks": 73,
+			"errors": 2
+		},
+		"copiedWeapons": {
+			"weapon_pistol": {
+				"ammoType": 3,
+				"clip": 18
+			},
+			"weapon_lod_crowbar": {
+				"ammoType": -1,
+				"clip": 0
+			},
+			"weapon_357": {
+				"ammoType": 5,
+				"clip": 6
+			}
+		},
+		"copyCurrent": true,
+		"heroHP": 100,
+		"recordAttackSerial": 0,
+		"heroBindingCurrent": true,
+		"heroAlive": true,
+		"playerAimArmed": true,
+		"playerWeapon": "weapon_357"
+	},
+	"final": {
+		"playerAimMultiplier": 2,
+		"copy": {
+			"position": [
+				-3826.794189453125,
+				-725.0220336914063,
+				-12269.96875
+			],
+			"entity": 1099,
+			"hp": 100,
+			"activeWeaponMethod": "nil",
+			"targetIsBoundHero": false,
+			"weaponClass": "weapon_357",
+			"presentedWeapon": "weapon_357",
+			"isPlayer": false,
+			"live": true,
+			"birth": 1338,
+			"name": "Jonah \"The Knife\" Hughes",
+			"classId": "fighter"
+		},
+		"at": 1279.9987236,
+		"playerClip": 5,
+		"stats": {
+			"lastMultiplier": 2,
+			"shots": 1,
+			"locks": 76,
+			"errors": 2
+		},
+		"copiedWeapons": {
+			"weapon_pistol": {
+				"ammoType": 3,
+				"clip": 18
+			},
+			"weapon_lod_crowbar": {
+				"ammoType": -1,
+				"clip": 0
+			},
+			"weapon_357": {
+				"ammoType": 5,
+				"clip": 2
+			}
+		},
+		"copyCurrent": true,
+		"heroHP": 97,
+		"recordAttackSerial": 5,
+		"heroBindingCurrent": true,
+		"heroAlive": true,
+		"playerAimArmed": true,
+		"playerWeapon": "weapon_357"
+	},
+	"errors": [],
+	"finished": 1279.9987087,
+	"started": 1223.6033634,
+	"ttl": 90,
+	"copyFire": 4,
+	"safeSourceCRC": "966710964",
+	"recordId": 2,
+	"luaErrorDelta": 0,
+	"playerAimLockDelta": 3,
+	"reason": "8-second exposure complete",
+	"hits": [
+		{
+			"target": 1,
+			"resolvedDamage": 3.3333332538604736,
+			"state": {
+				"playerAimMultiplier": 2,
+				"copy": {
+					"position": [
+						-3826.794189453125,
+						-725.0220336914063,
+						-12269.96875
+					],
+					"entity": 1099,
+					"hp": 100,
+					"activeWeaponMethod": "nil",
+					"targetIsBoundHero": true,
+					"weaponClass": "weapon_357",
+					"presentedWeapon": "weapon_357",
+					"isPlayer": false,
+					"live": true,
+					"birth": 1338,
+					"name": "Jonah \"The Knife\" Hughes",
+					"classId": "fighter"
+				},
+				"at": 1228.004365,
+				"playerClip": 5,
+				"stats": {
+					"lastMultiplier": 2,
+					"shots": 1,
+					"locks": 74,
+					"errors": 2
+				},
+				"copiedWeapons": {
+					"weapon_pistol": {
+						"ammoType": 3,
+						"clip": 18
+					},
+					"weapon_lod_crowbar": {
+						"ammoType": -1,
+						"clip": 0
+					},
+					"weapon_357": {
+						"ammoType": 5,
+						"clip": 4
+					}
+				},
+				"copyCurrent": true,
+				"heroHP": 97,
+				"recordAttackSerial": 3,
+				"heroBindingCurrent": true,
+				"heroAlive": true,
+				"playerAimArmed": true,
+				"playerWeapon": "weapon_357"
+			},
+			"targetIsBoundHero": true,
+			"targetHPAfter": 97,
+			"took": true,
+			"at": 1228.0043535
+		}
+	],
+	"overflow": 0,
+	"playerFire": 0,
+	"cleanupEmissionObserved": false,
+	"shots": [
+		{
+			"owner": "actual copy",
+			"weaponClass": "weapon_357",
+			"serial": 1,
+			"pellets": 1,
+			"state": {
+				"playerAimMultiplier": 2,
+				"copy": {
+					"position": [
+						-3836.727783203125,
+						-723.8706665039063,
+						-12269.96875
+					],
+					"entity": 1099,
+					"hp": 100,
+					"activeWeaponMethod": "nil",
+					"targetIsBoundHero": true,
+					"weaponClass": "weapon_357",
+					"presentedWeapon": "weapon_357",
+					"isPlayer": false,
+					"live": true,
+					"birth": 1338,
+					"name": "Jonah \"The Knife\" Hughes",
+					"classId": "fighter"
+				},
+				"at": 1224.4806453,
+				"playerClip": 5,
+				"stats": {
+					"lastMultiplier": 2,
+					"shots": 1,
+					"locks": 74,
+					"errors": 2
+				},
+				"copiedWeapons": {
+					"weapon_pistol": {
+						"ammoType": 3,
+						"clip": 18
+					},
+					"weapon_lod_crowbar": {
+						"ammoType": -1,
+						"clip": 0
+					},
+					"weapon_357": {
+						"ammoType": 5,
+						"clip": 5
+					}
+				},
+				"copyCurrent": true,
+				"heroHP": 100,
+				"recordAttackSerial": 1,
+				"heroBindingCurrent": true,
+				"heroAlive": true,
+				"playerAimArmed": true,
+				"playerWeapon": "weapon_357"
+			},
+			"at": 1224.4806387
+		},
+		{
+			"owner": "actual copy",
+			"weaponClass": "weapon_357",
+			"serial": 2,
+			"pellets": 1,
+			"state": {
+				"playerAimMultiplier": 2,
+				"copy": {
+					"position": [
+						-3826.794189453125,
+						-725.0220336914063,
+						-12269.96875
+					],
+					"entity": 1099,
+					"hp": 100,
+					"activeWeaponMethod": "nil",
+					"targetIsBoundHero": true,
+					"weaponClass": "weapon_357",
+					"presentedWeapon": "weapon_357",
+					"isPlayer": false,
+					"live": true,
+					"birth": 1338,
+					"name": "Jonah \"The Knife\" Hughes",
+					"classId": "fighter"
+				},
+				"at": 1226.058634,
+				"playerClip": 5,
+				"stats": {
+					"lastMultiplier": 2,
+					"shots": 1,
+					"locks": 74,
+					"errors": 2
+				},
+				"copiedWeapons": {
+					"weapon_pistol": {
+						"ammoType": 3,
+						"clip": 18
+					},
+					"weapon_lod_crowbar": {
+						"ammoType": -1,
+						"clip": 0
+					},
+					"weapon_357": {
+						"ammoType": 5,
+						"clip": 4
+					}
+				},
+				"copyCurrent": true,
+				"heroHP": 100,
+				"recordAttackSerial": 2,
+				"heroBindingCurrent": true,
+				"heroAlive": true,
+				"playerAimArmed": true,
+				"playerWeapon": "weapon_357"
+			},
+			"at": 1226.0586267
+		},
+		{
+			"owner": "actual copy",
+			"weaponClass": "weapon_357",
+			"serial": 4,
+			"pellets": 1,
+			"state": {
+				"playerAimMultiplier": 2,
+				"copy": {
+					"position": [
+						-3826.794189453125,
+						-725.0220336914063,
+						-12269.96875
+					],
+					"entity": 1099,
+					"hp": 100,
+					"activeWeaponMethod": "nil",
+					"targetIsBoundHero": true,
+					"weaponClass": "weapon_357",
+					"presentedWeapon": "weapon_357",
+					"isPlayer": false,
+					"live": true,
+					"birth": 1338,
+					"name": "Jonah \"The Knife\" Hughes",
+					"classId": "fighter"
+				},
+				"at": 1229.1845393,
+				"playerClip": 5,
+				"stats": {
+					"lastMultiplier": 2,
+					"shots": 1,
+					"locks": 75,
+					"errors": 2
+				},
+				"copiedWeapons": {
+					"weapon_pistol": {
+						"ammoType": 3,
+						"clip": 18
+					},
+					"weapon_lod_crowbar": {
+						"ammoType": -1,
+						"clip": 0
+					},
+					"weapon_357": {
+						"ammoType": 5,
+						"clip": 3
+					}
+				},
+				"copyCurrent": true,
+				"heroHP": 97,
+				"recordAttackSerial": 4,
+				"heroBindingCurrent": true,
+				"heroAlive": true,
+				"playerAimArmed": true,
+				"playerWeapon": "weapon_357"
+			},
+			"at": 1229.1845319
+		},
+		{
+			"owner": "actual copy",
+			"weaponClass": "weapon_357",
+			"serial": 5,
+			"pellets": 1,
+			"state": {
+				"playerAimMultiplier": 2,
+				"copy": {
+					"position": [
+						-3826.794189453125,
+						-725.0220336914063,
+						-12269.96875
+					],
+					"entity": 1099,
+					"hp": 100,
+					"activeWeaponMethod": "nil",
+					"targetIsBoundHero": true,
+					"weaponClass": "weapon_357",
+					"presentedWeapon": "weapon_357",
+					"isPlayer": false,
+					"live": true,
+					"birth": 1338,
+					"name": "Jonah \"The Knife\" Hughes",
+					"classId": "fighter"
+				},
+				"at": 1230.8825501,
+				"playerClip": 5,
+				"stats": {
+					"lastMultiplier": 2,
+					"shots": 1,
+					"locks": 75,
+					"errors": 2
+				},
+				"copiedWeapons": {
+					"weapon_pistol": {
+						"ammoType": 3,
+						"clip": 18
+					},
+					"weapon_lod_crowbar": {
+						"ammoType": -1,
+						"clip": 0
+					},
+					"weapon_357": {
+						"ammoType": 5,
+						"clip": 2
+					}
+				},
+				"copyCurrent": true,
+				"heroHP": 97,
+				"recordAttackSerial": 5,
+				"heroBindingCurrent": true,
+				"heroAlive": true,
+				"playerAimArmed": true,
+				"playerWeapon": "weapon_357"
+			},
+			"at": 1230.8825437
+		}
+	],
+	"playerAimShotDelta": 0
+}

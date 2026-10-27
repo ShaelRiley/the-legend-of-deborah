@@ -1,0 +1,254 @@
+{
+  "kind": "source17_finite_native_NPC_aim_boundary_acceptance",
+  "recorded_utc": "2026-10-27T22:36:01.886582+00:00",
+  "status": "Finite repaired single-client native gate passed across separate actual-player and actual-Fallen-copy windows.",
+  "tested_gameplay_commit": "6acff8a3458b230378100d491e431d18a84c740c",
+  "prepared_and_printed_build_commit": "94f3e07eef149a8bc35b165d654078d42e8274a4",
+  "current_main_at_bank": "777b284a9bbb426b86646dba56f799e8999afe67",
+  "aim_source_sha256": "db9ad30b329aac69dd27ed262085e9d080b5b7c54bf4876c089b89a435384f60",
+  "aim_source_crc32": 966710964,
+  "prepared_sha256": "c4e381a2a25187034c13a1d003852821315152801b203eb75a98af5d55fd8d68",
+  "source_files_matched": 576,
+  "physical_startup_entries": 118,
+  "both_realm_native_source_guards_matched": 6,
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+    "client": "Windows x86 Garrys Mod2026.09.17 / LuaJIT2.0.4 / Proton10",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "layout_seed": 1967490589,
+    "campaign_epoch": 1,
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true,
+    "hero": "Jonah \"The Knife\" Hughes",
+    "class": "fighter",
+    "level": 1,
+    "feat": "DEX_SPRING_HEEL / Spring Heel",
+    "feat_source": "Frozen RPG session event000084; no source16 FrugalCartography assumption reused."
+  },
+  "ordinary_setup": "Root selected the Fighter/feat/starter and entered through the portal normally. Two natural enemy deaths while idle during console setup consumed lives3\u21922\u21921 and created real Fallen records. The subsequent kill command had no effect on the first already-dead Hero; the second return had already happened automatically beforeF. No controlled-death or F-caused-respawn claim is made.",
+  "windows": {
+    "player_aim": {
+      "artifact": "player-aim-only-observation.json",
+      "actual_native_input": "Root used ordinary aimed LMB .357 fire at a wall from sanctuary.",
+      "reason": "90-second TTL",
+      "elapsed_SysTime": 89.98992049999993,
+      "actual_player_fire_events": 1,
+      "aim_shot_delta": 1,
+      "consumed_multiplier_seen": "2",
+      "marker_after_delay": "nil",
+      "player_magnum_clip": [
+        6,
+        5
+      ],
+      "new_Lua_errors": 0,
+      "copy_fire_events": 0,
+      "qualification": "This first window passes player Aim and cleanup only. No NPC fire is inferred from its idle copy snapshot."
+    },
+    "natural_copy": {
+      "artifact": "actual-copy-fire-observation.json",
+      "setup_artifact": "actual-copy-exposure.json",
+      "reason": "8-second exposure complete",
+      "observer_elapsed_SysTime": 56.39534529999992,
+      "configured_exposure_seconds": 8,
+      "actual_exposure_SysTime": 7.98873390000017,
+      "copy_record": 2,
+      "actual_entity": 1099,
+      "actual_creation_id": 1338,
+      "is_player": false,
+      "GetActiveWeapon_method_type": "nil",
+      "class": "fighter",
+      "selected_weapon_before": "nil / deferred selection",
+      "actual_selected_and_presented_weapon_after": "weapon_357",
+      "actual_EntityFireBullets_receipts": 4,
+      "observed_attack_serials": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "copied_magnum_ammo": [
+        6,
+        2
+      ],
+      "copy_HP": [
+        100,
+        100
+      ],
+      "actual_PostEntityTakeDamage_Hero_receipts": 1,
+      "resolved_damage_value": 3.3333332538604736,
+      "Hero_HP": [
+        100,
+        97
+      ],
+      "Hero_lives": 1,
+      "new_Lua_errors": 0,
+      "new_errors_in_observer": [],
+      "ordinary_player_fire_in_this_window": 0,
+      "qualification": "Repeated native .357 releases/contact were produced by the actual copied actor through normal AI. The eight-second helper changes only Hero position through canonical support/lifecycle guards; it never calls FireWeapon or changes NPC/profile/loadout/HP/damage/attack state. The observer lasts longer than the eight-second exposure because root finishes it after reviewing the return."
+    }
+  },
+  "return": {
+    "same_Hero_spawn": 6,
+    "same_Hero_binding": true,
+    "canonical_move": true,
+    "native_LOS": true,
+    "canonical_return": true,
+    "restored_sanctuary_XY": true,
+    "supported_Z_delta": 1.439453125,
+    "qualification": "Canonical landing snaps to support1.439453125 above the prior physics origin. Exact XYZ restoration and ordinary traversal into the fixture encounter are unclaimed."
+  },
+  "diagnostic_error_accounting": {
+    "initial_and_final_server_audit_counts": [
+      2,
+      2
+    ],
+    "root_diagnostic_errors_retained": [
+      "Native NULL GetClass query after a natural death (frozen console194).",
+      "Old selected-class-only observer assertion15 (frozen console212), corrected to inspect carried ranged entries without calling the mutating weapon chooser."
+    ],
+    "new_errors_during_each_successful_window": 0,
+    "native_NextBot_GetActiveWeapon_errors_in_frozen_repaired_console": 0,
+    "qualification": "The initial two diagnostic errors are preserved and attributed. No zero-total-error session claim is made."
+  },
+  "visual_review": [
+    {
+      "artifact": "native-client-before-player-shot.png",
+      "claim": "Actual native .357/client/console and observer start. The filename anticipated the shot; this screenshot itself is not a captured muzzle-flash or shot-counter frame."
+    },
+    {
+      "artifact": "native-natural-exposure-return-console.png",
+      "claim": "Native exposure-start/return console values, same actual rendered client and supported sanctuary location."
+    }
+  ],
+  "instrumentation": {
+    "raw_observer": "observer.lua.txt",
+    "exposure": "exposure8.lua.txt",
+    "bridge": "observe-and-expose.lua.txt",
+    "first_rejected_observer": "rejected-selected-only-observer.lua.txt",
+    "restart": "After preserving the first player-only TTL output, root explicitly archived the prior observation and loaded a new bounded observer only for the remaining natural-copy gate. The bridge changes diagnostic ownership only.",
+    "field_name_qualification": "Raw observer safeSourceCRC is a historical diagnostic field-name error: its checked path is sv_magnum_aim_state.lua and966710964 is the Aim CRC. SafeTeleport377454284 is separately asserted by the exposure helper."
+  },
+  "integration": "../../ci-source17/proof.json verifies exact gameplay6ac full frozen336/336,927Lua,576production. Native results here are separate evidence.",
+  "limits": [
+    "Finite BUG017 actor/API/ammo/player-Aim mechanics pass; every Fallen weapon/class, full combat presentation and lifecycle combination remain outside this narrow acceptance.",
+    "No rendered NPC attack animation, audible shot, controller, performance or complete authored-encounter acceptance is inferred from these console/event artifacts.",
+    "Teleport exposure is not ordinary route traversal or a normal production-default timed campaign pass.",
+    "Only one real client; cooperative acceptance remains blocked.",
+    "No boss/event-family/endings/full campaign or final three varied clean pass is claimed.",
+    "Stock Menu failed fallback and the earlier source15 shutdown qualification remain preserved; Steam Cloud restoration is still required after private testing."
+  ],
+  "clean_pass_streak": 0,
+  "artifact_manifest": {
+    "actual-copy-fire-observation.json": {
+      "sha256": "7c1794bd642d1d8b19e58191e995ea912e72ddddd5732d5383488f576585c424",
+      "bytes": 8152,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/actual-copy-fire-observation.json"
+    },
+    "actual-copy-exposure.json": {
+      "sha256": "4cfedf724f5e269b745254621db849af4d2be3a7757c7f90c48f5bbdde7535e8",
+      "bytes": 876,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/actual-copy-exposure.json"
+    },
+    "player-aim-only-observation.json": {
+      "sha256": "4dedd1193c817b4875b7f2e8a3a1c8e458fbc69a84faf86e090f37c914df1014",
+      "bytes": 4352,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/player-aim-only-observation.json"
+    },
+    "fallen-registry-before-fixture.json": {
+      "sha256": "358d67f3258bac6b84e44c78e1b18bf6d1e54c2aff429a2ffed43889663c38e6",
+      "bytes": 1381,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/fallen-registry-before-fixture.json"
+    },
+    "observer.lua.txt": {
+      "sha256": "fbd4ff2d693891a89ab5a73d495f69b359aedeec5c07ad7d23d1e1ff5094cb60",
+      "bytes": 7245,
+      "origin": ".build/lod-gmod/garrysmod/data/legend_of_deborah/source17_fallen_observer_source.txt"
+    },
+    "exposure8.lua.txt": {
+      "sha256": "78624a28692e5e35fb17c0f10361c2ca10bde7c969518628d98a4207adc98dca",
+      "bytes": 6601,
+      "origin": ".build/lod-gmod/garrysmod/data/legend_of_deborah/source17_fallen_exposure_source.txt"
+    },
+    "observe-and-expose.lua.txt": {
+      "sha256": "e5d0b3acc0ef3d63b264c61b432ca00dc080422fbfa62b82652acdcb77ac3000",
+      "bytes": 418,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/observe_expose.lua"
+    },
+    "registry-observer.lua.txt": {
+      "sha256": "9df0356deb8fed6856023c1be0c486484586bb08d4f380ec4755cc9b9caef4ff",
+      "bytes": 1170,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/fallen_registry.lua"
+    },
+    "rejected-selected-only-observer.lua.txt": {
+      "sha256": "85c5f4ddfde40460eb7f6e67df98156abee3b4e95691265f94c1950f94261124",
+      "bytes": 6994,
+      "origin": ".build/autonomous-playtest-20261027/source17-fallen-observer-original-selected-only.lua.txt"
+    },
+    "source-server-proof.json": {
+      "sha256": "b33afa1afbfe5d9bdc57250e1440101e1a9568e7ab913989c2143ee8eeda6e57",
+      "bytes": 1122,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/frozen-npc-gate/data__legend_of_deborah__private_profile_server_proof.json"
+    },
+    "source-client-proof.json": {
+      "sha256": "3226a2e35425240622a4ec0b3c3793880d069e1f3570917361a27847bc0ce473",
+      "bytes": 1088,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/frozen-npc-gate/data__legend_of_deborah__private_profile_client_proof.json"
+    },
+    "rpg_summary_latest.txt.xz": {
+      "sha256": "44885c3f8fa4aa880cedd3e4168e212a4b4176041433a2ebada7841c341b1304",
+      "bytes": 1540,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/frozen-npc-gate/data__legend_of_deborah__rpg_summary_latest.txt"
+    },
+    "rpg_session_latest.txt.xz": {
+      "sha256": "16c98551e12514186143f93ac47b7f58304c7a23466d431950607a182cc5a87f",
+      "bytes": 13888,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/frozen-npc-gate/data__legend_of_deborah__rpg_session_latest.txt"
+    },
+    "dev_population_sources.txt": {
+      "sha256": "013bbb187d92269d9f5463571ee6aa1b0ca9afb534bae2e9ef3abcf0fe5e3634",
+      "bytes": 15537,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/frozen-npc-gate/data__legend_of_deborah__dev_population_sources.txt"
+    },
+    "dev_build.txt": {
+      "sha256": "21fdd28849421d5dd7bfce4a6ec748a5078a1aea42ff0815dcb9fd41975a1d8a",
+      "bytes": 73,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/frozen-npc-gate/data__legend_of_deborah__dev_build.txt"
+    },
+    "console.log.xz": {
+      "sha256": "e57697c449db0a023f9ee1a0f7fbed58307a5d949ddb5b1fc6bfc2f6a991aca1",
+      "bytes": 8512,
+      "origin": ".build/autonomous-playtest-20261027/source17-native/frozen-npc-gate/console.log"
+    },
+    "console-markers.json": {
+      "sha256": "0a82cad23c138a8172de6a4f396ea065d2ec2cd571d21c3b522985816e22d50b",
+      "bytes": 5652,
+      "origin": "Exact selected native console lines; both diagnostic errors retained"
+    },
+    "native-client-before-player-shot.png": {
+      "sha256": "12024ed860903128a004330f5c00499199b472d3a74962408fd5e9f5d64818ae",
+      "bytes": 598763,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793139990892405251-source17-player-aim-native-shot.png"
+    },
+    "native-natural-exposure-return-console.png": {
+      "sha256": "e01156797e5add87e436e1acb3dfd24ffbb360f9ee3a0150338a2ecd717b1b14",
+      "bytes": 593164,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793140211638820270-source17-natural-fallen-exposure-console.png"
+    },
+    "production-manifest.json": {
+      "sha256": "ce9dccd1a070b099b1de389a15c39243c9d3025389c0542fd91d9b093bba8d0e",
+      "bytes": 80388,
+      "origin": "Exact prepared576-Lua manifest independently rehashed against repo and actual private addon"
+    },
+    "prepared-provenance.json": {
+      "sha256": "19d0102c27c72824d15c71e278fa27974fe9c0e5cda9431e4a734a1b30be8958",
+      "bytes": 4614,
+      "origin": ".build/autonomous-playtest-20261027/source15-fresh/session-1793138882026627356/prepared.json"
+    }
+  },
+  "physical_startup_matches_repository_and_private": true
+}
