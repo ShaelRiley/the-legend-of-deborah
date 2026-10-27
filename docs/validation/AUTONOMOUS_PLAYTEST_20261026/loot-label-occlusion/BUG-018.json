@@ -117,8 +117,19 @@
       11
     ],
     "independent_review": "clear after target-hit repair",
-    "full_337_matrix": "pending committed-candidate CI"
+    "full_337_matrix": "337/337 passed on exact repair commit63bcc03e; see full_ci. Earlier static/receipt.json accurately preserves the pre-CI pending checkpoint."
   },
   "static_evidence": "static/receipt.json",
-  "next_finite_native_gate": "Fresh installed candidate with matching new NearLookCRC: same real closed gate and Health target must no longer select/qualify/draw through its body in both realms; visible unobstructed/open controls still qualify and draw, cargo gap/invisible overhead remain visible, ordinary actors/glass and Omniscience eligibility remain unchanged. Compare equivalent view/settings/actors and retain baseline limits; then resume campaign exploration."
+  "next_finite_native_gate": "Fresh installed candidate with matching new NearLookCRC: same real closed gate and Health target must no longer select/qualify/draw through its body in both realms; visible unobstructed/open controls still qualify and draw, cargo gap/invisible overhead remain visible, ordinary actors/glass and Omniscience eligibility remain unchanged. Compare equivalent view/settings/actors and retain baseline limits; then resume campaign exploration.",
+  "repair_commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "full_ci": {
+    "run_id": 40599237156,
+    "job_id": 122522912306,
+    "passed": 337,
+    "total": 337,
+    "lua_files": 928,
+    "source_files": 4227,
+    "production_files": 576,
+    "proof": "../ci-source18/verification.json"
+  }
 }
