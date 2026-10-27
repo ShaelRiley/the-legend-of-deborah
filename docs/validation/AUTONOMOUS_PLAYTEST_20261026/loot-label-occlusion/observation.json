@@ -1,0 +1,82 @@
+{
+  "title": "Health pickup label at a visually closed Red gate",
+  "recorded_utc": "2026-10-27T19:10:59.935716+00:00",
+  "status": "Credible native observation; exact pickup/ray/collider attribution pending. No confirmed defect ID and no repair proposed.",
+  "runtime_build": "4322f105e519fec53c469877998eecd5b4d06a34",
+  "source_checked_at_commit": "4bc3ff8b7caa072fbd20ab652b126a6e40b2ed21",
+  "reported_setup": "Root ordinary Fighter/Pusher with no Finder, actual Steam Deck single client, first-person on gm_flatgrass, campaign6102602. No direct feat/target/collider snapshot was captured for these frames.",
+  "observed": [
+    "Root and independent agent saw a plain white Health label over the reader while the Red gate appeared closed. The before and far-Use frames keep the OPEN RED GATE objective and closed body.",
+    "After closer ordinary E, the Red gate opens and an actual resource crate behind it is visibly exposed; the white Health label remains.",
+    "These screenshots do not by themselves establish which exact pickup the HUD selected, its ray, replicated GetOpened state, collider mask/contents or numeric entity IDs."
+  ],
+  "source_authority": {
+    "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "live_readback": "Fresh exact paragraph ranges in normalized06, following earlier00/01 navigation in this campaign; no HUMAN fallback needed.",
+    "rules": [
+      {
+        "id": "LOD-UI-009",
+        "range": [
+          85208,
+          87007
+        ],
+        "relevant_requirement": "Looking at or near a visible drop shows its complete item name prominently in large wrapped text."
+      },
+      {
+        "id": "LOD-UI-010",
+        "range": [
+          89785,
+          90477
+        ],
+        "relevant_requirement": "Near-look identification does not reveal through walls or cloaked targets; drops use the same near-look selection rule."
+      }
+    ]
+  },
+  "production_reconciliation": [
+    "Loot:_PickupName maps health to Health and publishes LOD_LootName. cl_equipment HUD hook LOD_EquipmentComparison draws white Trebuchet24 names at a fixed screen position after NearLook selection and per-frame Qualifies. This label path has no Finder bypass.",
+    "sh_near_look Visible traces eye to target WorldSpaceCenter using MASK_VISIBLE. Existing Loot/Class fixture models only a generic obstruction Hit boolean, not native gate contents/masks or client collider replication.",
+    "Closed gate server authority uses SOLID_BBOX with configured bounds and a small cube proxy. Client draws the stock blastdoor through GatePresentation.Draw; that presentation model and networked collider are distinct. OpenGate removes solidity through the same gate entity."
+  ],
+  "source_hashes_unchanged_since_native4322": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_near_look.lua": "9d81b2e3b7f48c9b186e7f874f530ba63d2c7c66c1edd3f9a5920dbdcdc675e0",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_equipment.lua": "d23b46c6213a246bca0309ef7e4ce934385bb616e4dc336886d002946e1b9bac",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_loot_director.lua": "c31a93365c7d36b32b81890fb27a2ccf505bf3c0451ca2bda6d50317a1494e04",
+    "gamemodes/legend_of_deborah/entities/entities/lod_gate/init.lua": "e4851567b9948e2723813157cd04e7bbed89809947b0ac5df30b4dd4c048ed4e",
+    "gamemodes/legend_of_deborah/entities/entities/lod_gate/cl_init.lua": "381fbc64c6ebbeeae5887e7c0cca96674c0807ce35501587628ecad60245719e"
+  },
+  "hypotheses_pending": [
+    "A visibility-mask mismatch for the gate collider.",
+    "Client/server collider bounds or contents replication differs from the drawn door.",
+    "The selected pickup/ray or active label producer differs from the apparent screenshot target, including stale/alternate installed code."
+  ],
+  "native_entity_ids": null,
+  "native_trace_probe": "native-probe.json",
+  "photos": [
+    {
+      "name": "red-gate-before-use",
+      "sha256": "83426f8bc1bf30f449104b6e4088cc7666d62d2919533d36a76ecf0b8e33106b",
+      "durable_build_path": ".build/autonomous-playtest-20261027/screenshots/1793123547452480659-deborah-4322-red-gate-before-use.png",
+      "independently_viewed": true,
+      "tracked_evidence": "../native-4322-route/red-gate-before-use.png"
+    },
+    {
+      "name": "red-gate-after-use",
+      "sha256": "49335e91b37bbb6227ffd6c885a357ebacabfe8fb9393b5d91a257ba0f5478cc",
+      "durable_build_path": ".build/autonomous-playtest-20261027/screenshots/1793123551935382357-deborah-4322-red-gate-after-use.png",
+      "independently_viewed": true,
+      "tracked_evidence_note": "This redundant closed-gate frame remains in the durable ignored build screenshots; the before/open frames are tracked by root."
+    },
+    {
+      "name": "red-reader-close-use",
+      "sha256": "66dceda40c5dd1f66bc3e151eaa22b3a33546e6480f21d53631c949beba243fb",
+      "durable_build_path": ".build/autonomous-playtest-20261027/screenshots/1793123605966826441-deborah-4322-red-reader-close-use.png",
+      "independently_viewed": true,
+      "tracked_evidence": "../native-4322-route/red-reader-close-use.png"
+    }
+  ],
+  "next_finite_gate": "At a matching closed-gate/Health scene, collect actual target label/ID, frozen ray, client MASK_VISIBLE/SHOT/SOLID results, gate state/bounds/ID, analytic box intersection and corresponding server bounds. Repeat the same ray after ordinary E opens it. Classify only after these facts agree.",
+  "scope": "Read-only investigation record/probe only. Source, GDD, parent plan and matrix were not edited by this agent. Root owns plan/matrix integration.",
+  "clean_pass_streak": 0,
+  "native_probe_executed": false
+}

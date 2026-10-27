@@ -1,0 +1,101 @@
+{
+  "title": "Read-only native pickup/gate sight probe",
+  "status": "Proposal only; no native execution evidence",
+  "commands": [
+    "lua_run_cl HLOS={p=LocalPlayer()} HLOS.e=LOD.NearLook:Find(HLOS.p,512,function(e) return e:GetClass()==\"lod_loot_pickup\" end) print(\"HLOS_TARGET\",HLOS.e)",
+    "lua_run_cl local f=HLOS if IsValid(f.e) then f.a=f.p:EyePos() f.b=f.e:WorldSpaceCenter() print(\"HLOS_PICK\",f.e:EntIndex(),f.e:GetNW2String(\"LOD_LootName\",\"\"),f.a,f.b,LOD.NearLook:Qualifies(f.p,f.e,512)) end",
+    "lua_run_cl local f=HLOS f.ray=function(m) if not f.b then return end local t=util.TraceLine({start=f.a,endpos=f.b,filter=f.p,mask=m}) print(\"HLOS_RAY\",m,t.Hit,t.StartSolid,t.Entity,t.Contents,t.Fraction) end",
+    "lua_run_cl for _,m in ipairs({MASK_VISIBLE,MASK_SHOT,MASK_SOLID,MASK_VISIBLE_AND_NPCS}) do HLOS.ray(m) end",
+    "lua_run_cl HLOS.gate=function(e) print(\"HLOS_GATE\",e:EntIndex(),e:GetGateIndex(),e:GetOpened(),e:GetPos(),e:GetSolid(),e:GetSolidFlags(),e:GetCollisionBounds()) end",
+    "lua_run_cl local f=HLOS f.box=function(e) if not f.b then return end local a,b=e:GetCollisionBounds() local h,n,k=util.IntersectRayWithOBB(f.a,f.b-f.a,e:GetPos(),e:GetAngles(),a,b) print(\"HLOS_BOX\",e:EntIndex(),not(h==nil),k) end",
+    "lua_run_cl for _,e in ipairs(ents.FindByClass(\"lod_gate\")) do if e:GetPos():DistToSqr(HLOS.p:GetPos())<262144 then HLOS.gate(e) HLOS.box(e) end end",
+    "lua_run_cl local h=hook.GetTable().HUDPaint.LOD_EquipmentComparison local a=h and debug.getinfo(h,\"S\") local b=debug.getinfo(LOD.NearLook.Visible,\"S\") print(\"HLOS_SRC\",a and a.short_src,a and a.linedefined,b.short_src,b.linedefined)",
+    "lua_run HLOSS=function(e) print(\"HLOS_SG\",e:EntIndex(),e:GetGateIndex(),e:GetOpened(),e:GetPos(),e:GetSolid(),e:GetSolidFlags(),e:GetCollisionBounds()) end",
+    "lua_run local p=player.GetHumans()[1] for _,e in ipairs(ents.FindByClass(\"lod_gate\")) do if IsValid(p) and e:GetPos():DistToSqr(p:GetPos())<262144 then HLOSS(e) end end",
+    "lua_run_cl HLOS=nil",
+    "lua_run HLOSS=nil"
+  ],
+  "preconditions": [
+    "One real client is alive near a visibly closed gate while the ordinary white Health pickup label is visible. Keep view/position stationary for the closed/open comparison.",
+    "No inventory/player-menu page should be active. Run1-2 and stop unless the actual production-selected entity has label Health and qualifies.",
+    "No hardcoded EntIndex is assumed. Record the actual pickup and gate IDs from this run."
+  ],
+  "stages": [
+    {
+      "commands_1_based": [
+        1,
+        2
+      ],
+      "result": "Snapshot production NearLook target, exact label, pickup ID and frozen eye-to-pickup-center ray."
+    },
+    {
+      "commands_1_based": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "result": "Client MASK_VISIBLE/SHOT/SOLID/optional NPC variant, hit collider/contents/start-solid/fraction; nearby gate index/open/solid/flags/bounds; independent segment-box intersection; actual hook/function source paths and line numbers."
+    },
+    {
+      "commands_1_based": [
+        9,
+        10
+      ],
+      "result": "Server bounds/flags for the same nearby networked gate IDs, using the sole human's stationary position. Compare client/server copies."
+    },
+    {
+      "repeat_commands_1_based": [
+        4,
+        7,
+        10
+      ],
+      "result": "After ordinary E opens that gate and the visible opening settles, repeat these commands without reselecting the pickup or replacing the frozen ray. Record the same pickup/gate IDs. Reinitialize if the pickup was removed or viewpoint changed."
+    },
+    {
+      "commands_1_based": [
+        11,
+        12
+      ],
+      "result": "Remove diagnostic globals. No hooks, timers, cvars, actors, collision, HUD or feedback events are changed."
+    }
+  ],
+  "expected_identity": {
+    "target_class": "lod_loot_pickup",
+    "target_label": "Health",
+    "target_id": "Runtime HLOS_PICK output; not captured in earlier screenshots",
+    "gate_class": "lod_gate",
+    "ordinary_red_gate_index": 1,
+    "gate_id": "Runtime HLOS_GATE/HLOS_SG output; the collider hit should match this networked gate ID when it blocks the ray",
+    "rendered_body_model": "models/props_lab/blastdoor001c.mdl",
+    "server_proxy_model": "models/hunter/blocks/cube025x025x025.mdl",
+    "render_owner": "lod_gate/cl_init.lua GatePresentation.Draw, LOD_DrawSecurityGates PostDrawOpaqueRenderables",
+    "note": "The reusable client presentation model is distinct from the networked gate collider. Do not substitute its client-only model ID for the physical gate ID."
+  },
+  "interpretation": [
+    "Qualifying Health target beyond a closed gate, clear MASK_VISIBLE but MASK_SHOT/SOLID hitting that same gate ID: evidence for a sight-mask mismatch; capture all results before proposing a repair.",
+    "All client masks clear but client bounds miss the ray while corresponding server bounds cover it: investigate collider replication/shape, not merely the label formatter.",
+    "Client gate box intersects and all masks are clear: inspect solid/contents/flags and an exact server-ray mirror if needed. Pure box intersection alone does not prove native collision admission.",
+    "If current rays all hit the closed gate yet the label persists, inspect actual renderer/hook provenance or another producer/stale build. Do not assume the generic NearLook fixture proves native behavior.",
+    "If selected target is different, lies in front of the gate, or does not qualify, retain that discrepancy and collect the correct scene before classifying a defect.",
+    "Opened gates are expected to stop blocking; their stored geometric bounds can still intersect the ray after solidity is removed."
+  ],
+  "api_sources": [
+    "https://wiki.facepunch.com/gmod/Enums/MASK",
+    "https://wiki.facepunch.com/gmod/util.IntersectRayWithOBB",
+    "https://wiki.facepunch.com/gmod/Entity:GetCollisionBounds",
+    "https://wiki.facepunch.com/gmod/Entity:GetSolidFlags"
+  ],
+  "static_validation": {
+    "max_characters": 232,
+    "no_semicolons": true,
+    "no_tilde": true,
+    "compile_only": true,
+    "native_execution_claimed": false,
+    "Lua5.4_compile_only": true,
+    "LuaJIT_compile_only": true
+  },
+  "evidence_output": "Printed rows go to the currently running private profile console log identified by its authorized launcher. No game DATA file is created; the helper table contains functions, so retain printed rows rather than serializing the helper."
+}
