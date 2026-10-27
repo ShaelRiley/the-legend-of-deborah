@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "50c257772cdbb76474e539b5776dee1145e7fb69",
+  "current_candidate": "e6e0b8f1",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -15,10 +15,12 @@
       "source": "05 LOD-STAGE-001; 06 LOD-LORE-UI-001",
       "expected": "Startup/title, role and class selection, Hermit chapter, one identity-bound starter, ready portal",
       "scenario": "Fresh session; create disposable Hero, talk/read/manual, select class and legal feat; ordinary portal Use",
-      "result": "Observed actual Hero creation, Rogue class/four distinct feat choices and Russian Asset selection, identity starter claim and ordinary portal entry; one chapter natively repaired. Other roles/classes remain.",
+      "result": "Fresh cheats0 P class/Fighter/Haste, ordinary pedestalTouch and portalUse observed. WizardcardBUG006native rechecked. Role/Soldier flow pending.",
       "evidence": [
         "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png",
-        "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png"
+        "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png",
+        "production-2c73471b/deborah-wizard-class-card-fixed.png",
+        "production-2c73471b/deborah-anthony-deployed-unfound-map.png"
       ]
     },
     {
@@ -90,8 +92,11 @@
       "source": "Author request; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
       "expected": "Native visible map/cards/Jail Key remain collectible from normal views",
       "scenario": "Near/far and above/below orbit, touch, receipt and entity cleanup",
-      "result": "Observed native floor1 map binder/pedestal during ordinary walking; touched pickup removed body and revealed floor. Keycards/JailKey and angle/distance samples pending.",
-      "evidence": []
+      "result": "Mapbinder/pedestal visible at normal approach; ordinarytouch acquisition removed pickup and revealed physicalFloor1. Key/JailKey angle/distance checks pending.",
+      "evidence": [
+        "production-2c73471b/deborah-normal-map-pedestal-approach.png",
+        "production-2c73471b/deborah-map-legend-fixed-native.png"
+      ]
     },
     {
       "id": "REG-FEAT",
@@ -133,8 +138,10 @@
       "source": "00 LOD-FLOOR-MAP-001; approved FLOOR_MAP_PANEL_20261013 and NAVIGATION_FEATS_20261013",
       "expected": "Per-floor maps shared by party; personal Magic drain; unfound panel and navigation feats",
       "scenario": "Open Q/M before/after pickup; two clients on different floors; Compass/Finder/GPS",
-      "result": "Observed unfound-floor panel and Magic drain on actual Q/M hold; walked to map (read-only route assisted), pickup then Floor1/5 map and RedKey guidance. Footer clipping BUG004 repaired statically; fresh visual and party sharing pending.",
-      "evidence": []
+      "result": "Native cheats0 unfound/revealedFloor1 map, Magic drain and breadcrumb observed. Default1280x800 legend fits afterBUG004. Cross-floor route/Compass/Finder/GPS/partysharing pending.",
+      "evidence": [
+        "production-2c73471b/deborah-map-legend-fixed-native.png"
+      ]
     },
     {
       "id": "COMBAT-01",
@@ -185,9 +192,10 @@
       "source": "90 LOD-EQUIP-016; 06 LOD-BIG-LOOT-LIFECYCLE",
       "expected": "Owned equipment, capacity, stacks, acquisition, equips, pickup/drop and consumables",
       "scenario": "Ordinary loot/inventory with full/empty/depleted/stale/duplicate boundaries",
-      "result": "Diagnostic six-family loadout traced to cheats1+P/impulse101, not equipment generation. Fresh cheats0 ordinary acquisition/ownership/capacity checks pending.",
+      "result": "Cheats0 initial2records and one ordinary starter observed; P did not grant extras. Three equipment records/loadedammo/reserve survived death, but active selection failed (BUG007). Other ownership/capacity/economy boundaries pending.",
       "evidence": [
-        "environment-input/receipt.json"
+        "environment-input/receipt.json",
+        "death-lifecycle/BUG-007.json"
       ]
     },
     {
@@ -219,16 +227,20 @@
       "source": "06 LOD-MP-001; 06 LOD-RETENTION-001",
       "expected": "Supported Hero/Soldier counts and shared versus personal state",
       "scenario": "Multiple real clients; split floors, simultaneous interactions and roles",
-      "result": "pending",
-      "evidence": []
+      "result": "Pending documented two-real-client LAN smoke on the one available Deck; no native co-op pass yet.",
+      "evidence": [
+        "lan-client-feasibility.json"
+      ]
     },
     {
       "id": "COOP-02",
       "source": "06 LOD-SOLDIER/LOD-LIFE; 02 LOD-SXP",
       "expected": "Late join, death, Soldier queue, disconnect/reconnect and synchronization",
       "scenario": "Multiple real clients across alive/dead/staging/active/boss/reset states",
-      "result": "pending",
-      "evidence": []
+      "result": "LAN roles/death/session synchronization pending; distinct authenticated-account reconnect/ownership coverage blocked without an additional authorized authenticated client.",
+      "evidence": [
+        "lan-client-feasibility.json"
+      ]
     },
     {
       "id": "UI-01",
@@ -259,8 +271,11 @@
       "source": "06 LOD-RETENTION-001/LOD-LIFE/LOD-SOLDIER",
       "expected": "Death, Tetris/revival/no-Hero retention and resource integrity",
       "scenario": "Real deaths/return, spectator state, reconnect without reroll/duplication",
-      "result": "pending",
-      "evidence": []
+      "result": "Natural Hero deaths consumed lives and retained dungeon clock; controlled native fixture exposed BUG007 active-weapon loss and BUG008 no-Tetris F no-op. Both statically repaired; native repaired recheck and deathTetris/zero-life/co-op remain.",
+      "evidence": [
+        "death-lifecycle/BUG-007.json",
+        "death-lifecycle/BUG-008.json"
+      ]
     },
     {
       "id": "FAIL-02",
@@ -277,8 +292,10 @@
       "source": "07 LOD-IMPL-004; retained optimization integration",
       "expected": "Representative comparable performance; no repair-induced regression",
       "scenario": "Same scene/seed/settings/hardware baseline and candidate captures; no 40-FPS claim",
-      "result": "pending",
-      "evidence": []
+      "result": "Native exact-source180s entry/map-route baseline:3261activeframes,18.13FPS,median54.101ms,p95 64.764ms,p99 78.538ms,max185.897ms. Observer10Hz present. No40FPsorrepair-attributionclaim; no comparable exact-source pre-fix baseline.",
+      "evidence": [
+        "production-2c73471b/performance_client_latest.txt"
+      ]
     },
     {
       "id": "GATE-01",
@@ -319,7 +336,9 @@
     "For automated native mouse input, m_rawinput1 plus guarded finite UInput movement works. Original m_rawinput0 is preserved in pretest cfg backup; restore user preference after campaign. Console resumes use hideconsole;gameui_hide to release engine input focus.",
     "Production e766 session confirms0/0 Workshop mounted,114 source checks. Ordinary floor1 walking used no teleport/noclip; read-only server route hints accelerated navigation. No co-op/audio/full-campaign claim.",
     "Pre-reload30s staging capture:985 frames,32.88FPS all-frames, no active-play frames. Mounted source observer reports2mismatches because checkout advanced while client stayed open; do not attribute improvement/regression or use as verified final performance evidence.",
-    "278e diagnostic session inherited sv_cheats1; P/impulse101 supplied extra weapons/ammo. No clean combat/inventory or trial collision acceptance. Source had no setter; runtime origin unproven. Fresh launch will explicitly use0 and verify actual readback/loadout/MOVETYPE_WALK."
+    "278e diagnostic session inherited sv_cheats1; P/impulse101 supplied extra weapons/ammo. No clean combat/inventory or trial collision acceptance. Source had no setter; runtime origin unproven. Fresh launch will explicitly use0 and verify actual readback/loadout/MOVETYPE_WALK.",
+    "Fresh2c73471b: actualsv_cheats0/loddev0,114sourcesmatch, initialKitpistol18/crowbar withzeroreserve; afterP/class/feat unchanged. AnthonyFiveBucksJenkins Fighter+Haste, ordinary starter+portal. Bounded read-only10Hzpositionobserver verifiesMOVETYPE_WALK2; all route movement is actualWASD. Diagnosticfile-read race now retries finitely; matched key release preserved on failure.",
+    "User confirms only the Steam Deck is available. Official-multirun/LAN real-client smoke may work on this one device; not attempted yet. Authenticated second-account ownership/reconnect remains inaccessible. No Steam identity spoofing or account changes authorized/needed for documented smoke."
   ],
   "defects": [
     {
@@ -340,7 +359,7 @@
     {
       "id": "BUG-004",
       "record": "map-footer/defect.json",
-      "status": "repaired, static validated; native check pending"
+      "status": "repaired; fresh cheats0 native default1280x800 full legend visible after ordinary map pickup"
     },
     {
       "id": "BUG-005",
@@ -350,7 +369,17 @@
     {
       "id": "BUG-006",
       "record": "wizard-class-card/defect.json",
-      "status": "repaired50c25777;9/9focusedchecks;freshnativetextpending"
+      "status": "repaired; fresh native card fully displays10/+2.5/50,sourceCRC1801259425"
+    },
+    {
+      "id": "BUG-007",
+      "record": "death-lifecycle/BUG-007.json",
+      "status": "implemented;10/10 checks; fresh native pending"
+    },
+    {
+      "id": "BUG-008",
+      "record": "death-lifecycle/BUG-008.json",
+      "status": "implemented;9/9 checks; fresh native pending"
     }
   ],
   "static_fixture_checkpoint": {
@@ -364,8 +393,8 @@
     "receipt": "combined-278e-integration-gate/receipt.json",
     "native_gmod_accepted": false
   },
-  "installed_loaded_build": "278e2983197cafd75c6fa7862c2533e37f61012e",
-  "last_checkpoint_utc": "2026-10-26T23:35:30.239942+00:00",
-  "next_action": "Fresh install50c25777 or documentation successor, explicit sv_cheats0, developer0/Workshopoff. Verify all mounted files, corrected Wizard card, initial loadout unaffected byP, normal movement type. Native map footer then campaign progression.",
+  "installed_loaded_build": "2c73471bf7f0c73f1dac21e6eeba08b0e0f29aa4",
+  "last_checkpoint_utc": "2026-10-27T03:00:50.154935+00:00",
+  "next_action": "Fully quit/install combined lifecycle candidate; production prep with cheats0; verify server CRC925327479/clientCRC1705465356 and114 mounted sources. Repeat known loaded-SMG death, fresh F after20s, restored activeSMG and exact ammo. Then assisted native exploration; normal full campaign/co-op/three clean passes remain pending.",
   "last_runtime_build": "e76659db9d99360f557252faf2f6455d32d8c0c5"
 }

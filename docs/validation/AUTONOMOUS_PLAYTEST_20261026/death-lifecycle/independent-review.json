@@ -1,0 +1,11 @@
+{
+  "result": "Independent source review clear with limits",
+  "reviewer": "lifecycle_review",
+  "scope": "BUG007 early capture and identity/role/readiness/replay guards; BUG008 existing respawn request and F/VR compatibility",
+  "independent_checks": [
+    "lua tools/test_human_soldier_lifecycle.lua",
+    "lua tools/test_vr.lua",
+    "scoped git diff --check"
+  ],
+  "limits": "Static/source review only; root must verify native SMG selection+ammo restoration and fresh post-lockout F on fully restarted combined build."
+}

@@ -1,0 +1,22 @@
+{
+  "build": "2c73471bf7f0c73f1dac21e6eeba08b0e0f29aa4",
+  "environment": "Actual Steam Deck; native Windows x86 GMod/Proton10; gm_flatgrass; cheats0, developer0, Workshopoff; customseed6102601",
+  "setup": "Controlled failure fixture on deployed Edward Fighter/Deadeye; use command selected already-owned SMG; no gunfire before kill; current 20s/60s timing unchanged",
+  "evidence": [
+    "before-console_latest.txt",
+    "before-rpg_session_latest.txt"
+  ],
+  "id": "BUG-008",
+  "severity": "Input/usability: documented F respawn is a no-op without Tetris",
+  "expected": "Live06 LOD-LIFE-001 and current manual: fresh F after mandatory20s requests respawn; retain optional Tetris, left-click/VR compatibility, server eligibility and auto60s.",
+  "actual": "No Tetris opened; eligible HUD shows LEFT CLICK TO RESPAWN. Fresh native F leaves Hero dead; click/automatic route eventually restores body. Production ContextAction omitted no-Tetris/remaining0 branch.",
+  "reproduction": [
+    "Die without entering Tetris",
+    "Wait beyond20s, press fresh F",
+    "Observe still dead, compare supported click route"
+  ],
+  "repair_commit": "e6e0b8f1",
+  "status": "Implemented,9/9 focused checks; preserved original fails F-edge regression; fresh native recheck pending",
+  "expected_native_crc32": "1705465356",
+  "timing_limit": "Before/dead/after-f log labels came from delayed diagnostic timers; the after-f snapshot ran before the actual F press and is not independent timing proof. Native before/after-F screenshots plus source-path diagnosis support the no-op."
+}

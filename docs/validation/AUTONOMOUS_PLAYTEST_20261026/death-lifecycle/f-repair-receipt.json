@@ -1,0 +1,139 @@
+{
+  "defect_id": "BUG-008",
+  "base_commit_start": "8a0b484e5ed6fe4d91824b26f6c15e9b4a433b8f",
+  "base_commit_end": "8a0b484e5ed6fe4d91824b26f6c15e9b4a433b8f",
+  "results": [
+    {
+      "name": "vr-context-lua",
+      "command": [
+        "lua",
+        "tools/test_vr.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.005,
+      "log": "vr-context-lua.log"
+    },
+    {
+      "name": "vr-context-luajit",
+      "command": [
+        "luajit",
+        "tools/test_vr.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.004,
+      "log": "vr-context-luajit.log"
+    },
+    {
+      "name": "tetris-lifecycle",
+      "command": [
+        "lua",
+        "tools/test_tetris_lifecycle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.003,
+      "log": "tetris-lifecycle.log"
+    },
+    {
+      "name": "campaign-timeout",
+      "command": [
+        "lua",
+        "tools/test_campaign_timeout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.008,
+      "log": "campaign-timeout.log"
+    },
+    {
+      "name": "human-soldier-lifecycle",
+      "command": [
+        "lua",
+        "tools/test_human_soldier_lifecycle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.022,
+      "log": "human-soldier-lifecycle.log"
+    },
+    {
+      "name": "feat-rebalance",
+      "command": [
+        "lua",
+        "tools/test_checkpoint_d_rebalance_20261002.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.152,
+      "log": "feat-rebalance.log"
+    },
+    {
+      "name": "cleanup-lifecycle",
+      "command": [
+        "lua",
+        "tools/test_cleanup_lifecycle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.358,
+      "log": "cleanup-lifecycle.log"
+    },
+    {
+      "name": "syntax",
+      "command": [
+        "luac",
+        "-p",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_tetris.lua",
+        "tools/test_vr.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.004,
+      "log": "syntax.log"
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_tetris.lua",
+        "tools/test_vr.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.006,
+      "log": "diff-check.log"
+    }
+  ],
+  "passed": 9,
+  "total": 9,
+  "negative_control": {
+    "command": [
+      "lua",
+      "/tmp/deborah-death-f-repair/negative-control-final.lua"
+    ],
+    "exit_code": 1,
+    "test_sha256": "2f2d25d5e6ca6ccdb070f7435a3680967a86bf5735cfb72cf79b87cb65cba171",
+    "rejects_original": true
+  },
+  "source_before": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_tetris.lua": "ac0130441014db30e8070a64e47bee20b8561c4d47084104067c533d1d14bd5f",
+    "tools/test_vr.lua": "2f2d25d5e6ca6ccdb070f7435a3680967a86bf5735cfb72cf79b87cb65cba171",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua": "525022e86f56df7cfb2c4fd2c77d114930dcebeb0289d18f7e7414bce55f0957",
+    "tools/test_human_soldier_lifecycle.lua": "df52274a683ea6ba48a246c5bdeade6c1cf772926400d11e674bdaf0debe77c3"
+  },
+  "source_after": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_tetris.lua": "ac0130441014db30e8070a64e47bee20b8561c4d47084104067c533d1d14bd5f",
+    "tools/test_vr.lua": "2f2d25d5e6ca6ccdb070f7435a3680967a86bf5735cfb72cf79b87cb65cba171",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua": "525022e86f56df7cfb2c4fd2c77d114930dcebeb0289d18f7e7414bce55f0957",
+    "tools/test_human_soldier_lifecycle.lua": "df52274a683ea6ba48a246c5bdeade6c1cf772926400d11e674bdaf0debe77c3"
+  },
+  "source_unchanged": true,
+  "owned_files": [
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_tetris.lua",
+    "tools/test_vr.lua"
+  ],
+  "combined_bug007_dependencies": [
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+    "tools/test_human_soldier_lifecycle.lua"
+  ],
+  "production_crc32": "1705465356",
+  "coverage_state": "STATIC: real F-edge/ContextAction and mocked VR inputs; root owns actual client recheck; no headset acceptance",
+  "repair": "No-Tetris ContextAction with mandatoryremaining0 calls existing RequestRespawn. Timers/serverpolicy/earlyTetris/leftclick retained.",
+  "expected_fixture_warnings": "test_vr deliberately exercises missing-channel/content/module readiness negatives; retained in raw logs"
+}

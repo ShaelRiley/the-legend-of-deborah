@@ -1,0 +1,21 @@
+{
+  "build": "2c73471bf7f0c73f1dac21e6eeba08b0e0f29aa4",
+  "environment": "Actual Steam Deck; native Windows x86 GMod/Proton10; gm_flatgrass; cheats0, developer0, Workshopoff; customseed6102601",
+  "setup": "Controlled failure fixture on deployed Edward Fighter/Deadeye; use command selected already-owned SMG; no gunfire before kill; current 20s/60s timing unchanged",
+  "evidence": [
+    "before-console_latest.txt",
+    "before-rpg_session_latest.txt"
+  ],
+  "id": "BUG-007",
+  "severity": "Gameplay/lifecycle: active weapon selection is lost",
+  "expected": "Preserve active ordinary weapon, both clips, reserve ammo and equipment through Hero death. Explicit approved author correction27175f8c supersedes older death-loss text.",
+  "actual": "Before death nativeSMG25/0; DoPlayerDeath still exposes nativeSMG and equipmentSMG; PlayerDeath active pointer invalid, saved activeWeaponClassnil. Respawn selects crowbar while restoring all3weapons and exact clips/reserve.",
+  "reproduction": [
+    "Deploy ordinary Hero with owned SMG; select SMG without firing",
+    "Schedule native Player:Kill; observe early and late death boundaries",
+    "Respawn and compare native active weapon and ammo"
+  ],
+  "repair_commit": "8a0b484e",
+  "status": "Implemented,10/10 focused checks; original source fails native-shaped lifecycle test; fresh combined native recheck pending",
+  "expected_native_crc32": "925327479"
+}

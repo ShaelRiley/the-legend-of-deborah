@@ -1,41 +1,37 @@
 # Current checkpoint — autonomous native gameplay and defect campaign
 
-The October26 user goal supersedes the older next-test sequence: systematically
-play the actual client, repair demonstrated defects, retain a requirement-to-test
-matrix, and require three consecutive varied clean final-candidate passes before
-completion. Workshop/VPS and the sustained40-FPS goal remain outside this campaign;
-the October23 timer/countdown/hourglass/inventory/reward choices stay deferred.
+The October26 user goal supersedes older next-test sequencing: actual-client
+play, demonstrated defect repair, requirement-to-test evidence and three varied
+clean final-candidate passes. Clean streak is0. Workshop/VPS, the40FPS goal and
+all October23 timer/countdown/hourglass/inventory/reward choices remain deferred.
 
-Baseline remote main85894115 was clean. Fixture checkpoint9f698856 repairs nine
-inherited regression failures. Native Steam Deck play found and preserved five
-presentation/usability defects: truncated Hermit chapters; invalid optional weapon
-textures and dropped compiled shader flags; damsel clothing normals/flags lost by
-bulk cloning; clipped map legend; timeout HUD suppressing its own native dispatcher.
-Repairs are integrated through50c25777, including BUG006 stale Wizard selection
-text (combat was already correct). Frozen278e2983 passed336/336 suites with
-925 Lua files and unchanged source; the text correction passes9 focused checks.
-Native CRC/material proofs and timeout overlay/manual E reset now pass; map legend
-and corrected Wizard card still need fresh native recheck.
+Main through e6e0b8f1 contains eight demonstrated repairs. Earlier chapter,
+weapon/damsel-material, map-legend, timeout-HUD and Wizard-card fixes have native
+visual/parameter evidence, with ordinary rescued-NPC coverage still pending.
+Latest BUG007 captures Hero inventory at DoPlayerDeath before native teardown
+loses its active pointer; 10 focused gates pass. BUG008 restores post-lockout F
+without opening Tetris through the existing request;9 gates pass. Independent
+source review is clear; both latest repairs still require fresh native recheck.
+The last frozen full gate is336/336 on278e2983,925Lua files, source unchanged.
 
-Actual hardware is Valve Jupiter Steam Deck, Windows x86 GMod through Proton10.
-Production-settings seed6102601/levelSeed1694580310/layoutSeed102935261 verified
-114 mounted sources and no Workshop mounts. Actual Rogue/class/feat/starter/portal
-and ordinary floor1 walking/map pickup occurred. Read-only route hints assisted
-navigation; no teleport/noclip proved those routes. A natural thirty-minute timeout
-and automatic new staging epoch occurred. Missing failure feedback is BUG005;
-September17 approved five-shot camera supersedes the older oblique framing.
-No full-campaign, cooperative-client or clean-pass completion claim; streak remains0.
+Actual Steam Deck/Windowsx86/Proton10 testing on gm_flatgrass uses seed6102601.
+Fresh2c73471b verified cheats0, developer0 and114 mounted sources. P preserved
+initial pistol/crowbar/zero-reserve loadout. Ordinary starter/portal, walking,
+physical map pickup/discovery and complete1280x800 legend are observed. A180s
+exact-source traversal baseline measured18.13activeFPS, with diagnostic observer
+present; no before/after attribution or40FPS claim. Natural deaths/timeouts and
+replay occurred; no full campaign or clean-pass acceptance is claimed.
 
-The diagnostic session inherited sv_cheats1. Default P→impulse101 contaminated
-weapons/ammo; no production setter was found. Withhold combat/inventory/collision
-acceptance from that session. A typed Lua tilde also toggled the console shut;
-this controller fault and resulting warnings are preserved separately.
+Next finite gate: fully quit/install combined lifecycle candidate, verify114
+mounted sources plus RunManager CRC925327479 and cl_tetris CRC1705465356. Repeat
+known loaded-SMG death; fresh F after20s must restore HP and the same activeSMG,
+clips/reserve and item records without resetting the dungeon clock. Then resume
+single-client exploration and bounded authored-family fixtures.
 
-Next: fresh install, explicit sv_cheats0 and production prep; verify actual cheat
-state, normal initial loadout before/after P, exact sources and MOVETYPE_WALK.
-Recheck BUG004/006 visually, then continue ordinary campaign and bounded fixtures.
-Keep co-op access clarification pending; single-client evidence cannot accept it.
-Durable defects, evidence, coverage and next action:
+Only the Steam Deck is available. Documented -multirun/LAN mode may allow two
+real temporary-session clients for a bounded replication/role smoke; it remains
+untried. Distinct authenticated-account ownership/reconnect remains a coverage
+gap. See the matrix for exact evidence states and limits:
 [autonomous playtest](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
 
 # Current checkpoint — integrate retained partial performance improvements

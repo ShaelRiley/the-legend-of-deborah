@@ -1,0 +1,136 @@
+{
+  "defect_id": "BUG-007",
+  "base_commit": "2c73471bf7f0c73f1dac21e6eeba08b0e0f29aa4",
+  "results": [
+    {
+      "name": "human-soldier-lifecycle",
+      "command": [
+        "lua",
+        "tools/test_human_soldier_lifecycle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.021,
+      "log": "human-soldier-lifecycle.log"
+    },
+    {
+      "name": "human-soldier-lifecycle-luajit",
+      "command": [
+        "luajit",
+        "tools/test_human_soldier_lifecycle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.027,
+      "log": "human-soldier-lifecycle-luajit.log"
+    },
+    {
+      "name": "dungeon-transition",
+      "command": [
+        "lua",
+        "tools/test_dungeon_transition.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.318,
+      "log": "dungeon-transition.log"
+    },
+    {
+      "name": "big-loot-inventory",
+      "command": [
+        "lua",
+        "tools/test_big_loot_inventory.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.319,
+      "log": "big-loot-inventory.log"
+    },
+    {
+      "name": "cleanup-lifecycle",
+      "command": [
+        "lua",
+        "tools/test_cleanup_lifecycle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.36,
+      "log": "cleanup-lifecycle.log"
+    },
+    {
+      "name": "cleanup-contracts",
+      "command": [
+        "lua",
+        "tools/test_cleanup_contracts.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.356,
+      "log": "cleanup-contracts.log"
+    },
+    {
+      "name": "soldier-queue",
+      "command": [
+        "lua",
+        "tools/test_spot15_soldier_queue.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.307,
+      "log": "soldier-queue.log"
+    },
+    {
+      "name": "campaign-timeout",
+      "command": [
+        "lua",
+        "tools/test_campaign_timeout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.008,
+      "log": "campaign-timeout.log"
+    },
+    {
+      "name": "syntax",
+      "command": [
+        "luac",
+        "-p",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+        "tools/test_human_soldier_lifecycle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.004,
+      "log": "syntax.log"
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua",
+        "tools/test_human_soldier_lifecycle.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.006,
+      "log": "diff-check.log"
+    }
+  ],
+  "passed": 10,
+  "total": 10,
+  "negative_control": {
+    "command": [
+      "lua",
+      "/tmp/deborah-death-active-repair/negative-control-final.lua"
+    ],
+    "exit_code": 1,
+    "test_sha256": "df52274a683ea6ba48a246c5bdeade6c1cf772926400d11e674bdaf0debe77c3",
+    "rejects_original": true
+  },
+  "source_before": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua": "525022e86f56df7cfb2c4fd2c77d114930dcebeb0289d18f7e7414bce55f0957",
+    "tools/test_human_soldier_lifecycle.lua": "df52274a683ea6ba48a246c5bdeade6c1cf772926400d11e674bdaf0debe77c3"
+  },
+  "source_after": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua": "525022e86f56df7cfb2c4fd2c77d114930dcebeb0289d18f7e7414bce55f0957",
+    "tools/test_human_soldier_lifecycle.lua": "df52274a683ea6ba48a246c5bdeade6c1cf772926400d11e674bdaf0debe77c3"
+  },
+  "source_unchanged": true,
+  "production_crc32": "925327479",
+  "coverage_state": "STATIC: native boundary reproduced by lifecycle double; root owns repaired native recheck",
+  "native_cause": "DoPlayerDeath still has activeSMG; latePlayerDeath loses it; saved active=nil despite exact weaponclips/reserve",
+  "repair": "Move existing capture toDoPlayerDeath with same identity/role guards and handled-death replay guard; retain latePlayerDeath life handling unchanged; no new recorder or polling"
+}

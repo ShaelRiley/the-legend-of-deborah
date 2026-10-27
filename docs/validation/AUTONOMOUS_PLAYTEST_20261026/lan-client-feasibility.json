@@ -1,0 +1,15 @@
+{
+  "user_available_hardware": "Only this Steam Deck, confirmed by user",
+  "status": "Not runtime tested; documented two-client LAN mode is feasible in principle",
+  "official_mode": "-multirun with sv_lan1 BEFORE starting server/map",
+  "identities": "Duplicate clients are unauthenticated SteamID64=0; current RunManager:IdentityOf uses bot:<EntIndex>, distinct concurrent session IDs. Real clients must be verified IsBot=false.",
+  "supported_smoke_scope": "Two rendered clients, ordinary deployment/movement, map replication, personal Magic, Hero/Soldier roles and death/resets; all remain pending until actual observations.",
+  "remaining_account_gap": "Temporary entity-index IDs cannot certify authenticated account ownership or reconnect. Some event/economy services require raw valid SteamID64. No second authenticated client has been provided.",
+  "finite_gate": "After lifecycle fixes:90s startup/identity preflight, then5min two-way native synchronization smoke. Stop and preserve evidence if normal launch/identity isolation fails. No identity spoofing or platform bypass.",
+  "sources": [
+    "https://wiki.facepunch.com/gmod/Command_Line_Parameters",
+    "https://wiki.facepunch.com/gmod/Player:SteamID64",
+    "https://wiki.facepunch.com/gmod/Entity:EntIndex",
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua:IdentityOf"
+  ]
+}
