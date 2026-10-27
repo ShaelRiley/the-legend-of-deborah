@@ -1,0 +1,83 @@
+{
+  "kind": "independent reconstruction of canonical GitHub Actions frozen receipt",
+  "commit": "454f6037df408c3bad1943f59df57d124451d691",
+  "run_id": 40577044530,
+  "job_id": 122446153074,
+  "total": 336,
+  "passed": 336,
+  "all_returncodes_zero": true,
+  "receipt_sha256_matches_proof": true,
+  "source_files": 4053,
+  "frozen_source_digest_matches_before_after": true,
+  "production_files": 576,
+  "all_production_hashes_match_frozen_git_commit": true,
+  "lua_files": 927,
+  "unique_valid_suite_log_hash_pairs": 336,
+  "CI_verification_step_checked_actual_suite_log_hashes": true,
+  "actual_suite_logs_materialized_locally": false,
+  "decoded_full_job_log_sha256": "f38a94243138eee12a700b67da46a8890741cf39dcc8cdd687fcd064054e9ae0",
+  "native_gmod_accepted": false,
+  "qualification": "Receipt/production manifests reconstructed exactly from job-log chunks; source bytes checked independently against frozen Git objects. The successful CI verification step checked all336 actual suite log hashes; this local reconstruction does not download individual suite logs. Not native acceptance.",
+  "utc": "2026-10-27T20:34:13.423899+00:00",
+  "all_four_workflows_success": true,
+  "workflows": [
+    {
+      "id": 40577044367,
+      "name": "Validate ambient audio and event cues",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "454f6037df408c3bad1943f59df57d124451d691",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40577044367"
+    },
+    {
+      "id": 40577044502,
+      "name": "Validate VR compatibility",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "454f6037df408c3bad1943f59df57d124451d691",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40577044502"
+    },
+    {
+      "id": 40577044407,
+      "name": "Validate low-end performance sources",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "454f6037df408c3bad1943f59df57d124451d691",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40577044407"
+    },
+    {
+      "id": 40577044530,
+      "name": "Validate complete frozen source matrix",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "454f6037df408c3bad1943f59df57d124451d691",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40577044530"
+    }
+  ],
+  "artifact_metadata": [
+    {
+      "id": 12768516794,
+      "name": "frozen-source-matrix",
+      "size_in_bytes": 696916,
+      "digest": "sha256:2cca3a66cc9f4b0d204503d6fa501b7f0a5cf2ed94c20994e0b384cff522b4e5",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40577044530/artifacts/12768516794",
+      "head_sha": "454f6037df408c3bad1943f59df57d124451d691"
+    }
+  ],
+  "receipt_sha256": "56de6ec0b3ce2c4ef0fecbd6360acb54dc1977efa8c4ab044d4dc4a8b85139a0",
+  "source_before": "79d6bfc2325a3939e46555f1f4bd2b06a12b3683c557f4e15f6fbd387379fcf1",
+  "source_after": "79d6bfc2325a3939e46555f1f4bd2b06a12b3683c557f4e15f6fbd387379fcf1",
+  "archived_file_sha256": {
+    "job-122446153074.log": "f38a94243138eee12a700b67da46a8890741cf39dcc8cdd687fcd064054e9ae0",
+    "fixed-ci-receipt.json": "56de6ec0b3ce2c4ef0fecbd6360acb54dc1977efa8c4ab044d4dc4a8b85139a0",
+    "fixed-ci-production_manifest.json": "76d0acd93ccc327bc4c48afa551f55ac0c341e1a001bddbe1f0766df425e6c7d",
+    "fixed-ci-proof.json": "555f1caa634c89b54ca8f91fe7db3b27e66984b6d8d4e221d2163ce0504d1c0a",
+    "fixed-ci-local-verification.json": "60da0f76e8eb0db06f9d6fe4df04b09b86cb18b1af6c46b8820723a8b49830ab",
+    "454f-source-manifest.json": "4e7056505e8882ac17f9d4b2d049fbabccbae10c02348c8ba5c6f5f7faddc8bb",
+    "fixed-ci-workflows.json": "693e41bb59001c62d6632fae1c96a4ff8aa45a2aaae3168f40380a824dd7ee30",
+    "fixed-ci-artifacts.json": "aebd6ad780847f8ef3b54b42210292b8cc061385913c9dd3d3067e6df20aa099"
+  },
+  "evidence_archive_sha256": "39968b77c4f516c93457cc27808675f0c85e47d7638270234be79f96d5880dae",
+  "failed_source15_history": "../receipt.json and ../failure-and-comparison.tar.xz preserve the original 335/336 failure and exact assertion; this record closes the later pending-CI state.",
+  "scope": "Fixture-only successor; source74415 gameplay bytes unchanged. Headless verification does not establish native acceptance."
+}
