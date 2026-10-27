@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "3d33febe7fac68d3446a3ea689de386a6a3eb6f7",
+  "current_candidate": "4322f105e519fec53c469877998eecd5b4d06a34",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -109,11 +109,12 @@
       "source": "Approved Great Crate C3 stock-gate presentation; shared Geometry.GateModel;05 gate progression preserved",
       "expected": "A cold real gate uses the configured stock blastdoor; missing-model fallback remains available without altering collision or locks",
       "scenario": "Fresh client/server with no diagnostic precache; inspect actual gate, then ordinary keycard/Use/open/collision and replay",
-      "result": "BUG011 native cold validation/appearance mismatch and explicit server-precache causality confirmed on afdcbc camera-only fixture. Server-initialization repair passes13 targeted checks and original negative control. Fresh installed cold repair native acceptance remains pending; ordinary traversal/interaction/co-op remains pending.",
+      "result": "BUG011 fresh d66 cold finite gate passed: configured model valid before any diagnostic precache, stockBodies3/fallback0, intended blastdoor/red indicator visually observed through a15s camera-only fixture. Ordinary gate reach/Use/collision/key progression/co-op remain pending.",
       "evidence": [
         "gate-precache/BUG-011.json",
         "gate-precache/native-causality.json",
-        "gate-precache/static-receipt.json"
+        "gate-precache/static-receipt.json",
+        "native-d66/receipt.json"
       ]
     },
     {
@@ -166,9 +167,12 @@
       "source": "02 LOD-CLS/LOD-MON; 03 LOD-CBT",
       "expected": "Enemy archetypes, native acquisition/telegraphs/attacks and damage/defenses",
       "scenario": "Ordinary early/late combat plus bounded archetype fixtures",
-      "result": "Native Soldier telegraph/gunfire and hostile death observed, but contaminated session is not combat acceptance. Fresh production combat pending.",
+      "result": "Partial fresh d66 native dev0/cheats0 but HUD UNRANKED: ordinary portal and12s corridor walk, incoming Soldier bolts and natural Hero death/lives3-to2 observed. Normal retained feedback supplies current event order; developer RPG logs were disabled/stale. BUG012 notice misattributes enemy Backstab to receiving Hero and BUG013 first-death kill-icon warning were confirmed and repaired/static-checked on4322; repaired native gates and authored combat coverage remain pending. Native enemy class/origin/facing were not captured. Earlier contaminated-session evidence is retained as history and does not establish combat acceptance.",
       "evidence": [
-        "environment-input/deborah-native-walk-trial.png"
+        "environment-input/deborah-native-walk-trial.png",
+        "combat-feedback/BUG-012.json",
+        "combat-feedback/BUG-013.json",
+        "combat-feedback/before-rogue-backstab.png"
       ]
     },
     {
@@ -267,7 +271,7 @@
       "source": "06 LOD-UI-001 through 010; approved quieter logger amendment",
       "expected": "Menus, direct keys, HUD/log readability, prompts, input and camera modes",
       "scenario": "Rendered desktop input, menu scrolling, bindings, viewport sizes, third person",
-      "result": "Partial native: priorafdcbc Spellbook/CharacterSheet child Escape and next normal pause remain evidenced. Freshd66 ordinary Crowbar/Pistol tooltips wrap completely inside1280x800; settled actual-hover and held physical/UInput Escape close Equipment. Earlier no-settle/XTest anomalies retained as input uncertainty. Short tooltip/other viewports, independent DHTML pixels/focus, rebound/controller/camera/co-op and full UI coverage remain open.",
+      "result": "Partial native: priorafdcbc Spellbook/CharacterSheet child Escape and next normal pause remain evidenced. Freshd66 ordinary Crowbar/Pistol tooltips wrap completely inside1280x800; settled actual-hover and held physical/UInput Escape close Equipment. Earlier no-settle/XTest anomalies retained as input uncertainty. Short tooltip/other viewports, independent DHTML pixels/focus, rebound/controller/camera/co-op and full UI coverage remain open. Current d66 native incoming combat exposed Backstab subject misattribution and missing hostile kill icons;4322 has shared presentation repairs/static proof, with repaired HUD/log/glyph runtime checks pending.",
       "evidence": [
         "popup-escape/native-afdcbc/receipt.json",
         "popup-escape/native-afdcbc/deborah-afdcbc-escape-closed.png",
@@ -275,7 +279,8 @@
         "inventory-tooltip/BUG-010.json",
         "native-d66/receipt.json",
         "native-d66/deborah-d66-wrapped-crowbar-tooltip.png",
-        "native-d66/deborah-d66-equipment-escape-probe.png"
+        "native-d66/deborah-d66-equipment-escape-probe.png",
+        "combat-feedback/receipt.json"
       ]
     },
     {
@@ -357,6 +362,26 @@
       "scenario": "Non-forced push/integration then remote and installed-source verification",
       "result": "pending",
       "evidence": []
+    },
+    {
+      "id": "REG-BACKSTAB-FEEDBACK",
+      "source": "03 LOD-CBT-007;06 LOD-UI-003/004/005",
+      "expected": "A Backstab credits the attacking Rogue while retaining current recipient/shared event formatting and damage rules",
+      "scenario": "Actual AI and player rear/front attacks; inspect native HUD/normal retained history; bound source/target and lifecycle cases",
+      "result": "Native d66 attribution defect confirmed.4322 repair passes actual resolver/formatter and independently reviewed static gates; native repaired attribution, authored combat and cooperative coverage pending.",
+      "evidence": [
+        "combat-feedback/BUG-012.json"
+      ]
+    },
+    {
+      "id": "REG-HOSTILE-KILL-ICONS",
+      "source": "User attributable-error requirement; existing native kill feed and06 presentation",
+      "expected": "Known hostile inflictors have registered stock icons before first death; native unknown diagnostics remain intact",
+      "scenario": "Fresh known-class lookup, Soldier/generic native kill notices and live-console check; reload and unrelated-class controls",
+      "result": "Native d66 Soldier warning plus retained generic-hostile warning confirmed;4322 adds2 explicit stock aliases. Static cold/reload/unknown-warning/wiring gate passes; actual fresh native glyph/death checks pending.",
+      "evidence": [
+        "combat-feedback/BUG-013.json"
+      ]
     }
   ],
   "deferred": [
@@ -418,6 +443,31 @@
       "id": "BUG-008",
       "record": "death-lifecycle/BUG-008.json",
       "status": "Targeted native gate passed on f6048a0e; broader lifecycle coverage pending"
+    },
+    {
+      "id": "BUG-009",
+      "record": "popup-escape/BUG-009.json",
+      "status": "Finite ordinary child Escape/next stock pause native gate passed on afdcbc; Manual/DHTML, other inputs and broader UI remain qualified/pending"
+    },
+    {
+      "id": "BUG-010",
+      "record": "inventory-tooltip/BUG-010.json",
+      "status": "Finite long Crowbar/Pistol tooltip width and adjacent replacement roundtrip/held Escape native gate passed on d66; short tooltip and broad inventory pending"
+    },
+    {
+      "id": "BUG-011",
+      "record": "gate-precache/BUG-011.json",
+      "status": "Finite cold native gate model validation/appearance passed on d66; route/Use/collision/co-op pending"
+    },
+    {
+      "id": "BUG-012",
+      "record": "combat-feedback/BUG-012.json",
+      "status": "Confirmed native attribution defect;4322 repaired/static validated/independently reviewed; native repaired gate pending"
+    },
+    {
+      "id": "BUG-013",
+      "record": "combat-feedback/BUG-013.json",
+      "status": "Confirmed native missing-icon warning;4322 repaired/static validated/independently reviewed; cold native death/glyph gate pending"
     }
   ],
   "static_fixture_checkpoint": {
@@ -433,9 +483,29 @@
     "native_gmod_accepted": false,
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
-  "installed_loaded_build": "f6048a0ed942c83ec875e23443104dfde12143f2",
-  "last_checkpoint_utc": "2026-10-27T04:28:13.602457+00:00",
-  "next_action": "Continue single-client exploration and bounded authored-family fixtures on the verified gameplay build; repair/recheck newly confirmed shared-menu Escape focus BUG009. Expand death-Tetris scoring/reward, revival, inventory boundaries and cooperative coverage. Complete ordinary campaign progression and three varied clean passes; streak remains0.",
-  "last_runtime_build": "f6048a0ed942c83ec875e23443104dfde12143f2",
-  "current_native_build": "d66a6503afa097410c8cec77933891cfe4d1f2ca"
+  "installed_loaded_build": "d66a6503afa097410c8cec77933891cfe4d1f2ca",
+  "last_checkpoint_utc": "2026-10-27T17:10:40.353567+00:00",
+  "next_action": "Fresh-install/restart4322 and verify GateDCRC164367339,FeedbackCRC266214824,HostilePresentationCRC3365012306 (client file omitted by114 startup fingerprint). Observe actual Backstab source identity in HUD/normal retained history and cold native known-icon/death behavior; distinguish normal dev0 play from explicit dev1 fixtures. Resume ordinary campaign, authored-family/failure/reset and cooperative coverage; clean streak remains0.",
+  "last_runtime_build": "d66a6503afa097410c8cec77933891cfe4d1f2ca",
+  "current_native_build": "d66a6503afa097410c8cec77933891cfe4d1f2ca",
+  "installed_loaded_build_note": "These fields identify the last source-matched actual gameplay evidence; they do not assert that a client process is currently running or that the4322 candidate has native acceptance.",
+  "latest_repair_static_checkpoint": {
+    "commit": "4322f105e519fec53c469877998eecd5b4d06a34",
+    "evidence": "combat-feedback/receipt.json",
+    "positive_commands": 12,
+    "lua_syntax": 927,
+    "changed_file_luajit_compile": 7,
+    "original_negative_controls": 4,
+    "source_unchanged_during_gate": true,
+    "independent_review": "root clear",
+    "full_candidate_integration": "pending"
+  },
+  "latest_full_integration": {
+    "commit": "3d33febe7fac68d3446a3ea689de386a6a3eb6f7",
+    "passed": 336,
+    "total": 336,
+    "lua_files": 925,
+    "evidence": "gate-precache/ci-fixture/successor-3d33-remote.json",
+    "qualification": "Earlier complete frozen-source static evidence;4322 has focused gates and awaits its own CI. No native/campaign/co-op acceptance follows."
+  }
 }

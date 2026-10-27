@@ -1,0 +1,230 @@
+{
+  "canonical/all-lua-syntax.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/all-lua-syntax.stdout.txt": {
+    "bytes": 94667,
+    "sha256": "243684ad346bf63f9256b7caaa27e64224a39ecd7bb0e985830005f521ab59ef"
+  },
+  "canonical/diff-check.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/luajit-compile.json": {
+    "bytes": 780,
+    "sha256": "3dd731ef4f5d7ed1b24e51199bbd677e9801891f5700a84336fa84f9881cb83e"
+  },
+  "canonical/negative-backstab.stderr.txt": {
+    "bytes": 329,
+    "sha256": "1ab0d5eba636d0ef5172b22ed883a82a2f71ae3c9ac56e51290bb52bdccbede0"
+  },
+  "canonical/negative-backstab.stdout.txt": {
+    "bytes": 628,
+    "sha256": "704bba5224f040784a29601b1a4cc07c018d5afe8445c4b1d8d8ba66ad166e68"
+  },
+  "canonical/negative-both.lua": {
+    "bytes": 399,
+    "sha256": "255d70ceba6a5c626780ce6d0d8f2725b7f1e59b6e0c6db8bb64250aba4f578a"
+  },
+  "canonical/negative-both.stderr.txt": {
+    "bytes": 356,
+    "sha256": "9abefe7c9a2077239589dbb74d2754eb8328edf8ecaf06a772a8d3de0bba542c"
+  },
+  "canonical/negative-both.stdout.txt": {
+    "bytes": 628,
+    "sha256": "704bba5224f040784a29601b1a4cc07c018d5afe8445c4b1d8d8ba66ad166e68"
+  },
+  "canonical/negative-feedback.lua": {
+    "bytes": 312,
+    "sha256": "b3127c52389f2b748dc93e1e1edec94d355d18b640dab9917c7f550a408b7cc6"
+  },
+  "canonical/negative-feedback.stderr.txt": {
+    "bytes": 360,
+    "sha256": "05c813d8301fd69734cc89b126596876ee76790dec707791958f4ea5ff0da780"
+  },
+  "canonical/negative-feedback.stdout.txt": {
+    "bytes": 628,
+    "sha256": "704bba5224f040784a29601b1a4cc07c018d5afe8445c4b1d8d8ba66ad166e68"
+  },
+  "canonical/negative-kill-icons.stderr.txt": {
+    "bytes": 222,
+    "sha256": "8fc6c2f93ab649d925b117a698f9b78360551fc418190f0b0ea8751c863280ca"
+  },
+  "canonical/negative-kill-icons.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/receipt.json": {
+    "bytes": 10789,
+    "sha256": "9c88f94178cbf43314a33b078d51646e118d1dfe3d2f1f3a00113c965361c8b1"
+  },
+  "canonical/source_manifest.json": {
+    "bytes": 588572,
+    "sha256": "14797f5382b773599244e45fb8b1c63526ed5f4e05d494e63e770d72e4ff12e1"
+  },
+  "canonical/test_backstab_feedback.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_backstab_feedback.stdout.txt": {
+    "bytes": 1623,
+    "sha256": "a8227981e7c9d7766436b96941247b312ea50a72876400026bbf60be6f45163b"
+  },
+  "canonical/test_checkpoint_d_core_feats.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_checkpoint_d_core_feats.stdout.txt": {
+    "bytes": 38,
+    "sha256": "f84fbf0b0886b44210ef1968c491ae49057580c819edcdf6d5c3b24f2e545251"
+  },
+  "canonical/test_checkpoint_d_direct_cha_damage.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_checkpoint_d_direct_cha_damage.stdout.txt": {
+    "bytes": 186,
+    "sha256": "8dde45ba6b3179fb13717038c691d3857547d038bcfd901cced16fd864ef7397"
+  },
+  "canonical/test_equipment_economy_runtime.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_equipment_economy_runtime.stdout.txt": {
+    "bytes": 628,
+    "sha256": "704bba5224f040784a29601b1a4cc07c018d5afe8445c4b1d8d8ba66ad166e68"
+  },
+  "canonical/test_feedback_language.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_feedback_language.stdout.txt": {
+    "bytes": 769,
+    "sha256": "15985dde099b7e6b525986a48a06eaffa1f03f5321c9bb498d6e30b15dcfa4f1"
+  },
+  "canonical/test_fighter_strength.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_fighter_strength.stdout.txt": {
+    "bytes": 800,
+    "sha256": "b961a7dd10862d57f46adc9442adab89933fcbc0469467ce4755c1d1c5c39c5b"
+  },
+  "canonical/test_hostile_death_handoff.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_hostile_death_handoff.stdout.txt": {
+    "bytes": 219,
+    "sha256": "cd17fd07acc4558877af892b47c304e24ba316af416bbd4b6ab303567255b156"
+  },
+  "canonical/test_hostile_kill_icons.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_hostile_kill_icons.stdout.txt": {
+    "bytes": 183,
+    "sha256": "42f187b4517363a2d38b6c4e8093e6c976b71ebe81e33a9b0ca551bc283048d0"
+  },
+  "canonical/test_loot_class_refresh.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_loot_class_refresh.stdout.txt": {
+    "bytes": 1870,
+    "sha256": "2de95c043a89bac450164909c2220c03271702b13acd541cd2c7208b0597480a"
+  },
+  "canonical/test_monster_identity.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_monster_identity.stdout.txt": {
+    "bytes": 766,
+    "sha256": "029283ea2ba8dcdf332208130c0819ac80c82ddd28e12d1743b27d6f0de01a66"
+  },
+  "canonical/test_presentation_polish.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/test_presentation_polish.stdout.txt": {
+    "bytes": 237,
+    "sha256": "9ad90c845f1cde292fc3c30387d34965a9ec135186efa8e692ddbc765f419890"
+  },
+  "canonical/validate_spot05_die_logger.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "canonical/validate_spot05_die_logger.stdout.txt": {
+    "bytes": 5324,
+    "sha256": "8c3024e010094522378db017cf678e1ea1e0b30aa948b62ee8cddf66066e5596"
+  },
+  "gdd-excerpts.json": {
+    "bytes": 9117,
+    "sha256": "62f5714cc38849714599d488bd669f806014639ed5b30188ca9c7f30f257fd3b"
+  },
+  "native-history-excerpt.json": {
+    "bytes": 19548,
+    "sha256": "eb2ac0dd1b8682d8bb93330e184cc4d786c28409d7ecb343ad62aa5294e97cd5"
+  },
+  "native-console-killicon.json": {
+    "bytes": 231,
+    "sha256": "34dfb7da9efe830f8e01dd1115faa23b93e2b0d504b7a2be75a77cfe990bbd4e"
+  },
+  "original-reproduction.stdout.txt": {
+    "bytes": 1176,
+    "sha256": "9efe1547d377adc2d89e73f59a42eca40d874600bc5ffac2b5952074fdb3aee2"
+  },
+  "original-reproduction.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "reproduce.lua": {
+    "bytes": 3139,
+    "sha256": "7687cc6ab19206fdb9b3e41483597f302c15df8bebac866297f6c5af68f95ccd"
+  },
+  "sv_rpg_gate_d.original.lua": {
+    "bytes": 40564,
+    "sha256": "66543d6cb179b9905da7278963284561f3c84d3521a92d3ad482ada64b970f54"
+  },
+  "sv_feedback_language.original.lua": {
+    "bytes": 6362,
+    "sha256": "0338de8bb84b5d3f14aa974f836f12a650259843c6a767189bdf7bc05dd0032e"
+  },
+  "cl_hostile_presentation_safety.original.lua": {
+    "bytes": 2673,
+    "sha256": "42b144dc84b6bc90670c375ca451e10e73526c7ca1b7b4408568a9d99ed3aec4"
+  },
+  "candidate-diff.patch": {
+    "bytes": 13729,
+    "sha256": "4354cca365fbe8d9d36311593ce17a73f1b19d79aed755aedafd78ad31a37a2f"
+  },
+  "candidate/gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua": {
+    "bytes": 40777,
+    "sha256": "e9596992404d719b5264bf039b55dc49dfac7467eb19085ce9f464b84febac48"
+  },
+  "candidate/gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_language.lua": {
+    "bytes": 6552,
+    "sha256": "2a040aaaef05e2b96ffb0bc4cd57c5500ca8db1e151f2ee51ccbf71031f0327d"
+  },
+  "candidate/gamemodes/legend_of_deborah/gamemode/lod/cl_hostile_presentation_safety.lua": {
+    "bytes": 2930,
+    "sha256": "7505c9b17455d43fc45c28ac158b98092a7ad8cf4cf8ffbeb947e7ede67c5ecf"
+  },
+  "candidate/tools/test_backstab_feedback.lua": {
+    "bytes": 6174,
+    "sha256": "79e1faeaae8cf1e0cd503fb480992715da6ee840d543fae21c4c493035a3649f"
+  },
+  "candidate/tools/test_hostile_kill_icons.lua": {
+    "bytes": 2762,
+    "sha256": "3f957648ee3d853af25414b3d000c9215793492687f0cdfb819dedde298e2158"
+  },
+  "candidate/tools/test_feedback_language.lua": {
+    "bytes": 26904,
+    "sha256": "1af117b2058f0119cf3d6ffc361733aba18f322aab1443c1736be29b17ec6508"
+  },
+  "candidate/tools/test_loot_class_refresh.lua": {
+    "bytes": 8491,
+    "sha256": "42242ae3aacdb74cfadd038983137db58a21b8fb2a5a421ce63c0c10ccb21f08"
+  }
+}

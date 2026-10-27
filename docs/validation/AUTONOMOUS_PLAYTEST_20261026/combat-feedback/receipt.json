@@ -1,0 +1,60 @@
+{
+  "source_commit": "4322f105e519fec53c469877998eecd5b4d06a34",
+  "remote_verified_commit": "4322f105e519fec53c469877998eecd5b4d06a34",
+  "recorded_utc": "2026-10-27T17:09:01.268438+00:00",
+  "static_positive_commands": 12,
+  "lua_syntax": 927,
+  "changed_file_luajit_compile": 7,
+  "negative_controls": 4,
+  "full_registry_count_unchanged": 336,
+  "source_digest": "055c7646b76c18cc7a9423df847511842555766f554ece613f885d293feb6d94",
+  "archive_sha256": "9bb7930e752154193a24355d6d13e4bdf078b02f73f09ee04779ca1a259c264b",
+  "source": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua": {
+      "sha256": "e9596992404d719b5264bf039b55dc49dfac7467eb19085ce9f464b84febac48",
+      "crc32": "164367339"
+    },
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_language.lua": {
+      "sha256": "2a040aaaef05e2b96ffb0bc4cd57c5500ca8db1e151f2ee51ccbf71031f0327d",
+      "crc32": "266214824"
+    },
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_hostile_presentation_safety.lua": {
+      "sha256": "7505c9b17455d43fc45c28ac158b98092a7ad8cf4cf8ffbeb947e7ede67c5ecf",
+      "crc32": "3365012306"
+    },
+    "tools/test_backstab_feedback.lua": {
+      "sha256": "79e1faeaae8cf1e0cd503fb480992715da6ee840d543fae21c4c493035a3649f",
+      "crc32": "103672587"
+    },
+    "tools/test_hostile_kill_icons.lua": {
+      "sha256": "3f957648ee3d853af25414b3d000c9215793492687f0cdfb819dedde298e2158",
+      "crc32": "5990345"
+    },
+    "tools/test_feedback_language.lua": {
+      "sha256": "1af117b2058f0119cf3d6ffc361733aba18f322aab1443c1736be29b17ec6508",
+      "crc32": "1189532428"
+    },
+    "tools/test_loot_class_refresh.lua": {
+      "sha256": "42242ae3aacdb74cfadd038983137db58a21b8fb2a5a421ce63c0c10ccb21f08",
+      "crc32": "3598183953"
+    }
+  },
+  "independent_review": {
+    "reviewer": "/root",
+    "result": "clear",
+    "scope": "All3 production diffs, both new helpers, both existing suite call locations and P:_Event copied-fields/recipient/default context",
+    "independent_commands": [
+      "python3 tools/run_lua54.py tools/test_backstab_feedback.lua",
+      "python3 tools/run_lua54.py tools/test_hostile_kill_icons.lua",
+      "python3 tools/run_lua54.py tools/test_loot_class_refresh.lua",
+      "python3 tools/run_lua54.py tools/test_feedback_language.lua"
+    ],
+    "reported_all4_returncodes_zero": true,
+    "evidence_note": "Reviewer explicitly reported actual execution and clear in team message; raw independent rerun streams were not separately archived here."
+  },
+  "native_repaired_candidate_pending": true,
+  "clean_pass_streak": 0,
+  "latest_full_integration": "../gate-precache/ci-fixture/successor-3d33-remote.json",
+  "full_candidate_integration_pending": true,
+  "no_full_campaign_or_cooperative_acceptance": true
+}
