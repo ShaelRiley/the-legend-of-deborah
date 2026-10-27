@@ -16,7 +16,19 @@
     "Observe still dead, compare supported click route"
   ],
   "repair_commit": "e6e0b8f1",
-  "status": "Implemented,9/9 focused checks; preserved original fails F-edge regression; fresh native recheck pending",
+  "status": "Targeted native gate passed on f6048a0e; broader campaign/cooperative lifecycle acceptance remains pending",
   "expected_native_crc32": "1705465356",
-  "timing_limit": "Before/dead/after-f log labels came from delayed diagnostic timers; the after-f snapshot ran before the actual F press and is not independent timing proof. Native before/after-F screenshots plus source-path diagnosis support the no-op."
+  "timing_limit": "Before/dead/after-f log labels came from delayed diagnostic timers; the after-f snapshot ran before the actual F press and is not independent timing proof. Native before/after-F screenshots plus source-path diagnosis support the no-op.",
+  "status_before_runtime": "Implemented,9/9 focused checks; preserved original fails F-edge regression; fresh native recheck pending",
+  "runtime_recheck": {
+    "build": "f6048a0ed942c83ec875e23443104dfde12143f2",
+    "evidence": "fixed-runtime-f604/receipt.json",
+    "result": "Actual fresh F without Tetris respawns after the lockout. Adjacent early F opens Tetris; arrow input sent and later F respawn visually observed.",
+    "source_crc32": "1705465356",
+    "sources_verified": 114,
+    "sv_cheats": 0,
+    "lod_developer_mode": 0,
+    "seed": 6102601,
+    "limits": "Controlled Player:Kill fixture; no natural-combat, full campaign, co-op, full Tetris scoring/reward or exact20s/60s boundary acceptance."
+  }
 }

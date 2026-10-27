@@ -1,0 +1,20 @@
+{
+  "build": "f6048a0ed942c83ec875e23443104dfde12143f2",
+  "evidence_state": "Static frozen integration gate; native finite gate is separate",
+  "total": 336,
+  "passed": 336,
+  "lua_files": 925,
+  "source_before": "2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5",
+  "source_after": "2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5",
+  "changed_during_gate": [],
+  "native_gmod_accepted": false,
+  "archive": {
+    "file": "raw-gate.tar.xz",
+    "sha256": "00a47be6f407291153c631ab1f5b15ab9bc09f68ff2677fea9fa2ae53fdc47a0",
+    "bytes": 289264,
+    "members": 1010
+  },
+  "receipt_sha256": "6c5a0e501d5b0eba5041448edd6287555da94b5f4b680ca596a7018a63da784b",
+  "source_manifest_sha256": "51eb824966b713b631f16c7d8cc058825c9f913b331031d8d54722a217a308f3",
+  "native_lifecycle_receipt": "../death-lifecycle/fixed-runtime-f604/receipt.json"
+}

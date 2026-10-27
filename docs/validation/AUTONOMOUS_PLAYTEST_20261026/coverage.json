@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "e6e0b8f1",
+  "current_candidate": "f6048a0ed942c83ec875e23443104dfde12143f2",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -189,13 +189,14 @@
     },
     {
       "id": "INV-01",
-      "source": "90 LOD-EQUIP-016; 06 LOD-BIG-LOOT-LIFECYCLE",
+      "source": "90 LOD-EQUIP-016; 06 LOD-BIG-LOOT-LIFECYCLE; explicit author retention correction27175f8c",
       "expected": "Owned equipment, capacity, stacks, acquisition, equips, pickup/drop and consumables",
       "scenario": "Ordinary loot/inventory with full/empty/depleted/stale/duplicate boundaries",
-      "result": "Cheats0 initial2records and one ordinary starter observed; P did not grant extras. Three equipment records/loadedammo/reserve survived death, but active selection failed (BUG007). Other ownership/capacity/economy boundaries pending.",
+      "result": "Cheats0 initial2records and one ordinary starter observed; P did not grant extras. Fresh f6048a0e controlled Hero death/F respawn preserved all3weapons, exact clips/zero reserve and activeSMG (BUG007 finite gate passed). Other ownership/capacity/economy boundaries pending.",
       "evidence": [
         "environment-input/receipt.json",
-        "death-lifecycle/BUG-007.json"
+        "death-lifecycle/BUG-007.json",
+        "death-lifecycle/fixed-runtime-f604/receipt.json"
       ]
     },
     {
@@ -271,10 +272,11 @@
       "source": "06 LOD-RETENTION-001/LOD-LIFE/LOD-SOLDIER",
       "expected": "Death, Tetris/revival/no-Hero retention and resource integrity",
       "scenario": "Real deaths/return, spectator state, reconnect without reroll/duplication",
-      "result": "Natural Hero deaths consumed lives and retained dungeon clock; controlled native fixture exposed BUG007 active-weapon loss and BUG008 no-Tetris F no-op. Both statically repaired; native repaired recheck and deathTetris/zero-life/co-op remain.",
+      "result": "Natural deaths consumed lives and retained dungeon clock. BUG007/008 targeted native recheck passed on f6048a0e: controlled death saved activeSMG; fresh F without Tetris restoredHP100, SMG25/pistol18/crowbar/zero reserve. Early F Tetris entry, arrow input sent and later F respawn observed. Full scoring/reward, exact20s/60s boundaries, zero-life/revival and cooperative cases remain pending.",
       "evidence": [
         "death-lifecycle/BUG-007.json",
-        "death-lifecycle/BUG-008.json"
+        "death-lifecycle/BUG-008.json",
+        "death-lifecycle/fixed-runtime-f604/receipt.json"
       ]
     },
     {
@@ -302,10 +304,11 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "336/336frozen278e2983pass;925Lua/sourceunchanged.50c25777Wizardtext+renderedregressionpasses9focusedchecks.",
+      "result": "336/336 frozen f6048a0e pass;925 Lua files;sourcebefore=after2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5;no changed files. Native finite BUG007/008 acceptance is recorded separately; full gameplay acceptance remains open.",
       "evidence": [
         "combined-278e-integration-gate/receipt.json",
-        "wizard-class-card/static-repair-receipt.json"
+        "wizard-class-card/static-repair-receipt.json",
+        "combined-f604-integration-gate/receipt.json"
       ]
     },
     {
@@ -338,7 +341,8 @@
     "Pre-reload30s staging capture:985 frames,32.88FPS all-frames, no active-play frames. Mounted source observer reports2mismatches because checkout advanced while client stayed open; do not attribute improvement/regression or use as verified final performance evidence.",
     "278e diagnostic session inherited sv_cheats1; P/impulse101 supplied extra weapons/ammo. No clean combat/inventory or trial collision acceptance. Source had no setter; runtime origin unproven. Fresh launch will explicitly use0 and verify actual readback/loadout/MOVETYPE_WALK.",
     "Fresh2c73471b: actualsv_cheats0/loddev0,114sourcesmatch, initialKitpistol18/crowbar withzeroreserve; afterP/class/feat unchanged. AnthonyFiveBucksJenkins Fighter+Haste, ordinary starter+portal. Bounded read-only10Hzpositionobserver verifiesMOVETYPE_WALK2; all route movement is actualWASD. Diagnosticfile-read race now retries finitely; matched key release preserved on failure.",
-    "User confirms only the Steam Deck is available. Official-multirun/LAN real-client smoke may work on this one device; not attempted yet. Authenticated second-account ownership/reconnect remains inaccessible. No Steam identity spoofing or account changes authorized/needed for documented smoke."
+    "User confirms only the Steam Deck is available. Official-multirun/LAN real-client smoke may work on this one device; not attempted yet. Authenticated second-account ownership/reconnect remains inaccessible. No Steam identity spoofing or account changes authorized/needed for documented smoke.",
+    "f6048a0e fresh controlled lifecycle gate: actual Steam Deck/Windowsx86/Proton10, gm_flatgrass, seed6102601, cheats0/dev0,114 sources matched, RunManager CRC925327479 and cl_tetris CRC1705465356. BUG007/008 finite native gate passed; no campaign/co-op/clean-pass claim. New native shared-menu child-focus Escape issue BUG009 is under separate repair."
   ],
   "defects": [
     {
@@ -374,12 +378,12 @@
     {
       "id": "BUG-007",
       "record": "death-lifecycle/BUG-007.json",
-      "status": "implemented;10/10 checks; fresh native pending"
+      "status": "Targeted native gate passed on f6048a0e; broader lifecycle coverage pending"
     },
     {
       "id": "BUG-008",
       "record": "death-lifecycle/BUG-008.json",
-      "status": "implemented;9/9 checks; fresh native pending"
+      "status": "Targeted native gate passed on f6048a0e; broader lifecycle coverage pending"
     }
   ],
   "static_fixture_checkpoint": {
@@ -388,13 +392,15 @@
     "result": "All nine prior fixture failures reproduced and pass after repair, plus four adjacent regressions. Gameplay unchanged."
   },
   "integration": {
-    "result": "336/336pass,925Luafiles,sourceunchanged",
-    "commit": "278e2983197cafd75c6fa7862c2533e37f61012e",
-    "receipt": "combined-278e-integration-gate/receipt.json",
-    "native_gmod_accepted": false
+    "result": "336/336 pass;925 Lua files;frozen source unchanged",
+    "commit": "f6048a0ed942c83ec875e23443104dfde12143f2",
+    "receipt": "combined-f604-integration-gate/receipt.json",
+    "archive_receipt": "combined-f604-integration-gate/archive.json",
+    "native_gmod_accepted": false,
+    "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
-  "installed_loaded_build": "2c73471bf7f0c73f1dac21e6eeba08b0e0f29aa4",
-  "last_checkpoint_utc": "2026-10-27T03:00:50.154935+00:00",
-  "next_action": "Fully quit/install combined lifecycle candidate; production prep with cheats0; verify server CRC925327479/clientCRC1705465356 and114 mounted sources. Repeat known loaded-SMG death, fresh F after20s, restored activeSMG and exact ammo. Then assisted native exploration; normal full campaign/co-op/three clean passes remain pending.",
-  "last_runtime_build": "e76659db9d99360f557252faf2f6455d32d8c0c5"
+  "installed_loaded_build": "f6048a0ed942c83ec875e23443104dfde12143f2",
+  "last_checkpoint_utc": "2026-10-27T04:28:13.602457+00:00",
+  "next_action": "Continue single-client exploration and bounded authored-family fixtures on the verified gameplay build; repair/recheck newly confirmed shared-menu Escape focus BUG009. Expand death-Tetris scoring/reward, revival, inventory boundaries and cooperative coverage. Complete ordinary campaign progression and three varied clean passes; streak remains0.",
+  "last_runtime_build": "f6048a0ed942c83ec875e23443104dfde12143f2"
 }

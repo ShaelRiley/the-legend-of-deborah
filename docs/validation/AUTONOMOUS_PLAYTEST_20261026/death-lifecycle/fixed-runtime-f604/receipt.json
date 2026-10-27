@@ -1,0 +1,272 @@
+{
+  "build": "f6048a0ed942c83ec875e23443104dfde12143f2",
+  "recorded_utc": "2026-10-27T04:26:12.308701+00:00",
+  "evidence_state": "Native finite acceptance for BUG-007 and BUG-008 only",
+  "environment": {
+    "hardware": "Valve Jupiter Steam Deck",
+    "client": "Windows x86 Garry's Mod through Proton10",
+    "map": "gm_flatgrass",
+    "seed": 6102601,
+    "sv_cheats": 0,
+    "lod_developer_mode": 0,
+    "verified_mounted_sources": 114,
+    "source_mismatches": 0,
+    "source_crc32": {
+      "sv_run_manager.lua": "925327479",
+      "cl_tetris.lua": "1705465356"
+    }
+  },
+  "setup": "Controlled Player:Kill on an ordinary deployed Hero, followed by actual keyboard F; no gunfire in the preservation fixture",
+  "observations": {
+    "BUG-007": "Before death activeSMG25, pistol18 and crowbar with zero reserve. Death snapshot saves activeSMG. Post-lockout F restoresHP100, same activeSMG, all3weapons and exact clips/reserve.",
+    "BUG-008": "Fresh post-lockout F without Tetris restores the Hero through the existing respawn request. EarlyF also opens the rendered Tetris board; directional input was sent and later F respawn was visually observed."
+  },
+  "numeric_evidence": {
+    "before": {
+      "t": 376.70999157987535,
+      "active": "weapon_smg1",
+      "ammo": [],
+      "hp": 100,
+      "weapons": [
+        [
+          "weapon_pistol",
+          18,
+          -1
+        ],
+        [
+          "weapon_lod_crowbar",
+          -1,
+          -1
+        ],
+        [
+          "weapon_smg1",
+          25,
+          -1
+        ]
+      ]
+    },
+    "dead": {
+      "t": 382.7249914454296,
+      "active": false,
+      "ammo": [],
+      "hp": 0,
+      "weapons": [],
+      "inventory": {
+        "activeWeaponClass": "weapon_smg1",
+        "weapons": [
+          {
+            "clip2": -1,
+            "class": "weapon_pistol",
+            "clip1": 18,
+            "equipmentOwned": true
+          },
+          {
+            "clip2": -1,
+            "class": "weapon_lod_crowbar",
+            "clip1": -1,
+            "equipmentOwned": true
+          },
+          {
+            "clip2": -1,
+            "class": "weapon_smg1",
+            "clip1": 25,
+            "equipmentOwned": true
+          }
+        ],
+        "ammo": []
+      }
+    },
+    "after_f": {
+      "t": 410.57999082282186,
+      "active": "weapon_smg1",
+      "ammo": [],
+      "hp": 100,
+      "weapons": [
+        [
+          "weapon_pistol",
+          18,
+          -1
+        ],
+        [
+          "weapon_lod_crowbar",
+          -1,
+          -1
+        ],
+        [
+          "weapon_smg1",
+          25,
+          -1
+        ]
+      ],
+      "inventory": {
+        "activeWeaponClass": "weapon_smg1",
+        "weapons": [
+          {
+            "clip2": -1,
+            "class": "weapon_pistol",
+            "clip1": 18,
+            "equipmentOwned": true
+          },
+          {
+            "clip2": -1,
+            "class": "weapon_lod_crowbar",
+            "clip1": -1,
+            "equipmentOwned": true
+          },
+          {
+            "clip2": -1,
+            "class": "weapon_smg1",
+            "clip1": 25,
+            "equipmentOwned": true
+          }
+        ],
+        "ammo": []
+      }
+    },
+    "later_after_tetris_f": {
+      "t": 1359.5999696105719,
+      "active": "weapon_smg1",
+      "ammo": [],
+      "hp": 100,
+      "weapons": [
+        [
+          "weapon_pistol",
+          18,
+          -1
+        ],
+        [
+          "weapon_lod_crowbar",
+          -1,
+          -1
+        ],
+        [
+          "weapon_smg1",
+          25,
+          -1
+        ]
+      ],
+      "inventory": {
+        "activeWeaponClass": "weapon_smg1",
+        "weapons": [
+          {
+            "clip2": -1,
+            "class": "weapon_pistol",
+            "clip1": 18,
+            "equipmentOwned": true
+          },
+          {
+            "clip2": -1,
+            "class": "weapon_lod_crowbar",
+            "clip1": -1,
+            "equipmentOwned": true
+          },
+          {
+            "clip2": -1,
+            "class": "weapon_smg1",
+            "clip1": 25,
+            "equipmentOwned": true
+          }
+        ],
+        "ammo": []
+      }
+    }
+  },
+  "visual_review": {
+    "early_tetris": "Board visible with WAIT15, campaign clock27:42 and next-life overfill+0HP",
+    "later_tetris_respawn": "HP100, activeSMG25 and campaign clock27:13 visible"
+  },
+  "limits": [
+    "Controlled failure fixture, not natural-combat or start-to-finish campaign acceptance.",
+    "No cooperative, distinct-account, full Tetris scoring/reward or exact20s/60s boundary acceptance.",
+    "The added after-tetris-f data sample was collected later than the screenshot sequence; it supports final state, not a continuous paired timing interval.",
+    "Clean varied campaign-pass streak remains0."
+  ],
+  "archive": {
+    "file": "raw-native.tar.xz",
+    "sha256": "19cbce22893a783d3db1f6c9bbd9b86fc016e0c1586b531d5bdcac7af83a67aa",
+    "bytes": 10698104,
+    "members": 16
+  },
+  "files": [
+    {
+      "file": "deborah-f604-class.png",
+      "sha256": "d4b2452b9b8047d24c8295c453d93faacc61ab1cbbd87c0bd3c84d63f010c9ea",
+      "bytes": 565428
+    },
+    {
+      "file": "deborah-f604-deployed.png",
+      "sha256": "ca665e18fa0f00f195226ed7a370cbf3eb39272ea1ba11a37f894696ec385029",
+      "bytes": 1485728
+    },
+    {
+      "file": "deborah-f604-early-f-tetris.png",
+      "sha256": "758a44a66d1e48c41ac3aff5cf360c752ceaf17c34e136341f3991101281fd5d",
+      "bytes": 711973
+    },
+    {
+      "file": "deborah-f604-f-eligible.png",
+      "sha256": "ff0cf085f9e18e5d6b4d9ea01655724e453d68e56c89b56d7832c2a36e374ef6",
+      "bytes": 1154461
+    },
+    {
+      "file": "deborah-f604-f-respawn.png",
+      "sha256": "be81e6ad3e4da40458fb357f1ec7da325e40a5653417b1663f8f035f7c50c16e",
+      "bytes": 1392831
+    },
+    {
+      "file": "deborah-f604-feat-offer.png",
+      "sha256": "e59deaee8655f1dd51cf2b39c8e1d9ff2419d0e31907a8abfdd44ca6c10fd340",
+      "bytes": 530708
+    },
+    {
+      "file": "deborah-f604-feat.png",
+      "sha256": "67c5b23277d7da9af0abc8b825766600cee8b418b613a4b2a440da911e23d232",
+      "bytes": 538910
+    },
+    {
+      "file": "deborah-f604-lifecycle-dead.png",
+      "sha256": "2e7a2ade7cb57131195ffe1d2e24f18cf4548e3068813dec915782bec9d6f270",
+      "bytes": 1121519
+    },
+    {
+      "file": "deborah-f604-start.png",
+      "sha256": "c4130a2e6bd9c8cf623ece95dba5caf302d7bd33d3302f3f983672539ae43382",
+      "bytes": 1956617
+    },
+    {
+      "file": "deborah-f604-tetris-f-respawn.png",
+      "sha256": "ebe1212efc0efd3585eb7f4b4d62e02cd637d9c41a8433a662e7f946da7f1453",
+      "bytes": 1386435
+    },
+    {
+      "file": "playtest_life_after-f.txt",
+      "sha256": "db42d8c391f96d5160b07983cdd38ecc5c68041126d2af6cf8a05b821e05dc98",
+      "bytes": 436
+    },
+    {
+      "file": "playtest_life_after-tetris-f.txt",
+      "sha256": "04f0b24c61d3e3d1f449ef889cfbb13c50f25e2a32f1a4e2ef493c4b2e8d1ee0",
+      "bytes": 436
+    },
+    {
+      "file": "playtest_life_before-tetris.txt",
+      "sha256": "a8d72317ad2b5ec5052d5a8f3319a5636bcf078859615b71474105b4b9c3e2d7",
+      "bytes": 436
+    },
+    {
+      "file": "playtest_life_before.txt",
+      "sha256": "ebeed6aa779a03af5adb1570abe5a820aef560157f3a19a6d1b075ef7fed609f",
+      "bytes": 153
+    },
+    {
+      "file": "playtest_life_dead.txt",
+      "sha256": "e10730a365edd0448eb787938e962338699d9173f685b11811ca46039bc97c6b",
+      "bytes": 351
+    },
+    {
+      "file": "receipt.json",
+      "sha256": "8bfa261bc7780d914581aca53a5df915e52b018880a674b47496d2395fb86c88",
+      "bytes": 2561
+    }
+  ]
+}

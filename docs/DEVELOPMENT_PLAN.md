@@ -1,38 +1,43 @@
 # Current checkpoint — autonomous native gameplay and defect campaign
 
-The October26 user goal supersedes older next-test sequencing: actual-client
+The October 26 user goal supersedes older next-test sequencing: actual-client
 play, demonstrated defect repair, requirement-to-test evidence and three varied
-clean final-candidate passes. Clean streak is0. Workshop/VPS, the40FPS goal and
-all October23 timer/countdown/hourglass/inventory/reward choices remain deferred.
+clean final-candidate passes. Clean streak remains 0. Workshop/VPS, the 40 FPS
+goal and all October 23 timer/countdown/hourglass/inventory/reward choices remain
+deferred.
 
-Main through e6e0b8f1 contains eight demonstrated repairs. Earlier chapter,
-weapon/damsel-material, map-legend, timeout-HUD and Wizard-card fixes have native
-visual/parameter evidence, with ordinary rescued-NPC coverage still pending.
-Latest BUG007 captures Hero inventory at DoPlayerDeath before native teardown
-loses its active pointer; 10 focused gates pass. BUG008 restores post-lockout F
-without opening Tetris through the existing request;9 gates pass. Independent
-source review is clear; both latest repairs still require fresh native recheck.
-The last frozen full gate is336/336 on278e2983,925Lua files, source unchanged.
+Gameplay build `f6048a0ed942c83ec875e23443104dfde12143f2` contains eight repairs.
+BUG007/008 now pass their finite native gate: controlled Hero death saves the
+active SMG, and fresh F after the lockout restores HP100, active SMG25, pistol18,
+crowbar and zero reserve. Early F opens the rendered Tetris board; arrow input
+was sent and later F respawn was visually observed. Full Tetris scoring/rewards,
+exact 20s/60s boundaries, natural-combat and cooperative lifecycle acceptance
+remain open. See the [native lifecycle receipt](validation/AUTONOMOUS_PLAYTEST_20261026/death-lifecycle/fixed-runtime-f604/receipt.json).
 
-Actual Steam Deck/Windowsx86/Proton10 testing on gm_flatgrass uses seed6102601.
-Fresh2c73471b verified cheats0, developer0 and114 mounted sources. P preserved
-initial pistol/crowbar/zero-reserve loadout. Ordinary starter/portal, walking,
-physical map pickup/discovery and complete1280x800 legend are observed. A180s
-exact-source traversal baseline measured18.13activeFPS, with diagnostic observer
-present; no before/after attribution or40FPS claim. Natural deaths/timeouts and
-replay occurred; no full campaign or clean-pass acceptance is claimed.
+The same f6048a0e build passed all 336 integration suites and 925 Lua parses on
+frozen source; before/after digest is
+`2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5`.
+The [gate archive receipt](validation/AUTONOMOUS_PLAYTEST_20261026/combined-f604-integration-gate/archive.json)
+retains raw results and the complete source manifest. Static success does not
+accept the full campaign. Earlier chapter, material, map-legend, timeout-HUD and
+Wizard-card repairs retain their finite native evidence; ordinary rescued-NPC
+coverage is still pending.
 
-Next finite gate: fully quit/install combined lifecycle candidate, verify114
-mounted sources plus RunManager CRC925327479 and cl_tetris CRC1705465356. Repeat
-known loaded-SMG death; fresh F after20s must restore HP and the same activeSMG,
-clips/reserve and item records without resetting the dungeon clock. Then resume
-single-client exploration and bounded authored-family fixtures.
+Actual hardware is the Valve Jupiter Steam Deck, Windows x86 GMod/Proton10 on
+`gm_flatgrass`, seed6102601. Fresh f6048a0e uses cheats0/dev0, matches all 114
+mounted sources and verifies RunManager CRC925327479 / cl_tetris CRC1705465356.
+Prior production starter/portal, walking and physical floor-map pickup/discovery
+observations remain. The earlier 180s traversal baseline measured 18.13 active
+FPS with its observer present; it establishes no repair attribution or 40 FPS
+claim.
 
-Only the Steam Deck is available. Documented -multirun/LAN mode may allow two
-real temporary-session clients for a bounded replication/role smoke; it remains
-untried. Distinct authenticated-account ownership/reconnect remains a coverage
-gap. See the matrix for exact evidence states and limits:
-[autonomous playtest](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
+Next: repair/recheck newly confirmed shared-menu child-focus Escape BUG009,
+then continue single-client exploration and bounded authored-family fixtures.
+Ordinary full-campaign progression, endings/replay, detailed Tetris rewards and
+three clean varied passes remain unfinished. Only one Deck is available;
+two-real-client LAN smoke remains untried and distinct authenticated-account
+ownership/reconnect coverage remains a gap. Exact states and evidence are in the
+[coverage matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
 
 # Current checkpoint — integrate retained partial performance improvements
 

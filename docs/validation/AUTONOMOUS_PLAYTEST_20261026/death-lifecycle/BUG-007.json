@@ -16,6 +16,18 @@
     "Respawn and compare native active weapon and ammo"
   ],
   "repair_commit": "8a0b484e",
-  "status": "Implemented,10/10 focused checks; original source fails native-shaped lifecycle test; fresh combined native recheck pending",
-  "expected_native_crc32": "925327479"
+  "status": "Targeted native gate passed on f6048a0e; broader campaign/cooperative lifecycle acceptance remains pending",
+  "expected_native_crc32": "925327479",
+  "status_before_runtime": "Implemented,10/10 focused checks; original source fails native-shaped lifecycle test; fresh combined native recheck pending",
+  "runtime_recheck": {
+    "build": "f6048a0ed942c83ec875e23443104dfde12143f2",
+    "evidence": "fixed-runtime-f604/receipt.json",
+    "result": "Controlled Hero death saves active SMG; actual F after the lockout restores HP100, the same active SMG25, pistol18, crowbar and zero reserve.",
+    "source_crc32": "925327479",
+    "sources_verified": 114,
+    "sv_cheats": 0,
+    "lod_developer_mode": 0,
+    "seed": 6102601,
+    "limits": "Controlled Player:Kill fixture; no natural-combat, full campaign, co-op, full Tetris scoring/reward or exact20s/60s boundary acceptance."
+  }
 }
