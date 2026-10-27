@@ -6,12 +6,23 @@
   "status": "Implemented and statically validated on verified main74415d1a with independent review; original native defect preserved. Repaired native acceptance remains pending.",
   "baseline": {
     "gameplay_source_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
-    "private_install_receipt_commit": "2b2f7501f04f847448b3f5fc6bd5865f7a9b57ad",
+    "private_install_receipt_commit": "4bc3ff8b7caa072fbd20ab652b126a6e40b2ed21",
     "evidence_prepared_at_head": "4048e7ac5a015939982cfbeaf6f295bd18cfa4c5",
     "installed_addon": "./.build/lod-gmod/garrysmod/addons/the-legend-of-deborah-dev",
     "canonical_module": "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua",
     "installed_and_source14_sha256": "7981b5200ebc1e8f7f7438671733b1c2d58281a55dea7c108dbc76d9c2dd5701",
-    "source_identity_qualification": "Read-back installed addon file matched exact source14 Git bytes before repair installation. Private prepared receipt and current BUILD_IDENTITY report the docs successor2b2f7501; its production trees match8a9. This record does not assert a new compiled-source hash probe."
+    "source_identity_qualification": "The actual long native session prepared receipt is4bc3ff8b. BUILD_IDENTITY retained the older2b2f7501 display label; those are distinct provenance fields. Read-back installed sv_safe_teleport.lua matched exact source14 bytes before repair installation. Git verifies gamemodes/lua/sound trees identical for actual prepared4bc3, retained-label2b2 and gameplay8a9. This record does not assert a new compiled-source hash probe.",
+    "private_install_receipt": {
+      "path": ".build/autonomous-playtest-20261027/private-gameplay/session-1793127748138993188/prepared.json",
+      "sha256": "9e81260609f4cb4067eadfb6d7579aff4a049e8674f5257fb721a2a9fac46701",
+      "kind": "prepared_private_gameplay_extension",
+      "production_tree_identity": {
+        "gamemodes": "86afca43b6654ea02131ad20e813a600ed194b06",
+        "lua": "e2ab4ef2e3ef451336fa4c60d06dbd9fdac1cf45",
+        "sound": "600815fef14f7b13e7ba2d93d0090d8c3025b14b"
+      }
+    },
+    "runtime_build_identity_install_label": "2b2f7501f04f847448b3f5fc6bd5865f7a9b57ad clean-private-profile"
   },
   "environment": {
     "hardware": "Valve Jupiter Steam Deck / AMD Custom APU0405; this is the same actual Deck used by root for the native campaign",
@@ -113,7 +124,8 @@
       "feet": 5,
       "rays_hit": 0,
       "tiny_hulls_valid_generated_floor": 5,
-      "entity": 1009
+      "entity": 1009,
+      "landing_footprint_fixture": "Centered at(-3840,-2688) in cell1:4:0; valid positive location for the existing cell-inset/standing-footprint admission."
     },
     "zeroXY_Hero": {
       "cell": [
@@ -126,7 +138,14 @@
       "feet": 5,
       "rays_hit": 0,
       "zeroXY_hulls_valid_generated_floor": 5,
-      "entity": 1009
+      "entity": 1009,
+      "pos": [
+        -3630.132568359375,
+        -2688,
+        -12271.9375
+      ],
+      "landing_positive_fixture": false,
+      "qualification": "Trace-behavior evidence only. At x=-3630.132568359375 in cell2:4:0 (center x=-3456), standing min x=-3646.132568359375 extends6.132568359375 units outside the existing184-unit cell-inset limit (left edge=-3640). Landing may legitimately reject at this margin before probing support. Five ray misses versus five valid exact-point hull hits still prove the native trace discrepancy; this sample does not establish an expected successful Landing."
     },
     "rogue_candidates": {
       "cell": [
@@ -135,7 +154,7 @@
         1
       ],
       "flat": true,
-      "positive_controls": "Candidates3/4 (+Y160/-Y160): each of five samples misses with a line and hits generated lod_static_box kind1, normal(0,0,1), not StartSolid/AllSolid with either tiny or zeroXY hull.",
+      "positive_controls": "Candidates3/4 (+Y160/-Y160): each of five samples misses with a line and hits generated lod_static_box kind1, normal(0,0,1), not StartSolid/AllSolid with either tiny or zeroXY hull. The +/-Y locations remain within the existing standing-footprint cell inset; unlike the near-margin zeroXY Hero sample, they are valid positive footprint fixtures.",
       "negative_controls": "Candidates1/2 (+X160/-X160): hulls hit generated wallkind4 with StartSolid, so floorHit correctly rejects. The repair must preserve rejection.",
       "floor_entity": 1174,
       "wall_entities": [
@@ -209,5 +228,10 @@
     "archive": "static/focused-evidence.tar.xz",
     "qualification": "Source owner ran13 applicable adjacent commands plus118-source manifest validator,927-file Lua parse and production LuaJIT. Original Landing, Charge-ray and horizontally-widened-corner negative controls fail intended assertions. Independent reviewer reran core consumers and three negatives; root reviewed actual diff. This record references their preserved receipt, not an additional test run by the evidence author.",
     "legacy_failure": "Extra retired test_event_bribe_blockade.lua fails seed11 before and after repair; retained in source static receipt/archive. Live05 LOD-EVENT-BRIBE-001181060-181948 removes Bribe from active gameplay; no reactivation or hidden passing claim."
+  },
+  "evidence_correction": {
+    "utc": "2026-10-27T19:40:36.235094+00:00",
+    "reason": "Correct actual prepared-receipt provenance versus retained BUILD_IDENTITY label, and restrict near-margin zeroXY Hero sample to trace evidence. Original raw files and hashes are unchanged.",
+    "raw_evidence_rewritten": false
   }
 }
