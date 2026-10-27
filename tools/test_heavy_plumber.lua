@@ -56,6 +56,9 @@ util.TraceLine=function(d)
  return {Hit=not holes or math.abs(d.start.y)<1,HitPos=Vector(d.start.x,d.start.y,0),HitNormal=Vector(0,0,1),Entity=floor}
 end
 util.TraceHull=function(d)
+ if d.endpos.z<d.start.z and d.maxs.z<=2 then
+  return {Hit=not holes or math.abs(d.start.y)<1,HitPos=Vector(d.start.x,d.start.y,0),HitNormal=Vector(0,0,1),Entity=floor}
+ end
  if d.endpos.z>d.start.z then
   return {Hit=clearance<60,Fraction=clearance/60,StartSolid=ceiling}
  end

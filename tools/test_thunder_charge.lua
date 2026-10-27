@@ -57,6 +57,9 @@ util.TraceLine=function(d)
 end
 util.TraceHull=function(d)
  if ceiling then return {StartSolid=true} end
+ if d.endpos.z<d.start.z and d.maxs.z<=2 then
+  return {Hit=not holes or math.abs(d.start.y)<1,HitPos=Vector(d.start.x,d.start.y,0),HitNormal=Vector(0,0,1),Entity=floor}
+ end
  local fraction=1;local target
  if wall and d.endpos.x>=wall then fraction=math.max(0,(wall-d.start.x)/math.max(.001,d.endpos.x-d.start.x)) end
  if contact and d.endpos.x>=contact.position.x-32 then

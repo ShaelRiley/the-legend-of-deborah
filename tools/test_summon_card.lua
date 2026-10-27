@@ -6,6 +6,7 @@ local E,R=LOD.Equipment,env.Run
 local V=getmetatable(Vector())
 V.__add=function(a,b) return Vector(a.x+b.x,a.y+b.y,a.z+b.z) end
 V.__sub=function(a,b) return Vector(a.x-b.x,a.y-b.y,a.z-b.z) end
+V.__mul=function(a,b) return Vector(a.x*b,a.y*b,a.z*b) end
 local now=200;CurTime=function() return now end
 MOVETYPE_WALK,MASK_PLAYERSOLID,CONTENTS_SLIME,CONTENTS_WATER=2,1,16,32
 bit=bit or {};bit.band=function(a,b) return a & b end;bit.bor=function(a,b) return a | b end
@@ -51,7 +52,14 @@ local floor={valid=true,LODGeneratedGeometry=true,GetClass=function() return 'lo
 local blocked,noFloor,edgeHole,water,hurt,ceiling=false,false,false,false,false,false
 local function hit(pos) return {Hit=not noFloor,HitPos=Vector(pos.x,pos.y,0),HitNormal=Vector(0,0,1),Entity=floor} end
 util.TraceHull=function(d)
- if d.start.z~=d.endpos.z then return hit(d.start) end
+ if d.start.z~=d.endpos.z then
+  -- This scene has small deck islands at the candidate centers. Their corners
+  -- have no support, independently of which native probe shape checks them.
+  local dx=math.abs(d.start.x/64-math.floor(d.start.x/64+.5))*64
+  local dy=math.abs(d.start.y/64-math.floor(d.start.y/64+.5))*64
+  if edgeHole and (dx>8 or dy>8) then return {Hit=false} end
+  return hit(d.start)
+ end
  local occupied=false
  for _,p in ipairs(actors) do
   if p~=d.filter and p:Alive() and math.abs(p.position.x-d.start.x)<32 and math.abs(p.position.y-d.start.y)<32 then occupied=true end
@@ -144,6 +152,64 @@ assert(found>0 and found<128)
 assert(E:AddConsumable(state,'summon_card',3) and not E:AddConsumable(state,'summon_card',1))
 assert(state.items.summon_card.count==3,'Stack overflow remains atomic')
 print('SUMMON_CARD_PASS: graph locks, hull/support/hazards, lifecycle, net replay, resource commit, natural rewards')
+
+-- Native BUG015 boundary: generated SOLID_BBOX decks admit swept hulls while
+-- rays miss. Use an independent floor/void model, not the production helper.
+-- The small hole is narrower than a widened feet probe; an exact unsupported
+-- corner still has to reject even when every other point and body are clear.
+do
+ local line,hull,contents,find=util.TraceLine,util.TraceHull,util.PointContents,ents.FindInBox
+ local mode='clear'
+ local deck={valid=true,LODGeneratedGeometry=true,kind=1,class='lod_static_box'}
+ function deck:GetClass() return self.class end
+ function deck:GetBoxKind() return self.kind end
+ util.TraceLine=function() return {Hit=false} end
+ util.TraceHull=function(d)
+  assert(d.mask==MASK_PLAYERSOLID and d.filter==target)
+  if d.endpos.z>=d.start.z or d.maxs.z-d.mins.z>2 then
+   return {Hit=mode=='body',StartSolid=mode=='body',AllSolid=mode=='body',Fraction=mode=='body' and 0 or 1}
+  end
+  local lo,hi=d.start+d.mins,d.start+d.maxs
+  local inHole=lo.x>=47.5 and hi.x<=48.5 and lo.y>=47.5 and hi.y<=48.5
+  if mode=='missing' or mode=='corner-hole' and inHole then return {Hit=false} end
+  local z=mode=='height' and 5 or mode=='corner-height' and inHole and 3 or 0
+  local normal=mode=='slope' and Vector(.4559605,0,.89) or Vector(0,0,1)
+  return {Hit=true,HitPos=Vector(d.start.x,d.start.y,z),HitNormal=normal,Entity=deck,
+   StartSolid=mode=='start',AllSolid=mode=='all'}
+ end
+ util.PointContents=function() return mode=='water' and CONTENTS_WATER or mode=='slime' and CONTENTS_SLIME or 0 end
+ ents.FindInBox=function() return mode=='hurt' and {{GetClass=function() return 'trigger_hurt' end}} or {} end
+ local cell=graph.Cells['3:1:0']
+ local pos=Vector(64,64,0)
+ assert(T:Landing(target,graph,cell,pos),'BUG015: a clear native generated deck must admit a standing landing when rays miss')
+ assert(T:ChargeSupport(target,graph,Vector(64,64,2)),'BUG015: native generated deck must support all five charge points when rays miss')
+ for _,failure in ipairs({'missing','corner-hole','height','corner-height','slope','start','all','water','slime','hurt'}) do
+  mode=failure
+  assert(not T:Landing(target,graph,cell,pos),'Native landing rejects '..failure)
+  assert(not T:ChargeSupport(target,graph,Vector(64,64,2)),'Native charge rejects '..failure)
+ end
+ mode='clear'
+ for _,failure in ipairs({'wall','prop','ungenerated','invalid'}) do
+  deck.kind=failure=='wall' and 4 or 1
+  deck.class=failure=='prop' and 'prop_physics' or 'lod_static_box'
+  deck.LODGeneratedGeometry=failure~='ungenerated';deck.valid=failure~='invalid'
+  assert(not T:Landing(target,graph,cell,pos),'Native landing rejects '..failure)
+  assert(not T:ChargeSupport(target,graph,Vector(64,64,2)),'Native charge rejects '..failure)
+ end
+ deck.kind,deck.class,deck.LODGeneratedGeometry,deck.valid=1,'lod_static_box',true,true
+ mode='body'
+ assert(not T:Landing(target,graph,cell,pos),'Standing body clearance remains required')
+ assert(T:ChargePath(target,graph,Vector(64,64,2),Vector(1,0,0),64)==0,'Charge body sweep still rejects a solid body')
+ mode='clear'
+ assert(not T:ChargeSupport(target,graph,Vector(64,64,5)),'Charge support height remains bounded')
+ graph.VerticalEdges={{a=cell,b={x=cell.x,y=cell.y,z=1}}}
+ assert(not T:Landing(target,graph,cell,pos) and not T:ChargeSupport(target,graph,Vector(64,64,2)),'No stair landings')
+ graph.VerticalEdges={};graph.WardenVoid={['3:1:0']=true}
+ assert(not T:Landing(target,graph,cell,pos) and not T:ChargeSupport(target,graph,Vector(64,64,2)),'No void landings')
+ graph.WardenVoid=nil
+ util.TraceLine,util.TraceHull,util.PointContents,ents.FindInBox=line,hull,contents,find
+ print('SAFE_FLOOR_NATIVE_PASS: ray-missing deck supports landing/charge; exact corner hole, height, slope, solids, geometry identity, hazards, body, stairs and voids remain closed')
+end
 
 -- Actual picker callback and lifecycle, with native VGUI/transport boundaries.
 local nodes={};local panel={};panel.__index=panel

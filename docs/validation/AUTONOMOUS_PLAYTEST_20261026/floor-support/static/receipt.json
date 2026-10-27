@@ -1,0 +1,233 @@
+{
+  "kind": "BUG015 focused static repair proof; native repaired acceptance pending",
+  "utc": "2026-10-27T19:33:50.137573+00:00",
+  "source_base_commit": "4048e7ac5a015939982cfbeaf6f295bd18cfa4c5",
+  "changed_file_sha256": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua": "a615b9ada3d78710e56d8c9b5f451278542c4977bea6cd0eaa7f650301f5dc3e",
+    "tools/test_summon_card.lua": "ce478445e5bdf74b4a116e70395fda8d0ba670b0ccfa7d6d626ab0f0f8b2c24b",
+    "tools/test_thunder_charge.lua": "430c66458e533f54c5e86f9491bbbb60b3d654dc6d1194e54160341e397f3d6d",
+    "tools/test_heavy_plumber.lua": "64f2551c97837dc43e0b12d84a1cdfc61583e36d2b130a928f738ea33b30fcaa"
+  },
+  "production_crc32": 3252930173,
+  "repair": "Zero-XY, one-unit vertical feet hull shared by Landing corners and ChargeSupport; matches accepted native Sentry support shape. Generated kind1/upnormal/height/flat-cell/full standing hull/graph/hazard/lifecycle authority unchanged.",
+  "active_adjacent_gates": {
+    "passed": 13,
+    "total": 13,
+    "results": [
+      {
+        "name": "test_summon_card",
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_summon_card.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.422,
+        "stdout_sha256": "234f7a98cffbcb4e0de998110392ce7948543e99b510b49baeb298bc96f9121f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_thunder_charge",
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_thunder_charge.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.68,
+        "stdout_sha256": "f743376de0a517486c9dd6214b44403e330382ed0b8e609d9f73e58f6b0376f1",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_heavy_plumber",
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_heavy_plumber.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.478,
+        "stdout_sha256": "68ca4bd5b295cca37b1b5e8ba1a7647bd7c3c835369f2101f82c18d3dc4a0e44",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_warp_hole",
+        "command": [
+          "python3",
+          "tools/test_crypto_sqlite.py",
+          "tools/test_warp_hole.lua"
+        ],
+        "returncode": 0,
+        "seconds": 3.68,
+        "stdout_sha256": "e81ae97f132ab95a66100beb37d182798cf910f6f7d0696b4b50dec981209721",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_false_floor",
+        "command": [
+          "python3",
+          "tools/test_crypto_sqlite.py",
+          "tools/test_false_floor.lua"
+        ],
+        "returncode": 0,
+        "seconds": 2.551,
+        "stdout_sha256": "1a836efa1a5876e87ba720e06ba5f0389c22b86ac66e90ca0471022dbe908523",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_event_population",
+        "command": [
+          "python3",
+          "tools/test_crypto_sqlite.py",
+          "tools/test_event_population.lua"
+        ],
+        "returncode": 0,
+        "seconds": 30.478,
+        "stdout_sha256": "24746a2ee11697727aad8cb1857f8ab842f8e349300cfd0b31336a6b38e65e44",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_event_incidents",
+        "command": [
+          "python3",
+          "tools/test_crypto_sqlite.py",
+          "tools/test_event_incidents.lua"
+        ],
+        "returncode": 0,
+        "seconds": 2.865,
+        "stdout_sha256": "d2cdae1036c789038e007b4cf11baf7e94de3daf1adca52c88fb41f6d2616544",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_event_skeleton_blockade",
+        "command": [
+          "python3",
+          "tools/test_crypto_sqlite.py",
+          "tools/test_event_skeleton_blockade.lua"
+        ],
+        "returncode": 0,
+        "seconds": 107.363,
+        "stdout_sha256": "701b2088dba21c5c89e8ff53c8cc120c58517a9240ff5e33bb472f26c2efce4e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_event_skeleton_lifecycle",
+        "command": [
+          "python3",
+          "tools/test_crypto_sqlite.py",
+          "tools/test_event_skeleton_lifecycle.lua"
+        ],
+        "returncode": 0,
+        "seconds": 3.42,
+        "stdout_sha256": "513a2363160ec790354cfd4df13986f84a84ecfd98ab6db5aa1bc42183538e12",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_event_bribe_payment",
+        "command": [
+          "python3",
+          "tools/test_crypto_sqlite.py",
+          "tools/test_event_bribe_payment.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.91,
+        "stdout_sha256": "076b6cf7f6b731d3fb0a6c4659bacabe95e802e851027a4c576a7ca9f0af9b6e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_event_quiz_generation",
+        "command": [
+          "python3",
+          "tools/test_crypto_sqlite.py",
+          "tools/test_event_quiz_generation.lua"
+        ],
+        "returncode": 0,
+        "seconds": 15.313,
+        "stdout_sha256": "2259fadf06f1b753863da8c586482292154f70631a6c4364b20ca7e6507619f1",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_checkpoint_d_core_feats",
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_checkpoint_d_core_feats.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.068,
+        "stdout_sha256": "f84fbf0b0886b44210ef1968c491ae49057580c819edcdf6d5c3b24f2e545251",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "test_event_expansion_generation",
+        "command": [
+          "python3",
+          "tools/test_crypto_sqlite.py",
+          "tools/test_event_expansion_generation.lua"
+        ],
+        "returncode": 0,
+        "seconds": 35.619,
+        "stdout_sha256": "14bc6e82b0f962b2200f7575e9c04131ee2669d65c90a508dbb1a6a3d861f384",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "population_manifest": {
+    "returncode": 0,
+    "sources": 118
+  },
+  "lua54_syntax": {
+    "returncode": 0,
+    "files": 927
+  },
+  "production_luajit_compile": {
+    "returncode": 0,
+    "files": 1
+  },
+  "negative_controls": {
+    "original_sha256": "7981b5200ebc1e8f7f7438671733b1c2d58281a55dea7c108dbc76d9c2dd5701",
+    "checks": [
+      {
+        "name": "original",
+        "returncode": 1,
+        "expected_failure": "BUG015: a clear native generated deck must admit a standing landing when rays miss"
+      },
+      {
+        "name": "charge-ray",
+        "returncode": 1,
+        "expected_failure": "BUG015: native generated deck must support all five charge points when rays miss"
+      },
+      {
+        "name": "wide-corners",
+        "returncode": 1,
+        "expected_failure": "Native landing rejects corner-hole"
+      }
+    ]
+  },
+  "extra_historical_failure": {
+    "kind": "Extra historical test baseline comparison",
+    "candidate": "tools/test_event_bribe_blockade.lua",
+    "candidate_returncode": 1,
+    "original14_returncode": 1,
+    "exact_original14_reproduces_same_failure": true,
+    "failure": "Production build failed for seed 11: event placement exhausted: bribe_blockade: shortcut endpoints unreachable",
+    "current_336_suite_registry_contains_test": false,
+    "current_authored_catalog_contains_bribe_blockade": false,
+    "qualification": "Retired historical mixed-catalog harness failure is unchanged before/after BUG015; retained separately, not hidden as a pass."
+  },
+  "retirement_authority": {
+    "live_gdd_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "tab": "05 \u2014 CORE LOOP & WORLD",
+    "rule": "LOD-EVENT-BRIBE-001",
+    "tab_id": "t.8p7v8fnmr641",
+    "indices": [
+      181060,
+      181948
+    ],
+    "meaning": "Bribe removed from startup, selection and developer previews; dormant rollback implementation cannot be re-enabled without new author decision."
+  },
+  "initial_runner_errors": "Crypto-backed event fixtures were first called with plain Lua runner; retained initial logs are tester setup failures, not gameplay failures. Correct native Crypto/SQLite runner results appear above.",
+  "archive": "focused-evidence.tar.xz",
+  "archive_sha256": "b432be01e35d5e03020e7a2821d1829c66ba4855b3b6ad1f440d748d9ffc3d55",
+  "qualification": "No full336-suite local run or repaired native gameplay acceptance inferred. Exact original14 and both targeted unsafe mutants fail intended behavioral assertions. Pre-repair native proof is separately retained by BUG015 record; final candidate needs fresh source-matched native recheck."
+}

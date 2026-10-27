@@ -53,6 +53,15 @@ local function floorHit(trace)
         and ent.LODGeneratedGeometry and ent:GetBoxKind()==1
 end
 
+-- Generated SOLID_BBOX floors can support native bodies while ray traces miss
+-- them. Match the accepted Sentry feet probe: vertical extent selects the hull
+-- collision path without widening a footprint sample across a ledge or hole.
+local footMins,footMaxs=Vector(0,0,0),Vector(0,0,1)
+local function footSupport(foot,filter)
+    return util.TraceHull({start=foot,endpos=foot-Vector(0,0,16),
+        mins=footMins,maxs=footMaxs,mask=MASK_PLAYERSOLID,filter=filter})
+end
+
 -- Continuous ground travel uses the same exact cells/generated-floor authority
 -- as relocation, but may cross unlocked horizontal cell boundaries.
 function T:ChargeSupport(ply,graph,pos,previous,filter)
@@ -72,7 +81,7 @@ function T:ChargeSupport(ply,graph,pos,previous,filter)
         if from~=cell and (from.z~=cell.z or not (from.neighbors or {})[key(cell)]
             or not N:CanTraverse(graph,key(from),key(cell))) then return nil end
         local foot=Vector(point.x,point.y,center.z+8)
-        local tr=util.TraceLine({start=foot,endpos=foot-Vector(0,0,16),mask=MASK_PLAYERSOLID,filter=filter or ply})
+        local tr=footSupport(foot,filter or ply)
         if not floorHit(tr) or math.abs(tr.HitPos.z-center.z)>2 then return nil end
         for _,z in ipairs({4,maxs.z*.5}) do
             if bit.band(util.PointContents(point+Vector(0,0,z)),bit.bor(CONTENTS_SLIME,CONTENTS_WATER))~=0 then return nil end
@@ -146,11 +155,11 @@ function T:Landing(ply,graph,cell,pos)
     local dest=Vector(pos.x,pos.y,floor.HitPos.z-mins.z+2)
     local hull=util.TraceHull({start=dest,endpos=dest,mins=mins,maxs=maxs,mask=MASK_PLAYERSOLID,filter=ply})
     if hull.Hit or hull.StartSolid or hull.AllSolid then return nil end
-    -- All footprint corners need canonical support. A center ray alone admits
+    -- All footprint corners need canonical support. A center probe alone admits
     -- ledges, stair cutouts and partial floors beneath a large Hero.
     for _,x in ipairs({mins.x,maxs.x}) do for _,y in ipairs({mins.y,maxs.y}) do
         local foot=Vector(dest.x+x,dest.y+y,center.z+8)
-        local tr=util.TraceLine({start=foot,endpos=foot-Vector(0,0,16),mask=MASK_PLAYERSOLID,filter=ply})
+        local tr=footSupport(foot,ply)
         if not floorHit(tr) or math.abs(tr.HitPos.z-floor.HitPos.z)>2 then return nil end
     end end
     for _,offset in ipairs({Vector(0,0,4),Vector(0,0,maxs.z*.5)}) do
