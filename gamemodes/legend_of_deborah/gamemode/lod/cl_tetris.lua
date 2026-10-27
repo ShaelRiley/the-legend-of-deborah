@@ -150,13 +150,15 @@ function Client:ContextAction()
         if remaining <= 0 then sendDeathAction(DEATH_ACTION_RESPAWN) end
     elseif remaining > 0 then
         sendDeathAction(DEATH_ACTION_ENTER_TETRIS)
+    else
+        return self:RequestRespawn()
     end
     return true
 end
 
 -- Production F has one contextual meaning during death:
 --   mandatory wait running + no Tetris -> pay respects / enter Tetris
---   Tetris active + mandatory wait complete -> respawn
+--   mandatory wait complete, with or without Tetris -> respawn
 hook.Add("Think", "LOD_DeathTetrisFInput", function()
     local down = input.IsKeyDown(KEY_F)
     if down and not fWasDown and not gui.IsGameUIVisible() and not IsValid(vgui.GetKeyboardFocus()) then

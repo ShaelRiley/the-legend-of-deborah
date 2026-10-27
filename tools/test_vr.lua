@@ -106,6 +106,10 @@ death.gameOver=true;before=#messages;stick(0,0);stick(0,-1);assert(#messages==be
 death.gameOver=false;ply.remaining=0
 vrInput("boolean_use",true);assert(messages[#messages].value==2,"active Tetris uses contextual respawn")
 death.active=false;before=#messages
+vrInput("boolean_use",true)
+local vrPlainRespawnAccepted=#messages==before+1 and messages[#messages].name=="LOD_DeathTetrisAction"
+    and messages[#messages].value==2
+before=#messages
 vrInput("boolean_primaryfire",true);assert(#messages==before+1 and messages[#messages].value==2)
 ply.eliminated=true;before=#messages;vrInput("boolean_use",true);vrInput("boolean_primaryfire",true)
 assert(#messages==before,"eliminated Hero cannot respawn")
@@ -166,12 +170,44 @@ g_VR.active=true;commands.lod_vr_start();assert(loaded==2);g_VR.active=false
 
 -- The exposed action seam preserves ordinary desktop binds and F semantics.
 ply.alive=false;ply.remaining=0;victory.active=false
+before=#messages
 hooks.PlayerBindPress.LOD_DeathPlainRespawnInput(ply,"+attack",true)
-assert(messages[#messages].name=="LOD_DeathTetrisAction" and messages[#messages].value==2)
+assert(#messages==before+1 and messages[#messages].name=="LOD_DeathTetrisAction" and messages[#messages].value==2)
 ply.remaining=20;before=#messages
 hooks.PlayerBindPress.LOD_DeathPlainRespawnInput(ply,"+attack",true);assert(#messages==before)
-input.IsKeyDown=function() return true end
-hooks.Think.LOD_DeathTetrisFInput();assert(messages[#messages].value==1)
+local fDown=false
+input.IsKeyDown=function() return fDown end
+local function fFrame(down) fDown=down;hooks.Think.LOD_DeathTetrisFInput() end
+local function pressF() fFrame(false);fFrame(true) end
+pressF()
+assert(#messages==before+1 and messages[#messages].value==1,"early F retains optional Tetris admission")
+ply.remaining=0;before=#messages
+fFrame(true);assert(#messages==before,"held F cannot act merely because the lockout expired")
+pressF()
+assert(#messages==before+1 and messages[#messages].name=="LOD_DeathTetrisAction"
+    and messages[#messages].value==2 and messages[#messages].bits==2,
+    "fresh F after lockout must request ordinary respawn without entering Tetris")
+assert(vrPlainRespawnAccepted,
+    "contextual VR Use must retain the same post-lockout respawn action as desktop F without Tetris")
+before=#messages;fFrame(true);assert(#messages==before,"held F cannot repeat a respawn request")
+for _,case in ipairs({{"alive",true},{"eliminated",true},{"played",false},{"interactive",false},{"valid",false}}) do
+    local prior=ply[case[1]];ply[case[1]]=case[2];before=#messages
+    pressF();assert(#messages==before,"F must retain authoritative death eligibility guard: "..case[1])
+    ply[case[1]]=prior
+end
+covered=true;before=#messages
+pressF();assert(#messages==before,"game UI focus blocks F death action")
+covered=false;fFrame(true);assert(#messages==before,"closing game UI while F is held cannot respawn")
+local keyboardFocus={valid=true}
+vgui.GetKeyboardFocus=function() return keyboardFocus end
+pressF();assert(#messages==before,"text input focus blocks F death action")
+keyboardFocus=nil;fFrame(true);assert(#messages==before,"releasing text focus cannot synthesize an F press")
+pressF();assert(#messages==before+1 and messages[#messages].value==2)
+death.active=true;ply.remaining=20;before=#messages
+pressF();assert(#messages==before,"F cannot bypass the Tetris mandatory lockout")
+ply.remaining=0;pressF()
+assert(#messages==before+1 and messages[#messages].value==2,"F retains active-Tetris respawn after lockout")
+death.active=false
 
 -- Server detection/policy neither requires the addon nor affects non-VR clients.
 CLIENT=false;SERVER=true;dofile(root.."sh_vr.lua")
@@ -193,4 +229,4 @@ hooks.InitPostEntity.LOD_VRServerStartup();assert(not serverReady)
 missingContent=nil;vrmod.GetHMDPose=nil
 assert(not LOD.VR:ServerReady(),'a pooled join string alone does not prove loaded server runtime')
 vrmod=nil;assert(not LOD.VR:IsActive(ply))
-print("PASS VR: server readiness/assets, client start guards, HUD, menus, controller Tetris, life guards and desktop regressions")
+print("PASS VR: server readiness/assets, client start guards, HUD, menus, controller Tetris, life guards and desktop F/left-click respawn regressions")
