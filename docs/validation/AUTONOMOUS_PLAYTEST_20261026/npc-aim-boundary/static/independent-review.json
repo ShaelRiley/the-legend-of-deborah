@@ -1,0 +1,35 @@
+{
+  "kind": "independent BUG017 bounded repair review",
+  "reviewer": "/root/ci16_finalize",
+  "utc": "2026-10-27T21:45:22.973677+00:00",
+  "production_sha256": "db9ad30b329aac69dd27ed262085e9d080b5b7c54bf4876c089b89a435384f60",
+  "test_sha256": "7561d664163a8c54af9f2721127ffe5b140321085e53d71b6b0859112ed2b38e",
+  "finding": "No actionable finding in the two-line guard repair or focused regression extension.",
+  "reasoning": [
+    "Shared base RollPlayerWeapon is invoked before player-only Aim decoration, so a valid NPC retains its produced contract unchanged.",
+    "EntityFireBullets cleanup is global; guarding valid player subjects preserves its actual player Magnum deferred cleanup and skips NPCs without Player:GetActiveWeapon.",
+    "The real FallenHeroes FireWeapon path still seals owner snapshots, consumes finite copied ammo, runs shared damage/shotgun/burst authorities and dispatches native fire. No mechanics/assertions were removed.",
+    "Updated fixture now loads actual Magnum/Aim wrappers in production order and removes synthetic Player:GetActiveWeapon from all created hostile bodies, exposing the native API boundary.",
+    "Independent player positives exercise Pistol Aim commit and actual deferred Magnum marker removal, so an unconditional early return would fail."
+  ],
+  "independently_executed": {
+    "Lua5.4_strengthened_FallenHeroes": "pass",
+    "LuaJIT_strengthened_FallenHeroes": "pass",
+    "production_and_test_syntax": "pass",
+    "diff_check": "pass",
+    "frozen_source16_original_equality": "pass",
+    "original_negative": "expected nil GetActiveWeapon at271; rc1",
+    "roll_guard_only_negative": "expected independent cleanup nil GetActiveWeapon at323; rc1"
+  },
+  "review_negative_files": [
+    "review-original.lua",
+    "review-original.stdout",
+    "review-original.stderr",
+    "review-first-guard-only.lua",
+    "review-first-guard-only.stdout",
+    "review-first-guard-only.stderr",
+    "review-first-guard-only.lua.txt"
+  ],
+  "native_repaired_acceptance": false,
+  "remaining_native_gate": "Fresh installed repaired source: observe actual FallenHero copied ranged attack and successful damage/ammo accounting without either271 or323 error, then check ordinary player aim/native fire remains operational. Static fixture does not prove visual/audio/native timing."
+}

@@ -42,6 +42,11 @@ dofile(root..'sv_combat_rolls.lua')
 dofile(root..'sv_combat_feed_semantics.lua')
 dofile(root..'sv_magic.lua')
 dofile(root..'sv_player_weapon_specials.lua')
+local previousInclude=include
+include=function(name) return dofile(root..name) end
+dofile(root..'sv_magnum_super_explosive.lua')
+dofile(root..'sv_magnum_aim_state.lua')
+include=previousInclude
 dofile(root..'sv_skeleton_hero.lua')
 dofile(root..'sv_faction_manager.lua')
 dofile(root..'sv_fallen_heroes.lua')
@@ -86,6 +91,9 @@ local nativeCreated=0
 ents={Create=function(class)
  assert(class=='lod_hostile');nativeCreated=nativeCreated+1
  local e=env.actor('bones'..nativeCreated,true)
+ -- A native NextBot does not inherit Player:GetActiveWeapon. Exercise the
+ -- complete production roll wrappers and global native-fire cleanup hook.
+ e.GetActiveWeapon=nil
  e.SetPos=function(self,v) self.pos=v end;e.GetPos=function(self) return self.pos end
  e.WorldSpaceCenter=function(self) return self:GetPos()+Vector(0,0,36) end
  e.GetForward=function() return Vector(1,0,0) end
@@ -96,6 +104,7 @@ ents={Create=function(class)
  e._RefreshRoute=noop;e._AdvanceWaypoint=function() end;e._HasLineOfSight=function() return true end
  e.loco={FaceTowards=noop}
  e.FireBullets=function(self,data)
+  env.hooks.LOD_MagnumAimState_TriggerMarkerCleanup(self)
   self.lastBullet=data
   for _=1,data.Num do data.Callback(self,{Entity=target,HitPos=target:WorldSpaceCenter()},DamageInfo()) end
  end
@@ -230,6 +239,23 @@ assert(s.weapons.weapon_ar2.clip==0 and s.burst.remaining>=3,'Soldier lost its a
 local summon=env.actor('summon',false);summon.LODSummonedSeeker=true;summon.LODCaster=bones
 assert(LOD.FactionManager:IsEnemyCombatant(summon) and LOD.FactionManager:IsOpponent(summon,target))
 F:Cleanup();p.LODHumanSoldierProgressionState=nil;p.soldier=false
+-- The player-only Aim decoration and deferred marker cleanup still run for
+-- real player boundaries; the NPC guard must not disable either authority.
+local aimer=env.actor('aim-player')
+local aimedWeapon=aimer:Give('weapon_pistol');aimer.activeClass='weapon_pistol'
+local Aim=LOD.UniversalAim
+Aim.States[aimer]={weapon=aimedWeapon,weaponClass='weapon_pistol',armed=true,multiplier=2}
+local aimed=assert(LOD.CombatRolls:RollPlayerWeapon(aimer,'weapon_pistol'))
+assert(aimed.aimState and aimed.aimMultiplier==2 and not Aim.States[aimer].armed,
+ 'Player Aim no longer commits through the shared roll wrapper')
+local magnum=aimer:Give('weapon_357');aimer.activeClass='weapon_357'
+magnum.LODMagnumAimConsumedMultiplier=2
+local pending=#env.timers
+env.hooks.LOD_MagnumAimState_TriggerMarkerCleanup(aimer)
+assert(#env.timers==pending+1 and magnum.LODMagnumAimConsumedMultiplier==2,
+ 'Player Magnum marker did not schedule deferred cleanup')
+table.remove(env.timers)()
+assert(magnum.LODMagnumAimConsumedMultiplier==nil,'Player Magnum marker survived cleanup')
 -- Staging and completed worlds cannot create a combat body.
 p.staging=true;assert(not F:Capture(p,p.ps));p.staging=false
 Run.State.LevelCleared=true;assert(not F:Capture(p,p.ps));Run.State.LevelCleared=false

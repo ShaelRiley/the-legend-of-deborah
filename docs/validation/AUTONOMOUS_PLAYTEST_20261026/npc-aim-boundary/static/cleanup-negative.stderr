@@ -1,0 +1,1 @@
+/home/deck/Downloads/the-legend-of-deborah/tools/test_fallen_heroes.lua: ...s/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua:323: attempt to call a nil value (method 'GetActiveWeapon')

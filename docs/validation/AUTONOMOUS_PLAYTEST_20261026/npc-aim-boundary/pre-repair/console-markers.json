@@ -1,0 +1,19 @@
+{
+  "uncompressed_sha256": "69a3a62e3d92983247ad76071664441b7f5b3b0b36d5346e24538db3147cadb4",
+  "uncompressed_bytes": 196395,
+  "line_count": 362,
+  "markers": [
+    {
+      "line": 270,
+      "text": "> local r=LOD.RunManager local p=player.GetHumans()[1] local a=LOD.SafeTeleport:CellAt(r.State.Graph,p:GetPos()) local z=r:GetObjectiveGraphTarget() print(\"ROUTE16\",a and a.x,z)..."
+    },
+    {
+      "line": 272,
+      "text": "[ERROR] lua_run:1: attempt to call method 'GetObjectiveGraphTarget' (a nil value)"
+    },
+    {
+      "line": 352,
+      "text": "NextBot [85][lod_hostile] Error: addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua:271: attempt to call method 'GetActiveWeapon' (a nil value)"
+    }
+  ]
+}

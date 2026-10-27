@@ -1,0 +1,75 @@
+{
+  "files": {
+    "pre-repair/console.log.xz": {
+      "sha256": "fc5dc64e7449752c9e9c8c4233c342f69aed02fc911881f51b0ff536f57746f7",
+      "bytes": 8640,
+      "origin": ".build/autonomous-playtest-20261027/source16-native/first-nextbot-error-console.txt"
+    },
+    "pre-repair/console-markers.json": {
+      "sha256": "968bac85833b3a4dda6d7defed689b0b267c6665d67a17c80f68964dae2dfc72",
+      "bytes": 768,
+      "origin": "Exact selected lines from frozen original console"
+    },
+    "pre-repair/nextbot-error-native.png": {
+      "sha256": "8dd6ecb4b189426e2d57235e95f15e919664028e04baf26369285a77ae033cf6",
+      "bytes": 411091,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793137201655966323-source16-redcard-gate-route-console.png"
+    },
+    "pre-repair/nextbot-error-console.png": {
+      "sha256": "4d8dd89d24a7e1e8900dfbcb0c4f2b3a9fad800313d6d6087c5a704232885c59",
+      "bytes": 401963,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793137244025001870-source16-nextbot-error-console.png"
+    },
+    "pre-repair/original-sv_magnum_aim_state.lua.txt": {
+      "sha256": "05d054534e98b8042cb1b1449f49b55a41285d4c6f914a8eb88d91ab51c0b4b8",
+      "bytes": 14669,
+      "origin": ".build/autonomous-playtest-20261027/bug017-npc-aim/original-sv_magnum_aim_state.lua.txt"
+    },
+    "static/original-negative.json": {
+      "sha256": "8479e6cb0696040338f88372635b4cc96ae2c4aa95c236fb0c06fb9ebfc3f5ca",
+      "bytes": 353,
+      "origin": ".build/autonomous-playtest-20261027/bug017-npc-aim/original-negative.json"
+    },
+    "static/original-negative.stdout": {
+      "sha256": "704bba5224f040784a29601b1a4cc07c018d5afe8445c4b1d8d8ba66ad166e68",
+      "bytes": 628,
+      "origin": ".build/autonomous-playtest-20261027/bug017-npc-aim/original-negative.stdout"
+    },
+    "static/original-negative.stderr": {
+      "sha256": "fc516307d70a4f3efad77809224dc4420a088f412d3f806206bf38ec4b172e63",
+      "bytes": 193,
+      "origin": ".build/autonomous-playtest-20261027/bug017-npc-aim/original-negative.stderr"
+    },
+    "static/cleanup-negative.json": {
+      "sha256": "26dd57955ff53c7452aab2e06efc25d45426e87cbddd45c92ee82f97c186415d",
+      "bytes": 260,
+      "origin": ".build/autonomous-playtest-20261027/bug017-npc-aim/cleanup-negative.json"
+    },
+    "static/cleanup-negative.stdout": {
+      "sha256": "704bba5224f040784a29601b1a4cc07c018d5afe8445c4b1d8d8ba66ad166e68",
+      "bytes": 628,
+      "origin": ".build/autonomous-playtest-20261027/bug017-npc-aim/cleanup-negative.stdout"
+    },
+    "static/cleanup-negative.stderr": {
+      "sha256": "b3ae346b2a71153b18b8c15cd0d56f750f0547f823fc132e21ea62886ef2ba05",
+      "bytes": 193,
+      "origin": ".build/autonomous-playtest-20261027/bug017-npc-aim/cleanup-negative.stderr"
+    },
+    "static/targeted-gates.json": {
+      "sha256": "3bac105ed4af22b4381a4db09ce5128f0040168c549a49423ad88b2617474848",
+      "bytes": 5621,
+      "origin": ".build/autonomous-playtest-20261027/bug017-npc-aim/targeted-gates.json"
+    },
+    "static/independent-review.json": {
+      "sha256": "856f17252bd4ff727a924bceb8c78d9df09cd49cf834f06037a434d791364872",
+      "bytes": 2325,
+      "origin": ".build/autonomous-playtest-20261027/bug017-npc-aim/independent-review.json"
+    },
+    "static/targeted-output.json.xz": {
+      "sha256": "e5d26ac8da75c55ccb5d272911c2ec74f1e29ff8a5bdf9df4ad1edcb6a65dfec",
+      "bytes": 13080,
+      "origin": "Exact text/digests of targeted and review subprocess logs, packaged for bounded repository evidence"
+    }
+  },
+  "qualification": "Exact raw failure files and headless/reviewer outputs; no private cfg, database, prefix or credentials copied. NPC Lua is archived as txt and is not executable production source."
+}

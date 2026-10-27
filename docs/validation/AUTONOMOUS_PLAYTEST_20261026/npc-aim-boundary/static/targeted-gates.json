@@ -1,0 +1,164 @@
+{
+  "kind": "targeted_static_regressions_not_native",
+  "lua_files": 927,
+  "gates": [
+    {
+      "name": "test_fallen_heroes.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_fallen_heroes.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.4514870909988531,
+      "stdout_sha256": "8ed3c08e6868f585aa300a54e9f91ee73febd5495a33685d88c0877f676ffdd2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_deadeye_stabilization.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_deadeye_stabilization.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.08161117499548709,
+      "stdout_sha256": "6088b1ded69731a47fbc83b31a2de184fc5e0c4d858d0b6fd09f6f3c8dd0c8bd",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_spot16_soldier_rifle.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_spot16_soldier_rifle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.6596778879975318,
+      "stdout_sha256": "e5ffbe86fb53945eb92ccf8d3a0de3a4679bb5de4a8edf22088c530c86279d73",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_burst_authority_cleanup.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_burst_authority_cleanup.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07970385400403757,
+      "stdout_sha256": "bcd874b1a73a388ac468f2e8c4d5996fbec35d897148123de24f0a799af49f19",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_shotgun_native_path.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_shotgun_native_path.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.1458893570015789,
+      "stdout_sha256": "192698257aff499c5aff9098c5579c5744567da395137fa28d888a431827938a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_skeleton_hero.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_skeleton_hero.lua"
+      ],
+      "returncode": 0,
+      "seconds": 1.9364940430023125,
+      "stdout_sha256": "a24b393a2ddc5610bf80f54288e16de2ae0be8551c75432bb90b81307a45c91c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_shared_damage_lifetime.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_shared_damage_lifetime.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.15381433799484512,
+      "stdout_sha256": "fe793af7861caa803901b3a1de11e2f1f6a55f42ed40250d208cb147bbd288e4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_hostile_death_handoff.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_hostile_death_handoff.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.0723407830009819,
+      "stdout_sha256": "cd17fd07acc4558877af892b47c304e24ba316af416bbd4b6ab303567255b156",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_skeleton_animation.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_skeleton_animation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.0896024559988291,
+      "stdout_sha256": "47a6423bf8bfb2c882c430973fe378e3905cc6820b5c6a4e7c80d3f9860ef11d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "test_faction_damage.lua",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_faction_damage.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.07727812400116818,
+      "stdout_sha256": "c9766f7b3cc59f99b4c014279f9e06877b847fb831d57e3734880d6ad94c823d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "population_manifest",
+      "command": [
+        "python3",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.6618933569989167,
+      "stdout_sha256": "712c5e0fbcffd616d87d9159bc1a728ebaf8b34e74db58c05781116cf258e64a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "all_lua_syntax",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "<927 Lua files>"
+      ],
+      "returncode": 0,
+      "seconds": 0.5470728670043172,
+      "stdout_sha256": "243684ad346bf63f9256b7caaa27e64224a39ecd7bb0e985830005f521ab59ef",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "production_luajit",
+      "command": [
+        "luajit",
+        "-b",
+        "gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua",
+        ".build/autonomous-playtest-20261027/bug017-npc-aim/magnum-aim.luac"
+      ],
+      "returncode": 0,
+      "seconds": 0.003172140000970103,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "passed": true
+}

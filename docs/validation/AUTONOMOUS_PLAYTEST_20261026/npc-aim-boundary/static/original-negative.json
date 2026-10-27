@@ -1,0 +1,7 @@
+{
+  "returncode": 1,
+  "source_sha256": "05d054534e98b8042cb1b1449f49b55a41285d4c6f914a8eb88d91ab51c0b4b8",
+  "test_sha256": "7561d664163a8c54af9f2721127ffe5b140321085e53d71b6b0859112ed2b38e",
+  "expected_failure": "Production wrapper GetActiveWeapon on actual NPC boundary without player method",
+  "captured_utc": "2026-10-27T21:43:55.081964+00:00"
+}

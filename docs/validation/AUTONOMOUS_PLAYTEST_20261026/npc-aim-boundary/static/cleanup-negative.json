@@ -1,0 +1,5 @@
+{
+  "returncode": 1,
+  "source_sha256": "6a3e08e940087aef503ea5fb1895df56f9fc59a02a6fd0494769131553847951",
+  "expected_failure": "After guarding the roll wrapper, actual NPC native-fire cleanup hook independently hits same invalid player-only access at323"
+}

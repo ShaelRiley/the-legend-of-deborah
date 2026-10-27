@@ -268,7 +268,7 @@ if not Rolls.LODMagnumAimDamageInstalled then
         local contract = baseRollPlayerWeapon(self, ply, weaponClass, attackEvent)
         if not contract then return contract end
 
-        local weapon = IsValid(ply) and ply:GetActiveWeapon() or nil
+        local weapon = IsValid(ply) and ply:IsPlayer() and ply:GetActiveWeapon() or nil
         if not IsValid(weapon) or weapon:GetClass() ~= weaponClass then return contract end
 
         local multiplier = 1
@@ -320,7 +320,7 @@ end
 -- Magnum snapshots Aim directly in its canonical burst commit.
 
 hook.Add("EntityFireBullets", "LOD_MagnumAimState_TriggerMarkerCleanup", function(shooter)
-    local weapon = IsValid(shooter) and shooter:GetActiveWeapon() or nil
+    local weapon = IsValid(shooter) and shooter:IsPlayer() and shooter:GetActiveWeapon() or nil
     if not IsValid(weapon) or weapon:GetClass() ~= "weapon_357"
         or not weapon.LODMagnumAimConsumedMultiplier
     then

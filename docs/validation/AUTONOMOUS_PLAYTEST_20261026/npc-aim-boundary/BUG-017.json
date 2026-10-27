@@ -1,0 +1,99 @@
+{
+  "id": "BUG-017",
+  "recorded_utc": "2026-10-27T21:46:25.144623+00:00",
+  "title": "Player Aim wrapper calls Player:GetActiveWeapon on a Fallen Hero NextBot",
+  "status": "Confirmed native defect; smallest shared repair and strengthened regression pass static gates and independent review. Fresh repaired native acceptance remains pending.",
+  "severity": "Major autonomous-enemy combat coroutine failure. The native NextBot reports an exception; independent fallen-enemy attacks can cease. No whole-client crash, guaranteed progression block or universal NPC failure is claimed.",
+  "baseline": {
+    "native_prepared_commit": "2fcea7259728cef381e447395d93335f6df85382",
+    "gameplay_source_commit": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
+    "main_before_repair": "1dbe266c2c39c48b2e284fdc54942d7a6235fec7",
+    "source": "gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua",
+    "source_sha256": "05d054534e98b8042cb1b1449f49b55a41285d4c6f914a8eb88d91ab51c0b4b8",
+    "native_source_identity": "../stale-life-binding/native-repaired/prepared-provenance.json and production-manifest.json; root kept the same verified source16 client running unchanged."
+  },
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+    "client": "Windows x86 Garrys Mod2026.09.17 / LuaJIT2.0.4 / Proton10",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "layout_seed": 1967490589,
+    "campaign_epoch": 1,
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true,
+    "qualification": "The source16 session included ordinary native Fighter/FrugalCartography/starter/deployment, actual deaths/fallen copies and a StrengthPress preview regeneration. This failure occurred during ordinary walking toward the actual Redcard. No enemy weapon attack was injected at the time. The preview and diagnostics prevent a production-default campaign-pass claim."
+  },
+  "design": {
+    "identity": "https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": [
+      "00 \u2014 AI ENTRYPOINT",
+      "01 \u2014 AI RULE INDEX",
+      "03 \u2014 COMBAT, MAGIC & STATUS"
+    ],
+    "rules": [
+      {
+        "id": "LOD-CBT-001",
+        "location": "03, indexes58750-59069",
+        "requirement": "Extend the single authoritative actor combat-roll pipeline and preserve actor/source attribution. Shared rolls must remain usable by their canonical nonplayer callers."
+      },
+      {
+        "id": "LOD-CBT-007",
+        "location": "03, indexes79295-80286",
+        "requirement": "Preserve direct attack/aim/Backstab multiplier composition and downstream defenses; no combat retuning is part of this repair."
+      }
+    ],
+    "qualification": "No new aim behavior or values were authored. Live03 contains no requirement that a NextBot inherit a Player-only native method. Current wrapper/source call graph is implementation evidence; the GDD is not changed."
+  },
+  "reproduction": [
+    "Run the actual verified source16 private client on gm_flatgrass with the existing native fallen-body population.",
+    "Proceed through ordinary walking toward the actual Redcard after the StrengthPress preview setup.",
+    "Observe native console NextBot[85][lod_hostile] error at sv_magnum_aim_state.lua:271: attempt to call method GetActiveWeapon (a nil value).",
+    "The existing FallenHeroes production ranged path calls shared RollPlayerWeapon for its copied firearm. The Aim decorator invokes a Player-only method after the shared base contract was already produced.",
+    "In the strengthened real production FallenHeroes harness, remove the incorrectly inherited fixture NPC GetActiveWeapon method and load actual Magnum/Aim wrappers. Exact original source fails at the same271 line.",
+    "Guarding only that first access exposes the same invalid assumption at323 in the global native EntityFireBullets marker-cleanup hook, reached by FallenHeroes FireWeapon. This adjacent failure is statically reproduced, not a second native observation."
+  ],
+  "expected": "Independent fallen actors retain canonical copied firearm contracts and execute native fire without Player-only API calls. Real players keep existing armed Aim consumption, burst behavior and deferred Magnum marker cleanup.",
+  "actual": {
+    "native_error": "NextBot [85][lod_hostile] Error: addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua:271: attempt to call method GetActiveWeapon (a nil value)",
+    "frozen_console_line": 352,
+    "source_path": "FallenHeroes:FireWeapon \u2192 CombatRolls:RollPlayerWeapon shared base \u2192 universal player-Aim decoration \u2192 invalid GetActiveWeapon access",
+    "coroutine_body_identity_limit": "The exact historical identity/profile of NextBot85 was not captured at exception time. FallenHeroes is the current canonical nonplayer caller found in source.",
+    "unrelated_diagnostic_error": "Earlier lua_run GetObjectiveGraphTarget called the wrong API and raised its own nil-method error. Root owns that diagnostic error; it is preserved separately and is not another game defect. Server lua_errors rises1\u21922 around the NextBot exception; no claim that both are game bugs."
+  },
+  "repair": {
+    "source_sha256": "db9ad30b329aac69dd27ed262085e9d080b5b7c54bf4876c089b89a435384f60",
+    "source_crc32": 966710964,
+    "implementation": "Add an IsPlayer guard before the two GetActiveWeapon accesses in the existing player-Aim decoration and native marker-cleanup hook. The shared base roll still runs once and its NPC contract is returned unchanged. No NPC weapon/equipment method is invented.",
+    "production_lines_changed": 2,
+    "test": "tools/test_fallen_heroes.lua (already registered in full integration matrix)",
+    "test_changes": "Load real Magnum/Aim production wrappers; give NextBots their native absent GetActiveWeapon shape; dispatch real global cleanup hook at FireBullets engine boundary; retain all existing Pistol/Shotgun/AR2/Beam, copied economy, damage and lifecycle assertions; add player armed-Aim commit and deferred Magnum marker-cleanup positives.",
+    "private_installed_source_changed": false
+  },
+  "validation": {
+    "targeted": "static/targeted-gates.json",
+    "passed_gates": 13,
+    "lua_parses": 927,
+    "production_luajit_compile": true,
+    "source_manifest_entries": 118,
+    "original_negative": "static/original-negative.json; exact native source fails271",
+    "adjacent_cleanup_negative": "static/cleanup-negative.json; wrapper-only repair fails323",
+    "independent_review": "static/independent-review.json; clear; independently reran original/hybrid negatives and final Lua5.4/LuaJIT positives",
+    "native_repaired_acceptance": false,
+    "full_combined_ci": "Pending source checkpoint publication and frozen full matrix; targeted passes are not a full-matrix claim."
+  },
+  "evidence": "manifest.json",
+  "next_native_gate": "Freshly install/verify the repaired combined source, restart the actual client, create or encounter an ordinary ranged Fallen Hero, and observe actual copied firearm release/contact over repeated cycles with no attributed Lua error. Verify real-player Aim/fire and adjacent lifecycle behavior; then continue authored exploration.",
+  "limits": [
+    "Native source16 error is confirmed; eventual gameplay consequences beyond the failing enemy coroutine are not directly measured.",
+    "The second cleanup access was independently exposed statically after the first repair; it is not mislabeled as a native screenshot result.",
+    "One real client only; cooperative acceptance remains blocked.",
+    "Fresh repaired native acceptance, authored campaign/endings, three clean varied final passes and full final-candidate review remain open.",
+    "Clean streak stays0. October23 changes,40FPS,Workshop and VPS remain separate deferred scope."
+  ],
+  "clean_pass_streak": 0
+}
