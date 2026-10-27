@@ -8,9 +8,25 @@ p.ps.progressionState=nil
 local character=LOD.Config.Models.Characters[1]
 p.ps.model,p.ps.characterName,p.ps.lives=character.model,character.name,3
 p.LODProgressionState=CPS:InitializeHero(Run,p.ps,character)
+local unselected=CPS:BuildClientSnapshot(p)
+assert(unselected and not unselected.classId)
 assert(CPS:CommitClass(p,'wizard'))
 local offered=CPS:BuildClientSnapshot(p)
 assert(offered and #offered.featDraft.offers==4)
+-- Live GDD 03 LOD-MAG-002: the later Wizard rebalance supersedes the old
+-- 2%-per-Level rule. The real fresh-class snapshot must agree before any feat.
+assert(#p.ps.progressionState.featIds==0)
+assert(math.abs(p.ps.progressionState.derivedStats.wizardClassHpToMagicDiversionFraction-.10)<1e-8)
+assert(math.abs(p.ps.progressionState.derivedStats.hpToMagicDiversionFraction-.10)<1e-8
+    and p.ps.progressionState.derivedStats.manaBarrierFeatDiversionFraction==0)
+assert(offered.classPassive=='Arcane Diversion: 10% of otherwise-final HP damage is diverted to Magic when available.')
+for _,case in ipairs({{1,.10},{2,.125},{16,.475},{17,.50},{20,.50}}) do
+    local state=table.Copy(p.ps.progressionState)
+    state.level=case[1]
+    CPS:_RecomputeProgressionState(state)
+    assert(math.abs(state.derivedStats.wizardClassHpToMagicDiversionFraction-case[2])<1e-8,
+        'Wizard class rule drift at Level '..case[1])
+end
 for _,feat in ipairs(offered.featDraft.offers) do
     assert(feat.effect==CPS:_FindFeat(feat.featId).effectParams.description)
 end
@@ -181,6 +197,37 @@ duplicateNames.featDraft.offers=namesakes
 open(duplicateNames)
 verifyDraft(duplicateNames.featDraft,'CHOOSE FEAT')
 local resolutions={{640,480},{800,600},{980,720},{1024,768},{1280,800},{1920,1080}}
+for _,resolution in ipairs(resolutions) do
+    sw,sh=resolution[1],resolution[2]
+    open(unselected)
+    local wizard=assert(buttons('COMMIT WIZARD')[1],'Wizard class choice missing')
+    local card=wizard.parent
+    local body
+    for _,child in ipairs(card.children) do
+        if child.kind=='DLabel' and child.text:find('Diverts',1,true) then body=child end
+    end
+    assert(body,'Wizard class rule missing from rendered card')
+    for _,law in ipairs({'10%','Level 1','2.5 percentage points','additional Level','50%','Magic remains available'}) do
+        assert(body.text:find(law,1,true),'Wizard class card is missing current rule: '..law)
+    end
+    assert(not body.text:find('2% of',1,true),'Wizard card still teaches the retired class rule')
+    assert(body.wrap,'Wizard class rule must wrap')
+    within(card,card.parent)
+    for i,a in ipairs(card.children) do
+        within(a,card)
+        for j=i+1,#card.children do assert(separated(a,card.children[j]),'Wizard card contents overlap') end
+    end
+    surface.SetFont(wizard.font)
+    assert(surface.GetTextSize(wizard.text)<=wizard.w,'Wizard class button caption is clipped')
+    local count=#requests
+    wizard:DoClick()
+    local sent=requests[#requests]
+    assert(#requests==count+1 and sent.name=='LOD_RPG_ChooseClass' and sent[1]=='wizard' and sent[2]==nil,
+        'Wizard card changed the canonical class-selection request')
+    assert(not wizard:IsEnabled(),'Class choice must disable while awaiting server')
+    open(offered)
+    assert(nodeWithText(offered.classPassive),'Committed Wizard sheet lost the derived Level-1 class rule')
+end
 local seenOne,seenTwo,seenThree=false,false,false
 for _,resolution in ipairs(resolutions) do
     sw,sh=resolution[1],resolution[2]
@@ -248,4 +295,4 @@ Sheet:Open(false);Sheet.Snapshot=fresh;Sheet:Open(false);flushTimers()
 assert(Sheet.Scroll:GetVBar():GetScroll()==0,'Old Hero scroll leaked to a new identity')
 Sheet:Open(false);Sheet:Close();flushTimers()
 assert(Sheet.Frame==nil and Sheet.Scroll==nil)
-print('CHARACTER_SHEET_LAYOUT_PASS: canonical snapshot text; '..#entries..' descriptions at six resolutions; bounded nonoverlapping cards/sections; exact choices; read-only/resolved states; refresh/resize/identity scroll lifecycle')
+print('CHARACTER_SHEET_LAYOUT_PASS: current Wizard class card/scaling/request; canonical snapshot text; '..#entries..' descriptions at six resolutions; bounded nonoverlapping cards/sections; exact choices; read-only/resolved states; refresh/resize/identity scroll lifecycle')

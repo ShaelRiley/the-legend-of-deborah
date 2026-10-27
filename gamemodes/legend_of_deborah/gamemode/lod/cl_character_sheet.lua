@@ -173,7 +173,7 @@ local CLASS_CARDS = {
     },
     wizard = {
         title = "Wizard", subtitle = "INT / WIS | Hero d4",
-        body = "Diverts 2% of otherwise-final HP damage per Level into Magic damage while Magic remains available."
+        body = "Diverts 10% of otherwise-final HP damage into Magic damage at Level 1, adding 2.5 percentage points per additional Level, up to 50%, while Magic remains available."
     }
 }
 
