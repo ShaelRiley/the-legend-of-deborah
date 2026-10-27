@@ -13,7 +13,10 @@ and first-guard-only negatives,13 focused gates,927Lua/LuaJIT and independent
 review pass. Full frozen source17 CI336/336,4147 files,576 production unchanged.
 [Defect](validation/AUTONOMOUS_PLAYTEST_20261026/npc-aim-boundary/BUG-017.json),
 [CI](validation/AUTONOMOUS_PLAYTEST_20261026/ci-source17/verification.json).
-Fresh source17 native acceptance remains pending.
+Finite fresh source17 native acceptance now passes: actual copied357
+fires4times, ammo6→2, one real Hero hit3.3333/HP100→97, no new errors;
+separate ordinary player Aim shot/marker cleanup passes.8s supported setup/return
+is explicitly a fixture. [Native evidence](validation/AUTONOMOUS_PLAYTEST_20261026/npc-aim-boundary/native-repaired/receipt.json).
 
 Source16 finite native BUG016 passes actual death/20s wait/F-respawn: same ps/nil
 legacy equipmentLife, native spawn4→5, stale binding/move rejected without motion,
@@ -35,10 +38,12 @@ Source16 quit normally; owned/unproven/remaining cleanup all clear and personal
 cfg/DB/DATA/save baseline unchanged. Source17 new empty prefix launched from
 prepared94f3 source-equivalent to6ac on actual Valve Jupiter Deck/Windowsx86/
 Proton10,gm_flatgrass1280x800. All576Lua/118physical sources match; six native
-proof guards include AimCRC966710964 and SafeTeleportCRC377454284. Fresh realm
-checks and actual ranged-Fallen release/contact are the next finite gate. Preserve
-real-player Aim/fire and accepted collision/performance behavior, then continue
-ordinary/authored coverage. Health-label occlusion remains credible/trace-pending;
+proof guards include AimCRC966710964 and SafeTeleportCRC377454284. Fresh six-source realm checks and the finite ranged-Fallen/playerAim gate pass.
+Next: exact cached-HUD pickup visibility at the closed Red gate, then a genuinely
+new seed/canonical campaign for varied authored success/failure/progression/replay.
+Preserve accepted collision/performance behavior. Health-label occlusion is now confirmed BUG018 on fresh17: actual HUD target1054
+behind closedgate967, matched client/server eye/target, rays miss while shot/solid
+hulls hit. Native mask/hull characterization and shared NearLook repair are active;
 Blue route ambiguity under active Skeleton blockade remains unconfirmed.
 
 Exact owned-stream capture yielded6.144s PCM under8s lease; no device/routing/

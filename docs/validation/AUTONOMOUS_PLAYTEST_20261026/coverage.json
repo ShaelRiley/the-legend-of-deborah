@@ -284,7 +284,7 @@
       "source": "06 LOD-UI-001 through 010; approved quieter logger amendment",
       "expected": "Menus, direct keys, HUD/log readability, prompts, input and camera modes",
       "scenario": "Rendered desktop input, menu scrolling, bindings, viewport sizes, third person",
-      "result": "Partial native: priorafdcbc Spellbook/CharacterSheet child Escape and next normal pause remain evidenced. Freshd66 ordinary Crowbar/Pistol tooltips wrap completely inside1280x800; settled actual-hover and held physical/UInput Escape close Equipment. Earlier no-settle/XTest anomalies retained as input uncertainty. Short tooltip/other viewports, independent DHTML pixels/focus, rebound/controller/camera/co-op and full UI coverage remain open. Current d66 native incoming combat exposed Backstab subject misattribution and missing hostile kill icons;4322 has shared presentation repairs/static proof, with repaired HUD/log/glyph runtime checks pending. Fresh4322 native shows correct stock bolt kill icon and no attributed warning, while raw #lod_hostile class text exposed BUG014.8a9 adds the generic phrase; repaired native label and actual Backstab HUD/log attribution remain pending. Subsequent source15 finite native BUG012 attacker-prefix and BUG014 Hostile/crossbow/victim label now pass; explicit attack/oneHP fixture qualifications are preserved. Remaining broad UI/controller/camera/co-op coverage stays open.",
+      "result": "Partial native: priorafdcbc Spellbook/CharacterSheet child Escape and next normal pause remain evidenced. Freshd66 ordinary Crowbar/Pistol tooltips wrap completely inside1280x800; settled actual-hover and held physical/UInput Escape close Equipment. Earlier no-settle/XTest anomalies retained as input uncertainty. Short tooltip/other viewports, independent DHTML pixels/focus, rebound/controller/camera/co-op and full UI coverage remain open. Current d66 native incoming combat exposed Backstab subject misattribution and missing hostile kill icons;4322 has shared presentation repairs/static proof, with repaired HUD/log/glyph runtime checks pending. Fresh4322 native shows correct stock bolt kill icon and no attributed warning, while raw #lod_hostile class text exposed BUG014.8a9 adds the generic phrase; repaired native label and actual Backstab HUD/log attribution remain pending. Subsequent source15 finite native BUG012 attacker-prefix and BUG014 Hostile/crossbow/victim label now pass; explicit attack/oneHP fixture qualifications are preserved. Remaining broad UI/controller/camera/co-op coverage stays open. Subsequent source17 confirms Health-label through closed Red gate asBUG018 via exact HUD target and both realm frozen rays; repair investigation active.",
       "evidence": [
         "popup-escape/native-afdcbc/receipt.json",
         "popup-escape/native-afdcbc/deborah-afdcbc-escape-closed.png",
@@ -443,10 +443,21 @@
       "source": "03 LOD-CBT-001 shared actor combat pipeline and active Fallen Hero rules",
       "expected": "Copied NPC firearms use canonical rolls and native fire without player-only method errors; real player Aim/cleanup stays correct",
       "scenario": "Fresh combined source, actual ranged Fallen Hero release/contact through multiple cycles; real player armedAim/nativefire and lifecycle",
-      "result": "NativeBUG017 confirmed on source16; repaired6ac, exact negative and13/full336static independent pass; repaired native pending",
+      "result": "Finite fresh source17 pass: actual owned ranged Fallen NextBot without GetActiveWeapon emits4native357fires, copiedammo6\u21922,1realHerohit3.3333/HP100\u219297,noNewErrors; separate ordinaryplayerAimFire/cleanup passes.8s supportedsetup/return explicitlyfixture, broad NPC/ordinarycampaign/co-op remainopen.",
       "evidence": [
         "npc-aim-boundary/BUG-017.json",
-        "ci-source17/verification.json"
+        "ci-source17/verification.json",
+        "npc-aim-boundary/native-repaired/receipt.json"
+      ]
+    },
+    {
+      "id": "REG-PICKUP-SIGHT",
+      "source": "06 LOD-UI-009 and LOD-UI-010 visible-drop near-look/no-through-wall reveal",
+      "expected": "Only actually visible pickups show full near-look names; closed visible gates and walls occlude without hiding legitimate visible drops",
+      "scenario": "Exact renderedHealth/HUDcachedtarget, frozenclient/serverrays andgatebounds/state; repairedclosed/open/besidegate/ordinaryvisible controls",
+      "result": "Confirmed BUG018 native: pickup1054behindclosedgate967 selected/drawn, bothrealmsidenticaltarget/eye, ordinaryvisibilityray misses;SHOTHullblocks. Native/repair acceptancepending.",
+      "evidence": [
+        "loot-label-occlusion/observation.json"
       ]
     }
   ],
@@ -555,7 +566,12 @@
     {
       "id": "BUG-017",
       "record": "npc-aim-boundary/BUG-017.json",
-      "status": "Confirmed native Fallen ranged NPC Aim wrapper exception; repaired6ac with two player-only guards;13/full336/independent pass; fresh native pending"
+      "status": "Repaired6ac,13/full336static and independent clear; native4actualNPCfires/1realhit +separate playerAim/cleanup pass"
+    },
+    {
+      "id": "BUG-018",
+      "record": "loot-label-occlusion/BUG-018.json",
+      "status": "Confirmed source17 exactcachedHUDHealth1054 behindclosedRedgate967; client/serverraysmiss whileSHOTHullhitsgate; canonicalvisibilityrepairinvestigation active"
     }
   ],
   "static_fixture_checkpoint": {
@@ -572,8 +588,8 @@
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
   "installed_loaded_build": "6acff8a3458b230378100d491e431d18a84c740c",
-  "last_checkpoint_utc": "2026-10-27T22:08:37.204679+00:00",
-  "next_action": "Launch reviewed source17 private profile, verify six actual realm source guards including AimCRC966710964, create/encounter real ranged Fallen actor and observe actual native fire/contact with real player Aim; then resume authored campaign/event success/failure/reset coverage. Clean0/co-op/audio gaps remain; restore CloudON after private tests.",
+  "last_checkpoint_utc": "2026-10-27T22:46:25.497804+00:00",
+  "next_action": "Complete BUG018 native mask/hull characterization and minimal shared NearLook repair/static/independent/native regressions. Then distinct newseed/canonicalcampaign for more authored success/failure/progression/replay. Clean0; co-op/perceptualaudio blocked; restoreCloudON afterprivate tests.",
   "last_runtime_build": "6acff8a3458b230378100d491e431d18a84c740c",
   "current_native_build": "Private source17 running; owned client86343/birth6332948, same-prefix Chromium utility86463, fresh prepared94f3",
   "installed_loaded_build_note": "All576Lua/118physical sources match prepared94f3/gameplay6ac; both live realm six-source audits pass including AimCRC966710964/SafeTeleportCRC377454284; new native NPC acceptance pending.",
@@ -583,7 +599,8 @@
     "positive_commands": 13,
     "lua_syntax": 927,
     "independent_review": "clear; exact original271 and first-guard-only323 negatives reproduce",
-    "native": "pending fresh17"
+    "native": "Finite repaired native gate passes: actual4copy357fires/1Herohit/noNewErrors plus separate normalplayerAimShot/markerCleanup",
+    "native_evidence": "npc-aim-boundary/native-repaired/receipt.json"
   },
   "latest_full_integration": {
     "commit": "6acff8a3458b230378100d491e431d18a84c740c",
