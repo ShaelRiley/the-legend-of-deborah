@@ -1,0 +1,85 @@
+# The Legend of Deborah RPG current-session summary
+# schema=rpg-test-summary-v1
+# generated_utc=2026-10-27T04:30:13Z
+# map=gm_flatgrass
+# gamemode=legend_of_deborah
+# session_reason=unknown
+# event_count=0
+# last_sequence=0
+
+[MARKS]
+none
+
+[EVENT_COUNTS]
+none
+
+[FEEDBACK_DELIVERY]
+dispatched=0
+received=0
+drawn=0
+sound_requested=0
+throttled=0
+# drawn = client reports first feed/notice draw; crowded feed may retain without drawing
+# sound_requested = client called playback; audibility requires human confirmation
+
+[LATEST_PROFILES]
+none
+
+[PLAYER_DICE]
+none
+
+[SNAPSHOT_TRAFFIC]
+# counters since server initialization; reliable sheet/book snapshots only
+requested=129
+coalesced=68
+unchanged=14
+sent=47
+bytes=231378
+maxFlushBytes=19553
+
+[LATEST_GATE_D_VALIDATE]
+none
+
+# current-session event stream: garrysmod/data/legend_of_deborah/rpg_test_session.txt
+# cumulative archive: garrysmod/data/legend_of_deborah/rpg_test_log.txt
+
+[OBSERVABILITY]
+retention=console:per-GMod-launch;session:current-server-session;summary:overwrite-every-10s;archive:rolling-4MiB
+physical_upload_dir=garrysmod/data/legend_of_deborah/
+recommended_upload=console_latest.txt + rpg_summary_latest.txt
+detailed_upload_when_needed=rpg_session_latest.txt
+archive_upload_only_on_request=rpg_archive_latest.txt
+last_mark=
+last_rpg_validate=
+last_rpg_validate_errors=
+reload_scale_events=0
+last_reload_weapon=
+last_reload_channel=
+last_reload_multiplier=
+last_reload_authored_seconds=
+last_reload_scaled_seconds=
+last_reload_saved_seconds=
+smg_heat_shots=0
+smg_heat_suppressed=0
+smg_heat_added=0
+smg_heat_overheats=0
+smg_heat_last_chance=
+smg_heat_last_threshold=
+smg_heat_last_lock_seconds=
+smg_heat_acceptance=
+
+[RATE_OF_FIRE_OBSERVABILITY]
+rate_of_fire_sessions=0
+rate_of_fire_scale_events=0
+rate_of_fire_confirmed_attacks=0
+rate_of_fire_preexisting_locks_preserved=0
+rate_of_fire_deadline_misses=0
+last_rate_of_fire_weapon=
+last_rate_of_fire_channel=
+last_rate_of_fire_multiplier=
+last_rate_of_fire_authored_seconds=
+last_rate_of_fire_scaled_seconds=
+last_rate_of_fire_saved_seconds=
+last_rate_of_fire_confirmation=
+last_rate_of_fire_miss_weapon=
+last_rate_of_fire_miss_confirmation=

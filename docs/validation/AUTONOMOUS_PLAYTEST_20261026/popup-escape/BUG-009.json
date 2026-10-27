@@ -85,7 +85,7 @@
   "observed_before": "Root observed and inspected the rendered failure in the prior native session. The original screenshots were in /tmp and were lost after the host session reset; they are not included or claimed as durable archived images here. Reproduction remains a required fresh native check on the repaired build.",
   "cause": "Native ESC/cancelselect is explicitly excluded from PANEL:OnKeyCodePressed. Binding only a DFrame key handler cannot own the native pause attempt.",
   "repair": "Register the current exact page/frame/callback once in the shared UI authority; close that owned popup through OnPauseMenuShow and return false only when consumed. Reuse registration for CharacterSheet, retain the existing0.15s PageKey opening debounce, and retire ownership before the callback. Visibility, keyboard, descendant-focus, console, minigame, stale-page and exact-frame guards preserve other owners.",
-  "status": "Implemented and statically validated; fresh native acceptance pending. Three clean gameplay pass streak remains0.",
+  "status": "Native finite acceptance passed for the ordinary Spellbook/CharacterSheet Escape reproduction and next normal engine pause on afdcbc. Adjacent menu, DHTML rendering/focus, rebound/minigame and cooperative coverage remains partial; clean streak0.",
   "static": {
     "targeted_suites": 17,
     "passed": 17,
@@ -130,14 +130,32 @@
     "sha256": "5180f9011a34cb9b1494f116186c1b568ee104438ad5fcc3388dd588f9ef5bd1"
   },
   "next_native_gate": [
-    "Fully restart/install exact candidate; verify mounted source identities and theme/sheet CRCs",
-    "Open I Spellbook, click an owned Content child, press ordinary physical/raw Escape: book closes and stock pause stays hidden",
-    "Press Escape again: normal stock pause opens; dismiss it",
-    "Repeat Escape after CharacterSheet child focus, Manual/DHTML focus, Equipment, Wallet and Options; preserve P/I/O/L switching/debounce, console and minigame ownership"
+    "Retain source-matched Spellbook/CharacterSheet Escape and normal-pause evidence across final-candidate review",
+    "Complete independent DHTML-content/focus, Wallet/Options, rebound controls and native console/minigame arbitration coverage as applicable",
+    "Install/restart later BUG010 candidate for its ordinary tooltip hover recheck before final clean-pass acceptance"
   ],
   "limits": [
     "Static fixtures model native VGUI and pause events; they are not actual engine input, visuals, audio or cooperative acceptance",
     "The previous336-suite frozen result belongs to f604; this changed candidate has17 targeted suites plus925 Lua syntax checks, not a new336-suite full run",
-    "Older unarchived exploratory fixture failures were reported before the external reset; their missing temporary logs are not recreated or hidden as passing evidence"
+    "Older unarchived exploratory fixture failures were reported before the external reset; their missing temporary logs are not recreated or hidden as passing evidence",
+    "Native-afdcbc record now supplies ordinary keyboard/rendered-menu evidence for the finite Escape gate. Its wider campaign/adjacent menu and current-main limitations remain explicit."
+  ],
+  "native_acceptance": {
+    "tested_commit": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9",
+    "result": "Original native reproduction and bounded adjacent CharacterSheet/normal-pause checks passed",
+    "evidence": "native-afdcbc/receipt.json",
+    "actual_content": "Owned RAW Content child in the new Hero's Spellbook; native baseline failure used Ice. Both use the same ordinary Content-button path.",
+    "source_crc32": {
+      "cl_ui_theme.lua": "1212728956",
+      "cl_character_sheet.lua": "1796671531"
+    },
+    "settings": "Actual Steam Deck / Windows x86 / Proton10 / gm_flatgrass / seed6102602 / sv_cheats0 / developer0 / sv_lan1;114 matching startup sources",
+    "build_limit": "Current main includes later BUG010 tooltip repair edfcdb26; client remains compiled afdcbc with automatic Lua refresh disabled. No runtime claim for edfc."
+  },
+  "defined_native_gate": [
+    "Fully restart/install exact candidate; verify mounted source identities and theme/sheet CRCs",
+    "Open I Spellbook, click an owned Content child, press ordinary physical/raw Escape: book closes and stock pause stays hidden",
+    "Press Escape again: normal stock pause opens; dismiss it",
+    "Repeat Escape after CharacterSheet child focus, Manual/DHTML focus, Equipment, Wallet and Options; preserve P/I/O/L switching/debounce, console and minigame ownership"
   ]
 }

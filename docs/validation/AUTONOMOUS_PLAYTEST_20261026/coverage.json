@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "f6048a0ed942c83ec875e23443104dfde12143f2",
+  "current_candidate": "edfcdb26497ded707dc94b955f89fb3a68cfd4f0",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -15,12 +15,16 @@
       "source": "05 LOD-STAGE-001; 06 LOD-LORE-UI-001",
       "expected": "Startup/title, role and class selection, Hermit chapter, one identity-bound starter, ready portal",
       "scenario": "Fresh session; create disposable Hero, talk/read/manual, select class and legal feat; ordinary portal Use",
-      "result": "Fresh cheats0 P class/Fighter/Haste, ordinary pedestalTouch and portalUse observed. WizardcardBUG006native rechecked. Role/Soldier flow pending.",
+      "result": "Partial native: previous fresh cheats0 Fighter/Haste and Wizard card checks retained. Freshafdcbc Victor \"The Backup\" Hill selects Fighter and the fourth of four Level1 offers, Cloud Step; ordinary1of1 and locked original hand persist after closing/reopening. Ordinary starter/pedestal and portal deploy again observed. This does not accept Cloud Step combat/movement effects; Role/Soldier and full flow remain pending.",
       "evidence": [
         "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png",
         "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png",
         "production-2c73471b/deborah-wizard-class-card-fixed.png",
-        "production-2c73471b/deborah-anthony-deployed-unfound-map.png"
+        "production-2c73471b/deborah-anthony-deployed-unfound-map.png",
+        "popup-escape/native-afdcbc/receipt.json",
+        "popup-escape/native-afdcbc/deborah-afdcbc-fourth-feat.png",
+        "popup-escape/native-afdcbc/deborah-afdcbc-cloud-step-reopen.png",
+        "popup-escape/native-afdcbc/deborah-afdcbc-victor-deployed.png"
       ]
     },
     {
@@ -248,8 +252,13 @@
       "source": "06 LOD-UI-001 through 010; approved quieter logger amendment",
       "expected": "Menus, direct keys, HUD/log readability, prompts, input and camera modes",
       "scenario": "Rendered desktop input, menu scrolling, bindings, viewport sizes, third person",
-      "result": "pending",
-      "evidence": []
+      "result": "Partial native acceptance: afdcbc seed6102602 fixes ordinary Spellbook Content-child Escape and CharacterSheet child Escape; next Escape opens normal stock pause. I/O/L pages render; Manual click/Escape sequence returns to world, with no independent DHTML pixels/focus claim. BUG010 tooltip width discovered separately and repaired statically, pending fresh native recheck. Rebinding/controller/camera/viewport/co-op and other UI coverage remain open.",
+      "evidence": [
+        "popup-escape/native-afdcbc/receipt.json",
+        "popup-escape/native-afdcbc/deborah-afdcbc-escape-closed.png",
+        "popup-escape/native-afdcbc/deborah-afdcbc-next-escape-pause.png",
+        "inventory-tooltip/BUG-010.json"
+      ]
     },
     {
       "id": "UI-02",
@@ -304,11 +313,13 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "336/336 frozen f6048a0e pass;925 Lua files;sourcebefore=after2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5;no changed files. Native finite BUG007/008 acceptance is recorded separately; full gameplay acceptance remains open.",
+      "result": "336/336 frozen f6048a0e pass;925 Lua files;sourcebefore=after2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5;no changed files. Native finite BUG007/008 acceptance is recorded separately; full gameplay acceptance remains open. Laterafdcbc BUG009 has17 targeted suites+925 Lua parses and independent review; edfc BUG010 has10 focused positive checks plus changed-file syntax/LuaJIT checks and independent review. Specific baseline negative controls reject both originals; these are not new336-suite/full-gameplay passes.",
       "evidence": [
         "combined-278e-integration-gate/receipt.json",
         "wizard-class-card/static-repair-receipt.json",
-        "combined-f604-integration-gate/receipt.json"
+        "combined-f604-integration-gate/receipt.json",
+        "popup-escape/BUG-009.json",
+        "inventory-tooltip/BUG-010.json"
       ]
     },
     {
@@ -342,7 +353,9 @@
     "278e diagnostic session inherited sv_cheats1; P/impulse101 supplied extra weapons/ammo. No clean combat/inventory or trial collision acceptance. Source had no setter; runtime origin unproven. Fresh launch will explicitly use0 and verify actual readback/loadout/MOVETYPE_WALK.",
     "Fresh2c73471b: actualsv_cheats0/loddev0,114sourcesmatch, initialKitpistol18/crowbar withzeroreserve; afterP/class/feat unchanged. AnthonyFiveBucksJenkins Fighter+Haste, ordinary starter+portal. Bounded read-only10Hzpositionobserver verifiesMOVETYPE_WALK2; all route movement is actualWASD. Diagnosticfile-read race now retries finitely; matched key release preserved on failure.",
     "User confirms only the Steam Deck is available. Official-multirun/LAN real-client smoke may work on this one device; not attempted yet. Authenticated second-account ownership/reconnect remains inaccessible. No Steam identity spoofing or account changes authorized/needed for documented smoke.",
-    "f6048a0e fresh controlled lifecycle gate: actual Steam Deck/Windowsx86/Proton10, gm_flatgrass, seed6102601, cheats0/dev0,114 sources matched, RunManager CRC925327479 and cl_tetris CRC1705465356. BUG007/008 finite native gate passed; no campaign/co-op/clean-pass claim. New native shared-menu child-focus Escape issue BUG009 is under separate repair."
+    "f6048a0e fresh controlled lifecycle gate: actual Steam Deck/Windowsx86/Proton10, gm_flatgrass, seed6102601, cheats0/dev0,114 sources matched, RunManager CRC925327479 and cl_tetris CRC1705465356. BUG007/008 finite native gate passed; no campaign/co-op/clean-pass claim. New native shared-menu child-focus Escape issue BUG009 is under separate repair.",
+    "Fresh20261027 nativeafdcbc on same actualDeck uses seed6102602,sv_cheats0,developer0,sv_lan1,-noworkshop,-disableluarefresh;114 startup sources match,themeCRC1212728956/sheet1796671531. Latermain edfc tooltip edits are not loaded; native-main parity remains pending a fresh restart. Durable current host-state preservation is in ignored .build/autonomous-playtest-20261027/preserved-current-user-state, separate from lost previous-session /tmp tools.",
+    "For nativeafdcbc UI evidence, live garrysmod/console.log is clipped through first DEPLOYED. Canonical console_latest.txt remained stale, and summary contents have old generated_utc/event_count0/sessionunknown; those files are not substituted as current-session mechanics proof. See popup-escape/native-afdcbc/receipt.json."
   ],
   "defects": [
     {
@@ -402,5 +415,6 @@
   "installed_loaded_build": "f6048a0ed942c83ec875e23443104dfde12143f2",
   "last_checkpoint_utc": "2026-10-27T04:28:13.602457+00:00",
   "next_action": "Continue single-client exploration and bounded authored-family fixtures on the verified gameplay build; repair/recheck newly confirmed shared-menu Escape focus BUG009. Expand death-Tetris scoring/reward, revival, inventory boundaries and cooperative coverage. Complete ordinary campaign progression and three varied clean passes; streak remains0.",
-  "last_runtime_build": "f6048a0ed942c83ec875e23443104dfde12143f2"
+  "last_runtime_build": "f6048a0ed942c83ec875e23443104dfde12143f2",
+  "current_native_build": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9"
 }

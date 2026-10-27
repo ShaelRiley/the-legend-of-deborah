@@ -6,13 +6,20 @@ clean final-candidate passes. Clean streak remains 0. Workshop/VPS, the 40 FPS
 goal and all October 23 timer/countdown/hourglass/inventory/reward choices remain
 deferred.
 
-The current source candidate adds BUG009: shared Player Menu popups now own
-native Escape through `OnPauseMenuShow`, including focused Spellbook children,
-Character Sheet choices and the embedded Manual. Existing direct-open debounce,
-console/minigame/unrelated-dialog ownership and normal engine pause are retained.
-Independent review found no blocking defect; 17 targeted suites and all 925 Lua
-parses pass with source unchanged. The baseline fails the new native-event
-fixture. Fresh native acceptance is pending; see the [repair record](validation/AUTONOMOUS_PLAYTEST_20261026/popup-escape/BUG-009.json).
+Main `edfcdb26497ded707dc94b955f89fb3a68cfd4f0` contains ten repairs. Latest
+BUG010 wraps ordinary item tooltips within the native viewport; 10 focused
+positive checks, changed-file syntax/LuaJIT compilation, an original-source
+negative control and independent review pass. Native hover recheck is pending.
+See the [tooltip repair](validation/AUTONOMOUS_PLAYTEST_20261026/inventory-tooltip/BUG-010.json).
+
+Fresh native `afdcbc096a56ad2b2f67b2cdf670e344f9366be9` passes BUG009's finite
+ordinary Spellbook/Character Sheet Escape gate: a focused Content child closes
+to the rendered world, and the next Escape opens normal stock pause. I/O/L
+navigation and the fourth-of-four Cloud Step selection/reopen are observed.
+Manual click/Escape return is observed; independent DHTML pixels/focus,
+Wallet/Options, rebound input and native minigame arbitration remain open.
+The source repair retains 17 targeted checks, 925 Lua parses and independent
+review. See the [native evidence and limits](validation/AUTONOMOUS_PLAYTEST_20261026/popup-escape/native-afdcbc/receipt.json).
 
 Gameplay build `f6048a0ed942c83ec875e23443104dfde12143f2` contains eight repairs.
 BUG007/008 now pass their finite native gate: controlled Hero death saves the
@@ -32,18 +39,25 @@ Wizard-card repairs retain their finite native evidence; ordinary rescued-NPC
 coverage is still pending.
 
 Actual hardware is the Valve Jupiter Steam Deck, Windows x86 GMod/Proton10 on
-`gm_flatgrass`, seed6102601. Fresh f6048a0e uses cheats0/dev0, matches all 114
+`gm_flatgrass`. Fresh f6048a0e seed6102601 uses cheats0/dev0, matches all 114
 mounted sources and verifies RunManager CRC925327479 / cl_tetris CRC1705465356.
+Current native afdcbc seed6102602 also matches all 114 startup sources and
+verifies theme CRC1212728956 / Sheet CRC1796671531, with cheats0/dev0 and LAN1.
+Automatic Lua refresh is disabled: later main's tooltip repair is not loaded,
+so this evidence does not establish current-main runtime parity. Live console
+through first deployment is retained; stale canonical console/summary files are
+explicitly qualified in the receipt and are not current mechanics evidence.
 Prior production starter/portal, walking and physical floor-map pickup/discovery
 observations remain. The earlier 180s traversal baseline measured 18.13 active
 FPS with its observer present; it establishes no repair attribution or 40 FPS
 claim.
 
-Next: fully restart/install the Escape candidate and verify theme CRC1212728956
-and Character Sheet CRC1796671531. Open I, click an owned Content, and press
-Escape: only the Spellbook closes; the next Escape opens normal stock pause.
-Repeat with Character Sheet and Manual/DHTML focus, preserving P/I/O/L switching,
-then continue single-client exploration and bounded authored-family fixtures.
+Next: continue the active single-client dungeon exploration, then fully
+quit/install/restart main and verify inventory CRC2838551934. Hover ordinary
+Crowbar/Pistol tiles at1280x800: complete tooltips must wrap within the viewport;
+verify adjacent select/equip/stow/close behavior. Continue bounded authored-family
+fixtures and the remaining native menu/input coverage without treating prior
+static or assisted checks as full-campaign acceptance.
 Ordinary full-campaign progression, endings/replay, detailed Tetris rewards and
 three clean varied passes remain unfinished. Only one Deck is available;
 two-real-client LAN smoke remains untried and distinct authenticated-account

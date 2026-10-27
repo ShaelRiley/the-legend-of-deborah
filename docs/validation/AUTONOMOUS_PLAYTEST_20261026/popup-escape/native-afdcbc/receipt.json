@@ -1,0 +1,207 @@
+{
+  "kind": "Actual native rendered keyboard/mouse regression evidence; partial campaign coverage",
+  "recorded_utc": "2026-10-27T14:46:03.463507+00:00",
+  "tested_commit": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9",
+  "main_gameplay_at_recording": "edfcdb26497ded707dc94b955f89fb3a68cfd4f0",
+  "hardware": "Actual Valve Jupiter Steam Deck; AMD Custom APU0405; amdgpu1002:163F",
+  "client": "Windows x86 Garry's Mod, Proton10, engine2026.09.17;1280x800 client viewport",
+  "map": "gm_flatgrass",
+  "seed": 6102602,
+  "settings": {
+    "sv_cheats": 0,
+    "lod_developer_mode": 0,
+    "sv_lan": 1,
+    "Workshop": "-noworkshop",
+    "lua_refresh": "-disableluarefresh"
+  },
+  "source": {
+    "startup": {
+      "campaign": 6102602,
+      "level": 1,
+      "developerMode": false,
+      "source": {
+        "installLabel": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9 clean ",
+        "verified": true,
+        "checked": 114,
+        "mismatches": 0,
+        "missing": 0
+      },
+      "reason": "built"
+    },
+    "native_crc32": {
+      "cl_ui_theme.lua": "1212728956",
+      "cl_character_sheet.lua": "1796671531"
+    },
+    "limit": "The client was fully restarted on exact afdcbc and startup114 source hashes matched before BUG010 working-tree edits. Automatic Lua refresh is disabled; this is native evidence for compiled afdcbc, not for current edfc tooltip code."
+  },
+  "hero": "Victor \"The Backup\" Hill; Fighter, ordinary initial four-choice draft; fourth Cloud Step choice",
+  "results": [
+    {
+      "scenario": "I Spellbook; click owned RAW Content child; hold raw Escape0.8s",
+      "result": "PASS finite reproduction: menu closes to rendered staging world, stock pause hidden",
+      "evidence": [
+        "deborah-afdcbc-spellbook.png",
+        "deborah-afdcbc-escape-closed.png"
+      ]
+    },
+    {
+      "scenario": "Press Escape again with no owned popup",
+      "result": "PASS: native stock pause opens; resuming and O opens normal Equipment",
+      "evidence": [
+        "deborah-afdcbc-next-escape-pause.png",
+        "deborah-afdcbc-inventory-o.png"
+      ]
+    },
+    {
+      "scenario": "P Character Sheet class selection followed by Escape",
+      "result": "PASS finite adjacent check: Character Sheet closes to world after child interaction",
+      "evidence": [
+        "deborah-afdcbc-sheet-child-escape.png"
+      ]
+    },
+    {
+      "scenario": "Direct I/O/L sibling key navigation",
+      "result": "Runtime observed: Spellbook, Equipment and Die Logger render through their ordinary direct-open keys; no simultaneous-page claim beyond the captured states",
+      "evidence": [
+        "deborah-afdcbc-page-i.png",
+        "deborah-afdcbc-inventory-o.png",
+        "deborah-afdcbc-page-l.png"
+      ]
+    },
+    {
+      "scenario": "Manual tab, content click, Escape",
+      "result": "Input sequence and world return observed. No pre-Escape DHTML-content screenshot exists, so independent DHTML rendering/focus acceptance remains open",
+      "evidence": [
+        "deborah-afdcbc-manual-escape.png"
+      ]
+    },
+    {
+      "scenario": "Select fourth of four ordinary Level1 feats, close/reopen sheet",
+      "result": "PASS bounded RPG/flow sample: Cloud Step chosen, ordinary1of1 and locked original hand persist on reopen; no feat effect/prerequisite/combat acceptance inferred",
+      "evidence": [
+        "deborah-afdcbc-fourth-feat.png",
+        "deborah-afdcbc-cloud-step-chosen.png",
+        "deborah-afdcbc-cloud-step-reopen.png"
+      ]
+    },
+    {
+      "scenario": "Ordinary starter/pedestal and portal deployment",
+      "result": "Runtime observed in native UI run; first DEPLOYED announcement retained",
+      "evidence": [
+        "deborah-afdcbc-victor-deployed.png",
+        "console-through-first-deployment.txt"
+      ]
+    }
+  ],
+  "logging": {
+    "live_console_source": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/console.log",
+    "saved_console": "console-through-first-deployment.txt",
+    "cut": "Beginning through first DEPLOYED \u2014 ENTER THE DUNGEON line inclusive, retaining source/configuration and UI diagnostics before active dungeon exploration",
+    "saved_console_sha256": "df8a90465c5c9a812cb6ca5ecca8c4443a64775fb91b9b11d0b577163c43759b",
+    "canonical_console_latest": {
+      "status": "Stale previous-session file; not copied or used as current afdcbc proof",
+      "mtime_ns": 1793071945968615162,
+      "sha256": "7fe1c0c5fc7d728164b9de9eab46a71c885c4b6e7fe2ef17a7a809cb8871d8e0"
+    },
+    "summary_capture": {
+      "file": "captured-summary-not-current-proof.txt",
+      "status": "Qualified stale/unidentified contents: generated_utc2026-10-27T04:30:13Z,session_reasonunknown,event_count0,latestprofilesnone; captured but not used to prove current UI/RPG mechanics",
+      "mtime_ns": 1793110578054833841,
+      "sha256": "648dbe40d26569b63dbdc6e5cbfde1add72e30c0da571dd371c4c739159f4590"
+    }
+  },
+  "screenshots": [
+    {
+      "file": "deborah-afdcbc-spellbook.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793110630732332846-deborah-afdcbc-spellbook.png",
+      "captured_ns": "1793110630732332846",
+      "bytes": 875882,
+      "sha256": "84f095308b9a94de8de6b8c871386f262a00d99c90a73ad22da6f4009a928a50"
+    },
+    {
+      "file": "deborah-afdcbc-escape-closed.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793110669493686796-deborah-afdcbc-escape-closed.png",
+      "captured_ns": "1793110669493686796",
+      "bytes": 2055524,
+      "sha256": "8417bf681ff5c192fbbeed46142709c3b187ac2a490832d7658c964bcc5c17dc"
+    },
+    {
+      "file": "deborah-afdcbc-next-escape-pause.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793110674047875225-deborah-afdcbc-next-escape-pause.png",
+      "captured_ns": "1793110674047875225",
+      "bytes": 1651651,
+      "sha256": "760be90da621e729b3088a922ab0c6d4f3ef42a179ce5774ba97b4b81e96f380"
+    },
+    {
+      "file": "deborah-afdcbc-inventory-o.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793110681815086804-deborah-afdcbc-inventory-o.png",
+      "captured_ns": "1793110681815086804",
+      "bytes": 533334,
+      "sha256": "9231eddc6bba5b2f42cb32c2b0bc986c182d06384946125450c208d496bf8dfe"
+    },
+    {
+      "file": "deborah-afdcbc-sheet-child-escape.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793110896234589281-deborah-afdcbc-sheet-child-escape.png",
+      "captured_ns": "1793110896234589281",
+      "bytes": 2087359,
+      "sha256": "aae2c2f4684ffe26fa0d7756130b88bc4f9c432f6e224de959f0070e75e213bf"
+    },
+    {
+      "file": "deborah-afdcbc-page-i.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793111033454703401-deborah-afdcbc-page-i.png",
+      "captured_ns": "1793111033454703401",
+      "bytes": 883793,
+      "sha256": "b36a66cc02526930cff2ba3606af8105429663851c6560e395566a944ab9e6ed"
+    },
+    {
+      "file": "deborah-afdcbc-page-l.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793111042232961444-deborah-afdcbc-page-l.png",
+      "captured_ns": "1793111042232961444",
+      "bytes": 845796,
+      "sha256": "0fbd0f10da8f28bc6a5af2bf7a40b0e09d91bb020ca6534596e308f5aaa05223"
+    },
+    {
+      "file": "deborah-afdcbc-manual-escape.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793111029073116488-deborah-afdcbc-manual-escape.png",
+      "captured_ns": "1793111029073116488",
+      "bytes": 2088036,
+      "sha256": "612c145af5a8a735cc83b8aaca5a2ea37ceda28c606ae977280e50aa824c4cf2"
+    },
+    {
+      "file": "deborah-afdcbc-fourth-feat.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793111130219412557-deborah-afdcbc-fourth-feat.png",
+      "captured_ns": "1793111130219412557",
+      "bytes": 545755,
+      "sha256": "74737b97b096106e4786c950a74d638441c0229f0a8e3f347f9431af317e635a"
+    },
+    {
+      "file": "deborah-afdcbc-cloud-step-chosen.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793111257595784683-deborah-afdcbc-cloud-step-chosen.png",
+      "captured_ns": "1793111257595784683",
+      "bytes": 559441,
+      "sha256": "63a4451f47281cc72acb318663902c1ce13db6a195fa4db6304753a2ca5c5cbf"
+    },
+    {
+      "file": "deborah-afdcbc-cloud-step-reopen.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793111265930899537-deborah-afdcbc-cloud-step-reopen.png",
+      "captured_ns": "1793111265930899537",
+      "bytes": 559934,
+      "sha256": "6bb20f0c6593b2c154cb70edaed0d06d3d54076c32be96a6768c7eda1263b012"
+    },
+    {
+      "file": "deborah-afdcbc-victor-deployed.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793111410570409353-deborah-afdcbc-victor-deployed.png",
+      "captured_ns": "1793111410570409353",
+      "bytes": 1409134,
+      "sha256": "b467c7f8ac5a945345359dbcf1e10fac142a0c728f20c5a83e06f7815aad2a86"
+    }
+  ],
+  "accepted": "BUG009 ordinary Spellbook/CharacterSheet Escape regression and next normal pause finite gate passed on afdcbc. Adjacent shared menu/input coverage remains partial.",
+  "limits": [
+    "No full campaign, three clean passes, co-op, audio, controller hardware or performance acceptance",
+    "Wallet/Options, rebound keys, console/minigame native arbitration and independent DHTML pixels/focus remain unaccepted; their static checks stay supplementary",
+    "No errors/warnings are silently treated as resolved; raw startup diagnostics remain in the console cut. This record does not certify every diagnostic category.",
+    "BUG010 was discovered on this same build and has a separately committed static repair; current tooltip candidate edfc still requires fresh native recheck"
+  ],
+  "clean_pass_streak": 0
+}
