@@ -12,7 +12,11 @@ the respawned body because equipmentLifeSerial was nil in both lives. Thirteen
 adjacent gates,927 parses, meaningful original-source negative and independent
 review pass. Full exact frozen source16 CI passes336/336, all4082 files hashed,
 576 production unchanged. [CI proof](validation/AUTONOMOUS_PLAYTEST_20261026/ci-source16/verification.json).
-Fresh source16 native repaired acceptance is pending.
+Fresh source16 finite native body-life regression passes: real death/F-respawn
+changes spawn4→5 while identity state/legacy nil life stay the same; old binding
+and movement reject without displacement, fresh supported move/XY return succeeds.
+HP100/lives2/Tetrisclosed and retained weapons observed. Exact Z restoration is
+unclaimed. [Native proof](validation/AUTONOMOUS_PLAYTEST_20261026/stale-life-binding/native-repaired/receipt.json).
 
 Source15 finite native evidence now passes BUG015's actual generated-floor/wall
 support controls, guarded relocation/return and measured ThunderCharge movement;
@@ -35,10 +39,10 @@ flag after earlier proving the same live PID/birth owned. Root host-process chec
 confirmed closure. Preserve this qualification, not a clean unproven[] claim.
 Steam4000 Cloud remains TEMPORARILY OFF (original ON): MUST restore after tests.
 
-Next: ordinary Fighter/class/feat/starter/portal; capture current life binding,
-real death, wait the authored20-second F lockout, respawn; verify stale binding
-rejects and fresh supported move/return succeeds. Then resume authored events and
-ordinary progression, including success/failure/rescue/reset. Preserve accepted
+Next: continue actual Fighter/FrugalCartography native progression from the
+ordinary starter/portal into the Redcard route. StrengthPress preview is generated
+beyond current locks; its unchanged account/dungeon offer/wallet/attempt are
+recorded before use. Resume authored events and success/failure/rescue/reset. Preserve accepted
 collision/performance settings and earlier finite regressions. Health-label
 occlusion remains credible/trace-pending; Blue route ambiguity under active
 Skeleton blockade remains unconfirmed. [Coverage matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).

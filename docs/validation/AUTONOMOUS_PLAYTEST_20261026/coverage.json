@@ -429,10 +429,11 @@
       "source": "06 LOD-SAFE-TRAVEL-001 and exact native Hero body/life lifecycle",
       "expected": "Old body-life relocation binding rejects after real death/respawn; fresh binding still moves to a valid supported destination",
       "scenario": "Capture binding, real death, mandatory20s wait, ordinaryF respawn, stale MoveBound rejection plus fresh move/restore control",
-      "result": "Confirmed BUG016 pre-repair native failure; canonical existing spawnserial repaird3c statically/integration validated; fresh native gate pending",
+      "result": "Finite fresh source16 pass: same identity ps and nil legacy life, actual spawn4\u21925 after death/F-respawn; old Matches/MoveBound false with unchanged position, fresh Matches/move/support-return true. HP100/lives2/Tetrisclosed; all576 sources and both realm5guards match. Full lifecycle/consumer/co-op coverage remains open.",
       "evidence": [
         "stale-life-binding/BUG-016.json",
-        "ci-source16/verification.json"
+        "ci-source16/verification.json",
+        "stale-life-binding/native-repaired/receipt.json"
       ]
     }
   ],
@@ -536,7 +537,7 @@
     {
       "id": "BUG-016",
       "record": "stale-life-binding/BUG-016.json",
-      "status": "Confirmed native pre-death binding moves respawned body; repairedd3c/static13+full336/independent review; fresh16 native pending"
+      "status": "Repairedd3c; full336 static/independent and fresh native body-life rejection plus fresh-movement controls pass"
     }
   ],
   "static_fixture_checkpoint": {
@@ -553,8 +554,8 @@
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
   "installed_loaded_build": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
-  "last_checkpoint_utc": "2026-10-27T21:19:28.533506+00:00",
-  "next_action": "Fresh source16 native death/20-second lockout/F-respawn stale-binding rejection and fresh-move control, then authored event/progression exploration. Clean0; cooperative distinct-client gap; restore CloudON after private testing.",
+  "last_checkpoint_utc": "2026-10-27T21:30:48.757098+00:00",
+  "next_action": "Continue actual source16 Red Keycard route and authored StrengthPress setup/Use/repeat/account-dungeon lifecycle. No full campaign or clean pass; distinct-client co-op blocked; restore CloudON after private tests.",
   "last_runtime_build": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
   "current_native_build": "Private source16 client running; prepared2fcea source-equivalent, owned native74708, fresh prefix",
   "installed_loaded_build_note": "Prepared2fcea and subsequent evidence-only main successors share all576 production Lua. Both realms source16 five-module audit passed, SafeTeleportCRC377454284. Earlier source15 native finite BUG015/012/014 evidence retained; fresh16 lifecycle gate pending.",
@@ -564,7 +565,8 @@
     "positive_commands": 13,
     "lua_syntax": 927,
     "independent_review": "positive and original-negative control clear",
-    "native": "pending fresh16"
+    "native": "Finite source16 passed; stale binding rejects, fresh move/XY-supported return succeeds; no exact Z restoration claim",
+    "native_evidence": "stale-life-binding/native-repaired/receipt.json"
   },
   "latest_full_integration": {
     "commit": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
