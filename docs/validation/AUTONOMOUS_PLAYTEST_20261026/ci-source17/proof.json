@@ -1,0 +1,16 @@
+{
+  "changed_during_gate": [],
+  "checkout_sha": "6acff8a3458b230378100d491e431d18a84c740c",
+  "checkout_tree": "0c408fe9e24aa707a524ed237339df173b5faccd",
+  "lua_files": 927,
+  "native_gmod_accepted": false,
+  "passed": 336,
+  "production_files": 576,
+  "production_sha256": "5223af6bac674e4058e9c281cea784759cf8ee506e98bf5d30fc08d4b43f2571",
+  "receipt_sha256": "72da6222076459e96a0958d207d39ac7d668f0d4b2a7919eeea77b67f7116a91",
+  "source_after": "8c9cbe130d48e91fb23bbf7ef0eca123fa938459c3f7448db2e963e1383d973e",
+  "source_before": "8c9cbe130d48e91fb23bbf7ef0eca123fa938459c3f7448db2e963e1383d973e",
+  "source_files": 4147,
+  "total": 336,
+  "verified_suite_logs": 336
+}

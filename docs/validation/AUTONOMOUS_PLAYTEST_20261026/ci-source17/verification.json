@@ -1,0 +1,91 @@
+{
+  "kind": "independent source17 frozen GitHub CI proof",
+  "utc": "2026-10-27T22:00:22.892363+00:00",
+  "commit": "6acff8a3458b230378100d491e431d18a84c740c",
+  "run": {
+    "id": 40589622846,
+    "name": "Validate complete frozen source matrix",
+    "head_sha": "6acff8a3458b230378100d491e431d18a84c740c",
+    "head_tree": "0c408fe9e24aa707a524ed237339df173b5faccd",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40589622846"
+  },
+  "job_id": 122490136272,
+  "total": 336,
+  "passed": 336,
+  "all_returncodes_zero": true,
+  "receipt_sha256_matches_proof": true,
+  "receipt_sha256": "72da6222076459e96a0958d207d39ac7d668f0d4b2a7919eeea77b67f7116a91",
+  "source_files": 4147,
+  "source_before": "8c9cbe130d48e91fb23bbf7ef0eca123fa938459c3f7448db2e963e1383d973e",
+  "source_after": "8c9cbe130d48e91fb23bbf7ef0eca123fa938459c3f7448db2e963e1383d973e",
+  "frozen_git_source_digest_matches_before_after": true,
+  "production_files": 576,
+  "all_production_hashes_match_frozen_commit": true,
+  "lua_files": 927,
+  "suite_rows_with_valid_stdout_stderr_hashes": 336,
+  "unique_log_prefixes": 336,
+  "CI_step_verified_all_actual_suite_log_hashes": true,
+  "actual_individual_suite_logs_materialized_locally": false,
+  "all_four_workflows_success": true,
+  "workflows": [
+    {
+      "id": 40589623025,
+      "name": "Validate ambient audio and event cues",
+      "head_sha": "6acff8a3458b230378100d491e431d18a84c740c",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40589623025"
+    },
+    {
+      "id": 40589622890,
+      "name": "Validate VR compatibility",
+      "head_sha": "6acff8a3458b230378100d491e431d18a84c740c",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40589622890"
+    },
+    {
+      "id": 40589622841,
+      "name": "Validate low-end performance sources",
+      "head_sha": "6acff8a3458b230378100d491e431d18a84c740c",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40589622841"
+    },
+    {
+      "id": 40589622846,
+      "name": "Validate complete frozen source matrix",
+      "head_sha": "6acff8a3458b230378100d491e431d18a84c740c",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40589622846"
+    }
+  ],
+  "artifact_metadata": [
+    {
+      "id": 12774680127,
+      "name": "frozen-source-matrix",
+      "size_in_bytes": 701510,
+      "digest": "sha256:b70cbe4aadad34788bc8b9b20e9ddaed7169fdf44c3d16a2463db00d78c15485",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40589622846/artifacts/12774680127",
+      "head_sha": "6acff8a3458b230378100d491e431d18a84c740c"
+    }
+  ],
+  "native_gmod_accepted": false,
+  "qualification": "Exact receipt and production manifest reconstructed from canonical job122490136272 chunks; all4147 frozen Git blobs independently hashed. CI verified every actual stdout/stderr suite-log hash; individual suite logs and artifact ZIP were not materialized locally. Source17 fresh native acceptance remains pending; prior native failures remain preserved separately.",
+  "archived_file_sha256": {
+    "job-122490136272.log": "6b8b21403d202d010a40167d9e97eb131d1f03b13634fbdceb4a4646945727d3",
+    "frozen-receipt.json": "72da6222076459e96a0958d207d39ac7d668f0d4b2a7919eeea77b67f7116a91",
+    "frozen-production_manifest.json": "ce9dccd1a070b099b1de389a15c39243c9d3025389c0542fd91d9b093bba8d0e",
+    "frozen-git-source-manifest.json": "20a5b1dc5dc7665c62edcc9260853a4a432f16314b7fde13f7afa53f0a965afb",
+    "proof.json": "eb4e800de57ab0977795dede5772e8ae654be757d6783dc4922396a51158e590",
+    "verification.json": "9cf6d0014764128682d8feb4fc4b7c7bdd9c204bd8e408c5c50d494d3fd51369",
+    "run.json": "f5737edf793a6762b85ca079381057f9f313498a15d285a73274a55de274642d",
+    "jobs.json": "49e7abc1861a698255cfe0da3bf97db8e3c15b6249973cfcf4650872dd3d73f9",
+    "artifacts.json": "5c3b74728bc428089fcf1a2866e4fef4436d87222c96573b41c7456d8d57e703",
+    "workflows.json": "1a9e5acfa1c4f2f4a5304127be8c717535045c70b461dc0edf9c16a8402d63a3"
+  },
+  "evidence_archive_sha256": "f27ec4c254c106514e6ddfb11142efc092a2a8aa09949a6db3c88fa27d807181"
+}
