@@ -1,0 +1,21 @@
+{
+  "source": ".build/autonomous-playtest-20261027/source16-native/phase2-frozen/launch-result.json",
+  "source_sha256": "5f6a29ee1dc4668730d5b025331e729eb4601b54b92a822b6c654f0a0c2cb9f3",
+  "selected_frozen_receipt": {
+    "kind": "bounded_standalone_private_preflight",
+    "commit": "2fcea7259728cef381e447395d93335f6df85382",
+    "elapsed_seconds": 2847.467,
+    "owned_native_pids": [
+      74708
+    ],
+    "unproven_native_pids": [],
+    "remaining_owned_pids": [],
+    "wrapper_exit": 0,
+    "cleanup_errors": [],
+    "original_config_unchanged": true,
+    "native_accepted": false
+  },
+  "normal_profile_before_after_equal": true,
+  "normal_profile_equal_inventory_digest": "0b47b90bd88199c624a570bf8db84a8468c3ccdcdedb3a6a27cf81d4ffde894d",
+  "qualification": "Root reports normal native console quit; frozen bounded launcher is terminal with no remaining/unproven owned PIDs. Equality compares recorded original personal cfg/SQLite hashes and DATA/save inventories; no private inventory names or settings contents copied into this selected receipt. Steam Cloud remains temporarily Off and restoration belongs to root."
+}

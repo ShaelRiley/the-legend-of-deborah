@@ -341,7 +341,14 @@
       "fixture": "lod_event_preview_generate strength_press",
       "scenario": "Read displayed modifier/chance; Use once, compare logged face+STR against threshold, try repeat and reconnect.",
       "expected": "One stable ordinary d20+canonical STR vs12; success20 $DEB, failure no reward/cost; no reroll on retry.",
-      "result": "not_run_by_this_agent"
+      "result": "Partially runtime observed/finite failed-attempt gate accepted on source16: face1+STR−1=0vs12, wallet0; ordinary repeated Use denied, same-dungeon regeneration retains exact spent receipt and replacement-machine Use denied. Explicit beyond-lock preview locator; ordinary route and success20 payout remain unaccepted.",
+      "evidence": "native-source16-events/receipt.json",
+      "pending": [
+        "Success20 payout",
+        "Ordinary event traversal/admission and combat-adjacent behavior",
+        "Reconnect/replacement-Hero persistence",
+        "Cooperative independent/simultaneous attempts"
+      ]
     },
     {
       "id": "silent_archive",

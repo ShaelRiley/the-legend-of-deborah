@@ -1,0 +1,322 @@
+{
+  "kind": "Source16 phase2 frozen native event/walking/audio artifacts",
+  "utc": "2026-10-27T22:09:20.620275+00:00",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/phase2-frozen/console.log",
+      "archived_as": "console_latest.txt.xz",
+      "raw_bytes": 374279,
+      "raw_sha256": "6bf2305c2b25c184c020b4b7c1ff8d88737e74491e6780ba9ce2f5155e8440ad",
+      "archive_bytes": 10948,
+      "archive_sha256": "56625e2676fcddb2727b624e00eb9c92dbe1e5cd64d88ff273b0ecf5f1ad8d2d",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/phase2-frozen/data__legend_of_deborah__rpg_summary_latest.txt",
+      "archived_as": "rpg_summary_latest.txt.xz",
+      "raw_bytes": 3157,
+      "raw_sha256": "8301bbd7dedbef46035c52450cf62d8ca1d44534bc7ae2d032e67607c2dde834",
+      "archive_bytes": 1576,
+      "archive_sha256": "7edbf1630a09a92e16ce7393878fd8d6c185026fb9b3e018925af82200c49e77",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/phase2-frozen/data__legend_of_deborah__rpg_session_latest.txt",
+      "archived_as": "rpg_session_latest.txt.xz",
+      "raw_bytes": 262033,
+      "raw_sha256": "ab530d4062f48a2cd6b0400f604c4a6c5fea2cfe7736bc6e2dcccb5e5209fdbd",
+      "archive_bytes": 14208,
+      "archive_sha256": "f0e757e322e1fa2d3c9dd1bb1f992320ebf7e99e746cdc7c4bc12a929a04a2af",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/strength-before-regenerate.json",
+      "archived_as": "strength-before-regenerate.json",
+      "raw_bytes": 6107,
+      "raw_sha256": "e562b1073d11d6a8be967095dc60d3a55089e3c2409f8fed5c8292005474b721",
+      "archive_bytes": 6107,
+      "archive_sha256": "e562b1073d11d6a8be967095dc60d3a55089e3c2409f8fed5c8292005474b721",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/strength-after-regenerate.json",
+      "archived_as": "strength-after-regenerate.json",
+      "raw_bytes": 5126,
+      "raw_sha256": "4c92ba5ddce7ae58d2e160883fdc17093e5e4863e766c842f73fb88c1cba64ad",
+      "archive_bytes": 5126,
+      "archive_sha256": "4c92ba5ddce7ae58d2e160883fdc17093e5e4863e766c842f73fb88c1cba64ad",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793138271464329200-source16-strength-first-native-use.png",
+      "archived_as": "strength-first-native-use.png",
+      "raw_bytes": 1487287,
+      "raw_sha256": "fc6091e196b34a17da3a92cf475606977d6f740f53715262189fc8da5cad91d3",
+      "archive_bytes": 1487287,
+      "archive_sha256": "fc6091e196b34a17da3a92cf475606977d6f740f53715262189fc8da5cad91d3",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793138440931603987-source16-strength-repeat-console.png",
+      "archived_as": "strength-repeat-denied-console.png",
+      "raw_bytes": 780626,
+      "raw_sha256": "a3e93de83c7c5e0398490519ce07a0d7cf7b635ed13694b38e1dc952a680356f",
+      "archive_bytes": 780626,
+      "archive_sha256": "a3e93de83c7c5e0398490519ce07a0d7cf7b635ed13694b38e1dc952a680356f",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793138515243836214-source16-strength-regenerated-repeat-console.png",
+      "archived_as": "regenerated-at-spawn-not-an-event-use.png",
+      "raw_bytes": 604765,
+      "raw_sha256": "27473ea54d8946eb6de34f3897c4354e3cb2d039387bb9177109446347fe841f",
+      "archive_bytes": 604765,
+      "archive_sha256": "27473ea54d8946eb6de34f3897c4354e3cb2d039387bb9177109446347fe841f",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793138592710992586-source16-strength-regenerated-native-repeat.png",
+      "archived_as": "strength-regenerated-native-repeat-denied.png",
+      "raw_bytes": 714978,
+      "raw_sha256": "fbf3d1e38438dfb215750e4415cfa6180658861e87e0211d86c7f7ca4e908d3d",
+      "archive_bytes": 714978,
+      "archive_sha256": "fbf3d1e38438dfb215750e4415cfa6180658861e87e0211d86c7f7ca4e908d3d",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793137186086416596-source16-redcard-finish.png",
+      "archived_as": "ordinary-redcard-acquired.png",
+      "raw_bytes": 875824,
+      "raw_sha256": "bd628495eeda0c1e05dc5f40de3309647d9ac58a8725d371eaae2c6ece490b76",
+      "archive_bytes": 875824,
+      "archive_sha256": "bd628495eeda0c1e05dc5f40de3309647d9ac58a8725d371eaae2c6ece490b76",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793138174969679019-source16-redgate-native-use.png",
+      "archived_as": "ordinary-redgate-native-use-checkpoint1.png",
+      "raw_bytes": 1131942,
+      "raw_sha256": "08b1797e3b35631ef60a904133221f5cc1bbfef5b81f1facd9e9c979bc4f5e0b",
+      "archive_bytes": 1131942,
+      "archive_sha256": "08b1797e3b35631ef60a904133221f5cc1bbfef5b81f1facd9e9c979bc4f5e0b",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/strength_press_probe.lua",
+      "archived_as": "strength_press_probe.lua.txt",
+      "raw_bytes": 8563,
+      "raw_sha256": "21d8270f9b59a1f5479410f762dea078f237e0add60633c2c374f59923cc6e14",
+      "archive_bytes": 8563,
+      "archive_sha256": "21d8270f9b59a1f5479410f762dea078f237e0add60633c2c374f59923cc6e14",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/strength_preview_locator.lua",
+      "archived_as": "strength_preview_locator.lua.txt",
+      "raw_bytes": 1632,
+      "raw_sha256": "70551ae021f47c25948efa2cfc43d355456fc419ee533b70dd650667ae24134d",
+      "archive_bytes": 1632,
+      "archive_sha256": "70551ae021f47c25948efa2cfc43d355456fc419ee533b70dd650667ae24134d",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/objective_route.lua",
+      "archived_as": "objective_route.lua.txt",
+      "raw_bytes": 1552,
+      "raw_sha256": "afddb4f7d417d3fc85fbb647248fc5cbdcf3ab8ede24bc81c432a397259e51b2",
+      "archive_bytes": 1552,
+      "archive_sha256": "afddb4f7d417d3fc85fbb647248fc5cbdcf3ab8ede24bc81c432a397259e51b2",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/native-pilot-1793137103602655224.result.json",
+      "archived_as": "walking/native-pilot-1793137103602655224.result.json.xz",
+      "raw_bytes": 671,
+      "raw_sha256": "9d566b74c0566f3eed02431d487c1574757f7767d98b0b151aa72d5537de720a",
+      "archive_bytes": 428,
+      "archive_sha256": "33c88581971ee68cb18c7a0030b0f653d8d8a29796c3be1736bd4653fbf8def0",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/native-pilot-1793137103602655224.jsonl",
+      "archived_as": "walking/native-pilot-1793137103602655224.jsonl.xz",
+      "raw_bytes": 102643,
+      "raw_sha256": "24e4c9b543b4b34629af5cceb3c8d7dddf0030f9032c4c6b97e19ef4b8044115",
+      "archive_bytes": 7740,
+      "archive_sha256": "9db8084690bae131e947b7a1b1ac6cce577e6efbf5162892688a1601adc3ccd0",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/native-pilot-1793137152388019605.result.json",
+      "archived_as": "walking/native-pilot-1793137152388019605.result.json.xz",
+      "raw_bytes": 698,
+      "raw_sha256": "b1a457762618af56bec0ff5fe8861a8399e77b2922403cca3f89c8dde6109f1a",
+      "archive_bytes": 448,
+      "archive_sha256": "8133b4f1faca8a76d3754797c49831144ff427f5d8ddbf8d950521596feec6e3",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/native-pilot-1793137152388019605.jsonl",
+      "archived_as": "walking/native-pilot-1793137152388019605.jsonl.xz",
+      "raw_bytes": 42290,
+      "raw_sha256": "d01f03ca583f4bb06fa7dc2ff0f7eee02816ed06a3390e6e051cbf4223ae1636",
+      "archive_bytes": 3080,
+      "archive_sha256": "80cdb146a76975c348215ebf53eb7eadbf223498a201ffc82912783b7e396072",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/native-pilot-1793137573968158517.result.json",
+      "archived_as": "walking/native-pilot-1793137573968158517.result.json.xz",
+      "raw_bytes": 675,
+      "raw_sha256": "42d70e8979882ee412ca55362cab27e351e7a3eee2dad966af306bd4b32d7c3d",
+      "archive_bytes": 432,
+      "archive_sha256": "f1eb910d3d516398dc9b2b5bec7672b4cbe7abef7b5dffdbdf628423ec3702f2",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/native-pilot-1793137573968158517.jsonl",
+      "archived_as": "walking/native-pilot-1793137573968158517.jsonl.xz",
+      "raw_bytes": 33543,
+      "raw_sha256": "21011bbd91f24dcfba2c2ce808274583a279c9e40ed0724ac0e78078764b1ae5",
+      "archive_bytes": 1912,
+      "archive_sha256": "b5a84f7a23f3543f86eba6323c2cf49d5f77840b7476a777edf967ce286b90ce",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/red-walk-a.json",
+      "archived_as": "walking/red-walk-a.json",
+      "raw_bytes": 493,
+      "raw_sha256": "b924200a775c475810fdef480aa8db5a08d58729a5b4a5965db036cf538d6278",
+      "archive_bytes": 493,
+      "archive_sha256": "b924200a775c475810fdef480aa8db5a08d58729a5b4a5965db036cf538d6278",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/red-walk-b.json",
+      "archived_as": "walking/red-walk-b.json",
+      "raw_bytes": 233,
+      "raw_sha256": "d0190a1d70e8cccdc3cb3a0ed0c7cfbca6fb06d739db65e9c193f1de786ecfa8",
+      "archive_bytes": 233,
+      "archive_sha256": "d0190a1d70e8cccdc3cb3a0ed0c7cfbca6fb06d739db65e9c193f1de786ecfa8",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/red-walk-finish.json",
+      "archived_as": "walking/red-walk-finish.json",
+      "raw_bytes": 291,
+      "raw_sha256": "3bfe42960e9ac65c2589e1768ee6d53895161b0b6346ecef0f2d27c19063db0e",
+      "archive_bytes": 291,
+      "archive_sha256": "3bfe42960e9ac65c2589e1768ee6d53895161b0b6346ecef0f2d27c19063db0e",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/redgate-strafe.json",
+      "archived_as": "walking/redgate-strafe.json",
+      "raw_bytes": 234,
+      "raw_sha256": "166095aa19480188fd1c875f0b43d0980006ac79a45359f5c24be2ceca529aff",
+      "archive_bytes": 234,
+      "archive_sha256": "166095aa19480188fd1c875f0b43d0980006ac79a45359f5c24be2ceca529aff",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/redgate-walk.json",
+      "archived_as": "walking/redgate-walk.json",
+      "raw_bytes": 233,
+      "raw_sha256": "7bef067bec4612a91a5bfdc59fa56b1b3593cb01c1831ca3468e3e7122a5c62d",
+      "archive_bytes": 233,
+      "archive_sha256": "7bef067bec4612a91a5bfdc59fa56b1b3593cb01c1831ca3468e3e7122a5c62d",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/phase2-frozen/data__legend_of_deborah__source16_objective_route.json",
+      "archived_as": "walking/objective-route-after-card.json",
+      "raw_bytes": 797,
+      "raw_sha256": "a9604f5f43b51c29464a793b4e7acc4645ded6192896c8a448785f6abfd16d7f",
+      "archive_bytes": 797,
+      "archive_sha256": "a9604f5f43b51c29464a793b4e7acc4645ded6192896c8a448785f6abfd16d7f",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/capture_game_audio.py",
+      "archived_as": "audio/capture_game_audio.py.txt",
+      "raw_bytes": 3381,
+      "raw_sha256": "46d5a9e4eb3705ba7498f03e8156adf57112754a914294720c08ec06db58497c",
+      "archive_bytes": 3381,
+      "archive_sha256": "46d5a9e4eb3705ba7498f03e8156adf57112754a914294720c08ec06db58497c",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/audio_capture_proposal.json",
+      "archived_as": "audio/audio_capture_proposal.json",
+      "raw_bytes": 4839,
+      "raw_sha256": "778808c3e435298834dba8de9c5f18db70e07211bc496768c9af1d9f67daa387",
+      "archive_bytes": 4839,
+      "archive_sha256": "778808c3e435298834dba8de9c5f18db70e07211bc496768c9af1d9f67daa387",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/game-only-audio-1793138165231908469.json",
+      "archived_as": "audio/game-only-audio-1793138165231908469.json",
+      "raw_bytes": 966,
+      "raw_sha256": "8d81b1fa85b9dea92833db4c6670f86d4cb7b299ddd49b155e47bc1cdcca4b30",
+      "archive_bytes": 966,
+      "archive_sha256": "8d81b1fa85b9dea92833db4c6670f86d4cb7b299ddd49b155e47bc1cdcca4b30",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source16-native/game-only-audio-1793138165231908469.wav",
+      "archived_as": "audio/game-only-native.wav.xz",
+      "raw_bytes": 1179692,
+      "raw_sha256": "f42a5be7b800d6087678c3b7909f24a6b781c52942a62453ff33e77127352a17",
+      "archive_bytes": 37828,
+      "archive_sha256": "fc6252ea837cb28403c4cc1d43ebc044fae9cc4daf3ba2165fcbc1c8d3a72b22",
+      "compression": "xz"
+    },
+    {
+      "source": "git:2fcea7259728cef381e447395d93335f6df85382:gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua",
+      "archived_as": "source-five/gamemodes__legend_of_deborah__gamemode__lod__sv_rpg_gate_d.lua.txt",
+      "raw_bytes": 40777,
+      "raw_sha256": "e9596992404d719b5264bf039b55dc49dfac7467eb19085ce9f464b84febac48",
+      "archive_bytes": 40777,
+      "archive_sha256": "e9596992404d719b5264bf039b55dc49dfac7467eb19085ce9f464b84febac48",
+      "compression": "none"
+    },
+    {
+      "source": "git:2fcea7259728cef381e447395d93335f6df85382:gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_language.lua",
+      "archived_as": "source-five/gamemodes__legend_of_deborah__gamemode__lod__sv_feedback_language.lua.txt",
+      "raw_bytes": 6552,
+      "raw_sha256": "2a040aaaef05e2b96ffb0bc4cd57c5500ca8db1e151f2ee51ccbf71031f0327d",
+      "archive_bytes": 6552,
+      "archive_sha256": "2a040aaaef05e2b96ffb0bc4cd57c5500ca8db1e151f2ee51ccbf71031f0327d",
+      "compression": "none"
+    },
+    {
+      "source": "git:2fcea7259728cef381e447395d93335f6df85382:gamemodes/legend_of_deborah/gamemode/lod/cl_hostile_presentation_safety.lua",
+      "archived_as": "source-five/gamemodes__legend_of_deborah__gamemode__lod__cl_hostile_presentation_safety.lua.txt",
+      "raw_bytes": 3049,
+      "raw_sha256": "9d9d9db507eac8c03d09c3cfd8ec9acf4d5d4b03521f5f2fdf30cbebc9c6f27d",
+      "archive_bytes": 3049,
+      "archive_sha256": "9d9d9db507eac8c03d09c3cfd8ec9acf4d5d4b03521f5f2fdf30cbebc9c6f27d",
+      "compression": "none"
+    },
+    {
+      "source": "git:2fcea7259728cef381e447395d93335f6df85382:gamemodes/legend_of_deborah/entities/entities/lod_gate/init.lua",
+      "archived_as": "source-five/gamemodes__legend_of_deborah__entities__entities__lod_gate__init.lua.txt",
+      "raw_bytes": 2166,
+      "raw_sha256": "e4851567b9948e2723813157cd04e7bbed89809947b0ac5df30b4dd4c048ed4e",
+      "archive_bytes": 2166,
+      "archive_sha256": "e4851567b9948e2723813157cd04e7bbed89809947b0ac5df30b4dd4c048ed4e",
+      "compression": "none"
+    },
+    {
+      "source": "git:2fcea7259728cef381e447395d93335f6df85382:gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua",
+      "archived_as": "source-five/gamemodes__legend_of_deborah__gamemode__lod__sv_safe_teleport.lua.txt",
+      "raw_bytes": 14142,
+      "raw_sha256": "d6bf46baa9034c70c4fe3d3bf5ac139705431e91833bbec2d0d78fa84f220866",
+      "archive_bytes": 14142,
+      "archive_sha256": "d6bf46baa9034c70c4fe3d3bf5ac139705431e91833bbec2d0d78fa84f220866",
+      "compression": "none"
+    }
+  ],
+  "qualification": "Copied only ignored preserved raw/frozen source16 evidence. Later source17 installation/proofs are not consulted."
+}

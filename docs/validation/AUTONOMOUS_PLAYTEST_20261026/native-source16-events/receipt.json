@@ -1,0 +1,137 @@
+{
+  "kind": "source16 finite native StrengthPress failure/persistence and ordinary Red objective samples",
+  "utc": "2026-10-27T22:10:30.185381+00:00",
+  "status": "Finite StrengthPress failed attempt, repeated-Use rejection and same-dungeon regeneration persistence observed/accepted. Event success branch and full event/family/campaign acceptance remain pending.",
+  "gameplay_source_commit": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
+  "prepared_and_rendered_build_label": "2fcea7259728cef381e447395d93335f6df85382",
+  "subsequent_gameplay_repair": "../npc-aim-boundary/BUG-017.json",
+  "source_identity": {
+    "provenance": "source-provenance.json",
+    "realms": [
+      "source-client-proof.json",
+      "source-server-proof.json"
+    ],
+    "exact_five_sources": "source-five/",
+    "production_manifest": "../stale-life-binding/native-repaired/production-manifest.json",
+    "files": 576,
+    "qualification": "Frozen source16 receipts and exact Git source exports; no later source17 live file substituted. All576 manifest entries match earlier source16 native acceptance evidence. Both realms match five exact guards, but those boundary flags alone never accept gameplay."
+  },
+  "design": {
+    "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": [
+      "00 AI ENTRYPOINT",
+      "01 AI RULE INDEX",
+      "05 CORE LOOP & WORLD LOD-EVENT-EXPANSION, StrengthPress row59821",
+      "06 MULTIPLAYER, LIFECYCLE & UI LOD-EVENT-EXPANSION ownership/interactions; stable Strength trial row9653",
+      "07 IMPLEMENTATION & TUNING LOD-EVENT-EXPANSION"
+    ],
+    "expected": "One stable ordinary nonexploding1d20 plus canonical STR modifier vs12. Success20 $DEB, failure no cost/reward and attempt spent. Immutable account/campaign/dungeon/archetype receipt survives same-dungeon regeneration. No combat pause or invulnerability."
+  },
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+    "client": "Windows x86 GMod2026.09.17/LuaJIT2.0.4 under Proton10",
+    "rendered_size": [
+      1280,
+      800
+    ],
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "layout_seed": 1967490589,
+    "epoch": 1,
+    "dungeon": 1,
+    "run_id": "campaign:5",
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true,
+    "hero": "Jonah \"The Substitute\" Price",
+    "class": "fighter",
+    "ordinary_selected_feat": "WIS_FRUGAL_MAP / Frugal Cartography",
+    "qualification": "Ordinary class/feat, native starter claim and portal deployment precede these samples. Early normal1800-second clock is logged; later clock explicitly extended to7200 before gate approach/event fixtures. This is developer exploration, not a normal timed final-candidate pass."
+  },
+  "strength_press": {
+    "setup": "Canonical lod_event_preview_generate strength_press regenerated the same dungeon. The ordinary unlocked route was unavailable from the current location; root then used the separately explicit private preview locator beyond progression locks for rare encounter setup. It revalidates exact Hero/event/run ownership and canonical supported landing, but deliberately bypasses route locks. This cannot prove traversal, Warp or progression-bypass prevention.",
+    "scripts": [
+      "strength_press_probe.lua.txt",
+      "strength_preview_locator.lua.txt"
+    ],
+    "before": "strength-before-regenerate.json",
+    "after_regeneration": "strength-after-regenerate.json",
+    "public_offer": "Displayed snapshot: STR modifier\u22121, success chance40%, nonexploding1d20+STR vs12, success20 $DEB, failure no cost/reward. This is snapshot/prompt data; not a claim that every near-look line was independently legible in the screenshots.",
+    "native_first_use": "Root pressed ordinary native E at the actual machine. First-use screenshot and console/RPG report show1d20face1\u22121STR=0vs12, failed; attempt spent.",
+    "exact_receipt": {
+      "debit": 0,
+      "account": "76561198025505071",
+      "message": "1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.",
+      "dc": 12,
+      "face": 1,
+      "total": 0,
+      "modifier": -1,
+      "credit": 0,
+      "payout": 0,
+      "success": false
+    },
+    "repeated_use": "A subsequent ordinary E at actual event2006 is rejected with Your attempt was already spent or storage is unavailable. Read-only capture remains admission_current=true, spent=true, exact receipt unchanged and wallet0.",
+    "regeneration": "Second canonical same-dungeon preview replaces event2006/creation2226 with1015/creation3243 and native spawn7\u21928. Campaign:5, dungeon1, account transaction key and exact failed receipt remain identical; wallet0. This proves regeneration/body-respawn persistence for this attempt, not a new Hero identity or disconnect/reconnect.",
+    "actual_regenerated_repeat": "Root relocated to the actual replacement machine and pressed native E again; the denial and admission_current=true/spent=true capture confirm no new roll or reward. Earlier E at the spawn granted pistol ammo and is explicitly not counted as event interaction.",
+    "photos": [
+      "strength-first-native-use.png",
+      "strength-repeat-denied-console.png",
+      "regenerated-at-spawn-not-an-event-use.png",
+      "strength-regenerated-native-repeat-denied.png"
+    ],
+    "wallet": "All seven observations balance0/score0, debit0/credit0/payout0; exact face/modifier/total/DC stable across repeated Use and regeneration.",
+    "finite_result": "Failed-attempt resolution, repeat denial and same-dungeon regeneration persistence passed on source16. Failure is the legitimate roll outcome, not a defect.",
+    "pending": [
+      "Success20 $DEB payout/transaction and subsequent repeat denial",
+      "Reconnect and replacement-Hero identity persistence",
+      "Ordinary traversal/admission without locator; cancellation/abandonment and real combat adjacency",
+      "Cooperative simultaneous attempts/shared-versus-personal proof",
+      "Other trial archetypes and every other event family"
+    ]
+  },
+  "ordinary_red_progression_partial": {
+    "scope": "Native walking from the current deployed spawn through the Redcard corridor, automatic Redcard acquisition and later native Redgate Use; no teleport/position/collision/progression edits in these walking samples. Earlier separate life fixtures and later event locator do not count as route evidence.",
+    "walk_a": "walking/native-pilot-1793137103602655224.result.json.xz:30.023seconds,240frames,11waypoints,0shots,HP100; ends by normal bounded timeout with held keys released.",
+    "walk_b": "walking/native-pilot-1793137152388019605.result.json.xz:13.576seconds,99frames,5waypoints,0shots,HP100; stops on world/body/stage observer change at card acquisition. Final Redcard screenshot and subsequent stage2 route report identify progression rather than silently treating the guard stop as full path completion.",
+    "redcard_photo": "ordinary-redcard-acquired.png shows R CARD and OPEN RED GATE, remaining14:23 under the original countdown.",
+    "gate_approach": "walking/native-pilot-1793137573968158517.result.json.xz:11.211seconds,78frames,4waypoints,path_complete,0shots,HP100. Root then used native W.4seconds and E.15seconds at the real reader.",
+    "gate_photo": "ordinary-redgate-native-use-checkpoint1.png visibly shows RED GATE OPEN\u2014CHECKPOINT1 and objective FIND BLUE KEYCARD; root reports ordinary reader activation. Clock had already been explicitly extended by then.",
+    "qualification": "Server-generated route knowledge assists input walking; this does not accept player navigation feats, map discovery/sharing, Blue/Yellow/Neil/boss/rescue route, all collision/lighting or full campaign. Bright gate-scene presentation is retained without claiming broad lighting readability."
+  },
+  "audio": {
+    "evidence": "audio/verification.json",
+    "raw": "audio/game-only-native.wav.xz",
+    "script": "audio/capture_game_audio.py.txt",
+    "result": "Unaccepted perceptual coverage. Exact GMod owned stream1664/PID74708/birth6014333 remains matched before/after;8-second lease yields294912 stereo48kHz16-bit frames=6.144seconds. SHA/RMS/peak independently verified. No routing/default-device/module/microphone changes. Root could not consume playback because the tool returned unsupported; no sound was claimed heard or correctly associated with an action."
+  },
+  "errors_and_failed_evidence": {
+    "console": "console_latest.txt.xz",
+    "markers": "console-markers.json",
+    "actual_game_defect": "Retained native NextBot lod_hostile sv_magnum_aim_state.lua271 GetActiveWeapon error is BUG017, repaired later separately; this source16 session is not clean.",
+    "tooling_error": "Retained lua_run1 GetObjectiveGraphTarget nil-method invocation is a wrong diagnostic authority call; corrected route helper uses ProgressionDirector. It is not silently removed. Final build counters server2/client0 retain both errors.",
+    "other_limits": "Earlier native pilot turn/raw-input/observer TTL/sanctuary-ammo failed setups and natural deaths remain historical evidence, not clean-pass credit or automatic gameplay defects. No performance acceptance under developerDense/diagnostics."
+  },
+  "lifecycle_and_preservation": {
+    "terminal": "terminal-closure.json",
+    "result": "Source16 normal quit and bounded launcher terminal: wrapper_exit0, remaining_owned_pids[],unproven_native_pids[],cleanup_errors[]. Original personal configuration/SQLite hashes and DATA/save inventory snapshots exactly unchanged.",
+    "cloud": "Steam app4000 Cloud temporarily Off, originally On; root must restore at the private campaign end. No Cloud-cvar support inferred."
+  },
+  "evidence": {
+    "manifest": "artifact-manifest.json",
+    "default_package": [
+      "console_latest.txt.xz",
+      "rpg_summary_latest.txt.xz"
+    ],
+    "detail": "rpg_session_latest.txt.xz",
+    "walk_packets": "walking/",
+    "terminal": "terminal-closure.json"
+  },
+  "clean_pass_streak": 0,
+  "full_campaign_pass": false,
+  "cooperative_acceptance": false,
+  "next_finite_gate": "Current candidate source17 must separately recheck BUG017 native NPC firearm behavior; then continue ordinary progression and a distinct legitimate StrengthPress account/dungeon success branch without refreshing the already spent campaign:5 entitlement."
+}

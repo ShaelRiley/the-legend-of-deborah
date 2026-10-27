@@ -1,0 +1,24 @@
+-- Explicit private preview locator, not an authored movement ability or route proof.
+-- All native body/event/run ownership and supported-arrival checks stay active.
+assert(GetConVar("lod_developer_mode"):GetBool())
+local f=assert(SP16,"load source16 StrengthPress observer first")
+assert(f:Current(),"stale Hero or preview")
+local T,R,N=LOD.SafeTeleport,LOD.RunManager,LOD.MazeNavigator
+local center=N:CellCenter(f.instance.cell)
+local before=f.p:GetPos()
+local dest
+for _,o in ipairs({Vector(96,0,0),Vector(-96,0,0),Vector(0,96,0),Vector(0,-96,0),Vector(128,0,0),Vector(-128,0,0),Vector(0,128,0),Vector(0,-128,0)}) do
+ local d=T:Landing(f.p,f.b.graph,f.instance.cell,center+o)
+ assert(f:Current(),"preview changed during floor trace")
+ if d and d:DistToSqr(f.primary:GetPos())<=160*160 then
+  local tr=util.TraceLine({start=d+(f.p:EyePos()-f.p:GetPos()),endpos=f.primary:WorldSpaceCenter(),filter=f.p,mask=MASK_SOLID})
+  if not tr.Hit or tr.Entity==f.primary then dest=d break end
+ end
+end
+assert(dest,"no supported near-event preview locator")
+R:MarkUnranked("Explicit developer preview locator beyond locks; no ordinary route acceptance")
+local ok,why=T:MoveBound(f.b,dest,function() return f:Current() end,f.instance.cell)
+f.report.preview_locator={accepted=ok,reason=tostring(why),at=SysTime(),beyond_progression_locks_fixture=true,ordinary_traversal_accepted=false,source={before.x,before.y,before.z},target={dest.x,dest.y,dest.z}}
+if ok and f:Current() then f.p:SetEyeAngles((f.primary:WorldSpaceCenter()-f.p:EyePos()):Angle()) end
+f:Capture("after-explicit-preview-locator")
+print("SP16_PREVIEW_LOCATOR",ok,tostring(why))

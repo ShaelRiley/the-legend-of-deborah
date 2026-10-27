@@ -1,0 +1,85 @@
+{
+  "kind": "reviewable task-only bounded audio capture proposal",
+  "status": "NOT EXECUTED; inventory only",
+  "inventory_file": "audio_inventory.json",
+  "inventory_sha256": "2decf9c004812682ee164158f550f65dbe86adec0139bbbb9dfade8d9ee1e665",
+  "inventory_script_sha256": "2949a3a0cb944c1d3a8756fdf3372477017c948e66600557a51e7c7b51b579d4",
+  "pinned_identity": {
+    "pid": 74708,
+    "birth": "6014333",
+    "comm": "gmod.exe",
+    "application.name": "Garry's Mod",
+    "application.process.binary": "wine-preloader",
+    "pulse_client": 1656,
+    "sink": 248,
+    "active_stream": {
+      "sink_input": 1664,
+      "object.serial": "1664",
+      "object.id": "178",
+      "corked": "no"
+    },
+    "other_owned_stream": {
+      "sink_input": 1657,
+      "object.serial": "1657",
+      "object.id": "180",
+      "corked": "yes"
+    },
+    "monitor_source": "alsa_output.pci-0000_04_00.5-platform-acp5x_mach.0.HiFi__Speaker__sink.monitor"
+  },
+  "preferred_method": "parec --monitor-stream=1664 connected to the exact sink248 monitor. PulseAudio supports selecting only the specified sink input from its sink monitor; do not capture the undifferentiated speaker monitor. This avoids changing game routing or output. PipeWire1.6.8 compatibility requires a bounded real capture check before acceptance.",
+  "trusted_tools": {
+    "parec": "/usr/bin/parec (pacat17.0-98-gb096, libpulse17.0.0)",
+    "pactl": "/usr/bin/pactl same libpulse17.0.0",
+    "pw-record": "/usr/bin/pw-record libpipewire1.6.8",
+    "pw-cat": "/usr/bin/pw-cat",
+    "ffmpeg": "/usr/bin/ffmpeg n8.1.2"
+  },
+  "sample_argv_NOT_EXECUTED": [
+    "timeout",
+    "--signal=INT",
+    "--kill-after=2s",
+    "8s",
+    "/usr/bin/parec",
+    "--record",
+    "--device=alsa_output.pci-0000_04_00.5-platform-acp5x_mach.0.HiFi__Speaker__sink.monitor",
+    "--monitor-stream=1664",
+    "--rate=48000",
+    "--channels=2",
+    "--format=s16le",
+    "--file-format=wav",
+    "--client-name=DeborahPrivateAudio16",
+    "--stream-name=DeborahGameOnly16",
+    ".build/autonomous-playtest-20261027/source16-native/game-audio-stream1664.wav"
+  ],
+  "required_guards": [
+    "Revalidate actual host process74708 birth6014333 and exact stream1664 application.process.id74708/object.serial1664/client1656/sink248 immediately before starting. Abort on mismatch or missing process.",
+    "Use8s maximum capture with own recorder process handle and bounded INT/KILL cleanup; stop immediately if stream or process identity disappears/changes. Never signal the game or unrelated processes.",
+    "Require exact per-stream monitor target. If unsupported, failed, disappeared or silently rebound, reject file/abort; never drop --monitor-stream or record the shared speaker mix.",
+    "Do not enable microphones, alter default devices, change volumes/mute/routing, inject audio, use arbitrary media or print unrelated media metadata.",
+    "For coverage of both game streams, capture each exact owned stream to separate bounded files with identity guards; retain separate provenance, do not assume the corked stream is always silent.",
+    "Record root-selected native gameplay action/timestamps and build/seed. Audio sample energy supports capture/liveness only; perceptual sound correctness still needs actual listening and expected-action comparison."
+  ],
+  "fallback_NOT_AUTHORIZED_BY_THIS_TASK": {
+    "method": "Only if direct per-stream monitoring is unsupported: parent may separately authorize an owned temporary nullsink with unique task name, move only freshly matched owned game streams, capture its exact monitor, restore original per-stream sinks and unload only the owned module in finally.",
+    "restore_rules": [
+      "Snapshot stream\u2192original-sink mapping, volumes/mute and exact process/client/object serials before any mutation.",
+      "Do not change defaults or move unrelated audio. Pin created module ID/unique sink name.",
+      "Restore a surviving game stream only if its exact identity still matches and it remains on the task sink; preserve intervening user routing changes.",
+      "Unload only the captured module ID after task streams are restored and sink is empty. Report any restoration failure precisely.",
+      "This inventory task has NOT loaded modules, moved streams, created sinks or recorded audio."
+    ]
+  },
+  "primary_sources": [
+    "installed parec --help: --monitor-stream=INDEX records only sink input INDEX",
+    "https://freedesktop.org/software/pulseaudio/doxygen/stream_8h.html",
+    "https://wiki.freedesktop.org/www/Software/PulseAudio/Documentation/Developer/Clients/WritingVolumeControlUIs/",
+    "https://github.com/pulseaudio/pulseaudio/blob/master/src/utils/pacat.c"
+  ],
+  "actual_changes": {
+    "audio_capture": false,
+    "stream_moves": false,
+    "module_loads": false,
+    "device_changes": false,
+    "GUI": false
+  }
+}

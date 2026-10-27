@@ -1,0 +1,50 @@
+"""Bounded, read-only recording of one freshly verified owned GMod audio stream."""
+import array, hashlib, io, json, math, os, pathlib, re, signal, subprocess, time, wave
+PID,BIRTH,STREAM,SERIAL,CLIENT,SINK=74708,"6014333",1664,"1664","1656","248"
+AREA=pathlib.Path(__file__).resolve().parent
+stamp=str(time.time_ns()); out=AREA/("game-only-audio-"+stamp+".wav")
+receipt=out.with_suffix(".json")
+SOURCE="alsa_output.pci-0000_04_00.5-platform-acp5x_mach.0.HiFi__Speaker__sink.monitor"
+def guard():
+ st=pathlib.Path(f"/proc/{PID}/stat").read_text().rsplit(")",1)[1].split()
+ assert st[19]==BIRTH and pathlib.Path(f"/proc/{PID}/comm").read_text().strip()=="gmod.exe","native identity changed"
+ raw=subprocess.check_output(["pactl","list","sink-inputs"],text=True,timeout=2)
+ matches=[]
+ for chunk in re.split(r"(?m)^(?=Sink Input #\d+)",raw):
+  if not chunk.startswith("Sink Input #"+str(STREAM)+"\n"): continue
+  props=dict(re.findall(r'^\s+([\w.]+) = "(.*)"\s*$',chunk,re.M)); fields=dict(re.findall(r"^\t([^\t:\n]+): (.*)$",chunk,re.M))
+  assert props.get("application.process.id")==str(PID) and props.get("object.serial")==SERIAL and fields.get("Client")==CLIENT and fields.get("Sink")==SINK,"audio stream identity changed"
+  assert props.get("application.name")=="Garry's Mod","unexpected application"
+  matches.append({"index":STREAM,"serial":SERIAL,"pid":PID,"birth":BIRTH,"client":CLIENT,"sink":SINK})
+ assert len(matches)==1,"owned stream missing"
+ return matches[0]
+r={"kind":"bounded exact-owned-stream audio","started_unix":time.time(),"seconds_requested":8,"file":str(out),"identity":guard(),"routing_changes":False,"microphone_capture":False,"result":"unaccepted"}
+assert not out.exists()
+argv=["/usr/bin/parec","--record","--device="+SOURCE,"--monitor-stream="+str(STREAM),"--rate=48000","--channels=2","--format=s16le","--file-format=wav","--client-name=DeborahPrivateAudio16","--stream-name=DeborahGameOnly16",str(out)]
+proc=None
+try:
+ proc=subprocess.Popen(argv,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
+ print(json.dumps({"status":"recording_owned_stream","recorder_pid":proc.pid,"file":str(out)}),flush=True)
+ deadline=time.monotonic()+8
+ while time.monotonic()<deadline:
+  assert proc.poll() is None,"recorder exited early"
+  guard();time.sleep(.2)
+ r["identity_after"]=guard();r["result"]="captured_unaccepted"
+except BaseException as exc:
+ r["result"]="capture_failed";r["error"]=type(exc).__name__+": "+str(exc)
+finally:
+ if proc and proc.poll() is None:
+  proc.send_signal(signal.SIGINT)
+  try: proc.wait(timeout=1)
+  except subprocess.TimeoutExpired: proc.kill();proc.wait(timeout=1)
+ if proc:
+  r["recorder_exit"]=proc.returncode;r["stderr"]=proc.stderr.read().decode(errors="replace")[:1000]
+ r["finished_unix"]=time.time()
+ if out.exists():
+  r["sha256"]=hashlib.sha256(out.read_bytes()).hexdigest();r["bytes"]=out.stat().st_size
+  try:
+   with wave.open(str(out),"rb") as w:
+    r["channels"]=w.getnchannels();r["rate"]=w.getframerate();r["frames"]=w.getnframes();r["sample_width"]=w.getsampwidth();samples=array.array("h",w.readframes(w.getnframes()));r["duration"]=r["frames"]/r["rate"]
+    r["rms"]=math.sqrt(sum(v*v for v in samples)/len(samples)) if samples else 0;r["peak"]=max(map(abs,samples),default=0)
+  except Exception as exc:r["decode_error"]=str(exc)
+ receipt.write_text(json.dumps(r,indent=2)+"\n");print(json.dumps(r),flush=True)

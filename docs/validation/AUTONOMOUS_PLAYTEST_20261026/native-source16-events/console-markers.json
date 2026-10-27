@@ -1,0 +1,114 @@
+{
+  "source": "console_latest.txt.xz",
+  "markers": [
+    {
+      "line": 141,
+      "text": "[LOD:CLOCK] allowance=0 seconds"
+    },
+    {
+      "line": 142,
+      "text": "[LOD:CLOCK] epoch=1 level=1 started=false remaining=1800.00 timeout=false ready=nil physics=0"
+    },
+    {
+      "line": 185,
+      "text": "[LOD:CLOCK] allowance=0 seconds"
+    },
+    {
+      "line": 186,
+      "text": "[LOD:CLOCK] epoch=1 level=1 started=true remaining=1769.98 timeout=false ready=nil physics=0"
+    },
+    {
+      "line": 200,
+      "text": "[LOD:CLOCK] allowance=0 seconds"
+    },
+    {
+      "line": 201,
+      "text": "[LOD:CLOCK] epoch=1 level=1 started=true remaining=1680.36 timeout=false ready=nil physics=0"
+    },
+    {
+      "line": 208,
+      "text": "[LOD:EVENT-PREVIEW] STRENGTH PRESS preview is unranked. One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+    },
+    {
+      "line": 254,
+      "text": "STRENGTH PRESS preview is unranked. One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+    },
+    {
+      "line": 262,
+      "text": "SP16_OBS {\"hp\":100,\"legal_path\":[],\"label\":\"before-native-use\",\"at\":678.063274,\"position\":[-3840,-2688,-12271.376953125],\"balance_delta_from_first\":0,\"admission_current\":false,\"expected\":\"One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.\",\"simple_same_floor_route\":false,\"balance\":0,\"lives\":2,\"score\":0,\"legal_path_nodes\":0,\"str_modifier\":-1,\"transaction_key\":\"event-expansion:campaign:5:1:strength_press:claim:76561198025505071\",\"details\":{\"status\":\"Your STR modifier: -1. Success chance: 40%.\",\"spent\":false,\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":2006,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"}}"
+    },
+    {
+      "line": 272,
+      "text": "[ERROR] lua_run:1: attempt to call method 'GetObjectiveGraphTarget' (a nil value)"
+    },
+    {
+      "line": 352,
+      "text": "NextBot [85][lod_hostile] Error: addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_magnum_aim_state.lua:271: attempt to call method 'GetActiveWeapon' (a nil value)"
+    },
+    {
+      "line": 461,
+      "text": "SP16_OBS {\"hp\":100,\"legal_path\":[],\"label\":\"before-native-use\",\"at\":2473.5238906,\"position\":[-2971.41162109375,3082.986328125,-12271.9375],\"balance_delta_from_first\":0,\"admission_current\":false,\"expected\":\"One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.\",\"simple_same_floor_route\":false,\"balance\":0,\"lives\":1,\"score\":0,\"legal_path_nodes\":0,\"str_modifier\":-1,\"transaction_key\":\"event-expansion:campaign:5:1:strength_press:claim:76561198025505071\",\"details\":{\"status\":\"Your STR modifier: -1. Success chance: 40%.\",\"spent\":false,\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":2006,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"}}"
+    },
+    {
+      "line": 463,
+      "text": "SP16_OBS {\"candidate\":[1632,768,-11885.9375],\"hp\":100,\"legal_path\":[{\"key\":\"15:13:1\",\"position\":[1536,768,-11887.96875]}],\"label\":\"after-explicit-preview-locator\",\"at\":2474.6008566,\"position\":[1632,768,-11885.9375],\"balance_delta_from_first\":0,\"admission_current\":true,\"expected\":\"One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.\",\"simple_same_floor_route\":true,\"balance\":0,\"lives\":1,\"score\":0,\"legal_path_nodes\":1,\"str_modifier\":-1,\"transaction_key\":\"event-expansion:campaign:5:1:strength_press:claim:76561198025505071\",\"details\":{\"status\":\"Your STR modifier: -1. Success chance: 40%.\",\"spent\":false,\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":2006,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"}}"
+    },
+    {
+      "line": 464,
+      "text": "SP16_PREVIEW_LOCATOR\ttrue\t1632.000000 768.000000 -11885.937500"
+    },
+    {
+      "line": 465,
+      "text": "STRENGTH PRESS \u2014 1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent."
+    },
+    {
+      "line": 484,
+      "text": "SP16_OBS {\"claim\":{\"debit\":0,\"account\":\"76561198025505071\",\"message\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"dc\":12,\"face\":1,\"total\":0,\"modifier\":-1,\"credit\":0,\"payout\":0,\"success\":false},\"candidate\":[1632,768,-11885.9375],\"hp\":100,\"legal_path\":[{\"key\":\"15:13:1\",\"position\":[1536,768,-11887.96875]}],\"label\":\"after-native-use\",\"at\":2644.031587,\"position\":[1632,768,-11887.017578125],\"balance_delta_from_first\":0,\"admission_current\":true,\"expected\":\"One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.\",\"simple_same_floor_route\":true,\"balance\":0,\"lives\":1,\"score\":0,\"legal_path_nodes\":1,\"str_modifier\":-1,\"transaction_key\":\"event-expansion:campaign:5:1:strength_press:claim:76561198025505071\",\"details\":{\"spent\":true,\"status\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":2006,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"}}"
+    },
+    {
+      "line": 485,
+      "text": "STRENGTH PRESS \u2014 Your attempt was already spent or storage is unavailable."
+    },
+    {
+      "line": 490,
+      "text": "SP16_OBS {\"claim\":{\"debit\":0,\"account\":\"76561198025505071\",\"message\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"dc\":12,\"face\":1,\"total\":0,\"modifier\":-1,\"credit\":0,\"payout\":0,\"success\":false},\"candidate\":[1632,768,-11885.9375],\"hp\":100,\"legal_path\":[{\"key\":\"15:13:1\",\"position\":[1536,768,-11887.96875]}],\"label\":\"after-repeat-native-use\",\"at\":2691.0290387,\"position\":[1632,768,-11887.017578125],\"balance_delta_from_first\":0,\"admission_current\":true,\"expected\":\"One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.\",\"simple_same_floor_route\":true,\"balance\":0,\"lives\":1,\"score\":0,\"legal_path_nodes\":1,\"str_modifier\":-1,\"transaction_key\":\"event-expansion:campaign:5:1:strength_press:claim:76561198025505071\",\"details\":{\"spent\":true,\"status\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":2006,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"}}"
+    },
+    {
+      "line": 493,
+      "text": "[LOD:EVENT-PREVIEW] STRENGTH PRESS preview is unranked. One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+    },
+    {
+      "line": 539,
+      "text": "STRENGTH PRESS preview is unranked. One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+    },
+    {
+      "line": 544,
+      "text": "SP16_OBS {\"claim\":{\"debit\":0,\"account\":\"76561198025505071\",\"message\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"dc\":12,\"face\":1,\"total\":0,\"modifier\":-1,\"credit\":0,\"payout\":0,\"success\":false},\"hp\":100,\"legal_path\":[],\"label\":\"before-native-use\",\"at\":2718.3390679,\"position\":[-3840,-2688,-12271.376953125],\"balance_delta_from_first\":0,\"admission_current\":false,\"expected\":\"One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.\",\"simple_same_floor_route\":false,\"balance\":0,\"lives\":1,\"score\":0,\"legal_path_nodes\":0,\"str_modifier\":-1,\"transaction_key\":\"event-expansion:campaign:5:1:strength_press:claim:76561198025505071\",\"details\":{\"spent\":true,\"status\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":1015,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"}}"
+    },
+    {
+      "line": 555,
+      "text": "SP16_OBS {\"claim\":{\"debit\":0,\"account\":\"76561198025505071\",\"message\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"dc\":12,\"face\":1,\"total\":0,\"modifier\":-1,\"credit\":0,\"payout\":0,\"success\":false},\"candidate\":[1632,768,-11885.9375],\"hp\":100,\"legal_path\":[{\"key\":\"15:13:1\",\"position\":[1536,768,-11887.96875]}],\"label\":\"after-explicit-preview-locator\",\"at\":2795.9089072,\"position\":[1632,768,-11885.9375],\"balance_delta_from_first\":0,\"admission_current\":true,\"expected\":\"One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.\",\"simple_same_floor_route\":true,\"balance\":0,\"lives\":1,\"score\":0,\"legal_path_nodes\":1,\"str_modifier\":-1,\"transaction_key\":\"event-expansion:campaign:5:1:strength_press:claim:76561198025505071\",\"details\":{\"spent\":true,\"status\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":1015,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"}}"
+    },
+    {
+      "line": 556,
+      "text": "SP16_PREVIEW_LOCATOR\ttrue\t1632.000000 768.000000 -11885.937500"
+    },
+    {
+      "line": 557,
+      "text": "STRENGTH PRESS \u2014 Your attempt was already spent or storage is unavailable."
+    },
+    {
+      "line": 562,
+      "text": "SP16_OBS {\"claim\":{\"debit\":0,\"account\":\"76561198025505071\",\"message\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"dc\":12,\"face\":1,\"total\":0,\"modifier\":-1,\"credit\":0,\"payout\":0,\"success\":false},\"candidate\":[1632,768,-11885.9375],\"hp\":100,\"legal_path\":[{\"key\":\"15:13:1\",\"position\":[1536,768,-11887.96875]}],\"label\":\"after-regenerated-native-repeat\",\"at\":2837.8779969,\"position\":[1632,768,-11887.017578125],\"balance_delta_from_first\":0,\"admission_current\":true,\"expected\":\"One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.\",\"simple_same_floor_route\":true,\"balance\":0,\"lives\":1,\"score\":0,\"legal_path_nodes\":1,\"str_modifier\":-1,\"transaction_key\":\"event-expansion:campaign:5:1:strength_press:claim:76561198025505071\",\"details\":{\"spent\":true,\"status\":\"1d20 [1] -1 STR = 0 vs 12 \u2014 failed; attempt spent.\",\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":1015,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"}}"
+    },
+    {
+      "line": 563,
+      "text": "[LOD:CLOCK] allowance=0 seconds"
+    },
+    {
+      "line": 564,
+      "text": "[LOD:CLOCK] epoch=1 level=1 started=true remaining=6045.23 timeout=false ready=nil physics=0"
+    }
+  ],
+  "qualification": "Retains one wrong diagnostic GetObjectiveGraphTarget call and actual NPC BUG017 GetActiveWeapon error. These are not hidden or reclassified into a clean pass."
+}

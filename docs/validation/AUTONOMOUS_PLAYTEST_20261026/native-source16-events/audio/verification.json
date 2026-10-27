@@ -1,0 +1,16 @@
+{
+  "raw_sha256": "f42a5be7b800d6087678c3b7909f24a6b781c52942a62453ff33e77127352a17",
+  "frames": 294912,
+  "rate": 48000,
+  "channels": 2,
+  "width": 2,
+  "duration": 6.144,
+  "requested_wall_lease": 8,
+  "rms": 518.1814538140835,
+  "peak": 11012,
+  "exact_stream_identity_before_after_equal": true,
+  "result": "Captured native owned-stream frames and energy only; perceived correctness unaccepted. Root audio-consumption tool returned unsupported; no listening claim.",
+  "routing_or_device_changes": false,
+  "microphone_capture": false,
+  "qualification": "An8-second recording lease yielded6.144seconds of PCM. No full8-second frame claim or event-to-sound identification."
+}

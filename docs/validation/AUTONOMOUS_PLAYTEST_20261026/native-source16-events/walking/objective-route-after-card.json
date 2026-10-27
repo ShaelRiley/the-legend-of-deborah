@@ -1,0 +1,54 @@
+{
+	"spawn": 7,
+	"seed": 1550561962,
+	"stage": 2,
+	"qualification": "Server route knowledge assists ordinary native walking; no collision/progression/position edits or player navigation-feat acceptance.",
+	"goal": "3:19:0",
+	"route": [
+		{
+			"key": "1:21:0",
+			"position": [
+				-3840,
+				3840,
+				-12271.96875
+			]
+		},
+		{
+			"key": "1:20:0",
+			"position": [
+				-3840,
+				3456,
+				-12271.96875
+			]
+		},
+		{
+			"key": "1:19:0",
+			"position": [
+				-3840,
+				3072,
+				-12271.96875
+			]
+		},
+		{
+			"key": "2:19:0",
+			"position": [
+				-3456,
+				3072,
+				-12271.96875
+			]
+		},
+		{
+			"key": "3:19:0",
+			"position": [
+				-3072,
+				3072,
+				-12271.96875
+			]
+		}
+	],
+	"epoch": 1,
+	"kind": "read_only_current_objective_route",
+	"nodes": 5,
+	"start": "1:21:0",
+	"routeExists": true
+}

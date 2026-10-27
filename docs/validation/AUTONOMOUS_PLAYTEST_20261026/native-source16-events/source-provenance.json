@@ -1,0 +1,31 @@
+{
+  "frozen_prepared_source": ".build/autonomous-playtest-20261027/source16-native/phase2-frozen/prepared.json",
+  "frozen_prepared_sha256": "389812545702d5c973bc2c3a052e1e95361d031fbe12ac6d425fc07dd4ad8d47",
+  "selected_prepared_fields": {
+    "kind": "prepared_standalone_private_profile",
+    "commit": "2fcea7259728cef381e447395d93335f6df85382",
+    "production_tree_identity": {
+      "gamemodes": "3bd4742a2bfb34204eed4b673b85c4e76e97de25",
+      "lua": "e2ab4ef2e3ef451336fa4c60d06dbd9fdac1cf45",
+      "sound": "600815fef14f7b13e7ba2d93d0090d8c3025b14b"
+    },
+    "installation": "/home/deck/Downloads/the-legend-of-deborah/.build/lod-gmod",
+    "compatdata_initially_empty": true,
+    "source_proofs": {
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua": "e9596992404d719b5264bf039b55dc49dfac7467eb19085ce9f464b84febac48",
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_language.lua": "2a040aaaef05e2b96ffb0bc4cd57c5500ca8db1e151f2ee51ccbf71031f0327d",
+      "gamemodes/legend_of_deborah/gamemode/lod/cl_hostile_presentation_safety.lua": "9d9d9db507eac8c03d09c3cfd8ec9acf4d5d4b03521f5f2fdf30cbebc9c6f27d",
+      "gamemodes/legend_of_deborah/entities/entities/lod_gate/init.lua": "e4851567b9948e2723813157cd04e7bbed89809947b0ac5df30b4dd4c048ed4e",
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua": "d6bf46baa9034c70c4fe3d3bf5ac139705431e91833bbec2d0d78fa84f220866"
+    },
+    "startup_manifest_entries": 118,
+    "source16_sha256": "d6bf46baa9034c70c4fe3d3bf5ac139705431e91833bbec2d0d78fa84f220866",
+    "source16_crc32": 377454284,
+    "personal_config_copied": false,
+    "personal_prefix_or_credentials_copied": false,
+    "developer_fixtures": true,
+    "qualification": "Source16 private developer fixtures, fresh prefix. No repaired native acceptance or normal final campaign pass inferred."
+  },
+  "all576_manifest_exactly_matches": "../stale-life-binding/native-repaired/production-manifest.json",
+  "qualification": "Selected nonsecret receipt fields only; no profile token, cfg contents, account database or private prefix archived. No current/live installation substituted for source16 frozen evidence."
+}

@@ -1,0 +1,138 @@
+-- Private source16 diagnostic. No dice draw, interaction, reward or HP mutation.
+-- Load only after ordinary deployment and the canonical single-event preview.
+local R,T,D,N=LOD.RunManager,LOD.SafeTeleport,LOD.EventDirector,LOD.MazeNavigator
+if util.CRC(file.Read('gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua','GAME') or '')~='377454284' then
+    print('SP16_REFUSED: source16 SafeTeleport required') return
+end
+local humans=player.GetHumans()
+if #humans~=1 or not GetConVar('lod_developer_mode'):GetBool() then
+    print('SP16_REFUSED: one actual private developer client required') return
+end
+local p=humans[1]
+local b=T:Bind(p)
+local context=D.Context
+local instance
+for _,v in ipairs(context and context.plan.instances or {}) do
+    if v.archetype=='strength_press' then
+        if instance then print('SP16_REFUSED: duplicate StrengthPress') return end
+        instance=v
+    end
+end
+if not b or not instance or not D:IsCurrent(instance) or instance.state~='active' then
+    print('SP16_REFUSED: deployed current Hero and actual active StrengthPress required') return
+end
+local primary=instance.entities[1]
+if not IsValid(primary) or type(instance.parts)~='table' or #instance.parts==0 then
+    print('SP16_REFUSED: native event parts absent') return
+end
+local f={p=p,b=b,context=context,instance=instance,primary=primary,creation=primary:GetCreationID(),
+    identity=p:SteamID64(),hero=b.ps.heroSerial,progression=b.ps.progressionState,
+    psIdentity=b.ps.identity,runId=b.run.RunId,level=b.run.Level,epoch=b.run.CampaignEpoch,
+    cell=instance.cell,cellKey=instance.cellKey,
+    home=p:GetPos(),homeCell=T:CellAt(b.graph,p:GetPos()),parts=instance.parts,owners={}}
+for k,v in ipairs(instance.parts or {}) do f.owners[k]=v end
+function f:Current()
+    if SP16~=self or not T:Matches(self.b) or D.Context~=self.context
+        or not D:IsCurrent(self.instance) or self.instance.state~='active'
+        or self.p:SteamID64()~=self.identity or self.b.ps.heroSerial~=self.hero
+        or self.b.ps.identity~=self.psIdentity or self.b.run.RunId~=self.runId
+        or self.b.run.Level~=self.level or self.b.run.CampaignEpoch~=self.epoch
+        or self.b.ps.progressionState~=self.progression or self.instance.parts~=self.parts
+        or self.instance.archetype~='strength_press' or self.instance.cell~=self.cell
+        or self.instance.cellKey~=self.cellKey or self.b.graph.Cells[self.cellKey]~=self.cell
+        or #self.parts~=#self.owners or #self.instance.entities~=#self.owners
+        or self.primary~=self.instance.entities[1] or not IsValid(self.primary)
+        or self.primary:GetCreationID()~=self.creation then return false end
+    for k,v in ipairs(self.owners) do
+        if not IsValid(v) or self.parts[k]~=v or self.instance.entities[k]~=v
+            or v.LODEventInstance~=self.instance then return false end
+    end
+    local s=self.b.run
+    local clock=s.CampaignClock
+    return s.BuildReady and not s.Failed and not s.LevelCleared and not s.SimulationFrozen
+        and not self.b.ps.inStaging and not self.b.ps.eliminated
+        and not R:IsSoldierControl(self.p) and R:IsActivePlayer(self.p)
+        and not(clock and (clock.expired or clock.scene or clock.deadline and SysTime()>=clock.deadline))
+end
+function f:Path()
+    if not self:Current() then return nil end
+    return N:FindPath(self.b.graph,T:CellAt(self.b.graph,self.p:GetPos()),self.instance.cell)
+end
+function f:Candidate()
+    if not self:Path() then return nil end
+    local center=N:CellCenter(self.instance.cell)
+    for _,offset in ipairs({Vector(96,0,0),Vector(-96,0,0),Vector(0,96,0),Vector(0,-96,0),
+        Vector(128,0,0),Vector(-128,0,0),Vector(0,128,0),Vector(0,-128,0)}) do
+        local pos=T:Landing(self.p,self.b.graph,self.instance.cell,center+offset)
+        if not self:Current() then return nil end
+        if pos and pos:DistToSqr(self.primary:GetPos())<=160*160 then
+            local eye=pos+(self.p:EyePos()-self.p:GetPos())
+            local tr=util.TraceLine({start=eye,endpos=self.primary:WorldSpaceCenter(),filter=self.p,mask=MASK_SOLID})
+            if self:Current() and (not tr.Hit or tr.Entity==self.primary) then return pos end
+        end
+    end
+end
+local function vec(v) return v and {v.x,v.y,v.z} or nil end
+f.report={kind='source16 private StrengthPress diagnostic',fixture=true,
+    qualification='Preview and optional supported relocation are unranked setup; no ordinary route, campaign or cooperative acceptance.',
+    level=b.run.Level,seed=b.run.LevelSeed,campaign=b.run.CampaignSeed,epoch=b.run.CampaignEpoch,
+    run=b.run.RunId,event_id=instance.id,event_cell=instance.cellKey,event_entity=primary:EntIndex(),
+    event_creation=f.creation,spawn=b.spawn,home=vec(f.home),observations={}}
+f.path='legend_of_deborah/strength_press_probe_'..tostring(math.floor(SysTime()*1000))..'.json'
+function f:Capture(label)
+    if not self:Current() then print('SP16_STALE: no observation accepted') return false end
+    local account,accountError=LOD.CryptoStore:Read(self.identity)
+    local receipt,receiptError=LOD.EventTransactions.Claim(self.instance,self.identity)
+    local def=LOD.EventRegistry.Definitions.strength_press
+    local details=def.Snapshot(self.instance,self.p,self.identity)
+    local derived=LOD.RPGAbilityRules:Derived(self.p)
+    local path=self:Path()
+    local route={}
+    local flat=path~=nil
+    for _,cell in ipairs(path or {}) do
+        route[#route+1]={key=LOD.MazeGenerator.CellKey(cell.x,cell.y,cell.z),position=vec(N:CellCenter(cell))}
+        if cell.z~=self.instance.cell.z or not T:FlatCell(self.b.graph,cell) then flat=false end
+    end
+    local candidate=self:Candidate()
+    if not self:Current() then print('SP16_STALE: observation discarded after native trace') return false end
+    local admitted=LOD.EventIncidents:Bind(D,self.instance,self.p,self.identity)~=nil
+    if not self:Current() then print('SP16_STALE: observation discarded after admission trace') return false end
+    local item={label=label or 'snapshot',at=SysTime(),position=vec(self.p:GetPos()),hp=self.p:Health(),lives=self.b.ps.lives,
+        balance=account and account.balance,score=account and account.score,wallet_error=accountError,
+        claim=receipt,claim_error=receiptError,transaction_key=LOD.EventTransactions.Key(self.instance,self.identity),
+        details=details,str_modifier=derived and derived.strMod,admission_current=admitted,
+        legal_path_nodes=path and #path or 0,legal_path=route,candidate=vec(candidate),
+        simple_same_floor_route=flat and #route<=16,expected='One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.'}
+    if self.beforeBalance==nil and account then self.beforeBalance=account.balance end
+    item.balance_delta_from_first=self.beforeBalance and account and account.balance-self.beforeBalance or nil
+    self.report.observations[#self.report.observations+1]=item
+    file.Write(self.path,util.TableToJSON(self.report,true))
+    file.Write('legend_of_deborah/strength_press_probe_latest.json',util.TableToJSON(self.report,true))
+    -- This is a proposal for root review, never an executed movement plan.
+    if item.simple_same_floor_route and candidate then
+        local points={}
+        for k=2,#route-1 do points[#points+1]=route[k].position end
+        points[#points+1]=vec(candidate)
+        file.Write('legend_of_deborah/strength_press_route_proposal.json',util.TableToJSON({path=points,
+            seconds=30,tolerance=48,pause_for_targets=false,face_route=true},true))
+    end
+    print('SP16_OBS '..util.TableToJSON(item))
+    return true
+end
+function f:RelocateFixture()
+    if not self:Current() or not self:Path() then
+        print('SP16_MOVE_REFUSED: no current unlocked route; open progression normally') return false
+    end
+    local dest=self:Candidate()
+    if not dest then print('SP16_MOVE_REFUSED: no supported visible near-event landing') return false end
+    R:MarkUnranked('StrengthPress supported relocation fixture; route unaccepted')
+    local function guard() return self:Current() and self:Path()~=nil end
+    local ok,why=T:MoveBound(self.b,dest,guard,self.instance.cell)
+    self.report.relocation={at=SysTime(),accepted=ok,result=tostring(why),ordinary_traversal_accepted=false}
+    if ok and self:Current() then self.p:SetEyeAngles((self.primary:WorldSpaceCenter()-self.p:EyePos()):Angle()) end
+    self:Capture('after-explicit-supported-relocation')
+    print('SP16_MOVE',ok,tostring(why))
+    return ok
+end
+SP16=f
+f:Capture('before-native-use')

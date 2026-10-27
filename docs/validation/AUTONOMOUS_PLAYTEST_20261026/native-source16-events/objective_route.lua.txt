@@ -1,0 +1,18 @@
+local R,T,N,P=LOD.RunManager,LOD.SafeTeleport,LOD.MazeNavigator,LOD.ProgressionDirector
+local p=assert(player.GetHumans()[1])
+local b=assert(T:Bind(p),"living deployed Hero required")
+local target=assert(P:GetObjectiveGraphTarget(),"no active objective")
+local start=T:CellAt(b.graph,p:GetPos())
+local goal=b.graph.Cells[LOD.MazeGenerator.CellKey(target.a.x,target.a.y,target.a.z)]
+local path=N:FindPath(b.graph,start,goal)
+local report={kind="read_only_current_objective_route",stage=R.State.ObjectiveStage,seed=b.seed,epoch=R.State.CampaignEpoch,spawn=b.spawn,start=start and LOD.MazeGenerator.CellKey(start.x,start.y,start.z),goal=goal and LOD.MazeGenerator.CellKey(goal.x,goal.y,goal.z),routeExists=path~=nil,nodes=path and #path or 0,route={},qualification="Server route knowledge assists ordinary native walking; no collision/progression/position edits or player navigation-feat acceptance."}
+local pts={}
+for i,c in ipairs(path or {}) do
+ local v=N:CellCenter(c)
+ report.route[#report.route+1]={key=LOD.MazeGenerator.CellKey(c.x,c.y,c.z),position={v.x,v.y,v.z}}
+ if i>1 and #pts<16 then pts[#pts+1]={v.x,v.y,v.z} end
+end
+if not T:Matches(b) then print("ROUTE16_STALE") return end
+file.Write("legend_of_deborah/source16_objective_route.json",util.TableToJSON(report,true))
+if #pts>0 then file.Write("legend_of_deborah/source16_objective_plan.json",util.TableToJSON({path=pts,visible_hostiles=true,seconds=30,tolerance=40,pause_for_targets=true,face_route=true},true)) end
+print("ROUTE16",report.routeExists,report.nodes,report.start,report.goal)

@@ -1,0 +1,37 @@
+{
+  "kind": "bounded exact-owned-stream audio",
+  "started_unix": 1793138165.2319534,
+  "seconds_requested": 8,
+  "file": "/home/deck/Downloads/the-legend-of-deborah/.build/autonomous-playtest-20261027/source16-native/game-only-audio-1793138165231908469.wav",
+  "identity": {
+    "index": 1664,
+    "serial": "1664",
+    "pid": 74708,
+    "birth": "6014333",
+    "client": "1656",
+    "sink": "248"
+  },
+  "routing_changes": false,
+  "microphone_capture": false,
+  "result": "captured_unaccepted",
+  "identity_after": {
+    "index": 1664,
+    "serial": "1664",
+    "pid": 74708,
+    "birth": "6014333",
+    "client": "1656",
+    "sink": "248"
+  },
+  "recorder_exit": 0,
+  "stderr": "",
+  "finished_unix": 1793138173.337264,
+  "sha256": "f42a5be7b800d6087678c3b7909f24a6b781c52942a62453ff33e77127352a17",
+  "bytes": 1179692,
+  "channels": 2,
+  "rate": 48000,
+  "frames": 294912,
+  "sample_width": 2,
+  "duration": 6.144,
+  "rms": 518.1814538140835,
+  "peak": 11012
+}

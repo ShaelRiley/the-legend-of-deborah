@@ -1,0 +1,249 @@
+{
+	"level": 1,
+	"seed": 1550561962,
+	"preview_locator": {
+		"ordinary_traversal_accepted": false,
+		"beyond_progression_locks_fixture": true,
+		"source": [
+			-2971.41162109375,
+			3082.986328125,
+			-12271.9375
+		],
+		"accepted": true,
+		"target": [
+			1632,
+			768,
+			-11885.9375
+		],
+		"reason": "1632.000000 768.000000 -11885.937500",
+		"at": 2474.5996888
+	},
+	"event_entity": 2006,
+	"qualification": "Preview and optional supported relocation are unranked setup; no ordinary route, campaign or cooperative acceptance.",
+	"observations": [
+		{
+			"hp": 100,
+			"legal_path": [],
+			"label": "before-native-use",
+			"at": 2473.5238906,
+			"position": [
+				-2971.41162109375,
+				3082.986328125,
+				-12271.9375
+			],
+			"balance_delta_from_first": 0,
+			"admission_current": false,
+			"expected": "One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.",
+			"simple_same_floor_route": false,
+			"balance": 0,
+			"lives": 1,
+			"score": 0,
+			"legal_path_nodes": 0,
+			"str_modifier": -1,
+			"transaction_key": "event-expansion:campaign:5:1:strength_press:claim:76561198025505071",
+			"details": {
+				"status": "Your STR modifier: -1. Success chance: 40%.",
+				"spent": false,
+				"kind": "incident",
+				"endpoints": [
+					{
+						"entityIndex": 2006,
+						"part": 0,
+						"name": "STRENGTH PRESS"
+					}
+				],
+				"action": "USE — make your one Strength attempt this dungeon.",
+				"name": "STRENGTH PRESS",
+				"offer": "One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+			}
+		},
+		{
+			"candidate": [
+				1632,
+				768,
+				-11885.9375
+			],
+			"hp": 100,
+			"legal_path": [
+				{
+					"key": "15:13:1",
+					"position": [
+						1536,
+						768,
+						-11887.96875
+					]
+				}
+			],
+			"label": "after-explicit-preview-locator",
+			"at": 2474.6008566,
+			"position": [
+				1632,
+				768,
+				-11885.9375
+			],
+			"balance_delta_from_first": 0,
+			"admission_current": true,
+			"expected": "One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.",
+			"simple_same_floor_route": true,
+			"balance": 0,
+			"lives": 1,
+			"score": 0,
+			"legal_path_nodes": 1,
+			"str_modifier": -1,
+			"transaction_key": "event-expansion:campaign:5:1:strength_press:claim:76561198025505071",
+			"details": {
+				"status": "Your STR modifier: -1. Success chance: 40%.",
+				"spent": false,
+				"kind": "incident",
+				"endpoints": [
+					{
+						"entityIndex": 2006,
+						"part": 0,
+						"name": "STRENGTH PRESS"
+					}
+				],
+				"action": "USE — make your one Strength attempt this dungeon.",
+				"name": "STRENGTH PRESS",
+				"offer": "One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+			}
+		},
+		{
+			"claim": {
+				"debit": 0,
+				"account": "76561198025505071",
+				"message": "1d20 [1] -1 STR = 0 vs 12 — failed; attempt spent.",
+				"dc": 12,
+				"face": 1,
+				"total": 0,
+				"modifier": -1,
+				"credit": 0,
+				"payout": 0,
+				"success": false
+			},
+			"candidate": [
+				1632,
+				768,
+				-11885.9375
+			],
+			"hp": 100,
+			"legal_path": [
+				{
+					"key": "15:13:1",
+					"position": [
+						1536,
+						768,
+						-11887.96875
+					]
+				}
+			],
+			"label": "after-native-use",
+			"at": 2644.031587,
+			"position": [
+				1632,
+				768,
+				-11887.017578125
+			],
+			"balance_delta_from_first": 0,
+			"admission_current": true,
+			"expected": "One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.",
+			"simple_same_floor_route": true,
+			"balance": 0,
+			"lives": 1,
+			"score": 0,
+			"legal_path_nodes": 1,
+			"str_modifier": -1,
+			"transaction_key": "event-expansion:campaign:5:1:strength_press:claim:76561198025505071",
+			"details": {
+				"spent": true,
+				"status": "1d20 [1] -1 STR = 0 vs 12 — failed; attempt spent.",
+				"kind": "incident",
+				"endpoints": [
+					{
+						"entityIndex": 2006,
+						"part": 0,
+						"name": "STRENGTH PRESS"
+					}
+				],
+				"action": "USE — make your one Strength attempt this dungeon.",
+				"name": "STRENGTH PRESS",
+				"offer": "One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+			}
+		},
+		{
+			"claim": {
+				"debit": 0,
+				"account": "76561198025505071",
+				"message": "1d20 [1] -1 STR = 0 vs 12 — failed; attempt spent.",
+				"dc": 12,
+				"face": 1,
+				"total": 0,
+				"modifier": -1,
+				"credit": 0,
+				"payout": 0,
+				"success": false
+			},
+			"candidate": [
+				1632,
+				768,
+				-11885.9375
+			],
+			"hp": 100,
+			"legal_path": [
+				{
+					"key": "15:13:1",
+					"position": [
+						1536,
+						768,
+						-11887.96875
+					]
+				}
+			],
+			"label": "after-repeat-native-use",
+			"at": 2691.0290387,
+			"position": [
+				1632,
+				768,
+				-11887.017578125
+			],
+			"balance_delta_from_first": 0,
+			"admission_current": true,
+			"expected": "One nonexploding d20 + canonical STR vs12; success credit20, failure credit0; one durable account/dungeon attempt.",
+			"simple_same_floor_route": true,
+			"balance": 0,
+			"lives": 1,
+			"score": 0,
+			"legal_path_nodes": 1,
+			"str_modifier": -1,
+			"transaction_key": "event-expansion:campaign:5:1:strength_press:claim:76561198025505071",
+			"details": {
+				"spent": true,
+				"status": "1d20 [1] -1 STR = 0 vs 12 — failed; attempt spent.",
+				"kind": "incident",
+				"endpoints": [
+					{
+						"entityIndex": 2006,
+						"part": 0,
+						"name": "STRENGTH PRESS"
+					}
+				],
+				"action": "USE — make your one Strength attempt this dungeon.",
+				"name": "STRENGTH PRESS",
+				"offer": "One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+			}
+		}
+	],
+	"spawn": 7,
+	"event_creation": 2226,
+	"run": "campaign:5",
+	"home": [
+		-2971.41162109375,
+		3082.986328125,
+		-12271.9375
+	],
+	"epoch": 1,
+	"kind": "source16 private StrengthPress diagnostic",
+	"event_id": "1:strength_press",
+	"event_cell": "15:13:1",
+	"campaign": 6102602,
+	"fixture": true
+}
