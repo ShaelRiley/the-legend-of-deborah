@@ -63,19 +63,22 @@
     "static_archive": "hostile-label-static.tar.xz",
     "static_archive_sha256": "1790cc0fac948108154b4b6c913e382f27bc739915072019acfa5424cc70afba",
     "static_manifest": "hostile-label-static-manifest.json",
-    "native_api_source_hashes": "archive:native-api-reconciliation.json"
+    "native_api_source_hashes": "archive:native-api-reconciliation.json",
+    "repaired_native": "native-source15-killnotice/receipt.json"
   },
-  "status": "Implemented/statically validated/independently reviewed on verified main8a9; repaired native class label remains pending.",
+  "status": "Implemented/statically validated/independently reviewed; finite native generic Hostile label and retained crossbow glyph accepted on fresh source15. Broad combat/UI/campaign acceptance remains open.",
   "limits": [
-    "Fixture models the inspected native language API boundary; it does not establish native rendered phrase/glyph layout.",
-    "Current compiled4322 has automatic Lua refresh disabled; a changed on-disk CRC is not proof the client loaded BUG014.",
+    "The fixture and actual rendered source15 frame establish the finite generic Hostile/crossbow/victim layout; broader labels/layout/audio/cooperative behavior remains separate.",
+    "The original compiled4322 observation remains retained as pre-repair failure; the accepted later source15 capture is a fresh native process with matched source identity.",
     "This generic native class fallback does not rename every actual enemy Soldier or replace existing RPG archetype/identity formatting."
   ],
   "next_native_gate": [
-    "Fresh-start source8a9 and verify HostilePresentationCRC2978872520 plus prior GateD/Feedback CRCs",
-    "Check cold native language.GetPhrase(\"#lod_hostile\") returns Hostile before first death",
-    "Observe actual native kill/death notice with a readable generic class label; confirm stock glyph and unrelated/unknown name behavior remain intact"
+    "Continue broader ordinary combat/UI/campaign testing on the current gameplay candidate; preserve this finite generic class label regression.",
+    "Unknown labels, other archetypes, audio, cooperative cases and full endings remain independently scoped."
   ],
-  "native_repair_accepted": false,
-  "clean_pass_streak": 0
+  "native_repair_accepted": true,
+  "clean_pass_streak": 0,
+  "native_repair_scope": "Readable generic Hostile attacker label beside actual native crossbow glyph and victim on one real death; explicit one-HP developer presentation fixture.",
+  "native_repair_evidence": "native-source15-killnotice/receipt.json",
+  "native_gameplay_commit": "74415d1a3f135052de467286a08ebc1907b1608a"
 }

@@ -1,0 +1,87 @@
+{
+  "kind": "BUG014 finite native stock kill-notice label and observed post-elimination UI",
+  "utc": "2026-10-27T21:17:20.901458+00:00",
+  "status": "Finite repaired native generic Hostile label and retained crossbow glyph passed; broad combat/lifecycle/campaign acceptance remains open.",
+  "repair_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "native_gameplay_commit": "74415d1a3f135052de467286a08ebc1907b1608a",
+  "fresh_install_prepared_and_build_label": "cd6274bf285bee0788b1f07bf3e6261e0cce2a1b",
+  "source_identity": {
+    "proofs": "../../floor-support/native-repaired/prepared-provenance.json and source-{client,server}-proof.json",
+    "presentation_sha256": "9d9d9db507eac8c03d09c3cfd8ec9acf4d5d4b03521f5f2fdf30cbebc9c6f27d",
+    "presentation_crc32": 2978872520,
+    "qualification": "Prepared all-production source matches74415; its gamemodes/lua/sound trees equal cd6274. Fresh source15 client and server boundary proofs match all five expected sources, including BUG014. Console BUILD_IDENTITY continues this same install, zero reported Lua errors, through this later fixture. This is fresh-process evidence, not automatic hot reload."
+  },
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+    "client": "Windows x86 Garry's Mod under Proton10, LuaJIT2.0.4, engine2026.09.17",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "epoch": 1,
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true,
+    "hero": "Logan \"Long Shot\" White",
+    "hero_class": "wizard",
+    "qualification": "Ordinary selection/starter/deployment preceded targeted tests. The dungeon clock had explicitly been extended to7200 seconds; this is not a normal timed campaign pass. H recovery/infinite-pistol setup and earlier teleports were developer fixtures. No comparative performance claim."
+  },
+  "fixture": {
+    "source": "rogue-killnotice-one-hp.lua.txt",
+    "sha256": "f20d38ee672ea2104aaf80e7760aa4ee200e267573e97be775d35e4827bdeddd",
+    "operator": "root",
+    "source_entity": 990,
+    "source_actor_id": "skeleton:91352027",
+    "source_display": "Skeleton Of Valerie \"Dead Serious\" Perry",
+    "source_class": "rogue",
+    "manual_hp": 1,
+    "previous_hp_logged": 100,
+    "spawn_serial_logged": 6,
+    "setup": "Explicit SetHealth(1) presentation fixture. Canonical SafeTeleport/EntrySafety guards put the actual Hero near the existing real Rogue Skeleton; no enemy-class edit, injected damage, fake Event or native death-notice injection. The natural AI burst is already active: _BeginSoldierBurst returns false while actual burst exists=true.",
+    "native_evidence": "Console lines541-554 records fixture HP100/spawn6, dev1/active state, source990/Rogue/Backstab enabled, valid move, ready combat gates, rear dot approximately-1, then actual lod_hostile death. Retained history indexes220-224/serial114-118 at10-27 15:55:21 record source Backstab, Arcane Diversion,25HP soldier-bolt damage, HERO ELIMINATED and fallen-Hero message.",
+    "notice_duration": "Root temporarily used hud_deathnotice_time30 for capture and reports restoring6 before normal quit. The rendered result is observed; no separate console readback of this setting is archived.",
+    "scope": "Manual HP means this episode proves readable native death presentation, not ordinary difficulty, survival balance or damage-math acceptance."
+  },
+  "rendered": {
+    "screenshot": "hostile-killnotice-final-life-menu.png",
+    "sha256": "0ce7f0a6ef537900296cc8e10919537d5ddab251aa34a90348c4684020715466",
+    "independently_viewed_by": [
+      "root",
+      "native_evidence_finalize"
+    ],
+    "observed": "Actual top-right native stock notice reads Hostile, shows the orange crossbow glyph and names Shael Riley. It no longer shows raw #lod_hostile. The underlying screenshot shows SPECTATOR/UNRANKED, COLLAPSE69:52 and the post-elimination three choices.",
+    "readability_scope": "Generic attacker label, stock icon and victim are visibly readable together at1280x800. This does not claim every archetype/unknown-label case or all HUD font/color/layout combinations."
+  },
+  "post_elimination_partial": {
+    "screenshot": "hostile-killnotice-final-life-menu.png",
+    "observed_choices": [
+      "WAIT FOR RESURRECTION",
+      "BEGIN A NEW HERO",
+      "JOIN THE SOLDIERS"
+    ],
+    "confirmation": "begin-new-hero-confirmation.png",
+    "confirmation_observed": "Discard this Hero's levels and carried equipment? Your $DEB and DFTs remain. Begin/Cancel buttons are visible.",
+    "new_hero": "new-hero-staging.png",
+    "new_hero_observed": "Nathan \"Three Times\" Mitchell / Barney Calhoun, Level1/class UNCOMMITTED, STAGING INCOMPLETE and HUD LIVES3. Console SOURCE15_FINAL_HERO confirms alive=true/lives3/class nil/deploymentComplete=false/spawn7.",
+    "clock_observed": "Final console clock retains epoch1/level1/started=true/remaining3695.04/timeout=false; a new Hero has not reset the uncleared dungeon clock.",
+    "not_accepted": "These are observed UI/lifecycle samples, not a campaign failure ending/reset, authored rescue/next-dungeon timer reset, account currency preservation audit, Soldier role acceptance or cooperative resurrection."
+  },
+  "evidence": {
+    "manifest": "manifest.json",
+    "console_markers": "console-markers.json",
+    "console": "console.log.xz",
+    "history": "die_logger_history.json.xz",
+    "summary": "rpg_summary_latest.txt.xz",
+    "session": "rpg_session_latest.txt.xz"
+  },
+  "limits": [
+    "Single actual client; no second identity or cooperative/client synchronization proof.",
+    "Developer relocation does not prove ordinary traversal to this upper-floor attacker.",
+    "No audibility acceptance; sound_requested counters prove requests only.",
+    "Cold language API, other native labels and icon alias negatives remain the previously recorded finite/static evidence; this frame accepts the actual rendered generic class path only.",
+    "The later source16 stale-life repair is not installed or accepted by this source15 capture.",
+    "No full authored campaign, success/failure endings, normal production settings pass or three-clean-pass credit."
+  ],
+  "clean_pass_streak": 0
+}

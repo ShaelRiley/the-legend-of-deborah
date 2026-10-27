@@ -1,0 +1,87 @@
+{
+  "kind": "BUG014 exact native final source15 presentation/lifecycle UI artifacts",
+  "captured_utc": "2026-10-27T21:07:07.512042+00:00",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/rogue_killnotice_one_hp.lua",
+      "archived_as": "rogue-killnotice-one-hp.lua.txt",
+      "raw_bytes": 3121,
+      "raw_sha256": "f20d38ee672ea2104aaf80e7760aa4ee200e267573e97be775d35e4827bdeddd",
+      "archive_bytes": 3121,
+      "archive_sha256": "f20d38ee672ea2104aaf80e7760aa4ee200e267573e97be775d35e4827bdeddd",
+      "compression": "none",
+      "source_mtime_ns": 1793134519091775252
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793134523337598220-deborah-source15-real-killnotice-hp1-fixture.png",
+      "archived_as": "hostile-killnotice-final-life-menu.png",
+      "raw_bytes": 786551,
+      "raw_sha256": "0ce7f0a6ef537900296cc8e10919537d5ddab251aa34a90348c4684020715466",
+      "archive_bytes": 786551,
+      "archive_sha256": "0ce7f0a6ef537900296cc8e10919537d5ddab251aa34a90348c4684020715466",
+      "compression": "none",
+      "source_mtime_ns": 1793134523262009616
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793134776417242432-deborah-source15-begin-new-hero.png",
+      "archived_as": "begin-new-hero-confirmation.png",
+      "raw_bytes": 379205,
+      "raw_sha256": "61c700ac54bf2a7da5bc7a492171a54e59564fcc1173391bcaa5ec127a4ebef0",
+      "archive_bytes": 379205,
+      "archive_sha256": "61c700ac54bf2a7da5bc7a492171a54e59564fcc1173391bcaa5ec127a4ebef0",
+      "compression": "none",
+      "source_mtime_ns": 1793134776375608008
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793134840072353753-deborah-source15-new-hero-confirmed.png",
+      "archived_as": "new-hero-staging.png",
+      "raw_bytes": 546452,
+      "raw_sha256": "9b9ae42a56530ae88acb4eef721bb717f242a005a5f95a733199bbe32feaddb6",
+      "archive_bytes": 546452,
+      "archive_sha256": "9b9ae42a56530ae88acb4eef721bb717f242a005a5f95a733199bbe32feaddb6",
+      "compression": "none",
+      "source_mtime_ns": 1793134840028757062
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/console.log",
+      "archived_as": "console.log.xz",
+      "raw_bytes": 499672,
+      "raw_sha256": "97cf78602d2010a94d635916e0743c4887adad6acbf64be01a98b7ddf3c6b5b1",
+      "archive_bytes": 12080,
+      "archive_sha256": "29473c053b38900dc00057ff9c647b54d73962ae7b60e8d24a2a70d85870217a",
+      "compression": "xz",
+      "source_mtime_ns": 1793135021076178753
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/die_logger_history.json",
+      "archived_as": "die_logger_history.json.xz",
+      "raw_bytes": 182740,
+      "raw_sha256": "c2a941b2e00c8b9b50a67fd5afd137dbb0ddcaf9ef08ec7bd7c73f1b2ac00282",
+      "archive_bytes": 6972,
+      "archive_sha256": "2fc3f2bafa8d5994a21ddd0dc0d39b333f900147e6b939a9fbdbf77de162e08b",
+      "compression": "xz",
+      "source_mtime_ns": 1793135020822747768
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_summary_latest.txt",
+      "archived_as": "rpg_summary_latest.txt.xz",
+      "raw_bytes": 2995,
+      "raw_sha256": "fe43681947c6d08ce7a16d2ab9997c4519fbe1fdd3bf719c9d2851f28d2be435",
+      "archive_bytes": 1496,
+      "archive_sha256": "1392ecce775e0ba3510286c21f212cbede62a3d73bb9791ecdd37e47b994477d",
+      "compression": "xz",
+      "source_mtime_ns": 1793135020686798032
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_session_latest.txt",
+      "archived_as": "rpg_session_latest.txt.xz",
+      "raw_bytes": 242744,
+      "raw_sha256": "60a9447cf3df46fe7bc2136d77a93e6f92632f329399d9227c145e1eaa701072",
+      "archive_bytes": 12992,
+      "archive_sha256": "187a73a605ed0bf06205012e58792146bbafd6ef6364e0056822934fcbb37db3",
+      "compression": "xz",
+      "source_mtime_ns": 1793135020687177850
+    }
+  ],
+  "qualification": "Current source15 console includes final new-Hero and clock markers. Root reports native process normally quit. No source16/private lifecycle evidence is rewritten here."
+}

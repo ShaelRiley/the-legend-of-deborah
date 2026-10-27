@@ -1,0 +1,23 @@
+{
+  "source": "console.log.xz",
+  "kind": "OneHP fixture, death-notice duration restoration and final new-Hero/clock markers",
+  "markers": [
+    {
+      "line": 541,
+      "text": "> RunString(file.Read(\"legend_of_deborah/rogue_killnotice_one_hp_source.txt\",\"DATA\"),\"RealKillNoticeOneHP\")..."
+    },
+    {
+      "line": 542,
+      "text": "KILLNOTICE_ONE_HP_FIXTURE\t100\t6"
+    },
+    {
+      "line": 607,
+      "text": "> local p=Entity(1) local s=LOD.RunManager:GetPlayerState(p) print(\"SOURCE15_FINAL_HERO\",p:Alive(),s.lives,s.progressionState.classId,s.deploymentComplete,p.LODRunSpawnSerial)..."
+    },
+    {
+      "line": 608,
+      "text": "SOURCE15_FINAL_HERO\ttrue\t3\tnil\tfalse\t7"
+    }
+  ],
+  "qualification": "Root reports normal game quit after these markers. This record does not infer source16 acceptance or full role lifecycle from the source15 presentation scenario."
+}
