@@ -2,6 +2,8 @@
 -- Register them before the first death; leave unknown-class warnings intact.
 killicon.AddAlias("lod_soldier_bolt", "crossbow_bolt")
 killicon.AddAlias("lod_hostile", "default")
+-- Native class-only death notices share a generic label across all archetypes.
+language.Add("lod_hostile", "Hostile")
 
 LOD = LOD or {}
 LOD.HostilePresentationSafety = LOD.HostilePresentationSafety or {}
