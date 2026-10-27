@@ -1,0 +1,98 @@
+{
+  "kind": "Partial native private exploration; supplementary developer setup",
+  "gameplay_source_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "prepared_commit": "4bc3ff8b7caa072fbd20ab652b126a6e40b2ed21",
+  "printed_install_label": "2b2f7501f04f847448b3f5fc6bd5865f7a9b57ad clean-private-profile; identical gameplay trees",
+  "hardware": "Valve Jupiter Steam Deck / AMD Custom APU0405",
+  "runtime": "Windows x86 GMod 2026.09.17 / Proton10 / LuaJIT2.0.4; gm_flatgrass;1280x800;0 Workshop mounts; auto Lua refresh disabled",
+  "campaign_seed": 6102602,
+  "level_seed": 1550561962,
+  "layout_seed": 1967490589,
+  "layout_attempt": 3,
+  "campaign_epoch": 2,
+  "character": "Owen Cold Coffee Jenkins",
+  "class": "Rogue",
+  "feat": "INT_WORLD_WALKER_1",
+  "settings": {
+    "sv_cheats": 0,
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true,
+    "clock": "Normal1800 firstHero start observed, then explicitly extended current deadline to7200 for exploration."
+  },
+  "native_finite_results": [
+    "Both native realm DATA/cfg/map/source/Cloud-confirmation audits pass; host all576 Lua hashes match. Both owned process identities verified. Startup Lua errors0.",
+    "Normal class/WorldWalker selection, Hermit dialogue and physical starter acquisition. Portal denied unclaimed weapon, then normal E deployed;30:00 clock started once.",
+    "Actual walking reaches first5 route waypoints in12.876s,0 shots,HP100; .357 reserve pickup observed. No teleport/noclip on this leg.",
+    "Sustained ordinary Q opens readable unfoundFloor1/3 panel while living; rendered Magic86 then68; M closes it, and later Magic100 is observed. Third floor is real8-cell boss area (other floors310/191 cells), so header3 is consistent.",
+    "Natural Runner damage caused death3->2 while tester was idle outside sanctuary. Later current equipment remains3576/3,pistol18/6,crowbar-1/0; old P12 binding rejects after life change."
+  ],
+  "defects": [
+    "BUG015 shared native floor-support failure confirmed; separately banked floor-support/BUG-015.json. No repaired BUG015 native gate on this old source."
+  ],
+  "limits": [
+    "First brief synthetic Q/M taps were inconclusive; later sustained native presses supplied actual panel evidence.",
+    "Earlier Q attempt occurred on YOU DIED screen and is not a map test.",
+    "WorldWalker movement multiplier is not accepted by observing its selection/panel alone.",
+    "Actual repaired Backstab toast and native Hostile death label remain pending; failed P12 setup did not move or fire.",
+    "No full campaign/rescue/authored event/co-op/final clean pass. Stock Chromium menu fallback appears despite matching native HTML/CEF file visibility; gamemode VGUI works. No copied-resource defect inferred.",
+    "Cloud remains temporarily OFF; originalON must be restored after private testing."
+  ],
+  "shutdown": {
+    "elapsed_seconds": 1813.736,
+    "remaining_owned_pids": [],
+    "unproven_native_pids": [],
+    "cleanup_errors": [],
+    "original_config_unchanged": true
+  },
+  "archive_files": [
+    {
+      "name": "console.log",
+      "bytes": 249345,
+      "sha256": "9d88dca9a8e9d87952cbf1400e5b05a1bd41edd0421093ae968b8d9f1dc7492d"
+    },
+    {
+      "name": "die_logger_history.json",
+      "bytes": 94810,
+      "sha256": "a35b8ea9097a01a367273cadf59b1a7dfd32d1e443ecc85a689db86602180736"
+    },
+    {
+      "name": "rpg_summary_latest.txt",
+      "bytes": 2921,
+      "sha256": "3604e1e2a28a0bb596c85cfac9e2ad172ad7c404eb6092d1dc16443a4954d65f"
+    },
+    {
+      "name": "rpg_session_latest.txt",
+      "bytes": 158624,
+      "sha256": "a94d2dcaceca301ba429caf9d67f051d62d336b81a45745bb378b3d0c1d4369b"
+    },
+    {
+      "name": "ordinary-walk.jsonl",
+      "bytes": 37061,
+      "sha256": "13575c3a4525f71cf9364e179547bb04ae1772db5a4d72e1564a167aca1ffef8"
+    },
+    {
+      "name": "ordinary-walk-result.json",
+      "bytes": 674,
+      "sha256": "d768c9ae050ffb20b4adc0698ee8989a1ac7eff4965cfdcf59f87ab3231bfb1c"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "native-evidence.tar.xz",
+      "bytes": 27016,
+      "sha256": "164fee43c91a1fa36c1c75f7ea12c5e87eae86b9a5d9e69fed53628d5afe02eb"
+    },
+    {
+      "name": "unfound-map-native-q.png",
+      "bytes": 1295890,
+      "sha256": "df39f17562e7df7b0edb2ea91cf6c9d8962fdee0ef9846ca52d01064cea14f30"
+    },
+    {
+      "name": "native-m-map-closed.png",
+      "bytes": 1340609,
+      "sha256": "682149e68c1a848c067ae06976ad432ba378044bb5515f71981b716eca226e23"
+    }
+  ],
+  "clean_pass_streak": 0
+}

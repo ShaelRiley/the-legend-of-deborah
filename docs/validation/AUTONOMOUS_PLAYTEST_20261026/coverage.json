@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "current_candidate": "74415d1a3f135052de467286a08ebc1907b1608a",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -162,9 +162,10 @@
       "source": "00 LOD-FLOOR-MAP-001; approved FLOOR_MAP_PANEL_20261013 and NAVIGATION_FEATS_20261013",
       "expected": "Per-floor maps shared by party; personal Magic drain; unfound panel and navigation feats",
       "scenario": "Open Q/M before/after pickup; two clients on different floors; Compass/Finder/GPS",
-      "result": "Native cheats0 unfound/revealedFloor1 map, Magic drain and breadcrumb observed. Default1280x800 legend fits afterBUG004. Cross-floor route/Compass/Finder/GPS/partysharing pending.",
+      "result": "Native cheats0 unfound/revealedFloor1 map, Magic drain and breadcrumb observed. Default1280x800 legend fits afterBUG004. Cross-floor route/Compass/Finder/GPS/partysharing pending. Private14 dev1 actual living unfound panel Q-open/M-close and Magic drain observed with sustained native keys; no WorldWalker speed/party sharing claim.",
       "evidence": [
-        "production-2c73471b/deborah-map-legend-fixed-native.png"
+        "production-2c73471b/deborah-map-legend-fixed-native.png",
+        "native-private14/receipt.json"
       ]
     },
     {
@@ -196,8 +197,10 @@
       "source": "03 LOD-FORM/LOD-CONTENT/LOD-MAG",
       "expected": "Forms/Contents, resources, Blast/Beam presentation and stable Summon",
       "scenario": "Ordinary acquisition/casting plus rare-form fixtures; multi-body Beam and Summon floors",
-      "result": "pending",
-      "evidence": []
+      "result": "Open. NativeBUG015 confirms shared floor-support rejection affecting relocation/charge callers;74415 repairs/static-validates it, fresh native pending. Full Magic/equipment ability and authored consumer coverage remains incomplete.",
+      "evidence": [
+        "floor-support/BUG-015.json"
+      ]
     },
     {
       "id": "RPG-01",
@@ -346,7 +349,7 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "Latest8a9 full remote336/336,927 Lua parses,576 production files verified, frozen source unchanged; native acceptance remains separate.",
+      "result": "Latest8a9 full remote336/336,927 Lua parses,576 production files verified, frozen source unchanged; native acceptance remains separate. Source74415 complete CI failed Stomp Movement Contact; investigation is active and failed evidence is retained.",
       "evidence": [
         "combined-278e-integration-gate/receipt.json",
         "wizard-class-card/static-repair-receipt.json",
@@ -406,6 +409,17 @@
         "combat-feedback/BUG-014.json",
         "combat-feedback/native-4322/receipt.json"
       ]
+    },
+    {
+      "id": "REG-SAFE-FLOOR",
+      "source": "03 LOD-THUNDER-HAT-001/LOD-HEAVY-PLUMBER-001;05 LOD-EVENT-WARP-001;06 LOD-SAFE-TRAVEL-001",
+      "expected": "Canonical relocation and ground abilities accept valid supported standing footprints; reject holes, walls, hazards, locked routes and stale bodies",
+      "scenario": "Repeat native centeredHero/Rogue±Y support positives and wall±X negatives; observe actual movement and authored consumers",
+      "result": "BUG015 pre-repair native failure confirmed.74415 repaired/static-validates shared probes; fresh native gate pending.",
+      "evidence": [
+        "floor-support/BUG-015.json",
+        "floor-support/static/receipt.json"
+      ]
     }
   ],
   "deferred": [
@@ -425,7 +439,8 @@
     "f6048a0e fresh controlled lifecycle gate: actual Steam Deck/Windowsx86/Proton10, gm_flatgrass, seed6102601, cheats0/dev0,114 sources matched, RunManager CRC925327479 and cl_tetris CRC1705465356. BUG007/008 finite native gate passed; no campaign/co-op/clean-pass claim. New native shared-menu child-focus Escape issue BUG009 is under separate repair.",
     "Fresh20261027 nativeafdcbc on same actualDeck uses seed6102602,sv_cheats0,developer0,sv_lan1,-noworkshop,-disableluarefresh;114 startup sources match,themeCRC1212728956/sheet1796671531. Latermain edfc tooltip edits are not loaded; native-main parity remains pending a fresh restart. Durable current host-state preservation is in ignored .build/autonomous-playtest-20261027/preserved-current-user-state, separate from lost previous-session /tmp tools.",
     "For nativeafdcbc UI evidence, live garrysmod/console.log is clipped through first DEPLOYED. Canonical console_latest.txt remained stale, and summary contents have old generated_utc/event_count0/sessionunknown; those files are not substituted as current-session mechanics proof. See popup-escape/native-afdcbc/receipt.json.",
-    "Freshnative d66 on actualDeck/Windowsx86/Proton10,seed6102602,1280x800,cheats0/dev0,Workshopoff/autorefreshoff:114startup sourcesmatch plus inventoryCRC2838551934 and separate gateinitCRC153563205. Finite ordinary tooltip/weaponreplacement/heldEscape and camera-only coldstockgate evidence in native-d66/receipt.json.3d33CI-fixture successor has identical gamemodes tree; no fullcampaign/clean-pass claim. Earlier no-settle/XTest anomalies are retained as input-delivery/focus uncertainty, without confirmed game-code attribution."
+    "Freshnative d66 on actualDeck/Windowsx86/Proton10,seed6102602,1280x800,cheats0/dev0,Workshopoff/autorefreshoff:114startup sourcesmatch plus inventoryCRC2838551934 and separate gateinitCRC153563205. Finite ordinary tooltip/weaponreplacement/heldEscape and camera-only coldstockgate evidence in native-d66/receipt.json.3d33CI-fixture successor has identical gamemodes tree; no fullcampaign/clean-pass claim. Earlier no-settle/XTest anomalies are retained as input-delivery/focus uncertainty, without confirmed game-code attribution.",
+    "Private14 source-matched dev1/cheats0 native exploration ended normally: both ownedPIDs, none unproven/remaining, personalcfg/SQLite hashes+DATA/save inventories unchanged. Source74415 repair prepared next. Only this Deck is available; earlier sharedprefix LAN attempt failed, no distinct-account cooperation. See native-private14/receipt.json. Steam Cloud remains OFF temporarily and must be restoredON."
   ],
   "defects": [
     {
@@ -497,6 +512,11 @@
       "id": "BUG-014",
       "record": "combat-feedback/BUG-014.json",
       "status": "Confirmed raw native class label;8a9 repaired/static validated/independently reviewed, fresh native pending"
+    },
+    {
+      "id": "BUG-015",
+      "record": "floor-support/BUG-015.json",
+      "status": "Confirmed native floor support rejects valid generated floor; repaired/static74415 plus independent review; fresh native recheck pending"
     }
   ],
   "static_fixture_checkpoint": {
@@ -512,12 +532,12 @@
     "native_gmod_accepted": false,
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
-  "installed_loaded_build": "4322f105e519fec53c469877998eecd5b4d06a34",
-  "last_checkpoint_utc": "2026-10-27T18:52:13.169958+00:00",
-  "next_action": "Prove shorter-path disposable native profile before authored extended-clock fixtures; recheck BUG012/014; resume remaining systematic scope; restore Steam Cloud ON after private tests.",
-  "last_runtime_build": "4322f105e519fec53c469877998eecd5b4d06a34",
-  "current_native_build": "none; short private source14 preflight closed normally; source/cfg/DATA match both realms, cloud-cvar audit assumption needs correction",
-  "installed_loaded_build_note": "Cold private source14 renders staging with0 Lua errors; HostilePresentationCRC2978872520 and Hostile/known icon lookups verified. This is a namespace/source preflight, not actual death label or Backstab acceptance.",
+  "installed_loaded_build": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "last_checkpoint_utc": "2026-10-27T19:41:15.807556+00:00",
+  "next_action": "Fresh source74415 private install/start; verify SafeTeleportCRC3252930173 and original fixture positives/wall negatives, actual ability movement, then rebind real-Rogue Soldier forBUG012/014. Resume authored coverage; clean0. Restore CloudON after private testing.",
+  "last_runtime_build": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "current_native_build": "none; old private source14 closed normally, fresh source15 preparation pending",
+  "installed_loaded_build_note": "Last loaded private source14 matched all576 Lua plus both realm boundary audits; prepared4bc3/printed2b2 are docs-only source-equivalent successors. SafeTeleport originalSHA7981/HostilePresentationCRC2978872520; new source74415 native gate pending.",
   "latest_repair_static_checkpoint": {
     "commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
     "evidence": "combat-feedback/BUG-014.json",
@@ -530,11 +550,18 @@
     "full_candidate_integration": "pending"
   },
   "latest_full_integration": {
-    "commit": "4322f105e519fec53c469877998eecd5b4d06a34",
+    "commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
     "passed": 336,
     "total": 336,
     "lua_files": 927,
-    "evidence": "remote-ci-4322/proof.json",
-    "qualification": "Verified earlier4322 full frozen-source static gate; later8a9 source has focused6-command checks and awaits its own CI. Native/gameplay/co-op acceptance stays separate."
+    "evidence": "remote-ci-8a9/proof.json",
+    "qualification": "Full frozen static gate only. Source74415 full CI run40570280858 is in progress; no pass inferred."
+  },
+  "latest_candidate_full_integration": {
+    "commit": "74415d1a3f135052de467286a08ebc1907b1608a",
+    "run_id": 40570280858,
+    "job_id": 122422335898,
+    "status": "failed",
+    "finding": "Stomp Movement Contact fixture fails; its broad downward-hull override also alters new independent foot support. Exact baseline/candidate triage and narrow fixture repair in progress; no gate pass inferred."
   }
 }
