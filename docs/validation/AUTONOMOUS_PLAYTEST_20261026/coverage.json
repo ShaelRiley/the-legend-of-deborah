@@ -342,10 +342,11 @@
       "source": "07 LOD-IMPL-004; retained optimization integration",
       "expected": "Representative comparable performance; no repair-induced regression",
       "scenario": "Same scene/seed/settings/hardware baseline and candidate captures; no 40-FPS claim",
-      "result": "Native exact-source180s entry/map-route baseline:3261activeframes,18.13FPS,median54.101ms,p95 64.764ms,p99 78.538ms,max185.897ms. Observer10Hz present. No40FPsorrepair-attributionclaim; no comparable exact-source pre-fix baseline. Source17 actualDeck closedgate stationarybaseline29.731FPS/p9540.291/p9951.717ms/max61.34,891activeframes; unprofileddev1dense. Qualifiedsamepose source18 comparisonpending; no40FPS/fullworkload acceptance.",
+      "result": "Representative actualDeck source17\u219218 same closed-gate pose/settings sampled29.7313\u219230.3647FPS, p9540.291\u219239.778ms; all891/910frames independently recomputed.36wanderers/40bodies, different client entity counts. No sampled regression, causal gain/40FPS/full-workload acceptance unclaimed.",
       "evidence": [
         "production-2c73471b/performance_client_latest.txt",
-        "native-source17-adjacent/receipt.json"
+        "native-source17-adjacent/receipt.json",
+        "loot-label-occlusion/native-repaired/performance-verification.json"
       ]
     },
     {
@@ -353,7 +354,7 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "Latest8a9 full remote336/336,927 Lua parses,576 production files verified, frozen source unchanged; native acceptance remains separate. Source74415 complete CI failed Stomp Movement Contact; investigation is active and failed evidence is retained.",
+      "result": "Latest exact frozen source18 full337/337validators,928Lua,576production/4227Gitblobs pass; original negative and target-hit-mutant checks retained. All four candidate workflows green. Native acceptance remains separate.",
       "evidence": [
         "combined-278e-integration-gate/receipt.json",
         "wizard-class-card/static-repair-receipt.json",
@@ -362,7 +363,8 @@
         "inventory-tooltip/BUG-010.json",
         "gate-precache/static-receipt.json",
         "gate-precache/ci-fixture/receipt.json",
-        "remote-ci-8a9/proof.json"
+        "remote-ci-8a9/proof.json",
+        "ci-source18/verification.json"
       ]
     },
     {
@@ -457,11 +459,13 @@
       "source": "06 LOD-UI-008 dedicated drop readability; LOD-UI-010 near-look/no-through-wall reveal (older observation UI009 citation typo preserved)",
       "expected": "Only actually visible pickups show full near-look names; closed visible gates and walls occlude without hiding legitimate visible drops",
       "scenario": "Exact renderedHealth/HUDcachedtarget, frozenclient/serverrays andgatebounds/state; repairedclosed/open/besidegate/ordinaryvisible controls",
-      "result": "Confirmed BUG018 native exactcachedHealth behindclosedRedGate.24mask/shape variants in eachrealm proveMONSTER maskmembership plusnativehullpath; notnodraw.63bcc shared exactrendered-body correction passes14static/independentreview/negative controls; full337 andfresh18native closed/open/clear/glass/header controls pending.",
+      "result": "Finite native original BUG018 gate PASS on source18/seed6102602: Health1054/birth1269 exists at same center, both realms Visible/Qualifies false + cachedHUDnil behind closed Red967, then true + cachedHUDHealth + visual label after ordinary opening. New-life and83.867-unit changed-eye control qualified. Synthetic actual-body/header/gap native rays also pass16cases; glass/Omniscience and broader presentation coverage remain open.",
       "evidence": [
         "loot-label-occlusion/BUG-018.json",
         "loot-label-occlusion/pre-repair/manifest.json",
-        "loot-label-occlusion/static/independent-review.json"
+        "loot-label-occlusion/static/independent-review.json",
+        "loot-label-occlusion/native-repaired/receipt.json",
+        "native-source18-adjacent/geometry/receipt.json"
       ]
     }
   ],
@@ -575,7 +579,7 @@
     {
       "id": "BUG-018",
       "record": "loot-label-occlusion/BUG-018.json",
-      "status": "Confirmed source17 Health1054 behindclosedgate967; repaired63bcc in shared visibility/render-body bounds,14static+independent original/mutant/parity pass; fresh18native/full337CI pending"
+      "status": "Repaired63bcc; full337/337 static matrix and fresh native same-existing-Health closed/open gate control PASS. Native synthetic cargo/door/header controls pass separately; no complete visibility/campaign/co-op acceptance."
     }
   ],
   "static_fixture_checkpoint": {
@@ -591,38 +595,42 @@
     "native_gmod_accepted": false,
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
-  "installed_loaded_build": "6acff8a3458b230378100d491e431d18a84c740c",
-  "last_checkpoint_utc": "2026-10-27T23:08:48.971067+00:00",
-  "next_action": "Fresh source18 install/start with9native source guards NearLookCRC84557611; prove existingHealth remainsbehindclosedgate withoutlabel, then clear/open-visiblepositive and glass/invisibleheader/wall/Omniscience controls plusqualifiedsameposecost. Continue newseed6102603 canonicalNewCampaign for varied authored success/failure/progression/replay. Clean0/co-op/audio gaps remain; restore CloudON afterprivate tests.",
-  "last_runtime_build": "6acff8a3458b230378100d491e431d18a84c740c",
-  "current_native_build": "none; source17 quit, host process0 confirmed, final primary unproven flag retained with prior ownership/closure qualification; source18 preparing",
-  "installed_loaded_build_note": "All576Lua/118physical sources match prepared94f3/gameplay6ac; both live realm six-source audits pass including AimCRC966710964/SafeTeleportCRC377454284; new native NPC acceptance pending.",
+  "installed_loaded_build": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "last_checkpoint_utc": "2026-10-27T23:48:16.919324+00:00",
+  "next_action": "Bank native6102623 StrengthPress+20/Vending-10+potion1/repeat denial evidence and lawful active-weapon stat reconciliation; ordinary Q/entrance floor0 map touch, cross-floor Red route/UPcue and real-blockade discrimination. Continue authored families/progression/endings. Clean0; oneDeck co-op/audio gaps remain. Restore CloudON afterprivate tests.",
+  "last_runtime_build": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "current_native_build": "source18 running owned PID95782/birth6693172, prepared0d00da7d production-equivalent63bcc; nine actual source proofs pass in both realms; private dev1/dense, not a final normal pass",
+  "installed_loaded_build_note": "All576Lua/118physical startup entries match frozen source; NearLookCRC84557611, Aim966710964, Safe377454284. Native original BUG018 closed/open finite gate passes; synthetic geometry controls separately labeled.",
   "latest_repair_static_checkpoint": {
     "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
     "evidence": "loot-label-occlusion/BUG-018.json",
     "positive_commands": 14,
     "lua_syntax": 928,
     "independent_review": "clear; original/target-hit-mutant negatives plus exact2892model-transform parity",
-    "native": "pending fresh18"
+    "native": "finite original closed/open defect gate PASS; loot-label-occlusion/native-repaired/receipt.json; independent cargo/header ray controls are supplementary, not HUD/glass/Omniscience acceptance"
   },
   "latest_full_integration": {
-    "commit": "6acff8a3458b230378100d491e431d18a84c740c",
-    "run_id": 40589622846,
-    "job_id": 122490136272,
+    "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+    "run_id": 40599237156,
+    "job_id": 122522912306,
     "status": "success",
-    "passed": 336,
-    "total": 336,
-    "lua_files": 927,
+    "passed": 337,
+    "total": 337,
+    "lua_files": 928,
     "production_files": 576,
-    "evidence": "ci-source17/verification.json",
-    "qualification": "Exact full frozen static source17 gate; no repaired native acceptance."
+    "evidence": "ci-source18/verification.json",
+    "qualification": "Exact full frozen source18 static gate; native claims require their separate receipts."
   },
   "latest_candidate_full_integration": {
     "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
     "run_id": 40599237156,
     "job_id": 122522912306,
-    "status": "in_progress",
-    "registered": 337,
-    "qualification": "Last actual live-job observation; no pass inferred until exact frozen receipt verification."
+    "status": "success",
+    "passed": 337,
+    "total": 337,
+    "lua_files": 928,
+    "production_files": 576,
+    "evidence": "ci-source18/verification.json",
+    "qualification": "Exact full frozen source18 static gate; native claims require their separate receipts."
   }
 }
