@@ -460,3 +460,6 @@ do
     util.TableToJSON,util.JSONToTable=originalEncode,originalDecode
     print("HISTORY_JSON_CACHE_PASS: loading warmup, unchanged rows, scalar/span edits, replacement/order, transient layout and reload")
 end
+
+-- Native first-death icon registration shares this presentation gate.
+dofile("tools/test_hostile_kill_icons.lua")

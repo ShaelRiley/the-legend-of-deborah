@@ -1,3 +1,8 @@
+-- These known native damage inflictors use existing stock death-notice icons.
+-- Register them before the first death; leave unknown-class warnings intact.
+killicon.AddAlias("lod_soldier_bolt", "crossbow_bolt")
+killicon.AddAlias("lod_hostile", "default")
+
 LOD = LOD or {}
 LOD.HostilePresentationSafety = LOD.HostilePresentationSafety or {}
 

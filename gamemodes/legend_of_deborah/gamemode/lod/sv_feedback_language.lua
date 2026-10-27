@@ -54,7 +54,9 @@ function P:_Event(actor, family, text, fields, cooldownKey)
         limits[cooldownKey] = now + 1.5
     end
     local grammar = LOD.FeedbackLanguage[family] or LOD.FeedbackLanguage.routine
-    local name = self:FeedbackName(ply)
+    -- Audience and subject can differ, e.g. an enemy Backstab shown to its victim.
+    local subjectName = fields.subjectName
+    local name = isstring(subjectName) and subjectName ~= "" and subjectName or self:FeedbackName(ply)
     if not text:find(name,1,true) then text = name .. ": " .. text end
     local prefix = grammar.label ~= "" and ("[" .. grammar.label .. "] ") or ""
     if LOD.CombatRolls then LOD.CombatRolls:_Send(ply, 3, prefix .. text, family, fields) end

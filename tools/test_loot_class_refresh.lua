@@ -98,6 +98,9 @@ target.nw.LOD_WatcherInvisibleUntil=0
 assert(not LOD.NearLook:Find(attacker,512,function() return false end))
 print('LOOT_CLASS_REFRESH_PASS: backstab 2x/3x/4x and once-per-event geometry; shield-only STR Block; death retention; near-look cone/LOS/cloak')
 
+-- Reuse this real actor environment for native-discovered Backstab attribution.
+assert(loadfile("tools/test_backstab_feedback.lua"))(env)
+
 -- Frozen statue rendering, bounded shared mesh and optional light budget.
 ENT={};include=function() end
 Material=function(v) return v end;CreateMaterial=function(v) return v end

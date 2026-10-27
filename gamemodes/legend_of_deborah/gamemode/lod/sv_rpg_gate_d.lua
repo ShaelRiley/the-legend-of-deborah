@@ -245,7 +245,12 @@ function AbilityRules:Backstab(contract,attacker,target,tags,source)
     cache[target]=yes
     if yes and LOD.RPGPresentation and LOD.RPGPresentation.Event then
         local viewer=attacker:IsPlayer() and attacker or target:IsPlayer() and target
-        if viewer then LOD.RPGPresentation:Event(viewer,"damage","BACKSTAB — bonus damage multiple; Constitution bypassed",{event="backstab"}) end
+        if viewer then
+            local presentation=LOD.RPGPresentation
+            local sourceName=presentation.FeedbackName and presentation:FeedbackName(attacker) or "Attacker"
+            presentation:Event(viewer,"damage","BACKSTAB — bonus damage multiple; Constitution bypassed",
+                {event="backstab",subjectName=sourceName})
+        end
     end
     return yes
 end
