@@ -1,0 +1,95 @@
+[
+  {
+    "name": "candidate-Lua54",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      ".build/autonomous-playtest-20261027/bug018-independent-review/visibility-gate.lua",
+      "candidate"
+    ],
+    "returncode": 0,
+    "expected": 0,
+    "expected_signature": null,
+    "verified": true,
+    "seconds": 0.07532835799793247,
+    "stdout_sha256": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "candidate-LuaJIT",
+    "command": [
+      "luajit",
+      ".build/autonomous-playtest-20261027/bug018-independent-review/visibility-gate.lua",
+      "candidate"
+    ],
+    "returncode": 0,
+    "expected": 0,
+    "expected_signature": null,
+    "verified": true,
+    "seconds": 0.0035292809989186935,
+    "stdout_sha256": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "original-negative",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      ".build/autonomous-playtest-20261027/bug018-independent-review/visibility-gate.lua",
+      "original"
+    ],
+    "returncode": 1,
+    "expected": 1,
+    "expected_signature": "Health name revealed beyond native-shaped closed Red gate",
+    "verified": true,
+    "seconds": 0.07811535500513855,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "483a6bfb3d109636fe03391bcdb6e9acf77fe09879c52880f345ae17b6ebbec2"
+  },
+  {
+    "name": "target-hit-negative",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      ".build/autonomous-playtest-20261027/bug018-independent-review/visibility-gate.lua",
+      "target-hit-mutant"
+    ],
+    "returncode": 1,
+    "expected": 1,
+    "expected_signature": "target-hit legacy ray bypassed earlier generated cover",
+    "verified": true,
+    "seconds": 0.07455851499980781,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "1e3a89a212cac6adf9568fbf8be00a37ea4134694ae14d9c7c41da3ce6ecfbb9"
+  },
+  {
+    "name": "legacy-cone-RNG-quantization",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_system_quantization.lua"
+    ],
+    "returncode": 0,
+    "expected": 0,
+    "expected_signature": null,
+    "verified": true,
+    "seconds": 0.3343972020011279,
+    "stdout_sha256": "f2ff0d94207f73b0ab9a0c0332c314f76339c57a0d0fbe26bbd104ca81315849",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "legacy-loot-class",
+    "command": [
+      "python3",
+      "tools/run_lua54.py",
+      "tools/test_loot_class_refresh.lua"
+    ],
+    "returncode": 0,
+    "expected": 0,
+    "expected_signature": null,
+    "verified": true,
+    "seconds": 0.4424347090025549,
+    "stdout_sha256": "2de95c043a89bac450164909c2220c03271702b13acd541cd2c7208b0597480a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

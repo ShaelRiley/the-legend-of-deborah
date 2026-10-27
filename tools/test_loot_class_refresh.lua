@@ -73,6 +73,9 @@ assert(savedState.items.healing_potion.count==2 and savedState.slots.throwable==
 assert(attacker.ps.progressionState==saved and saved.level==level and saved.equipmentShieldEquipped)
 
 -- Real near-look selection, including obstructed, side and cloaked targets.
+MASK_VISIBLE,CONTENTS_MONSTER=24705,33554432
+bit=bit or {bor=function(a,b) return a+b end} -- these native mask bits are disjoint
+util.TraceHull=function() return {Hit=false} end
 dofile(root..'sh_near_look.lua')
 local candidates={};local obstruction=false
 function attacker:EyePos() return Vector() end

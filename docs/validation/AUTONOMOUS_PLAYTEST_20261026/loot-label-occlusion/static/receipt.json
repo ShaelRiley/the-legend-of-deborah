@@ -1,0 +1,302 @@
+{
+  "kind": "BUG018 coherent static candidate proof",
+  "candidate_file_sha256": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_near_look.lua": "c30de31c0cbb78dfa5d52b8b66bec39f2aa70ff64eb00f3ab1d23ae877fbf8fc",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua": "f7f8de66b060a17464262e7b0b34ddeb53868a2d315c4158aad74725cc0fdb2d",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua": "87d9d10c68ee48f7fcfbd3dd815efeb51dc8271b3f42eef84d983db6870449c5",
+    "tools/test_near_look_native_bounds.lua": "5078eaef3fd8c5b17da03c7d461d4600a509595c4bd261e91219a2185ec6414c",
+    "tools/test_loot_class_refresh.lua": "cab19a602641207dd6c0bef0f1e26251f5d7db7a549a3b04bf4db1fbe5a67870",
+    "tools/test_system_quantization.lua": "7a1ec1e96abd7fe6aa3098a03b71355ee89f05d5bbe4ecce81fdfbbcc505d80b",
+    "tools/test_checkpoint_g_integration.py": "9605720acaddc062e9fb704aadc293a5aefb6b68cd89a1d5f20875001ea490bc"
+  },
+  "targeted_gate_receipt": {
+    "utc": "2026-10-27T22:57:41.220337+00:00",
+    "total": 14,
+    "passed": 14,
+    "lua_files": 928,
+    "native_accepted": false,
+    "results": [
+      {
+        "index": 1,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_near_look_native_bounds.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.078,
+        "stdout_sha256": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_loot_class_refresh.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.387,
+        "stdout_sha256": "2de95c043a89bac450164909c2220c03271702b13acd541cd2c7208b0597480a",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_system_quantization.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.332,
+        "stdout_sha256": "f2ff0d94207f73b0ab9a0c0332c314f76339c57a0d0fbe26bbd104ca81315849",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 4,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_great_crate_geometry.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.829,
+        "stdout_sha256": "f7458d274a97b353520c65f0ec2d3d5ae9ad63f019ccecdcf0bf5a3fce3ec859",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 5,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_great_crate_gates.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.076,
+        "stdout_sha256": "9f9ddb22a8c74966908c810bebb466bdcdff42dd0ad3a9ac67acd2f41fc330b4",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 6,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_great_crate_render.lua"
+        ],
+        "returncode": 0,
+        "seconds": 6.69,
+        "stdout_sha256": "ae530c16cf66b95b24b14fac5b705ee55e95ca35f6d373d28f5dce4c11d42941",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 7,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_consult_wall_pool.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.124,
+        "stdout_sha256": "102336614326117469a154bcd8a6f538a09c661979cecdfcc7b2cef30f99662f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 8,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_wall_batch.lua"
+        ],
+        "returncode": 0,
+        "seconds": 37.77,
+        "stdout_sha256": "fe78e4257e27d33f096f15a874ea01c8ae0db856600fe4debfe6ce4ad3bef121",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 9,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_checkpoint_d_wis_information.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.088,
+        "stdout_sha256": "71fcf98171891c435e0f4d19123e79683579f405d281493bdaaa7bb512f46b4b",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 10,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_player_options.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.076,
+        "stdout_sha256": "3b9d4b1309c023dbad5ce3a612e5b329249c16068deed12c1b5fd4210c933767",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 11,
+        "command": [
+          "python3",
+          "tools/test_dev_population_manifest.py"
+        ],
+        "returncode": 0,
+        "seconds": 0.695,
+        "stdout_sha256": "712c5e0fbcffd616d87d9159bc1a728ebaf8b34e74db58c05781116cf258e64a",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 12,
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "--syntax",
+          "ALL_928_LUA_FILES"
+        ],
+        "returncode": 0,
+        "seconds": 0.501,
+        "stdout_sha256": "f8fd1ac6efa2c69634ddfe30aa3e40192a076a7574ea9861dfaa2c367b1ef414",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 13,
+        "command": [
+          "luajit",
+          "tools/test_near_look_native_bounds.lua"
+        ],
+        "returncode": 0,
+        "seconds": 0.004,
+        "stdout_sha256": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 14,
+        "command": [
+          "luajit",
+          "-b",
+          "gamemodes/legend_of_deborah/gamemode/lod/sh_near_look.lua",
+          ".build/autonomous-playtest-20261027/bug018-near-look/nearlook.luac"
+        ],
+        "returncode": 0,
+        "seconds": 0.003,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "final_fixture_validation": {
+    "kind": "final BUG018 fixture and registry validation",
+    "utc": "2026-10-27T23:00:31.412473+00:00",
+    "new_test_sha256": "5078eaef3fd8c5b17da03c7d461d4600a509595c4bd261e91219a2185ec6414c",
+    "results": [
+      {
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          "tools/test_near_look_native_bounds.lua"
+        ],
+        "returncode": 0,
+        "stdout_sha256": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "command": [
+          "luajit",
+          "tools/test_near_look_native_bounds.lua"
+        ],
+        "returncode": 0,
+        "stdout_sha256": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "command": [
+          "python3",
+          "tools/run_lua54.py",
+          ".build/autonomous-playtest-20261027/bug018-near-look/original-negative.lua"
+        ],
+        "returncode": 1,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "dcc541c7130448ab4bccda95e23a668f2817a33e05129f89cf408a5f4205f5ce"
+      }
+    ],
+    "all_original_336_suites_retained_in_order": true,
+    "registered_total": 337,
+    "private_installed_nearlook_sha256": "9d81b2e3b7f48c9b186e7f874f530ba63d2c7c66c1edd3f9a5920dbdcdc675e0",
+    "candidate_nearlook_sha256": "c30de31c0cbb78dfa5d52b8b66bec39f2aa70ff64eb00f3ab1d23ae877fbf8fc",
+    "native_repaired_accepted": false
+  },
+  "independent_review": "independent-review.json",
+  "actual_renderer_parity": "wall-parity.json",
+  "original_negative_preserved": true,
+  "archived_file_sha256": {
+    "author/01.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/01.stdout": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+    "author/02.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/02.stdout": "2de95c043a89bac450164909c2220c03271702b13acd541cd2c7208b0597480a",
+    "author/03.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/03.stdout": "f2ff0d94207f73b0ab9a0c0332c314f76339c57a0d0fbe26bbd104ca81315849",
+    "author/04.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/04.stdout": "f7458d274a97b353520c65f0ec2d3d5ae9ad63f019ccecdcf0bf5a3fce3ec859",
+    "author/05.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/05.stdout": "9f9ddb22a8c74966908c810bebb466bdcdff42dd0ad3a9ac67acd2f41fc330b4",
+    "author/06.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/06.stdout": "ae530c16cf66b95b24b14fac5b705ee55e95ca35f6d373d28f5dce4c11d42941",
+    "author/07.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/07.stdout": "102336614326117469a154bcd8a6f538a09c661979cecdfcc7b2cef30f99662f",
+    "author/08.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/08.stdout": "fe78e4257e27d33f096f15a874ea01c8ae0db856600fe4debfe6ce4ad3bef121",
+    "author/09.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/09.stdout": "71fcf98171891c435e0f4d19123e79683579f405d281493bdaaa7bb512f46b4b",
+    "author/10.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/10.stdout": "3b9d4b1309c023dbad5ce3a612e5b329249c16068deed12c1b5fd4210c933767",
+    "author/11.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/11.stdout": "712c5e0fbcffd616d87d9159bc1a728ebaf8b34e74db58c05781116cf258e64a",
+    "author/12.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/12.stdout": "f8fd1ac6efa2c69634ddfe30aa3e40192a076a7574ea9861dfaa2c367b1ef414",
+    "author/13.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/13.stdout": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+    "author/14.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/14.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/final-fixture-validation.json": "62b30a174ab7e37835540114dec9d828d6f5a1e94affff0e4d1a155ee2718231",
+    "author/final-focused-1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/final-focused-1.stdout": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+    "author/final-focused-2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/final-focused-2.stdout": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+    "author/final-focused-3.stderr": "dcc541c7130448ab4bccda95e23a668f2817a33e05129f89cf408a5f4205f5ce",
+    "author/final-focused-3.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/original-negative.json": "e6674491a1962b2e8fa7a464b568b108ba78813fd6106e9e1d32ce77fcc72c2a",
+    "author/original-negative.lua": "a717442115d17c6514d444c10ee8377532c9eb03b3fed243913853d542f96dcb",
+    "author/original-negative.stderr": "dcc541c7130448ab4bccda95e23a668f2817a33e05129f89cf408a5f4205f5ce",
+    "author/original-negative.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "author/original-sh_near_look.lua.txt": "9d81b2e3b7f48c9b186e7f874f530ba63d2c7c66c1edd3f9a5920dbdcdc675e0",
+    "author/targeted-gates.json": "b375dd8301b49030f545fae97f2565f3dc4305574a523070738ad913eb7a25a3",
+    "independent/candidate-Lua54.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "independent/candidate-Lua54.stdout": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+    "independent/candidate-LuaJIT.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "independent/candidate-LuaJIT.stdout": "42e441a913b5ad24ef730261be11b209c6c94fe0daa5df244a291db80546548f",
+    "independent/candidate-near-look.lua.txt": "c30de31c0cbb78dfa5d52b8b66bec39f2aa70ff64eb00f3ab1d23ae877fbf8fc",
+    "independent/frozen-near-look.lua.txt": "9d81b2e3b7f48c9b186e7f874f530ba63d2c7c66c1edd3f9a5920dbdcdc675e0",
+    "independent/frozen-wall-renderer.lua.txt": "76da29f5ca8aa63ec11766216bfc8a0ec94718011b8f15b1d463a364043ba8a5",
+    "independent/independent-review.json": "2c7d76476cd87275fd76dd83238ec5bc9cb2f20a759a21bf9e07d9bd0c3f0dee",
+    "independent/legacy-cone-RNG-quantization.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "independent/legacy-cone-RNG-quantization.stdout": "f2ff0d94207f73b0ab9a0c0332c314f76339c57a0d0fbe26bbd104ca81315849",
+    "independent/legacy-loot-class.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "independent/legacy-loot-class.stdout": "2de95c043a89bac450164909c2220c03271702b13acd541cd2c7208b0597480a",
+    "independent/original-negative.stderr": "483a6bfb3d109636fe03391bcdb6e9acf77fe09879c52880f345ae17b6ebbec2",
+    "independent/original-negative.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "independent/target-hit-mutant.lua.txt": "36688a1c0853e23543f947980d895a9447f11786151616a8e03dabb2b0a6b511",
+    "independent/target-hit-negative.stderr": "1e3a89a212cac6adf9568fbf8be00a37ea4134694ae14d9c7c41da3ce6ecfbb9",
+    "independent/target-hit-negative.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "independent/visibility-gate.lua": "3134c5998f18176f8fbbfad18e67efc25e54c8045d4c86e81969f5f6157d0fac",
+    "independent/visibility-gates.json": "86e398c59f93dea332d77f3926095b937ca26d00436d5cfd0a19c0d93bd040c3",
+    "independent/wall-candidate.tsv": "dbabc4ce7945d485a67e50cc59b32b7d84d2355cfb4cf222bc8bac215a7bdc83",
+    "independent/wall-old.tsv": "dbabc4ce7945d485a67e50cc59b32b7d84d2355cfb4cf222bc8bac215a7bdc83",
+    "independent/wall-parity.json": "14d98dff75a5d293775eb5829cfdd211e6dd35869ea6c63c39e5480abed678a3",
+    "independent/wall-parity.lua": "3f2b3cde6ea948aa692d66685547e6f786cce61070819b94a74307d6197d01fb"
+  },
+  "archive_sha256": "531a82f75a112ad10bc5820817ce29b7bbf495c5e7193af85ccdd4263596acd2",
+  "native_repaired_accepted": false,
+  "full_337_suite_result": "pending exact committed-candidate CI; targeted checks are not the full matrix"
+}

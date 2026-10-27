@@ -1,0 +1,17 @@
+{
+  "kind": "independent_actual_production_wall_transform_parity",
+  "boundary": "Existing model-pool fixture executes production wall compiler; only renderer file replaced by exact frozen5d75554a in baseline run. No duplicated placement formula used.",
+  "equal": true,
+  "bytes_each": 135601,
+  "sha256": "dbabc4ce7945d485a67e50cc59b32b7d84d2355cfb4cf222bc8bac215a7bdc83",
+  "position_rows": 2892,
+  "seeds": [
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "fixture": "tools/test_consult_wall_pool.lua",
+  "native_FPS_measured": false
+}

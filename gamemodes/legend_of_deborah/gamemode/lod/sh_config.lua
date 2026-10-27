@@ -46,6 +46,9 @@ C.Geometry = {
     ContainerWidth = 128,
     ContainerHeight = 128,
     WallStack = 2,
+    -- Existing presentation offsets shared by wall rendering and sight bounds.
+    ContainerVisualEmbed = 16,
+    StackVisualGap = 4,
     -- Visible walls remain two containers high. This is the minimum collision
     -- height; invisible columns extend through overhead void below, leaving
     -- canonical upper-floor openings clear without limiting jump impulses.

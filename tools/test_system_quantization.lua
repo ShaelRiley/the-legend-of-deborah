@@ -35,6 +35,9 @@ local function actor(id,pos)
         GetNW2Float=function(e,k,default) return e[k] or default end}
 end
 LOD={}
+MASK_VISIBLE,CONTENTS_MONSTER=24705,33554432
+bit=bit or {bor=function(a,b) return a+b end} -- these native mask bits are disjoint
+util.TraceHull=function() return {Hit=false} end
 dofile(root..'sh_near_look.lua')
 local look=LOD.NearLook
 local cosine=math.cos(math.rad(6))

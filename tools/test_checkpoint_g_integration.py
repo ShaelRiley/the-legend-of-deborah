@@ -232,6 +232,7 @@ SUITES = [
     ("Pickup Native Creation & Touch Handoff", ["python3", "tools/run_lua54.py", "tools/test_pickup_native_handoff.lua"]),
     ("Procedural Weapon Visual Identity", ["python3", "tools/run_lua54.py", "tools/test_weapon_appearance.lua"]),
     ("Loot/Class/Identification Refresh", ["python3", "tools/run_lua54.py", "tools/test_loot_class_refresh.lua"]),
+    ("Near-look Native Generated Body Visibility", ["python3", "tools/run_lua54.py", "tools/test_near_look_native_bounds.lua"]),
     ("Fighter Strength / Constitution Bypass", ["python3", "tools/run_lua54.py", "tools/test_fighter_strength.lua"]),
     ("Monster Class, Affinity & Aura", ["python3", "tools/run_lua54.py", "tools/test_monster_identity.lua"]),
     ("Size Shifter Collision & Growth", ["python3", "tools/run_lua54.py", "tools/test_size_shifter_collision.lua"]),

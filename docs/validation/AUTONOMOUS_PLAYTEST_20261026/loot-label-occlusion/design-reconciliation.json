@@ -1,0 +1,47 @@
+{
+  "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "title": "The Legend of Deborah — Garry's Mod Game Design Document",
+  "revision_id": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+  "tab_id": "t.5ffvxbn7lbs",
+  "navigation": [
+    "00 — AI ENTRYPOINT",
+    "01 — AI RULE INDEX",
+    "06 — MULTIPLAYER, LIFECYCLE & UI"
+  ],
+  "rules": [
+    {
+      "text": "LOD-UI-008 — EQUIPMENT BODY MAP AND ICON INVENTORY [CURRENT AUTHOR DIRECTION]",
+      "startIndex": 85130,
+      "endIndex": 85207,
+      "tabId": "t.5ffvxbn7lbs",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    },
+    {
+      "text": "Equipment has a body map on the left and a scrollable inventory grid on the right, with at least three tile rows and empty destinations. Drag equipment both onto and off body slots; dragging to the bag stows/unequips it. Double-click an owned item tile to equip it in its ordinary default compatible slot, or to stow/unequip it if currently equipped. Single-click inspection, explicit hand selection and drag-and-drop remain available. Bag-only consumables have no equip action. Keep controls to equip, stow, hold a throwable and permanently trash any unequipped item, including weapons and consumable stacks. Gloves occupy both hands; rings can use either. Carry multiple distinct procedural copies of the same weapon family, while only the selected copy of the active weapon contributes effects. Copies use their family's shared native magazine and ammunition reserve; changing the selected copy never refills ammunition. This replaces the old one-record-per-family/replacement rule. Ordinary touch pickup automatically stores weapons/wearables without changing the equipped copy or requiring E; if capacity is full the world drop remains available. Displaced gear stays in the bag. Deprecate the world equipment-comparison panel and replacement prompt. Looking at or near a visible drop shows its complete item name prominently in large wrapped text. Inventory details retain the full name, properties and value. Server ownership, capacity, life/role and item identity checks remain authoritative; preserve pressed/dragged panels across delayed snapshots. Normal inventory persists through maze transitions and reconnects until Hero death, when weapons, wearables, consumables and saved ammunition are lost. Persistent wallet/DFT holdings and once-per-run recreation entitlements remain separate.",
+      "startIndex": 85208,
+      "endIndex": 87007,
+      "tabId": "t.5ffvxbn7lbs",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    },
+    {
+      "text": "LOD-UI-010 — NEAR-LOOK IDENTIFICATION AND HOLY DEBBIE [AUTHOR DIRECTION]",
+      "startIndex": 89712,
+      "endIndex": 89784,
+      "tabId": "t.5ffvxbn7lbs",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    },
+    {
+      "text": "Omniscience identifies a visible monster when looking near it, not solely when the exact crosshair ray intersects it. Retain feat/role eligibility and the existing identity/type/class/level/HP fields, with no combat targeting assistance, through-wall identification, cloaked-target reveal or tracking after look-away. Drops use the same near-look selection rule and show full names in large text; the equipment comparison is retired. The statue remains Deborah in her granite, arms-crossed scowling pose, across the portal. Freeze animation on both server and client, enlarge her modestly, add stone angel wings and soft blue-gold lighting. Keep the existing Use prompt and wallet validation.",
+      "startIndex": 89785,
+      "endIndex": 90477,
+      "tabId": "t.5ffvxbn7lbs",
+      "namedStyleType": "NORMAL_TEXT",
+      "isListItem": false
+    }
+  ],
+  "human_fallback": false,
+  "historical_citation_correction": "The earlier observation.json called the pickup-name paragraph LOD-UI-009. Live heading85130 identifies it as LOD-UI-008; its body85208–87007 is unchanged. LOD-UI-010 supplies the explicit no-wall rule."
+}

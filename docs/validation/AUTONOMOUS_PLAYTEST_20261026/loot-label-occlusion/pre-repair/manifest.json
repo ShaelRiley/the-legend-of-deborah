@@ -1,0 +1,26 @@
+{
+  "native_files": {
+    "source16_pickup_sight_client_latest.json": "248c886f0225da0f22ebc4e89eb310e511337296421e23c3031607f8ec4f0159",
+    "source16_pickup_sight_server_latest.json": "5daeb12602e6ab05cf9ab953c31aa43a0b31ebfd7feafa7f3c49b5be9dcbd0ec",
+    "source17_pickup_sight_variants_client.json": "ccac55df866b15ed226cbaa4786bfdb31193efce30f2b2d6080a716ac3703615",
+    "source17_pickup_sight_variants_server.json": "b68219526981c6c749b91d0f41712b2bd40790ed319ecb64fcc7a4dd6c1ead3e",
+    "source17_red_gate_sight_setup.json": "6e45ebb887047ce8a7bea776c7882692f9b158926c59584d781ab0705a6cbc1c",
+    "pickup_sight_variants.lua": "3ecc160e4d20e7f6b253f50c62db3b4d9e20f22e0914a8b5e3121591c34ade40",
+    "pickup_sight_client.lua": "dbddc2a25e9c44e5585935b97880d92909c24d1fec40f44a6d41f694245b1417",
+    "pickup_sight_server.lua": "dc5714bd7ce0d84e494b0feccaba4d49bd9e98d6420ca916f908bfa4304b594a",
+    "red_gate_sight_setup.lua": "5f74cbf1e38bcf8854b4769fcc66db3b4471d4e19953a809e51b8fd70584b2f7"
+  },
+  "archive_sha256": "ffd1b6c954132ffd6364047a9c9cb1d2ce8fad412ee4354f02ef9bf785393a32",
+  "photos": [
+    {
+      "file": "pre-repair/closed-gate-health.png",
+      "sha256": "9a67096c6c8a6809e186de61baeea88f562dbb3bcee107cbc12d4e8ba19bebaf",
+      "independently_viewed": true
+    },
+    {
+      "file": "pre-repair/exact-target-health.png",
+      "sha256": "8fd66805dda625f614bd4139e0d34c1cfa6da0d2f1b34a6813a7b3655824f8b1",
+      "independently_viewed": true
+    }
+  ]
+}

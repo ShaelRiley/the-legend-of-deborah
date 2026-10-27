@@ -1,0 +1,124 @@
+{
+  "id": "BUG-018",
+  "title": "Ordinary pickup name appears through an opaque closed generated gate",
+  "recorded_utc": "2026-10-27T22:56:32.362421+00:00",
+  "severity": "Gameplay UI information leak; no crash/progression loss demonstrated",
+  "state": "Repaired candidate, statically validated and independently reviewed; fresh repaired native acceptance pending",
+  "gameplay_commit": "6acff8a3458b230378100d491e431d18a84c740c",
+  "installed_label_commit": "94f3e07eef149a8bc35b165d654078d42e8274a4",
+  "environment": "Actual Valve Jupiter Steam Deck AMD CustomAPU0405/amdgpu; Windows x86 GMod2026.09.17 under Proton10; gm_flatgrass1280x800; one real client, developerDense private fixture;0 Workshop mounts",
+  "host_process_at_observation": {
+    "pid": 86343,
+    "birth": "6332948"
+  },
+  "campaign_seed": 6102602,
+  "setup": "Optional canonical supported relocation160 units before real closed Red gate; no card/gate/loot/HP edits. Current real Hero alive HP97/lives1. Explicit fixture, not traversal or ordinary timed acceptance. Clock extended7200 only after the frozen original rays.",
+  "reproduction": [
+    "On source17 gm_flatgrass campaign6102602, look toward the closed real Red gate from its before side atx\u22123040,y3072.",
+    "Observe ordinary white Health pickup-name text on the opaque closed door.",
+    "Snapshot the actual production HUD closure target, primary rendered origin, replicated bounds and exact frozen client/server rays; compare masks and line/hull shapes."
+  ],
+  "expected": "Visible drops display their full names; neither pickup names nor shared Omniscience identification reveal through opaque generated architecture. Preserve existing eligibility, cloak/look-away and ordinary transparent/actor visibility behavior.",
+  "design_source": "design-reconciliation.json (fresh live00\u219201\u219206, LOD-UI-008 and LOD-UI-010; revision unchanged)",
+  "actual": {
+    "target": {
+      "id": 1054,
+      "birth": 1269,
+      "class": "lod_loot_pickup",
+      "name": "Health",
+      "center": [
+        -2620,
+        3072,
+        -12229.96875
+      ]
+    },
+    "gate": {
+      "id": 967,
+      "birth": 1176,
+      "opened": false,
+      "pos": [
+        -2880,
+        3072,
+        -12079.96875
+      ],
+      "solid": 2,
+      "solid_flags": 0,
+      "bounds_min": [
+        -14,
+        -192,
+        -192
+      ],
+      "bounds_max": [
+        14,
+        192,
+        192
+      ]
+    },
+    "actual_hud_target_qualifies_and_would_draw": true,
+    "render_and_production_origin_match": true,
+    "server_eye_and_target_deltas": 0,
+    "segment_intersects_gate_obb_fraction": 0.3476190476190476,
+    "all_point_lines_visible_shot_solid": "miss",
+    "visible24705_hulls": "zeroXY1Z and cube1 both miss",
+    "visible_or_monster_hulls": "zeroXY1Z and cube1 both hit gate967, reported Contents1",
+    "removing_ignore_nodraw_alone": "still misses",
+    "gate_material": "opaque white alpha255/renderMode0/noDrawfalse, no override; hunter myplastic flags134217728"
+  },
+  "cause": "Source scripted SOLID_BBOX gate is missed by ordinary point rays. Native hull collision also requires MONSTER membership in the trace mask, even though the reported hit Contents is1. Both independent conditions are demonstrated; the opaque material evidence rejects a guessed NODRAW cause.",
+  "repair_approach": "Keep original MASK_VISIBLE ray semantics and add one zero-horizontal/one-vertical hull correction restricted to actual rendered generated bodies; ignore world in that correction. Clip gate/cargo proxy overhead and real cargo stack gap; preserve transparent/actor/containment behavior. Promote unchanged16/4 presentation offsets to one shared authority.",
+  "evidence": [
+    "pre-repair/manifest.json",
+    "pre-repair/native-frozen-rays.tar.xz",
+    {
+      "file": "pre-repair/closed-gate-health.png",
+      "sha256": "9a67096c6c8a6809e186de61baeea88f562dbb3bcee107cbc12d4e8ba19bebaf",
+      "independently_viewed": true
+    },
+    {
+      "file": "pre-repair/exact-target-health.png",
+      "sha256": "8fd66805dda625f614bd4139e0d34c1cfa6da0d2f1b34a6813a7b3655824f8b1",
+      "independently_viewed": true
+    }
+  ],
+  "native_repaired_accepted": false,
+  "clean_pass_streak": 0,
+  "scope_limits": [
+    "No cooperative/native multi-client claim.",
+    "No general campaign success/failure/reset claim.",
+    "No absolute absence of other visibility defects or native repaired acceptance yet.",
+    "Historical credible observation and failed evidence remain unchanged."
+  ],
+  "repair_files": [
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_near_look.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua",
+    "tools/test_near_look_native_bounds.lua",
+    "tools/test_loot_class_refresh.lua",
+    "tools/test_system_quantization.lua",
+    "tools/test_checkpoint_g_integration.py"
+  ],
+  "repair": "Retain legacy visible ray obstruction rejection, then one zeroXY/oneZ hull with MASK_VISIBLE|CONTENTS_MONSTER and ignoreworld. Callback restricts correction to actual generated opaque body bands, preserving ordinary glass/grate/actor semantics, invisible containment, opened doors, hidden floors and the real cargo stack gap. Existing embed16/gap4 values now have one shared owner; renderer positions unchanged.",
+  "static_checks": {
+    "targeted_passed": 14,
+    "targeted_total": 14,
+    "lua_parses": 928,
+    "LuaJIT_focused_test_and_production_compile": "pass",
+    "population_manifest_sources": 118,
+    "original_negative": "intended closed Redgate assertion",
+    "independent_target_hit_mutant": "intended generated-cover bypass assertion",
+    "prior_336_registered_suites_retained_in_order": true,
+    "new_registry_total": 337,
+    "actual_renderer_parity_rows": 2892,
+    "parity_seeds": [
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "independent_review": "clear after target-hit repair",
+    "full_337_matrix": "pending committed-candidate CI"
+  },
+  "static_evidence": "static/receipt.json",
+  "next_finite_native_gate": "Fresh installed candidate with matching new NearLookCRC: same real closed gate and Health target must no longer select/qualify/draw through its body in both realms; visible unobstructed/open controls still qualify and draw, cargo gap/invisible overhead remain visible, ordinary actors/glass and Omniscience eligibility remain unchanged. Compare equivalent view/settings/actors and retain baseline limits; then resume campaign exploration."
+}

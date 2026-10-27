@@ -1,0 +1,67 @@
+{
+  "kind": "independent bounded BUG018 review",
+  "reviewer": "/root/native_profile_review",
+  "utc": "2026-10-27T22:59:31.483738+00:00",
+  "finding": "No remaining actionable finding after correction of the target-hit early-return bypass.",
+  "candidate_files": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_near_look.lua": "c30de31c0cbb78dfa5d52b8b66bec39f2aa70ff64eb00f3ab1d23ae877fbf8fc",
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua": "f7f8de66b060a17464262e7b0b34ddeb53868a2d315c4158aad74725cc0fdb2d",
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_wall_visuals.lua": "87d9d10c68ee48f7fcfbd3dd815efeb51dc8271b3f42eef84d983db6870449c5",
+    "tools/test_near_look_native_bounds.lua": "5078eaef3fd8c5b17da03c7d461d4600a509595c4bd261e91219a2185ec6414c",
+    "tools/test_system_quantization.lua": "7a1ec1e96abd7fe6aa3098a03b71355ee89f05d5bbe4ecce81fdfbbcc505d80b",
+    "tools/test_loot_class_refresh.lua": "cab19a602641207dd6c0bef0f1e26251f5d7db7a549a3b04bf4db1fbe5a67870",
+    "tools/test_checkpoint_g_integration.py": "9605720acaddc062e9fb704aadc293a5aefb6b68cd89a1d5f20875001ea490bc"
+  },
+  "design": {
+    "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": "Reused live00/01 read this turn; fetched06 with matching revision. LOD-UI-008/010 require visible full-name drops and near-look identity without through-wall/cloak reveal."
+  },
+  "resolved_finding": {
+    "problem": "Candidate initially accepted a legacy ray hit on the intended target before correcting an earlier missed generated-BBox blocker.",
+    "correction": "Only another legacy hit rejects early; both clear and intended-target legacy results now run the narrow generated-body check.",
+    "meaningful_negative": "Independent early-return mutant fails target-hit legacy ray bypassed earlier generated cover; exact original source separately fails the closed Redgate test."
+  },
+  "independently_run": {
+    "native_shape_suite_Lua54": "pass",
+    "native_shape_suite_LuaJIT": "pass",
+    "frozen_original_negative": "expected failure at Health name revealed beyond native-shaped closed Red gate",
+    "target_hit_mutant_negative": "expected failure at target-hit legacy ray bypassed earlier generated cover",
+    "legacy_loot_class_regressions": "pass",
+    "legacy_cone_RNG_quantization": "pass",
+    "actual_renderer_model_pool_old_and_new": "pass in separate existing-fixture runs",
+    "all_prior_matrix_registrations": "all336 prior name/command entries unchanged and in order; one added,337 total (same current filesystem inventory used for syntax command comparison)"
+  },
+  "actual_renderer_parity": {
+    "kind": "independent_actual_production_wall_transform_parity",
+    "boundary": "Existing model-pool fixture executes production wall compiler; only renderer file replaced by exact frozen5d75554a in baseline run. No duplicated placement formula used.",
+    "equal": true,
+    "bytes_each": 135601,
+    "sha256": "dbabc4ce7945d485a67e50cc59b32b7d84d2355cfb4cf222bc8bac215a7bdc83",
+    "position_rows": 2892,
+    "seeds": [
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "fixture": "tools/test_consult_wall_pool.lua",
+    "native_FPS_measured": false
+  },
+  "architecture_review": [
+    "Original MASK_VISIBLE obstruction behavior remains authoritative; correction also protects a target-hit ray from earlier missed generated cover.",
+    "Nonzero-Z/zero-XY hull and MONSTER mask match actual dual-realm root traces. Fallback ignores world and filters only rendered generated bodies, preserving original ordinary glass/grate/actor behavior.",
+    "Closed Gate/Jail body is clipped to existing visual height; open gates and invisible upper containment do not gain false cover.",
+    "Kind4 body bands use actual accepted CargoMins/Maxs and the exact existing renderer embed16/gap4. Actual production world/model transforms are unchanged, including existing model-pool budget/lifetime behavior.",
+    "Invisible kinds3/7 and hidden false floor remain excluded; no world scan, new recurring hook or actor/collision mutation.",
+    "Extra cost is one bounded hull after a surviving legacy visibility query; no claim that this is free or that native FPS is proven."
+  ],
+  "primary_API_sources": [
+    "https://wiki.facepunch.com/gmod/Structures/HullTrace",
+    "https://wiki.facepunch.com/gmod/util.TraceHull"
+  ],
+  "native_acceptance": false,
+  "remaining_gate": "Fresh installed combined candidate: same posed hidden Health/closed gate must lose its label and identification on both realms while ordinary visible/open controls still work. Observe native cost at equivalent pose; retain broad campaign and cooperative coverage gaps.",
+  "final_fixture_recheck": "Final native-shaped test now marks the cargo proxy NoDraw while its separate accepted visuals remain visible; both runtimes and exact original/target-hit negatives independently rerun successfully."
+}
