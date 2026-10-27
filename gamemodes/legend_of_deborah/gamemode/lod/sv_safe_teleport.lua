@@ -16,13 +16,15 @@ end
 function T:Bind(ply)
     local ps=self:Hero(ply)
     if not ps then return nil end
-    return {actor=ply,ps=ps,life=ps.equipmentLifeSerial,run=Run.State,
+    return {actor=ply,ps=ps,life=ps.equipmentLifeSerial,spawn=ply.LODRunSpawnSerial,run=Run.State,
         seed=Run.State.LevelSeed,graph=Run.State.Graph}
 end
 function T:Matches(b)
     return b and self:Hero(b.actor)==b.ps and Run.State==b.run
         and Run.State.LevelSeed==b.seed and Run.State.Graph==b.graph
-        and b.ps.equipmentLifeSerial==b.life or false
+        -- The identity-owned ps survives respawn; the native spawn serial owns
+        -- this body even when the optional equipment life field is absent.
+        and b.ps.equipmentLifeSerial==b.life and b.actor.LODRunSpawnSerial==b.spawn or false
 end
 
 -- Navigation's nearest-cell fallback is appropriate for path recovery, but

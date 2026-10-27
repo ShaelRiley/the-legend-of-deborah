@@ -151,6 +151,13 @@ local first,second=instance.endpoints[1],instance.endpoints[2]
 local center,other=B:CellCenter(source),B:CellCenter(destination)
 local away=center+Vector(240,0,2)
 local function near(p,endpoint) prepare(p);p.pos=endpoint:GetPos() end
+local function nativeSpawn(p)
+ local pending=#F.timers
+ assert(F.hooks.LOD_PlayerSpawn)(p)
+ -- The actual spawn callback advances the body serial. Deferred native
+ -- ApplyPlayerState is outside this transaction/standing-hull boundary.
+ while #F.timers>pending do table.remove(F.timers) end
+end
 local function unchanged(p,endpoint,why)
  near(p,endpoint);local before=p.pos;local moves=p.moves
  assert(not D:Interact(endpoint,p),why)
@@ -184,7 +191,7 @@ for _,state in ipairs({'vehicle','noclip','spectator','soldier','dead','staging'
 end
 -- Reentrant native queries can invalidate exact Hero, life, source, paired
 -- entity, account or generation ownership before any movement commits.
-for _,change in ipairs({'life','state','epoch','graph','identity','entity','destination','tracking','source','spectator','soldier','clock','late_clock','late_frozen','late_occupancy'}) do
+for _,change in ipairs({'life','spawn','state','epoch','graph','identity','entity','destination','tracking','source','spectator','soldier','clock','late_clock','late_frozen','late_occupancy'}) do
  near(a,first);b.pos=away
  local oldPS,oldEpoch,oldGraph,oldId=a.ps,Run.State.CampaignEpoch,Run.State.Graph,a.id
  local oldEntities=instance.entities;local oldLife=a.ps.equipmentLifeSerial
@@ -198,6 +205,10 @@ for _,change in ipairs({'life','state','epoch','graph','identity','entity','dest
   elseif not data.mins then return end
   fired=true
   if change=='life' then a.ps.equipmentLifeSerial=(oldLife or 0)+1
+  elseif change=='spawn' then
+   assert(a.ps==oldPS and oldLife==nil,'Exercise the native same-state/nil-equipment-life case')
+   nativeSpawn(a)
+   assert(a.ps==oldPS and a.ps.equipmentLifeSerial==nil)
   elseif change=='state' then a.ps=table.Copy(a.ps)
   elseif change=='epoch' then Run.State.CampaignEpoch=oldEpoch+1
   elseif change=='graph' then Run.State.Graph=table.Copy(oldGraph)
@@ -327,5 +338,35 @@ endpoint.index=index+100000
 local text=render(endpoint)
 assert(text:find('Synchronizing warp',1,true) and not text:find('LINK AND TRAVERSE',1,true),'Recycled endpoint index matched stale row')
 endpoint.index=index
+-- BUG016: production retains the same identity-owned ps and leaves the optional
+-- equipmentLifeSerial nil across death/respawn. Exercise the actual RunManager
+-- PlayerSpawn authority, then attempt a genuinely safe standing arrival.
+do
+ local T,g=LOD.SafeTeleport,Run.State.Graph
+ prepare(a);b.pos=away
+ a.ps.equipmentLifeSerial=nil;a.ps.lives=2
+ nativeSpawn(a)
+ local ps=a.ps
+ local old=assert(T:Bind(a))
+ assert(T:Matches(old) and old.life==nil)
+ a.dead=true;assert(not T:Matches(old),'Dead Hero cannot retain a live binding')
+ a.ps.lives=1;a.dead=false
+ nativeSpawn(a)
+ assert(a.ps==ps and ps.equipmentLifeSerial==nil,'Native respawn preserves this identity record')
+ assert(not T:Matches(old),'BUG016: previous-body binding must reject respawn with same ps and nil equipment life')
+ local cell=g.Cells[instance.cellKey]
+ local c=B:CellCenter(cell)
+ local home=assert(T:Landing(a,g,cell,c+Vector(0,64,0)))
+ a.pos=home
+ local destination=assert(T:Landing(a,g,cell,c+Vector(0,-64,0)))
+ local moves=a.moves
+ assert(not T:MoveBound(old,destination,nil,cell) and a.moves==moves and a.pos==home,
+  'Stale body binding must not move to an otherwise valid destination')
+ local fresh=assert(T:Bind(a))
+ assert(T:Matches(fresh) and T:MoveBound(fresh,destination,nil,cell),'Fresh body binding remains usable')
+ assert(a.moves==moves+1 and a.pos:DistToSqr(destination)<1)
+ assert(T:MoveBound(fresh,home,nil,cell),'Fresh binding can restore the same safe standing location')
+ print('SAFE_BODY_BINDING_PASS: actual PlayerSpawn, same ps/nil equipment life, stale rejection and fresh safe movement')
+end
 D:Cleanup('warp suite complete')
 print('WARP_HOLE_PASS: actual paired production generation, independent ordered-stage/return proof, endpoint rejection, SafeTeleport support/hull/occupancy, native Use/repeat/cooldown/two Heroes, late joins, exact lifecycle rejection, partial creation rollback and cleanup')
