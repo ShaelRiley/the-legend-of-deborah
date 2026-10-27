@@ -1,0 +1,2 @@
+OVERHEAD_WALLS_PASS: five vault heights; upper opening; gallery; split merge; 4759 legal crossings and 38 stair flights across eight seeds; peak 616 merged boxes
+OVERHEAD_DOORS_PASS: native gate/jail collision extension and complete idempotent gate opening

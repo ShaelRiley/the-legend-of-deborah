@@ -1,0 +1,114 @@
+{
+  "kind": "BUG011 CI fixture adapter repair; no production change",
+  "base_commit": "d66a6503afa097410c8cec77933891cfe4d1f2ca",
+  "failed_remote_run": 40529567400,
+  "failed_remote_job": 122278344230,
+  "failed_remote_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40529567400",
+  "observed_remote_result": {
+    "passed": 335,
+    "total": 336,
+    "source_changed": 0,
+    "failures": [
+      "Invisible Overhead Walls & Free Movement: native gate initialization calls missing fixture util.PrecacheModel"
+    ]
+  },
+  "remote_evidence": "Decoded job logs independently fetched through GitHub connector; exact selected failure/context/summary lines retained. One [FAIL] line in819 received lines.",
+  "repair": "Only overhead-walls test adapter gains a recorded server model-precache table; real gate initialization must publish the configured stock body before unchanged collision/opening assertions. Prior API restored after the fixture.",
+  "unchanged_assertions": "All4759 legal horizontal crossings,38 stair flights,eight generated seeds,five vault heights,ceiling/gallery/merged-wall checks and complete/idempotent gate/jail opening checks remain intact.",
+  "local_positive_checks": [
+    "Overhead walls and real gate/jail initialization: PASS",
+    "Great Crate cold-server precache/client body, fallback and lifecycle: PASS",
+    "Client geometry full-update recovery: PASS",
+    "Great Crate deterministic floor and collision: PASS",
+    "Standing stair headroom: PASS",
+    "Changed fixture Lua5.4 syntax and LuaJIT compile-only: PASS"
+  ],
+  "semantic_negative_control": "The final test redirected only real server gate initialization to63bac original production code; expected failure: Native gate initialization must publish its stock body to the server model table.",
+  "after_stdout_note": "local-after-completion.txt is the exact completion output received after initial enemy-fixture boilerplate; no claim that it contains the initial stdout chunk.",
+  "test_before_sha256": "c96e6677ba6f14f74e165b314fa154f6bdddd2754ed2abc53a0b372286626431",
+  "test_after_sha256": "759b926cf12ee324a06741704e8c8294e9f511fd728d5678765659e41e2cc7c2",
+  "production_gameplay_unchanged_from": "d66a6503afa097410c8cec77933891cfe4d1f2ca",
+  "successor_full_remote_ci": "Pending after push; local checks do not substitute for the336-suite result.",
+  "native_gmod_claim": "No new gameplay build or native pass; production GateInit and current primary remain unchanged.",
+  "archive": {
+    "file": "local-validation.tar.xz",
+    "sha256": "a428dfb6e4e27ff5f02aafab65d78b867b2235a9e8f47437d2d215cac0e5f1b6",
+    "entries": [
+      {
+        "path": "adjacent-results.json",
+        "sha256": "9afed8ffa8b452d1f1b8b36ce27eefe07c1c30fdce50051b31061d16ac6bff77",
+        "bytes": 886
+      },
+      {
+        "path": "ci-failure-excerpt.txt",
+        "sha256": "52bdd56a7bc5b6b739f03df5438a2db5761c03e886c093af90f1718d06202af2",
+        "bytes": 1907
+      },
+      {
+        "path": "crate-geometry.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "crate-geometry.stdout.txt",
+        "sha256": "f7458d274a97b353520c65f0ec2d3d5ae9ad63f019ccecdcf0bf5a3fce3ec859",
+        "bytes": 3679
+      },
+      {
+        "path": "gate-init-before-precache.lua",
+        "sha256": "0698a9f6663ab24df79476d469e736b0b4b6d50f5e63c4d8ccd24d7d7d6c707d",
+        "bytes": 1945
+      },
+      {
+        "path": "geometry-fullupdate.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "geometry-fullupdate.stdout.txt",
+        "sha256": "b5ff9851078684944c7e6f6912a39710760ece4e62608736cbe6c8b17eb00635",
+        "bytes": 237
+      },
+      {
+        "path": "local-after-completion.txt",
+        "sha256": "8e4f80662aec40159685884c70199b52102525e2345e5887231cd4b323fd6332",
+        "bytes": 257
+      },
+      {
+        "path": "run-adjacent.py",
+        "sha256": "c6f01a72dffa30a7ec4ad172c797f16780c27e822d7664f33ef9e108e1c7e486",
+        "bytes": 1474
+      },
+      {
+        "path": "semantic-negative-control.lua",
+        "sha256": "5909d905b7351dd43507ce77053f6f2adcb17e62808e62a919581d4ecc8be7ae",
+        "bytes": 348
+      },
+      {
+        "path": "semantic-negative-control.stderr.txt",
+        "sha256": "050c198f0e3d91d137b16d933f81acd3122bace60983dc6b590e52eedf2e1715",
+        "bytes": 256
+      },
+      {
+        "path": "semantic-negative-control.stdout.txt",
+        "sha256": "3c98d2976fc04aae7fb7942d19da829f110de587966ab7c0e0b8cc50a74b7c73",
+        "bytes": 597
+      },
+      {
+        "path": "stair-headroom.stderr.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      {
+        "path": "stair-headroom.stdout.txt",
+        "sha256": "1062e1a6e2bdda921e25a7759c00757f7e9943ce9700ba69febe1df5a5c6965c",
+        "bytes": 702
+      },
+      {
+        "path": "test_maze_overhead_walls.before.lua",
+        "sha256": "c96e6677ba6f14f74e165b314fa154f6bdddd2754ed2abc53a0b372286626431",
+        "bytes": 6100
+      }
+    ]
+  }
+}

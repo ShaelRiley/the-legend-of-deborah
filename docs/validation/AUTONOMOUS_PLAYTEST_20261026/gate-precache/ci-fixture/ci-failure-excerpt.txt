@@ -1,0 +1,18 @@
+2026-10-27T15:27:45.9516613Z [PASS] 137/336 Equipment Combo Abilities (0.317s)
+2026-10-27T15:27:46.2373540Z [PASS] 138/336 Monster Defense Balance & Tactical Feedback (0.285s)
+2026-10-27T15:27:49.9634883Z [FAIL] 139/336 Invisible Overhead Walls & Free Movement (3.726s)
+2026-10-27T15:27:49.9636624Z [LOD:ENEMY-UPDATE] Clear nearby enemies first; this test preserves the active-hostile reserve.
+2026-10-27T15:27:49.9637822Z [LOD:ENEMY-UPDATE] sniper spawned 2 open graph cells away; normal level, XP and equipment drops.
+2026-10-27T15:27:49.9639525Z [LOD:ENEMY-UPDATE] blitzer spawned 3 open graph cells away; normal level, XP and equipment drops.
+2026-10-27T15:27:49.9640760Z enemy_update PASS: graph range/LOS/gates/safes/leash/stairs, frozen aim, finite bolt, cancellations, encounter cost/cap/spawn, testkit lifecycle
+2026-10-27T15:27:49.9642075Z OVERHEAD_WALLS_PASS: five vault heights; upper opening; gallery; split merge; 4759 legal crossings and 38 stair flights across eight seeds; peak 616 merged boxes
+2026-10-27T15:27:49.9643673Z /home/runner/work/the-legend-of-deborah/the-legend-of-deborah/tools/test_maze_overhead_walls.lua: ...es/legend_of_deborah/entities/entities/lod_gate/init.lua:20: attempt to call a nil value (field 'PrecacheModel')
+2026-10-27T15:27:49.9644571Z 
+2026-10-27T15:27:50.0310962Z [PASS] 140/336 September 22 Navigation Recovery (0.066s)
+2026-10-27T15:28:52.1049006Z [PASS] 334/336 Manual Catalog Parity (0.115s)
+2026-10-27T15:28:52.2526833Z [PASS] 333/336 Muted Potion Input & Cure (0.3s)
+2026-10-27T15:28:52.5764996Z [PASS] 335/336 Workshop Native & Proton Tools (0.471s)
+2026-10-27T15:28:54.1168742Z [PASS] 336/336 Verified Server Deploy & Rollback (1.864s)
+2026-10-27T15:28:54.4492413Z SYSTEMS_MATRIX 335/336; source_changed=0
+2026-10-27T15:28:54.4606929Z ##[error]Process completed with exit code 1.
+2026-10-27T15:28:54.4695637Z ##[group]Run actions/upload-artifact@v4

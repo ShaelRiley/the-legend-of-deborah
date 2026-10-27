@@ -92,6 +92,9 @@ print('OVERHEAD_WALLS_PASS: five vault heights; upper opening; gallery; split me
 -- collision on that entity, including repeated black-gate reconciliation.
 local classes={}
 local oldAdd,oldInclude=AddCSLuaFile,include
+local oldPrecache=util.PrecacheModel
+local precachedModels={}
+util.PrecacheModel=function(model) precachedModels[model]=true end
 AddCSLuaFile=function() end;include=function() end
 for _,name in ipairs({'lod_gate','lod_jail_door'}) do
  ENT={};dofile('gamemodes/legend_of_deborah/entities/entities/'..name..'/init.lua');classes[name]=ENT
@@ -116,8 +119,12 @@ local doorGraph={Cells={[key(3,3,0)]=a,[key(4,3,0)]=b},Edges={}}
 local meta={beforeCell=a,afterCell=b,index=4}
 for _,kind in ipairs({'gate','jail'}) do
  local e=kind=='gate' and B:_SpawnProgressionGate(meta,doorGraph) or B:_SpawnJailDoor(meta,doorGraph)
+ if kind=='gate' then
+  assert(precachedModels[GC.GateModel],'Native gate initialization must publish its stock body to the server model table')
+ end
  assert(e.Solid==SOLID_BBOX and e.Pos.z+e.maxs.z==16384,'Closed door cannot be vaulted')
  if kind=='gate' then e:OpenGate();e:OpenGate() else e:OpenDoor() end
  assert(e.Solid==SOLID_NONE and e.NotSolid and e.Opened,'Door opens its entire overhead collision')
 end
+util.PrecacheModel=oldPrecache
 print('OVERHEAD_DOORS_PASS: native gate/jail collision extension and complete idempotent gate opening')
