@@ -1,0 +1,11 @@
+local p=player.GetHumans()[1]
+if not IsValid(p) then return end
+local run,rows,start=LOD.RunManager.State,{},SysTime()
+local name="PT15NativeMovement"
+timer.Create(name,.05,600,function()
+ if not IsValid(p) or LOD.RunManager.State~=run then timer.Remove(name) return end
+ local ps=LOD.RunManager:GetPlayerState(p)
+ local a,v=p:GetPos(),p:GetVelocity()
+ rows[#rows+1]={t=SysTime()-start,pos={a.x,a.y,a.z},velocity={v.x,v.y,v.z},hp=p:Health(),magic=ps and ps.magic,alive=p:Alive(),moveType=p:GetMoveType(),dash=LOD.RPGAbilityRules.VoluntaryDashes[p]~=nil,thunderUntil=p:GetNW2Float("LOD_ThunderUntil",0)}
+ if #rows%10==0 or #rows==600 then file.Write("legend_of_deborah/native_charge_latest.json",util.TableToJSON({seed=run.LevelSeed,epoch=run.CampaignEpoch,rows=rows})) end
+end)

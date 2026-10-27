@@ -1,0 +1,77 @@
+{
+  "source": "console.log.xz",
+  "selection": "Finite completed first setup and relocation through source line273; later console activity remains in raw archive and is not acceptance evidence here.",
+  "markers": [
+    {
+      "line": 181,
+      "text": "PT12_PRE\t1\t1\ttrue\tfalse\tfalse\tfalse\t1550561962\ttrue"
+    },
+    {
+      "line": 185,
+      "text": "PT12_SOURCE\tNextBot [979][lod_hostile]"
+    },
+    {
+      "line": 187,
+      "text": "PT12_HERO\ttrue\ttrue"
+    },
+    {
+      "line": 189,
+      "text": "PT12_BIND\ttrue"
+    },
+    {
+      "line": 197,
+      "text": "PT12_CLASS\t979\tmonster:168255545\trogue\ttrue"
+    },
+    {
+      "line": 217,
+      "text": "PT12_D\tnil"
+    },
+    {
+      "line": 254,
+      "text": "PT15_CHARGE_SUPPORT\ttable: 0xc1d82cea"
+    },
+    {
+      "line": 261,
+      "text": "PT12_REBIND\tNextBot [990][lod_hostile]\trogue\ttrue\t-1920.000000 384.000000 -11887.937500"
+    },
+    {
+      "line": 263,
+      "text": "PT12_FAST_PICK\t-1920.000000 544.000000 -11885.937500\t6\t12\t1"
+    },
+    {
+      "line": 268,
+      "text": "PT12_D\t-1920.000000 544.000000 -11885.937500"
+    },
+    {
+      "line": 269,
+      "text": "PT12_MOVED"
+    },
+    {
+      "line": 270,
+      "text": "PT12_GATES\ttrue"
+    },
+    {
+      "line": 271,
+      "text": "PT12_REAR\t-1"
+    },
+    {
+      "line": 272,
+      "text": "PT12_BURST\tfalse\ttrue"
+    },
+    {
+      "line": 273,
+      "text": "PT12_RETURN\ttrue\t-3840.000000 -2688.000000 -12269.937500"
+    }
+  ],
+  "tool_warning_candidates": [
+    {
+      "line": 6,
+      "text": "Unknown command \"con_enable\""
+    },
+    {
+      "line": 8,
+      "text": "Unknown command \"con_enable\""
+    }
+  ],
+  "warnings_qualification": "Retained as diagnostic evidence. A warning candidate is not automatically a gameplay defect; failed key/chat diagnostic batch is excluded from movement proof."
+}

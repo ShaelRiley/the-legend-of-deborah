@@ -1,0 +1,96 @@
+{
+  "captured_utc": "2026-10-27T20:30:27.836883+00:00",
+  "kind": "BUG015 exact repaired native artifacts; individual live log snapshots are not atomic",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/source15-native/safe_floor_zeroarea_probe_repaired.json",
+      "archived_as": "safe_floor_zeroarea_probe_repaired.json",
+      "source_bytes": 9092,
+      "source_sha256": "edb481c183b62ba9a713a9238e123dc38daaddc2c346ab60ea2cb03856266fdf",
+      "archive_bytes": 9092,
+      "archive_sha256": "edb481c183b62ba9a713a9238e123dc38daaddc2c346ab60ea2cb03856266fdf",
+      "compression": "none",
+      "source_mtime_ns": 1793131584367515134
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source15-native/native-charge-observed.json",
+      "archived_as": "native-charge-observed.json.xz",
+      "source_bytes": 112093,
+      "source_sha256": "7de0d17411ebf853927cf8d95cc12990a726960e19fbc82254b4c616b2479c54",
+      "archive_bytes": 5308,
+      "archive_sha256": "85cdef54f9e1d70f9b39e1abaaaba62bf6dd92638c7d1fac8be0d76d2f5edb40",
+      "compression": "xz",
+      "source_mtime_ns": 1793132678302376075
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/console.log",
+      "archived_as": "console.log.xz",
+      "source_bytes": 263115,
+      "source_sha256": "51756b91af6fcea90ff761dcbcf0fd5f94422291cbc2fb84cea3642a103d6e1a",
+      "archive_bytes": 9740,
+      "archive_sha256": "57d1bff27471c208065453603ef8cce57ae9e8627c5f3994ef53e44b25fc5631",
+      "compression": "xz",
+      "source_mtime_ns": 1793133024809181328
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/die_logger_history.json",
+      "archived_as": "die_logger_history.json.xz",
+      "source_bytes": 162847,
+      "source_sha256": "53146ad59cbb50bf7f1e872b091210c8b38a567b0010fc410561ee8e8905d5ed",
+      "archive_bytes": 6500,
+      "archive_sha256": "dc1c2a39a2d16e3e918899064b2e8435d8b4cb4ca484f7421087ee8207c477e4",
+      "compression": "xz",
+      "source_mtime_ns": 1793133027067655434
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_summary_latest.txt",
+      "archived_as": "rpg_summary_latest.txt.xz",
+      "source_bytes": 2977,
+      "source_sha256": "e20e712ad9b9ebc38e5a2f6b00920f243488f888049a3637ebe2aabd9ce3aec2",
+      "archive_bytes": 1492,
+      "archive_sha256": "4db10435b46be483bbd8285298308b4dc59b4a2e8e6d09be1086d5e7240417c8",
+      "compression": "xz",
+      "source_mtime_ns": 1793133024446644350
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_session_latest.txt",
+      "archived_as": "rpg_session_latest.txt.xz",
+      "source_bytes": 160492,
+      "source_sha256": "a9c52e205a302e286ce36790ad2faf2320b3676dfaac112487aadb9f376a19e7",
+      "archive_bytes": 9916,
+      "archive_sha256": "dfa217a915f20e1c553d011edace3daf732f21ab825c29d29952988d7e4520f3",
+      "compression": "xz",
+      "source_mtime_ns": 1793133024448636723
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/native_charge_observer.lua",
+      "archived_as": "native-charge-observer.lua.txt",
+      "source_bytes": 778,
+      "source_sha256": "7e12fbdd33d61d1852c78e72c3ec5a7bd81a3f4382b5270488f53242cca6e273",
+      "archive_bytes": 778,
+      "archive_sha256": "7e12fbdd33d61d1852c78e72c3ec5a7bd81a3f4382b5270488f53242cca6e273",
+      "compression": "none",
+      "source_mtime_ns": 1793132397166215264
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793131987060302021-deborah-source15-real-backstab-contact.png",
+      "archived_as": "real-backstab-contact.png",
+      "source_bytes": 1349517,
+      "source_sha256": "44ff7a1115a1e58c157aa170f3592e9e3892f7b30b02ac85252cb4351018e6e2",
+      "archive_bytes": 1349517,
+      "archive_sha256": "44ff7a1115a1e58c157aa170f3592e9e3892f7b30b02ac85252cb4351018e6e2",
+      "compression": "none",
+      "source_mtime_ns": 1793131987017598298
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793132616984915487-deborah-source15-thunder-observed.png",
+      "archived_as": "thunder-observed.png",
+      "source_bytes": 1265046,
+      "source_sha256": "c614c83d05f8787760a9a3fdbde758a347b874f1b5b08b0e9a1073c1bcd31a17",
+      "archive_bytes": 1265046,
+      "archive_sha256": "c614c83d05f8787760a9a3fdbde758a347b874f1b5b08b0e9a1073c1bcd31a17",
+      "compression": "none",
+      "source_mtime_ns": 1793132616945498287
+    }
+  ]
+}

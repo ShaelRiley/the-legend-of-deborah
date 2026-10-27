@@ -1,0 +1,32 @@
+{
+  "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/private_profile_client_proof.json",
+  "source_sha256": "ef13db94120afe55200fa1c18f512d90729523cbc0ebde498bbbac1039b7a231",
+  "qualification": "Source profile token omitted; all remaining proof fields preserved. This boundary proof is not gameplay acceptance.",
+  "proof": {
+    "native_gameplay_accepted": false,
+    "developer_fixtures": true,
+    "source": {
+      "gamemodes/legend_of_deborah/gamemode/lod/cl_hostile_presentation_safety.lua": true,
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua": true,
+      "gamemodes/legend_of_deborah/entities/entities/lod_gate/init.lua": true,
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua": true,
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_language.lua": true
+    },
+    "cloud_ui_confirmation_match": true,
+    "map_exists": true,
+    "developer_mode_actual": 1,
+    "cloud_ui_off_confirmed": true,
+    "passed": true,
+    "cloud_ui_off_evidence_match": true,
+    "realm": "client",
+    "cloud_ui_confirmation_sha256": "c79a589a9d795dbe2b340fafb99a38703254c307374a95f22868b0fc525114aa",
+    "cfg_match": true,
+    "gamemode": "legend_of_deborah",
+    "cloud_cvar_available": false,
+    "kind": "private_profile_boundary",
+    "data_match": true,
+    "cloud_ui_off_evidence_sha256": "0502b8b10a29823684371cebb621966cd9dd4c818c5a8ef2f0e277b81e876936",
+    "cloud_setting": -1,
+    "map": "gm_flatgrass"
+  }
+}

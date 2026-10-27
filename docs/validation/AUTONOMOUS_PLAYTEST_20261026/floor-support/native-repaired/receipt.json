@@ -1,0 +1,181 @@
+{
+  "kind": "BUG015 finite native repaired gate on actual Steam Deck; broader consumer/campaign acceptance remains open",
+  "recorded_utc": "2026-10-27T20:36:01.180Z",
+  "status": "Finite canonical floor-support, safe relocation/return and charge-on-supported-floor gate passed. No full campaign, cooperative or complete Thunder ability acceptance.",
+  "gameplay_source_commit": "74415d1a3f135052de467286a08ebc1907b1608a",
+  "installed_prepared_commit_and_build_label": "cd6274bf285bee0788b1f07bf3e6261e0cce2a1b",
+  "baseline_static_successor_checked": "454f6037df408c3bad1943f59df57d124451d691",
+  "source": {
+    "prepared": "prepared-provenance.json",
+    "prepared_source_sha256": "9ce1b8b8b6e2b1ee729c897ff230aa064d1db694ee88a24ba150198644832d21",
+    "canonical_safe_teleport_sha256": "a615b9ada3d78710e56d8c9b5f451278542c4977bea6cd0eaa7f650301f5dc3e",
+    "canonical_safe_teleport_crc32": 3252930173,
+    "realms": [
+      "source-server-proof.json",
+      "source-client-proof.json"
+    ],
+    "source_gate": "Both actual realm boundary proofs report passed=true and all five source-file checks true. Their boundary native_gameplay_accepted remains false; this receipt supplies only the later finite observations. Gameplay trees74415/cd627/454f are byte-identical.",
+    "cvar_qualification": "Server boundary probe reports developer_mode_actual=-1 during startup. Later actual PT12_PRE reports developer_mode1. Client boundary reports1. No server startup -1 is presented as a later gameplay cvar measurement."
+  },
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405 used by root; Windows x86 Garry's Mod under Proton",
+    "engine": "2026.09.17",
+    "jit": "LuaJIT2.0.4",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "campaign_epoch": 1,
+    "developer_mode": 1,
+    "unranked": true,
+    "fresh_session": "source15-fresh/session-1793129969908511313",
+    "ordinary_progression_qualification": "Real staging character/feat selection and dungeon deployment preceded fixtures. Relocation, equipment testkit, H recovery and extended private clock are developer setup, so these episodes are not an ordinary route/campaign pass."
+  },
+  "landing": {
+    "artifact": "safe_floor_zeroarea_probe_repaired.json",
+    "sha256": "edb481c183b62ba9a713a9238e123dc38daaddc2c346ab60ea2cb03856266fdf",
+    "same_repro_seed": true,
+    "Hero": {
+      "cell": [
+        1,
+        4,
+        0
+      ],
+      "input": [
+        -3840,
+        -2688,
+        -12271.376953125
+      ],
+      "landing": [
+        -3840,
+        -2688,
+        -12269.9375
+      ],
+      "rays_hit": 0,
+      "valid_zeroXY_floor_hits": 5,
+      "result": "pass"
+    },
+    "moving_Rogue_979_candidates": {
+      "cell": [
+        4,
+        3,
+        0
+      ],
+      "floor_candidates": [
+        2,
+        3
+      ],
+      "floor_result": "Each returns a canonical Landing vector and has five valid exact-point generated kind1/upnormal/non-solid hull hits, despite five ray misses.",
+      "wall_candidates": [
+        1,
+        4
+      ],
+      "wall_result": "Each retains nil Landing and five wallkind4/StartSolid hits; unsafe geometry still rejects."
+    },
+    "support_service": "PT15_CHARGE_SUPPORT returns a nonnil support table on the current supported floor.",
+    "limits": "These trace/landing probes do not establish all event placement, hazard, gate, stair or occupancy combinations. Static regression checks separately preserve them."
+  },
+  "relocation": {
+    "proof": "console-markers.json",
+    "source": "Actual existing generated Rogue Soldier/Skeleton990, canonical class rogue. Rebound to its own actor/life through EnemyRoster; no class/HP mutation or fake presentation-event injection.",
+    "source_actor": "skeleton:91352027",
+    "destination_cell": [
+      6,
+      12,
+      1
+    ],
+    "destination": [
+      -1920,
+      544,
+      -11885.9375
+    ],
+    "admission": "PT12_REBIND rogue/true; PT12_FAST_PICK returns safe destination; MoveBound executes; PT12_GATES=true, rear dot=-1.",
+    "natural_attack": "PT12_BURST=false with existing burst active=true, so the real AI was already in its normal burst; actual bolts/damage and history followed.",
+    "return": "Original eight-second bounded owner/life/graph relocation returned true to(-3840,-2688,-12269.9375).",
+    "rendered_context": "real-backstab-contact.png independently viewed on the upper pink floor: Hero Logan, lives3, UNRANKED, HP74/Magic97, actual Arcane Diversion and source/target damage feed.",
+    "initial_attempt_preserved": "The first setup against moving ordinary Rogue979 returned PT12_Dnil. It is retained and not counted as a passed relocation or given an invented cause; the later stationary-source setup supplies the completed gate.",
+    "input_and_route_qualification": "Developer relocation demonstrates the shared native movement/clearance seam. It is not proof of ordinary traversal to that cell."
+  },
+  "charge": {
+    "telemetry": "native-charge-observed.json.xz",
+    "raw_sha256": "7de0d17411ebf853927cf8d95cc12990a726960e19fbc82254b4c616b2479c54",
+    "observer_source": "native-charge-observer.lua.txt",
+    "operator_observation": "Root reports verified game focus/console closure, H developer recovery, then the real UP DOWN UP input recipe. Telemetry independently observes the resulting commitment and movement. No raw HID event stream is archived here.",
+    "samples": 600,
+    "dash_samples": 20,
+    "sample_window_seconds": 29.992875299999923,
+    "move_types": [
+      2
+    ],
+    "alive_all": true,
+    "hp_min": 100,
+    "hp_max": 100,
+    "magic_before": 100,
+    "magic_at_commitment": 76,
+    "magic_cost_observed": 24,
+    "magic_final": 100,
+    "peak_observed_velocity": 1267.1999511718761,
+    "net_displacement_units": 1026.43505859375,
+    "first_position": [
+      -3852.96923828125,
+      -3371.001220703125,
+      -12271.9375
+    ],
+    "last_position": [
+      -3852.96923828125,
+      -2344.566162109375,
+      -12271.9375
+    ],
+    "history_proof": "Current Logan session serial60 reports Thunder Charge,24 Magic spent/76 remaining. Magic regenerates after commitment during the30-second observation.",
+    "rendered_context": "thunder-observed.png independently viewed: post-travel corridor, HP100, Magic78. This frame does not establish the complete charge warning/trail.",
+    "excluded_failed_attempt": "The preceding key/chat diagnostic batch is retained in raw console and supplies no movement proof. Ordinary S retreat happened afterward and is not included in this telemetry displacement.",
+    "limits": "Finite observation establishes real commitment/resource debit and physical movement over supported generated floors. Exact speed/timing/range tuning, collision/clipping, hit effects, audiovisual feel, all hazards and cooperative behavior remain separate acceptance."
+  },
+  "history": {
+    "artifact": "current-session-history-serial1-60.json",
+    "raw_all_sessions": "die_logger_history.json.xz",
+    "selection": "The captured raw file has199 rows and serial reset boundaries at original indexes31 and107. Only the final current Logan session at index107 through166, serial1..60, supplies this receipt; older duplicate serials and later serial61+ are excluded.",
+    "backstab_serials": [
+      31,
+      36,
+      39,
+      42,
+      45,
+      48,
+      53,
+      56
+    ],
+    "backstab_subject": "Skeleton Of Valerie \"Dead Serious\" Perry",
+    "BUG012_qualification": "This first episode observes correct Backstab subject in native history. Its screenshot has ordinary damage/Arcane rows, not the exact Backstab HUD line. Later dedicated BUG012 HUD proof is banked separately; no BUG012 HUD acceptance is inferred here."
+  },
+  "evidence": {
+    "manifest": "manifest.json",
+    "console": "console.log.xz",
+    "console_markers": "console-markers.json",
+    "rpg_summary": "rpg_summary_latest.txt.xz",
+    "rpg_session": "rpg_session_latest.txt.xz",
+    "photos": [
+      {
+        "path": "real-backstab-contact.png",
+        "independently_viewed": true,
+        "claim": "Actual upper-floor combat scene/HP74; not a death or exact Backstab HUD proof."
+      },
+      {
+        "path": "thunder-observed.png",
+        "independently_viewed": true,
+        "claim": "Actual post-charge scene/HP100/Magic78; not full audiovisual effect acceptance."
+      }
+    ],
+    "warnings": "Two startup Unknown command con_enable lines are retained. Failed input/chat diagnostic setup and initial moving-source nil destination remain visible. No errors or assertions were silenced.",
+    "log_qualification": "Exact XZ snapshots were captured individually while root continued playing. Newer ongoing activity exists in raw logs; only explicitly selected completed episodes are accepted. Proof JSONs omit the private profile token and preserve all other boundary fields with original source hashes. No cfg/db/prefix files copied."
+  },
+  "not_accepted": [
+    "Ordinary start-to-finish campaign, authored endings, reset/replay and three final clean varied passes.",
+    "Complete Thunder collision/tuning/FX/audio, Heavy Stomp, Warp Hole, False-floor or Fallen Hero native acceptance.",
+    "Any cooperative synchronization or Summon Card two-client result; only one Deck/account is available.",
+    "BUG014 native death label; neither selected screenshot is a death notice.",
+    "FPS, server frame time or a comparable performance baseline from this diagnostic."
+  ],
+  "clean_pass_streak": 0
+}

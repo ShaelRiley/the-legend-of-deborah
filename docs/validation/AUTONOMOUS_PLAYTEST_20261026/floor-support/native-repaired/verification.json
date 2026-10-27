@@ -1,0 +1,23 @@
+{
+  "kind": "native evidence integrity and finite-gate checks; no new gameplay run by evidence author",
+  "utc": "2026-10-27T20:37:06.542910+00:00",
+  "status": "pass",
+  "checks": [
+    "exact-hash:safe_floor_zeroarea_probe_repaired.json",
+    "exact-hash:native-charge-observed.json.xz",
+    "exact-hash:console.log.xz",
+    "exact-hash:die_logger_history.json.xz",
+    "exact-hash:rpg_summary_latest.txt.xz",
+    "exact-hash:rpg_session_latest.txt.xz",
+    "exact-hash:native-charge-observer.lua.txt",
+    "exact-hash:real-backstab-contact.png",
+    "exact-hash:thunder-observed.png",
+    "native five-point supported floors pass; wall candidates reject",
+    "native charge600samples/20dash/allMT2/HP100/debit24/physical travel",
+    "actual server five-file boundary source proof",
+    "actual client five-file boundary source proof",
+    "current-session serial1..60 only; correct source history and charge cost",
+    "bounded canonical relocation and return markers"
+  ],
+  "limits": "Raw logs may contain later activity. Only selected completed first episode and charge interval supply this gate; exact tuning, other consumers, campaign, cooperative and audiovisual acceptance remain separate."
+}

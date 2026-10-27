@@ -3,7 +3,7 @@
   "recorded_utc": "2026-10-27T19:31:46.589Z",
   "title": "Canonical foot-support rays reject native generated floors",
   "severity": "Major gameplay: safe landing requests fail on demonstrably supported generated floors; shared charge/stomp/event consumers are at risk. No campaign-ending failure is inferred from this fixture.",
-  "status": "Implemented and statically validated on verified main74415d1a with independent review; original native defect preserved. Repaired native acceptance remains pending.",
+  "status": "Implemented/statically validated and independently reviewed on main74415d1a. Finite repaired native generated-floor/landing/relocation and supported-floor charge gate passed on the actual Steam Deck; broader consumer/campaign acceptance remains open.",
   "baseline": {
     "gameplay_source_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
     "private_install_receipt_commit": "4bc3ff8b7caa072fbd20ab652b126a6e40b2ed21",
@@ -214,12 +214,11 @@
     "failed_setup_image": "pre-repair/failed-setup-entry.png",
     "failed_setup_image_qualification": "Independently viewed: unchanged blue entry corridor, HP100/lives3, UNRANKED, .3576/0. It supports scene context; PT12_Dnil in exact console is the no-relocation proof. This frame does not visualize collision traces or establish Backstab acceptance."
   },
-  "next_finite_gate": "After source checkpoint installation and fresh native startup, repeat exact zeroXY probe and canonical Landing/ChargeSupport checks for new current Hero life. Valid generated floors must pass; wallkind4/StartSolid and missing-corner/unsafe/stale checks must still reject. Rebind P12 after prior death before any bounded genuine attack fixture. Resume actual ordinary progression afterward.",
+  "next_finite_gate": "Continue ordinary progression and the remaining targeted consumer/collision/hazard/lifecycle scenarios in the campaign coverage matrix. The original canonical floor-support defect has a passed finite native gate; do not infer all callers or full campaign acceptance from it.",
   "remaining_coverage": [
-    "Native repaired landing/charge support and movement are pending.",
-    "Warp-hole/False-floor/Heavy Stomp/Thunder Charge integrated native acceptance remains separate from this diagnostic.",
+    "Full Thunder collision/tuning/FX/audio, Heavy Stomp, Warp Hole, False-floor and Fallen Hero integrated native acceptance remain separate from this floor-support gate.",
     "Summon Card/cooperative synchronization requires a second real client/identity, unavailable.",
-    "BUG012 natural Backstab presentation and BUG014 rendered native label are not accepted by this failed setup.",
+    "BUG012 dedicated HUD acceptance belongs to combat-feedback evidence; it is not inferred from the first relocation episode. BUG014 rendered death label remains separate.",
     "Three clean varied final campaign passes remain0."
   ],
   "clean_pass_streak": 0,
@@ -233,5 +232,12 @@
     "utc": "2026-10-27T19:40:36.235094+00:00",
     "reason": "Correct actual prepared-receipt provenance versus retained BUILD_IDENTITY label, and restrict near-margin zeroXY Hero sample to trace evidence. Original raw files and hashes are unchanged.",
     "raw_evidence_rewritten": false
+  },
+  "native_repaired": {
+    "receipt": "native-repaired/receipt.json",
+    "gameplay_source_commit": "74415d1a3f135052de467286a08ebc1907b1608a",
+    "installed_prepared_commit_and_build_label": "cd6274bf285bee0788b1f07bf3e6261e0cce2a1b",
+    "status": "Finite gate passed in fresh private dev1/unranked single-client runtime. Centered Hero landing and safe candidates succeed while wall candidates reject; canonical relocation/8-second owner-bound return succeeds; real-input Thunder commitment spends24Magic and moves over supported native floor.",
+    "limits": "This does not accept complete Thunder tuning/collision/FX/audio, other relocation consumers, ordinary campaign completion, multiplayer or final clean passes."
   }
 }

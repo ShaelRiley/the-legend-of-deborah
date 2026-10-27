@@ -1,0 +1,4300 @@
+{
+  "source": "die_logger_history.json.xz",
+  "selection": "Final serial-reset segment beginning at original array index107, restricted to serial1..60 inclusive. Earlier same-numbered entries and later current-session serial61+ are deliberately excluded.",
+  "original_array_start_index": 107,
+  "original_array_end_index": 166,
+  "rows": [
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Starting abilities: raw total "
+        },
+        {
+          "role": "total",
+          "text": "77"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "continuation",
+          "text": ">="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "74"
+        },
+        {
+          "role": "prose",
+          "text": "; STR "
+        },
+        {
+          "role": "dice",
+          "text": "4d6"
+        },
+        {
+          "role": "prose",
+          "text": "["
+        },
+        {
+          "role": "total",
+          "text": "6+3+3+3"
+        },
+        {
+          "role": "prose",
+          "text": "] drop lowest "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "12"
+        },
+        {
+          "role": "prose",
+          "text": "; DEX "
+        },
+        {
+          "role": "dice",
+          "text": "4d6"
+        },
+        {
+          "role": "prose",
+          "text": "["
+        },
+        {
+          "role": "total",
+          "text": "4+4+6+5"
+        },
+        {
+          "role": "prose",
+          "text": "] drop lowest "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "15"
+        },
+        {
+          "role": "prose",
+          "text": "; CON "
+        },
+        {
+          "role": "dice",
+          "text": "4d6"
+        },
+        {
+          "role": "prose",
+          "text": "["
+        },
+        {
+          "role": "total",
+          "text": "1+2+1+5"
+        },
+        {
+          "role": "prose",
+          "text": "] drop lowest "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "8"
+        },
+        {
+          "role": "prose",
+          "text": "; INT "
+        },
+        {
+          "role": "dice",
+          "text": "4d6"
+        },
+        {
+          "role": "prose",
+          "text": "["
+        },
+        {
+          "role": "total",
+          "text": "1+1+4+6"
+        },
+        {
+          "role": "prose",
+          "text": "] drop lowest "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "11"
+        },
+        {
+          "role": "prose",
+          "text": "; WIS "
+        },
+        {
+          "role": "dice",
+          "text": "4d6"
+        },
+        {
+          "role": "prose",
+          "text": "["
+        },
+        {
+          "role": "total",
+          "text": "4+3+6+5"
+        },
+        {
+          "role": "prose",
+          "text": "] drop lowest "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "15"
+        },
+        {
+          "role": "prose",
+          "text": "; CHA "
+        },
+        {
+          "role": "dice",
+          "text": "4d6"
+        },
+        {
+          "role": "prose",
+          "text": "["
+        },
+        {
+          "role": "total",
+          "text": "6+3+5+5"
+        },
+        {
+          "role": "prose",
+          "text": "] drop lowest "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "16"
+        },
+        {
+          "role": "prose",
+          "text": "; CON "
+        },
+        {
+          "role": "total",
+          "text": "8"
+        },
+        {
+          "role": "prose",
+          "text": " - "
+        },
+        {
+          "role": "dice",
+          "text": "2d2"
+        },
+        {
+          "role": "prose",
+          "text": "["
+        },
+        {
+          "role": "total",
+          "text": "2+2"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": "; INT "
+        },
+        {
+          "role": "total",
+          "text": "11"
+        },
+        {
+          "role": "prose",
+          "text": " - "
+        },
+        {
+          "role": "dice",
+          "text": "1d3"
+        },
+        {
+          "role": "prose",
+          "text": "["
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "9"
+        },
+        {
+          "role": "prose",
+          "text": "; STR "
+        },
+        {
+          "role": "total",
+          "text": "12"
+        },
+        {
+          "role": "prose",
+          "text": " - "
+        },
+        {
+          "role": "dice",
+          "text": "1d3"
+        },
+        {
+          "role": "prose",
+          "text": "["
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "11"
+        },
+        {
+          "role": "prose",
+          "text": "; final total "
+        },
+        {
+          "role": "total",
+          "text": "70."
+        },
+        {
+          "role": "prose",
+          "text": " No post-weakness reroll."
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 1,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Starting abilities: raw total 77 >= 74; STR 4d6[6+3+3+3] drop lowest = 12; DEX 4d6[4+4+6+5] drop lowest = 15; CON 4d6[1+2+1+5] drop lowest = 8; INT 4d6[1+1+4+6] drop lowest = 11; WIS 4d6[4+3+6+5] drop lowest = 15; CHA 4d6[6+3+5+5] drop lowest = 16; CON 8 - 2d2[2+2] = 4; INT 11 - 1d3[2] = 9; STR 12 - 1d3[1] = 11; final total 70. No post-weakness reroll."
+    },
+    {
+      "segments": [
+        {
+          "role": "progress",
+          "text": "[PROGRESS]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": DUNGEON "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " READY \u2014 staging"
+        }
+      ],
+      "cue": 0,
+      "family": "progress",
+      "serial": 2,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "[PROGRESS] Shael Riley as Logan \"Long Shot\" White: DUNGEON 1 READY \u2014 staging"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Soldier health "
+        },
+        {
+          "role": "dice",
+          "text": "4d4+5"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "13"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "14.1"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "2,1,1,4"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.97"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "14"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 3,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Soldier health 4d4+5 (13 -> 14.1) [rolls 2,1,1,4; size x0.97; campaign x1.00] = 14 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Runner health "
+        },
+        {
+          "role": "dice",
+          "text": "3d4+3"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "7"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "9.9"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "1,1,2"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.57"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "6"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 4,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Runner health 3d4+3 (7 -> 9.9) [rolls 1,1,2; size x0.57; campaign x1.00] = 6 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Seeker health "
+        },
+        {
+          "role": "dice",
+          "text": "3d4+3"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "9"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "9.9"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "2,1,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.76"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "8"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 5,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Seeker health 3d4+3 (9 -> 9.9) [rolls 2,1,3; size x0.76; campaign x1.00] = 8 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Bio Blaster health "
+        },
+        {
+          "role": "dice",
+          "text": "5d4+6"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "16"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "17.4"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "1,2,1,4,2"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.53"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "9"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 6,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Bio Blaster health 5d4+6 (16 -> 17.4) [rolls 1,2,1,4,2; size x0.53; campaign x1.00] = 9 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Bio Blaster health "
+        },
+        {
+          "role": "dice",
+          "text": "5d4+6"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "17"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "17.4"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "1,4,2,1,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.86"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "15"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 7,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Bio Blaster health 5d4+6 (17 -> 17.4) [rolls 1,4,2,1,3; size x0.86; campaign x1.00] = 15 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Deadcrab health "
+        },
+        {
+          "role": "dice",
+          "text": "2d4+1"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "5"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "5.6"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "2,2"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.64"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 8,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Deadcrab health 2d4+1 (5 -> 5.6) [rolls 2,2; size x0.64; campaign x1.00] = 4 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Bio Blaster health "
+        },
+        {
+          "role": "dice",
+          "text": "5d4+6"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "21"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "19.6"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "3,4,3,3,2"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.83"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "16"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 9,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Bio Blaster health 5d4+6 (21 -> 19.6) [rolls 3,4,3,3,2; size x0.83; campaign x1.00] = 16 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Shambler health "
+        },
+        {
+          "role": "dice",
+          "text": "4d4+5"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "15"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "3,1,4,2"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.11"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "17"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 10,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Shambler health 4d4+5 (15) [rolls 3,1,4,2; size x1.11; campaign x1.00] = 17 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Runner health "
+        },
+        {
+          "role": "dice",
+          "text": "3d4+3"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "10"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "4,2,1"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.16"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "12"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 11,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Runner health 3d4+3 (10) [rolls 4,2,1; size x1.16; campaign x1.00] = 12 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Bio Blaster health "
+        },
+        {
+          "role": "dice",
+          "text": "5d4+6"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "17"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "17.4"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "2,3,2,1,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.28"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "22"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 12,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Bio Blaster health 5d4+6 (17 -> 17.4) [rolls 2,3,2,1,3; size x1.28; campaign x1.00] = 22 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Soldier health "
+        },
+        {
+          "role": "dice",
+          "text": "4d4+5"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "16"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "15.9"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "3,4,1,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.01"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "16"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 13,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Soldier health 4d4+5 (16 -> 15.9) [rolls 3,4,1,3; size x1.01; campaign x1.00] = 16 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Bio Blaster health "
+        },
+        {
+          "role": "dice",
+          "text": "5d4+6"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "21"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "19.6"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "2,2,3,4,4"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.28"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "25"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 14,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Bio Blaster health 5d4+6 (21 -> 19.6) [rolls 2,2,3,4,4; size x1.28; campaign x1.00] = 25 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Runner health "
+        },
+        {
+          "role": "dice",
+          "text": "3d4+3"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "11"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "4,2,2"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.36"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 15,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Runner health 3d4+3 (11) [rolls 4,2,2; size x0.36; campaign x1.00] = 4 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Seeker health "
+        },
+        {
+          "role": "dice",
+          "text": "3d4+3"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "11"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "1,4,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.74"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "8"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 16,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Seeker health 3d4+3 (11) [rolls 1,4,3; size x0.74; campaign x1.00] = 8 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Runner health "
+        },
+        {
+          "role": "dice",
+          "text": "3d4+3"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "11"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "3,2,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.87"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "10"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 17,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Runner health 3d4+3 (11) [rolls 3,2,3; size x0.87; campaign x1.00] = 10 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Soldier health "
+        },
+        {
+          "role": "dice",
+          "text": "4d4+5"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "15"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "1,2,3,4"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.16"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "17"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 18,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Soldier health 4d4+5 (15) [rolls 1,2,3,4; size x1.16; campaign x1.00] = 17 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Bio Blaster health "
+        },
+        {
+          "role": "dice",
+          "text": "5d4+6"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "25"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "19.6"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "4,4,4,4,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.24"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "24"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 19,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Bio Blaster health 5d4+6 (25 -> 19.6) [rolls 4,4,4,4,3; size x1.24; campaign x1.00] = 24 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Runner health "
+        },
+        {
+          "role": "dice",
+          "text": "3d4+3"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "7"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "9.9"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "1,1,2"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.48"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "5"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 20,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Runner health 3d4+3 (7 -> 9.9) [rolls 1,1,2; size x0.48; campaign x1.00] = 5 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Watcher health "
+        },
+        {
+          "role": "dice",
+          "text": "3d4+3"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "10"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "2,3,2"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.26"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "13"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 21,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Watcher health 3d4+3 (10) [rolls 2,3,2; size x1.26; campaign x1.00] = 13 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Soldier health "
+        },
+        {
+          "role": "dice",
+          "text": "4d4+5"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "11"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "14.1"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "2,1,2,1"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.17"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "17"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 22,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Soldier health 4d4+5 (11 -> 14.1) [rolls 2,1,2,1; size x1.17; campaign x1.00] = 17 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Bio Blaster health "
+        },
+        {
+          "role": "dice",
+          "text": "5d4+6"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "18"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "3,3,2,1,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.86"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "15"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 23,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Bio Blaster health 5d4+6 (18) [rolls 3,3,2,1,3; size x0.86; campaign x1.00] = 15 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Deadcrab health "
+        },
+        {
+          "role": "dice",
+          "text": "2d4+1"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "5"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "5.6"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "1,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "1.28"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "7"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 24,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Deadcrab health 2d4+1 (5 -> 5.6) [rolls 1,3; size x1.28; campaign x1.00] = 7 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "Shambler health "
+        },
+        {
+          "role": "dice",
+          "text": "4d4+5"
+        },
+        {
+          "role": "prose",
+          "text": " ("
+        },
+        {
+          "role": "total",
+          "text": "16"
+        },
+        {
+          "role": "prose",
+          "text": " -"
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "15.9"
+        },
+        {
+          "role": "prose",
+          "text": ") [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "3,2,3,3"
+        },
+        {
+          "role": "prose",
+          "text": "; size x"
+        },
+        {
+          "role": "total",
+          "text": "0.45"
+        },
+        {
+          "role": "prose",
+          "text": "; campaign x"
+        },
+        {
+          "role": "total",
+          "text": "1.00"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "7"
+        },
+        {
+          "role": "prose",
+          "text": " HP"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 25,
+      "category": 2,
+      "cueVariant": 0,
+      "stamp": "10-27 14:57:53",
+      "text": "Shambler health 4d4+5 (16 -> 15.9) [rolls 3,2,3,3; size x0.45; campaign x1.00] = 7 HP"
+    },
+    {
+      "segments": [
+        {
+          "role": "progress",
+          "text": "[PROGRESS]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": CONTENT LEARNED \u2014 Light / Press I for Spellbook"
+        }
+      ],
+      "cue": 3,
+      "family": "progress",
+      "serial": 26,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:00:37",
+      "text": "[PROGRESS] Shael Riley as Logan \"Long Shot\" White: CONTENT LEARNED \u2014 Light / Press I for Spellbook"
+    },
+    {
+      "segments": [
+        {
+          "role": "prose",
+          "text": "FEAT CHOSEN \u2014 Internal Compass"
+        }
+      ],
+      "cue": 0,
+      "family": "progression",
+      "serial": 27,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:01:41",
+      "text": "FEAT CHOSEN \u2014 Internal Compass"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": MISSILE / LIGHT SELECTED"
+        }
+      ],
+      "cue": 0,
+      "family": "selection",
+      "serial": 28,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:02:52",
+      "text": "Shael Riley as Logan \"Long Shot\" White: MISSILE / LIGHT SELECTED"
+    },
+    {
+      "segments": [
+        {
+          "role": "objective",
+          "text": "[OBJECTIVE]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": PRISON COLLAPSE IN "
+        },
+        {
+          "role": "total",
+          "text": "30"
+        },
+        {
+          "role": "prose",
+          "text": ":"
+        },
+        {
+          "role": "total",
+          "text": "00"
+        },
+        {
+          "role": "prose",
+          "text": " \u2014 DUNGEON CLOCK STARTED"
+        }
+      ],
+      "cue": 0,
+      "family": "objective",
+      "serial": 29,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:03:11",
+      "text": "[OBJECTIVE] Shael Riley as Logan \"Long Shot\" White: PRISON COLLAPSE IN 30:00 \u2014 DUNGEON CLOCK STARTED"
+    },
+    {
+      "segments": [
+        {
+          "role": "resource",
+          "text": "[RESOURCE]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": THUNDER HAT TEST \u2014 \u2191 \u2193 \u2191; "
+        },
+        {
+          "role": "total",
+          "text": "24"
+        },
+        {
+          "role": "prose",
+          "text": " base "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": ", "
+        },
+        {
+          "role": "total",
+          "text": "0.25"
+        },
+        {
+          "role": "prose",
+          "text": "s warning, up to three blocks, "
+        },
+        {
+          "role": "total",
+          "text": "6"
+        },
+        {
+          "role": "prose",
+          "text": "s cooldown. First contact stops; locks and unsafe floors block. Run unranked."
+        }
+      ],
+      "cue": 0,
+      "family": "resource",
+      "serial": 30,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:11:38",
+      "text": "[RESOURCE] Shael Riley as Logan \"Long Shot\" White: THUNDER HAT TEST \u2014 \u2191 \u2193 \u2191; 24 base Magic, 0.25s warning, up to three blocks, 6s cooldown. First contact stops; locks and unsafe floors block. Run unranked."
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 31,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:05",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(16)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "18"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "16"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 32,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:05",
+      "text": "(16) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 2 HP prevented; 18 incoming - 2 diverted = 16 HP; 2 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(16)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "10@10+ "
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "dice",
+          "text": " 1@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 12 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 18"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 33,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:05",
+      "text": "(16) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 10@10+ > 1@10+ + 1 bonus = 12 rolled; resolved 18]"
+    },
+    {
+      "segments": [
+        {
+          "role": "resist",
+          "text": "[RESIST]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": Skeleton Of Valerie \"Dead Serious\" Perry \u2014 CONSTITUTION resisted: "
+        },
+        {
+          "role": "total",
+          "text": "-1"
+        },
+        {
+          "role": "prose",
+          "text": " per die. Backstabs bypass it; favor stronger hits."
+        }
+      ],
+      "cue": 0,
+      "family": "resist",
+      "serial": 34,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:05",
+      "text": "[RESIST] Shael Riley as Logan \"Long Shot\" White: Skeleton Of Valerie \"Dead Serious\" Perry \u2014 CONSTITUTION resisted: -1 per die. Backstabs bypass it; favor stronger hits."
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(5)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "recipient",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "Feedback"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "2d4"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "3, 4 "
+        },
+        {
+          "role": "total",
+          "text": "= 7 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; CON "
+        },
+        {
+          "role": "total",
+          "text": "-1"
+        },
+        {
+          "role": "prose",
+          "text": "/die: "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " + "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "5"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 5"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 35,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:05",
+      "text": "(5) DAMAGE \u2014 Shael Riley as Logan \"Long Shot\" White \u2192 Skeleton Of Valerie \"Dead Serious\" Perry, via Feedback; 2d4 [rolls 3, 4 = 7 rolled; CON -1/die: 2 + 3 = 5; resolved 5]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 36,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:06",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(10)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "12"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "10"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 37,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:06",
+      "text": "(10) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 2 HP prevented; 12 incoming - 2 diverted = 10 HP; 2 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(10)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "8@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 9 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 12"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 38,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:06",
+      "text": "(10) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 8@10+ + 1 bonus = 9 rolled; resolved 12]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 39,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:07",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 40,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:07",
+      "text": "(3) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 1 HP prevented; 4 incoming - 1 diverted = 3 HP; 1 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "3@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 4 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 41,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:07",
+      "text": "(3) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 3@10+ + 1 bonus = 4 rolled]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 42,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:07",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(28)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "32"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "28"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 43,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:07",
+      "text": "(28) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 4 HP prevented; 32 incoming - 4 diverted = 28 HP; 4 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(28)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "10@10+ "
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "dice",
+          "text": " 8@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 19 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 32"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 44,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:07",
+      "text": "(28) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 10@10+ > 8@10+ + 1 bonus = 19 rolled; resolved 32]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 45,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:07",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 46,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:07",
+      "text": "(3) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 1 HP prevented; 4 incoming - 1 diverted = 3 HP; 1 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "2@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 3 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 4"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 47,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:07",
+      "text": "(3) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 2@10+ + 1 bonus = 3 rolled; resolved 4]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 48,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 49,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "(3) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 1 HP prevented; 4 incoming - 1 diverted = 3 HP; 1 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": "
+        },
+        {
+          "role": "status",
+          "text": "RECKLESS"
+        },
+        {
+          "role": "prose",
+          "text": " WIS SAVE \u2014 "
+        },
+        {
+          "role": "dice",
+          "text": "1d20"
+        },
+        {
+          "role": "prose",
+          "text": " ["
+        },
+        {
+          "role": "total",
+          "text": "15"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "18"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "+3"
+        },
+        {
+          "role": "prose",
+          "text": " modifier; DC "
+        },
+        {
+          "role": "total",
+          "text": "13"
+        },
+        {
+          "role": "prose",
+          "text": " \u2014 SAVED"
+        }
+      ],
+      "cue": 0,
+      "family": "roll",
+      "serial": 50,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "Shael Riley as Logan \"Long Shot\" White: RECKLESS WIS SAVE \u2014 1d20 [15] = 18; +3 modifier; DC 13 \u2014 SAVED"
+    },
+    {
+      "segments": [
+        {
+          "role": "resist",
+          "text": "[RESIST]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": "
+        },
+        {
+          "role": "status",
+          "text": "RECKLESS"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "resist",
+          "text": "RESISTED"
+        },
+        {
+          "role": "prose",
+          "text": " (save "
+        },
+        {
+          "role": "total",
+          "text": "18"
+        },
+        {
+          "role": "prose",
+          "text": " / DC "
+        },
+        {
+          "role": "total",
+          "text": "13"
+        },
+        {
+          "role": "prose",
+          "text": ")"
+        }
+      ],
+      "cue": 0,
+      "family": "resist",
+      "serial": 51,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "[RESIST] Shael Riley as Logan \"Long Shot\" White: RECKLESS RESISTED (save 18 / DC 13)"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "4@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 5 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 4"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 52,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "(3) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 4@10+ + 1 bonus = 5 rolled; resolved 4]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 53,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(5)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "6"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "5"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 54,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "(5) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 1 HP prevented; 6 incoming - 1 diverted = 5 HP; 1 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(5)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "5@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 6 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 55,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "(5) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 5@10+ + 1 bonus = 6 rolled]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 56,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(23)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "26"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "23"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 57,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "(23) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 3 HP prevented; 26 incoming - 3 diverted = 23 HP; 3 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(23)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "10@10+ "
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "dice",
+          "text": " 5@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 16 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 26"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 58,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:13:10",
+      "text": "(23) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 10@10+ > 5@10+ + 1 bonus = 16 rolled; resolved 26]"
+    },
+    {
+      "segments": [
+        {
+          "role": "resource",
+          "text": "[RESOURCE]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": Thunder Charge \u2014 "
+        },
+        {
+          "role": "total",
+          "text": "24"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " spent / "
+        },
+        {
+          "role": "total",
+          "text": "76.0"
+        },
+        {
+          "role": "prose",
+          "text": " remaining"
+        }
+      ],
+      "cue": 0,
+      "family": "resource",
+      "serial": 59,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:20:02",
+      "text": "[RESOURCE] Shael Riley as Logan \"Long Shot\" White: Thunder Charge \u2014 24 Magic spent / 76.0 remaining"
+    },
+    {
+      "segments": [
+        {
+          "role": "resource",
+          "text": "[RESOURCE]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": Thunder Charge \u2014 "
+        },
+        {
+          "role": "total",
+          "text": "24"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " spent / "
+        },
+        {
+          "role": "total",
+          "text": "76.0"
+        },
+        {
+          "role": "prose",
+          "text": " remaining"
+        }
+      ],
+      "cue": 0,
+      "family": "resource",
+      "serial": 60,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:23:35",
+      "text": "[RESOURCE] Shael Riley as Logan \"Long Shot\" White: Thunder Charge \u2014 24 Magic spent / 76.0 remaining"
+    }
+  ]
+}

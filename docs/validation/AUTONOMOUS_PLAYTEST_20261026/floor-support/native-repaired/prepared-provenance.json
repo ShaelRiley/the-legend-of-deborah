@@ -1,0 +1,33 @@
+{
+  "source": ".build/autonomous-playtest-20261027/source15-fresh/session-1793129969908511313/prepared.json",
+  "source_sha256": "9ce1b8b8b6e2b1ee729c897ff230aa064d1db694ee88a24ba150198644832d21",
+  "qualification": "Selected nonsecret provenance fields from actual fresh source15 prepared receipt. No private cfg/db/prefix or profile token archived.",
+  "prepared": {
+    "kind": "prepared_standalone_private_profile",
+    "commit": "cd6274bf285bee0788b1f07bf3e6261e0cce2a1b",
+    "production_tree_identity": {
+      "gamemodes": "6298b3163c19cfc379a8e70bd4c24d6f87225770",
+      "lua": "e2ab4ef2e3ef451336fa4c60d06dbd9fdac1cf45",
+      "sound": "600815fef14f7b13e7ba2d93d0090d8c3025b14b"
+    },
+    "installation": "/home/deck/Downloads/the-legend-of-deborah/.build/lod-gmod",
+    "source_proofs": {
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua": "e9596992404d719b5264bf039b55dc49dfac7467eb19085ce9f464b84febac48",
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_feedback_language.lua": "2a040aaaef05e2b96ffb0bc4cd57c5500ca8db1e151f2ee51ccbf71031f0327d",
+      "gamemodes/legend_of_deborah/gamemode/lod/cl_hostile_presentation_safety.lua": "9d9d9db507eac8c03d09c3cfd8ec9acf4d5d4b03521f5f2fdf30cbebc9c6f27d",
+      "gamemodes/legend_of_deborah/entities/entities/lod_gate/init.lua": "e4851567b9948e2723813157cd04e7bbed89809947b0ac5df30b4dd4c048ed4e",
+      "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua": "a615b9ada3d78710e56d8c9b5f451278542c4977bea6cd0eaa7f650301f5dc3e"
+    },
+    "refreshed_runtime_files": [
+      {
+        "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua",
+        "sha256": "a615b9ada3d78710e56d8c9b5f451278542c4977bea6cd0eaa7f650301f5dc3e"
+      }
+    ],
+    "qualification": "Source15 private developer fixtures, fresh prefix. No repaired native acceptance or normal final campaign pass inferred.",
+    "startup_manifest_entries": 118,
+    "startup_manifest_sha256": "013bbb187d92269d9f5463571ee6aa1b0ca9afb534bae2e9ef3abcf0fe5e3634",
+    "source15_sha256": "a615b9ada3d78710e56d8c9b5f451278542c4977bea6cd0eaa7f650301f5dc3e",
+    "source15_crc32": 3252930173
+  }
+}
