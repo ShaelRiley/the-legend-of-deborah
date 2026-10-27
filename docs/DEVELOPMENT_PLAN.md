@@ -1,55 +1,47 @@
 # Current checkpoint — autonomous native gameplay and defect campaign
 
-The October26 user campaign remains active; clean streak0. Full authored,
-campaign, endings and cooperative coverage remain open. October23 changes,
-40FPS, Workshop/VPS and design-only new class5/10/15 rewards remain deferred.
-The exact live GDD revision is recorded in the linked defect and coverage files.
+The October26 user campaign remains active; clean streak0. Full authored campaign,
+endings, event/boss families and cooperative coverage remain open. Only this Steam
+Deck is available: distinct real-client synchronization is externally blocked.
+October23 changes,40FPS,Workshop/VPS and design-only class5/10/15 rewards remain deferred.
 
-Latest gameplay source `74415d1a3f135052de467286a08ebc1907b1608a` fixes BUG015:
-canonical safe landing/charge foot rays miss actual generated floors. A shared
-zero-horizontal/one-vertical hull probe preserves exact footprint corners and
-existing floor-kind, normal, solid, height, clearance, hazard, graph, lock and
-lifecycle guards. Real pre-repair traces show safe floors and wall negatives;
-13 active adjacent gates,118-source manifest,927 parses,LuaJIT and three meaningful
-negative controls pass, with independent review. Repaired native acceptance is
-PENDING. [Defect/evidence](validation/AUTONOMOUS_PLAYTEST_20261026/floor-support/BUG-015.json).
-The extra retired Bribe fixture fails identically before/after and remains recorded;
-live05 explicitly retires it. Preserve active Skeleton/collision regressions.
+Latest gameplay source `d3c2dd2d2a7ead5993217551bd470e9e7000b1f0` repairs BUG016:
+SafeTeleport now binds to the existing native PlayerSpawn serial as well as the
+identity-owned state. Native source15 proved an old pre-death binding could move
+the respawned body because equipmentLifeSerial was nil in both lives. Thirteen
+adjacent gates,927 parses, meaningful original-source negative and independent
+review pass. Full exact frozen source16 CI passes336/336, all4082 files hashed,
+576 production unchanged. [CI proof](validation/AUTONOMOUS_PLAYTEST_20261026/ci-source16/verification.json).
+Fresh source16 native repaired acceptance is pending.
 
-Last native gameplay was source14 (`8a9d4e8`) in the disposable short installation,
-actual Steam Deck/Windowsx86/Proton10, gm_flatgrass, seed6102602. Both realms match
-private DATA/cfg/source; all576 Lua match,0 Workshop mounts/0 Lua errors. Normal
-Rogue/WorldWalker selection, Hermit/starter/portal and first1800s clock observed.
-Current deadline then extended explicitly to7200s: this is developer exploration,
-with developerDense=true, not a normal timed pass. First5 waypoints were walked;
-Q-held living unfound-map panel/M-close/Magic drain observed. No WorldWalker speed
-claim. A natural Runner death3→2 while idle retained weapons; stale P12 binding
-rejects. [Native14 evidence and limits](validation/AUTONOMOUS_PLAYTEST_20261026/native-private14/receipt.json).
+Source15 finite native evidence now passes BUG015's actual generated-floor/wall
+support controls, guarded relocation/return and measured ThunderCharge movement;
+BUG012's real-Rogue Backstab attacker attribution on HUD/history; and BUG014's
+actual Hostile/crossbow/victim label. The label uses an explicit one-HP natural
+attack fixture. None is a full campaign, normal combat difficulty or cooperative
+pass. [Floor support](validation/AUTONOMOUS_PLAYTEST_20261026/floor-support/BUG-015.json),
+[combat presentation](validation/AUTONOMOUS_PLAYTEST_20261026/combat-feedback/BUG-014.json).
+Preserve source15's original335/336 CI failure; a narrowly repaired body-sweep
+fixture passes336/336 without changing the production repair.
 
-BUG012 real-Rogue Soldier setup refused landing, so actual repaired Backstab
-presentation remains pending. BUG014 cold Hostile phrase/known icon registration
-passes; actual rendered death label remains pending. BUG013 earlier actual bolt
-glyph finite pass is retained. [Combat records](validation/AUTONOMOUS_PLAYTEST_20261026/combat-feedback/receipt.json).
-Prior ordinary Redcard/Redgate Use and route ambiguity remain [partial evidence](validation/AUTONOMOUS_PLAYTEST_20261026/native-4322-route/receipt.json).
-Health label beyond closed gate is [credible/trace-pending](validation/AUTONOMOUS_PLAYTEST_20261026/loot-label-occlusion/observation.json), not a confirmed repaired bug.
+Fresh source16 is running on actual Valve Jupiter Steam Deck, Windowsx86/Proton10,
+gm_flatgrass,1280x800, private short installation and new empty compatibility prefix.
+All576 production Lua match prepared2fcea/source d3c; both realm five-module audits
+pass, including SafeTeleportCRC377454284. Native startup30:00 remains paused until
+first actual Hero deployment. DeveloperDense=true/dev1 means fixture exploration,
+not a production-settings acceptance pass. No Workshop mount or personal profile
+copy is used. Source15 quit normally; the launcher retained a final unproven-PID
+flag after earlier proving the same live PID/birth owned. Root host-process check
+confirmed closure. Preserve this qualification, not a clean unproven[] claim.
+Steam4000 Cloud remains TEMPORARILY OFF (original ON): MUST restore after tests.
 
-The private14 client quit normally: remaining/unproven PIDs none, original personal
-configuration/SQLite hashes and DATA/save inventories unchanged. Short-path copy
-resolved earlier include failures; stock Chromium menu fallback still occurs with
-matching HTML/CEF visibility, so no copied-resource cause is inferred.
-Steam4000 Cloud is TEMPORARILY OFF (original ON): MUST restore after private tests.
-Exact before/OFF evidence and restoration state are in ignored
-.build/autonomous-playtest-20261027/steam-cloud-guard/state.json.
-
-Latest completed full CI is source14:336/336,927 parses on frozen source ([proof](validation/AUTONOMOUS_PLAYTEST_20261026/remote-ci-8a9/proof.json)).
-Source74415 full CI40570280858 FAILED Stomp Movement Contact. Its historical
-downward-hull override also changes the new independent feet probes; exact
-baseline/candidate triage and a narrow fixture repair are underway. No pass inferred.
-Next: fresh source74415/isolated-profile launch, verify SafeTeleportCRC3252930173,
-repeat valid-floor/wall/stale guards and actual supported movement. Rebind P12 to
-the new Hero life for actual Backstab/Hostile captures; then resume authored
-campaign/family/endings/reset coverage. Only this Deck/account is available;
-distinct real-client synchronization remains blocked. [Coverage matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
+Next: ordinary Fighter/class/feat/starter/portal; capture current life binding,
+real death, wait the authored20-second F lockout, respawn; verify stale binding
+rejects and fresh supported move/return succeeds. Then resume authored events and
+ordinary progression, including success/failure/rescue/reset. Preserve accepted
+collision/performance settings and earlier finite regressions. Health-label
+occlusion remains credible/trace-pending; Blue route ambiguity under active
+Skeleton blockade remains unconfirmed. [Coverage matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
 
 # Current checkpoint — integrate retained partial performance improvements
 
