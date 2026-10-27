@@ -1,0 +1,14 @@
+{
+  "build": "278e2983197cafd75c6fa7862c2533e37f61012e",
+  "gameplay_commit": "19feeda8",
+  "native_timeout_crc32": "1789208541",
+  "setup": "Near-deadline server fixture from staging; no timing constants changed",
+  "observed": [
+    "Actual TIME OVER and coming-apart text plus both bars",
+    "Actual GAME OVER and collapsed text",
+    "Manual lockout feedback then PRESS E and original automatic countdown",
+    "Fresh ordinary native E input restarted at epoch2 before automatic expiry",
+    "Normal CharacterSheet/staging HUD restored after reset"
+  ],
+  "limits": "Single client; fixture accelerates expiry, not ordinary natural deadline. Prior natural30min failure evidence retained separately. No full campaign/clean pass."
+}

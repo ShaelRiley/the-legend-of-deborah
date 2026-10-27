@@ -1,0 +1,610 @@
+{
+  "schema": 1,
+  "kind": "Targeted live-design reconciliation and finite native coverage plan; no pass claims",
+  "inspected_source_head": "8bea782c",
+  "read_utc": "2026-10-26 23:44:30 UTC",
+  "design": {
+    "id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "title": "The Legend of Deborah — Garry's Mod Game Design Document",
+    "revision_id": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": [
+      "00 — AI ENTRYPOINT",
+      "01 — AI RULE INDEX",
+      "02 — RPG & LEVELING: LOD-CLS-001..006 and LOD-CLASS-MILESTONES-001",
+      "03 — COMBAT, MAGIC & STATUS: LOD-CLASS-MILESTONES-COMBAT-001",
+      "05 — CORE LOOP & WORLD: LOD-EVENT-EXPANSION, LOD-EVENT-QUIZ/CHEST/TREASURE/WARP/FALSE-FLOOR/SKELETON/SLOTS, LOD-BIG-SKELETON-001, LOD-BOSS-MODULAR-001..003",
+      "06 — MULTIPLAYER, LIFECYCLE & UI: LOD-EVENT-EXPANSION and event lifecycle rules; LOD-CLASS-MILESTONES-UI-001",
+      "07 — IMPLEMENTATION & TUNING: LOD-EVENT-EXPANSION; LOD-CLASS-MILESTONES-TUNING-001"
+    ],
+    "human_monolith_read": false
+  },
+  "scope": {
+    "active_events": 28,
+    "production_eligible_before_dungeon5": 27,
+    "event_families": 13,
+    "authored_boss_levels": 20,
+    "unique_primary_bosses": 19,
+    "jane": "Subordinate Chuck companion; not a separate primary boss",
+    "bribe_blockade": "Explicitly removed; cannot appear in production or developer preview",
+    "october23_changes": "Remain deferred by current user instruction; do not activate or report missing as defects"
+  },
+  "fixture_setup": [
+    "Use exact installed/mounted source on gm_flatgrass, an admin, a disposable Hero/test-data profile and an explicitly unranked developer session. M3 debug modules require developer mode at startup.",
+    "Preserve production settings for ordinary acceptance. Event previews regenerate one selected identity and print locators; they use real server-local wallets/items/DFTs and do not mint setup funds.",
+    "Walk from legitimate deployment to an event when claiming route acceptance. Console teleport/testkit relocation only accelerates mechanic fixtures and cannot count as traversal proof.",
+    "Use lod_equipment_economy_testkit or lod_equipment_catalog_testkit once for explicit resource fixtures; lod_chest_key_testkit supplies one finite key. No free-currency fixture is authorized by these event commands.",
+    "Alternate success/failure branches for once-only account claims require a fresh disposable campaign/dungeon entitlement; same-dungeon regeneration/reconnect is a repeat-rejection test, not a fresh attempt."
+  ],
+  "common_event_gates": [
+    "Living deployed cooperative Hero, current exact body/account/run/graph/event binding, live clock, range/LOS and resource/capacity admission; Soldier/dead/staged/stale interactions reject.",
+    "For services: first Use reviews exact offer, second confirms within12s. Changed inventory/body/price refreshes rather than consumes; protected/starting/DFT gear cannot be salvage/reforge inputs.",
+    "A valid committed transaction has one debit/reward/receipt; rapid repeated Use, reconnect and same-dungeon regeneration cannot duplicate it. Failed admission or storage does not consume resources.",
+    "Try cancellation/abandonment and one regeneration while active per distinct lifecycle family. Sessions, native parts, owned statuses/hazards and control locks retire without affecting a later dungeon.",
+    "Population separately: lod_event_population_preview <positive_levelSeed> uses ordinary exact1d4; counts1–3 commons, count4 three commons+one rare among treasure_chest/contraband_lot/life_underwriter. No Bribe, duplicates, silent drops or event-count rerolls. Member/endpoints count once.",
+    "Verify shared versus personal state, simultaneous claims, late join, disconnect/reconnect on two real clients before cooperative acceptance; single-client fixtures cannot pass those rows."
+  ],
+  "family_index": {
+    "games": [
+      "slot_machine",
+      "equipment_quiz",
+      "memory_terminal",
+      "nerve_clock"
+    ],
+    "caches": [
+      "locked_chest",
+      "treasure_chest"
+    ],
+    "services": [
+      "vending_machine",
+      "triage_station",
+      "key_cutter",
+      "ammo_transmuter"
+    ],
+    "traps": [
+      "false_floor",
+      "steam_vent",
+      "watchful_eye"
+    ],
+    "anomalies": [
+      "warp_hole",
+      "blood_dynamo",
+      "overclock_console",
+      "stasis_beacon",
+      "silent_archive"
+    ],
+    "blockades": [
+      "skeleton_blockade"
+    ],
+    "equipment": [
+      "salvage_press",
+      "reforging_bench"
+    ],
+    "prisoners": [
+      "prisoner_barter"
+    ],
+    "merchant": [
+      "contraband_lot"
+    ],
+    "bureaucracy": [
+      "life_underwriter"
+    ],
+    "inhabitants": [
+      "prison_surveyor"
+    ],
+    "mechanisms": [
+      "counterweight_cache"
+    ],
+    "trials": [
+      "relay_race",
+      "strength_press"
+    ]
+  },
+  "events": [
+    {
+      "id": "slot_machine",
+      "family": "games",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate slot_machine",
+      "scenario": "Read stake/odds before Use; one account wager; retry after insufficient funds, repeat/reconnect rejection; observe both outcomes on separate entitlements.",
+      "expected": "5 $DEB stake; ordinary d4=4 pays 15 gross, otherwise zero. Other accounts retain their own play.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "locked_chest",
+      "family": "caches",
+      "contract": "REWARD",
+      "fixture": "lod_event_preview_generate locked_chest",
+      "scenario": "All classes use a Chest Key; Rogue also tries sprint+Use, including while carrying a key. Test failed pick then later key, full inventory and repeat Use.",
+      "expected": "One frozen ordinary wearable/account/dungeon; failed pick uses no key; invalid capacity consumes neither key nor attempt.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "treasure_chest",
+      "family": "caches",
+      "contract": "REWARD",
+      "fixture": "lod_event_preview_generate treasure_chest",
+      "scenario": "Open each generated member by key or Rogue pick; cover both member counts and full DFT collection; retry/reconnect after claim.",
+      "expected": "One or two members count as one rare identity; one frozen DFT/account/member; ordinary bag capacity is irrelevant.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "vending_machine",
+      "family": "services",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate vending_machine",
+      "scenario": "Inspect price; buy below potion-stack capacity; retry at full stack/insufficient funds and after consuming purchased potion.",
+      "expected": "10 $DEB buys one ordinary Healing Potion, once/account/dungeon; denial costs nothing; use of potion does not renew purchase.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "false_floor",
+      "family": "traps",
+      "contract": "HAZARD",
+      "fixture": "lod_event_preview_generate false_floor",
+      "scenario": "Walk around rim, then cross centered grounded footprint; observe native fall and ordinary return route. Occupy aperture before rearm; repeat after clearing.",
+      "expected": "Optional one-floor physical drop; unsafe landing leaves lid solid; reclosure waits for clear aperture, with no forced teleport or progression bypass.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "warp_hole",
+      "family": "anomalies",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate warp_hole",
+      "scenario": "Approach both floor endpoints; test dormant-to-linked E traversal and repeat traversal; occupy arrival and retry; verify gates still govern access.",
+      "expected": "Free paired shortcut, safe arrival or no move; first successful traversal links pair for party. Ordinary production starts at Dungeon5; explicit preview may bypass threshold.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "skeleton_blockade",
+      "family": "blockades",
+      "contract": "BLOCKADE",
+      "fixture": "lod_event_preview_generate skeleton_blockade",
+      "scenario": "Approach with future locks shut; fight real hostile; inspect barrier, XP/drop and navigation update; retry after respawn.",
+      "expected": "Only exact canonical lethal defeat opens route once for everyone; no hidden resource prerequisite; removal alone is never victory.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "equipment_quiz",
+      "family": "games",
+      "contract": "REWARD",
+      "fixture": "lod_event_preview_generate equipment_quiz",
+      "scenario": "Cover no eligible gear; decline before acceptance; correct answer, wrong answer and accepted cancellation/timeout on separate entitlements; inspect page/input restoration.",
+      "expected": "Three readable equally styled cards; correct earns one DFT, incorrect steals exact selected eligible worn item; forfeiture steals nothing and mints nothing.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "triage_station",
+      "family": "services",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate triage_station",
+      "scenario": "Use once to review, again within review window to confirm while hurt; try full health; observe existing ailment afterward.",
+      "expected": "12 $DEB restores missing HP but does not cure ailments; full health has no charge.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "blood_dynamo",
+      "family": "anomalies",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate blood_dynamo",
+      "scenario": "Review/confirm while Magic missing; test low HP and full Magic denials.",
+      "expected": "10 HP for up to25 Magic; never lethal; invalid admission spends nothing.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "salvage_press",
+      "family": "equipment",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate salvage_press",
+      "scenario": "Carry spare eligible wearable, review exact item/value, change inventory before confirming, then review afresh; test protected/equipped items.",
+      "expected": "Only reviewed eligible unequipped wearable is destroyed for canonical value; changed offer refreshes and consumes nothing.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "reforging_bench",
+      "family": "equipment",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate reforging_bench",
+      "scenario": "Offer two spare eligible wearables; inspect exact fusion before confirmation; change one input; test capacity/result rejection.",
+      "expected": "Canonical fusion of reviewed inputs; no starter/protected/DFT gear; failed result/admission preserves both inputs.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "key_cutter",
+      "family": "services",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate key_cutter",
+      "scenario": "Review/confirm with potion and Magic; test missing resource and full Chest Key stack.",
+      "expected": "One Healing Potion plus20 Magic becomes one Chest Key; denied conversion consumes neither input.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "ammo_transmuter",
+      "family": "services",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate ammo_transmuter",
+      "scenario": "Hold eligible firearm with room in reserves; review then switch weapon; review again and confirm; try full ammo or crowbar.",
+      "expected": "15 Magic purchases one canonical large ration for held eligible firearm; wrong/full weapon spends nothing.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "prisoner_barter",
+      "family": "prisoners",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate prisoner_barter",
+      "scenario": "Inspect displayed wearable, review/confirm with potion; test missing potion/full bag; observe living unarmed NPC presentation.",
+      "expected": "One potion trades for exactly displayed wearable; failed capacity retains potion; one personal receipt.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "overclock_console",
+      "family": "anomalies",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate overclock_console",
+      "scenario": "Review explicit friendly-fire risk while Magic missing; confirm; try again during Reckless and at full Magic.",
+      "expected": "Full Magic in exchange for30s Reckless, using canonical status; denied/repeated transaction creates no extra grant.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "contraband_lot",
+      "family": "merchant",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate contraband_lot",
+      "scenario": "Observe reviewed price over market time and same-dungeon regeneration; change quote before confirming; test full bag. Two-client competition remains separate.",
+      "expected": "One exact shared wearable goes to first successful buyer; price follows monotonic market clock and floor; Hourglass/time allowance does not reset it.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "life_underwriter",
+      "family": "bureaucracy",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate life_underwriter",
+      "scenario": "Review/confirm with a reserve life; inspect life/debit/credit receipt; try with final life only.",
+      "expected": "One reserve life buys40 $DEB; final life cannot be surrendered.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "steam_vent",
+      "family": "traps",
+      "contract": "HAZARD",
+      "fixture": "lod_event_preview_generate steam_vent",
+      "scenario": "Observe safe/warning/active cycle; avoid, then risk active contact; disable with Use; observe status expiry and safe ordinary route.",
+      "expected": "Canonical WIS save vs Muted; warning readable, existing status not extended; party disable persists until teardown.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "stasis_beacon",
+      "family": "anomalies",
+      "contract": "HAZARD",
+      "fixture": "lod_event_preview_generate stasis_beacon",
+      "scenario": "Crouch past, then stand within field; inspect save/status; disable with Use.",
+      "expected": "Canonical DEX save vs Clumsy; crouching avoids field; shared disable and cleanup.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "watchful_eye",
+      "family": "traps",
+      "contract": "HAZARD",
+      "fixture": "lod_event_preview_generate watchful_eye",
+      "scenario": "Compare facing/averted gaze; attempt front Use then circle behind and unplug.",
+      "expected": "Canonical WIS save vs Reckless only under gaze/range conditions; rear unplug disables for party.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "prison_surveyor",
+      "family": "inhabitants",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate prison_surveyor",
+      "scenario": "Ask before and after objective/gate changes; compare reported floor/first steps with ordinary legal route; inspect unarmed NPC.",
+      "expected": "Repeatable current legal objective guidance; closed gate/event is reported rather than inventing a route.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "counterweight_cache",
+      "family": "mechanisms",
+      "contract": "REWARD",
+      "fixture": "lod_event_preview_generate counterweight_cache",
+      "scenario": "Solo lever: start, interrupt movement/cancel, retry and hold through unlock; collect then repeat. Add two-real-client plate branch later.",
+      "expected": "Solo10s or two distinct Heroes on plates3s opens shared cache; each account claims15 $DEB once.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "relay_race",
+      "family": "trials",
+      "contract": "REWARD",
+      "fixture": "lod_event_preview_generate relay_race",
+      "scenario": "Traverse markers1→2→3 normally, test out-of-order/expiry, complete and Use console; repeat claim attempt.",
+      "expected": "12s sequence; successful run pays15 $DEB once/account; no teleport or movement buff required.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "memory_terminal",
+      "family": "games",
+      "contract": "REWARD",
+      "fixture": "lod_event_preview_generate memory_terminal",
+      "scenario": "Observe three current clues; enter wrong order freely, replay and answer correctly; let answer window expire; inspect recipient-only UI.",
+      "expected": "15 $DEB once/account; wrong answers reset without cost; snapshots never reveal future sequence.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "nerve_clock",
+      "family": "games",
+      "contract": "REWARD",
+      "fixture": "lod_event_preview_generate nerve_clock",
+      "scenario": "Start then stop during green; separately stop on red and test expiry; retry pending settlement without changing result.",
+      "expected": "Green pays20 $DEB; red spends attempt and risks canonical Reckless; no paused combat or invulnerability.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "strength_press",
+      "family": "trials",
+      "contract": "REWARD",
+      "fixture": "lod_event_preview_generate strength_press",
+      "scenario": "Read displayed modifier/chance; Use once, compare logged face+STR against threshold, try repeat and reconnect.",
+      "expected": "One stable ordinary d20+canonical STR vs12; success20 $DEB, failure no reward/cost; no reroll on retry.",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "id": "silent_archive",
+      "family": "anomalies",
+      "contract": "UTILITY",
+      "fixture": "lod_event_preview_generate silent_archive",
+      "scenario": "Start with missing Magic; cancel by movement/attack and explicit Use; then remain grounded, still and quiet until complete.",
+      "expected": "Up to25 Magic after4s; full Magic/cancel spends no entitlement; once/account after success.",
+      "result": "not_run_by_this_agent"
+    }
+  ],
+  "bosses": [
+    {
+      "level": 1,
+      "id": "warden",
+      "fixture_build": "lod_boss_test_level 1",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Observe one real Gordon, zero clones/turrets, his ordinary phases and actual defeat; collect key, open jail and rescue.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 2,
+      "id": "chonker",
+      "fixture_build": "lod_boss_test_level 2",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Black/Red/Gold bomb tells and cap; shoot bombs to defuse; destroy THE BIG ONE for backfire/stun; defeat and inspect death/key scene.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_chonker.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 3,
+      "id": "felon",
+      "fixture_build": "lod_boss_test_level 3",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Committed bounce collision/landings; arcing melons and ricochets; marked produce rain keeps safe route; trap recovery and legitimate defeat.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_felon.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 4,
+      "id": "melf",
+      "fixture_build": "lod_boss_test_level 4",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Freeze Hero-specific mirrors; complete duplicate→Skeleton→Giant phases; bait pylon reflection; death/disconnect cannot reroll giant identity or add late mirrors.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_melf.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 5,
+      "id": "ollie",
+      "fixture_build": "lod_boss_test_level 5",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Read basket preview and catalog; rolling/charge turns; reduce Shopping Spree props; bait cart corral recovery; bounded hazards and final key.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_ollie.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 6,
+      "id": "crystal_bepis",
+      "fixture_build": "lod_boss_test_level 6",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Poison soda patterns; interrupt or pre-jam exactly one vending attempt; observe finite visible healing stock, later buff and vending-return key.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_crystal_bepis.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 7,
+      "id": "daryl",
+      "fixture_build": "lod_boss_test_level 7",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Read Stable→Armed→Critical barrel states; bounded chains and self-damage; cover during internal detonation; safe gaps and finale key.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_daryl.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 8,
+      "id": "sofa",
+      "fixture_build": "lod_boss_test_level 8",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Charge/recline tells; temporary detached section retains primary boss authority; inverted punish window, safe furniture lanes and cleanup.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_sofa.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 9,
+      "id": "marion",
+      "fixture_build": "lod_boss_test_level 9",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Readable sledge combo; safe traffic gaps; one-impact protection prevents pinball; bait designated car ricochet, validate pileup cover/routes.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_marion.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 10,
+      "id": "button",
+      "fixture_build": "lod_boss_test_level 10",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Baseline run-to-button and E presses alone damage; weapons/Magic/statuses do not; TOO SLOW retries; distinguish fakes; Big Red then separate Jail Key button. Paired windows need real clients.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_button.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 11,
+      "id": "ray",
+      "fixture_build": "lod_boss_test_level 11",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Steam/heat→overpressure vent→cooled vulnerability; optional relief valve changes vent safely; pipe patterns retain safe openings and standard Fire/status rules.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_ray.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 12,
+      "id": "cornette",
+      "fixture_build": "lod_boss_test_level 12",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Alternate visible drill projectiles/return; bounded flank drones; bait drill-column rush and Overstrain recovery; no skating pinball.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_cornette.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 13,
+      "id": "moshi",
+      "fixture_build": "lod_boss_test_level 13",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Fill→Wash→Spin→Drain; wet/suds traction and optional drain clearing; Lost Sock fakeout and Rinse dry spaces; door weak point and cleanup.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_moshi.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 14,
+      "id": "chuck",
+      "fixture_build": "lod_boss_test_level 14",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Readable beaver face/tail and three distinct wood classes; defeat Jane first and Chuck first on separate runs; only Chuck HUD/receipt/key authority, all propane/wood retires.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_chuck.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 15,
+      "id": "rank_and_file",
+      "fixture_build": "lod_boss_test_level 15",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Drawer cues, bounded existing-zombie batches and destructible PENDING markers; cancel markers by shooting/shredder; ceiling-bound surge; no boss healing.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_rank_and_file.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 16,
+      "id": "flightmeister",
+      "fixture_build": "lod_boss_test_level 16",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Readable bounded Gunship routes, useful range/visibility; bombing and cover checks; optional beacons; permanent cover survives; designated crash/key.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_flightmeister.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 17,
+      "id": "conan",
+      "fixture_build": "lod_boss_test_level 17",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Charge and connectivity-safe cone formations; finite CONED trap auto-releases solo; teammate release branch needs real clients; temporary lane closure and final ROAD OPEN.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_conan.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 18,
+      "id": "joilette",
+      "fixture_build": "lod_boss_test_level 18",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "BDD denies all ordinary damage; acquire/throw three unique Cleaners, miss/lose one to verify replacement; persistent0/3→3/3; no farming after break, then normal defeat.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_joilette.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 19,
+      "id": "little_mooky",
+      "fixture_build": "lod_boss_test_level 19",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "Validate Strider body/knee/underbody routes; temporary knee stagger, fixed laser lock, permanent cover, no adds; controlled collapse and recoverable key.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/bosses/sv_little_mooky.lua",
+      "result": "not_run_by_this_agent"
+    },
+    {
+      "level": 20,
+      "id": "warden",
+      "fixture_build": "lod_boss_test_level 20",
+      "then": "Deploy normally, then lod_boss_testkit; lod_boss_status",
+      "scenario": "One real Gordon+four fake clones+four owned Sentries; real death transfers to Hector without key; genuine Hector defeat yields final key; jail and Deborah rescue remain separate.",
+      "source": "gamemodes/legend_of_deborah/gamemode/lod/sv_warden.lua",
+      "result": "not_run_by_this_agent"
+    }
+  ],
+  "common_boss_gates": [
+    "Inspect title/body/telegraph plus real attacks through all authored phases and unique counterplay. Do not kill special-completion bosses with console damage.",
+    "Ordinary boss defeat is not rescue: exactly one recoverable key, jail interaction and live Hero rescue are separate; Level20 requires Hector after Gordon.",
+    "Loss of all Hero lives retains uncleared boss phase/HP and mandatory-item progress; timer expiration owns automatic failure/reset. Fresh Hero entry must not reroll encounter.",
+    "Across high-risk modules: death/respawn, role/disconnect/rejoin, pause/reset and late join retire stale actors/projectiles/hazards/callbacks without losing required Cleaner/button/key progress.",
+    "All current stages obey protected entry, world cover/collision, finite shared actor/projectile/hazard limits, genuine attribution and deterministic identity.",
+    "Fixtures establish boss mechanics only. Ordinary start-to-finish campaign progression and three final varied clean passes remain required independently."
+  ],
+  "class_reconciliation": {
+    "level1": {
+      "design_status": "CURRENT REQUIRED and implemented; fresh runtime acceptance still evidence-dependent",
+      "anchors": [
+        "02 LOD-CLS-002 Fighter regeneration",
+        "02 LOD-CLS-003/004 Rogue movement/Dodge",
+        "02 LOD-CLS-005 complete core",
+        "02 LOD-CLS-006 Fighter penetration",
+        "03 Wizard core and Magic rules"
+      ],
+      "sources": [
+        "sv_rpg_gate_e_feats.lua shared innate/feat regeneration",
+        "sv_rpg_dodge.lua Rogue movement and one-roll speed-gated Dodge",
+        "sv_rpg_wizard_rebalance.lua and sv_wizard_arcane_cap.lua Arcane Shield",
+        "sv_magic_progression.lua Wizard free starting Content",
+        "sh_rpg_schema.lua class/hit-die catalog"
+      ],
+      "native_gate": "Choose each class normally on separate fresh Heroes; inspect derived stats, starter ownership and free Content, take real damage/move/cast, then verify class-specific passive recovery/defense and lifecycle. Static implementation is not a native pass."
+    },
+    "levels5_10_15": {
+      "design_status": "Explicit October12 DESIGN-ONLY addition; not implemented, not runtime failed/passed, not silently waived",
+      "headings": [
+        "00 LOD-CLASS-MILESTONES-001 — AUTHOR-REQUESTED DESIGN UPDATE (2026-10-12)",
+        "02 LOD-CLASS-MILESTONES-001 — CLASS MILESTONES AT 5 / 10 / 15",
+        "03 LOD-CLASS-MILESTONES-COMBAT-001 — SHARED RESOLUTION",
+        "06 LOD-CLASS-MILESTONES-UI-001 — INPUT, OWNERSHIP AND LIFECYCLE",
+        "07 LOD-CLASS-MILESTONES-TUNING-001 — INITIAL VALUES AND ACCEPTANCE"
+      ],
+      "intended": {
+        "fighter": [
+          "5 Crossbow",
+          "10 Battle Shout",
+          "15 RPG"
+        ],
+        "rogue": [
+          "5 Shadow Dash",
+          "10 Cutting Shadow",
+          "15 Parting Gift"
+        ],
+        "wizard": [
+          "5 Gildling",
+          "10 Gilded Sentinel",
+          "15 Aurum Guardian"
+        ]
+      },
+      "implementation_proof": [
+        "Production search finds no Battle Shout/Shadow Dash/familiar tier or milestone authority.",
+        "sh_equipment_economy.lua supports six existing families only; crossbow and RPG are absent.",
+        "Existing sv_magic_progression.lua ClassMilestoneAbilityDelta is older ability-score progression, not the new active abilities/familiar."
+      ],
+      "sequencing": "No explicit 5/10/15 implementation deferral/activation entry found in current DEVELOPMENT_PLAN.md, NEXT_DEVELOPMENT_HANDOFF.md or docs/briefs. Live additions repeatedly say design-only. Root's current campaign scope is active implemented systems; preserve this named designed-only coverage gap for the user if overall required-scope interpretation matters.",
+      "future_gate_only": "Thresholds4/5,9/10,14/15; automatic cumulative ownership and pending single delivery; real rebound/UI input; collision/cover/rider accounting; one familiar plus one pending return and preserved identity/HP/deadline. Not an instruction to implement within this bugfix tranche."
+    }
+  },
+  "evidence": {
+    "default": [
+      "console_latest.txt",
+      "rpg_summary_latest.txt"
+    ],
+    "detail": "rpg_session_latest.txt only for exact ordering/timing",
+    "presentation": "Screenshots/video/audio for visual, input and sound rows",
+    "finish": "lod_rpg_test_finish <fixture-label>",
+    "results": "No runtime work performed by this agent; root owns client and result matrix"
+  }
+}

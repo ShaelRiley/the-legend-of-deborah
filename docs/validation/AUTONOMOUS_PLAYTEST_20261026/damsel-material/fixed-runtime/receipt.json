@@ -1,0 +1,8 @@
+{
+  "build": "278e2983197cafd75c6fa7862c2533e37f61012e",
+  "source_crc32": "97551537",
+  "flags": 134219776,
+  "normal": "models/humans/female/group01/citizen_sheet_normal",
+  "setup": "Disposableclient-onlymodelcallsproductionApplyAppearance;modelremovedimmediately;noordinaryNPCpose/rescueclaim",
+  "observed": "ExpectedhalfLambert+modelbitsandrealnormalretained;faceuntinted;noattributableshaderwarnings.OrdinaryrescuedNPCrenderpending."
+}

@@ -1,0 +1,12 @@
+{
+  "build": "278e2983197cafd75c6fa7862c2533e37f61012e",
+  "classification": "Environment/input diagnostics, not a confirmed ordinary-game source defect",
+  "sv_cheats": 1,
+  "lod_developer_mode": 0,
+  "cause_of_extra_weapons": "Default engine P binding impulse101 executed while cheats were enabled. Runtime origin of cheats1 remains unproven; no project setter/config/Steam option found.",
+  "expected_loadout": "Pistol18 + LoDcrowbar, zero reserve, plus exactly one Hermit starter.",
+  "native_coverage_limit": "Inventory/combat/route acceptance from contaminated session is withheld. Blind text after console closed could also activate V/noclip, so the four-cell control trial is not collision acceptance without movement-type proof.",
+  "input_fault": "Lua ~= typed by xdotool synthesizes Shift+grave, closing Source console midline. Rewritten as == with early return; text controller now rejects tilde/backtick. This caused the stock unknown-command warnings and popup/chat changes; retain evidence.",
+  "observed_control": "After correction, bounded native WASD visited four requested corridor centers; actual Soldier telegraph/gunfire and subsequent hostile death occurred. These are diagnostic observations.",
+  "next_action": "Fresh installed candidate; explicit sv_cheats0, verify loadout before/after P, MOVETYPE_WALK observer, production encounter settings; then ordinary map/keys/gates/Neil/boss route."
+}

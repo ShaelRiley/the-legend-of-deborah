@@ -1,0 +1,175 @@
+{
+  "defect_id": "BUG-006",
+  "base_commit": "278e2983197cafd75c6fa7862c2533e37f61012e",
+  "results": [
+    {
+      "name": "character-sheet-layout",
+      "command": [
+        "lua",
+        "tools/test_character_sheet_layout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.748,
+      "log": "character-sheet-layout.log"
+    },
+    {
+      "name": "wizard-balance",
+      "command": [
+        "lua",
+        "tools/test_wizard_balance.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.813,
+      "log": "wizard-balance.log"
+    },
+    {
+      "name": "wizard-reaction-fx",
+      "command": [
+        "lua",
+        "tools/test_wizard_reaction_fx.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.008,
+      "log": "wizard-reaction-fx.log"
+    },
+    {
+      "name": "feat-rebalance",
+      "command": [
+        "lua",
+        "tools/test_checkpoint_d_rebalance_20261002.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.146,
+      "log": "feat-rebalance.log"
+    },
+    {
+      "name": "integrated-refresh",
+      "command": [
+        "lua",
+        "tools/test_integrated_refresh.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.296,
+      "log": "integrated-refresh.log"
+    },
+    {
+      "name": "refresh-ui",
+      "command": [
+        "lua",
+        "tools/test_refresh_ui.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.002,
+      "log": "refresh-ui.log"
+    },
+    {
+      "name": "syntax",
+      "command": [
+        "luac",
+        "-p",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua",
+        "tools/test_character_sheet_layout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.003,
+      "log": "syntax.log"
+    },
+    {
+      "name": "luajit-syntax",
+      "command": [
+        "luajit",
+        "-e",
+        "assert(loadfile('gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua'));assert(loadfile('tools/test_character_sheet_layout.lua'))"
+      ],
+      "exit_code": 0,
+      "seconds": 0.003,
+      "log": "luajit-syntax.log"
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua",
+        "tools/test_character_sheet_layout.lua"
+      ],
+      "exit_code": 0,
+      "seconds": 0.008,
+      "log": "diff-check.log"
+    }
+  ],
+  "passed": 9,
+  "total": 9,
+  "negative_control": {
+    "command": [
+      "lua",
+      "/tmp/deborah-wizard-card-repair/negative-control-final.lua"
+    ],
+    "exit_code": 1,
+    "test_sha256": "58f5216bea98fc65a4d72cab983d7335747727794cc7750b4c1be7f30c04c708",
+    "rejects_original": true
+  },
+  "source_before": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua": "35ba2cd54db9d789dbc5c815f9d8da63c6b3713b714db9115f07d79e1841d5ef",
+    "tools/test_character_sheet_layout.lua": "58f5216bea98fc65a4d72cab983d7335747727794cc7750b4c1be7f30c04c708"
+  },
+  "source_after": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua": "35ba2cd54db9d789dbc5c815f9d8da63c6b3713b714db9115f07d79e1841d5ef",
+    "tools/test_character_sheet_layout.lua": "58f5216bea98fc65a4d72cab983d7335747727794cc7750b4c1be7f30c04c708"
+  },
+  "source_unchanged": true,
+  "only_expected_production_edit": true,
+  "production_crc32": "1801259425",
+  "coverage_state": "STATIC ONLY; root owns native recheck",
+  "viewports": [
+    [
+      640,
+      480
+    ],
+    [
+      800,
+      600
+    ],
+    [
+      980,
+      720
+    ],
+    [
+      1024,
+      768
+    ],
+    [
+      1280,
+      800
+    ],
+    [
+      1920,
+      1080
+    ]
+  ],
+  "fresh_wizard_no_feat_fraction": 0.1,
+  "golden_levels": [
+    [
+      1,
+      0.1
+    ],
+    [
+      2,
+      0.125
+    ],
+    [
+      16,
+      0.475
+    ],
+    [
+      17,
+      0.5
+    ],
+    [
+      20,
+      0.5
+    ]
+  ]
+}

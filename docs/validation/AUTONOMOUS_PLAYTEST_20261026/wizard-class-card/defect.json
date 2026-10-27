@@ -1,0 +1,23 @@
+{
+  "id": "BUG-006",
+  "build": "278e2983197cafd75c6fa7862c2533e37f61012e",
+  "seed": 6102601,
+  "environment": "ActualSteamDeck;nativeGModx86/Proton10;1280x800;productionsettings",
+  "severity": "Misleadingclassselectiondescription",
+  "expected": "Currentlive03LOD-MAG-002:Wizard10%atLevel1,+2.5percentagepointsperadditionalLevel,capped50%;currentMagicbounds",
+  "actual": "PreselectionWizardcardstated2%perLevel;committedsheetshowedcorrect10%.Underlyingcombatandderivedsnapshotwerealreadycorrect.",
+  "source": "LiveGDD03LOD-MAG-002;02LOD-CLS-005routespassivesto03;sv_rpg_wizard_rebalance+sv_wizard_arcane_caparecurrentloadedauthorities.",
+  "reproduction": [
+    "Pbeforeclasscommit:readWizardcard",
+    "CommitWizardandreadclasspassive:says10%withnofeatselected"
+  ],
+  "repair_commit": "50c257772cdbb76474e539b5776dee1145e7fb69",
+  "status": "Oneproductionstringcorrected;9/9focusedchecks;oldsourcefailsrenderedcardregression.Nativefreshrecheckpending.",
+  "native_crc32_expected": "1801259425",
+  "evidence": [
+    "deborah-278e-class-open.png",
+    "deborah-278e-wizard-feats.png",
+    "static-repair-receipt.json",
+    "static-repair.tar.xz"
+  ]
+}

@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "19feeda8",
+  "current_candidate": "50c257772cdbb76474e539b5776dee1145e7fb69",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -141,8 +141,10 @@
       "source": "02 LOD-CLS/LOD-MON; 03 LOD-CBT",
       "expected": "Enemy archetypes, native acquisition/telegraphs/attacks and damage/defenses",
       "scenario": "Ordinary early/late combat plus bounded archetype fixtures",
-      "result": "pending",
-      "evidence": []
+      "result": "Native Soldier telegraph/gunfire and hostile death observed, but contaminated session is not combat acceptance. Fresh production combat pending.",
+      "evidence": [
+        "environment-input/deborah-native-walk-trial.png"
+      ]
     },
     {
       "id": "COMBAT-02",
@@ -173,16 +175,20 @@
       "source": "02/03/06 LOD-CLASS-MILESTONES; 07 tuning",
       "expected": "Active versus design-only class rewards reconciled before claims",
       "scenario": "Read implementation and current explicit decisions; isolate any authored gap",
-      "result": "pending",
-      "evidence": []
+      "result": "Level1coreimplemented;Oct12Level5/10/15newclassmilestonesexplicitDESIGN-ONLYandunimplemented;notaruntimepassorobservedbug",
+      "evidence": [
+        "authored-coverage-plan.json"
+      ]
     },
     {
       "id": "INV-01",
       "source": "90 LOD-EQUIP-016; 06 LOD-BIG-LOOT-LIFECYCLE",
       "expected": "Owned equipment, capacity, stacks, acquisition, equips, pickup/drop and consumables",
       "scenario": "Ordinary loot/inventory with full/empty/depleted/stale/duplicate boundaries",
-      "result": "pending",
-      "evidence": []
+      "result": "Diagnostic six-family loadout traced to cheats1+P/impulse101, not equipment generation. Fresh cheats0 ordinary acquisition/ownership/capacity checks pending.",
+      "evidence": [
+        "environment-input/receipt.json"
+      ]
     },
     {
       "id": "ECON-01",
@@ -242,10 +248,10 @@
     },
     {
       "id": "AUDIO-01",
-      "source": "05/06/07 LOD-MUSIC; approved MS3_SONG amendment",
-      "expected": "Effects/cues/music continuity, Options Off/On and cleanup",
-      "scenario": "Capture/listen actual audio during staging, floors, danger, boss, rescue and reset",
-      "result": "pending",
+      "source": "Approvedc8a6ad9Oct4retirement;live06LOD-UI-OPTIONS-001;PLAYER_OPTIONS_20261007",
+      "expected": "Oct4approvedaudio-onlyretirement:continuousmusicremoved;preserveambientloops,event/key/gate/combatcuesandEventCuevolume",
+      "scenario": "Game-onlyaudiocapture;actualgameplaycues,volumeandcleanup;nostreamedMusiccontrols",
+      "result": "Game-only10.24saudiocapturesignalmeasured;comprehensivenativecuespending",
       "evidence": []
     },
     {
@@ -279,10 +285,10 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "336/336 suites on frozen e76659db with925 Lua files; later material/minimap repairs pass focused gates, combined fresh gate pending.",
+      "result": "336/336frozen278e2983pass;925Lua/sourceunchanged.50c25777Wizardtext+renderedregressionpasses9focusedchecks.",
       "evidence": [
-        "/tmp/deborah-playtest-e76659db-frozen-gate/receipt.json",
-        "integration-gate/receipt.json"
+        "combined-278e-integration-gate/receipt.json",
+        "wizard-class-card/static-repair-receipt.json"
       ]
     },
     {
@@ -312,7 +318,8 @@
     "Native baseline launched after Steam shader processing/Proton prefix migration. x86 client; exact114 source hashes match. Baseline developerDense=true is diagnostic, not a production acceptance pass.",
     "For automated native mouse input, m_rawinput1 plus guarded finite UInput movement works. Original m_rawinput0 is preserved in pretest cfg backup; restore user preference after campaign. Console resumes use hideconsole;gameui_hide to release engine input focus.",
     "Production e766 session confirms0/0 Workshop mounted,114 source checks. Ordinary floor1 walking used no teleport/noclip; read-only server route hints accelerated navigation. No co-op/audio/full-campaign claim.",
-    "Pre-reload30s staging capture:985 frames,32.88FPS all-frames, no active-play frames. Mounted source observer reports2mismatches because checkout advanced while client stayed open; do not attribute improvement/regression or use as verified final performance evidence."
+    "Pre-reload30s staging capture:985 frames,32.88FPS all-frames, no active-play frames. Mounted source observer reports2mismatches because checkout advanced while client stayed open; do not attribute improvement/regression or use as verified final performance evidence.",
+    "278e diagnostic session inherited sv_cheats1; P/impulse101 supplied extra weapons/ammo. No clean combat/inventory or trial collision acceptance. Source had no setter; runtime origin unproven. Fresh launch will explicitly use0 and verify actual readback/loadout/MOVETYPE_WALK."
   ],
   "defects": [
     {
@@ -338,7 +345,12 @@
     {
       "id": "BUG-005",
       "record": "timeout-hud/defect.json",
-      "status": "implemented19feeda8;10/10 focused checks; fresh native pending"
+      "status": "repairedandnativerechecked:failuretext,bars,lockout,manualEreset"
+    },
+    {
+      "id": "BUG-006",
+      "record": "wizard-class-card/defect.json",
+      "status": "repaired50c25777;9/9focusedchecks;freshnativetextpending"
     }
   ],
   "static_fixture_checkpoint": {
@@ -347,13 +359,13 @@
     "result": "All nine prior fixture failures reproduced and pass after repair, plus four adjacent regressions. Gameplay unchanged."
   },
   "integration": {
-    "result": "336/336 pass, 925 Lua files, source unchanged",
-    "commit": "e76659db9d99360f557252faf2f6455d32d8c0c5",
-    "receipt": "/tmp/deborah-playtest-e76659db-frozen-gate/receipt.json",
+    "result": "336/336pass,925Luafiles,sourceunchanged",
+    "commit": "278e2983197cafd75c6fa7862c2533e37f61012e",
+    "receipt": "combined-278e-integration-gate/receipt.json",
     "native_gmod_accepted": false
   },
-  "installed_loaded_build": null,
+  "installed_loaded_build": "278e2983197cafd75c6fa7862c2533e37f61012e",
   "last_checkpoint_utc": "2026-10-26T23:35:30.239942+00:00",
-  "next_action": "Install19feeda8 successor on fully closed native client; production prep; source-verified native rechecks BUG002-005; ordinary dungeon progression. Combined frozen integration gate pending.",
+  "next_action": "Fresh install50c25777 or documentation successor, explicit sv_cheats0, developer0/Workshopoff. Verify all mounted files, corrected Wizard card, initial loadout unaffected byP, normal movement type. Native map footer then campaign progression.",
   "last_runtime_build": "e76659db9d99360f557252faf2f6455d32d8c0c5"
 }

@@ -11,9 +11,11 @@ inherited regression failures. Native Steam Deck play found and preserved five
 presentation/usability defects: truncated Hermit chapters; invalid optional weapon
 textures and dropped compiled shader flags; damsel clothing normals/flags lost by
 bulk cloning; clipped map legend; timeout HUD suppressing its own native dispatcher.
-Repairs are integrated through19feeda8. BUG001 has fresh native recheck; BUG002–005
-pass focused static/regression gates and still require a fully restarted combined
-build. Frozen e76659db passed336/336 suites; a current combined gate is pending.
+Repairs are integrated through50c25777, including BUG006 stale Wizard selection
+text (combat was already correct). Frozen278e2983 passed336/336 suites with
+925 Lua files and unchanged source; the text correction passes9 focused checks.
+Native CRC/material proofs and timeout overlay/manual E reset now pass; map legend
+and corrected Wizard card still need fresh native recheck.
 
 Actual hardware is Valve Jupiter Steam Deck, Windows x86 GMod through Proton10.
 Production-settings seed6102601/levelSeed1694580310/layoutSeed102935261 verified
@@ -24,8 +26,14 @@ and automatic new staging epoch occurred. Missing failure feedback is BUG005;
 September17 approved five-shot camera supersedes the older oblique framing.
 No full-campaign, cooperative-client or clean-pass completion claim; streak remains0.
 
-Next: closed-client install and production prep, verify exact loaded sources and
-native BUG002–005 behavior, then continue ordinary campaign and bounded fixtures.
+The diagnostic session inherited sv_cheats1. Default P→impulse101 contaminated
+weapons/ammo; no production setter was found. Withhold combat/inventory/collision
+acceptance from that session. A typed Lua tilde also toggled the console shut;
+this controller fault and resulting warnings are preserved separately.
+
+Next: fresh install, explicit sv_cheats0 and production prep; verify actual cheat
+state, normal initial loadout before/after P, exact sources and MOVETYPE_WALK.
+Recheck BUG004/006 visually, then continue ordinary campaign and bounded fixtures.
 Keep co-op access clarification pending; single-client evidence cannot accept it.
 Durable defects, evidence, coverage and next action:
 [autonomous playtest](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).

@@ -1,0 +1,10 @@
+[LOD BUILD_IDENTITY] build=generator-jit-20260917-01 realm=server install=278e2983197cafd75c6fa7862c2533e37f61012e clean  missing=none architecture=x86 branch=unknown engine=2026.09.17 lua_errors=0 lua_kb=30232 entities=1380 meshes=0 wall_models=0 loot_entities=0 jit_version=LuaJIT 2.0.4 equipment_generation=interpreter-generator damsels=damsels-20261012-lore feedback_audio=feedback-20260919-01
+[LOD BUILD_IDENTITY] build=generator-jit-20260917-01 realm=client install=278e2983197cafd75c6fa7862c2533e37f61012e clean  missing=none architecture=x86 branch=unknown engine=2026.09.17 lua_errors=0 lua_kb=23953 entities=1245 meshes=1 wall_models=1 loot_entities=0 jit_version=LuaJIT 2.0.4 equipment_generation=interpreter-generator damsels=damsels-20261012-lore feedback_audio=feedback-20260919-01
+PT_CRC	cl_weapon_appearance	2873846432
+PT_CRC	cl_damsels	97551537
+PT_CRC	cl_minimap	538781210
+PT_CRC	cl_campaign_timeout	1789208541
+PT_MATERIAL	models/weapons/w_pistol/pistol:tint-v4:b	2048	nil
+PT_MATERIAL	models/weapons/v_pistol/v_pistol_sheet:tint-v4:b	4196416	Texture [models/weapons/v_pistol/v_pistol_sheet_normal]
+PT_MATERIAL	models/weapons/w_pistol/pistol:tint-v4:a	2048	nil
+PT_MATERIAL	models/weapons/v_pistol/v_pistol_sheet:tint-v4:a	4196416	Texture [models/weapons/v_pistol/v_pistol_sheet_normal]
