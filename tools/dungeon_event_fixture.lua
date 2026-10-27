@@ -44,7 +44,9 @@ net={Start=function(id) currentPacket={id=id};packets[#packets+1]=currentPacket 
  Send=function(p) currentPacket.recipient=p end,Broadcast=noop,
  Receive=function(id,f) receivers[id]=f end}
 F.traceBlocked=false
-util={AddNetworkString=noop,TraceLine=function() return {Hit=F.traceBlocked} end,
+F.precachedModels={}
+util={AddNetworkString=noop,PrecacheModel=function(path) F.precachedModels[path]=true end,
+ TraceLine=function() return {Hit=F.traceBlocked} end,
  TraceHull=function() return {Hit=false,StartSolid=false} end,
  TableToJSON=WalletJSONEncode,JSONToTable=function(s) return WalletJSONDecode(s) end}
 local convars={}

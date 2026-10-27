@@ -15,6 +15,9 @@ local function gateBounds(axis)
 end
 
 function ENT:Initialize()
+    -- Client IsValidModel requires this server precache even when the stock file
+    -- exists and ClientsideModel could load it. Publish it before gate replication.
+    util.PrecacheModel(LOD.Config.Geometry.GateModel)
     self:SetModel("models/hunter/blocks/cube025x025x025.mdl")
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_BBOX)

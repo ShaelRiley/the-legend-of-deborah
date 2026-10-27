@@ -24,6 +24,25 @@ Material=function(path) assert(not path:find('concrete'));return {path=path} end
 CreateMaterial=function() return {} end
 LOD={};dofile(root..'gamemode/lod/sh_config.lua')
 local PC,GC=LOD.Config.Progression,LOD.Config.Geometry
+-- A stock file can load as a client model while native client IsValidModel is
+-- still false: its server precache table is a separate acceptance boundary.
+local precached={}
+util={PrecacheModel=function(path) precached[path]=true end,
+ IsValidModel=function(path) return precached[path]==true end}
+AddCSLuaFile=noop
+ENT={};dofile(root..'entities/entities/lod_gate/init.lua')
+local serverClass=ENT
+MOVETYPE_NONE,SOLID_BBOX,COLLISION_GROUP_NONE,SIMPLE_USE,EFL_FORCE_CHECK_TRANSMIT=0,2,0,3,1
+local serverGate=setmetatable({},{__index=serverClass})
+for _,name in ipairs({'SetMoveType','SetSolid','SetCollisionGroup','SetUseType','SetOpened',
+ 'SetOpenedAt','DrawShadow','AddEFlags'}) do serverGate[name]=noop end
+serverGate.SetModel=function(_,path)
+ assert(path=='models/hunter/blocks/cube025x025x025.mdl','physical blocker model changed')
+end
+serverGate.GetGateAxis=function() return 0 end
+serverGate.SetCollisionBounds=function(self,lo,hi) self.lo,self.hi=lo,hi end
+assert(not util.IsValidModel(GC.GateModel),'fixture must begin with a cold server model table')
+serverGate:Initialize()
 local native,fail,bad,thinY,allocations,draws=nil,false,false,false,0,0
 function Matrix() return {Scale=function(self,s) self.scale=s end} end
 function ClientsideModel(path)
@@ -52,7 +71,8 @@ ENT={};dofile(root..'entities/entities/lod_gate/cl_init.lua')
 local G=LOD.GatePresentation
 local center=Vector(110,230,410)
 local function checkBounds(axis)
- assert(G.Draw(center,axis));local a,b=native:GetModelBounds()
+ assert(G.Draw(center,axis),'Fresh server gate must make its stock body eligible on the client')
+ local a,b=native:GetModelBounds()
  local lo,hi=Vector(1e9,1e9,1e9),Vector(-1e9,-1e9,-1e9)
  for _,x in ipairs({a.x,b.x}) do for _,y in ipairs({a.y,b.y}) do for _,z in ipairs({a.z,b.z}) do
   local p=native.pos+native.ang:Forward()*(x*native.scale.x)-native.ang:Right()*(y*native.scale.y)+native.ang:Up()*(z*native.scale.z)
@@ -65,16 +85,21 @@ local function checkBounds(axis)
  local mid=(lo+hi)*0.5;assert(mid:DistToSqr(center)<1e-12,'off-center stock origin displaced gate')
 end
 checkBounds(0);checkBounds(1)
+-- A fresh map has a fresh model table; the same production initialization must
+-- publish the dependency again without removing the client fallback guard.
+precached={};G.Clear()
+assert(not G.Draw(center,0),'unprecached client model bypassed the native guard')
+serverGate:Initialize();now=12.1;checkBounds(0)
 for _=1,100 do checkBounds(0) end
-assert(allocations==1,'model allocated per gate/frame')
+assert(allocations==2,'model allocated per gate/frame')
 local prior=native;hooks.PostCleanupMap.LOD_GatePresentation();assert(not prior.valid)
-thinY=true;checkBounds(0);checkBounds(1);assert(allocations==2)
+thinY=true;checkBounds(0);checkBounds(1);assert(allocations==3)
 prior=native;hooks.ShutDown.LOD_GatePresentation();assert(not prior.valid)
 fail=true;assert(not G.Draw(center,0));local n=allocations
 for _=1,30 do assert(not G.Draw(center,0)) end
 assert(allocations==n,'failed allocation spins each frame')
-now=13;fail=false;bad=true;assert(not G.Draw(center,0) and not native.valid)
-now=16;bad=false;checkBounds(0)
+now=15;fail=false;bad=true;assert(not G.Draw(center,0) and not native.valid)
+now=18;bad=false;checkBounds(0)
 -- Full production draw hooks: closed/moving/open gates and missing-model fallback.
 local e=setmetatable({opened=false,started=0},{__index=ENT})
 e.GetPos=function() return center end;e.GetGateAxis=function() return 1 end;e.GetGateIndex=function() return 1 end
@@ -91,6 +116,6 @@ e.opened=true;e.started=now-PC.GateOpenSeconds*.5;draw();assert(draws==before+2)
 e.started=now-PC.GateOpenSeconds;draw();assert(draws==before+2,'open gate body retained')
 e.opened=false;G.Clear();fail=true;draw();assert(fallbacks==1 and G.Summary().fallbackBodies==1)
 local count=fallbacks;draw(true);assert(fallbacks==count,'depth pass drew gate')
-now=20;fail=false;draw();assert(G.Summary().stockBodies==1)
+now=22;fail=false;draw();assert(G.Summary().stockBodies==1)
 prior=native;dofile(root..'entities/entities/lod_gate/cl_init.lua');assert(not prior.valid,'Lua refresh leaked model')
-print('CRATE_GATES_PASS: measured stock bounds; both thin/gate axes; off-center alignment; one shared model; cleanup/shutdown/refresh; failed allocation backoff; open animation; independent metal fallback; approved floor untouched')
+print('CRATE_GATES_PASS: real server initialization precaches stock body before native client validation; fresh-map table recovery; measured stock bounds; both thin/gate axes; off-center alignment; one shared model; cleanup/shutdown/refresh; failed allocation backoff; open animation; independent metal fallback; approved floor untouched')

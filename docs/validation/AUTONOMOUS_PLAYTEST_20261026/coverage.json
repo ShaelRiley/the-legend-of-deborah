@@ -103,6 +103,18 @@
       ]
     },
     {
+      "id": "REG-GATE-MODEL",
+      "source": "Approved Great Crate C3 stock-gate presentation; shared Geometry.GateModel;05 gate progression preserved",
+      "expected": "A cold real gate uses the configured stock blastdoor; missing-model fallback remains available without altering collision or locks",
+      "scenario": "Fresh client/server with no diagnostic precache; inspect actual gate, then ordinary keycard/Use/open/collision and replay",
+      "result": "BUG011 native cold validation/appearance mismatch and explicit server-precache causality confirmed on afdcbc camera-only fixture. Server-initialization repair passes13 targeted checks and original negative control. Fresh installed cold repair native acceptance remains pending; ordinary traversal/interaction/co-op remains pending.",
+      "evidence": [
+        "gate-precache/BUG-011.json",
+        "gate-precache/native-causality.json",
+        "gate-precache/static-receipt.json"
+      ]
+    },
+    {
       "id": "REG-FEAT",
       "source": "04 LOD-FEAT; approved FEAT_REPEAT_NEIL_CONSOLE_20261013",
       "expected": "Rapid Recovery and other nonrepeatable feats cannot duplicate",
@@ -313,13 +325,14 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "336/336 frozen f6048a0e pass;925 Lua files;sourcebefore=after2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5;no changed files. Native finite BUG007/008 acceptance is recorded separately; full gameplay acceptance remains open. Laterafdcbc BUG009 has17 targeted suites+925 Lua parses and independent review; edfc BUG010 has10 focused positive checks plus changed-file syntax/LuaJIT checks and independent review. Specific baseline negative controls reject both originals; these are not new336-suite/full-gameplay passes.",
+      "result": "336/336 frozen f6048a0e pass;925 Lua files;sourcebefore=after2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5;no changed files. Native finite BUG007/008 acceptance is recorded separately; full gameplay acceptance remains open. Laterafdcbc BUG009 has17 targeted suites+925 Lua parses and independent review; edfc BUG010 has10 focused positive checks plus changed-file syntax/LuaJIT checks and independent review. Specific baseline negative controls reject both originals; these are not new336-suite/full-gameplay passes. BUG011 has13 affected targeted checks,3 changed-file LuaJIT compilations and an original-source negative control; fresh native acceptance remains pending.",
       "evidence": [
         "combined-278e-integration-gate/receipt.json",
         "wizard-class-card/static-repair-receipt.json",
         "combined-f604-integration-gate/receipt.json",
         "popup-escape/BUG-009.json",
-        "inventory-tooltip/BUG-010.json"
+        "inventory-tooltip/BUG-010.json",
+        "gate-precache/static-receipt.json"
       ]
     },
     {

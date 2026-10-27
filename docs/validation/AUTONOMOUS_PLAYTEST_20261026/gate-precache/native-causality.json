@@ -1,0 +1,57 @@
+{
+  "kind": "BUG011 original native reproduction and cache-causality fixture; not repaired-build acceptance",
+  "build": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9",
+  "hardware": "Valve Jupiter Steam Deck; AMD Custom APU0405; amdgpu1002:163F",
+  "runtime": "Windowsx86 GarrysMod under Proton10; gm_flatgrass; seed6102602; developer0/cheats0; Workshop off; auto-refresh disabled",
+  "captured_utc": "2026-10-27T15:14:46.624120+00:00",
+  "actual_actor": "Root controlled real client; this agent independently inspected preserved screenshots and source/API evidence",
+  "sequence": [
+    "Cold client IsValidModel=false while mounted file.Exists=true; physical gate renders the striped fallback",
+    "An explicit native ClientsideModel constructor succeeds with exact configured blastdoor path, but client IsValidModel remainsfalse; same gate retains fallback",
+    "Only after server util.PrecacheModel(shared configured GateModel), client IsValidModel becomestrue and same-camera gate renders the intended stock blastdoor"
+  ],
+  "limits": [
+    "Camera-only fixture: Hero body remains staging; this is no ordinary route, collision, gate-use, progression or cooperative acceptance.",
+    "Server cache intervention demonstrates cause on the old build; fresh cold restart of the installed repair is required.",
+    "114 population startup source checks do not cover lod_gate/init.lua; next native gate must separately verify its file CRC and cold loaded behavior.",
+    "No FPS comparison or resumed optimization objective is claimed."
+  ],
+  "raw_console_source_sha256": "3077c886316fb4d2c3daacd4f83f7552f97620f5d8e7c3f9fd5e31c565f01616",
+  "raw_excerpt_sha256": "4db4230b84a2140b6a58d87e142df1288eddbaadb5081138739010126e7cd80d",
+  "raw_line_numbers_1based": [
+    189,
+    192,
+    193,
+    194,
+    332,
+    333,
+    334,
+    335,
+    337,
+    338,
+    339,
+    340,
+    341,
+    342
+  ],
+  "screenshots": [
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793113371659253644-deborah-afdcbc-cold-gate-unobscured.png",
+      "file": "cold-gate.png",
+      "sha256": "e0b8cc62640edd8db0bb676e1bfea863ba9e9c6e216372b8489abdb3ab7e1078",
+      "bytes": 1081693
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793113399491723492-deborah-afdcbc-gate-after-client-construct.png",
+      "file": "after-client-constructor.png",
+      "sha256": "7cd9c64aa87383c42c08a39d4310ecf145e8eb9136555c9351ac171ad902bd06",
+      "bytes": 1461918
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793113454081612609-deborah-afdcbc-gate-after-server-precache.png",
+      "file": "after-server-precache.png",
+      "sha256": "214d568a14f0f4f5703e6b6a9b3c641c43642311b191005794b9e0d69fbf386f",
+      "bytes": 1337802
+    }
+  ]
+}

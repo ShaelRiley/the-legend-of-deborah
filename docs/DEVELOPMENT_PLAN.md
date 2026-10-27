@@ -6,6 +6,16 @@ clean final-candidate passes. Clean streak remains 0. Workshop/VPS, the 40 FPS
 goal and all October 23 timer/countdown/hourglass/inventory/reward choices remain
 deferred.
 
+The BUG011 checkpoint precaches the shared configured stock gate model during
+ordinary server gate initialization. Cold native afdcbc had the asset mounted
+and a successful client constructor, but client IsValidModel stayed false and
+the real gate rendered its fallback. Explicit server precache changed that same
+camera to the intended blastdoor, proving the missing dependency. The repair
+passes 13 targeted checks, changed-file Lua5.4/LuaJIT compilation, an expected
+original-source failure and independent review. Fresh cold repaired-build native
+acceptance is pending; no traversal/collision/co-op acceptance follows from this
+camera fixture. See [BUG011](validation/AUTONOMOUS_PLAYTEST_20261026/gate-precache/BUG-011.json).
+
 Main `edfcdb26497ded707dc94b955f89fb3a68cfd4f0` contains ten repairs. Latest
 BUG010 wraps ordinary item tooltips within the native viewport; 10 focused
 positive checks, changed-file syntax/LuaJIT compilation, an original-source
@@ -53,7 +63,10 @@ FPS with its observer present; it establishes no repair attribution or 40 FPS
 claim.
 
 Next: continue the active single-client dungeon exploration, then fully
-quit/install/restart main and verify inventory CRC2838551934. Hover ordinary
+quit/install/restart main and verify inventory CRC2838551934 and server gate
+initialization CRC153563205. Before any server precache diagnostic, the cold
+client must validate the configured gate model and render its stock body. The
+114 population fingerprint omits this entity file; verify it separately. Hover ordinary
 Crowbar/Pistol tiles at1280x800: complete tooltips must wrap within the viewport;
 verify adjacent select/equip/stow/close behavior. Continue bounded authored-family
 fixtures and the remaining native menu/input coverage without treating prior

@@ -1,0 +1,258 @@
+{
+  "kind": "Complete targeted static repair archive",
+  "passed": 13,
+  "total": 13,
+  "source_unchanged": true,
+  "original_negative_control": "Expected failure: Fresh server gate must make its stock body eligible on the client",
+  "luajit_compile_only_files": 3,
+  "native_gmod_accepted": false,
+  "archive": "static-regression.tar.xz",
+  "archive_sha256": "23b8b6e37ee0c6917a37b550a47fa18785f8a12724a4ba7884428db0dc7b61df",
+  "entries": [
+    {
+      "path": "before-source/gamemodes/legend_of_deborah/entities/entities/lod_gate/cl_init.lua",
+      "bytes": 14784,
+      "sha256": "381fbc64c6ebbeeae5887e7c0cca96674c0807ce35501587628ecad60245719e"
+    },
+    {
+      "path": "before-source/gamemodes/legend_of_deborah/entities/entities/lod_gate/init.lua",
+      "bytes": 1945,
+      "sha256": "0698a9f6663ab24df79476d469e736b0b4b6d50f5e63c4d8ccd24d7d7d6c707d"
+    },
+    {
+      "path": "before-source/gamemodes/legend_of_deborah/gamemode/lod/sh_config.lua",
+      "bytes": 13418,
+      "sha256": "350cce6720fbffc9eb70766e4a8e9787479e4db98d91510af10d1586bf1631a1"
+    },
+    {
+      "path": "before-source/tools/test_great_crate_gates.lua",
+      "bytes": 7263,
+      "sha256": "269183620e0a688f76cc7f8cca64de90cd7f0c3bab1d379bb16030ac7ce20ed5"
+    },
+    {
+      "path": "changed-lua-syntax.json",
+      "bytes": 474,
+      "sha256": "d1d69417175da171c55cf4c06963e740eec792f3c519dd3c214e4a96bdec70f7"
+    },
+    {
+      "path": "changed-lua-syntax.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "changed-lua-syntax.stdout.txt",
+      "bytes": 273,
+      "sha256": "69eb263d8cf797f0175ec4c98484bcd18612628501dc062b5e763e0862fd155e"
+    },
+    {
+      "path": "event-quiz-generation.json",
+      "bytes": 365,
+      "sha256": "8bfdf682c823c4f47da5c8af16aa6ff754c5d8b7bab32f641d0d89cec989f6d8"
+    },
+    {
+      "path": "event-quiz-generation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "event-quiz-generation.stdout.txt",
+      "bytes": 4396,
+      "sha256": "2259fadf06f1b753863da8c586482292154f70631a6c4364b20ca7e6507619f1"
+    },
+    {
+      "path": "event-skeleton-blockade.json",
+      "bytes": 368,
+      "sha256": "d17a19a58086fe2c44cde9ea67e1c1c9db0d08451b024094887fc6ea80579185"
+    },
+    {
+      "path": "event-skeleton-blockade.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "event-skeleton-blockade.stdout.txt",
+      "bytes": 4952,
+      "sha256": "701b2088dba21c5c89e8ff53c8cc120c58517a9240ff5e33bb472f26c2efce4e"
+    },
+    {
+      "path": "event-skeleton-lifecycle.json",
+      "bytes": 370,
+      "sha256": "aef02fe68ed7c67d699efb10d715a4219e1ad0e8064eeb44a4edac24086ad412"
+    },
+    {
+      "path": "event-skeleton-lifecycle.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "event-skeleton-lifecycle.stdout.txt",
+      "bytes": 1317,
+      "sha256": "513a2363160ec790354cfd4df13986f84a84ecfd98ab6db5aa1bc42183538e12"
+    },
+    {
+      "path": "gate-enemy-engagement.json",
+      "bytes": 356,
+      "sha256": "998527c7148065e1b1d87e9cebc7f64a226747d2e7cbf2510c7505abeaf2cf8e"
+    },
+    {
+      "path": "gate-enemy-engagement.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "gate-enemy-engagement.stdout.txt",
+      "bytes": 2900,
+      "sha256": "b8f797b9f76b82ad55bfcea62ea9c3f8e1dce78aaade169c71a519daae87b768"
+    },
+    {
+      "path": "geometry-fullupdate.json",
+      "bytes": 351,
+      "sha256": "65e43ec714eaea8865da0b12a4037769208626462b46a10b4bc6b4f81ddd2ddd"
+    },
+    {
+      "path": "geometry-fullupdate.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "geometry-fullupdate.stdout.txt",
+      "bytes": 237,
+      "sha256": "b5ff9851078684944c7e6f6912a39710760ece4e62608736cbe6c8b17eb00635"
+    },
+    {
+      "path": "great-crate-gates.json",
+      "bytes": 347,
+      "sha256": "b8649624f27887b1b299717d87e5683f303559c7f23acf684cc5245c1ec7090f"
+    },
+    {
+      "path": "great-crate-gates.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "great-crate-gates.stdout.txt",
+      "bytes": 331,
+      "sha256": "9f9ddb22a8c74966908c810bebb466bdcdff42dd0ad3a9ac67acd2f41fc330b4"
+    },
+    {
+      "path": "great-crate-geometry.json",
+      "bytes": 353,
+      "sha256": "f3c7c11b7baf8fbc81fc03bbe088ef94d102c30c73706344fb373e981fac2a89"
+    },
+    {
+      "path": "great-crate-geometry.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "great-crate-geometry.stdout.txt",
+      "bytes": 3679,
+      "sha256": "f7458d274a97b353520c65f0ec2d3d5ae9ad63f019ccecdcf0bf5a3fce3ec859"
+    },
+    {
+      "path": "great-crate-hull-runtime.json",
+      "bytes": 361,
+      "sha256": "1ebbf9cf464f95e7f6daadaeb4adbbaadf5ac5d9f9c99ed4595013a520705950"
+    },
+    {
+      "path": "great-crate-hull-runtime.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "great-crate-hull-runtime.stdout.txt",
+      "bytes": 513,
+      "sha256": "a7e81c63ca047de60fbe8cdafa33e21177ba5e35c4c5f63b145e2821c49924a5"
+    },
+    {
+      "path": "great-crate-render.json",
+      "bytes": 349,
+      "sha256": "eaa46a39bd6ef4d0360c8f7daba528052202b2c62f1872bf030417ee426a9093"
+    },
+    {
+      "path": "great-crate-render.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "great-crate-render.stdout.txt",
+      "bytes": 826,
+      "sha256": "e966b30741e193db1a9280276e52ea775904dbacdeeb01815510914e1333926a"
+    },
+    {
+      "path": "neil-brute.json",
+      "bytes": 333,
+      "sha256": "95e9d237763079d52f771f2874efd3fecffbfb06a6367c5f656a901214788075"
+    },
+    {
+      "path": "neil-brute.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "neil-brute.stdout.txt",
+      "bytes": 664,
+      "sha256": "546a40fcee05fed3a35fc984fd5cf3fd32d8eda69879ea027f755bff5d3ad54e"
+    },
+    {
+      "path": "original-source-negative-control.json",
+      "bytes": 405,
+      "sha256": "144adf7fb5eff4606be4c72fa70936a133ee7a31bd055fb634ec842fbe98bb60"
+    },
+    {
+      "path": "original-source-negative-control.stderr.txt",
+      "bytes": 278,
+      "sha256": "e951bfbbdc562a6695ddc3cd4ebe0cc668c7fa4e6aeedbf41a8720341d00680e"
+    },
+    {
+      "path": "original-source-negative-control.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "progression-stock-props.json",
+      "bytes": 358,
+      "sha256": "02dd709e272323007006c2299d57948a0823db5efffdf6fccd848c442d2d39b7"
+    },
+    {
+      "path": "progression-stock-props.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "progression-stock-props.stdout.txt",
+      "bytes": 513,
+      "sha256": "a1448099f9663dd8d1cba7904e6d3e90e8843a9c815466acb43bca3cfbd91f53"
+    },
+    {
+      "path": "receipt.json",
+      "bytes": 6314,
+      "sha256": "b308257d9c553b25db0216a39884868763d1bd693d37ec02aea545e4bacbf88b"
+    },
+    {
+      "path": "run-targeted.py",
+      "bytes": 4370,
+      "sha256": "6a8052416906f999fb0c8341c394384c6004745c5f3dd78a2c2ed51fddeabfc8"
+    },
+    {
+      "path": "source-manifest-before.json",
+      "bytes": 130493,
+      "sha256": "4db7c0360bdd749dd0b14e6619d2c2767f117a9cf8b7043f82f7a86f3352f676"
+    },
+    {
+      "path": "source-manifest.json",
+      "bytes": 324,
+      "sha256": "1671f5d62f3e75d104c74626e097e53c78904a45edb201a92680bffade1d7230"
+    },
+    {
+      "path": "source-manifest.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-manifest.stdout.txt",
+      "bytes": 212,
+      "sha256": "712c5e0fbcffd616d87d9159bc1a728ebaf8b34e74db58c05781116cf258e64a"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "BUG-011",
+  "severity": "Presentation: every cold gate uses its fallback instead of the configured stock blastdoor",
+  "reported_build": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9",
+  "implementation_base_commit": "63bac1f73fb32946fa0843fec03411edb08804af",
+  "source_of_expected_behavior": [
+    "Live GDD05 gate progression remains authoritative; no game-law change",
+    "Approved Great Crate C3 stock blast-door presentation retained in docs/validation/GREAT_CRATE_C3.md",
+    "Shared Geometry.GateModel plus existing client renderer selects models/props_lab/blastdoor001c.mdl"
+  ],
+  "environment": "Actual Valve Jupiter Steam Deck, Windowsx86 GMod/Proton10, gm_flatgrass, seed6102602, developer0/cheats0, Workshop disabled, automatic Lua refresh disabled",
+  "reproduction": [
+    "Start a cold native client/server on the reported build",
+    "Observe a real gate with camera-only diagnostic setup; client util.IsValidModel=false and mounted file.Exists=true",
+    "Create an explicit client model: constructor succeeds with correct model while client validation remainsfalse and gate remainsfallback",
+    "Precache the same model on the server; client validation becomestrue and same-camera gate renders the intended stock body"
+  ],
+  "actual": "Server gate initialization only SetModel()s its invisible hunter-cube blocker. The decorative blastdoor is never server-precached, so native client util.IsValidModel rejects it before ClientsideModel allocation. Each gate shows the separate textured/reinforced fallback.",
+  "cause": "Source client model validation depends on the server precache table, independently of mounted asset availability or a successful client constructor.",
+  "api_source": "https://wiki.facepunch.com/gmod/util.IsValidModel",
+  "repair": "Precache the shared configured GateModel synchronously during ordinary server gate initialization, before gate replication. Client checks, fallback, physical blocker/collision, prompts, locks and event ownership stay intact.",
+  "fixed_source_sha256": "e4851567b9948e2723813157cd04e7bbed89809947b0ac5df30b4dd4c048ed4e",
+  "expected_fresh_native_crc32": "153563205",
+  "static_validation": "13/13 targeted checks;3 changed files parse under Lua5.4 and compile under LuaJIT; original63bac source fails the final semantic regression at the expected native acceptance boundary; checked source unchanged during gate.",
+  "independent_review": "Root independently reviewed the three-file production/test diff and ran the real gate fixture successfully before authorizing checkpoint integration.",
+  "status": "Implemented and statically validated; old-build native causality proven. Fresh installed cold repaired-build acceptance is pending.",
+  "evidence": [
+    "native-causality.json",
+    "cold-gate.png",
+    "after-client-constructor.png",
+    "after-server-precache.png",
+    "native-console-excerpt.raw.txt",
+    "native-console-excerpt.txt",
+    "static-receipt.json",
+    "static-archive.json",
+    "static-regression.tar.xz"
+  ],
+  "next_finite_native_gate": "Fully quit/install/restart the checkpoint; verify loaded build and separate lod_gate/init.lua CRC153563205. Before any server precache diagnostic, client IsValidModel must be true and an actual visible cold gate must draw stock body without fallback. Follow with ordinary keycard/Use/open/closed collision checks as part of pending campaign coverage.",
+  "limits": [
+    "Camera-only causality fixture proves appearance/cache behavior, not ordinary traversal, collision, progression, multiplayer or full campaign acceptance.",
+    "The existing114 population source fingerprint omits this entity file; do not use that count alone to certify the repair.",
+    "No new clean playtest pass is claimed; clean streak remains0."
+  ]
+}

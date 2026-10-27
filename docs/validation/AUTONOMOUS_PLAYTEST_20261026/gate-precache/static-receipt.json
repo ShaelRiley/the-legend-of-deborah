@@ -1,0 +1,187 @@
+{
+  "kind": "BUG011 targeted static gate; not native acceptance",
+  "base_commit": "63bac1f73fb32946fa0843fec03411edb08804af",
+  "tests": [
+    {
+      "name": "great-crate-gates",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_gates.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.092,
+      "stdout_sha256": "9f9ddb22a8c74966908c810bebb466bdcdff42dd0ad3a9ac67acd2f41fc330b4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "great-crate-hull-runtime",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_hull_runtime.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.589,
+      "stdout_sha256": "a7e81c63ca047de60fbe8cdafa33e21177ba5e35c4c5f63b145e2821c49924a5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "great-crate-geometry",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_geometry.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.942,
+      "stdout_sha256": "f7458d274a97b353520c65f0ec2d3d5ae9ad63f019ccecdcf0bf5a3fce3ec859",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "great-crate-render",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_great_crate_render.lua"
+      ],
+      "returncode": 0,
+      "seconds": 6.522,
+      "stdout_sha256": "e966b30741e193db1a9280276e52ea775904dbacdeeb01815510914e1333926a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "progression-stock-props",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_progression_stock_props.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.09,
+      "stdout_sha256": "a1448099f9663dd8d1cba7904e6d3e90e8843a9c815466acb43bca3cfbd91f53",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "gate-enemy-engagement",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_gate_enemy_engagement.lua"
+      ],
+      "returncode": 0,
+      "seconds": 12.954,
+      "stdout_sha256": "b8f797b9f76b82ad55bfcea62ea9c3f8e1dce78aaade169c71a519daae87b768",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "geometry-fullupdate",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_geometry_fullupdate.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.071,
+      "stdout_sha256": "b5ff9851078684944c7e6f6912a39710760ece4e62608736cbe6c8b17eb00635",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "neil-brute",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "tools/test_neil_brute.lua"
+      ],
+      "returncode": 0,
+      "seconds": 2.575,
+      "stdout_sha256": "546a40fcee05fed3a35fc984fd5cf3fd32d8eda69879ea027f755bff5d3ad54e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "event-quiz-generation",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_quiz_generation.lua"
+      ],
+      "returncode": 0,
+      "seconds": 14.253,
+      "stdout_sha256": "2259fadf06f1b753863da8c586482292154f70631a6c4364b20ca7e6507619f1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "event-skeleton-blockade",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_skeleton_blockade.lua"
+      ],
+      "returncode": 0,
+      "seconds": 96.06,
+      "stdout_sha256": "701b2088dba21c5c89e8ff53c8cc120c58517a9240ff5e33bb472f26c2efce4e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "event-skeleton-lifecycle",
+      "command": [
+        "python3",
+        "tools/test_crypto_sqlite.py",
+        "tools/test_event_skeleton_lifecycle.lua"
+      ],
+      "returncode": 0,
+      "seconds": 3.451,
+      "stdout_sha256": "513a2363160ec790354cfd4df13986f84a84ecfd98ab6db5aa1bc42183538e12",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "source-manifest",
+      "command": [
+        "python3",
+        "tools/test_dev_population_manifest.py"
+      ],
+      "returncode": 0,
+      "seconds": 0.617,
+      "stdout_sha256": "712c5e0fbcffd616d87d9159bc1a728ebaf8b34e74db58c05781116cf258e64a",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "changed-lua-syntax",
+      "command": [
+        "python3",
+        "tools/run_lua54.py",
+        "--syntax",
+        "gamemodes/legend_of_deborah/entities/entities/lod_gate/init.lua",
+        "tools/test_great_crate_gates.lua",
+        "tools/dungeon_event_fixture.lua"
+      ],
+      "returncode": 0,
+      "seconds": 0.068,
+      "stdout_sha256": "69eb263d8cf797f0175ec4c98484bcd18612628501dc062b5e763e0862fd155e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "passed": 13,
+  "total": 13,
+  "original_source_negative_control": {
+    "name": "original-source-negative-control",
+    "command": [
+      "python3",
+      "/home/deck/Downloads/the-legend-of-deborah/tools/run_lua54.py",
+      "tools/test_great_crate_gates.lua"
+    ],
+    "returncode": 1,
+    "seconds": 0.066,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e951bfbbdc562a6695ddc3cd4ebe0cc668c7fa4e6aeedbf41a8720341d00680e"
+  },
+  "negative_control_failed_as_expected": true,
+  "luajit_compile_only": [
+    "gamemodes/legend_of_deborah/entities/entities/lod_gate/init.lua",
+    "tools/test_great_crate_gates.lua",
+    "tools/dungeon_event_fixture.lua"
+  ],
+  "source_unchanged": true,
+  "changed_during_gate": [],
+  "native_gmod_accepted": false
+}
