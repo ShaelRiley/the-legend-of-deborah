@@ -34,7 +34,8 @@ d.pos=Vector(36,0,70);d.velocity=Vector(500,0,0)
 local oldTrace=util.TraceHull
 util.TraceHull=function(q)
     local tr=oldTrace(q)
-    if q.endpos.z<q.start.z then tr.HitPos=Vector(30,0,74);tr.Fraction=.5 end
+    -- Inject the body impact without overwriting separate floor-support sweeps.
+    if q.endpos.z<q.start.z and q.maxs.z-q.mins.z>2 then tr.HitPos=Vector(30,0,74);tr.Fraction=.5 end
     return tr
 end
 assert(finish(p,d)==nil,'FinishMove must not suppress native state application')
@@ -48,7 +49,7 @@ for _,kind in ipairs({'missing','below','side','allsolid','startsolid'}) do
     d=movement(p.position,Vector(25,0,-200));setup(p,d);d.pos=Vector(0,0,74)
     util.TraceHull=function(q)
         local tr=oldTrace(q)
-        if q.endpos.z<q.start.z then
+        if q.endpos.z<q.start.z and q.maxs.z-q.mins.z>2 then
             tr.HitPos=kind=='missing' and nil or Vector(0,0,kind=='below' and 68 or 74)
             if kind=='missing' then tr.HitPos=nil end
             if kind=='side' then tr.HitNormal=Vector(1,0,0) end
@@ -63,7 +64,8 @@ env.reset();setup(p,movement(p.position));p.airborne=true;p.ground=NULL;p.positi
 d=movement(p.position,Vector(25,0,-200));setup(p,d);d.pos=Vector(0,0,74)
 util.TraceHull=function(q)
     local tr=oldTrace(q)
-    if q.endpos.z>q.start.z then tr.StartSolid=true else tr.HitPos=Vector(0,0,74) end
+    if q.endpos.z>q.start.z then tr.StartSolid=true
+    elseif q.endpos.z<q.start.z and q.maxs.z-q.mins.z>2 then tr.HitPos=Vector(0,0,74) end
     return tr
 end
 finish(p,d);assert(enemy.hp==100 and E.StompFlights[p].spent and d.velocity.z<0,'Unsafe ceiling: no damage, no bounce, consumed flight')

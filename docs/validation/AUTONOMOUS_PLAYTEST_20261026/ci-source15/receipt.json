@@ -1,0 +1,92 @@
+{
+  "utc": "2026-10-27T20:14:35.407452+00:00",
+  "kind": "fixture-only CI regression repair; no gameplay source change",
+  "baseline_commit": "4048e7ac5a015939982cfbeaf6f295bd18cfa4c5",
+  "failed_ci_commit": "74415d1a3f135052de467286a08ebc1907b1608a",
+  "failed_ci": {
+    "workflow": "Validate complete frozen source matrix",
+    "run_id": 40570280858,
+    "run_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40570280858",
+    "job_id": 122422335898,
+    "job_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40570280858/job/122422335898",
+    "total": 336,
+    "passed": 335,
+    "source_changed": 0,
+    "failed_suite": "Stomp Movement Contact",
+    "failed_assertion": "A first upward-normal top contact must stomp even after a small native post-contact slide",
+    "file": "tools/test_stomp_contact.lua",
+    "line": 41,
+    "native_boundaries_and_syntax_step": "success",
+    "post-matrix-receipt-verification": "skipped after failure",
+    "artifact_id": 12763954420,
+    "artifact_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40570280858/artifacts/12763954420",
+    "artifact_sha256": "5905bc63136d47b12931c6ccd9f442f707f02437421599646f6e4ead2c7760f8",
+    "artifact_bytes": 668457,
+    "zip_materialized_locally": false,
+    "materialization_failure": "Reusable connector file reference download returned HTTP403; full decoded job log archived instead; no temporary URL retained"
+  },
+  "cause": "The existing Stomp Contact fixture overwrote all downward hull HitPos values with enemy contact height74, including the newly correct1-unit floor-support sweeps, so bounce support falsely failed.",
+  "repair": "Restrict all3 contact geometry overrides to downward body sweeps with vertical extent>2. Floor-support traces retain their independent floor results. Every existing assertion remains.",
+  "changed_runtime_files": [],
+  "production_safe_teleport_sha256": "a615b9ada3d78710e56d8c9b5f451278542c4977bea6cd0eaa7f650301f5dc3e",
+  "original_fixture_sha256": "7cad02ec6c0c571814f693eabe5e82af47ae63e259610f3ee5b659de8714c6d2",
+  "repaired_fixture_sha256": "f6d2a658c3927a998ed9f84281ed3182b9fcbc3494c7e0d8cb48816ad83731c2",
+  "comparisons": [
+    {
+      "case": "source14-original-fixture",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "stdout_sha256": "de5a277a9d813297ab2f0551e3ddab0b29b2341432aefb2097f1d8146d686b41",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "PASS": true
+    },
+    {
+      "case": "source15-original-fixture",
+      "returncode": 1,
+      "expected_returncode": 1,
+      "stdout_sha256": "68ca4bd5b295cca37b1b5e8ba1a7647bd7c3c835369f2101f82c18d3dc4a0e44",
+      "stderr_sha256": "764409a27049a2926ebeb8f312434402ec9e575b764da7a548bce5e0ad01422d",
+      "PASS": true
+    },
+    {
+      "case": "source14-repaired-fixture",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "stdout_sha256": "de5a277a9d813297ab2f0551e3ddab0b29b2341432aefb2097f1d8146d686b41",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "PASS": true
+    },
+    {
+      "case": "source15-repaired-fixture",
+      "returncode": 0,
+      "expected_returncode": 0,
+      "stdout_sha256": "de5a277a9d813297ab2f0551e3ddab0b29b2341432aefb2097f1d8146d686b41",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "PASS": true
+    }
+  ],
+  "syntax": "Lua5.4 parse passed for changed fixture",
+  "meaningful_negative": "Unmodified source15 fixture reproduces exact failed CI assertion; source14 original and repaired fixtures both pass; repaired source15 passes.",
+  "decoded_job_log_sha256": "965cfaba3035a46e22e3baff2de254c1877c72e01d554c3838e1fc5ebfa4b3fd",
+  "decoded_job_log_bytes": 84585,
+  "evidence_archive_sha256": "afc605db9628bfbae30896b86a2e400cfc197ad157e59214bb70f7e9fbe14d04",
+  "archived_files": {
+    "job-122422335898.log": "965cfaba3035a46e22e3baff2de254c1877c72e01d554c3838e1fc5ebfa4b3fd",
+    "comparison.json": "29ec30eab182b0d2fb6a24ad8a63cdb33fec976c1f5eb9d048bfe30f7ef4f4a2",
+    "source14-sv_safe_teleport.lua": "7981b5200ebc1e8f7f7438671733b1c2d58281a55dea7c108dbc76d9c2dd5701",
+    "source14-test_heavy_plumber.lua": "810b06411402c4caa98c58308f8ebccf4efd1a9c946ce5e832568e67201e66de",
+    "source14-test_stomp_contact.lua": "7cad02ec6c0c571814f693eabe5e82af47ae63e259610f3ee5b659de8714c6d2",
+    "baseline-original.lua": "4c4ec0287fc10262a717b7c4e69e6b2ea5e5e0c4cf016cfa02cb0d9134579ffe",
+    "baseline-repaired.lua": "8b289ae657b8b9863bf13729b479c9b6e2c96b247ef59cee5bf932a92297f432",
+    "source14-original-fixture.stdout.txt": "de5a277a9d813297ab2f0551e3ddab0b29b2341432aefb2097f1d8146d686b41",
+    "source14-original-fixture.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source15-original-fixture.stdout.txt": "68ca4bd5b295cca37b1b5e8ba1a7647bd7c3c835369f2101f82c18d3dc4a0e44",
+    "source15-original-fixture.stderr.txt": "764409a27049a2926ebeb8f312434402ec9e575b764da7a548bce5e0ad01422d",
+    "source14-repaired-fixture.stdout.txt": "de5a277a9d813297ab2f0551e3ddab0b29b2341432aefb2097f1d8146d686b41",
+    "source14-repaired-fixture.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source15-repaired-fixture.stdout.txt": "de5a277a9d813297ab2f0551e3ddab0b29b2341432aefb2097f1d8146d686b41",
+    "source15-repaired-fixture.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "complete_repaired_candidate_CI": "pending after fixture checkpoint push; no all-green claim",
+  "qualification": "Headless movement-hook fixture evidence only. No native gameplay, sound, cooperative, normal-clock or final clean-pass acceptance inferred."
+}
