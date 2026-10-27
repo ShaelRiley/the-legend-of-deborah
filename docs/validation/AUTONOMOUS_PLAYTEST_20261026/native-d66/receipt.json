@@ -1,0 +1,162 @@
+{
+  "kind": "Finite actual native visual/input regression evidence; no full campaign pass",
+  "recorded_utc": "2026-10-27T16:22:44.154999+00:00",
+  "tested_commit": "d66a6503afa097410c8cec77933891cfe4d1f2ca",
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405 / amdgpu1002:163F",
+    "client": "Windowsx86 Garry's Mod / Proton10 / LuaJIT2.0.4 / engine2026.09.17",
+    "map": "gm_flatgrass",
+    "viewport": [
+      1280,
+      800
+    ],
+    "seed": 6102602,
+    "sv_cheats": 0,
+    "lod_developer_mode": 0,
+    "automatic_lua_refresh": "disabled",
+    "Workshop": "disabled",
+    "body_during_these_checks": "Staging, before first ordinary deployment; gate view uses a finite15s CalcView fixture only"
+  },
+  "startup_source": {
+    "campaign": 6102602,
+    "developerMode": false,
+    "source": {
+      "installLabel": "d66a6503afa097410c8cec77933891cfe4d1f2ca clean ",
+      "verified": true,
+      "checked": 114,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "reason": "built",
+    "layoutSeed": 1967490589
+  },
+  "native_crc32": {
+    "cl_equipment_inventory.lua": "2838551934",
+    "entities/lod_gate/init.lua": "153563205"
+  },
+  "entity_identity_limit": "The114-source population fingerprint does not include lod_gate/init.lua; its separate native CRC153563205 is required and retained.",
+  "console": {
+    "source": "Native garrysmod/console.log from this fresh session",
+    "cut": "Beginning through final PT_UI nil/nil closed-menu samples; later ordinary gameplay excluded",
+    "lines": 193,
+    "readable": "console-through-ui-probe.txt",
+    "readable_sha256": "dca86b055454ca9ccbb3b158bad4602e13a32b7dbc4a2805ef24fa60d337b37f",
+    "readable_normalization": "CRLF to LF only",
+    "exact_raw": "console-through-ui-probe.raw.xz",
+    "exact_raw_sha256": "ccd2f669465fc4760dcf6d5e65b4f9912fb2b27c813be94ca4a8a31f468bd912",
+    "uncompressed_raw_sha256": "7ec29e120a4d9343388c087f55549e37c6f124e5936e6c8f502a8f1767352248"
+  },
+  "screenshots": [
+    {
+      "file": "deborah-d66-wrapped-crowbar-tooltip.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793117267425130841-deborah-d66-wrapped-crowbar-tooltip.png",
+      "capture_ns": "1793117267425130841",
+      "bytes": 552302,
+      "sha256": "7d7f61bf28b289c2233373051fff92bed2ec8fb42668fc707cb73cb5b5c69201"
+    },
+    {
+      "file": "deborah-d66-pistol-tooltip-stowed.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793117670997904613-deborah-d66-pistol-tooltip-stowed.png",
+      "capture_ns": "1793117670997904613",
+      "bytes": 590421,
+      "sha256": "ee5350527affeddad0092f85e430d3d09c8cb564b0e24264b2acf37f590963db"
+    },
+    {
+      "file": "deborah-d66-equipment-hover-probe.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793117937504683571-deborah-d66-equipment-hover-probe.png",
+      "capture_ns": "1793117937504683571",
+      "bytes": 599263,
+      "sha256": "ccefb460f6bbaeaf952829b3d11e721b751d0c1097ff31d3abd7496db7e228a3"
+    },
+    {
+      "file": "deborah-d66-equipment-escape-probe.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793117943057821673-deborah-d66-equipment-escape-probe.png",
+      "capture_ns": "1793117943057821673",
+      "bytes": 2086012,
+      "sha256": "10b08dd2d7afa962ae83e5f23b91e69e0fd7b45e62f4810c69248c80e50ea38b"
+    },
+    {
+      "file": "deborah-d66-cold-gate-stock.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793117729094338258-deborah-d66-cold-gate-stock.png",
+      "capture_ns": "1793117729094338258",
+      "bytes": 1326801,
+      "sha256": "e6a8bc1dafb40fd4aa61ce81437f71a3836eb3d6e3fbab1e91a60cbf33f28810"
+    },
+    {
+      "file": "deborah-d66-select-pistol.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793117759135216292-deborah-d66-select-pistol.png",
+      "capture_ns": "1793117759135216292",
+      "bytes": 596369,
+      "sha256": "31f94b3664957c423bc71530dfc58e1b603884a0008c318ff29a1650449e4f01"
+    },
+    {
+      "file": "deborah-d66-pistol-world.png",
+      "original": ".build/autonomous-playtest-20261027/screenshots/1793117814865711296-deborah-d66-pistol-world.png",
+      "capture_ns": "1793117814865711296",
+      "bytes": 526696,
+      "sha256": "cbd3d707f17a22dc675ba15a82962d806e7b112696123fdda621bcff48b570af"
+    }
+  ],
+  "results": [
+    {
+      "id": "BUG-010",
+      "scenario": "Hover the ordinary Dockworker's Crackling Crowbar of Silence and Command, then Hermit's Earthly Pistol of Holding and Stumbling",
+      "result": "PASS finite native width gate: both complete displayed name/description/base-family tooltips wrap inside1280x800; no arbitrary-length or other-viewport claim",
+      "evidence": [
+        "deborah-d66-wrapped-crowbar-tooltip.png",
+        "deborah-d66-pistol-tooltip-stowed.png"
+      ]
+    },
+    {
+      "id": "BUG-010-adjacent",
+      "scenario": "Ordinary select+occupied weapon-slot clicks switch Pistol to Crowbar (Pistol stored), then settled selection/placement switches back to Pistol (Crowbar stored)",
+      "result": "PASS bounded replacement roundtrip: active Pistol and stored Crowbar render with EQUIPMENT UPDATED; two ordinary gear records retained. This is not an explicit STOW WEAPON button or broader inventory/economy acceptance.",
+      "evidence": [
+        "deborah-d66-pistol-tooltip-stowed.png",
+        "deborah-d66-equipment-hover-probe.png",
+        "console-through-ui-probe.txt"
+      ]
+    },
+    {
+      "id": "BUG-009-adjacent",
+      "scenario": "Timed read-only VGUI focus/hover probe plus settled mouse target placement, then held physical/UInput Escape0.4s",
+      "result": "PASS finite adjacent control: actual hoveredDButton observed under current equipment/frame ownership; later ActivePage/ActivePopup/focus become nil and rendered world returns with Pistol.",
+      "evidence": [
+        "deborah-d66-equipment-hover-probe.png",
+        "deborah-d66-equipment-escape-probe.png",
+        "console-through-ui-probe.txt"
+      ]
+    },
+    {
+      "id": "BUG-011",
+      "scenario": "Fresh cold d66 startup, before any diagnostic server precache; native client model validation and stock-body stats, then15s camera-only look at an actual gate",
+      "result": "PASS finite cold appearance/cache gate: IsValidModel=true; renderer loaded=true,stockBodies3,fallbackBodies0; actual gate visibly uses intended stock blastdoor/redindicator. Physical Hero remains staging; this does not prove traversal/collision/key/Use/progression.",
+      "evidence": [
+        "deborah-d66-cold-gate-stock.png",
+        "console-through-ui-probe.txt"
+      ]
+    }
+  ],
+  "input_uncertainty": {
+    "retained": [
+      "deborah-d66-select-pistol.png",
+      "deborah-d66-pistol-world.png"
+    ],
+    "reported": "Earlier no-settle mouse placement did not visibly switch, and an XTest Escape opened stock pause over Equipment. Those observations are retained. A timed actual-hover probe with1.1s settling and held physical/UInput Escape succeeded; no production change was made.",
+    "classification": "Input delivery/focus uncertainty remains; no confirmed game-code defect or repair is assigned. These attempts are not clean-pass evidence."
+  },
+  "limits": [
+    "No newly short or single-line tooltip was natively tested; static short-text regression remains supplementary",
+    "The6600 generated strings and native samples do not prove absence of the1023-byte DLabel cap or arbitrary vertical overflow",
+    "Gate camera fixture leaves the body in staging; the Hermit interaction prompt seen over the gate is an expected camera-only fixture artifact",
+    "No ordinary gate reach/Use/open/closed collision, cooperative sync, full inventory, authored campaign, audio, hardware-controller or performance acceptance",
+    "Whole-campaign clean-pass streak remains0; currentCI adapter/fingerprint checks are recorded separately from these finite native observations"
+  ],
+  "clean_pass_streak": 0,
+  "main_at_recording": "3d33febe7fac68d3446a3ea689de386a6a3eb6f7",
+  "production_tree_equivalence": {
+    "gamemodes_tested": "2a5c528d58d66e45b65559e1a9607d2a4daa2541",
+    "gamemodes_main": "2a5c528d58d66e45b65559e1a9607d2a4daa2541",
+    "note": "Successor3d33 changes the CI fixture and evidence only; it does not change the native-tested game implementation."
+  }
+}

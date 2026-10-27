@@ -24,7 +24,7 @@
   "actual": "The preserved screenshot shows the ordinary Crowbar selected and equipped; its separate details panel is readable, while the hover tooltip is one excessively wide horizontal strip cut by the client viewport.",
   "cause": "Native DTooltip initializes the Default font and sizes its label from explicit-line GetContentSize plus8 horizontal/+6 vertical pixels. Position clamping cannot fit content that exceeds the viewport width.",
   "repair": "Measure tooltip text in actual native Default font and insert line breaks once at tile creation. Width is min(480,screen width minus32), with UTF-8 codepoint splitting for an overlong token. Preserve every authored byte, whitespace and existing newline. No inventory, economy, weapon or server behavior changes.",
-  "status": "Implemented and statically validated; fresh exact-build native hover recheck pending. Clean gameplay pass streak remains0.",
+  "status": "Finite native width acceptance passed on fresh d66 for ordinary Crowbar/Pistol tooltips at1280x800; bounded weapon replacement roundtrip and held-Escape checks passed. Short native tooltip and broad inventory coverage remain untested; clean streak0.",
   "static": {
     "positive_checks_passed": 10,
     "source_unchanged": true,
@@ -69,13 +69,12 @@
   "limits": [
     "The6600 generated-item sample with max894 raw bytes is bounded evidence, not an exhaustive generator proof",
     "Wrapping repairs width; it does not remove the native DLabel1023-byte text cap or provide a scroll container for arbitrarily long/vertically excessive text",
-    "Static Default-font doubles cannot establish native glyph metrics, hover timing, viewport placement, input feel or co-op acceptance; original ordinary Crowbar must be rechecked in the real client",
+    "Native Default-font glyph/hover/layout behavior now has two real1280x800 samples. Other viewports, genuinely short text, arbitrary generated strings, hardware controllers and co-op remain outside this finite result.",
     "Existing full336-suite gate belongs to f604. This candidate has the focused10-positive-check gate and changed-file compile checks, not a newly claimed full integration run"
   ],
   "next_native_gate": [
-    "Fully quit/install/restart exact repair candidate; verify loaded cl_equipment_inventory CRC2838551934",
-    "Open ordinary O Equipment and hover Crowbar/Pistol tiles at1280x800; name and complete relevant properties wrap inside the viewport",
-    "Confirm short tooltip remains readable and ordinary select/equip/stow/close controls work without unintended ammo or ownership mutation"
+    "Retain the finite source-matched native width/adjacent replacement evidence in final-candidate review",
+    "Complete remaining relevant viewport/short-tooltip and inventory lifecycle coverage without treating sampled width success as whole-inventory acceptance"
   ],
   "evidence": {
     "native_before": "before-crowbar-tooltip.png",
@@ -83,7 +82,8 @@
     "archive": "static-evidence.tar.xz",
     "archive_sha256": "bb4cec18217c6c2eeba68261516a928b2bcad472362c5258481d81aad730286f",
     "archive_bytes": 19644,
-    "native_source_identity": "before-source-identity.json"
+    "native_source_identity": "before-source-identity.json",
+    "native_recheck": "../native-d66/receipt.json"
   },
   "candidate_source": {
     "gamemodes/legend_of_deborah/gamemode/lod/cl_equipment_inventory.lua": {
@@ -94,5 +94,25 @@
       "sha256": "cc77452a208bb3cab8d158bc83f80916f1b47054617029aeaf76e44d7588a4c3",
       "native_crc32": "433861238"
     }
-  }
+  },
+  "native_acceptance": {
+    "tested_commit": "d66a6503afa097410c8cec77933891cfe4d1f2ca",
+    "evidence": "../native-d66/receipt.json",
+    "inventory_crc32": "2838551934",
+    "passed": [
+      "Full displayed ordinary Crowbar and Pistol tooltip name/properties/base-family fit within1280x800",
+      "Ordinary occupied-slot replacement Pistol\u2192Crowbar\u2192Pistol retains two gear records and returns to rendered Pistol",
+      "Settled actual-hover probe and held physical/UInput Escape close Equipment to world"
+    ],
+    "qualifications": [
+      "Both native samples contain long generated text; genuinely short tooltip native coverage is not claimed",
+      "Roundtrip is replacement with the prior weapon automatically stored; explicit STOW WEAPON button and full inventory/economy lifecycle are not accepted",
+      "Earlier no-settle mouse and XTest Escape anomalies are preserved as input-delivery/focus uncertainty; no game-code defect was confirmed or patched"
+    ]
+  },
+  "defined_native_gate": [
+    "Fully quit/install/restart exact repair candidate; verify loaded cl_equipment_inventory CRC2838551934",
+    "Open ordinary O Equipment and hover Crowbar/Pistol tiles at1280x800; name and complete relevant properties wrap inside the viewport",
+    "Confirm short tooltip remains readable and ordinary select/equip/stow/close controls work without unintended ammo or ownership mutation"
+  ]
 }

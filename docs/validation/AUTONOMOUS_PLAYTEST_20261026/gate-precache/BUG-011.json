@@ -23,7 +23,7 @@
   "expected_fresh_native_crc32": "153563205",
   "static_validation": "13/13 targeted checks;3 changed files parse under Lua5.4 and compile under LuaJIT; original63bac source fails the final semantic regression at the expected native acceptance boundary; checked source unchanged during gate.",
   "independent_review": "Root independently reviewed the three-file production/test diff and ran the real gate fixture successfully before authorizing checkpoint integration.",
-  "status": "Implemented and statically validated; old-build native causality proven. Fresh installed cold repaired-build acceptance is pending.",
+  "status": "Fresh d66 finite cold native appearance/cache gate passed before explicit server precache diagnostics: validationtrue,stockBodies3,fallbackBodies0 and actual stock blastdoor visible. Ordinary gate reach/Use/open/closed collision, multiplayer and campaign acceptance remain pending; clean streak0.",
   "evidence": [
     "native-causality.json",
     "cold-gate.png",
@@ -33,12 +33,30 @@
     "native-console-excerpt.txt",
     "static-receipt.json",
     "static-archive.json",
-    "static-regression.tar.xz"
+    "static-regression.tar.xz",
+    "../native-d66/receipt.json"
   ],
-  "next_finite_native_gate": "Fully quit/install/restart the checkpoint; verify loaded build and separate lod_gate/init.lua CRC153563205. Before any server precache diagnostic, client IsValidModel must be true and an actual visible cold gate must draw stock body without fallback. Follow with ordinary keycard/Use/open/closed collision checks as part of pending campaign coverage.",
+  "next_finite_native_gate": "Retain cold appearance proof and separately complete ordinary keycard/gate Use/open/closed collision and cooperative synchronization during campaign coverage.",
   "limits": [
     "Camera-only causality fixture proves appearance/cache behavior, not ordinary traversal, collision, progression, multiplayer or full campaign acceptance.",
     "The existing114 population source fingerprint omits this entity file; do not use that count alone to certify the repair.",
     "No new clean playtest pass is claimed; clean streak remains0."
-  ]
+  ],
+  "native_acceptance": {
+    "tested_commit": "d66a6503afa097410c8cec77933891cfe4d1f2ca",
+    "evidence": "../native-d66/receipt.json",
+    "gate_init_crc32": "153563205",
+    "client_validation": true,
+    "reported_renderer": {
+      "loaded": true,
+      "stockBodies": 3,
+      "fallbackBodies": 0,
+      "model": "models/props_lab/blastdoor001c.mdl"
+    },
+    "visual": "Actual gate displays intended stock blastdoor and red indicator during finite15s camera-only fixture",
+    "cold_boundary": "Fully restarted installed client/server; no explicit diagnostic server precache was used on this repaired-build session",
+    "coverage_limit": "Physical Hero stayed in staging. The Hermit prompt over the gate is expected from the diagnostic camera and does not establish ordinary progression or Use range."
+  },
+  "defined_next_finite_native_gate": "Fully quit/install/restart the checkpoint; verify loaded build and separate lod_gate/init.lua CRC153563205. Before any server precache diagnostic, client IsValidModel must be true and an actual visible cold gate must draw stock body without fallback. Follow with ordinary keycard/Use/open/closed collision checks as part of pending campaign coverage.",
+  "integration_limit": "D66 fullCI initially passed335/336; the missing native-model adapter boundary in the overhead-walls fixture is preserved and repaired in fixture-only successor3d33febe. Full successorCI remains pending at this record; source-targeted13-check proof is not relabelled a fullCI pass."
 }
