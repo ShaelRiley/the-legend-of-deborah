@@ -1,0 +1,54 @@
+{
+  "source": "../../floor-support/native-repaired/console.log.xz",
+  "scope": "Second20-second guarded real-source fixture startup/admission/actual burst only; no later cleanup, death or replacement-life acceptance inferred.",
+  "markers": [
+    {
+      "line": 379,
+      "text": "> RunString(file.Read(\"legend_of_deborah/rogue_real_attack20_source.txt\",\"DATA\"),\"RealRogueAttack20\")..."
+    },
+    {
+      "line": 380,
+      "text": "PT12_20_START\t1970.4275871\t1"
+    },
+    {
+      "line": 381,
+      "text": "PT12_PRE\t1\t1\ttrue\tfalse\tfalse\tfalse\t1550561962\ttrue"
+    },
+    {
+      "line": 382,
+      "text": "PT12_SOURCE20\tNextBot [990][lod_hostile]"
+    },
+    {
+      "line": 383,
+      "text": "PT12_HERO\ttrue\ttrue"
+    },
+    {
+      "line": 384,
+      "text": "PT12_BIND\ttrue"
+    },
+    {
+      "line": 385,
+      "text": "PT12_CLASS\t990\tskeleton:91352027\trogue\ttrue"
+    },
+    {
+      "line": 386,
+      "text": "PT12_D\t-1920.000000 544.000000 -11885.937500"
+    },
+    {
+      "line": 387,
+      "text": "PT12_MOVED"
+    },
+    {
+      "line": 388,
+      "text": "PT12_GATES\ttrue"
+    },
+    {
+      "line": 389,
+      "text": "PT12_REAR\t-0.99999994039536"
+    },
+    {
+      "line": 390,
+      "text": "PT12_BURST\tfalse\ttrue"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+if util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua","GAME") or "")~="3252930173" then return end
+print("PT12_20_START",SysTime(),LOD.RunManager.State.CampaignEpoch)
+local s=LOD.RunManager.State local v=GetConVar("lod_developer_mode") print("PT12_PRE",#player.GetHumans(),v and v:GetInt(),s.BuildReady,s.Failed,s.LevelCleared,s.SimulationFrozen,s.LevelSeed,not(s.Graph==nil))
+P12={p=player.GetHumans()[1],R=LOD.RPGAbilityRules,T=LOD.SafeTeleport,E=LOD.EntrySafety,S=LOD.RunManager.State}
+local f=P12 f.eligible=function(e) local q=f.R:ProgressionState(e) return q and q.classId=="rogue" and e.LODArchetypeId=="soldier" and e.LODActivated and not e.LODDead and e:Health()>0 end
+P12.e=Entity(990) if not P12.eligible(P12.e) then P12.e=nil end print("PT12_SOURCE20",P12.e)
+local f=P12 if IsValid(f.p) then f.b=f.T:Bind(f.p) f.home=f.p:GetPos() f.hc=f.T:CellAt(f.S.Graph,f.home) end print("PT12_HERO",not(f.b==nil),not(f.hc==nil))
+local f=P12 if f.b and IsValid(f.e) then f.l=LOD.EnemyRoster:CaptureLife(f.e,f.p) f.q=f.l and f.l.sourceState end print("PT12_BIND",not(f.l==nil))
+local f=P12 f.live=function() return P12==f and f.q and f.q.derivedStats and f.T:Matches(f.b) and LOD.EnemyRoster:ValidLife(f.l) and f.q.classId=="rogue" and f.q.derivedStats.rogueBackstabEnabled==true end
+local f=P12 if f.live() then local q=f.l.sourceState print("PT12_CLASS",f.e:EntIndex(),q.actorId,q.classId,q.derivedStats.rogueBackstabEnabled) end
+P12.O={Vector(160,0,0),Vector(-160,0,0),Vector(0,160,0),Vector(0,-160,0)}
+local f=P12 f.locate=function() f.d=nil f.c=f.T:CellAt(f.S.Graph,f.e:GetPos()) if f.c then f.v=LOD.MazeNavigator:CellCenter(f.c) end end
+local f=P12 f.land=function(v) local d=f.T:Landing(f.p,f.S.Graph,f.c,v) return d and d:DistToSqr(f.e:GetPos())>16384 and not f.E:ProtectedPosition(d) and d end
+local f=P12 f.pick=function() f.locate() if not f.c then return end for _,v in ipairs(f.O) do local d=f.land(f.v+v) if d then f.d=d break end end end
+local f=P12 f.dot=function() local v=f.e:GetPos()-f.p:GetPos() v.z=0 local a=f.p:EyeAngles():Forward() a.z=0 return v:GetNormalized():Dot(a:GetNormalized()) end
+local f=P12 f.ready=function() return f.live() and f.E:Claim(f.e)==f.p and f.E:CombatAllowed(f.p,f.e) and LOD.RPGStatusElements:CanInitiateAttack(f.e) and f.dot()<=-.5 end
+local f=P12 f.fire=function() local ok=f.ready() print("PT12_GATES",ok) if ok then print("PT12_REAR",f.dot()) print("PT12_BURST",f.e:_BeginSoldierBurst(f.p),not(f.e.LODSoldierBurst==nil)) end end
+local f=P12 f.back=function() if not(P12==f) then return end if f.T:Matches(f.b) then print("PT12_RETURN",f.T:MoveBound(f.b,f.home,nil,f.hc)) end P12=nil end
+local f=P12 if f.live() then f.pick() print("PT12_D",f.d) if f.d and f.T:MoveBound(f.b,f.d,f.live,f.c) then f.p:SetEyeAngles((f.p:GetPos()-f.e:GetPos()):Angle()) timer.Simple(.3,f.fire) timer.Simple(20,f.back) print("PT12_MOVED") end end

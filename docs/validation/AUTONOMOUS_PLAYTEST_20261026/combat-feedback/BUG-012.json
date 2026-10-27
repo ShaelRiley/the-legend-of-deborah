@@ -6,7 +6,7 @@
   "baseline_source_commit": "0880fb9d814998f5432143dcf443e4aac29b1959",
   "environment": {
     "hardware": "Actual Valve Jupiter Steam Deck; AMD Custom APU0405; amdgpu1002:163F",
-    "client": "Windows x86 Garry’s Mod under Proton10",
+    "client": "Windows x86 Garry\u2019s Mod under Proton10",
     "map": "gm_flatgrass",
     "seed": 6102602,
     "viewport": [
@@ -34,10 +34,11 @@
     "archive_manifest": "archive-manifest.json",
     "native_history": "archive:native-history-excerpt.json",
     "normal_logger_note": "Normal client die_logger_history.json is active in production and supplied11 selected fresh Henry records. Developer-only rpg_session/summary files were stale and are not used as current mechanics proof.",
-    "native_source_identity": "../native-d66/receipt.json"
+    "native_source_identity": "../native-d66/receipt.json",
+    "native_repaired": "native-source15-backstab/receipt.json"
   },
-  "status": "Implemented and statically validated on verified main; repaired candidate native gate remains pending; clean streak0",
-  "native_candidate_accepted": false,
+  "status": "Implemented/statically validated and independently reviewed. Finite native AI Rogue-to-Hero attacker-prefix HUD plus matching history gate passed on actual Steam Deck source74415; wider combat/UI/cooperative acceptance remains separate; clean streak0.",
+  "native_candidate_accepted": true,
   "clean_pass_streak": 0,
   "id": "BUG-012",
   "severity": "Presentation: Backstab notice credits its receiving Hero instead of the actual attacking enemy; no damage-rule defect reproduced",
@@ -45,22 +46,22 @@
     "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
     "gdd_revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
     "navigation": [
-      "00 — AI ENTRYPOINT",
-      "01 — AI RULE INDEX",
-      "03 — COMBAT, MAGIC & STATUS: LOD-CBT-006/007",
-      "06 — MULTIPLAYER, LIFECYCLE & UI: LOD-UI-003/004/005"
+      "00 \u2014 AI ENTRYPOINT",
+      "01 \u2014 AI RULE INDEX",
+      "03 \u2014 COMBAT, MAGIC & STATUS: LOD-CBT-006/007",
+      "06 \u2014 MULTIPLAYER, LIFECYCLE & UI: LOD-UI-003/004/005"
     ],
-    "exact_rules": "03 normalized LOD-CBT-007 at79368–80286 owns Rogue attacker/rear qualification, +one multiple and CON bypass. 06 owns canonical identity/wording and shared HUD/history records. No HUMAN fallback or GDD change was needed."
+    "exact_rules": "03 normalized LOD-CBT-007 at79368\u201380286 owns Rogue attacker/rear qualification, +one multiple and CON bypass. 06 owns canonical identity/wording and shared HUD/history records. No HUMAN fallback or GDD change was needed."
   },
   "expected": "A Backstab notice credits the actual attacking Rogue through the canonical display formatter while retaining its existing receiving player and shared HUD/history event path.",
   "reproduction": [
     "Fresh verified d66; select Henry/Rogue/Distracting, ordinary portal entry and12s corridor walk",
-    "Allow ordinary Soldier attacks without a Hero attack; observe natural death and lives3→2",
-    "Read lower-right BACKSTAB notice and adjacent Soldier→Henry damage; inspect normal retained history"
+    "Allow ordinary Soldier attacks without a Hero attack; observe natural death and lives3\u21922",
+    "Read lower-right BACKSTAB notice and adjacent Soldier\u2192Henry damage; inspect normal retained history"
   ],
-  "actual": "Native screenshot and current normal client records31–41 show Henry-prefixed BACKSTAB notices followed by incoming Soldier damage. Last record resolves8.57083 from4 rolled and the next record loses a life. The notice omits Soldier and presents its receiving player as subject.",
+  "actual": "Native screenshot and current normal client records31\u201341 show Henry-prefixed BACKSTAB notices followed by incoming Soldier damage. Last record resolves8.57083 from4 rolled and the next record loses a life. The notice omits Soldier and presents its receiving player as subject.",
   "cause": "Backstab selects the human victim as viewer for AI attacks, then calls Event(viewer,...). P:_Event previously always used that viewer as the sentence subject. ResolveDamageContract selects attacker-derived Rogue capability; a Rogue defender alone does not enable enemy Backstab.",
-  "repair": "Add optional nonempty string subjectName to the existing Event formatter, defaulting to its previous viewer prefix. Backstab supplies FeedbackName(attacker). Keep viewer, damage, geometry, event cache, transport, timing and all other callers unchanged. Native expected sentence is now Soldier: BACKSTAB — bonus damage multiple; Constitution bypassed.",
+  "repair": "Add optional nonempty string subjectName to the existing Event formatter, defaulting to its previous viewer prefix. Backstab supplies FeedbackName(attacker). Keep viewer, damage, geometry, event cache, transport, timing and all other callers unchanged. Native expected sentence is now Soldier: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed.",
   "candidate_source": {
     "gamemodes/legend_of_deborah/gamemode/lod/sv_rpg_gate_d.lua": {
       "sha256": "e9596992404d719b5264bf039b55dc49dfac7467eb19085ce9f464b84febac48",
@@ -72,9 +73,9 @@
     }
   },
   "regression_checks": [
-    "Real actor progression and ResolveDamageContract plus actual feedback/name authority: AI→Hero, Hero→AI and Hero→Hero recipient/subject separation",
+    "Real actor progression and ResolveDamageContract plus actual feedback/name authority: AI\u2192Hero, Hero\u2192AI and Hero\u2192Hero recipient/subject separation",
     "Canonical Steam/Hero name formatting; default/empty/nonstring optional subject keeps prior Event behavior",
-    "AI Fighter→Hero Rogue has no Backstab; AI Rogue→Hero Fighter/Rogue does",
+    "AI Fighter\u2192Hero Rogue has no Backstab; AI Rogue\u2192Hero Fighter/Rogue does",
     "x2/x3/x4, full CON bypass, direct Magic, cached event/target, forward/excluded damage and repeated independent attacks",
     "Final fixture against exact original Backstab, original Event, and both original authorities fails the attribution assertion"
   ],
@@ -84,14 +85,14 @@
     "review": "Root and independent agent viewed actual lower-right text; only the captured latest records are claimed visually observed. Normal retained history supplies exact event text/order."
   },
   "limits": [
-    "Runtime Soldier class, committed origin and defender facing were not captured; the screenshot/history do not independently accept the native rear-cone qualification or exact multiplier composition. The deterministic real-source fixture proves class isolation and multiplier behavior.",
-    "No repaired-build native HUD/font, history-color or cooperative delivery acceptance yet. Hero→Hero fixture is a Source-boundary simulation, not two-real-client evidence.",
-    "A legitimate Soldier death is not itself a defect. Authored difficulty and all combat numbers remain unchanged."
+    "Original d66 snapshot did not capture source class/committed origin/facing. Fresh source15 fixture captures canonical Rogue capability and observed rear dot, but exact native damage/CON composition still is not accepted from the UI frame alone.",
+    "Repaired source attribution is observed on the actual HUD and matching history. Full font/color/layout, player Rogue adjacency and cooperative delivery remain separate; Hero-to-Hero static fixture is not two-real-client evidence.",
+    "The developer scenario does not prove ordinary traversal to the source, timer cleanup or replacement-life safety. Root's later lifecycle investigation remains separate. Legitimate enemy damage and difficulty remain unchanged."
   ],
   "next_native_gate": [
-    "Fully restart installed4322 and verify GateDCRC164367339 and FeedbackCRC266214824; confirm normal dev0 settings or explicitly label a dev1 fixture",
-    "Observe an actual AI Rogue rear hit and the Soldier-prefixed Backstab on rendered HUD and identical retained history; verify appropriate front/non-Rogue adjacency",
-    "Observe ordinary player Rogue attack attribution and preserve damage/life/replay behavior; native cooperative coverage remains separate"
+    "Continue varied ordinary combat builds/routes and relevant front/non-Rogue/player-Rogue adjacencies within the broader campaign scope.",
+    "Keep full UI presentation and cooperative delivery as separate coverage; a second real client/identity is unavailable.",
+    "Do not infer BUG014 death-label acceptance from the living-Hero Backstab frame or its original anticipated-death filename."
   ],
   "native_4322_partial": {
     "receipt": "native-4322/receipt.json",
@@ -99,5 +100,26 @@
     "matching_feedback_crc": 266214824,
     "actual_backstab_toasts": 0,
     "result": "Source matched and ordinary combat recorded; repaired Backstab attribution remains native-pending."
+  },
+  "native_candidate_acceptance_scope": "Correct actual attacking Rogue/Skeleton subject on rendered Backstab HUD and matching retained history in one fresh single-client developer scenario. No whole-game, full UI or cooperative acceptance.",
+  "native_repaired": {
+    "receipt": "native-source15-backstab/receipt.json",
+    "gameplay_commit": "74415d1a3f135052de467286a08ebc1907b1608a",
+    "fresh_installed_prepared_and_build_label": "cd6274bf285bee0788b1f07bf3e6261e0cce2a1b",
+    "actual_subject": "Skeleton Of Valerie \"Dead Serious\" Perry",
+    "history_serials": [
+      61,
+      67,
+      70,
+      73,
+      76,
+      81,
+      84,
+      87,
+      90
+    ],
+    "rendered_HUD_attacker_prefix_observed": true,
+    "history_scope": "Current Logan session only; original array indexes167..198, serial61..92. Old duplicate serials excluded.",
+    "qualification": "Actual existing Rogue Skeleton attack/resolver, safely arranged by a developer fixture. Native photo shows living LoganHP2/lives3, not a death or BUG014 proof."
   }
 }

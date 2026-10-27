@@ -1,0 +1,89 @@
+{
+  "kind": "BUG012 finite native attacker attribution on HUD and retained history",
+  "utc": "2026-10-27T20:41:55.270Z",
+  "status": "Finite AI Rogue to Hero Backstab-subject gate passed; broader combat/UI/cooperative acceptance remains separate.",
+  "defect_repair_commit": "4322f105e519fec53c469877998eecd5b4d06a34",
+  "native_gameplay_commit": "74415d1a3f135052de467286a08ebc1907b1608a",
+  "fresh_install_prepared_and_build_label": "cd6274bf285bee0788b1f07bf3e6261e0cce2a1b",
+  "source_identity": {
+    "proofs": "../../floor-support/native-repaired/prepared-provenance.json and source-{client,server}-proof.json",
+    "gate_d_sha256": "e9596992404d719b5264bf039b55dc49dfac7467eb19085ce9f464b84febac48",
+    "gate_d_crc32": 164367339,
+    "feedback_sha256": "2a040aaaef05e2b96ffb0bc4cd57c5500ca8db1e151f2ee51ccbf71031f0327d",
+    "feedback_crc32": 266214824,
+    "qualification": "These exact BUG012 authorities remain unchanged since4322. Fresh source15 realm boundary checks both match all five expected sources, including the required authorities. The later fixture runs in the fresh source15 process."
+  },
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+    "client": "Windows x86 Garry's Mod under Proton, LuaJIT2.0.4, engine2026.09.17",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "epoch": 1,
+    "developer_mode": 1,
+    "unranked": true,
+    "hero": "Logan \"Long Shot\" White",
+    "hero_class": "wizard",
+    "qualification": "Ordinary character/feat selection and entry deployment preceded the developer scenario. Private clock extension, earlier H recovery/infinite-pistol setup and developer relocation are explicitly fixtures. Root reports no player fire or manual health change during this attack fixture; passive reactive damage remains ordinary combat."
+  },
+  "fixture": {
+    "source": "rogue-real-attack20.lua.txt",
+    "sha256": "46521162f031b3dbb1614bce1aa7f2c3be3f54da7a45a21401cf6e8182fea91d",
+    "root_operator": true,
+    "source_entity": 990,
+    "source_actor_id": "skeleton:91352027",
+    "source_display": "Skeleton Of Valerie \"Dead Serious\" Perry",
+    "source_class": "rogue",
+    "canonical_backstab_capability": true,
+    "checks": "Current source15 SafeTeleportCRC guard; one actual human/dev1/current active graph; exact source/Hero life capture; actual canonical landing and EntrySafety/CombatAllowed; source can initiate attacks; observed rear dot -0.99999994039536.",
+    "action": "Canonical MoveBound places the actual Hero safely behind an existing generated Rogue Skeleton. _BeginSoldierBurst returns false while the real natural AI burst is already active=true; existing physical bolts/resolver produce the notice and damage. No fake Event-only injection, enemy-class edit, manual damage or protection bypass.",
+    "timer_qualification": "The script schedules a20-second owner-bound return. This receipt accepts the attribution episode only, not its later return, death cleanup or replacement-life safety. Root's subsequent lifecycle investigation is outside this acceptance."
+  },
+  "rendered": {
+    "photo": "correct-backstab-hud-alive.png",
+    "original_filename": "deborah-source15-native-death-label.png",
+    "sha256": "e57a8b9d865b7da0e26524a75ae92aae0f9f4e7cafc93905f632ac91ffc601a9",
+    "independently_viewed_by": [
+      "root",
+      "popup_independent_review"
+    ],
+    "observed": "Logan is alive atHP2/lives3 on the upper pink floor. The lower-right native HUD visibly begins Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB — bonus damage multiple; adjacent actual Arcane Diversion/damage rows identify Skeleton-to-Logan bolts.",
+    "exact_scope": "The attacker prefix and BACKSTAB wording are readable. Complete wrapped tail, color/layout/readability under overlapping transient Arcane/record hints are not accepted by this frame.",
+    "not_death": "Despite its original anticipated-death filename, this is a living Hero frame with no native death notice. It does not accept BUG014."
+  },
+  "history": {
+    "excerpt": "current-session-history-serial61-92.json",
+    "shared_raw": "../../floor-support/native-repaired/die_logger_history.json.xz",
+    "raw_selection": "Final current Logan session starts at original raw index107. Only original indexes167..198, serial61..92, local stamps10-27 15:30:19..15:30:25, are used. Older repeated serials and other sessions are excluded.",
+    "backstab_serials": [
+      61,
+      67,
+      70,
+      73,
+      76,
+      81,
+      84,
+      87,
+      90
+    ],
+    "subject": "Skeleton Of Valerie \"Dead Serious\" Perry",
+    "last_notice": "Serial90 matches the pictured latest source-prefixed Backstab; serial91 is Arcane Diversion and92 is3HP Skeleton-to-Logan damage, matching the visible neighboring rows.",
+    "result": "All nine selected native Backstab notices credit the attacking Skeleton instead of the receiving Logan. Recipient delivery remains the same Hero's HUD/history."
+  },
+  "evidence": {
+    "manifest": "manifest.json",
+    "console_markers": "console-markers.json",
+    "raw_console": "../../floor-support/native-repaired/console.log.xz",
+    "boundary_identity": "../../floor-support/native-repaired/receipt.json",
+    "raw_qualification": "Existing exact source15 raw console/history snapshots are referenced without modification. Source/probe scripts are preserved as .lua.txt to avoid adding executable integration fixtures."
+  },
+  "limits": [
+    "Single-client developer scenario, not ordinary traversal to the upper-floor source.",
+    "This gate accepts attacker attribution only; exact native damage multiplier/CON math, front/non-Rogue combinations, player Rogue attacks and broader UI remain separate from the existing static checks.",
+    "No audio, font/color/layout, three-pass campaign, cooperative or BUG014 death-label acceptance.",
+    "Later lifecycle probes are not classified or accepted by this receipt."
+  ],
+  "clean_pass_streak": 0
+}

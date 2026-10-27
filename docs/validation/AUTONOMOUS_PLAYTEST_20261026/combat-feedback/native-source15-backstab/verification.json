@@ -1,0 +1,12 @@
+{
+  "kind": "native evidence consistency; no new gameplay performed by evidence author",
+  "utc": "2026-10-27T20:41:55.459303+00:00",
+  "status": "pass",
+  "checks": [
+    "exact:rogue-real-attack20.lua.txt",
+    "exact:correct-backstab-hud-alive.png",
+    "nine correctly sourced current-session notices; exact raw-array segment",
+    "real source/class/capability/rear/normal active burst markers"
+  ],
+  "claim_limit": "Actual attacker-prefix HUD/history gate only, aliveHP2; no death label, full UI, cleanup or lifecycle acceptance."
+}

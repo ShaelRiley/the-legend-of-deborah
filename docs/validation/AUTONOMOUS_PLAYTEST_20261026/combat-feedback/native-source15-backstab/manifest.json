@@ -1,0 +1,20 @@
+{
+  "kind": "BUG012 actual source15 HUD artifact and guarded native setup; originals preserved byte-exact",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/rogue_real_attack20.lua",
+      "archived_as": "rogue-real-attack20.lua.txt",
+      "bytes": 2907,
+      "sha256": "46521162f031b3dbb1614bce1aa7f2c3be3f54da7a45a21401cf6e8182fea91d",
+      "source_mtime_ns": 1793133016797272635
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793133031162606508-deborah-source15-native-death-label.png",
+      "archived_as": "correct-backstab-hud-alive.png",
+      "bytes": 1364144,
+      "sha256": "e57a8b9d865b7da0e26524a75ae92aae0f9f4e7cafc93905f632ac91ffc601a9",
+      "source_mtime_ns": 1793133031115672501
+    }
+  ],
+  "shared_raw_history_manifest": "../../floor-support/native-repaired/manifest.json"
+}

@@ -1,0 +1,1945 @@
+{
+  "raw_source": "../../floor-support/native-repaired/die_logger_history.json.xz",
+  "raw_sha256": "53146ad59cbb50bf7f1e872b091210c8b38a567b0010fc410561ee8e8905d5ed",
+  "selection": "Current Logan session after final serial reset at original index107. Exact array indexes167..198/serial61..92 only, local wall stamps10-27 15:30:19..15:30:25. Earlier duplicate serials from old sessions are excluded.",
+  "original_array_start_index": 167,
+  "original_array_end_index": 198,
+  "rows": [
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 61,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 62,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "(3) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 1 HP prevented; 4 incoming - 1 diverted = 3 HP; 1 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": "
+        },
+        {
+          "role": "status",
+          "text": "RECKLESS"
+        },
+        {
+          "role": "prose",
+          "text": " WIS SAVE \u2014 "
+        },
+        {
+          "role": "dice",
+          "text": "1d20"
+        },
+        {
+          "role": "prose",
+          "text": " ["
+        },
+        {
+          "role": "total",
+          "text": "5"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "8"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "+3"
+        },
+        {
+          "role": "prose",
+          "text": " modifier; DC "
+        },
+        {
+          "role": "total",
+          "text": "13"
+        },
+        {
+          "role": "prose",
+          "text": " \u2014 FAILED"
+        }
+      ],
+      "cue": 0,
+      "family": "roll",
+      "serial": 63,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "Shael Riley as Logan \"Long Shot\" White: RECKLESS WIS SAVE \u2014 1d20 [5] = 8; +3 modifier; DC 13 \u2014 FAILED"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": "
+        },
+        {
+          "role": "status",
+          "text": "RECKLESS"
+        },
+        {
+          "role": "prose",
+          "text": " DURATION \u2014 "
+        },
+        {
+          "role": "dice",
+          "text": "4d6!"
+        },
+        {
+          "role": "prose",
+          "text": " ["
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " + "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " + "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " + "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "15"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 15"
+        },
+        {
+          "role": "prose",
+          "text": " seconds"
+        }
+      ],
+      "cue": 0,
+      "family": "roll",
+      "serial": 64,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "Shael Riley as Logan \"Long Shot\" White: RECKLESS DURATION \u2014 4d6! [4 + 4 + 3 + 4] = 15; resolved 15 seconds"
+    },
+    {
+      "segments": [
+        {
+          "role": "status",
+          "text": "[STATUS +]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": "
+        },
+        {
+          "role": "status",
+          "text": "RECKLESS"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "status",
+          "text": "APPLIED"
+        }
+      ],
+      "cue": 0,
+      "family": "status",
+      "serial": 65,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "[STATUS +] Shael Riley as Logan \"Long Shot\" White: RECKLESS APPLIED"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "2@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 3 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 4"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 66,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "(3) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 2@10+ + 1 bonus = 3 rolled; resolved 4]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 67,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 68,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "(3) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 1 HP prevented; 4 incoming - 1 diverted = 3 HP; 1 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "3@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 4 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 69,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "(3) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 3@10+ + 1 bonus = 4 rolled]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 70,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(10)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "12"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "10"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 71,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "(10) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 2 HP prevented; 12 incoming - 2 diverted = 10 HP; 2 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(10)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "8@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 9 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 12"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 72,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:19",
+      "text": "(10) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 8@10+ + 1 bonus = 9 rolled; resolved 12]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 73,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(16)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "18"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "16"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 74,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "(16) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 2 HP prevented; 18 incoming - 2 diverted = 16 HP; 2 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(16)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "10@10+ "
+        },
+        {
+          "role": "continuation",
+          "text": ">"
+        },
+        {
+          "role": "dice",
+          "text": " 1@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 12 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 18"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 75,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "(16) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 10@10+ > 1@10+ + 1 bonus = 12 rolled; resolved 18]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 76,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 77,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "(3) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 1 HP prevented; 4 incoming - 1 diverted = 3 HP; 1 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": "
+        },
+        {
+          "role": "status",
+          "text": "RECKLESS"
+        },
+        {
+          "role": "prose",
+          "text": " WIS SAVE \u2014 "
+        },
+        {
+          "role": "dice",
+          "text": "1d20"
+        },
+        {
+          "role": "prose",
+          "text": " ["
+        },
+        {
+          "role": "total",
+          "text": "19"
+        },
+        {
+          "role": "prose",
+          "text": "] "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "22"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "+3"
+        },
+        {
+          "role": "prose",
+          "text": " modifier; DC "
+        },
+        {
+          "role": "total",
+          "text": "13"
+        },
+        {
+          "role": "prose",
+          "text": " \u2014 SAVED"
+        }
+      ],
+      "cue": 0,
+      "family": "roll",
+      "serial": 78,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "Shael Riley as Logan \"Long Shot\" White: RECKLESS WIS SAVE \u2014 1d20 [19] = 22; +3 modifier; DC 13 \u2014 SAVED"
+    },
+    {
+      "segments": [
+        {
+          "role": "resist",
+          "text": "[RESIST]"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ": "
+        },
+        {
+          "role": "status",
+          "text": "RECKLESS"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "resist",
+          "text": "RESISTED"
+        },
+        {
+          "role": "prose",
+          "text": " (save "
+        },
+        {
+          "role": "total",
+          "text": "22"
+        },
+        {
+          "role": "prose",
+          "text": " / DC "
+        },
+        {
+          "role": "total",
+          "text": "13"
+        },
+        {
+          "role": "prose",
+          "text": ")"
+        }
+      ],
+      "cue": 0,
+      "family": "resist",
+      "serial": 79,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "[RESIST] Shael Riley as Logan \"Long Shot\" White: RECKLESS RESISTED (save 22 / DC 13)"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "1@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 2 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 4"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 80,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "(3) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 1@10+ + 1 bonus = 2 rolled; resolved 4]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 81,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(7)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "8"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "7"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 82,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "(7) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 1 HP prevented; 8 incoming - 1 diverted = 7 HP; 1 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(7)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "6@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 7 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 8"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 83,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:22",
+      "text": "(7) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 6@10+ + 1 bonus = 7 rolled; resolved 8]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 84,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:25",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(10)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "12"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "10"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 85,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:25",
+      "text": "(10) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 2 HP prevented; 12 incoming - 2 diverted = 10 HP; 2 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(10)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "8@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 9 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 12"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 86,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:25",
+      "text": "(10) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 8@10+ + 1 bonus = 9 rolled; resolved 12]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 87,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:25",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(12)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "14"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "12"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "2"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 88,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:25",
+      "text": "(12) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 2 HP prevented; 14 incoming - 2 diverted = 12 HP; 2 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(12)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "9@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 10 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 14"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 89,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:25",
+      "text": "(12) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 9@10+ + 1 bonus = 10 rolled; resolved 14]"
+    },
+    {
+      "segments": [
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": ": BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+        }
+      ],
+      "cue": 0,
+      "family": "damage",
+      "serial": 90,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:25",
+      "text": "Skeleton Of Valerie \"Dead Serious\" Perry: BACKSTAB \u2014 bonus damage multiple; Constitution bypassed"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " HP AFTER DIVERSION \u2014 ARCANE DIVERSION: "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " HP prevented; "
+        },
+        {
+          "role": "total",
+          "text": "4"
+        },
+        {
+          "role": "prose",
+          "text": " incoming - "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " diverted "
+        },
+        {
+          "role": "continuation",
+          "text": "="
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "total",
+          "text": "3"
+        },
+        {
+          "role": "prose",
+          "text": " HP; "
+        },
+        {
+          "role": "total",
+          "text": "1"
+        },
+        {
+          "role": "prose",
+          "text": " "
+        },
+        {
+          "role": "magic",
+          "text": "Magic"
+        },
+        {
+          "role": "prose",
+          "text": " lost"
+        }
+      ],
+      "cue": 0,
+      "family": "magic",
+      "serial": 91,
+      "category": 3,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:25",
+      "text": "(3) HP AFTER DIVERSION \u2014 ARCANE DIVERSION: 1 HP prevented; 4 incoming - 1 diverted = 3 HP; 1 Magic lost"
+    },
+    {
+      "segments": [
+        {
+          "role": "total",
+          "text": "(3)"
+        },
+        {
+          "role": "prose",
+          "text": " DAMAGE \u2014 "
+        },
+        {
+          "role": "identity",
+          "text": "Skeleton Of Valerie \"Dead Serious\" Perry"
+        },
+        {
+          "role": "prose",
+          "text": " \u2192 "
+        },
+        {
+          "role": "identity",
+          "text": "Shael Riley"
+        },
+        {
+          "role": "prose",
+          "text": " as "
+        },
+        {
+          "role": "character",
+          "text": "Logan \"Long Shot\" White"
+        },
+        {
+          "role": "prose",
+          "text": ", via "
+        },
+        {
+          "role": "source",
+          "text": "soldier bolt"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "dice",
+          "text": "1d10!+1"
+        },
+        {
+          "role": "prose",
+          "text": " [rolls "
+        },
+        {
+          "role": "dice",
+          "text": "1@10+ + 1 bonus "
+        },
+        {
+          "role": "total",
+          "text": "= 2 rolled"
+        },
+        {
+          "role": "prose",
+          "text": "; "
+        },
+        {
+          "role": "total",
+          "text": "resolved 4"
+        },
+        {
+          "role": "prose",
+          "text": "]"
+        }
+      ],
+      "cue": 0,
+      "family": "routine",
+      "serial": 92,
+      "category": 1,
+      "cueVariant": 0,
+      "stamp": "10-27 15:30:25",
+      "text": "(3) DAMAGE \u2014 Skeleton Of Valerie \"Dead Serious\" Perry \u2192 Shael Riley as Logan \"Long Shot\" White, via soldier bolt; 1d10!+1 [rolls 1@10+ + 1 bonus = 2 rolled; resolved 4]"
+    }
+  ]
+}
