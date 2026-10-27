@@ -1,0 +1,23 @@
+{
+  "kind": "GitHub Actions frozen integration; no native acceptance",
+  "source_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "run_id": 40552993210,
+  "job_id": 122361438647,
+  "workflow_url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40552993210",
+  "proof": {
+    "changed_during_gate": [],
+    "checkout_sha": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+    "checkout_tree": "956b54f3b408314069f786a4f0843d79d6e1e942",
+    "lua_files": 927,
+    "native_gmod_accepted": false,
+    "passed": 336,
+    "production_files": 576,
+    "production_sha256": "88c01825147a0351c38a344cb8d49bbe1d1c9d29b2fae46a181767bf18d21f90",
+    "receipt_sha256": "fc2b8f25a6fd3ad8eaea24ab05af4a01f14d71c4f4cf6269558c43ee32e86566",
+    "source_after": "fc8e1757bfb5a912d50519fef6aea2a685a0aab85fb8c96ec8ebad38c44405c6",
+    "source_before": "fc8e1757bfb5a912d50519fef6aea2a685a0aab85fb8c96ec8ebad38c44405c6",
+    "source_files": 4014,
+    "total": 336,
+    "verified_suite_logs": 336
+  }
+}

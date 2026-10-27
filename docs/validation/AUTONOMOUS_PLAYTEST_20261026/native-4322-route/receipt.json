@@ -1,0 +1,40 @@
+{
+  "kind": "partial ordinary native progression; no clean campaign pass",
+  "utc": "2026-10-27T18:52:13.166007+00:00",
+  "compiled_gameplay_commit": "4322f105e519fec53c469877998eecd5b4d06a34",
+  "disk_gameplay_commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
+  "campaign_seed": 6102602,
+  "level_seed": 1550561962,
+  "layout_seed": 1967490589,
+  "hardware": "Valve Jupiter Steam Deck / AMD Custom APU0405",
+  "runtime": "Windows x86 GMod 2026.09.17 under Proton10; gm_flatgrass; noworkshop; automatic Lua refresh disabled",
+  "settings": "sv_cheats0 lod_developer_mode0; seeded UNRANKED; normal 1800s clock; temporary AlwaysRun1",
+  "observed": "multiple actual .357 kills/reloads/XP; two natural deaths3->2->1 and auto-return; Redcardsharedreceipt; physical MT2walking to Redreader, Use openedgate/checkpoint1. No stairs proven.",
+  "route_gap": "canonical full Bluepath nil withactiveSkeletonBlockade6:11:1|6:12:1; no game defect inferred. NR queries included internal unquotedLua semicolons and failed tester diagnostics; game timeout/reset occurred during these.",
+  "failure_recovery": "natural30minuteexpiry/automaticreset; newScottHalfPintMoore awaitingfirstHero observed",
+  "limits": [
+    "Bounded native movement/aim/fire input assistance and read-only route hints; no teleport or noclip on these legs.",
+    "Initial commands were mistakenly typed before console focus; stray inputs and later malformed diagnostic queries are retained.",
+    "No full doorway/stairs traversal, Blue/Yellow/Neil/boss/rescue/end-to-end success acceptance.",
+    "White Health label beyond closed gate is a credible trace-pending LOS investigation, not a confirmed repaired defect.",
+    "Only this Deck/account is available; no cooperative client acceptance."
+  ],
+  "clean_pass_streak": 0,
+  "evidence": [
+    {
+      "name": "raw-evidence.tar.xz",
+      "bytes": 38288,
+      "sha256": "30dce8b51b3e7eff638cb74f054ab5a66da97a6755cbd92937f77876bbcd9c45"
+    },
+    {
+      "name": "red-gate-before-use.png",
+      "bytes": 1077465,
+      "sha256": "83426f8bc1bf30f449104b6e4088cc7666d62d2919533d36a76ecf0b8e33106b"
+    },
+    {
+      "name": "red-reader-close-use.png",
+      "bytes": 1211451,
+      "sha256": "66dceda40c5dd1f66bc3e151eaa22b3a33546e6480f21d53631c949beba243fb"
+    }
+  ]
+}

@@ -32,8 +32,10 @@
       "source": "05 LOD-OBJ-001",
       "expected": "Ordered red/blue/yellow cards and gates, Neil release/hunt, black gate, boss/key/jail/rescue",
       "scenario": "Walk ordinary legal route; attempt early interactions and progression bypass",
-      "result": "pending",
-      "evidence": []
+      "result": "Partial native4322 seed6102602: ordinary physical Redcard acquisition persisted through death; close-range E opened stock Red Gate/checkpoint1 and advanced objective to Blue. No Blue/Yellow/Neil/Black/boss/rescue acceptance.",
+      "evidence": [
+        "native-4322-route/receipt.json"
+      ]
     },
     {
       "id": "FLOW-03",
@@ -64,8 +66,10 @@
       "source": "05 LOD-WORLD-001; 05 LOD-OBJ-001",
       "expected": "Solvable seeded maze and reachable required objectives without illegal shortcuts",
       "scenario": "Distinct seeds; graph validator plus ordinary route traversal",
-      "result": "pending",
-      "evidence": []
+      "result": "Partial actual MT2 route from entrance to Redcard and Redreader on seed6102602; no teleport. Cross-floor Blue full-path nil coincides with active SkeletonBlockade6:11:1|6:12:1; approach/physical traversal not yet established; no maze defect confirmed.",
+      "evidence": [
+        "native-4322-route/receipt.json"
+      ]
     },
     {
       "id": "MAZE-02",
@@ -109,12 +113,13 @@
       "source": "Approved Great Crate C3 stock-gate presentation; shared Geometry.GateModel;05 gate progression preserved",
       "expected": "A cold real gate uses the configured stock blastdoor; missing-model fallback remains available without altering collision or locks",
       "scenario": "Fresh client/server with no diagnostic precache; inspect actual gate, then ordinary keycard/Use/open/collision and replay",
-      "result": "BUG011 fresh d66 cold finite gate passed: configured model valid before any diagnostic precache, stockBodies3/fallback0, intended blastdoor/red indicator visually observed through a15s camera-only fixture. Ordinary gate reach/Use/collision/key progression/co-op remain pending.",
+      "result": "Cold stock gate fixture passed on d66; ordinary4322 Redreader close-range E opens stock body/checkpoint1. Full doorway traversal, other gates, collision/bypass and co-op remain pending.",
       "evidence": [
         "gate-precache/BUG-011.json",
         "gate-precache/native-causality.json",
         "gate-precache/static-receipt.json",
-        "native-d66/receipt.json"
+        "native-d66/receipt.json",
+        "native-4322-route/receipt.json"
       ]
     },
     {
@@ -167,14 +172,15 @@
       "source": "02 LOD-CLS/LOD-MON; 03 LOD-CBT",
       "expected": "Enemy archetypes, native acquisition/telegraphs/attacks and damage/defenses",
       "scenario": "Ordinary early/late combat plus bounded archetype fixtures",
-      "result": "Partial actual fresh4322 dev0/cheats0 UNRANKED, campaign6102602/levelSeed1550561962: normal Fighter/Blake progression and .357 combat recorded Runner/Waylayer/Blitzer kills, XP120 total observed, Waylayer Dodge success/failure and natural Soldier-bolt Hero death/lives3-to2. NPC/XP formulas and full family coverage are not accepted.73 contiguous normal client records preserve defense context; no Backstab toast triggered, so BUG012 native attribution remains pending. Cold known-icon/actual bolt glyph gates passed; raw class label became separate BUG014, source8a9 static-checked/native pending. Earlier contaminated and d66 evidence remains retained.",
+      "result": "Partial native4322 Fighter/Pusher: actual .357 shots/normal reloads, several normal-history enemy defeats and XP, Dodge contexts and incoming Soldier bolts/natural deaths. Bounded native input assistance; no all-archetype or full combat acceptance.",
       "evidence": [
         "environment-input/deborah-native-walk-trial.png",
         "combat-feedback/BUG-012.json",
         "combat-feedback/BUG-013.json",
         "combat-feedback/before-rogue-backstab.png",
         "combat-feedback/native-4322/receipt.json",
-        "combat-feedback/BUG-014.json"
+        "combat-feedback/BUG-014.json",
+        "native-4322-route/receipt.json"
       ]
     },
     {
@@ -216,7 +222,7 @@
       "source": "90 LOD-EQUIP-016; 06 LOD-BIG-LOOT-LIFECYCLE; explicit author retention correction27175f8c",
       "expected": "Owned equipment, capacity, stacks, acquisition, equips, pickup/drop and consumables",
       "scenario": "Ordinary loot/inventory with full/empty/depleted/stale/duplicate boundaries",
-      "result": "Cheats0 initial2records and one ordinary starter observed; P did not grant extras. Fresh f6048a0e controlled Hero death/F respawn preserved all3weapons, exact clips/zero reserve and activeSMG (BUG007 finite gate passed). Other ownership/capacity/economy boundaries pending. Freshd66 bounded ordinary weapon replacement Pistol\u2192Crowbar\u2192Pistol observed, with prior weapon stored, two gear records retained and final rendered Pistol18/0; direct STOW WEAPON, stacking/capacity/economy/co-op and broader inventory remain pending.",
+      "result": "Cheats0 initial2records and one ordinary starter observed; P did not grant extras. Fresh f6048a0e controlled Hero death/F respawn preserved all3weapons, exact clips/zero reserve and activeSMG (BUG007 finite gate passed). Other ownership/capacity/economy boundaries pending. Freshd66 bounded ordinary weapon replacement Pistol→Crowbar→Pistol observed, with prior weapon stored, two gear records retained and final rendered Pistol18/0; direct STOW WEAPON, stacking/capacity/economy/co-op and broader inventory remain pending.",
       "evidence": [
         "environment-input/receipt.json",
         "death-lifecycle/BUG-007.json",
@@ -340,7 +346,7 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "336/336 frozen f6048a0e pass;925 Lua files;sourcebefore=after2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5;no changed files. Native finite BUG007/008 acceptance is recorded separately; full gameplay acceptance remains open. Laterafdcbc BUG009 has17 targeted suites+925 Lua parses and independent review; edfc BUG010 has10 focused positive checks plus changed-file syntax/LuaJIT checks and independent review. Specific baseline negative controls reject both originals; these are not new336-suite/full-gameplay passes. BUG011 has13 affected targeted checks,3 changed-file LuaJIT compilations and an original-source negative control; fresh native acceptance remains pending. D66 fullCI335/336 failed one newly exposed missing-model API fixture adapter; exact failure and fixture-only3d33 repair retained separately. Successor fullCI pending; no full pass inferred.",
+      "result": "Latest8a9 full remote336/336,927 Lua parses,576 production files verified, frozen source unchanged; native acceptance remains separate.",
       "evidence": [
         "combined-278e-integration-gate/receipt.json",
         "wizard-class-card/static-repair-receipt.json",
@@ -348,7 +354,8 @@
         "popup-escape/BUG-009.json",
         "inventory-tooltip/BUG-010.json",
         "gate-precache/static-receipt.json",
-        "gate-precache/ci-fixture/receipt.json"
+        "gate-precache/ci-fixture/receipt.json",
+        "remote-ci-8a9/proof.json"
       ]
     },
     {
@@ -506,11 +513,11 @@
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
   "installed_loaded_build": "4322f105e519fec53c469877998eecd5b4d06a34",
-  "last_checkpoint_utc": "2026-10-27T17:47:40.690909+00:00",
-  "next_action": "Finish bounded current compiled4322 route observations, then fresh-install/restart8a9; verify HostilePresentationCRC2978872520 and unchanged GateD164367339/Feedback266214824, cold language phrase Hostile and actual native death label/glyph. Trigger and inspect actual Backstab attribution with ordinary progression plus separately labeled dev1 setup where needed. Continue authored campaign/families/failure/reset/co-op coverage; clean streak0.",
+  "last_checkpoint_utc": "2026-10-27T18:52:13.169958+00:00",
+  "next_action": "Prove shorter-path disposable native profile before authored extended-clock fixtures; recheck BUG012/014; resume remaining systematic scope; restore Steam Cloud ON after private tests.",
   "last_runtime_build": "4322f105e519fec53c469877998eecd5b4d06a34",
-  "current_native_build": "4322f105e519fec53c469877998eecd5b4d06a34",
-  "installed_loaded_build_note": "Last verified compiled native gameplay is4322 with GateDCRC164367339,FeedbackCRC266214824,HostilePresentationCRC3365012306. Automatic Lua refresh is disabled. Source8a9 changes only the later client class phrase (new source CRC2978872520); changed disk bytes do not establish native BUG014 acceptance.",
+  "current_native_build": "none; short private source14 preflight closed normally; source/cfg/DATA match both realms, cloud-cvar audit assumption needs correction",
+  "installed_loaded_build_note": "Cold private source14 renders staging with0 Lua errors; HostilePresentationCRC2978872520 and Hostile/known icon lookups verified. This is a namespace/source preflight, not actual death label or Backstab acceptance.",
   "latest_repair_static_checkpoint": {
     "commit": "8a9d4e861cb1364de1483f7f39c54f32e9d93333",
     "evidence": "combat-feedback/BUG-014.json",
