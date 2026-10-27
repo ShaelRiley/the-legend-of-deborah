@@ -6,6 +6,14 @@ clean final-candidate passes. Clean streak remains 0. Workshop/VPS, the 40 FPS
 goal and all October 23 timer/countdown/hourglass/inventory/reward choices remain
 deferred.
 
+The current source candidate adds BUG009: shared Player Menu popups now own
+native Escape through `OnPauseMenuShow`, including focused Spellbook children,
+Character Sheet choices and the embedded Manual. Existing direct-open debounce,
+console/minigame/unrelated-dialog ownership and normal engine pause are retained.
+Independent review found no blocking defect; 17 targeted suites and all 925 Lua
+parses pass with source unchanged. The baseline fails the new native-event
+fixture. Fresh native acceptance is pending; see the [repair record](validation/AUTONOMOUS_PLAYTEST_20261026/popup-escape/BUG-009.json).
+
 Gameplay build `f6048a0ed942c83ec875e23443104dfde12143f2` contains eight repairs.
 BUG007/008 now pass their finite native gate: controlled Hero death saves the
 active SMG, and fresh F after the lockout restores HP100, active SMG25, pistol18,
@@ -31,7 +39,10 @@ observations remain. The earlier 180s traversal baseline measured 18.13 active
 FPS with its observer present; it establishes no repair attribution or 40 FPS
 claim.
 
-Next: repair/recheck newly confirmed shared-menu child-focus Escape BUG009,
+Next: fully restart/install the Escape candidate and verify theme CRC1212728956
+and Character Sheet CRC1796671531. Open I, click an owned Content, and press
+Escape: only the Spellbook closes; the next Escape opens normal stock pause.
+Repeat with Character Sheet and Manual/DHTML focus, preserving P/I/O/L switching,
 then continue single-client exploration and bounded authored-family fixtures.
 Ordinary full-campaign progression, endings/replay, detailed Tetris rewards and
 three clean varied passes remain unfinished. Only one Deck is available;

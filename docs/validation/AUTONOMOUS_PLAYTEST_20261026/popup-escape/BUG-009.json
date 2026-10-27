@@ -1,0 +1,143 @@
+{
+  "id": "BUG-009",
+  "recorded_utc": "2026-10-27T14:13:09.464203+00:00",
+  "baseline": "087e5fda2f4ee31c9490913f2850dfe366d5678b",
+  "runtime_reproduction_build": "f6048a0ed942c83ec875e23443104dfde12143f2",
+  "severity": "Usability: advertised Escape close does not close Player Menu",
+  "environment": "Prior actual Valve Jupiter Steam Deck / Windows x86 GMod under Proton10 / gm_flatgrass, seed6102601, cheats0/developer0; this checkpoint performs static validation only",
+  "expected": "Escape dismisses the currently owned Player Menu popup, including after a content or embedded-reader child has focus. With no owned popup, ordinary engine pause remains available. Preserve console, minigame, unrelated dialog and direct-open input ownership.",
+  "source": {
+    "gdd": {
+      "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+      "title": "The Legend of Deborah \u2014 Garry's Mod Game Design Document",
+      "revision_id": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+      "navigation": [
+        "00 \u2014 AI ENTRYPOINT",
+        "01 \u2014 AI RULE INDEX",
+        "06 \u2014 MULTIPLAYER, LIFECYCLE & UI"
+      ],
+      "human_monolith_read": false,
+      "rules": [
+        {
+          "text": "LOD-UI-001 \u2014 P CHARACTER SHEET [CURRENT REQUIRED]",
+          "startIndex": 66209,
+          "endIndex": 66258,
+          "tabId": "t.5ffvxbn7lbs",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "P opens the shared non-pausing Player Menu directly to the Character Sheet tab. The Player Menu contains five first-class tabs: Character Sheet, Inventory + Spellbook, Die Log, Instruction Booklet, and Options. LOD-UI-OPTIONS-001 [SOURCE IMPLEMENTED; NATIVE ACCEPTANCE PENDING]: Options is the extensible home for saved player preferences: Event cue volume, Always Run, Reduced effects, Third-person camera, Map size and Map opacity. The retired streamed Music controls remain removed. Third-person camera is a saved desktop checkbox, default Off; use the existing behind-player placement with collision protection and preserve aiming/FOV, VR, vehicles, spectating and authored cinematic views. Map size is a saved continuous slider from 0.5 to 1.5 times the current map, default 1.0. Map opacity is a separate saved continuous slider from 0 (transparent) to 1 (the current opacity), default 1.0. Size and opacity affect the entire map together, including text, markers and quadrant overlays; keep the panel within the window without changing the saved requested scale. These presentation preferences apply immediately, survive reconnects and Hero changes, and never change map access, Magic costs, map data, combat or server rules. First-person view and the existing map appearance remain the defaults. Reuse the existing camera placement constants rather than introducing new camera tuning. Always Run defaults Off (hold Shift to run); On means run by default and hold Shift to walk, honoring rebound keys without changing other Shift shortcuts or legal movement speeds. Preferences persist across sessions and Hero changes. Full rules: HUMAN anchor Player Options \u2014 Music and Always Run. P, I, and L remain direct-open/switch bindings for Character Sheet, Inventory + Spellbook, and Die Log respectively rather than separate overlapping windows. No dedicated default direct-open key is currently authored for Instruction Booklet; once the Player Menu is open, the player reaches it through the same tab-navigation controls as the other pages. For cooperative Heroes the Character Sheet displays identity, class, Level/XP, abilities/growth, derived stats including current FinalDodgeChance plus ordinary-tier and elevated-tier DodgeChance projections for the shared 25%-walk / 90%-sprint horizontal-speed ladder when different/nonzero, progression HP rolls, feats/capstone, Form/Content ownership and other authored current fields. For human Soldiers it exposes the current automatically generated/developed Soldier profile read-only, including Level, SoldierXP/next legal threshold, class, abilities, HP, feats, Content/capstone state and relevant derived stats including DodgeChance when applicable. The Player Menu never pauses gameplay or grants safety.",
+          "startIndex": 66259,
+          "endIndex": 69018,
+          "tabId": "t.5ffvxbn7lbs",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "LOD-UI-002 \u2014 I SPELLBOOK [CURRENT REQUIRED]",
+          "startIndex": 69020,
+          "endIndex": 69063,
+          "tabId": "t.5ffvxbn7lbs",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "I opens the shared Player Menu directly to the Inventory + Spellbook tab for all cooperative Hero classes. Six Forms remain on the top row; RAW plus unlocked Contents remain on the bottom row; Content permission is class-neutral. Inventory + Spellbook must use the same Instruction-Booklet/Character-Sheet visual grammar, typography, paper field, heading hierarchy, tab treatment, spacing, and information-pane conventions as the Character Sheet. See 03.",
+          "startIndex": 69064,
+          "endIndex": 69518,
+          "tabId": "t.5ffvxbn7lbs",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "LOD-UI-006 \u2014 INSTRUCTION BOOKLET PLAYER-MENU TAB [CURRENT REQUIRED]",
+          "startIndex": 74958,
+          "endIndex": 75025,
+          "tabId": "t.5ffvxbn7lbs",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        },
+        {
+          "text": "Instruction Booklet is the fourth first-class tab of the shared non-pausing Player Menu and is required for the RPG Update. It exposes the canonical in-game rules booklet during active maze play so a player is not limited to consulting it in the Hermit staging hut. The staging-hut booklet and the Player Menu Instruction Booklet tab are two access paths to one canonical manual content source: they must render the same current pages, rules text, controls, diagrams and illustrations rather than maintain duplicate independently editable copies. Cooperative Heroes and human Soldiers may consult the tab anywhere ordinary Player Menu access is legal; opening or reading it never pauses gameplay, grants invulnerability, changes movement/combat state, or otherwise creates safety. No dedicated default direct-open key is currently authored for this tab; P, I and L retain their existing direct-open meanings and the booklet is reached through ordinary tab navigation after opening the Player Menu. The tab uses the same Instruction-Booklet/Character-Sheet visual grammar as the other Player Menu pages and must ship synchronized with the final RPG Update manual reconciliation under LOD-IMPL-007.",
+          "startIndex": 75026,
+          "endIndex": 76222,
+          "tabId": "t.5ffvxbn7lbs",
+          "namedStyleType": "NORMAL_TEXT",
+          "isListItem": false
+        }
+      ],
+      "application": "Preserve the shared non-pausing Player Menu and its existing direct-open/switch bindings. The exact Escape close expectation is also advertised by the existing CLOSE / ESC control and intended baseline close callback; this repair does not author a new game rule."
+    },
+    "existing_ui": "cl_ui_theme CloseButton advertises CLOSE / ESC and baseline frame.OnKeyCodePressed attempts a close; baseline CharacterSheet has the same intended Escape callback",
+    "native_apis": [
+      "https://wiki.facepunch.com/gmod/PANEL:OnKeyCodePressed",
+      "https://wiki.facepunch.com/gmod/GM:OnPauseMenuShow",
+      "https://wiki.facepunch.com/gmod/Panel:HasParent"
+    ]
+  },
+  "reproduction": [
+    "Open Spellbook normally and select its owned Ice Content with an ordinary click",
+    "Press raw keyboard Escape for0.3s",
+    "Observe stock Garry's Mod pause overlay with Spellbook still open",
+    "Dismiss stock pause and click CLOSE / ESC; the button closes Spellbook"
+  ],
+  "observed_before": "Root observed and inspected the rendered failure in the prior native session. The original screenshots were in /tmp and were lost after the host session reset; they are not included or claimed as durable archived images here. Reproduction remains a required fresh native check on the repaired build.",
+  "cause": "Native ESC/cancelselect is explicitly excluded from PANEL:OnKeyCodePressed. Binding only a DFrame key handler cannot own the native pause attempt.",
+  "repair": "Register the current exact page/frame/callback once in the shared UI authority; close that owned popup through OnPauseMenuShow and return false only when consumed. Reuse registration for CharacterSheet, retain the existing0.15s PageKey opening debounce, and retire ownership before the callback. Visibility, keyboard, descendant-focus, console, minigame, stale-page and exact-frame guards preserve other owners.",
+  "status": "Implemented and statically validated; fresh native acceptance pending. Three clean gameplay pass streak remains0.",
+  "static": {
+    "targeted_suites": 17,
+    "passed": 17,
+    "lua_files": 925,
+    "syntax_passed": true,
+    "manifest_digest": "b5231496af02a2ba5e65759a531d4fc1f86239e97b859285258b3a8895d8bc41",
+    "changed_during_gate": [],
+    "negative_control": {
+      "baseline": "087e5fda2f4ee31c9490913f2850dfe366d5678b",
+      "returncode": 1,
+      "expected_failure": "Native pause event must be owned",
+      "matched": true,
+      "kind": "Final real equipment/Spellbook fixture with only theme and CharacterSheet dofile paths redirected to exact baseline bytes; no repository mutation",
+      "old_source_sha256": {
+        "cl_ui_theme.lua": "d78b7f82f12c97d39dfda1325b83d1009751c48d67e33e94005105d3d929bae6",
+        "cl_character_sheet.lua": "35ba2cd54db9d789dbc5c815f9d8da63c6b3713b714db9115f07d79e1841d5ef"
+      }
+    },
+    "independent_review": "Current popup_independent_review agent reviewed the prior agent's production repair and all callers without changing gameplay code; no blocking defect found. Focused equipment/Manual fixtures, syntax and diff checks independently rerun before this checkpoint gate."
+  },
+  "candidate_source": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua": {
+      "sha256": "8e11b888c7309fb4dca4027ddcaaf5594971e195176b40181d3e0b6f9828792b",
+      "native_crc32": "1212728956"
+    },
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua": {
+      "sha256": "65e6a0e6586118032fb90b855d67b2d263bc6a07c85a305c443322b70b43c3be",
+      "native_crc32": "1796671531"
+    },
+    "tools/test_equipment_inventory_ui.lua": {
+      "sha256": "054a68b96904edca0b0fdad8b8687321c58d5045f340ba158b6f4607f9a27f5d",
+      "native_crc32": "2184958477"
+    },
+    "tools/test_instruction_manual.lua": {
+      "sha256": "50dde85bb36a5454f2c7fa283cabd914a2dc7ef892a139603ffdad80027c5f5f",
+      "native_crc32": "3620220591"
+    }
+  },
+  "archive": {
+    "file": "static-evidence.tar.xz",
+    "bytes": 82780,
+    "sha256": "5180f9011a34cb9b1494f116186c1b568ee104438ad5fcc3388dd588f9ef5bd1"
+  },
+  "next_native_gate": [
+    "Fully restart/install exact candidate; verify mounted source identities and theme/sheet CRCs",
+    "Open I Spellbook, click an owned Content child, press ordinary physical/raw Escape: book closes and stock pause stays hidden",
+    "Press Escape again: normal stock pause opens; dismiss it",
+    "Repeat Escape after CharacterSheet child focus, Manual/DHTML focus, Equipment, Wallet and Options; preserve P/I/O/L switching/debounce, console and minigame ownership"
+  ],
+  "limits": [
+    "Static fixtures model native VGUI and pause events; they are not actual engine input, visuals, audio or cooperative acceptance",
+    "The previous336-suite frozen result belongs to f604; this changed candidate has17 targeted suites plus925 Lua syntax checks, not a new336-suite full run",
+    "Older unarchived exploratory fixture failures were reported before the external reset; their missing temporary logs are not recreated or hidden as passing evidence"
+  ]
+}

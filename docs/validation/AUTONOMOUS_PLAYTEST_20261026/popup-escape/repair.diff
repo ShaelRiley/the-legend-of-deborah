@@ -1,0 +1,214 @@
+diff --git a/gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua b/gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua
+index ca24c264..3e63c979 100644
+--- a/gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua
++++ b/gamemodes/legend_of_deborah/gamemode/lod/cl_character_sheet.lua
+@@ -382,13 +382,7 @@ function Sheet:Open(requestFresh)
+     frame:ShowCloseButton(false)
+     frame:SetDraggable(false)
+     frame:MakePopup()
+-    -- PlayerButtonDown opens this keyboard-focused frame during the originating
+-    -- P event. Do not let DFrame consume that same event as an immediate close.
+-    frame.LODAcceptToggleAt = RealTime() + 0.15
+-    frame.OnKeyCodePressed = function(_, code)
+-        if code == KEY_ESCAPE then Sheet:Close()
+-        elseif RealTime() >= frame.LODAcceptToggleAt then UI:PageKey(code) end
+-    end
++    UI:RegisterPopup(frame, function() Sheet:Close() end)
+     frame.Paint = function(self, w, h)
+         draw.RoundedBox(4, 0, 0, w, h, Color(18, 19, 21, 248))
+         draw.RoundedBox(2, 8, 8, w - 16, h - 16, PAPER)
+diff --git a/gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua b/gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua
+index 42393e38..0ac30215 100644
+--- a/gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua
++++ b/gamemodes/legend_of_deborah/gamemode/lod/cl_ui_theme.lua
+@@ -34,6 +34,41 @@ function UI:Button(button, accent)
+         surface.DrawOutlinedRect(0, 0, w, h, 1)
+     end
+ end
++function UI:RegisterPopup(frame, callback)
++    self.ActivePopup = {frame = frame, page = self.ActivePage, close = callback}
++    -- The opening P/I/O event may also reach this newly focused frame.
++    frame.LODAcceptToggleAt = RealTime() + 0.15
++    frame.OnKeyCodePressed = function(_, key)
++        if key == KEY_ESCAPE then UI:ClosePopup(frame)
++        elseif RealTime() >= frame.LODAcceptToggleAt then UI:PageKey(key) end
++    end
++end
++
++function UI:ClosePopup(expectedFrame)
++    local popup = self.ActivePopup
++    if not popup or (expectedFrame and popup.frame ~= expectedFrame)
++        or self:IsMinigameLocked() or gui.IsConsoleVisible() then return false end
++    local frame = popup.frame
++    if not IsValid(frame) or not popup.page or self.ActivePage ~= popup.page then
++        self.ActivePopup = nil
++        return false
++    end
++    if not frame:IsVisible() or not frame:IsKeyboardInputEnabled() then return false end
++    local focus = vgui.GetKeyboardFocus()
++    if IsValid(focus) and focus ~= frame and not focus:HasParent(frame) then return false end
++    -- Retire before calling the owner: removal or replacement must not replay an
++    -- old close callback against a newer popup, including during native teardown.
++    self.ActivePopup = nil
++    popup.close()
++    return true
++end
++
++-- Native ESC/cancelselect never reaches OnKeyCodePressed. Consume only an owned
++-- visible popup's close; with no such popup the engine keeps its normal pause.
++hook.Add("OnPauseMenuShow", "LOD_PlayerMenuEscape", function()
++    if UI:ClosePopup() then return false end
++end)
++
+ function UI:CloseButton(frame, callback)
+     frame:ShowCloseButton(false)
+     local close = vgui.Create("DButton", frame)
+@@ -42,11 +77,7 @@ function UI:CloseButton(frame, callback)
+     close:SetSize(104, 26)
+     self:Button(close, C.red)
+     close.DoClick = callback
+-    frame.LODAcceptToggleAt=RealTime()+0.15
+-    frame.OnKeyCodePressed = function(_, key)
+-        if key == KEY_ESCAPE then callback()
+-        elseif RealTime() >= frame.LODAcceptToggleAt then UI:PageKey(key) end
+-    end
++    self:RegisterPopup(frame, callback)
+     return close
+ end
+ -- Closing pending requests is part of closing a page, so delayed snapshots cannot
+diff --git a/tools/test_equipment_inventory_ui.lua b/tools/test_equipment_inventory_ui.lua
+index 4b582231..c2de67c0 100644
+--- a/tools/test_equipment_inventory_ui.lua
++++ b/tools/test_equipment_inventory_ui.lua
+@@ -245,3 +245,77 @@ assert(not E:CanStore(E.Snapshot,candidate),'Overflow blocks new pickups')
+ local saved=table.Copy(E.Snapshot);assert(E:StorageCapacity(saved)==28,'Capacity modifier persists with character bag')
+ E.Snapshot.capacityBonus=4;E:RefreshInventory();assert(E:CanStore(E.Snapshot,candidate))
+ print('DYNAMIC_CAPACITY_PASS: expansion/shrink, exact vacancies, preserved overflow, shared admission and state roundtrip')
++
++-- Native Escape attempts pause instead of calling the focused panel's key
++-- handler. Exercise that event after the real Spellbook's Ice child is clicked.
++local UI,B=LOD.UI,LOD.Spellbook
++local focus,consoleVisible,locked=nil,false,false
++vgui.GetKeyboardFocus=function() return focus end
++gui.IsConsoleVisible=function() return consoleVisible end
++function panel:IsVisible() return self.visible~=false end
++function panel:IsKeyboardInputEnabled() return self.keyboard~=false end
++function panel:HasParent(ancestor)
++    local parent=self.parent
++    while parent do
++        if parent==ancestor then return true end
++        parent=parent.parent
++    end
++    return false
++end
++LOD.Minigame={IsLocked=function() return locked end}
++LOD.Audio={Play=function() end}
++MOUSE_LEFT,MOUSE_RIGHT,MOUSE_MIDDLE,MOUSE_4,MOUSE_5=107,108,109,110,111
++net.WriteUInt=function(value,bits) pending[#pending+1]=value;pending.bits=bits end
++B.Snapshot={forms={},contents={{id='ice',owned=true}}}
++B:Open()
++local ice
++for _,child in ipairs(B.Frame.children) do if child.h==113 then ice=child end end
++assert(ice,'Real Ice content child must exist')
++focus=ice;ice:DoClick()
++assert(requests[#requests].name=='LOD_MagicBindContent' and requests[#requests][1]=='ice')
++local pause=assert(fixture.hooks.LOD_PlayerMenuEscape,'Native pause event must be owned')
++assert(pause()==false and not B.Frame and not UI.ActivePage,
++    'Escape after clicking Ice must close Spellbook and suppress stock pause')
++assert(pause()==nil,'Next Escape with no owned popup must allow normal engine pause')
++
++-- Other shared pages retain their exact callbacks, including detached stale
++-- keyboard focus during native removal. Never close a replacement or foreign UI.
++local closedPopups=0
++local function popup(page)
++    UI.ActivePage=page
++    local frame=create('DFrame');frame:SetSize(640,480)
++    UI:CloseButton(frame,function() closedPopups=closedPopups+1;frame:Remove();UI.ActivePage=nil end)
++    focus=create('DButton',create('DPanel',frame))
++    return frame
++end
++for _,page in ipairs({'equipment','wallet','options','manual','history','summon_card'}) do
++    local frame=popup(page);local before=closedPopups
++    assert(pause()==false and closedPopups==before+1 and not IsValid(frame),page..' callback must close once')
++    assert(pause()==nil and closedPopups==before+1,'Removed child focus cannot replay '..page..' close')
++end
++for _,reason in ipairs({'console','minigame','hidden','keyboard-disabled','foreign-focus','stale-page','removed'}) do
++    local frame=popup('equipment');local before=closedPopups
++    consoleVisible=reason=='console';locked=reason=='minigame'
++    frame.visible=reason~='hidden';frame.keyboard=reason~='keyboard-disabled'
++    if reason=='foreign-focus' then focus=create('DButton',create('DFrame')) end
++    if reason=='stale-page' then UI.ActivePage='book' end
++    if reason=='removed' then frame:Remove() end
++    assert(pause()==nil and closedPopups==before,'Escape must preserve '..reason..' ownership')
++    consoleVisible=false;locked=false;frame:Remove()
++end
++local retired=popup('book');local current=popup('book');local before=closedPopups
++retired:OnKeyCodePressed(KEY_ESCAPE)
++assert(IsValid(current) and closedPopups==before,'A stale same-page frame cannot close its replacement')
++focus=nil
++assert(pause()==false and closedPopups==before+1,'Visible current popup also closes when focus has cleared')
++
++-- Character Sheet has a custom close button but shares the same native owner.
++panel.SetDraggable=function() end
++dofile(root..'cl_character_sheet.lua')
++LOD.CharacterSheet:Open(false)
++local sheetFrame=assert(LOD.CharacterSheet.Frame)
++focus=create('DButton',sheetFrame)
++assert(pause()==false and not LOD.CharacterSheet.Frame and not UI.ActivePage,
++    'Character Sheet loading/choice children must share the Escape close path')
++assert(pause()==nil,'Closing the Character Sheet restores normal engine pause')
++print('SHARED_POPUP_ESCAPE_PASS: real Ice selection and Character Sheet; native pause interception, exact callbacks, child/stale/foreign focus, console, minigame and normal pause')
+diff --git a/tools/test_instruction_manual.lua b/tools/test_instruction_manual.lua
+index 4889ede9..f9caa661 100644
+--- a/tools/test_instruction_manual.lua
++++ b/tools/test_instruction_manual.lua
+@@ -4,6 +4,10 @@ local function expect(ok,label) assert(ok,label) end
+ Color=function(...) return {...} end
+ surface={CreateFont=function() end}
+ draw={}
++local hooks={}
++hook={Add=function(_,id,fn) hooks[id]=fn end}
++local focus,consoleVisible=nil,false
++gui={IsConsoleVisible=function() return consoleVisible end}
+ isstring=function(v) return type(v)=='string' end
+ util={Decompress=function(value,limit) assert(limit==8*1024*1024);return value end}
+ KEY_ESCAPE,KEY_P,KEY_I,KEY_L=70,25,18,21
+@@ -35,6 +39,16 @@ function Panel:GetWide() return self.w end
+ function Panel:GetTall() return self.h end
+ function Panel:SetPos(x,y) self.x,self.y=x,y end
+ function Panel:SetText(t) self.text=t end
++function Panel:IsVisible() return true end
++function Panel:IsKeyboardInputEnabled() return true end
++function Panel:HasParent(ancestor)
++    local parent=self.parent
++    while parent do
++        if parent==ancestor then return true end
++        parent=parent.parent
++    end
++    return false
++end
+ function Panel:Remove() self.removed=true end
+ function Panel:MakePopup() self.popup=true end
+ function Panel:SetHTML(s)
+@@ -51,7 +65,7 @@ for _,k in ipairs({'SetFont','SetTextColor','SetContentAlignment','SetWrap','Set
+     'ShowCloseButton','Center','SetTitle','SetDraggable','SetDeleteOnClose'}) do Panel[k]=function() end end
+ vgui={Create=function(kind,parent)
+     local p=setmetatable({kind=kind,parent=parent,callbacks={}},{__index=Panel});panels[#panels+1]=p;return p
+-end}
++end,GetKeyboardFocus=function() return focus end}
+ LOD={}
+ include('lod/cl_ui_theme.lua')
+ local UI=LOD.UI
+@@ -98,6 +112,12 @@ M.Browser.callbacks['lod.position'](0/0,0,18)
+ expect(M.Page==16,'reject nonfinite callback')
+ M.Browser.callbacks['lod.close']()
+ expect(UI.ActivePage==nil and not IsValid(M.Frame),'Escape bridge closes reader')
++M:Open();focus=M.Browser
++local nativePause=assert(hooks.LOD_PlayerMenuEscape)
++expect(nativePause()==false and UI.ActivePage==nil and not M.Frame,
++    'Native Escape closes a focused embedded reader without opening stock pause')
++expect(nativePause()==nil,'Stale browser focus cannot suppress the next normal pause')
++focus=nil
+ M:Open();UI:SelectPage(nil)
+ expect(not IsValid(M.Frame),'terminal transition closes reader through shared menu')
+ M.HTML=nil;M:Open();expect(requests==2 and IsValid(M.LoadingLabel),'missing payload still opens visible reader')

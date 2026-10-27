@@ -4,6 +4,10 @@ local function expect(ok,label) assert(ok,label) end
 Color=function(...) return {...} end
 surface={CreateFont=function() end}
 draw={}
+local hooks={}
+hook={Add=function(_,id,fn) hooks[id]=fn end}
+local focus,consoleVisible=nil,false
+gui={IsConsoleVisible=function() return consoleVisible end}
 isstring=function(v) return type(v)=='string' end
 util={Decompress=function(value,limit) assert(limit==8*1024*1024);return value end}
 KEY_ESCAPE,KEY_P,KEY_I,KEY_L=70,25,18,21
@@ -35,6 +39,16 @@ function Panel:GetWide() return self.w end
 function Panel:GetTall() return self.h end
 function Panel:SetPos(x,y) self.x,self.y=x,y end
 function Panel:SetText(t) self.text=t end
+function Panel:IsVisible() return true end
+function Panel:IsKeyboardInputEnabled() return true end
+function Panel:HasParent(ancestor)
+    local parent=self.parent
+    while parent do
+        if parent==ancestor then return true end
+        parent=parent.parent
+    end
+    return false
+end
 function Panel:Remove() self.removed=true end
 function Panel:MakePopup() self.popup=true end
 function Panel:SetHTML(s)
@@ -51,7 +65,7 @@ for _,k in ipairs({'SetFont','SetTextColor','SetContentAlignment','SetWrap','Set
     'ShowCloseButton','Center','SetTitle','SetDraggable','SetDeleteOnClose'}) do Panel[k]=function() end end
 vgui={Create=function(kind,parent)
     local p=setmetatable({kind=kind,parent=parent,callbacks={}},{__index=Panel});panels[#panels+1]=p;return p
-end}
+end,GetKeyboardFocus=function() return focus end}
 LOD={}
 include('lod/cl_ui_theme.lua')
 local UI=LOD.UI
@@ -98,6 +112,12 @@ M.Browser.callbacks['lod.position'](0/0,0,18)
 expect(M.Page==16,'reject nonfinite callback')
 M.Browser.callbacks['lod.close']()
 expect(UI.ActivePage==nil and not IsValid(M.Frame),'Escape bridge closes reader')
+M:Open();focus=M.Browser
+local nativePause=assert(hooks.LOD_PlayerMenuEscape)
+expect(nativePause()==false and UI.ActivePage==nil and not M.Frame,
+    'Native Escape closes a focused embedded reader without opening stock pause')
+expect(nativePause()==nil,'Stale browser focus cannot suppress the next normal pause')
+focus=nil
 M:Open();UI:SelectPage(nil)
 expect(not IsValid(M.Frame),'terminal transition closes reader through shared menu')
 M.HTML=nil;M:Open();expect(requests==2 and IsValid(M.LoadingLabel),'missing payload still opens visible reader')

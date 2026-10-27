@@ -245,3 +245,77 @@ assert(not E:CanStore(E.Snapshot,candidate),'Overflow blocks new pickups')
 local saved=table.Copy(E.Snapshot);assert(E:StorageCapacity(saved)==28,'Capacity modifier persists with character bag')
 E.Snapshot.capacityBonus=4;E:RefreshInventory();assert(E:CanStore(E.Snapshot,candidate))
 print('DYNAMIC_CAPACITY_PASS: expansion/shrink, exact vacancies, preserved overflow, shared admission and state roundtrip')
+
+-- Native Escape attempts pause instead of calling the focused panel's key
+-- handler. Exercise that event after the real Spellbook's Ice child is clicked.
+local UI,B=LOD.UI,LOD.Spellbook
+local focus,consoleVisible,locked=nil,false,false
+vgui.GetKeyboardFocus=function() return focus end
+gui.IsConsoleVisible=function() return consoleVisible end
+function panel:IsVisible() return self.visible~=false end
+function panel:IsKeyboardInputEnabled() return self.keyboard~=false end
+function panel:HasParent(ancestor)
+    local parent=self.parent
+    while parent do
+        if parent==ancestor then return true end
+        parent=parent.parent
+    end
+    return false
+end
+LOD.Minigame={IsLocked=function() return locked end}
+LOD.Audio={Play=function() end}
+MOUSE_LEFT,MOUSE_RIGHT,MOUSE_MIDDLE,MOUSE_4,MOUSE_5=107,108,109,110,111
+net.WriteUInt=function(value,bits) pending[#pending+1]=value;pending.bits=bits end
+B.Snapshot={forms={},contents={{id='ice',owned=true}}}
+B:Open()
+local ice
+for _,child in ipairs(B.Frame.children) do if child.h==113 then ice=child end end
+assert(ice,'Real Ice content child must exist')
+focus=ice;ice:DoClick()
+assert(requests[#requests].name=='LOD_MagicBindContent' and requests[#requests][1]=='ice')
+local pause=assert(fixture.hooks.LOD_PlayerMenuEscape,'Native pause event must be owned')
+assert(pause()==false and not B.Frame and not UI.ActivePage,
+    'Escape after clicking Ice must close Spellbook and suppress stock pause')
+assert(pause()==nil,'Next Escape with no owned popup must allow normal engine pause')
+
+-- Other shared pages retain their exact callbacks, including detached stale
+-- keyboard focus during native removal. Never close a replacement or foreign UI.
+local closedPopups=0
+local function popup(page)
+    UI.ActivePage=page
+    local frame=create('DFrame');frame:SetSize(640,480)
+    UI:CloseButton(frame,function() closedPopups=closedPopups+1;frame:Remove();UI.ActivePage=nil end)
+    focus=create('DButton',create('DPanel',frame))
+    return frame
+end
+for _,page in ipairs({'equipment','wallet','options','manual','history','summon_card'}) do
+    local frame=popup(page);local before=closedPopups
+    assert(pause()==false and closedPopups==before+1 and not IsValid(frame),page..' callback must close once')
+    assert(pause()==nil and closedPopups==before+1,'Removed child focus cannot replay '..page..' close')
+end
+for _,reason in ipairs({'console','minigame','hidden','keyboard-disabled','foreign-focus','stale-page','removed'}) do
+    local frame=popup('equipment');local before=closedPopups
+    consoleVisible=reason=='console';locked=reason=='minigame'
+    frame.visible=reason~='hidden';frame.keyboard=reason~='keyboard-disabled'
+    if reason=='foreign-focus' then focus=create('DButton',create('DFrame')) end
+    if reason=='stale-page' then UI.ActivePage='book' end
+    if reason=='removed' then frame:Remove() end
+    assert(pause()==nil and closedPopups==before,'Escape must preserve '..reason..' ownership')
+    consoleVisible=false;locked=false;frame:Remove()
+end
+local retired=popup('book');local current=popup('book');local before=closedPopups
+retired:OnKeyCodePressed(KEY_ESCAPE)
+assert(IsValid(current) and closedPopups==before,'A stale same-page frame cannot close its replacement')
+focus=nil
+assert(pause()==false and closedPopups==before+1,'Visible current popup also closes when focus has cleared')
+
+-- Character Sheet has a custom close button but shares the same native owner.
+panel.SetDraggable=function() end
+dofile(root..'cl_character_sheet.lua')
+LOD.CharacterSheet:Open(false)
+local sheetFrame=assert(LOD.CharacterSheet.Frame)
+focus=create('DButton',sheetFrame)
+assert(pause()==false and not LOD.CharacterSheet.Frame and not UI.ActivePage,
+    'Character Sheet loading/choice children must share the Escape close path')
+assert(pause()==nil,'Closing the Character Sheet restores normal engine pause')
+print('SHARED_POPUP_ESCAPE_PASS: real Ice selection and Character Sheet; native pause interception, exact callbacks, child/stale/foreign focus, console, minigame and normal pause')

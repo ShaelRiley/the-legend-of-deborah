@@ -34,6 +34,41 @@ function UI:Button(button, accent)
         surface.DrawOutlinedRect(0, 0, w, h, 1)
     end
 end
+function UI:RegisterPopup(frame, callback)
+    self.ActivePopup = {frame = frame, page = self.ActivePage, close = callback}
+    -- The opening P/I/O event may also reach this newly focused frame.
+    frame.LODAcceptToggleAt = RealTime() + 0.15
+    frame.OnKeyCodePressed = function(_, key)
+        if key == KEY_ESCAPE then UI:ClosePopup(frame)
+        elseif RealTime() >= frame.LODAcceptToggleAt then UI:PageKey(key) end
+    end
+end
+
+function UI:ClosePopup(expectedFrame)
+    local popup = self.ActivePopup
+    if not popup or (expectedFrame and popup.frame ~= expectedFrame)
+        or self:IsMinigameLocked() or gui.IsConsoleVisible() then return false end
+    local frame = popup.frame
+    if not IsValid(frame) or not popup.page or self.ActivePage ~= popup.page then
+        self.ActivePopup = nil
+        return false
+    end
+    if not frame:IsVisible() or not frame:IsKeyboardInputEnabled() then return false end
+    local focus = vgui.GetKeyboardFocus()
+    if IsValid(focus) and focus ~= frame and not focus:HasParent(frame) then return false end
+    -- Retire before calling the owner: removal or replacement must not replay an
+    -- old close callback against a newer popup, including during native teardown.
+    self.ActivePopup = nil
+    popup.close()
+    return true
+end
+
+-- Native ESC/cancelselect never reaches OnKeyCodePressed. Consume only an owned
+-- visible popup's close; with no such popup the engine keeps its normal pause.
+hook.Add("OnPauseMenuShow", "LOD_PlayerMenuEscape", function()
+    if UI:ClosePopup() then return false end
+end)
+
 function UI:CloseButton(frame, callback)
     frame:ShowCloseButton(false)
     local close = vgui.Create("DButton", frame)
@@ -42,11 +77,7 @@ function UI:CloseButton(frame, callback)
     close:SetSize(104, 26)
     self:Button(close, C.red)
     close.DoClick = callback
-    frame.LODAcceptToggleAt=RealTime()+0.15
-    frame.OnKeyCodePressed = function(_, key)
-        if key == KEY_ESCAPE then callback()
-        elseif RealTime() >= frame.LODAcceptToggleAt then UI:PageKey(key) end
-    end
+    self:RegisterPopup(frame, callback)
     return close
 end
 -- Closing pending requests is part of closing a page, so delayed snapshots cannot

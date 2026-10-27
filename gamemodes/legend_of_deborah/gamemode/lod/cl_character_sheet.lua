@@ -382,13 +382,7 @@ function Sheet:Open(requestFresh)
     frame:ShowCloseButton(false)
     frame:SetDraggable(false)
     frame:MakePopup()
-    -- PlayerButtonDown opens this keyboard-focused frame during the originating
-    -- P event. Do not let DFrame consume that same event as an immediate close.
-    frame.LODAcceptToggleAt = RealTime() + 0.15
-    frame.OnKeyCodePressed = function(_, code)
-        if code == KEY_ESCAPE then Sheet:Close()
-        elseif RealTime() >= frame.LODAcceptToggleAt then UI:PageKey(code) end
-    end
+    UI:RegisterPopup(frame, function() Sheet:Close() end)
     frame.Paint = function(self, w, h)
         draw.RoundedBox(4, 0, 0, w, h, Color(18, 19, 21, 248))
         draw.RoundedBox(2, 8, 8, w - 16, h - 16, PAPER)
