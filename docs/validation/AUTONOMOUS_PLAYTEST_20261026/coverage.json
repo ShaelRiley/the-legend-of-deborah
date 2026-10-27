@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
+  "current_candidate": "6acff8a3458b230378100d491e431d18a84c740c",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -102,7 +102,7 @@
       "source": "Author request; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
       "expected": "Native visible map/cards/Jail Key remain collectible from normal views",
       "scenario": "Near/far and above/below orbit, touch, receipt and entity cleanup",
-      "result": "Mapbinder/pedestal visible at normal approach; ordinarytouch acquisition removed pickup and revealed physicalFloor1. Key/JailKey angle/distance checks pending.",
+      "result": "Mapbinder/pedestal visible at normal approach; ordinarytouch acquisition removed pickup and revealed physicalFloor1. Key/JailKey angle/distance checks pending. Source16 ordinary Redcard native body-contact and HUD stage2 passed; key/map broad disappearance/lifecycle regressions remain open.",
       "evidence": [
         "production-2c73471b/deborah-normal-map-pedestal-approach.png",
         "production-2c73471b/deborah-map-legend-fixed-native.png"
@@ -173,7 +173,7 @@
       "source": "02 LOD-CLS/LOD-MON; 03 LOD-CBT",
       "expected": "Enemy archetypes, native acquisition/telegraphs/attacks and damage/defenses",
       "scenario": "Ordinary early/late combat plus bounded archetype fixtures",
-      "result": "Partial native4322 Fighter/Pusher: actual .357 shots/normal reloads, several normal-history enemy defeats and XP, Dodge contexts and incoming Soldier bolts/natural deaths. Bounded native input assistance; no all-archetype or full combat acceptance.",
+      "result": "Partial native4322 Fighter/Pusher: actual .357 shots/normal reloads, several normal-history enemy defeats and XP, Dodge contexts and incoming Soldier bolts/natural deaths. Bounded native input assistance; no all-archetype or full combat acceptance. Source16 actual Fallen NPC shared Aim error confirmed asBUG017; source6ac static repair/nativepending.",
       "evidence": [
         "environment-input/deborah-native-walk-trial.png",
         "combat-feedback/BUG-012.json",
@@ -246,8 +246,10 @@
       "source": "05/06/07 LOD-EVENT-EXPANSION",
       "expected": "Active 28-event catalog, exact density/placement/admission/outcomes",
       "scenario": "Natural event samples plus deterministic setup of each authored family",
-      "result": "pending",
-      "evidence": []
+      "result": "Partial native StrengthPress failure: d20face1+STR\u22121=0vs12, wallet unchanged0, spent receipt and repeated nativeE rejection persist across recreated entity. Explicit preview/locator beyondlocks/unranked; ordinary event route, success20payout, replacementHero/reconnect/co-op and other27authored events remain open.",
+      "evidence": [
+        "native-source16-events/receipt.json"
+      ]
     },
     {
       "id": "EVENT-02",
@@ -309,7 +311,7 @@
       "source": "Approvedc8a6ad9Oct4retirement;live06LOD-UI-OPTIONS-001;PLAYER_OPTIONS_20261007",
       "expected": "Oct4approvedaudio-onlyretirement:continuousmusicremoved;preserveambientloops,event/key/gate/combatcuesandEventCuevolume",
       "scenario": "Game-onlyaudiocapture;actualgameplaycues,volumeandcleanup;nostreamedMusiccontrols",
-      "result": "Game-only10.24saudiocapturesignalmeasured;comprehensivenativecuespending",
+      "result": "Game-only10.24saudiocapturesignalmeasured;comprehensivenativecuespending Exact owned game stream1664 captured under8s lease with6.144s48kHzPCM and nonzero energy, no routing/device/microphone changes. Tool interface cannot consume audio, so no perceptual SFX correctness is accepted.",
       "evidence": []
     },
     {
@@ -435,6 +437,17 @@
         "ci-source16/verification.json",
         "stale-life-binding/native-repaired/receipt.json"
       ]
+    },
+    {
+      "id": "REG-NPC-AIM",
+      "source": "03 LOD-CBT-001 shared actor combat pipeline and active Fallen Hero rules",
+      "expected": "Copied NPC firearms use canonical rolls and native fire without player-only method errors; real player Aim/cleanup stays correct",
+      "scenario": "Fresh combined source, actual ranged Fallen Hero release/contact through multiple cycles; real player armedAim/nativefire and lifecycle",
+      "result": "NativeBUG017 confirmed on source16; repaired6ac, exact negative and13/full336static independent pass; repaired native pending",
+      "evidence": [
+        "npc-aim-boundary/BUG-017.json",
+        "ci-source17/verification.json"
+      ]
     }
   ],
   "deferred": [
@@ -538,6 +551,11 @@
       "id": "BUG-016",
       "record": "stale-life-binding/BUG-016.json",
       "status": "Repairedd3c; full336 static/independent and fresh native body-life rejection plus fresh-movement controls pass"
+    },
+    {
+      "id": "BUG-017",
+      "record": "npc-aim-boundary/BUG-017.json",
+      "status": "Confirmed native Fallen ranged NPC Aim wrapper exception; repaired6ac with two player-only guards;13/full336/independent pass; fresh native pending"
     }
   ],
   "static_fixture_checkpoint": {
@@ -553,43 +571,42 @@
     "native_gmod_accepted": false,
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
-  "installed_loaded_build": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
-  "last_checkpoint_utc": "2026-10-27T21:30:48.757098+00:00",
-  "next_action": "Continue actual source16 Red Keycard route and authored StrengthPress setup/Use/repeat/account-dungeon lifecycle. No full campaign or clean pass; distinct-client co-op blocked; restore CloudON after private tests.",
-  "last_runtime_build": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
-  "current_native_build": "Private source16 client running; prepared2fcea source-equivalent, owned native74708, fresh prefix",
-  "installed_loaded_build_note": "Prepared2fcea and subsequent evidence-only main successors share all576 production Lua. Both realms source16 five-module audit passed, SafeTeleportCRC377454284. Earlier source15 native finite BUG015/012/014 evidence retained; fresh16 lifecycle gate pending.",
+  "installed_loaded_build": "6acff8a3458b230378100d491e431d18a84c740c",
+  "last_checkpoint_utc": "2026-10-27T22:08:37.204679+00:00",
+  "next_action": "Launch reviewed source17 private profile, verify six actual realm source guards including AimCRC966710964, create/encounter real ranged Fallen actor and observe actual native fire/contact with real player Aim; then resume authored campaign/event success/failure/reset coverage. Clean0/co-op/audio gaps remain; restore CloudON after private tests.",
+  "last_runtime_build": "6acff8a3458b230378100d491e431d18a84c740c",
+  "current_native_build": "Private source17 running; owned client86343/birth6332948, same-prefix Chromium utility86463, fresh prepared94f3",
+  "installed_loaded_build_note": "All576Lua/118physical sources match prepared94f3/gameplay6ac; both live realm six-source audits pass including AimCRC966710964/SafeTeleportCRC377454284; new native NPC acceptance pending.",
   "latest_repair_static_checkpoint": {
-    "commit": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
-    "evidence": "stale-life-binding/BUG-016.json",
+    "commit": "6acff8a3458b230378100d491e431d18a84c740c",
+    "evidence": "npc-aim-boundary/BUG-017.json",
     "positive_commands": 13,
     "lua_syntax": 927,
-    "independent_review": "positive and original-negative control clear",
-    "native": "Finite source16 passed; stale binding rejects, fresh move/XY-supported return succeeds; no exact Z restoration claim",
-    "native_evidence": "stale-life-binding/native-repaired/receipt.json"
+    "independent_review": "clear; exact original271 and first-guard-only323 negatives reproduce",
+    "native": "pending fresh17"
   },
   "latest_full_integration": {
-    "commit": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
-    "run_id": 40582121358,
-    "job_id": 122463986619,
+    "commit": "6acff8a3458b230378100d491e431d18a84c740c",
+    "run_id": 40589622846,
+    "job_id": 122490136272,
     "status": "success",
     "passed": 336,
     "total": 336,
     "lua_files": 927,
     "production_files": 576,
-    "evidence": "ci-source16/verification.json",
-    "qualification": "Full frozen static gate; not native acceptance. Original335/336 source15 failure and repaired fixture comparisons retained in ci-source15."
+    "evidence": "ci-source17/verification.json",
+    "qualification": "Exact full frozen static source17 gate; no repaired native acceptance."
   },
   "latest_candidate_full_integration": {
-    "commit": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
-    "run_id": 40582121358,
-    "job_id": 122463986619,
+    "commit": "6acff8a3458b230378100d491e431d18a84c740c",
+    "run_id": 40589622846,
+    "job_id": 122490136272,
     "status": "success",
     "passed": 336,
     "total": 336,
     "lua_files": 927,
     "production_files": 576,
-    "evidence": "ci-source16/verification.json",
-    "qualification": "Full frozen static gate; not native acceptance. Original335/336 source15 failure and repaired fixture comparisons retained in ci-source15."
+    "evidence": "ci-source17/verification.json",
+    "qualification": "Exact full frozen static source17 gate; no repaired native acceptance."
   }
 }

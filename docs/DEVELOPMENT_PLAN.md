@@ -1,51 +1,51 @@
 # Current checkpoint — autonomous native gameplay and defect campaign
 
-The October26 user campaign remains active; clean streak0. Full authored campaign,
-endings, event/boss families and cooperative coverage remain open. Only this Steam
-Deck is available: distinct real-client synchronization is externally blocked.
-October23 changes,40FPS,Workshop/VPS and design-only class5/10/15 rewards remain deferred.
+The October26 campaign remains active; clean streak0. Full authored progression,
+event/boss families, endings/reset and cooperative coverage remain open. Only this
+Steam Deck is available; distinct real-client synchronization is blocked. October23,
+40FPS,Workshop/VPS and design-only class5/10/15 rewards remain deferred.
 
-Latest gameplay source `d3c2dd2d2a7ead5993217551bd470e9e7000b1f0` repairs BUG016:
-SafeTeleport now binds to the existing native PlayerSpawn serial as well as the
-identity-owned state. Native source15 proved an old pre-death binding could move
-the respawned body because equipmentLifeSerial was nil in both lives. Thirteen
-adjacent gates,927 parses, meaningful original-source negative and independent
-review pass. Full exact frozen source16 CI passes336/336, all4082 files hashed,
-576 production unchanged. [CI proof](validation/AUTONOMOUS_PLAYTEST_20261026/ci-source16/verification.json).
-Fresh source16 finite native body-life regression passes: real death/F-respawn
-changes spawn4→5 while identity state/legacy nil life stay the same; old binding
-and movement reject without displacement, fresh supported move/XY return succeeds.
-HP100/lives2/Tetrisclosed and retained weapons observed. Exact Z restoration is
-unclaimed. [Native proof](validation/AUTONOMOUS_PLAYTEST_20261026/stale-life-binding/native-repaired/receipt.json).
+Latest gameplay source `6acff8a3458b230378100d491e431d18a84c740c` repairs BUG017:
+actual Fallen Hero native ranged fire reached player-only GetActiveWeapon calls
+in shared Aim decoration and global bullet cleanup. Two IsPlayer guards preserve
+the already-produced NPC contract and ordinary player Aim/cleanup. Exact original
+and first-guard-only negatives,13 focused gates,927Lua/LuaJIT and independent
+review pass. Full frozen source17 CI336/336,4147 files,576 production unchanged.
+[Defect](validation/AUTONOMOUS_PLAYTEST_20261026/npc-aim-boundary/BUG-017.json),
+[CI](validation/AUTONOMOUS_PLAYTEST_20261026/ci-source17/verification.json).
+Fresh source17 native acceptance remains pending.
 
-Source15 finite native evidence now passes BUG015's actual generated-floor/wall
-support controls, guarded relocation/return and measured ThunderCharge movement;
-BUG012's real-Rogue Backstab attacker attribution on HUD/history; and BUG014's
-actual Hostile/crossbow/victim label. The label uses an explicit one-HP natural
-attack fixture. None is a full campaign, normal combat difficulty or cooperative
-pass. [Floor support](validation/AUTONOMOUS_PLAYTEST_20261026/floor-support/BUG-015.json),
-[combat presentation](validation/AUTONOMOUS_PLAYTEST_20261026/combat-feedback/BUG-014.json).
-Preserve source15's original335/336 CI failure; a narrowly repaired body-sweep
-fixture passes336/336 without changing the production repair.
+Source16 finite native BUG016 passes actual death/20s wait/F-respawn: same ps/nil
+legacy equipmentLife, native spawn4→5, stale binding/move rejected without motion,
+fresh supported move/XY return accepted. HP100/lives2/Tetrisclosed and retained
+weapons observed; exact Z restoration unclaimed. Prior source15 finite BUG015
+floor/charge and BUG012/014 presentation proofs remain accepted with fixture limits.
+[Body-life proof](validation/AUTONOMOUS_PLAYTEST_20261026/stale-life-binding/native-repaired/receipt.json).
 
-Fresh source16 is running on actual Valve Jupiter Steam Deck, Windowsx86/Proton10,
-gm_flatgrass,1280x800, private short installation and new empty compatibility prefix.
-All576 production Lua match prepared2fcea/source d3c; both realm five-module audits
-pass, including SafeTeleportCRC377454284. Native startup30:00 remains paused until
-first actual Hero deployment. DeveloperDense=true/dev1 means fixture exploration,
-not a production-settings acceptance pass. No Workshop mount or personal profile
-copy is used. Source15 quit normally; the launcher retained a final unproven-PID
-flag after earlier proving the same live PID/birth owned. Root host-process check
-confirmed closure. Preserve this qualification, not a clean unproven[] claim.
-Steam4000 Cloud remains TEMPORARILY OFF (original ON): MUST restore after tests.
+Source16 also walked to actual Redcard and opened physical Redgate/checkpoint1.
+StrengthPress actual E failed correctly at1d20[1]−1=0vs12, paid0/spent once;
+repeat E and recreated-machine E were denied with same account/dungeon receipt.
+The event used explicit preview and supported locator beyond progression locks:
+no event-route, authored-warp or success-payout acceptance. DeveloperDense=true,
+clock explicitly extended from1800 to7200 during fixtures, natural death and input
+helper failures remain recorded. One root diagnostic wrong API error is distinct
+from actual BUG017. [Native event/route evidence](validation/AUTONOMOUS_PLAYTEST_20261026/native-source16-events/receipt.json).
 
-Next: continue actual Fighter/FrugalCartography native progression from the
-ordinary starter/portal into the Redcard route. StrengthPress preview is generated
-beyond current locks; its unchanged account/dungeon offer/wallet/attempt are
-recorded before use. Resume authored events and success/failure/rescue/reset. Preserve accepted
-collision/performance settings and earlier finite regressions. Health-label
-occlusion remains credible/trace-pending; Blue route ambiguity under active
-Skeleton blockade remains unconfirmed. [Coverage matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
+Source16 quit normally; owned/unproven/remaining cleanup all clear and personal
+cfg/DB/DATA/save baseline unchanged. Source17 new empty prefix launched from
+prepared94f3 source-equivalent to6ac on actual Valve Jupiter Deck/Windowsx86/
+Proton10,gm_flatgrass1280x800. All576Lua/118physical sources match; six native
+proof guards include AimCRC966710964 and SafeTeleportCRC377454284. Fresh realm
+checks and actual ranged-Fallen release/contact are the next finite gate. Preserve
+real-player Aim/fire and accepted collision/performance behavior, then continue
+ordinary/authored coverage. Health-label occlusion remains credible/trace-pending;
+Blue route ambiguity under active Skeleton blockade remains unconfirmed.
+
+Exact owned-stream capture yielded6.144s PCM under8s lease; no device/routing/
+microphone change. The interface cannot consume audio, so perceptual SFX remains
+unaccepted. Stock Chromium menu fallback remains an environment gap. Steam4000
+Cloud is TEMPORARILY OFF (original ON): MUST restore after private tests.
+[Coverage matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
 
 # Current checkpoint — integrate retained partial performance improvements
 
