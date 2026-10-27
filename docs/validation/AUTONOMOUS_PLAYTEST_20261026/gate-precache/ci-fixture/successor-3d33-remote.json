@@ -1,0 +1,38 @@
+{
+  "kind": "Verified full remote CI successor after BUG011 overhead fixture adapter repair",
+  "observed_utc": "2026-10-27T16:48:48.445244+00:00",
+  "commit": "3d33febe7fac68d3446a3ea689de386a6a3eb6f7",
+  "matrix_run": 40540290231,
+  "matrix_job": 122316533246,
+  "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40540290231",
+  "job_conclusion": "success",
+  "receipt_reconstruction": "57 contiguous offset-checked receipt.json EVIDENCE_CHUNK records from decoded successful GitHub job logs",
+  "total": 336,
+  "passed": 336,
+  "all336_returncodes_zero": true,
+  "lua_files": 925,
+  "source_before": "e884c42c995f14db4a66c0ebe95a4c5b5a6de19424202fa1c64b9b273e584978",
+  "source_after": "e884c42c995f14db4a66c0ebe95a4c5b5a6de19424202fa1c64b9b273e584978",
+  "changed_during_gate": [],
+  "raw_log_summary": "2026-10-27T16:34:23.0959088Z SYSTEMS_MATRIX 336/336; source_changed=0",
+  "other_workflows_observed_success": [
+    {
+      "run": 40540290243,
+      "name": "Validate ambient audio and event cues"
+    },
+    {
+      "run": 40540290022,
+      "name": "Validate low-end performance sources"
+    },
+    {
+      "run": 40540290584,
+      "name": "Validate VR compatibility"
+    }
+  ],
+  "full_receipt": {
+    "archive": "successor-3d33-full-receipt.tar.xz",
+    "archive_sha256": "b33b561a3c03fe472ae3dc31ea8b505a9f2df79efc7ef94bfe5ca7cf24c00ab5",
+    "receipt_sha256": "92e47438c28df536c09127f8b79f7ca397275e607019f0ccb76efa0a677fe049"
+  },
+  "qualification": "Remote static/integration proof for exact3d33 successor. Native primary remains d66 with identical production runtime trees. No new gameplay/co-op/clean-pass acceptance is inferred; earlier d66 335/336 failure remains preserved."
+}
