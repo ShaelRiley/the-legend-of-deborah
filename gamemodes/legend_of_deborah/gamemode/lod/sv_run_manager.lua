@@ -598,9 +598,9 @@ function RunManager:CaptureInventory(ply, ps, allowDead)
     if not IsValid(ply) or not ps or self:IsSoldierControl(ply)
         or ply.LODRunInventoryReady == false then return end
 
-    -- PlayerDeath runs after Alive() becomes false, while the player's weapon
-    -- entities still hold the authoritative magazines. Only that hook opts in;
-    -- a later disconnect must never replace a good snapshot with an empty body.
+    -- DoPlayerDeath runs with Alive() false but still exposes the active weapon.
+    -- The later PlayerDeath phase has already lost that native pointer. Only
+    -- the earlier hook opts in; a dead disconnect must not replace this snapshot.
     if not allowDead and not ply:Alive() then return end
     local snapshot = {weapons = {}, ammo = {}}
     local ownedWeapons = ownedEquipmentWeapons(ps)
@@ -1285,13 +1285,17 @@ hook.Add("PlayerSpawn", "LOD_PlayerSpawn", function(ply)
     end)
 end)
 
-hook.Add("PlayerDeath", "LOD_PlayerDeathLives", function(victim, inflictor, attacker)
+hook.Add("DoPlayerDeath", "LOD_PlayerDeathInventory", function(victim)
+    if victim.LODHandledRunDeath then return end
     local ps = RunManager:GetPlayerState(victim)
     if ps and not RunManager:IsSoldierControl(victim)
         and RunManager:IsPlayedIdentity(victim) and RunManager:IsActivePlayer(victim)
     then
         RunManager:CaptureInventory(victim, ps, true)
     end
+end)
+
+hook.Add("PlayerDeath", "LOD_PlayerDeathLives", function(victim, inflictor, attacker)
     RunManager:HandleDeath(victim, attacker)
 end)
 

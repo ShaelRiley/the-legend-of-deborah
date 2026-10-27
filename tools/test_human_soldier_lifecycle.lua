@@ -204,6 +204,7 @@ local function createMockPlayer(id, nick, entIndex)
         HasWeapon = function(self, cls) return self:GetWeapon(cls) ~= nil end,
         GetActiveWeapon = function(self) return activeClass and self:GetWeapon(activeClass) or nil end,
         SelectWeapon = function(_, cls) activeClass = cls end,
+        ClearDeathActiveWeapon = function() activeClass = nil end,
         GetAmmoCount = function(_, ammoID) return ammo[ammoID] or 0 end,
         SetNW2Bool = function() end,
         SetNW2Int = function() end,
@@ -259,8 +260,9 @@ hero2State.classId = "fighter"
 ps2.progressionState = hero2State
 ps2.lives = 3
 
--- A normal Hero death snapshots the still-owned native loadout even though the
--- engine already reports Alive() == false, then restores that exact run state.
+-- Native DoPlayerDeath still exposes the active gun while Alive() is false;
+-- PlayerDeath retains its magazines but has already lost that active pointer.
+-- Capture the earlier phase, then simulate the real native boundary between them.
 local pistol = p2:Give("weapon_pistol")
 local shotgun = p2:Give("weapon_shotgun")
 pistol:SetClip1(7); shotgun:SetClip1(3); p2:SelectWeapon("weapon_shotgun")
@@ -269,13 +271,28 @@ local retainedEquipment = {items={hat={definitionId="hat",count=1},
     healing_potion={definitionId="healing_potion",count=2}},
     slots={head="hat",throwable="healing_potion"}}
 ps2.equipment = retainedEquipment
+local inventoryBeforeDeath = ps2.inventory
+p2.LODRunInventoryReady = false
+hook.Run("DoPlayerDeath", p2, p1, {})
+check(ps2.inventory == inventoryBeforeDeath,
+    "Early death capture rejects an uninitialized respawn body")
+p2.LODRunInventoryReady = true
 p2:SetAlive(false)
+hook.Run("DoPlayerDeath", p2, p1, {})
+local deathInventory = ps2.inventory
+p2:ClearDeathActiveWeapon()
 hook.Run("PlayerDeath", p2, nil, p1)
+check(ps2.inventory == deathInventory,
+    "Late PlayerDeath cannot overwrite the earlier native loadout capture")
 check(ps2.lives == 2 and ps2.equipment == retainedEquipment,
     "Respawn retention keeps wearable and throwable equipment records")
 check(#ps2.inventory.weapons == 2 and ps2.inventory.activeWeaponClass == "weapon_shotgun"
     and ps2.inventory.ammo[1] == 19 and ps2.inventory.ammo[10] == nil and ps2.armor == 27,
-    "PlayerDeath captures weapons, active selection, reserve ammo and armor without stock grenades")
+    "DoPlayerDeath captures weapons, active selection, reserve ammo and armor before native teardown")
+RunManager:CaptureInventory(p2, ps2)
+hook.Run("DoPlayerDeath", p2, p1, {})
+check(ps2.inventory == deathInventory and ps2.inventory.activeWeaponClass == "weapon_shotgun",
+    "Dead late capture and replayed death cannot erase the saved active weapon")
 p2:StripWeapons(); p2:RemoveAllAmmo(); p2:SetArmor(0)
 p2:Spawn()
 local restoredPistol, restoredShotgun = p2:GetWeapon("weapon_pistol"), p2:GetWeapon("weapon_shotgun")
@@ -303,6 +320,10 @@ check(RunManager:IsSoldierControl(p1) == false, "A. P1 does NOT automatically be
 local okJoin, joinErr = RunManager:JoinSoldierRole(p1)
 check(okJoin == true, "B. JoinSoldierRole succeeded explicitly")
 check(RunManager:IsSoldierControl(p1) == true, "B. P1 is now under active Soldier control")
+local dormantInventory = ps1.inventory
+hook.Run("DoPlayerDeath", p1, p2, {})
+check(ps1.inventory == dormantInventory,
+    "Early Soldier death capture cannot overwrite the dormant Hero loadout")
 
 -- C. Active Soldier control does not alter Hero state
 check(ps1.progressionState.level == 5 and ps1.progressionState.xp == 1250, "C. Hero 1 level (5) and XP (1250) preserved untouched during Soldier play")
