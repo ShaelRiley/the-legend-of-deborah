@@ -1,81 +1,75 @@
 # Current checkpoint — autonomous native gameplay and defect campaign
 
-The October 26 user goal supersedes older next-test sequencing: actual-client
-play, demonstrated defect repair, requirement-to-test evidence and three varied
-clean final-candidate passes. Clean streak remains 0. Workshop/VPS, the 40 FPS
-goal and all October 23 timer/countdown/hourglass/inventory/reward choices remain
-deferred.
+The October26 user goal governs this campaign: actual-client play, demonstrated
+repairs, requirement-to-test evidence and three varied clean final-candidate
+passes. Clean streak remains0. Workshop/VPS publication, the40FPS goal and all
+October23 timer/countdown/hourglass/inventory/reward choices remain deferred.
 
-The BUG011 checkpoint precaches the shared configured stock gate model during
-ordinary server gate initialization. Cold native afdcbc had the asset mounted
-and a successful client constructor, but client IsValidModel stayed false and
-the real gate rendered its fallback. Explicit server precache changed that same
-camera to the intended blastdoor, proving the missing dependency. The repair
-passes 13 targeted checks, changed-file Lua5.4/LuaJIT compilation, an expected
-original-source failure and independent review. Fresh cold repaired-build native
-acceptance is pending; no traversal/collision/co-op acceptance follows from this
-camera fixture. See [BUG011](validation/AUTONOMOUS_PLAYTEST_20261026/gate-precache/BUG-011.json).
+Main source checkpoint `4322f105e519fec53c469877998eecd5b4d06a34` repairs two
+presentation defects found during ordinary fresh d66 Soldier combat. BUG012
+separates the Backstab notice's subject from its receiving player: an enemy hit
+now credits the actual enemy, through the existing canonical name formatter.
+Rogue qualification, damage, cache, geometry and audience remain unchanged.
+BUG013 registers the known Soldier projectile/generic hostile inflictors with
+existing stock kill icons in the normal client presentation authority, preserving
+unknown-class warnings. See [both defect records and exact evidence](validation/AUTONOMOUS_PLAYTEST_20261026/combat-feedback/receipt.json).
 
-Main `edfcdb26497ded707dc94b955f89fb3a68cfd4f0` contains ten repairs. Latest
-BUG010 wraps ordinary item tooltips within the native viewport; 10 focused
-positive checks, changed-file syntax/LuaJIT compilation, an original-source
-negative control and independent review pass. Native hover recheck is pending.
-See the [tooltip repair](validation/AUTONOMOUS_PLAYTEST_20261026/inventory-tooltip/BUG-010.json).
+Canonical12 focused commands, all927 Lua parses,7 changed-file LuaJIT compile
+checks and4 exact-original negative controls pass on unchanged source. Root
+independently reviewed all3 production diffs and both fixture integrations and
+reran both new helpers plus both composed suites, all4 exit0. The existing
+integration registry remains336 suites. Full candidate CI passed336/336 and927 Lua parses with unchanged source
+(digest055c7646b76c18cc7a9423df847511842555766f554ece613f885d293feb6d94);
+[proof](validation/AUTONOMOUS_PLAYTEST_20261026/remote-ci-4322/proof.json).
+Native repaired HUD/history/first-death icon gates remain pending. Earlier complete336/336 frozen CI on
+`3d33febe7fac68d3446a3ea689de386a6a3eb6f7` is separately retained in the
+[verified remote receipt](validation/AUTONOMOUS_PLAYTEST_20261026/gate-precache/ci-fixture/successor-3d33-remote.json).
 
-Fresh native `afdcbc096a56ad2b2f67b2cdf670e344f9366be9` passes BUG009's finite
-ordinary Spellbook/Character Sheet Escape gate: a focused Content child closes
-to the rendered world, and the next Escape opens normal stock pause. I/O/L
-navigation and the fourth-of-four Cloud Step selection/reopen are observed.
-Manual click/Escape return is observed; independent DHTML pixels/focus,
-Wallet/Options, rebound input and native minigame arbitration remain open.
-The source repair retains 17 targeted checks, 925 Lua parses and independent
-review. See the [native evidence and limits](validation/AUTONOMOUS_PLAYTEST_20261026/popup-escape/native-afdcbc/receipt.json).
+Last source-matched actual gameplay is d66 on the Valve Jupiter Steam Deck,
+Windows x86 GMod/Proton10, `gm_flatgrass`, seed6102602. Native settings were
+cheats0/dev0/LAN1; the captured HUD says UNRANKED. Ordinary portal entry, corridor
+walking, Soldier bolts and natural death/lives3-to2 are observed. Current normal
+client Die Log history preserves exact combat wording/order. Developer-only RPG
+session/summary files do not update in dev0 and are stale, so they are not used
+as current mechanics proof. Native enemy class, committed origin and facing
+were not captured; no standalone rear-cone or multiplier acceptance is claimed.
 
-Gameplay build `f6048a0ed942c83ec875e23443104dfde12143f2` contains eight repairs.
-BUG007/008 now pass their finite native gate: controlled Hero death saves the
-active SMG, and fresh F after the lockout restores HP100, active SMG25, pistol18,
-crowbar and zero reserve. Early F opens the rendered Tetris board; arrow input
-was sent and later F respawn was visually observed. Full Tetris scoring/rewards,
-exact 20s/60s boundaries, natural-combat and cooperative lifecycle acceptance
-remain open. See the [native lifecycle receipt](validation/AUTONOMOUS_PLAYTEST_20261026/death-lifecycle/fixed-runtime-f604/receipt.json).
+Earlier finite native gates remain: BUG009 ordinary Spellbook/Sheet child Escape
+and next normal stock pause on afdcbc; BUG010 long Crowbar/Pistol tooltip width,
+weapon replacement roundtrip and held Escape on d66; BUG011 cold model validation
+and intended stock blastdoor/red indicator through a15s camera-only fixture.
+See [d66 native evidence and limits](validation/AUTONOMOUS_PLAYTEST_20261026/native-d66/receipt.json).
+The camera gate does not prove traversal/Use/collision. Short tooltips, broad
+inventory, independent DHTML focus/pixels, rebound/controller input and full UI
+coverage remain open. The f604 death/retained-loadout/Tetris-opening checks and
+accepted collision/performance improvements remain regression constraints.
 
-The same f6048a0e build passed all 336 integration suites and 925 Lua parses on
-frozen source; before/after digest is
-`2cfa52cb2a8637a7f8b8e62f72759e9df3c471533e0337c73eb3e0fc45698ee5`.
-The [gate archive receipt](validation/AUTONOMOUS_PLAYTEST_20261026/combined-f604-integration-gate/archive.json)
-retains raw results and the complete source manifest. Static success does not
-accept the full campaign. Earlier chapter, material, map-legend, timeout-HUD and
-Wizard-card repairs retain their finite native evidence; ordinary rescued-NPC
-coverage is still pending.
+Fresh4322 startup is verified in both realms with0 Lua errors/0 Workshop mounts,
+cheats0/dev0/first-person0; GateDCRC164367339, FeedbackCRC266214824 and
+HostilePresentationCRC3365012306 match. Cold known-icon lookup returns true
+for both classes without a warning; actual first death still needs observation.
+The initial diagnostic batch was mistakenly typed before console focus and
+did not execute; its stray movement/chat/stock-binding warnings are retained,
+not mechanics evidence. The actual queries were rerun from a visually open
+console. Blake Slow Burn Garcia has now selected Fighter normally.
 
-Actual hardware is the Valve Jupiter Steam Deck, Windows x86 GMod/Proton10 on
-`gm_flatgrass`. Fresh f6048a0e seed6102601 uses cheats0/dev0, matches all 114
-mounted sources and verifies RunManager CRC925327479 / cl_tetris CRC1705465356.
-Current native afdcbc seed6102602 also matches all 114 startup sources and
-verifies theme CRC1212728956 / Sheet CRC1796671531, with cheats0/dev0 and LAN1.
-Automatic Lua refresh is disabled: later main's tooltip repair is not loaded,
-so this evidence does not establish current-main runtime parity. Live console
-through first deployment is retained; stale canonical console/summary files are
-explicitly qualified in the receipt and are not current mechanics evidence.
-Prior production starter/portal, walking and physical floor-map pickup/discovery
-observations remain. The earlier 180s traversal baseline measured 18.13 active
-FPS with its observer present; it establishes no repair attribution or 40 FPS
-claim.
+A bounded shared-prefix LAN attempt failed with no verified synchronized clients:
+the primary exited before owned cleanup, private cfg omitted stock valve.rc,
+and logs show a native missing-map error despite matching map copies. Exact
+cause remains partly unresolved. Logs/receipts and the isolated-prefix proposal
+are preserved in ignored .build/autonomous-playtest-20261027/lan-failure-1793119419920915938/.
+Do not repeat that unchanged launch. No authenticated second account is available.
 
-Next: continue the active single-client dungeon exploration, then fully
-quit/install/restart main and verify inventory CRC2838551934 and server gate
-initialization CRC153563205. Before any server precache diagnostic, the cold
-client must validate the configured gate model and render its stock body. The
-114 population fingerprint omits this entity file; verify it separately. Hover ordinary
-Crowbar/Pistol tiles at1280x800: complete tooltips must wrap within the viewport;
-verify adjacent select/equip/stow/close behavior. Continue bounded authored-family
-fixtures and the remaining native menu/input coverage without treating prior
-static or assisted checks as full-campaign acceptance.
-Ordinary full-campaign progression, endings/replay, detailed Tetris rewards and
-three clean varied passes remain unfinished. Only one Deck is available;
-two-real-client LAN smoke remains untried and distinct authenticated-account
-ownership/reconnect coverage remains a gap. Exact states and evidence are in the
-[coverage matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
+Next: observe actual Backstab and first-death feedback, then continue progression. The114 startup
+fingerprint omits the last client file; verify it separately. Observe actual
+Backstab source wording on rendered HUD and identical normal history; check
+cold known-icon registration before first death and then actual native kill
+notices/live console. Label any dev1 fixture separately from ordinary play.
+Resume ordinary campaign progression, authored encounter/event families,
+endings/reset/replay and remaining input coverage. Only one Deck/account is
+available; two-real-client synchronization and distinct-account coverage remain
+unaccepted. None of this is a clean campaign pass. Current results and gaps are
+in the [coverage matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
 
 # Current checkpoint — integrate retained partial performance improvements
 
