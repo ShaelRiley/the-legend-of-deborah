@@ -1,0 +1,158 @@
+{
+  "id": "BUG-016",
+  "recorded_utc": "2026-10-27T20:49:55.266Z",
+  "title": "SafeTeleport accepts a pre-death binding for a replacement Hero life",
+  "status": "Implemented/statically validated and independently reviewed on verified main d3c2dd2d. Original native stale-life movement is preserved; repaired native death/respawn acceptance remains pending.",
+  "severity": "Major lifecycle/state safety: an obsolete action can move the replacement Hero after death. Demonstrated64-unit in-cell relocation; no unobserved progression bypass, card loss or broader corruption is claimed.",
+  "baseline": {
+    "gameplay_commit": "74415d1a3f135052de467286a08ebc1907b1608a",
+    "native_prepared_and_build_label": "cd6274bf285bee0788b1f07bf3e6261e0cce2a1b",
+    "main_at_evidence_capture": "4e1a928ef97ed2feb2734d08e7e7355e5dc2edd7",
+    "source_module": "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua",
+    "source_sha256": "a615b9ada3d78710e56d8c9b5f451278542c4977bea6cd0eaa7f650301f5dc3e",
+    "source_crc32": 3252930173,
+    "identity_evidence": "../floor-support/native-repaired/prepared-provenance.json and source-{server,client}-proof.json; same continuously running fresh source15 native client."
+  },
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+    "client": "Windows x86 Garry's Mod under Proton, LuaJIT2.0.4/engine2026.09.17",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "campaign_epoch": 1,
+    "developer_mode": 1,
+    "unranked": true,
+    "Hero": "Logan \"Long Shot\" White",
+    "class": "wizard",
+    "qualification": "Developer diagnostic capture, console kill and bounded canonical relocation on an isolated private profile. Earlier ordinary character selection/deployment and natural combat are separate evidence; this is not an ordinary campaign pass."
+  },
+  "design": "design-reconciliation.json",
+  "reproduction": [
+    "In the source15 actual native private client, capture LIFET.b=SafeTeleport:Bind(currentHero) while lives2. Confirm Matches=true and both b.life and ps.equipmentLifeSerial printnil.",
+    "Use the native console kill to exercise actual death and respawn lifecycle. The Hero loses a life2->1. An earlyF opens the existing Tetris death minigame while WAIT14 is still mandatory; this is not an early respawn.",
+    "Wait through the mandatory gate and respawn: Hero aliveHP100/lives1, same player-state table0xc2ed89aa, LODRunSpawnSerial6. The old binding still returns Matches=true.",
+    "First attempt canonical MoveBound with old binding to the +X64 candidate. Geometry rejects and no move occurs; preserve as a rejected geometry control, not successful stale movement.",
+    "Choose a landing-approved point through canonical Landing; the safe probe selectsY-64. The same obsolete binding returns MoveBound=true and actually moves the replacement Hero fromY-2688 toY-2752.",
+    "Capture a fresh binding and restore through canonical MoveBound; fresh restore succeeds."
+  ],
+  "expected": "Once that Hero life dies and is replaced, the old binding must no longer match or commit movement. A fresh current-life binding must retain ordinary safe landing/movement and all existing geometry/run/graph/seed/role checks.",
+  "actual": {
+    "before_death": {
+      "lives": 2,
+      "bound_life": "nil",
+      "state_equipment_life": "nil",
+      "old_matches": true,
+      "player_state_pointer": "table:0xc2ed89aa",
+      "prior_canonical_spawn_serial": "not captured by the old binding/initial marker"
+    },
+    "after_respawn": {
+      "alive": true,
+      "lives": 1,
+      "HP_in_photo": 100,
+      "same_player_state": true,
+      "current_equipment_life": "nil",
+      "canonical_spawn_serial": 6,
+      "old_matches": true
+    },
+    "positive_safe_Y": {
+      "artifact": "pre-repair/stale-life-safe-target.json",
+      "sha256": "6514b29400fc9929cb3632d56f13f95e4e6152c9139d3fc523829c40c5e5c46e",
+      "before": [
+        -3840,
+        -2688,
+        -12271.017578125
+      ],
+      "destination": [
+        -3840,
+        -2752,
+        -12269.9375
+      ],
+      "stale_move_accepted": true,
+      "after": [
+        -3840,
+        -2752,
+        -12269.9375
+      ],
+      "fresh_restore": true,
+      "restored": [
+        -3840,
+        -2688,
+        -12269.9375
+      ],
+      "horizontal_displacement": 64
+    },
+    "initial_unsafe_X": {
+      "artifact": "pre-repair/stale-life-initial-unsafe-x.json",
+      "sha256": "52e451d17b68a80205d16c0d8abe6c7e3ab5c5d053354ed8de6cbc4f95972e33",
+      "old_matches": true,
+      "stale_move_accepted": false,
+      "position_unchanged": true,
+      "fresh_restore": true,
+      "qualification": "This first geometry-rejected attempt alone does not demonstrate stale movement. It remains explicit negative evidence beside the successful safe-Y probe."
+    }
+  },
+  "cause": "Bind records the absent ps.equipmentLifeSerial. Matches compares the absent current field to that savednil while the same player entity/state, run, graph and seed survive native respawn. Their equality admits a replacement body life. The canonical advancing LODRunSpawnSerial is not captured or compared.",
+  "repair": {
+    "owner": "native_environment_recovery",
+    "commit": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
+    "meaningful_regression": "Existing Warp Hole suite invokes the actual production PlayerSpawn hook while retaining the Hero state and nil legacy field, then reject stale Matches/MoveBound and permit fresh canonical Landing/move/restore. This avoids inventing a synthetic equipmentLifeSerial increment.",
+    "remote_main_source_commit_verified": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
+    "source_sha256": "d6bf46baa9034c70c4fe3d3bf5ac139705431e91833bbec2d0d78fa84f220866",
+    "source_crc32": 377454284,
+    "implementation": "Shared Bind/Matches repair now captures and compares the actual canonical player-body spawn marker while preserving old player-state/equipment-life/run/graph/seed guards. No floor-support, collision, damage, difficulty or GDD changes."
+  },
+  "evidence": {
+    "manifest": "pre-repair-manifest.json",
+    "console": "pre-repair/console.log.xz",
+    "markers": "pre-repair/console-markers.json",
+    "safe_probe_source": "pre-repair/stale-life-safe-target.lua.txt",
+    "safe_probe_source_sha256": "25a832a1d03f138fa21889431b8c56cc498e2b5683c9c2d8a5f34b73a237be4c",
+    "initial_probe_source": "pre-repair/stale-life-initial-unsafe-x.lua.txt",
+    "initial_probe_source_sha256": "bb6011210ef4296eea09ce9f00aa54a8f8c5b32929e50704c90a4e31198d384d",
+    "rpg_summary": "pre-repair/rpg_summary_latest.txt.xz",
+    "rpg_session": "pre-repair/rpg_session_latest.txt.xz",
+    "die_logger": "pre-repair/die_logger_history.json.xz",
+    "photos": [
+      {
+        "path": "pre-repair/mandatory-tetris-wait14.png",
+        "independently_viewed": true,
+        "claim": "Actual YOU DIED/Tetris WAIT14/lives1, not a respawn or BUG008."
+      },
+      {
+        "path": "pre-repair/replacement-life-alive.png",
+        "independently_viewed": true,
+        "claim": "Later actual aliveHP100/lives1 in the entrance."
+      },
+      {
+        "path": "pre-repair/replacement-life-console.png",
+        "independently_viewed": false,
+        "claim": "Exact original console frame preserved; raw LIFE_DEAD_OR_AFTER line supplies numeric state proof."
+      }
+    ],
+    "qualification": "Raw files/scripts and compressed logs are exact captured bytes with manifests. Logs were captured individually while root continued testing. No private cfg/db/prefix files or credentials copied. Probe sources archived as .lua.txt to avoid adding executable Lua gates."
+  },
+  "next_native_gate": "After the coherent source16 checkpoint is installed and freshly verified, capture a new binding before actual native death. Wait/respawn, verify oldMatches=false and oldMoveBound=false without replacement-life displacement, then verify a fresh binding permits the same canonical safe move and restore. Keep accepted floor-support, wall/hazard and same-life behavior intact.",
+  "limits": [
+    "Only the canonical stale binding/movement seam has a confirmed native reproduction; every caller is not claimed to have independently malfunctioned.",
+    "Initial blockedX and the correctly gated Tetris window are not game defects.",
+    "BUG015's prior same-life positive landing/return does not establish replacement-life rejection; this new defect reopens that distinct lifecycle coverage.",
+    "One real client only; cooperative Summon Card and shared-client synchronization remain unavailable.",
+    "No repaired native acceptance or final campaign clean pass is claimed."
+  ],
+  "clean_pass_streak": 0,
+  "static_evidence": {
+    "receipt": "static/receipt.json",
+    "qualification": "Source owner ran13 applicable adjacent suites,118-source manifest validator,927-file Lua parse and production LuaJIT. Final actual-spawn regression rejects exact original source15; root and independent reviewer cleared the actual diff. No new run of those gates is claimed by this evidence author.",
+    "original_negative": {
+      "original_source_sha256": "a615b9ada3d78710e56d8c9b5f451278542c4977bea6cd0eaa7f650301f5dc3e",
+      "returncode": 1,
+      "expected_failure": "Stale traversal accepted: spawn",
+      "mechanism": "Actual RunManager PlayerSpawn callback advances canonical body serial while exact ps pointer and nil equipmentLifeSerial remain unchanged."
+    },
+    "ground_and_remaining_module_bytes_unchanged_from_source15": true,
+    "native_repaired_acceptance": false,
+    "full_source16_integration_result": "Not inferred here; required CI tracking is separate."
+  }
+}

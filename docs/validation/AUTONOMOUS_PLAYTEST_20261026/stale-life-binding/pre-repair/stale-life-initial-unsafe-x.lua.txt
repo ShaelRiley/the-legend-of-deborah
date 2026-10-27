@@ -1,0 +1,17 @@
+local p,b=LIFET.p,LIFET.b
+local T,R,N=LOD.SafeTeleport,LOD.RunManager,LOD.MazeNavigator
+local ps=R:GetPlayerState(p)
+local home=p:GetPos()
+local cell=T:CellAt(R.State.Graph,home)
+local dest=cell and N:CellCenter(cell)+Vector(64,0,0)
+local function v(a) return {a.x,a.y,a.z} end
+local r={kind="native_stale_life_binding_probe",seed=R.State.LevelSeed,epoch=R.State.CampaignEpoch,alive=p:Alive(),lives=ps.lives,playerStateSame=ps==b.ps,boundLife=tostring(b.life),currentLife=tostring(ps.equipmentLifeSerial),spawn=p.LODRunSpawnSerial,expectedOldMatches=false,actualOldMatches=T:Matches(b),before=v(home)}
+if p:Alive() and cell and T:FlatCell(R.State.Graph,cell) and r.actualOldMatches then
+ r.staleMoveAccepted=T:MoveBound(b,dest,nil,cell)
+ r.after=v(p:GetPos())
+ local fresh=T:Bind(p)
+ r.restoredWithFreshBinding=T:MoveBound(fresh,home,nil,cell)
+ r.restored=v(p:GetPos())
+end
+file.Write("legend_of_deborah/stale_life_probe_latest.json",util.TableToJSON(r))
+print("STALE_LIFE_PROBE="..util.TableToJSON(r))

@@ -1,0 +1,30 @@
+{
+  "kind": "BUG016 live normalized design reconciliation; not a replacement design authority",
+  "read_utc": "2026-10-27T20:49:55.266Z",
+  "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "document_url": "https://docs.google.com/document/d/1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+  "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+  "navigation": "Live00 then01 read earlier in this campaign; exact required normalized06 paragraphs freshly resolved. No HUMAN fallback or GDD edit.",
+  "tab": "06 — MULTIPLAYER, LIFECYCLE & UI",
+  "tab_id": "t.5ffvxbn7lbs",
+  "requirements": [
+    {
+      "id": "LOD-EVENT-WARP-001",
+      "range": [
+        46324,
+        46937
+      ],
+      "expected": "Revalidate exact actor, account, Hero state/body life, endpoints, graph/generation/run/clock/current route after clearance and immediately before moving. Stale arrivals must reject without moving a replacement Hero."
+    },
+    {
+      "id": "LOD-SAFE-TRAVEL-001",
+      "range": [
+        56581,
+        56937
+      ],
+      "expected": "At commit revalidate owner/target/item/current run/level/graph/identity-state/life. Life replacement, disconnect/reconnect or dungeon transition invalidates old selection."
+    }
+  ],
+  "implementation_reconciliation": "SafeTeleport Bind/Matches stores ps.equipmentLifeSerial, which is nil in the actual Hero. RunManager reuses that player-state table after respawn, so nil==nil fails to distinguish body lives. The existing actual PlayerSpawn LODRunSpawnSerial is the canonical advancing body marker; a repair should preserve all other state/geometry/spend guards.",
+  "finite_gate": "An old binding captured before native death must reject after mandatory wait/respawn even when account/player/state/run/graph/seed stay the same. Safe current-life fresh bindings must still permit the same legal landing and restoration."
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "BUG016 pre-repair evidence integrity; not repaired gameplay acceptance",
+  "utc": "2026-10-27T20:51:03.434423+00:00",
+  "status": "pass",
+  "checks": [
+    "exact:pre-repair/stale-life-safe-target.lua.txt",
+    "exact:pre-repair/stale-life-initial-unsafe-x.lua.txt",
+    "exact:pre-repair/stale-life-initial-unsafe-x.json",
+    "exact:pre-repair/stale-life-safe-target.json",
+    "exact:pre-repair/console.log.xz",
+    "exact:pre-repair/die_logger_history.json.xz",
+    "exact:pre-repair/rpg_summary_latest.txt.xz",
+    "exact:pre-repair/rpg_session_latest.txt.xz",
+    "exact:pre-repair/mandatory-tetris-wait14.png",
+    "exact:pre-repair/replacement-life-alive.png",
+    "exact:pre-repair/replacement-life-console.png",
+    "initial geometry rejection retained; no fabricated movement",
+    "safe-Y obsolete binding actually moves replacement life64units; fresh restore succeeds",
+    "same-state actual death/respawn count and stale-match markers"
+  ],
+  "qualification": "Probe variants remain distinct; initialX rejection and mandatoryTetris wait are not defect positives. SafeY stale movement is the actual reproduction. Raw source/log/image bytes are preserved."
+}

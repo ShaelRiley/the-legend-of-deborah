@@ -1,0 +1,116 @@
+{
+  "kind": "BUG016 exact source15 stale binding native snapshots; individually captured during continuing play",
+  "utc": "2026-10-27T20:45:39.004496+00:00",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/stale_life_probe_safe_target.lua",
+      "archived_as": "pre-repair/stale-life-safe-target.lua.txt",
+      "raw_bytes": 1187,
+      "raw_sha256": "25a832a1d03f138fa21889431b8c56cc498e2b5683c9c2d8a5f34b73a237be4c",
+      "archive_bytes": 1187,
+      "archive_sha256": "25a832a1d03f138fa21889431b8c56cc498e2b5683c9c2d8a5f34b73a237be4c",
+      "compression": "none",
+      "source_mtime_ns": 1793133785698448947
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/stale_life_probe_initial.lua",
+      "archived_as": "pre-repair/stale-life-initial-unsafe-x.lua.txt",
+      "raw_bytes": 1003,
+      "raw_sha256": "bb6011210ef4296eea09ce9f00aa54a8f8c5b32929e50704c90a4e31198d384d",
+      "archive_bytes": 1003,
+      "archive_sha256": "bb6011210ef4296eea09ce9f00aa54a8f8c5b32929e50704c90a4e31198d384d",
+      "compression": "none",
+      "source_mtime_ns": 1793133785698198727
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source15-native/stale_life_probe_initial.json",
+      "archived_as": "pre-repair/stale-life-initial-unsafe-x.json",
+      "raw_bytes": 389,
+      "raw_sha256": "52e451d17b68a80205d16c0d8abe6c7e3ab5c5d053354ed8de6cbc4f95972e33",
+      "archive_bytes": 389,
+      "archive_sha256": "52e451d17b68a80205d16c0d8abe6c7e3ab5c5d053354ed8de6cbc4f95972e33",
+      "compression": "none",
+      "source_mtime_ns": 1793133785698378887
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/stale_life_probe_latest.json",
+      "archived_as": "pre-repair/stale-life-safe-target.json",
+      "raw_bytes": 423,
+      "raw_sha256": "6514b29400fc9929cb3632d56f13f95e4e6152c9139d3fc523829c40c5e5c46e",
+      "archive_bytes": 423,
+      "archive_sha256": "6514b29400fc9929cb3632d56f13f95e4e6152c9139d3fc523829c40c5e5c46e",
+      "compression": "none",
+      "source_mtime_ns": 1793133786472156556
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/console.log",
+      "archived_as": "pre-repair/console.log.xz",
+      "raw_bytes": 370939,
+      "raw_sha256": "c65fa955ae1d68ba764f8c7b014316871401fcccaa5405890ac3019d3bb3a437",
+      "archive_bytes": 11000,
+      "archive_sha256": "e7be751770104b757b581c4003b65b1da331e5ef1b2a232bcdadee81c74f29b7",
+      "compression": "xz",
+      "source_mtime_ns": 1793133934421525974
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/die_logger_history.json",
+      "archived_as": "pre-repair/die_logger_history.json.xz",
+      "raw_bytes": 176531,
+      "raw_sha256": "febc4d51d3cb2b69132bbce234b49a730a9b8b361cfa2f6600d1a71e5e1028df",
+      "archive_bytes": 6820,
+      "archive_sha256": "45911277c0693ec6c364bd1d80d0256e742b0c8c849e3f2b405fae69d88922f7",
+      "compression": "xz",
+      "source_mtime_ns": 1793133433294126776
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_summary_latest.txt",
+      "archived_as": "pre-repair/rpg_summary_latest.txt.xz",
+      "raw_bytes": 2995,
+      "raw_sha256": "fc287120b4f8c2d6f5b0f1b24a7755f5ac0f6b19656ec18a72aa0e731430ede4",
+      "archive_bytes": 1500,
+      "archive_sha256": "f73d47cddf3a4afac6b2f4ef8c80cdf5a869fe36083ef8f3f75d7d2458c1f313",
+      "compression": "xz",
+      "source_mtime_ns": 1793133934431956685
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_session_latest.txt",
+      "archived_as": "pre-repair/rpg_session_latest.txt.xz",
+      "raw_bytes": 218869,
+      "raw_sha256": "b5c6329672c17ff96fe9e438a530acb521e47156af98bb9554af56aa59a16e4c",
+      "archive_bytes": 12176,
+      "archive_sha256": "a28906d4b43f35ea088d046416341865560683931cf540bc261cf1619193dcb7",
+      "compression": "xz",
+      "source_mtime_ns": 1793133934432550722
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793133437758256128-deborah-source15-life-boundary-respawn.png",
+      "archived_as": "pre-repair/mandatory-tetris-wait14.png",
+      "raw_bytes": 547542,
+      "raw_sha256": "37c540edf5d67d8316303dafe2271870c89c56851dc96627aad51daa0e8f36e9",
+      "archive_bytes": 547542,
+      "archive_sha256": "37c540edf5d67d8316303dafe2271870c89c56851dc96627aad51daa0e8f36e9",
+      "compression": "none",
+      "source_mtime_ns": 1793133437718140737
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793133557207345399-deborah-source15-life-boundary-after-wait.png",
+      "archived_as": "pre-repair/replacement-life-alive.png",
+      "raw_bytes": 1303408,
+      "raw_sha256": "ccf80f17081656a667ec08ea794e51e101a9294f098d35012053faa9ecd8fade",
+      "archive_bytes": 1303408,
+      "archive_sha256": "ccf80f17081656a667ec08ea794e51e101a9294f098d35012053faa9ecd8fade",
+      "compression": "none",
+      "source_mtime_ns": 1793133557166505995
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793133558262199885-deborah-source15-life-post-console.png",
+      "archived_as": "pre-repair/replacement-life-console.png",
+      "raw_bytes": 600382,
+      "raw_sha256": "963abcae094d71a8b941c9739e95e7f2ed8f5005f371213cede468b6173c8cef",
+      "archive_bytes": 600382,
+      "archive_sha256": "963abcae094d71a8b941c9739e95e7f2ed8f5005f371213cede468b6173c8cef",
+      "compression": "none",
+      "source_mtime_ns": 1793133558220509126
+    }
+  ]
+}

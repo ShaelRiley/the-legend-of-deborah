@@ -1,0 +1,26 @@
+{
+  "source": "console.log.xz",
+  "kind": "Actual stale-binding lifecycle and both probe attempts; exact raw lines copied",
+  "markers": [
+    {
+      "line": 424,
+      "text": "LIFE_PRE\t2\tnil\tnil\ttrue"
+    },
+    {
+      "line": 426,
+      "text": "LIFE_PS\ttable: 0xc2ed89aa\t-1\tnil"
+    },
+    {
+      "line": 448,
+      "text": "LIFE_DEAD_OR_AFTER\ttrue\t1\ttable: 0xc2ed89aa\tnil\t6\ttrue"
+    },
+    {
+      "line": 461,
+      "text": "STALE_LIFE_PROBE={\"spawn\":6,\"seed\":1550561962,\"actualOldMatches\":true,\"restored\":[-3840,-2688,-12269.9375],\"before\":[-3840,-2688,-12271.376953125],\"after\":[-3840,-2688,-12271.376953125],\"staleMoveAccepted\":false,\"boundLife\":\"nil\",\"restoredWithFreshBinding\":true,\"currentLife\":\"nil\",\"lives\":1,\"epoch\":1,\"expectedOldMatches\":false,\"kind\":\"native_stale_life_binding_probe\",\"playerStateSame\":true,\"alive\":true}"
+    },
+    {
+      "line": 474,
+      "text": "STALE_LIFE_PROBE={\"spawn\":6,\"seed\":1550561962,\"staleMoveAccepted\":true,\"restoredWithFreshBinding\":true,\"currentLife\":\"nil\",\"epoch\":1,\"after\":[-3840,-2752,-12269.9375],\"actualOldMatches\":true,\"boundLife\":\"nil\",\"restored\":[-3840,-2688,-12269.9375],\"alive\":true,\"expectedOldMatches\":false,\"before\":[-3840,-2688,-12271.017578125],\"destination\":[-3840,-2752,-12269.9375],\"playerStateSame\":true,\"kind\":\"native_stale_life_binding_probe\",\"lives\":1}"
+    }
+  ]
+}
