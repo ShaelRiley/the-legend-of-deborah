@@ -1,0 +1,94 @@
+{
+  "archived_file_sha256": {
+    "raw/closed_performance_client_latest.txt": "c51cdf5ec274dfc3eaae31ed927888550825cbe735b10890e3e4ea561d6a23bb",
+    "raw/closed_private_profile_client_proof.json": "b7c84d256416b6c689593de00338a69dc4fac4d4d6c67506ded58237b5368999",
+    "raw/closed_private_profile_server_proof.json": "dcbf777c2c2d5ca298ac16c2f663ff91bde79a7a7aca87d290b6068d98f0a749",
+    "raw/closed_source17_red_gate_sight_setup.json": "5fe267e2b582f00ccc34e36e54e6971e44ca59b8c41c9a501945f4bfc783cd46",
+    "raw/closed_source18_health_sight_oracle_client_latest.json": "8b627ce4080b4cc76ecedd50860a63b2a64ad674792dc0fd7eb92254aacdb5ed",
+    "raw/closed_source18_health_sight_oracle_server_latest.json": "7f789eb6aef44fc9d9f084d66c8673a627eeaa109741ee5cf65486ec78489559",
+    "raw/console-through-open-return.log": "9e2d7ce0a981e05de0ba49c45bd3d0f14e9cc65637cef695b91e4f5b3af2717e",
+    "raw/open_source18_health_sight_oracle_client_latest.json": "6efc0853796fd29eb9e4f470af95be95781c4b19c55c9c8108221d780ada1fdd",
+    "raw/open_source18_health_sight_oracle_server_latest.json": "ce4a53531b5262feadfb6bf534faa408211cd0718894867f5ca2893e9b69815a",
+    "raw/open_source18_red_gate_after_card_setup.json": "09e930bf28dbb1d3c99a66093d69ac20a32209026ad7fc08b1e0aa2f5df46148",
+    "raw/open_source18_redcard_approach_latest.json": "6647acac0f6a37749335542dbb0b82e83eccc960e2dc199098e2be4e0e4d483a",
+    "helpers/source18_health_sight_oracle.lua": "efa8e68b3138bdd837251022b1df2e5930e9f1080e48ee84e8f4a02da71113e6",
+    "helpers/source18_redcard_approach8.lua": "4db528c8abfe506997e3020893a089f40a690cf5024eaa4f5d62a110526da645",
+    "helpers/source18_red_gate_after_card_setup.lua": "c20e52a4750e7c8c98ecebc7f9040205a6278dd92b5f6b68c9415594a68931a9",
+    "helpers/red_gate_sight_setup.lua": "5f74cbf1e38bcf8854b4769fcc66db3b4471d4e19953a809e51b8fd70584b2f7",
+    "photos/source18-character-choices.png": "063c61a5d3b99bc07c803e3c0cf27d2ab3eee537da67f49e883b3a1aa3804ff6",
+    "photos/source18-feat-draft.png": "291e7b82fe833bea5ec833fe100fca153dd55fb2272d21019f448b3e3a82fef4",
+    "photos/source18-ordinary-first-entry.png": "57f99b9bfa781a7ce3df745029dde210cba214c1d0a63b6cba61a414676151d5",
+    "photos/source18-closed-red-gate.png": "4c8e16f2482f7b7e7b17dfbe63d1913dc3c6d470b177dcda0ac875b87817bf5a",
+    "photos/source18-natural-redcard-return.png": "a0e7d71cfd702aa79d0babc2a4bcaefbb709befd9f8715d486e26b60dcf9d325",
+    "photos/source18-after-death-console.png": "f8d20296173db138799f717ac12d7e2bed13f10bdc9808886e1cf36dce32b509",
+    "photos/source18-returned-after-open-check.png": "6db6785325933229f755b89f6fe28e6c3834dc4f9c6c75b8ed79637089d03890",
+    "source/prepared.json": "03bc5742fb81c22f2e7c609350848fff73ebf279e52f0656a6047ea0b82d8b45"
+  },
+  "archive_sha256": "f6c30af7506d0d83c30714c129d918723f6ee42fe2e7aa9cca68d862328f62ac",
+  "photos": [
+    {
+      "name": "character-choices",
+      "sha256": "063c61a5d3b99bc07c803e3c0cf27d2ab3eee537da67f49e883b3a1aa3804ff6",
+      "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793142857402113079-source18-character-choices.png",
+      "independently_viewed": true,
+      "file": "raw-evidence.tar.xz:photos/source18-character-choices.png"
+    },
+    {
+      "name": "feat-draft",
+      "sha256": "291e7b82fe833bea5ec833fe100fca153dd55fb2272d21019f448b3e3a82fef4",
+      "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143087088365566-source18-feat-draft.png",
+      "independently_viewed": true,
+      "file": "raw-evidence.tar.xz:photos/source18-feat-draft.png"
+    },
+    {
+      "name": "ordinary-first-entry",
+      "sha256": "57f99b9bfa781a7ce3df745029dde210cba214c1d0a63b6cba61a414676151d5",
+      "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143125153489488-source18-ordinary-first-entry.png",
+      "independently_viewed": true,
+      "file": "raw-evidence.tar.xz:photos/source18-ordinary-first-entry.png"
+    },
+    {
+      "name": "closed-red-gate",
+      "sha256": "4c8e16f2482f7b7e7b17dfbe63d1913dc3c6d470b177dcda0ac875b87817bf5a",
+      "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143161539058836-source18-closed-red-gate.png",
+      "independently_viewed": true,
+      "file": "raw-evidence.tar.xz:photos/source18-closed-red-gate.png"
+    },
+    {
+      "name": "closed-gate-no-health-name",
+      "sha256": "d31d3f32c232e8a72d64d354703369f1a2af17b7b101537b829e86a7f603b2f4",
+      "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143263793450276-source18-closed-gate-no-health-name.png",
+      "independently_viewed": true,
+      "file": "closed-gate-no-health-name.png"
+    },
+    {
+      "name": "natural-redcard-return",
+      "sha256": "a0e7d71cfd702aa79d0babc2a4bcaefbb709befd9f8715d486e26b60dcf9d325",
+      "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143305475442522-source18-natural-redcard-return.png",
+      "independently_viewed": true,
+      "file": "raw-evidence.tar.xz:photos/source18-natural-redcard-return.png"
+    },
+    {
+      "name": "after-death-console",
+      "sha256": "f8d20296173db138799f717ac12d7e2bed13f10bdc9808886e1cf36dce32b509",
+      "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143371743619334-source18-after-death-console.png",
+      "independently_viewed": true,
+      "file": "raw-evidence.tar.xz:photos/source18-after-death-console.png"
+    },
+    {
+      "name": "open-red-gate-positive",
+      "sha256": "e5407bf3610b9503771ccd5586fd57c87b9b93141019eb81d4f9625ee7b18121",
+      "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143414030788037-source18-open-red-gate-positive.png",
+      "independently_viewed": true,
+      "file": "open-red-gate-positive.png"
+    },
+    {
+      "name": "returned-after-open-check",
+      "sha256": "6db6785325933229f755b89f6fe28e6c3834dc4f9c6c75b8ed79637089d03890",
+      "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143446903980960-source18-returned-after-open-check.png",
+      "independently_viewed": true,
+      "file": "raw-evidence.tar.xz:photos/source18-returned-after-open-check.png"
+    }
+  ],
+  "audit_nonce_qualification": "Audit token is an owned local profile nonce, not an account credential; no credentials were copied into the prepared profile."
+}

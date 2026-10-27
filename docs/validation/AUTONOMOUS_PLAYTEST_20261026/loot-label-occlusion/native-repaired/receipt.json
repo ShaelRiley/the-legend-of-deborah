@@ -1,0 +1,191 @@
+{
+  "kind": "finite native source18 closed-cover/visible-pickup acceptance",
+  "utc": "2026-10-27T23:30:28.125747+00:00",
+  "gameplay_commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "prepared_and_rendered_build_label": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b",
+  "source_provenance": "source-provenance.json",
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD CustomAPU0405 / amdgpu1002:163F",
+    "client": "Windows x86 Garry Mod2026.09.17/LuaJIT2.0.4 under Proton10",
+    "gamemode": "legend_of_deborah",
+    "map": "gm_flatgrass",
+    "pixels": [
+      1280,
+      800
+    ],
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "layout_seed": 1967490589,
+    "real_clients": 1,
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true,
+    "host_pid_root_verified": 95782,
+    "host_birth_root_verified": "6693172",
+    "clock": "Screenshots show30:00 awaiting first Hero, then active29:23\u219227:41\u219225:11 progression. Setup/oracle scripts do not alter the clock. This remains a developer fixture, not a normal timed campaign pass."
+  },
+  "finite_gate": {
+    "result": "PASS for original Health-through-closed-Redgate defect and same-pickup open/visible control",
+    "expected_source": "../design-reconciliation.json (live GDD008/010)",
+    "Health_entity": {
+      "id": 1054,
+      "birth": 1269,
+      "center": [
+        -2620,
+        3072,
+        -12229.96875
+      ]
+    },
+    "Redgate_entity": {
+      "id": 967,
+      "birth": 1176
+    },
+    "closed": {
+      "eye": [
+        -3040,
+        3072,
+        -12207.017578125
+      ],
+      "both_realms_visible": false,
+      "both_realms_qualifies512": false,
+      "HUD_cached_target_valid": false,
+      "pickup_exists_and_unique_at_original_anchor": true,
+      "photo": "closed-gate-no-health-name.png"
+    },
+    "open": {
+      "eye": [
+        -2956.132568359375,
+        3072,
+        -12207.9375
+      ],
+      "both_realms_visible": true,
+      "both_realms_qualifies512": true,
+      "HUD_cached_target_id": 1054,
+      "card_owned": true,
+      "gate_opened": true,
+      "photo": "open-red-gate-positive.png"
+    },
+    "ray_qualification": "The same existing Health and gate identities/centers are compared; ordinary forward movement changed the eye by83.8674units horizontally and0.9199vertically. This is not an identical frozen-ray before/after-opening comparison. Independent existence lookup prevents mistaking a removed pickup for a passed occlusion test.",
+    "same_native_life_for_closed_and_open": false,
+    "life_qualification": "Closed observation precedes the natural Runner death (spawn4); open positive control follows ordinary respawn and a fresh binding (spawn5). Same pickup/gate identities persist across these lives."
+  },
+  "ordinary_and_fixture_actions": {
+    "character": "Jonathan The Local Scott / Eli Vance; ordinary character UI and feat draft shown. Specific final class/feat selection not inferred from partial screenshots.",
+    "staging_photo_qualification": "ordinary-first-entry filename shows starter acquired and E portal prompt with AWAITING FIRST HERO; it is before portal activation. Subsequent frozen population shows deployment, so the photo alone is not claimed as completed entry.",
+    "closed_setup": "Reviewed source17-origin locator, using current living binding, supported before-gate landing and unlocked graph route. Explicit relocation; no ordinary route traversal claim.",
+    "natural_Redcard": "Root reports ordinary W0.6 after supported96-unit approach; actual card971/birth1180 removed and Cards1false\u2192true. No grant/CollectCard/open calls in helper.",
+    "death_and_recovery": "Runner native kill occurs within8s, screenshot lives3\u21922 and console killed-by-hostile. SameHeroAtReturnfalse correctly prevents the scheduled stale move. This is legitimate death, not fixture failure. Root reports normal F after20s; fresh after-card setup binds spawn5 versus earlier4.",
+    "open_input": "Root reports W0.4/E0.2; actual Redgate opens, checkpoint1/nextBlue objective displayed; both realms and HUD again expose the same Health.",
+    "fresh_return": {
+      "console_RETURN18": true,
+      "returned_position": [
+        -3840.0,
+        -2688.0,
+        -12269.9375
+      ],
+      "original_home": [
+        -3840,
+        -2688,
+        -12271.376953125
+      ],
+      "same_XY": true,
+      "exact_Z_restoration_claimed": false,
+      "qualification": "Canonical supported landing returned exacthomeXY with Z about1.43945higher; later gravity settlement is not measured here."
+    }
+  },
+  "performance": "performance-verification.json",
+  "errors_and_warnings": {
+    "frozen_Lua_exception_signatures": 0,
+    "retained_startup_warnings": [
+      {
+        "line": 6,
+        "text": "Unknown command \"con_enable\""
+      },
+      {
+        "line": 8,
+        "text": "Unknown command \"con_enable\""
+      }
+    ],
+    "interpretation": "con_enable appears in the private fixture config; these2bootstrap Unknown-command warnings remain raw. Native source counters within the sample and later build markers remain0; no all-session warning-free claim."
+  },
+  "evidence": {
+    "raw_archive": "raw-evidence.tar.xz",
+    "manifest": "artifact-manifest.json",
+    "photos": [
+      {
+        "name": "character-choices",
+        "sha256": "063c61a5d3b99bc07c803e3c0cf27d2ab3eee537da67f49e883b3a1aa3804ff6",
+        "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793142857402113079-source18-character-choices.png",
+        "independently_viewed": true,
+        "file": "raw-evidence.tar.xz:photos/source18-character-choices.png"
+      },
+      {
+        "name": "feat-draft",
+        "sha256": "291e7b82fe833bea5ec833fe100fca153dd55fb2272d21019f448b3e3a82fef4",
+        "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143087088365566-source18-feat-draft.png",
+        "independently_viewed": true,
+        "file": "raw-evidence.tar.xz:photos/source18-feat-draft.png"
+      },
+      {
+        "name": "ordinary-first-entry",
+        "sha256": "57f99b9bfa781a7ce3df745029dde210cba214c1d0a63b6cba61a414676151d5",
+        "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143125153489488-source18-ordinary-first-entry.png",
+        "independently_viewed": true,
+        "file": "raw-evidence.tar.xz:photos/source18-ordinary-first-entry.png"
+      },
+      {
+        "name": "closed-red-gate",
+        "sha256": "4c8e16f2482f7b7e7b17dfbe63d1913dc3c6d470b177dcda0ac875b87817bf5a",
+        "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143161539058836-source18-closed-red-gate.png",
+        "independently_viewed": true,
+        "file": "raw-evidence.tar.xz:photos/source18-closed-red-gate.png"
+      },
+      {
+        "name": "closed-gate-no-health-name",
+        "sha256": "d31d3f32c232e8a72d64d354703369f1a2af17b7b101537b829e86a7f603b2f4",
+        "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143263793450276-source18-closed-gate-no-health-name.png",
+        "independently_viewed": true,
+        "file": "closed-gate-no-health-name.png"
+      },
+      {
+        "name": "natural-redcard-return",
+        "sha256": "a0e7d71cfd702aa79d0babc2a4bcaefbb709befd9f8715d486e26b60dcf9d325",
+        "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143305475442522-source18-natural-redcard-return.png",
+        "independently_viewed": true,
+        "file": "raw-evidence.tar.xz:photos/source18-natural-redcard-return.png"
+      },
+      {
+        "name": "after-death-console",
+        "sha256": "f8d20296173db138799f717ac12d7e2bed13f10bdc9808886e1cf36dce32b509",
+        "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143371743619334-source18-after-death-console.png",
+        "independently_viewed": true,
+        "file": "raw-evidence.tar.xz:photos/source18-after-death-console.png"
+      },
+      {
+        "name": "open-red-gate-positive",
+        "sha256": "e5407bf3610b9503771ccd5586fd57c87b9b93141019eb81d4f9625ee7b18121",
+        "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143414030788037-source18-open-red-gate-positive.png",
+        "independently_viewed": true,
+        "file": "open-red-gate-positive.png"
+      },
+      {
+        "name": "returned-after-open-check",
+        "sha256": "6db6785325933229f755b89f6fe28e6c3834dc4f9c6c75b8ed79637089d03890",
+        "durable_input": ".build/autonomous-playtest-20261027/screenshots/1793143446903980960-source18-returned-after-open-check.png",
+        "independently_viewed": true,
+        "file": "raw-evidence.tar.xz:photos/source18-returned-after-open-check.png"
+      }
+    ],
+    "full_CI": "../../ci-source18/verification.json"
+  },
+  "remaining": [
+    "Native cargo-wall/gap/invisible-header and Omniscience eligibility/positive controls remain separate; static checks are not native presentation acceptance.",
+    "Stock Chromium fallback in the private profile remains an environment/UI gap, visible behind the after-death console.",
+    "No full authored campaign, success/failure ending, reset/replay or cooperative synchronization acceptance. Both realms here belong to one real client.",
+    "No3clean passes and no absolute bug-absence claim. No40FPS or causal optimization claim."
+  ],
+  "clean_pass_streak": 0,
+  "full_campaign_pass": false,
+  "cooperative_acceptance": false,
+  "no_changes_by_evidence_agent": "Only this native-repaired evidence directory written; no gameplay control, private installation/live DATA, production, GDD, root plan/matrix or sibling defect record edits."
+}

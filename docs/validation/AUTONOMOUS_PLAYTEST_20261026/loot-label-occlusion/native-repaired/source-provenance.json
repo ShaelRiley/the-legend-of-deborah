@@ -1,0 +1,20 @@
+{
+  "gameplay_commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "prepared_and_rendered_label_commit": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b",
+  "prepared_file": ".build/autonomous-playtest-20261027/source15-fresh/session-1793142464596271900/prepared.json",
+  "prepared_sha256": "03bc5742fb81c22f2e7c609350848fff73ebf279e52f0656a6047ea0b82d8b45",
+  "prepared_production_tree_identity": {
+    "gamemodes": "c42eb4f053321589a7b531ac072cb7914ac1071f",
+    "lua": "e2ab4ef2e3ef451336fa4c60d06dbd9fdac1cf45",
+    "sound": "600815fef14f7b13e7ba2d93d0090d8c3025b14b"
+  },
+  "prepared_production_manifest_entries": 576,
+  "prepared_manifest_equals_exact_CI_gameplay_production": true,
+  "gameplay_to_prepared_production_diff": [],
+  "nine_native_source_guards_both_realms": true,
+  "native_gamemode_map_cfg_DATA_guards_both_realms": true,
+  "NearLookCRC": "84557611",
+  "SafeTeleportCRC": "377454284",
+  "raw_audit_field_qualification": "Raw audit campaign_seed_actual is assigned RunManager.State.LevelSeed by the audit builder; value1550561962 is the level seed, not campaign6102602. Campaign is independently present in frozen setup/population. Audit native_gameplay_accepted=false describes boundary-only scope and is not overwritten.",
+  "private_runtime_reads_in_this_bank": "Only frozen source18-native files and immutable prepared.json were read; no currently live DATA or private source files were inspected or changed."
+}

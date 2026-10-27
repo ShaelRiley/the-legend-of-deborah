@@ -1,0 +1,169 @@
+{
+  "kind": "independently recomputed source18 closed-gate native frame sample and qualified source17 comparison",
+  "source18": {
+    "raw_file": "raw-evidence.tar.xz:raw/closed_performance_client_latest.txt",
+    "raw_sha256": "c51cdf5ec274dfc3eaae31ed927888550825cbe735b10890e3e4ea561d6a23bb",
+    "ordered_sample_count": 910,
+    "active_ranges": [
+      {
+        "last": 910,
+        "first": 1
+      }
+    ],
+    "metrics": {
+      "frames": 910,
+      "seconds": 29.969029,
+      "fps": 30.364680817653454,
+      "median_ms": 31.972,
+      "p95_ms": 39.778,
+      "p99_ms": 47.413,
+      "max_ms": 54.976,
+      "over50": 4,
+      "over100": 0,
+      "one_percent_low_fps": 19.954981561597037
+    },
+    "metadata_matches_all_recomputed_values": true,
+    "configuration_start_end_equal": true,
+    "configuration_changes": [],
+    "configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": false,
+      "fps_max": "150",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-1",
+      "lod_boss_binary_snapshots": "1",
+      "lod_container_model_pool": "1",
+      "r_shadows": "1",
+      "r_waterforceexpensive": "1",
+      "lod_map_scale": "1",
+      "window_mode": "user-recorded",
+      "lod_third_person": "0",
+      "mat_picmip": "0",
+      "mat_antialias": "0",
+      "architecture": "x86",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "lod_map_opacity": "1",
+      "lod_wall_batches": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "source": {
+      "verified": true,
+      "checked": 52,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "population": {
+      "campaign": 6102602,
+      "layoutSeed": 1967490589,
+      "level": 1,
+      "developerDense": true,
+      "aliveBodies": 40,
+      "aliveWanderers": 36,
+      "plannedBodies": 43,
+      "gates": [
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    "resources": {
+      "entities": {
+        "start": 2422,
+        "end": 2422
+      },
+      "wall_models": {
+        "start": 1372,
+        "end": 1372
+      },
+      "meshes": {
+        "start": 90,
+        "end": 90
+      },
+      "lua_errors": {
+        "start": 0,
+        "end": 0
+      },
+      "install": {
+        "start": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b clean-private-source18-fixtures ",
+        "end": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b clean-private-source18-fixtures "
+      }
+    },
+    "trailing_unrendered_ms": 18.57940000002145
+  },
+  "source17": {
+    "raw_file": "../../native-source17-adjacent/performance-before-source18.txt.xz",
+    "raw_sha256": "3ad44d786ad75ec17223f3ec32e39b47fdbcf8b529d97939a2842106a2673876",
+    "metrics": {
+      "frames": 891,
+      "seconds": 29.968436,
+      "fps": 29.73128127206905,
+      "median_ms": 32.579,
+      "p95_ms": 40.291,
+      "p99_ms": 51.717,
+      "max_ms": 61.34,
+      "over50": 9,
+      "over100": 0,
+      "one_percent_low_fps": 18.586708025534005
+    },
+    "metadata_matches_all_recomputed_values": true,
+    "population": {
+      "campaign": 6102602,
+      "layoutSeed": 1967490589,
+      "level": 1,
+      "developerDense": true,
+      "aliveBodies": 40,
+      "aliveWanderers": 36,
+      "plannedBodies": 43,
+      "gates": [
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    "resources": {
+      "entities": {
+        "start": 2427,
+        "end": 2427
+      },
+      "wall_models": {
+        "start": 1372,
+        "end": 1372
+      },
+      "meshes": {
+        "start": 98,
+        "end": 98
+      },
+      "lua_errors": {
+        "start": 0,
+        "end": 0
+      },
+      "install": {
+        "start": "94f3e07eef149a8bc35b165d654078d42e8274a4 clean-private-source17-fixtures ",
+        "end": "94f3e07eef149a8bc35b165d654078d42e8274a4 clean-private-source17-fixtures "
+      }
+    }
+  },
+  "same_recorded_configuration": true,
+  "same_reported_population_counts_and_layout": true,
+  "metric_deltas_source18_minus17": {
+    "fps": 0.6333995455844033,
+    "p95_ms": -0.5129999999999981,
+    "p99_ms": -4.304000000000002,
+    "max_ms": -6.364000000000004,
+    "over50": -5,
+    "over100": 0
+  },
+  "qualification": "Two single unprofiled stationary windows on the actual same Steam Deck, nominally same closed Redgate view and recorded settings/seed/layout/counts. Source18 has2422 versus2427client entities; builds, character/item appearance, AI timing, entry/lifecycle/warmup state and independent run order are not controlled. These samples show no slower reported metrics in the later window; they do not isolate repair causality, establish general performance or certify the separately deferred40FPS goal. Every source18 frame exceeds25ms; no40FPS acceptance."
+}
