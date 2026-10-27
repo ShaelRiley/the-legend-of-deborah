@@ -2,7 +2,7 @@
   "id": "BUG-016",
   "recorded_utc": "2026-10-27T20:49:55.266Z",
   "title": "SafeTeleport accepts a pre-death binding for a replacement Hero life",
-  "status": "Implemented/statically validated and independently reviewed on verified main d3c2dd2d. Original native stale-life movement is preserved; repaired native death/respawn acceptance remains pending.",
+  "status": "Implemented on verified main d3c2dd2d; statically validated and independently reviewed; finite native single-client repaired death/respawn acceptance passed on fresh source16. Full campaign/cooperative acceptance remains pending.",
   "severity": "Major lifecycle/state safety: an obsolete action can move the replacement Hero after death. Demonstrated64-unit in-cell relocation; no unobserved progression bypass, card loss or broader corruption is claimed.",
   "baseline": {
     "gameplay_commit": "74415d1a3f135052de467286a08ebc1907b1608a",
@@ -133,13 +133,13 @@
     ],
     "qualification": "Raw files/scripts and compressed logs are exact captured bytes with manifests. Logs were captured individually while root continued testing. No private cfg/db/prefix files or credentials copied. Probe sources archived as .lua.txt to avoid adding executable Lua gates."
   },
-  "next_native_gate": "After the coherent source16 checkpoint is installed and freshly verified, capture a new binding before actual native death. Wait/respawn, verify oldMatches=false and oldMoveBound=false without replacement-life displacement, then verify a fresh binding permits the same canonical safe move and restore. Keep accepted floor-support, wall/hazard and same-life behavior intact.",
+  "next_native_gate": "Continue broad authored campaign and relevant caller/lifecycle coverage. Retain this finite same-state/nil-equipment-life spawn-bound rejection plus existing accepted floor, wall and hazard regressions; no repeated identical native proof is needed absent contrary evidence.",
   "limits": [
     "Only the canonical stale binding/movement seam has a confirmed native reproduction; every caller is not claimed to have independently malfunctioned.",
     "Initial blockedX and the correctly gated Tetris window are not game defects.",
     "BUG015's prior same-life positive landing/return does not establish replacement-life rejection; this new defect reopens that distinct lifecycle coverage.",
     "One real client only; cooperative Summon Card and shared-client synchronization remain unavailable.",
-    "No repaired native acceptance or final campaign clean pass is claimed."
+    "Finite repaired native canonical binding/movement gate passed; no final campaign clean pass is claimed."
   ],
   "clean_pass_streak": 0,
   "static_evidence": {
@@ -152,7 +152,9 @@
       "mechanism": "Actual RunManager PlayerSpawn callback advances canonical body serial while exact ps pointer and nil equipmentLifeSerial remain unchanged."
     },
     "ground_and_remaining_module_bytes_unchanged_from_source15": true,
-    "native_repaired_acceptance": false,
-    "full_source16_integration_result": "Not inferred here; required CI tracking is separate."
-  }
+    "native_repaired_acceptance": true,
+    "full_source16_integration_result": "Not inferred here; required CI tracking is separate.",
+    "native_repaired_acceptance_receipt": "native-repaired/receipt.json"
+  },
+  "native_repaired_evidence": "native-repaired/receipt.json"
 }

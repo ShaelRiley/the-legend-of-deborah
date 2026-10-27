@@ -1,0 +1,170 @@
+{
+  "kind": "source16_native_repaired_stale_life_binding_acceptance",
+  "captured_utc": "2026-10-27T21:28:20.781750+00:00",
+  "status": "Finite single-client native repair gate passed; broad campaign/cooperative acceptance remains open.",
+  "gameplay_source_commit": "d3c2dd2d2a7ead5993217551bd470e9e7000b1f0",
+  "prepared_commit": "2fcea7259728cef381e447395d93335f6df85382",
+  "safe_source_sha256": "d6bf46baa9034c70c4fe3d3bf5ac139705431e91833bbec2d0d78fa84f220866",
+  "safe_crc32": 377454284,
+  "prepared_sha256": "389812545702d5c973bc2c3a052e1e95361d031fbe12ac6d425fc07dd4ad8d47",
+  "production_source_files": 576,
+  "all_current_source_hashes_match": true,
+  "both_native_realms_five_source_guards_match": true,
+  "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+  "client": "Windows x86 Garrys Mod2026.09.17 / LuaJIT2.0.4 / Proton10",
+  "map": "gm_flatgrass",
+  "gamemode": "legend_of_deborah",
+  "campaign_seed": 6102602,
+  "level_seed": 1550561962,
+  "campaign_epoch": 1,
+  "real_clients": 1,
+  "developer_mode": 1,
+  "developer_dense": true,
+  "unranked": true,
+  "hero": "Jonah \"The Substitute\" Price",
+  "class": "fighter",
+  "feat": "Frugal Cartography",
+  "ordinary_setup": "Root used native Character Sheet selection, physical starter pickup and entry portal. Clock started at its normal1800 seconds. Setup did not grant a class, feat, weapon or level through a fixture.",
+  "native_steps": [
+    "Capture fresh canonical binding while deployed, alive, lives3 and canonical spawn4.",
+    "Use actual console kill, consuming reserve3 to2; retain same player state and absent equipment-life field.",
+    "Root hid the stock fallback with gameui_hide, waited five5-second intervals, then pressed nativeF after the mandatory lockout.",
+    "Rendered screenshot shows aliveHP100/lives2, no Tetris, restored ordinary pistol/crowbar/.357.",
+    "Execute read-only setup plus bounded canonical Landing/MoveBound probes: old binding rejected without displacement; fresh binding moves to the supported64-unitY destination and restores supported originalXY."
+  ],
+  "results": {
+    "same_player_state": true,
+    "legacy_equipment_life_fields": "nil before and after",
+    "canonical_spawn": [
+      4,
+      5
+    ],
+    "old_binding_matches": false,
+    "stale_move_accepted": false,
+    "stale_position_unchanged": true,
+    "fresh_binding_matches": true,
+    "fresh_move_accepted": true,
+    "fresh_destination_reached": true,
+    "fresh_restore_accepted": true,
+    "restored_XY": true,
+    "restored_Z_delta": 1.439453125,
+    "after_elapsed_seconds": 88.11559160000002,
+    "alive_HP_lives": [
+      true,
+      100,
+      2
+    ]
+  },
+  "independent_visual_review": [
+    "respawn-alive-tetris-closed.png: normal first-person .357, HP100/lives2, no Tetris and restored weapon list.",
+    "stale-binding-results.png: actual native SOURCE16_LIFE_AFTER values and remaining1680.36s clock.",
+    "environment-pointer-console.png: Character Sheet beneath native console and stock Menu failed fallback."
+  ],
+  "environment_qualifications": [
+    "Fresh private prefix experienced an ordinary menu-input guard failure: pointer warps recentered while Character Sheet was visible. Preserve screenshots; no production source change or game defect inferred.",
+    "Root reports gameui_hide plus closing/reopeningP restored native mouse input. Private m_rawinput was changed to0 during this diagnosis; do not infer normal-profile changes or an input regression repair.",
+    "Stock Chromium Menu failed remains an environmental presentation coverage gap.",
+    "The original source15 launch unproven-PID flag remains preserved in prepared-provenance; exact root host-closure evidence qualifies the subsequent fresh launch.",
+    "Steam Cloud remains temporarilyOFF by supported UI; restoreON after private tests."
+  ],
+  "limits": [
+    "This finite fixture demonstrates canonical lifecycle binding rejection and same-life supported movement, not independent acceptance of every SafeTeleport caller.",
+    "Fresh canonical restore snaps to supported landing Z1.439453125 above the prior physics origin. Exact XYZ restoration is not claimed.",
+    "No cooperative, boss, event-family, full authored campaign, ending or clean-pass result is inferred.",
+    "No frame-time, sound, performance target or production-default timed acceptance is inferred.",
+    "The client was still running when independent evidence snapshots were copied; later play and cleanup are separate evidence."
+  ],
+  "clean_pass_streak": 0,
+  "artifact_manifest": {
+    "life-before.json": {
+      "sha256": "7db45859be0fc7e8fc1d8ea2d0b6ccf8310d92eff122fed53e5e924ec4716565",
+      "bytes": 247,
+      "origin": ".build/lod-gmod/garrysmod/data/legend_of_deborah/source16_life_before.json"
+    },
+    "life-after.json": {
+      "sha256": "7f033d481cf7309ed8b9031cd1ad4d6be620d210755c39a265b3bb9b264b7549",
+      "bytes": 697,
+      "origin": ".build/lod-gmod/garrysmod/data/legend_of_deborah/source16_life_after.json"
+    },
+    "life-binding-before.lua.txt": {
+      "sha256": "8e15a096aa3f9e0f5b49efca58e212e74df997604f3ab561f306e8902e00d439",
+      "bytes": 1004,
+      "origin": ".build/autonomous-playtest-20261027/source16-native/life_binding_before.lua"
+    },
+    "life-binding-after.lua.txt": {
+      "sha256": "7161a1e8a1370da1a66ed5c81af9ae5e77a1133f950d86a2f6e56b7360174646",
+      "bytes": 1618,
+      "origin": ".build/autonomous-playtest-20261027/source16-native/life_binding_after.lua"
+    },
+    "source-server-proof.json": {
+      "sha256": "fe7cb0e9402520638b861d10fdd1347618716359a482953ea5642edad6595352",
+      "bytes": 1050,
+      "origin": ".build/autonomous-playtest-20261027/source16-native/private_profile_server_proof.json"
+    },
+    "source-client-proof.json": {
+      "sha256": "d8c7480cea3f1bae73fc07e72e1c5df2c15082af8fca7de8feb58823da79fa87",
+      "bytes": 1016,
+      "origin": ".build/autonomous-playtest-20261027/source16-native/private_profile_client_proof.json"
+    },
+    "production-manifest.json": {
+      "sha256": "b248f8da8be9186add1017b9bcec565ce2585e400776b6a32df38d25a08d8d23",
+      "bytes": 80388,
+      "origin": "Prepared source16 manifest independently rehashed against current repository and actual private addon"
+    },
+    "prepared-provenance.json": {
+      "sha256": "0318799d78d8020ab60b02908c3cafe69a155c7fc40647ac630437e658eb69fd",
+      "bytes": 3239,
+      "origin": ".build/autonomous-playtest-20261027/source15-fresh/session-1793135431910747188/prepared.json"
+    },
+    "console.log.xz": {
+      "sha256": "bce225f6689ff7ac7a07ec36352548746cd88ee8506cea19490a66bdd65f0b8a",
+      "bytes": 7344,
+      "origin": ".build/lod-gmod/garrysmod/console.log; exact captured bytes compressed without alteration"
+    },
+    "console-markers.json": {
+      "sha256": "fb6e5de5a38a255b5587c5d42fcc5fa498842ca4f1bf311f5d7af126d911e63b",
+      "bytes": 1897,
+      "origin": "Exact line references into captured native console"
+    },
+    "rpg_summary_latest.txt.xz": {
+      "sha256": "d154bfc04a74fd013d7456b9a5cb5f8bae3c090ef13ed93c46eb679e86b64085",
+      "bytes": 1428,
+      "origin": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_summary_latest.txt; snapshot includes retained diagnostics and is not a separate campaign pass"
+    },
+    "rpg_session_latest.txt.xz": {
+      "sha256": "5d7280f2cc7bb0c432886e286dceb25cf9bb255fa7f6c820f741c9e3ceb99076",
+      "bytes": 6644,
+      "origin": ".build/lod-gmod/garrysmod/data/legend_of_deborah/rpg_session_latest.txt; snapshot includes retained diagnostics and is not a separate campaign pass"
+    },
+    "respawn-alive-tetris-closed.png": {
+      "sha256": "7e88119fa5f89859b2e81351a3b978d10d5d7a9b5fdc13c9de39c8aed09cc1ab",
+      "bytes": 1243243,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793136335420629737-source16-respawn-after-full-lockout.png"
+    },
+    "post-respawn-console.png": {
+      "sha256": "15fe2ad1f055d0f845548af3b80a0f816f7ec902a0fe13dc60c6cc70e393af7c",
+      "bytes": 601708,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793136348594543473-source16-post-respawn-console.png"
+    },
+    "stale-binding-results.png": {
+      "sha256": "77935fc8802681cfc791e3e74ab96dea8eb50c9e22564cf0fdccce318830ea84",
+      "bytes": 598880,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793136369617278915-source16-stale-binding-results.png"
+    },
+    "environment-pointer-console.png": {
+      "sha256": "cf0cb158567f4974213832f10cc3242c3af980183ae3a4aa71a90b46ea47ef0e",
+      "bytes": 506096,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793136100719655966-source16-pointer-diagnostic-console.png"
+    },
+    "environment-pointer-guard.png": {
+      "sha256": "a862cf4e3d959484a7af1beaa6f768ce449cc1785de084ace7817f10835ec329",
+      "bytes": 581380,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793135986354841775-source16-after-pointer-guard.png"
+    },
+    "environment-native-menu-pointer.png": {
+      "sha256": "c377ec5ed8e906be7d83b84bb1237bac91f1f2a28a496646d45ca6d74a2489dc",
+      "bytes": 580706,
+      "origin": ".build/autonomous-playtest-20261027/screenshots/1793136062055775620-source16-native-menu-pointer.png"
+    }
+  }
+}

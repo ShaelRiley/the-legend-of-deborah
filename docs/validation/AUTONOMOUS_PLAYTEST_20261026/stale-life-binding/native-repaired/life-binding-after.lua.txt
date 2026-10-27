@@ -1,0 +1,24 @@
+assert(GetConVar("lod_developer_mode"):GetBool(),"private developer fixture only")
+assert(util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua","GAME"))=="377454284","wrong SafeTeleport source")
+local p,b=LIFE16.p,LIFE16.b
+local T,R,N=LOD.SafeTeleport,LOD.RunManager,LOD.MazeNavigator
+local ps=assert(T:Hero(p),"living respawned Hero required")
+local home=p:GetPos()
+local cell=T:CellAt(R.State.Graph,home)
+local function v(a) return {a.x,a.y,a.z} end
+local r={kind="source16_repaired_native_stale_life_binding",seed=R.State.LevelSeed,epoch=R.State.CampaignEpoch,alive=p:Alive(),hp=p:Health(),lives=ps.lives,elapsed=SysTime()-LIFE16.at,playerStateSame=ps==b.ps,boundEquipmentLife=tostring(b.life),currentEquipmentLife=tostring(ps.equipmentLifeSerial),boundSpawn=b.spawn,currentSpawn=p.LODRunSpawnSerial,oldMatches=T:Matches(b),before=v(home)}
+local fresh=assert(T:Bind(p))
+r.freshMatches=T:Matches(fresh)
+local dest
+if cell then for _,o in ipairs({Vector(0,-64,0),Vector(0,64,0),Vector(-64,0,0),Vector(64,0,0)}) do local d=T:Landing(p,R.State.Graph,cell,N:CellCenter(cell)+o) if d then dest=d break end end end
+if dest then
+ r.destination=v(dest)
+ r.staleMoveAccepted=T:MoveBound(b,dest,nil,cell)
+ r.afterStale=v(p:GetPos())
+ r.freshMoveAccepted=T:MoveBound(fresh,dest,nil,cell)
+ r.afterFresh=v(p:GetPos())
+ r.restoredWithFreshBinding=T:MoveBound(fresh,home,nil,cell)
+ r.restored=v(p:GetPos())
+else r.setupRejected="no canonical supported destination" end
+file.Write("legend_of_deborah/source16_life_after.json",util.TableToJSON(r,true))
+print("SOURCE16_LIFE_AFTER="..util.TableToJSON(r))

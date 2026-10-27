@@ -1,0 +1,11 @@
+assert(GetConVar("lod_developer_mode"):GetBool(),"private developer fixture only")
+assert(util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua","GAME"))=="377454284","wrong SafeTeleport source")
+local p=assert(player.GetHumans()[1])
+local T,R=LOD.SafeTeleport,LOD.RunManager
+local ps=assert(T:Hero(p),"living deployed Hero required")
+local b=assert(T:Bind(p))
+assert(T:Matches(b),"fresh binding must match")
+LIFE16={p=p,b=b,ps=ps,at=SysTime(),position=p:GetPos()}
+local r={kind="source16_pre_death_binding",seed=R.State.LevelSeed,epoch=R.State.CampaignEpoch,alive=p:Alive(),lives=ps.lives,spawn=p.LODRunSpawnSerial,equipmentLife=tostring(ps.equipmentLifeSerial),matches=T:Matches(b),position={p:GetPos().x,p:GetPos().y,p:GetPos().z},safeSourceCRC=util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua","GAME"))}
+file.Write("legend_of_deborah/source16_life_before.json",util.TableToJSON(r,true))
+print("SOURCE16_LIFE_BEFORE="..util.TableToJSON(r))

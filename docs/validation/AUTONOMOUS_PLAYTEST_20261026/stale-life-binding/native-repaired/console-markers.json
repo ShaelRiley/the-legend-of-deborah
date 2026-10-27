@@ -1,0 +1,43 @@
+{
+  "line_count": 265,
+  "uncompressed_sha256": "764aa196dbaf62cbc2c997db91cacb7813e6975952f7b289614cf6e26f03e38c",
+  "uncompressed_bytes": 103452,
+  "markers": [
+    {
+      "line": 141,
+      "text": "[LOD:CLOCK] allowance=0 seconds"
+    },
+    {
+      "line": 142,
+      "text": "[LOD:CLOCK] epoch=1 level=1 started=false remaining=1800.00 timeout=false ready=nil physics=0"
+    },
+    {
+      "line": 185,
+      "text": "[LOD:CLOCK] allowance=0 seconds"
+    },
+    {
+      "line": 186,
+      "text": "[LOD:CLOCK] epoch=1 level=1 started=true remaining=1769.98 timeout=false ready=nil physics=0"
+    },
+    {
+      "line": 188,
+      "text": "SOURCE16_LIFE_BEFORE={\"spawn\":4,\"seed\":1550561962,\"position\":[-3840,-2688,-12271.376953125],\"matches\":true,\"alive\":true,\"lives\":3,\"epoch\":1,\"safeSourceCRC\":\"377454284\",\"kind\":\"source16_pre_death_binding\",\"equipmentLife\":\"nil\"}"
+    },
+    {
+      "line": 192,
+      "text": "Shael Riley suicided!"
+    },
+    {
+      "line": 199,
+      "text": "SOURCE16_LIFE_AFTER={\"seed\":1550561962,\"oldMatches\":false,\"hp\":100,\"currentEquipmentLife\":\"nil\",\"restoredWithFreshBinding\":true,\"afterStale\":[-3840,-2688,-12271.376953125],\"epoch\":1,\"boundEquipmentLife\":\"nil\",\"kind\":\"source16_repaired_native_stale_life_binding\",\"afterFresh\":[-3840,-2752,-12269.9375],\"playerStateSame\":true,\"staleMoveAccepted\":false,\"currentSpawn\":5,\"restored\":[-3840,-2688,-12269.9375],\"freshMatches\":true,\"alive\":true,\"lives\":2,\"boundSpawn\":4,\"destination\":[-3840,-2752,-12269.9375],\"elapsed\":88.11559160000002,\"freshMoveAccepted\":true,\"before\":[-3840,-2688,-12271.376953125]}"
+    },
+    {
+      "line": 200,
+      "text": "[LOD:CLOCK] allowance=0 seconds"
+    },
+    {
+      "line": 201,
+      "text": "[LOD:CLOCK] epoch=1 level=1 started=true remaining=1680.36 timeout=false ready=nil physics=0"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+	"spawn": 4,
+	"seed": 1550561962,
+	"position": [
+		-3840,
+		-2688,
+		-12271.376953125
+	],
+	"matches": true,
+	"alive": true,
+	"lives": 3,
+	"epoch": 1,
+	"safeSourceCRC": "377454284",
+	"kind": "source16_pre_death_binding",
+	"equipmentLife": "nil"
+}

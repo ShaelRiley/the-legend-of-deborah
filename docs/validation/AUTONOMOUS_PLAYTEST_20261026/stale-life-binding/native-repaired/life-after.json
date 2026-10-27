@@ -1,0 +1,44 @@
+{
+	"seed": 1550561962,
+	"oldMatches": false,
+	"hp": 100,
+	"currentEquipmentLife": "nil",
+	"restoredWithFreshBinding": true,
+	"afterStale": [
+		-3840,
+		-2688,
+		-12271.376953125
+	],
+	"epoch": 1,
+	"boundEquipmentLife": "nil",
+	"kind": "source16_repaired_native_stale_life_binding",
+	"afterFresh": [
+		-3840,
+		-2752,
+		-12269.9375
+	],
+	"playerStateSame": true,
+	"staleMoveAccepted": false,
+	"currentSpawn": 5,
+	"restored": [
+		-3840,
+		-2688,
+		-12269.9375
+	],
+	"freshMatches": true,
+	"alive": true,
+	"lives": 2,
+	"boundSpawn": 4,
+	"destination": [
+		-3840,
+		-2752,
+		-12269.9375
+	],
+	"elapsed": 88.11559160000002,
+	"freshMoveAccepted": true,
+	"before": [
+		-3840,
+		-2688,
+		-12271.376953125
+	]
+}
