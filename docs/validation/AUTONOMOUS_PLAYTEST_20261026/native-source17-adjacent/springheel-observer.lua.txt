@@ -1,0 +1,7 @@
+local p=player.GetHumans()[1]
+local R=LOD.RunManager
+local ps=R:GetPlayerState(p)
+local x=p:GetPos()
+local r={kind="ordinary_owned_SpringHeel_jump_observation",playerAlive=p:Alive(),hp=p:Health(),lives=ps.lives,spawn=p.LODRunSpawnSerial,seed=R.State.LevelSeed,epoch=R.State.CampaignEpoch,position={x.x,x.y,x.z},jumpPower=p:GetJumpPower(),gravityScale=p:GetGravity(),serverGravity=GetConVar("sv_gravity"):GetFloat(),featImpulseMultiplier=LOD.RPGAbilityRules:SpringHeelImpulseMultiplier(p),stats=table.Copy(LOD.RPG.FeatEffectSystem.SingletonStats),gateClosed=not R.State.GatesOpen[1],cardOwned=R.State.Cards[1]==true,qualification="One ordinary native Space input on legitimately selected SpringHeel; no baseline ordinary jump or airborne speed ratio proven; no feat/stat/velocity/gravity edits."}
+file.Write("legend_of_deborah/source17_springheel_observation.json",util.TableToJSON(r,true))
+print("SOURCE17_SPRINGHEEL="..util.TableToJSON(r))

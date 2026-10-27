@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-27T23:04:10.733604+00:00",
+  "prepared_source": ".build/autonomous-playtest-20261027/source15-fresh/session-1793138882026627356/prepared.json",
+  "prepared_sha256": "c4e381a2a25187034c13a1d003852821315152801b203eb75a98af5d55fd8d68",
+  "prepared_commit": "94f3e07eef149a8bc35b165d654078d42e8274a4",
+  "gameplay_commit": "6acff8a3458b230378100d491e431d18a84c740c",
+  "prepared_production_tree": {
+    "gamemodes": "3fbcc4f741d3bd77fd7c0fedb08ccb8e255769ed",
+    "lua": "e2ab4ef2e3ef451336fa4c60d06dbd9fdac1cf45",
+    "sound": "600815fef14f7b13e7ba2d93d0090d8c3025b14b"
+  },
+  "production_manifest": "../npc-aim-boundary/native-repaired/production-manifest.json",
+  "manifest_sha256": "ce9dccd1a070b099b1de389a15c39243c9d3025389c0542fd91d9b093bba8d0e",
+  "manifest_entries": 576,
+  "private_bytes_match_frozen_source17_manifest": true,
+  "private_mismatches": [],
+  "gameplay_to_prepared_production_diff": [],
+  "qualification": "Compared actual private source bytes against frozen source17 manifest, not current source18 main. Root has not yet replaced private source17 at this read. Snapshot/provenance proof is not broader gameplay acceptance."
+}

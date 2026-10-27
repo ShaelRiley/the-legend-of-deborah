@@ -1,0 +1,33 @@
+{
+	"spawn": 6,
+	"seed": 1550561962,
+	"position": [
+		-3040,
+		3072,
+		-12271.0107421875
+	],
+	"cardOwned": false,
+	"qualification": "One ordinary native Space input on legitimately selected SpringHeel; no baseline ordinary jump or airborne speed ratio proven; no feat/stat/velocity/gravity edits.",
+	"hp": 97,
+	"gateClosed": true,
+	"stats": {
+		"lastJumpHeight": 55.248046875,
+		"meleeSwings": 0,
+		"baselineJumpHeight": 55.248046875,
+		"lastJumpAddedImpulse": 117.12812921102035,
+		"lastJumpImpulse": 119.5,
+		"jumpAttempts": 1,
+		"expectedEnabled": false,
+		"lastMeleeReach": 0,
+		"jumpBoosts": 1,
+		"lastJumpMultiplier": 1.7320508075688772
+	},
+	"featImpulseMultiplier": 1.7320508075688772,
+	"jumpPower": 160,
+	"lives": 1,
+	"kind": "ordinary_owned_SpringHeel_jump_observation",
+	"gravityScale": 0,
+	"serverGravity": 600,
+	"epoch": 1,
+	"playerAlive": true
+}

@@ -1,0 +1,11 @@
+{
+  "source": ".build/autonomous-playtest-20261027/source17-native/frozen-npc-gate/data__legend_of_deborah__rpg_session_latest.txt",
+  "source_sha256": "2e1eee80342eba2d4d24a5bdc2bec9585a94e18aa3a8d53d8d616db3caea30f8",
+  "entries": [
+    {
+      "line": 92,
+      "text": "000084\t385.185\tRPG_FEAT_CONFIRMATION\tfeat=DEX_SPRING_HEEL\tkind=ordinary\tlabel=Spring Heel\tplayer=player:Shael Riley#1"
+    }
+  ],
+  "qualification": "Exact current source17 ordinary selection confirmation. Root also observed DEX16 in native UI; this excerpt does not independently measure DEX or jump ratio."
+}

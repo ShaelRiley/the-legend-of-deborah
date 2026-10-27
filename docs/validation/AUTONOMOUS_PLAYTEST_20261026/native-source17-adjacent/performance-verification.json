@@ -1,0 +1,46 @@
+{
+  "raw_sha256": "3ad44d786ad75ec17223f3ec32e39b47fdbcf8b529d97939a2842106a2673876",
+  "recomputed_from_ordered_active_frame_samples": {
+    "frames": 891,
+    "seconds": 29.968436,
+    "fps": 29.73128127206905,
+    "median_ms": 32.579,
+    "p95_ms": 40.291,
+    "p99_ms": 51.717,
+    "max_ms": 61.34,
+    "over50": 9,
+    "over100": 0
+  },
+  "active_ranges": [
+    {
+      "last": 891,
+      "first": 1
+    }
+  ],
+  "metadata_matches_raw_active": true,
+  "configuration_start_end_equal": true,
+  "configuration_changes": [],
+  "preparation_timed_out": false,
+  "reason": "complete",
+  "client_resources_start_end": {
+    "entities_start": 2427,
+    "entities_end": 2427,
+    "client_lua_errors_start": 0,
+    "client_lua_errors_end": 0
+  },
+  "population_for_future_comparison": {
+    "aliveBodies": 40,
+    "aliveWanderers": 36,
+    "plannedBodies": 43,
+    "developerDense": true,
+    "level": 1,
+    "layoutSeed": 1967490589,
+    "gates": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "qualification": "Single stationary pre-source18 baseline, not a paired causal regression result or a40FPS campaign. Preserve same-scene/settings/hardware and disclose population/resource differences in any later comparison. Client counters0 here do not erase known server/session diagnostic errors."
+}

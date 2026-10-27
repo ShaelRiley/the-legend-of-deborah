@@ -1,0 +1,60 @@
+{
+  "utc": "2026-10-27T23:04:10.737560+00:00",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/source17-native/closed-gate-sight/performance-before-source18.txt",
+      "archived_as": "performance-before-source18.txt.xz",
+      "raw_bytes": 59349,
+      "raw_sha256": "3ad44d786ad75ec17223f3ec32e39b47fdbcf8b529d97939a2842106a2673876",
+      "archive_bytes": 11444,
+      "archive_sha256": "67cb6248dc26c1c1d1d360101ee559008230fffe2d536abfb9c7a572df68e500",
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source17-native/closed-gate-sight/performance-baseline.json",
+      "archived_as": "performance-baseline.json",
+      "raw_bytes": 2111,
+      "raw_sha256": "82a6d0c78a48ed7489005811d58e9e21930c208c93ab4063e8f3a009ee45495d",
+      "archive_bytes": 2111,
+      "archive_sha256": "82a6d0c78a48ed7489005811d58e9e21930c208c93ab4063e8f3a009ee45495d",
+      "compression": "none"
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/data/legend_of_deborah/source17_springheel_observation.json",
+      "archived_as": "springheel-observation.json",
+      "raw_bytes": 857,
+      "raw_sha256": "1af7f5514fa7b610f0275e581c3faf47ce57855bb48bff4d1171b75f6e0d269a",
+      "archive_bytes": 857,
+      "archive_sha256": "1af7f5514fa7b610f0275e581c3faf47ce57855bb48bff4d1171b75f6e0d269a",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source17-native/springheel_observer.lua",
+      "archived_as": "springheel-observer.lua.txt",
+      "raw_bytes": 941,
+      "raw_sha256": "3e26fedfad7adfd7138408f2eac88abd1a37071271f0e1b418390c40fa208324",
+      "archive_bytes": 941,
+      "archive_sha256": "3e26fedfad7adfd7138408f2eac88abd1a37071271f0e1b418390c40fa208324",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793141679824943481-source17-closedgate-performance-baseline.png",
+      "archived_as": "closedgate-performance-context.png",
+      "raw_bytes": 950677,
+      "raw_sha256": "f62fdd5366b72dc9b69661eb3d22995ba019fcf102643dd0f50805d89d1631ad",
+      "archive_bytes": 950677,
+      "archive_sha256": "f62fdd5366b72dc9b69661eb3d22995ba019fcf102643dd0f50805d89d1631ad",
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793141868086853812-source17-springheel-ordinary-jump-console.png",
+      "archived_as": "springheel-jump-console-context.png",
+      "raw_bytes": 586801,
+      "raw_sha256": "a14d94ae284a70c8e520976231ebe4a0175bf3739dc8dc18d3033657f735d994",
+      "archive_bytes": 586801,
+      "archive_sha256": "a14d94ae284a70c8e520976231ebe4a0175bf3739dc8dc18d3033657f735d994",
+      "compression": "none"
+    }
+  ],
+  "qualification": "Only native source17 adjacent performance/jump raw evidence; no source18 installed data, no GUI/private writes and no plan/matrix changes."
+}

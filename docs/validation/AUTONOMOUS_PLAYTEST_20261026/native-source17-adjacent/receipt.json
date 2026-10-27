@@ -1,0 +1,153 @@
+{
+  "kind": "source17 adjacent native stationary pacing baseline and partial ordinary SpringHeel observation",
+  "utc": "2026-10-27T23:04:57.631190+00:00",
+  "status": "Evidence preserved; SpringHeel complete physical acceptance and any source18 performance comparison remain pending.",
+  "gameplay_source_commit": "6acff8a3458b230378100d491e431d18a84c740c",
+  "prepared_and_rendered_build_label": "94f3e07eef149a8bc35b165d654078d42e8274a4",
+  "source_provenance": "source-provenance.json",
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405 / amdgpu1002:163F",
+    "client": "Windows x86 Garry's Mod2026.09.17 / LuaJIT2.0.4 under Proton10",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "rendered_size": [
+      1280,
+      800
+    ],
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "layout_seed": 1967490589,
+    "real_clients": 1,
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true,
+    "clock": "Explicit7200-second developer deadline extension; not a normal timed campaign pass."
+  },
+  "performance": {
+    "raw": "performance-before-source18.txt.xz",
+    "metadata": "performance-baseline.json",
+    "independent_recomputation": "performance-verification.json",
+    "scene": "Stationary actual closed Redgate/reader with the pre-repair Health near-look label visible through cover; sameXY as subsequent ordinary jump.",
+    "screenshot": "closedgate-performance-context.png",
+    "requested_seconds": 30,
+    "active": {
+      "max_ms": 61.34,
+      "over100": 0,
+      "median_ms": 32.579,
+      "over50": 9,
+      "one_percent_low_fps": 18.58670802553401,
+      "p95_ms": 40.291,
+      "frames": 891,
+      "below40_seconds": 29.968436000000004,
+      "p99_ms": 51.717,
+      "over25": 891,
+      "fps": 29.731281272069047,
+      "below40_runs_ge2s": 1,
+      "seconds": 29.968436000000004,
+      "longest_below40_seconds": 29.968436000000004
+    },
+    "configuration": {
+      "mat_viewportscale": "1.0",
+      "width": 1280,
+      "singleplayer": false,
+      "fps_max": "150",
+      "mat_aaquality": "0",
+      "mat_queue_mode": "-1",
+      "lod_boss_binary_snapshots": "1",
+      "lod_container_model_pool": "1",
+      "r_shadows": "1",
+      "r_waterforceexpensive": "1",
+      "lod_map_scale": "1",
+      "window_mode": "user-recorded",
+      "lod_third_person": "0",
+      "mat_picmip": "0",
+      "mat_antialias": "0",
+      "architecture": "x86",
+      "engine": "2026.09.17",
+      "lod_reduced_effects": "1",
+      "r_shadowrendertotexture": "1",
+      "lod_map_opacity": "1",
+      "lod_wall_batches": "0",
+      "os": "Windows",
+      "mat_hdr_level": "2",
+      "mat_dxlevel": "95",
+      "mat_vsync": "0",
+      "proton_version": "not-exposed-by-engine",
+      "branch": "unknown",
+      "height": 800,
+      "map": "gm_flatgrass"
+    },
+    "retained_optimization_settings": {
+      "lod_container_model_pool": 1,
+      "lod_wall_batches": 0,
+      "lod_reduced_effects": 1
+    },
+    "scope": "Unprofiled stationary891-frame29.968436-second sample; avg29.731281FPS,p9540.291ms,p9951.717ms,max61.340ms,9frames>50ms,0>100ms. Ordered active samples independently recompute counts, average, quantiles and maximum. No paired source18 result or causal regression conclusion.",
+    "limitations": [
+      "This is an actual Deck measurement, not a generic machine result.",
+      "The separately deferred40FPS campaign is not reactivated, passed or completed by this snapshot.",
+      "DeveloperDense, exact scene/settings,40alive bodies/36wanderers,43planned bodies and2427client entities are preserved for future comparison; a fresh source18 scene may differ in population or lifetime state.",
+      "One stationary window does not certify representative full workload, ordinary combat, server responsiveness or frame pacing across the campaign.",
+      "Known source17 session/server diagnostic errors remain preserved separately; client start/end lua_errors0 within this sample is not an all-session error-free claim."
+    ]
+  },
+  "springheel": {
+    "source_authority": {
+      "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+      "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+      "root_verified_navigation": [
+        "00 AI ENTRYPOINT",
+        "01 AI RULE INDEX",
+        "04 FEATS & IDENTITY LOD-FEAT-004 HUMAN-DETAIL",
+        "Exact HUMAN DEX_SPRING_HEEL heading398991/effect399066"
+      ],
+      "expected": "Voluntary jump apex3x via impulse multiplier sqrt3; voluntary airborne control1.5x. Forced impulses and containment remain unchanged.",
+      "qualification": "Root read the exact live authored fallback; this evidence bank does not re-read the monolith or change design."
+    },
+    "selection": "Ordinary native UI selected SpringHeel; current session RPG_FEAT_CONFIRMATION corroborates DEX_SPRING_HEEL. Root observed DEX16 in UI.",
+    "selection_evidence": "springheel-feat-confirmation.json",
+    "observation": "springheel-observation.json",
+    "readonly_observer": "springheel-observer.lua.txt",
+    "context_screenshot": "springheel-jump-console-context.png",
+    "action": "After the pacing sample, root used one ordinary native Space .2-second input at the same closed gate. No feat/stat/jump-power/velocity/gravity edits. Observer only copies current native state/SingletonStats and writes a diagnostic file.",
+    "native_result": {
+      "jumpAttempts": 1,
+      "jumpBoosts": 1,
+      "lastJumpHeight": 55.248046875,
+      "lastJumpImpulse": 119.5,
+      "lastJumpAddedImpulse": 117.12812921102035,
+      "lastJumpMultiplier": 1.7320508075688772,
+      "jumpPower": 160,
+      "serverGravity": 600,
+      "gravityScale": 0,
+      "hp": 97,
+      "lives": 1,
+      "spawn": 6,
+      "gateClosed": true,
+      "cardOwned": false,
+      "position": [
+        -3040,
+        3072,
+        -12271.0107421875
+      ]
+    },
+    "finite_scope": "An ordinary jump and one SpringHeel boost occurred on the legitimately selected feat. Native impulse multiplier sqrt3 and added-impulse diagnostic are observed; this is partial native evidence only. The context screenshot is not a measured apex trace.",
+    "stale_diagnostic_bookkeeping": "SingletonStats.expectedEnabled=false and baselineJumpHeight55.248 are stale diagnostic bookkeeping, retained raw. Neither proves the feat absent nor supplies an ordinary no-feat baseline. The measured jump here already owns SpringHeel.",
+    "pending": [
+      "A real comparable ordinary baseline and exact3x native apex ratio",
+      "1.5x voluntary airborne control measurement",
+      "Forced movement/impulse exclusions and gate/ceiling containment regression",
+      "Lifecycle and cooperative combinations"
+    ]
+  },
+  "known_visibility_defect": "Health label visible through the closed gate is retained as BUG018 pre-repair evidence elsewhere; this bank does not accept the repair.",
+  "evidence": {
+    "manifest": "artifact-manifest.json",
+    "source": "source-provenance.json",
+    "baseline": "performance-verification.json"
+  },
+  "no_changes": "No game control, private installation writes, production changes or root plan/matrix edits by this evidence agent.",
+  "clean_pass_streak": 0,
+  "full_campaign_pass": false,
+  "cooperative_acceptance": false
+}
