@@ -2,55 +2,52 @@
 
 The October26 campaign remains active; clean streak0. Full authored progression,
 event/boss families, endings/reset and cooperative coverage remain open. Only this
-Steam Deck is available; distinct real-client synchronization is blocked. October23,
+Deck is available; distinct real-client synchronization is blocked. October23,
 40FPS,Workshop/VPS and design-only class5/10/15 rewards remain deferred.
 
-Latest gameplay source `6acff8a3458b230378100d491e431d18a84c740c` repairs BUG017:
-actual Fallen Hero native ranged fire reached player-only GetActiveWeapon calls
-in shared Aim decoration and global bullet cleanup. Two IsPlayer guards preserve
-the already-produced NPC contract and ordinary player Aim/cleanup. Exact original
-and first-guard-only negatives,13 focused gates,927Lua/LuaJIT and independent
-review pass. Full frozen source17 CI336/336,4147 files,576 production unchanged.
-[Defect](validation/AUTONOMOUS_PLAYTEST_20261026/npc-aim-boundary/BUG-017.json),
-[CI](validation/AUTONOMOUS_PLAYTEST_20261026/ci-source17/verification.json).
-Finite fresh source17 native acceptance now passes: actual copied357
-fires4times, ammo6→2, one real Hero hit3.3333/HP100→97, no new errors;
-separate ordinary player Aim shot/marker cleanup passes.8s supported setup/return
-is explicitly a fixture. [Native evidence](validation/AUTONOMOUS_PLAYTEST_20261026/npc-aim-boundary/native-repaired/receipt.json).
+Latest gameplay `63bcc03e30233f74208a92e25a1904a87201125f` repairs confirmed BUG018:
+actual Health1054 was drawn through closed Redgate967. Exact cached HUD target,
+matching frozen client/server eye/target and24mask/shape variants prove both native
+hull collision and MONSTER membership are needed for generated BBox occlusion.
+The shared NearLook correction checks only actual rendered generated body bands;
+ordinary world/glass/actor/cloak rules and invisible containment remain. Existing
+cargo embed16/gap4 move to shared config unchanged;2892 actual compiled/model
+transforms match exactly.14 focused gates,928Lua/LuaJIT, original/target-hit-mutant
+negatives and independent review pass. [Defect](validation/AUTONOMOUS_PLAYTEST_20261026/loot-label-occlusion/BUG-018.json).
+Exact full337 CI40599237156/job122522912306 last observed in progress; no pass inferred.
+Fresh source18 native closed/open/clear/geometry and cost controls remain pending.
 
-Source16 finite native BUG016 passes actual death/20s wait/F-respawn: same ps/nil
-legacy equipmentLife, native spawn4→5, stale binding/move rejected without motion,
-fresh supported move/XY return accepted. HP100/lives2/Tetrisclosed and retained
-weapons observed; exact Z restoration unclaimed. Prior source15 finite BUG015
-floor/charge and BUG012/014 presentation proofs remain accepted with fixture limits.
-[Body-life proof](validation/AUTONOMOUS_PLAYTEST_20261026/stale-life-binding/native-repaired/receipt.json).
+Previous BUG017 native gate passes on source6ac: actual copied357 fires4times,
+ammo6→2, one real Hero hit3.3333/HP100→97, no new errors; separate normal player
+Aim shot/marker cleanup passes.8s supported setup/return is a fixture. Two natural
+idle deaths and two root diagnostic errors remain preserved, not game errors or
+controlled-kill proof. [NPC proof](validation/AUTONOMOUS_PLAYTEST_20261026/npc-aim-boundary/native-repaired/receipt.json).
+BUG016 real body-life stale rejection/fresh movement and prior BUG015 floor/charge,
+BUG012/014 presentation finite proofs remain reusable with their recorded limits.
 
-Source16 also walked to actual Redcard and opened physical Redgate/checkpoint1.
-StrengthPress actual E failed correctly at1d20[1]−1=0vs12, paid0/spent once;
-repeat E and recreated-machine E were denied with same account/dungeon receipt.
-The event used explicit preview and supported locator beyond progression locks:
-no event-route, authored-warp or success-payout acceptance. DeveloperDense=true,
-clock explicitly extended from1800 to7200 during fixtures, natural death and input
-helper failures remain recorded. One root diagnostic wrong API error is distinct
-from actual BUG017. [Native event/route evidence](validation/AUTONOMOUS_PLAYTEST_20261026/native-source16-events/receipt.json).
+Source16 ordinary Redcard/physical Redgate/checkpoint1 and StrengthPress failure,
+repeat denial and recreated-machine receipt persistence are preserved. Event
+preview/locator beyond locks is not event-route or success-payout acceptance.
+[Event evidence](validation/AUTONOMOUS_PLAYTEST_20261026/native-source16-events/receipt.json).
+Source17 actualDeck/Windowsx86/Proton10/gm_flatgrass1280x800 stationary closedgate
+baseline is29.731FPS,p9540.291/p9951.717ms/max61.34 over891activeframes. It is dev1/
+dense, not40FPS or fullworkload certification. Ordinary SpringHeel boost observed;
+no normal-jump baseline/apex3x or air-control1.5 acceptance. [Adjacent proof](validation/AUTONOMOUS_PLAYTEST_20261026/native-source17-adjacent/receipt.json).
 
-Source16 quit normally; owned/unproven/remaining cleanup all clear and personal
-cfg/DB/DATA/save baseline unchanged. Source17 new empty prefix launched from
-prepared94f3 source-equivalent to6ac on actual Valve Jupiter Deck/Windowsx86/
-Proton10,gm_flatgrass1280x800. All576Lua/118physical sources match; six native
-proof guards include AimCRC966710964 and SafeTeleportCRC377454284. Fresh six-source realm checks and the finite ranged-Fallen/playerAim gate pass.
-Next: exact cached-HUD pickup visibility at the closed Red gate, then a genuinely
-new seed/canonical campaign for varied authored success/failure/progression/replay.
-Preserve accepted collision/performance behavior. Health-label occlusion is now confirmed BUG018 on fresh17: actual HUD target1054
-behind closedgate967, matched client/server eye/target, rays miss while shot/solid
-hulls hit. Native mask/hull characterization and shared NearLook repair are active;
-Blue route ambiguity under active Skeleton blockade remains unconfirmed.
+Source17 quit normally and host process0 verified; terminal primaryunproven86343
+is retained despite matching live marker-owned birth, consistent with a shutdown
+identity race but exact cause unproven. No clean-unproven receipt claimed. Personal
+cfg/DB/DATA/save baseline unchanged. Reviewed source18 preparation preserves all17
+state, all576Lua/118physical entries, new empty prefix and9native guards including
+NearLookCRC84557611/Aim966710964/Safe377454284. Frozen launcher remains unchanged.
 
-Exact owned-stream capture yielded6.144s PCM under8s lease; no device/routing/
-microphone change. The interface cannot consume audio, so perceptual SFX remains
-unaccepted. Stock Chromium menu fallback remains an environment gap. Steam4000
-Cloud is TEMPORARILY OFF (original ON): MUST restore after private tests.
-[Coverage matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
+Next: fresh18 install/launch, exact9-source realm proof, retained Health oracle
+behind closedgate/no label, then clear/open visible positive and neighboring
+wall/glass/invisibleheader/Omniscience controls; qualified samepose cost comparison.
+Then genuinely newseed6102603 plus canonical NewCampaign for varied authored play.
+Perceptual audio remains unavailable despite owned-stream PCM capture. Stock
+Chromium menu fallback remains environmental. Steam4000 Cloud is TEMPORARILY OFF
+(original ON): MUST restore after private testing. [Matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
 
 # Current checkpoint — integrate retained partial performance improvements
 

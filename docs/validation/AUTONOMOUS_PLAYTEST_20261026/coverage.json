@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "6acff8a3458b230378100d491e431d18a84c740c",
+  "current_candidate": "63bcc03e30233f74208a92e25a1904a87201125f",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -215,9 +215,10 @@
       "source": "02/03/06 LOD-CLASS-MILESTONES; 07 tuning",
       "expected": "Active versus design-only class rewards reconciled before claims",
       "scenario": "Read implementation and current explicit decisions; isolate any authored gap",
-      "result": "Level1coreimplemented;Oct12Level5/10/15newclassmilestonesexplicitDESIGN-ONLYandunimplemented;notaruntimepassorobservedbug",
+      "result": "Level1coreimplemented;Oct12Level5/10/15newclassmilestonesexplicitDESIGN-ONLYandunimplemented;notaruntimepassorobservedbug Source17 ordinarySpringHeel selected atDEX16 and one nativejumpboost observed (160basepower/add117.128/55.248height), gatedoor remainedclosed/cardunowned. Exactapex3x vsnormalbaseline andaircontrol1.5 remainunaccepted.",
       "evidence": [
-        "authored-coverage-plan.json"
+        "authored-coverage-plan.json",
+        "native-source17-adjacent/receipt.json"
       ]
     },
     {
@@ -341,9 +342,10 @@
       "source": "07 LOD-IMPL-004; retained optimization integration",
       "expected": "Representative comparable performance; no repair-induced regression",
       "scenario": "Same scene/seed/settings/hardware baseline and candidate captures; no 40-FPS claim",
-      "result": "Native exact-source180s entry/map-route baseline:3261activeframes,18.13FPS,median54.101ms,p95 64.764ms,p99 78.538ms,max185.897ms. Observer10Hz present. No40FPsorrepair-attributionclaim; no comparable exact-source pre-fix baseline.",
+      "result": "Native exact-source180s entry/map-route baseline:3261activeframes,18.13FPS,median54.101ms,p95 64.764ms,p99 78.538ms,max185.897ms. Observer10Hz present. No40FPsorrepair-attributionclaim; no comparable exact-source pre-fix baseline. Source17 actualDeck closedgate stationarybaseline29.731FPS/p9540.291/p9951.717ms/max61.34,891activeframes; unprofileddev1dense. Qualifiedsamepose source18 comparisonpending; no40FPS/fullworkload acceptance.",
       "evidence": [
-        "production-2c73471b/performance_client_latest.txt"
+        "production-2c73471b/performance_client_latest.txt",
+        "native-source17-adjacent/receipt.json"
       ]
     },
     {
@@ -452,12 +454,14 @@
     },
     {
       "id": "REG-PICKUP-SIGHT",
-      "source": "06 LOD-UI-009 and LOD-UI-010 visible-drop near-look/no-through-wall reveal",
+      "source": "06 LOD-UI-008 dedicated drop readability; LOD-UI-010 near-look/no-through-wall reveal (older observation UI009 citation typo preserved)",
       "expected": "Only actually visible pickups show full near-look names; closed visible gates and walls occlude without hiding legitimate visible drops",
       "scenario": "Exact renderedHealth/HUDcachedtarget, frozenclient/serverrays andgatebounds/state; repairedclosed/open/besidegate/ordinaryvisible controls",
-      "result": "Confirmed BUG018 native: pickup1054behindclosedgate967 selected/drawn, bothrealmsidenticaltarget/eye, ordinaryvisibilityray misses;SHOTHullblocks. Native/repair acceptancepending.",
+      "result": "Confirmed BUG018 native exactcachedHealth behindclosedRedGate.24mask/shape variants in eachrealm proveMONSTER maskmembership plusnativehullpath; notnodraw.63bcc shared exactrendered-body correction passes14static/independentreview/negative controls; full337 andfresh18native closed/open/clear/glass/header controls pending.",
       "evidence": [
-        "loot-label-occlusion/observation.json"
+        "loot-label-occlusion/BUG-018.json",
+        "loot-label-occlusion/pre-repair/manifest.json",
+        "loot-label-occlusion/static/independent-review.json"
       ]
     }
   ],
@@ -571,7 +575,7 @@
     {
       "id": "BUG-018",
       "record": "loot-label-occlusion/BUG-018.json",
-      "status": "Confirmed source17 exactcachedHUDHealth1054 behindclosedRedgate967; client/serverraysmiss whileSHOTHullhitsgate; canonicalvisibilityrepairinvestigation active"
+      "status": "Confirmed source17 Health1054 behindclosedgate967; repaired63bcc in shared visibility/render-body bounds,14static+independent original/mutant/parity pass; fresh18native/full337CI pending"
     }
   ],
   "static_fixture_checkpoint": {
@@ -588,19 +592,18 @@
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
   "installed_loaded_build": "6acff8a3458b230378100d491e431d18a84c740c",
-  "last_checkpoint_utc": "2026-10-27T22:46:25.497804+00:00",
-  "next_action": "Complete BUG018 native mask/hull characterization and minimal shared NearLook repair/static/independent/native regressions. Then distinct newseed/canonicalcampaign for more authored success/failure/progression/replay. Clean0; co-op/perceptualaudio blocked; restoreCloudON afterprivate tests.",
+  "last_checkpoint_utc": "2026-10-27T23:08:48.971067+00:00",
+  "next_action": "Fresh source18 install/start with9native source guards NearLookCRC84557611; prove existingHealth remainsbehindclosedgate withoutlabel, then clear/open-visiblepositive and glass/invisibleheader/wall/Omniscience controls plusqualifiedsameposecost. Continue newseed6102603 canonicalNewCampaign for varied authored success/failure/progression/replay. Clean0/co-op/audio gaps remain; restore CloudON afterprivate tests.",
   "last_runtime_build": "6acff8a3458b230378100d491e431d18a84c740c",
-  "current_native_build": "Private source17 running; owned client86343/birth6332948, same-prefix Chromium utility86463, fresh prepared94f3",
+  "current_native_build": "none; source17 quit, host process0 confirmed, final primary unproven flag retained with prior ownership/closure qualification; source18 preparing",
   "installed_loaded_build_note": "All576Lua/118physical sources match prepared94f3/gameplay6ac; both live realm six-source audits pass including AimCRC966710964/SafeTeleportCRC377454284; new native NPC acceptance pending.",
   "latest_repair_static_checkpoint": {
-    "commit": "6acff8a3458b230378100d491e431d18a84c740c",
-    "evidence": "npc-aim-boundary/BUG-017.json",
-    "positive_commands": 13,
-    "lua_syntax": 927,
-    "independent_review": "clear; exact original271 and first-guard-only323 negatives reproduce",
-    "native": "Finite repaired native gate passes: actual4copy357fires/1Herohit/noNewErrors plus separate normalplayerAimShot/markerCleanup",
-    "native_evidence": "npc-aim-boundary/native-repaired/receipt.json"
+    "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+    "evidence": "loot-label-occlusion/BUG-018.json",
+    "positive_commands": 14,
+    "lua_syntax": 928,
+    "independent_review": "clear; original/target-hit-mutant negatives plus exact2892model-transform parity",
+    "native": "pending fresh18"
   },
   "latest_full_integration": {
     "commit": "6acff8a3458b230378100d491e431d18a84c740c",
@@ -615,15 +618,11 @@
     "qualification": "Exact full frozen static source17 gate; no repaired native acceptance."
   },
   "latest_candidate_full_integration": {
-    "commit": "6acff8a3458b230378100d491e431d18a84c740c",
-    "run_id": 40589622846,
-    "job_id": 122490136272,
-    "status": "success",
-    "passed": 336,
-    "total": 336,
-    "lua_files": 927,
-    "production_files": 576,
-    "evidence": "ci-source17/verification.json",
-    "qualification": "Exact full frozen static source17 gate; no repaired native acceptance."
+    "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+    "run_id": 40599237156,
+    "job_id": 122522912306,
+    "status": "in_progress",
+    "registered": 337,
+    "qualification": "Last actual live-job observation; no pass inferred until exact frozen receipt verification."
   }
 }
