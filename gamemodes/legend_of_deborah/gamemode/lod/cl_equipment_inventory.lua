@@ -28,6 +28,40 @@ local function textHeight(text,width,font)
     end
     local _,height=surface.GetTextSize('Ag');return lines*height+6
 end
+-- DTooltip measures explicit lines in Default; it never wraps its DLabel.
+-- Prepare the text once per tile, keeping every byte and authored line break.
+local function tooltipText(text)
+    surface.SetFont('Default')
+    local width=math.max(1,math.min(480,ScrW()-32))
+    local lines,line={},''
+    local function append(token)
+        if line~='' and surface.GetTextSize(line..token)>width then
+            lines[#lines+1]=line;line=''
+        end
+        if surface.GetTextSize(token)<=width then line=line..token;return end
+        -- Long names/tokens still fit, without splitting UTF-8 continuation bytes.
+        local first=1
+        while first<=#token do
+            local nextByte=first+1
+            while nextByte<=#token do
+                local byte=token:byte(nextByte)
+                if byte<128 or byte>=192 then break end
+                nextByte=nextByte+1
+            end
+            local character=token:sub(first,nextByte-1)
+            if line~='' and surface.GetTextSize(line..character)>width then
+                lines[#lines+1]=line;line=''
+            end
+            line=line..character;first=nextByte
+        end
+    end
+    for paragraph in (text..'\n'):gmatch('(.-)\n') do
+        append(paragraph:match('^%s*'))
+        for token in paragraph:gmatch('%S+%s*') do append(token) end
+        lines[#lines+1]=line;line=''
+    end
+    return table.concat(lines,'\n')
+end
 function E:InventorySlot(id)
     local def=self:Definition(self.Snapshot.items[id])
     if def and def.weapon then
@@ -94,7 +128,7 @@ local function tile(parent,id,slot,title,size)
     if id then
         p:Droppable(DRAG)
         local item=E.Snapshot.items[id]
-        p:SetTooltip(E:ItemName(item)..'\n'..E:Description(item)..'\n'..(E:Definition(item).name or ''))
+        p:SetTooltip(tooltipText(E:ItemName(item)..'\n'..E:Description(item)..'\n'..(E:Definition(item).name or '')))
     end
     p.Paint=function(self,w,h)
         local item=E.Snapshot.items[self.LODItemId];local selected=E.InventorySelectedId==self.LODItemId and item

@@ -1,0 +1,98 @@
+{
+  "id": "BUG-010",
+  "recorded_utc": "2026-10-27T14:38:33.275034+00:00",
+  "baseline": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9",
+  "runtime_reproduction_build": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9",
+  "environment": "Actual Valve Jupiter Steam Deck; native Windows x86 Garry's Mod under Proton10; gm_flatgrass; seed6102602; production cheats0/dev0 setup",
+  "severity": "Presentation/usability: long ordinary item tooltip loses visible name/property text at both viewport edges",
+  "expected": "Keep the complete item name and description readable inside the viewport while preserving existing inventory ownership, equipment input and item text.",
+  "source": {
+    "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "gdd_revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": [
+      "00 \u2014 AI ENTRYPOINT",
+      "01 \u2014 AI RULE INDEX",
+      "06 \u2014 MULTIPLAYER, LIFECYCLE & UI: LOD-UI-008/009"
+    ],
+    "scope": "Preserve complete item name/properties in inventory and the existing responsive shared presentation. Native DTooltip behavior is directly inspected in its installed source, included in the evidence archive."
+  },
+  "reproduction": [
+    "Open ordinary Equipment page and inspect the acquired Crowbar tile",
+    "Hover the ordinary Neil's Radiant Crowbar of Holding and Might item",
+    "Observe one unwrapped property line spanning beyond both viewport sides, cutting the tooltip name and leading/trailing text"
+  ],
+  "actual": "The preserved screenshot shows the ordinary Crowbar selected and equipped; its separate details panel is readable, while the hover tooltip is one excessively wide horizontal strip cut by the client viewport.",
+  "cause": "Native DTooltip initializes the Default font and sizes its label from explicit-line GetContentSize plus8 horizontal/+6 vertical pixels. Position clamping cannot fit content that exceeds the viewport width.",
+  "repair": "Measure tooltip text in actual native Default font and insert line breaks once at tile creation. Width is min(480,screen width minus32), with UTF-8 codepoint splitting for an overlong token. Preserve every authored byte, whitespace and existing newline. No inventory, economy, weapon or server behavior changes.",
+  "status": "Implemented and statically validated; fresh exact-build native hover recheck pending. Clean gameplay pass streak remains0.",
+  "static": {
+    "positive_checks_passed": 10,
+    "source_unchanged": true,
+    "source_hashes": {
+      "gamemodes/legend_of_deborah/gamemode/lod/cl_equipment_inventory.lua": "9012a4b98e488bc4a2286787346ca4dc02117e91e07609aba901589748d3cef6",
+      "tools/test_equipment_inventory_ui.lua": "cc77452a208bb3cab8d158bc83f80916f1b47054617029aeaf76e44d7588a4c3"
+    },
+    "negative_control": "Final inventory fixture with exact baseline inventory source fails Native DTooltip content plus padding must fit the viewport. Full failure retained.",
+    "syntax": "Both changed files pass Lua5.4 and independent LuaJIT compile-only checks; no execution/runtime claim",
+    "independent_review": "popup_independent_review inspected actual native DTooltip and repair, reran full equipment/UI fixture and diff check, verified exact negative source bytes and LuaJIT compilation; no blocking defect found."
+  },
+  "coverage": {
+    "static_viewports": [
+      [
+        640,
+        480
+      ],
+      [
+        1280,
+        800
+      ],
+      [
+        3440,
+        1440
+      ]
+    ],
+    "cases": [
+      "Real generated Crowbar description",
+      "Unchanged short text",
+      "Authored whitespace/newlines",
+      "Overlong ASCII and multibyte UTF-8 tokens"
+    ],
+    "generated_text_sample": {
+      "samples": 6600,
+      "largest_raw_bytes": 894,
+      "family": "fighting_gloves",
+      "dungeon_level": 999,
+      "seed": 38,
+      "native_label_limit_note": "The sampled largest raw description remains below the previously observed1023-byte native label limit; this sample does not prove all possible generated strings."
+    }
+  },
+  "limits": [
+    "The6600 generated-item sample with max894 raw bytes is bounded evidence, not an exhaustive generator proof",
+    "Wrapping repairs width; it does not remove the native DLabel1023-byte text cap or provide a scroll container for arbitrarily long/vertically excessive text",
+    "Static Default-font doubles cannot establish native glyph metrics, hover timing, viewport placement, input feel or co-op acceptance; original ordinary Crowbar must be rechecked in the real client",
+    "Existing full336-suite gate belongs to f604. This candidate has the focused10-positive-check gate and changed-file compile checks, not a newly claimed full integration run"
+  ],
+  "next_native_gate": [
+    "Fully quit/install/restart exact repair candidate; verify loaded cl_equipment_inventory CRC2838551934",
+    "Open ordinary O Equipment and hover Crowbar/Pistol tiles at1280x800; name and complete relevant properties wrap inside the viewport",
+    "Confirm short tooltip remains readable and ordinary select/equip/stow/close controls work without unintended ammo or ownership mutation"
+  ],
+  "evidence": {
+    "native_before": "before-crowbar-tooltip.png",
+    "native_before_sha256": "d6d5740d0fb0f293cd3bdb57c38e7aa12657a4e1722476ad981bb06a80331314",
+    "archive": "static-evidence.tar.xz",
+    "archive_sha256": "bb4cec18217c6c2eeba68261516a928b2bcad472362c5258481d81aad730286f",
+    "archive_bytes": 19644,
+    "native_source_identity": "before-source-identity.json"
+  },
+  "candidate_source": {
+    "gamemodes/legend_of_deborah/gamemode/lod/cl_equipment_inventory.lua": {
+      "sha256": "9012a4b98e488bc4a2286787346ca4dc02117e91e07609aba901589748d3cef6",
+      "native_crc32": "2838551934"
+    },
+    "tools/test_equipment_inventory_ui.lua": {
+      "sha256": "cc77452a208bb3cab8d158bc83f80916f1b47054617029aeaf76e44d7588a4c3",
+      "native_crc32": "433861238"
+    }
+  }
+}

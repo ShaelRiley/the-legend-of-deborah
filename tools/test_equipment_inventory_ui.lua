@@ -6,6 +6,7 @@ KEY_O=25;CreateClientConVar=function() return {GetInt=function() return KEY_O en
 local now=10;RealTime=function() return now end
 unpack=table.unpack
 local nodes,receivers,requests={}, {}, {}
+local measuredFont
 local panel={};panel.__index=panel
 local create
 function panel:SetPos(x,y) self.x=x;self.y=y end
@@ -13,7 +14,7 @@ function panel:GetX() return self.x or 0 end;function panel:GetY() return self.y
 function panel:SetSize(w,h) self.w=w;self.h=h end
 function panel:GetWide() return self.w end;function panel:GetTall() return self.h end
 function panel:SetText(t) self.text=t end
-function panel:SetTooltip(t) self.tooltip=t end
+function panel:SetTooltip(t) self.tooltip=t;self.tooltipFont=measuredFont end
 function panel:SetContentAlignment() return self end
 function panel:Droppable(name) self.drag=name end
 function panel:SetDoubleClickingEnabled(v) self.doubleClick=v end
@@ -33,7 +34,8 @@ create=function(kind,parent)
 end
 vgui={Create=create}
 LOD.UI={Colors={ink={},blue={},red={},green={},rule={},peach={},light={}},Button=function() end}
-surface={SetFont=function() end,GetTextSize=function(s) return #s*7,14 end}
+surface={SetFont=function(font) measuredFont=font end,GetTextSize=function(s) return #s*7,14 end}
+ScrW=function() return 1280 end;ScrH=function() return 800 end
 local drawing=false;dragndrop={IsDragging=function() return drawing end}
 net.Receive=function(n,f) receivers[n]=f end
 local pending
@@ -319,3 +321,60 @@ assert(pause()==false and not LOD.CharacterSheet.Frame and not UI.ActivePage,
     'Character Sheet loading/choice children must share the Escape close path')
 assert(pause()==nil,'Closing the Character Sheet restores normal engine pause')
 print('SHARED_POPUP_ESCAPE_PASS: real Ice selection and Character Sheet; native pause interception, exact callbacks, child/stale/foreign focus, console, minigame and normal pause')
+
+-- Native DTooltip uses Default/GetContentSize plus8 horizontal and6 vertical
+-- pixels. Its position clamp cannot rescue an over-wide unwrapped description.
+-- Exercise real tile construction, not a separately exported wrapping helper.
+local nativeName,nativeDescription=E.ItemName,E.Description
+local crowbar=E:Generate(1007,1,'weapon_lod_crowbar','tooltip:crowbar')
+local authored={nativeName(E,crowbar),nativeDescription(E,crowbar)}
+local cases={authored,{'Short name','Short description.'},
+    {'Preserved paragraphs','  Leading spaces\tand repeated  gaps stay.\n\nA second authored paragraph.\n'},
+    {string.rep('W',200),string.rep('é魔→',80)..' — complete UTF-8 token.'}}
+surface.GetTextSize=function(text)
+    local widest,rows=0,0
+    for line in (text..'\n'):gmatch('(.-)\n') do
+        local width=0
+        for _,code in utf8.codes(line) do
+            width=width+(code==32 and 4 or code==9 and 16 or code==87 and 12
+                or code==105 and 3 or code>127 and 11 or 7)
+        end
+        widest=math.max(widest,width);rows=rows+1
+    end
+    return widest,rows*14
+end
+local function preservesText(wrapped,original)
+    local nextOriginal=1
+    for i=1,#wrapped do
+        local byte=wrapped:sub(i,i)
+        if byte==original:sub(nextOriginal,nextOriginal) then nextOriginal=nextOriginal+1
+        else assert(byte=='\n','Tooltip may only insert line breaks, never remove/change authored bytes') end
+    end
+    assert(nextOriginal==#original+1,'Tooltip lost authored description text')
+end
+for _,viewport in ipairs({{640,480},{1280,800},{3440,1440}}) do
+    ScrW=function() return viewport[1] end;ScrH=function() return viewport[2] end
+    for _,content in ipairs(cases) do
+        E.ItemName=function() return content[1] end;E.Description=function() return content[2] end
+        E.Snapshot={items={[crowbar.id]=crowbar},slots={}}
+        local frame=create('DFrame');frame:SetSize(math.min(1120,ScrW()-32),math.min(740,ScrH()-32))
+        E:BuildPanel(frame)
+        local tile
+        for _,child in ipairs(E.InventoryView.Bag.children) do if child.LODItemId==crowbar.id then tile=child end end
+        assert(tile,'Representative item tooltip must exist')
+        local original=content[1]..'\n'..content[2]..'\n'..E:Definition(crowbar).name
+        preservesText(tile.tooltip,original)
+        for line in (tile.tooltip..'\n'):gmatch('(.-)\n') do
+            assert(utf8.len(line),'A tooltip line split a UTF-8 code point')
+            assert(surface.GetTextSize(line)+8<=viewport[1],
+                'Native DTooltip content plus padding must fit the viewport')
+        end
+        assert(tile.tooltipFont=='Default','Item tooltip must be measured in its native Default font')
+        local nativeWidth,nativeHeight=surface.GetTextSize(tile.tooltip)
+        assert(nativeWidth+8<=viewport[1] and nativeHeight+6<=viewport[2],
+            'Representative native tooltip must fit after native size-to-content layout')
+        if content==cases[2] then assert(tile.tooltip==original,'Short tooltips must keep their exact existing text') end
+    end
+end
+E.ItemName,E.Description=nativeName,nativeDescription
+print('INVENTORY_TOOLTIP_NATIVE_BOUNDS_PASS: actual item tiles; Default-font native content/padding at640/1280/ultrawide; full description, whitespace/newline and long UTF-8 preservation')

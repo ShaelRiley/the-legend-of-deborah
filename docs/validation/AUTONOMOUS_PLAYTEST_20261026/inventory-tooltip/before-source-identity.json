@@ -1,0 +1,31 @@
+{
+  "kind": "Native startup source identity from the same live session as the preserved before screenshot",
+  "rows": [
+    {
+      "campaign": 6102602,
+      "level": 1,
+      "developerMode": false,
+      "source": {
+        "installLabel": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9 clean ",
+        "verified": true,
+        "checked": 114,
+        "mismatches": 0,
+        "missing": 0
+      },
+      "reason": "built"
+    },
+    {
+      "campaign": 6102602,
+      "level": 1,
+      "developerMode": false,
+      "source": {
+        "installLabel": "afdcbc096a56ad2b2f67b2cdf670e344f9366be9 clean ",
+        "verified": true,
+        "checked": 114,
+        "mismatches": 0,
+        "missing": 0
+      },
+      "reason": "heartbeat"
+    }
+  ]
+}
