@@ -97,7 +97,7 @@
     "live_console_source": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/console.log",
     "saved_console": "console-through-first-deployment.txt",
     "cut": "Beginning through first DEPLOYED \u2014 ENTER THE DUNGEON line inclusive, retaining source/configuration and UI diagnostics before active dungeon exploration",
-    "saved_console_sha256": "df8a90465c5c9a812cb6ca5ecca8c4443a64775fb91b9b11d0b577163c43759b",
+    "saved_console_sha256": "afe7009cf73e18c1c77ba88b21e0df8522c3af9de19f1d91a3011f2ee90bdcd0",
     "canonical_console_latest": {
       "status": "Stale previous-session file; not copied or used as current afdcbc proof",
       "mtime_ns": 1793071945968615162,
@@ -108,6 +108,13 @@
       "status": "Qualified stale/unidentified contents: generated_utc2026-10-27T04:30:13Z,session_reasonunknown,event_count0,latestprofilesnone; captured but not used to prove current UI/RPG mechanics",
       "mtime_ns": 1793110578054833841,
       "sha256": "648dbe40d26569b63dbdc6e5cbfde1add72e30c0da571dd371c4c739159f4590"
+    },
+    "saved_console_format": "Readable text with CRLF normalized to LF only. Exact original Windows log-cut bytes are retained separately.",
+    "exact_raw_console": {
+      "file": "console-through-first-deployment.raw.xz",
+      "sha256": "9a52a9153952da9623eb356e1fcfb1b0a5b860dbd3b362498b607272d147db6e",
+      "uncompressed_sha256": "df8a90465c5c9a812cb6ca5ecca8c4443a64775fb91b9b11d0b577163c43759b",
+      "format": "XZ of exact raw byte cut, including original CRLF"
     }
   },
   "screenshots": [
