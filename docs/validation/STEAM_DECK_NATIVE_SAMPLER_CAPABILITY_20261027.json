@@ -1,0 +1,132 @@
+{
+  "status": "Diagnostic capability finding only. No optimization candidate, adapter implementation, native invocation or performance gain. Sustained40FPS remains unmet; active goal not complete.",
+  "checkpoint_budget": {
+    "resumed_utc": "2026-10-27T03:02:37+00:00",
+    "first_observation_utc": "2026-10-27T03:03:04+00:00",
+    "conservative_carried_forward_elapsed_cap_minutes": 45,
+    "hard_deadline_utc": "2026-10-27T03:47:37+00:00",
+    "prepared_utc": "2026-10-27T03:15:00.245778+00:00",
+    "recorded_utc": "2026-10-27T03:16:27.402498+00:00",
+    "elapsed_seconds_at_record": 830.402498
+  },
+  "source": {
+    "canonical_main": "e6e0b8f192cb3429d3b9a20b602cda1a264cf9e7",
+    "retained_integration": "858941158ed5182a88ab2d7522f534bdd6029c30",
+    "integration_PR": "https://github.com/ShaelRiley/the-legend-of-deborah/pull/8",
+    "research_branch": "perf/deck-20261021",
+    "research_checkpoint": "5b47a62e02863e434111ed79c691563cc5887571",
+    "experimental_runtime_sha": null,
+    "newer_legitimate_work_preserved": "Seven post-integration runtime files, plus dirty autonomous-playtest documentation and untracked captures in original main worktree. No reset, stash, installation, source or settings edit performed."
+  },
+  "delta_review": {
+    "reviewer": "fresh read-only resume_delta_review",
+    "result": "No new material removable steady operation. NextBot/movement/navigation/admission/combat source unchanged since retained integration.",
+    "executed_source_findings": [
+      {
+        "source": "gamemodes/legend_of_deborah/gamemode/lod/cl_damsels.lua:14",
+        "finding": "Material reconstruction follows appearance guard and cache miss; dialogue split is opening-event work."
+      },
+      {
+        "source": "gamemodes/legend_of_deborah/gamemode/lod/cl_weapon_appearance.lua:71",
+        "finding": "New shader derivation runs on bounded material-cache misses. Removing repaired flags/maps changes presentation."
+      },
+      {
+        "source": "gamemodes/legend_of_deborah/gamemode/lod/cl_minimap.lua:731",
+        "finding": "Legend derivation is screen/scale cached; map rendering requires open map."
+      },
+      {
+        "source": "gamemodes/legend_of_deborah/gamemode/lod/sv_run_manager.lua:1288",
+        "finding": "New inventory capture runs on death, not recurring AI."
+      }
+    ]
+  },
+  "existing_attribution": {
+    "source_review_handoff": "/home/deck/deborah-recovery/INDEPENDENT_SOURCE_REVIEW_20261026.json",
+    "low_overhead_record": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_LOW_OVERHEAD_20261025.json",
+    "retention": "Prior sampling supports substantial on-CPU execution; VProf identifies costly protected NextBot Lua boundary but does not name a substantial removable operation. BeforeAI2.538–2.730ms/rendered frame is qualified instrumented inclusive wall, not exclusiveCPU or savings.",
+    "closed": "No unchanged baseline, VProf repeat, BeforeAI/child wrapper refinement, public jit.profile reprobe, broad wrapper, or rejected lookup/context/dispatch/movement/preload experiment repeated.",
+    "strongest_reviewed_algorithmic_lead": "EntrySafety globally gated radius-six BFS has genuine repeated search but only sparse historical1.98–2.36ms/second estimates and no material-stall/GC link; not reopened.",
+    "frozen_protocol": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/STEAM_DECK_BENCHMARK.md",
+    "stair_corrected_reproduction": "https://github.com/ShaelRiley/the-legend-of-deborah/blob/5b47a62e02863e434111ed79c691563cc5887571/docs/validation/STEAM_DECK_STAIR_BASELINE_20261026.json"
+  },
+  "new_binary_evidence": {
+    "read_utc": "2026-10-27T03:10:50.521400+00:00",
+    "dll": "/home/deck/.local/share/Steam/steamapps/common/GarrysMod/garrysmod/bin/win64/lua_shared.dll",
+    "bytes": 787280,
+    "sha256": "c4d093ab2ec74877459fec06ce238510ebc2001d60508632d78a2b659ce1395d",
+    "pe_format": "pei-x86-64",
+    "preferred_image_base": "0x180000000",
+    "exports": {
+      "luaJIT_profile_dumpstack": "0x283c0",
+      "luaJIT_profile_start": "0x28410",
+      "luaJIT_profile_stop": "0x285e0"
+    },
+    "export_rows": [
+      "[   3] +base[   4]  0003 luaJIT_profile_dumpstack",
+      "[   4] +base[   5]  0004 luaJIT_profile_start",
+      "[   5] +base[   6]  0005 luaJIT_profile_stop",
+      "[  71] +base[  72]  0047 lua_getinfo",
+      "[  88] +base[  89]  0058 lua_newthread",
+      "[ 112] +base[ 113]  0070 lua_resume_real"
+    ],
+    "start_implementation": "Nontrivial body verified by disassembly: saves registers, parses mode, defaults interval10. Export is not merely a return stub. No function was invoked.",
+    "not_proved": [
+      "Callback delivery or correctness in GMod",
+      "Native sampling overhead or pacing",
+      "Attribution through JIT and yielding GMod behaviors",
+      "Availability of a safe installed adapter",
+      "Any source savings or40FPS"
+    ],
+    "runtime_changed": false,
+    "game_started": false,
+    "public_jit_profile_probe_repeated": false
+  },
+  "abi_hazard": {
+    "function": "luaJIT_profile_dumpstack",
+    "installed_win64_length_parameter": "size_t* (eight-byte store verified at preferred-image address0x1800283fc)",
+    "documentation_discrepancy": "Public LuaJIT profiler page describes int*. Current upstream implementation uses size_t*. Blindly allocating a four-byte int is unsafe for this installed binary.",
+    "primary_source": "https://github.com/LuaJIT/LuaJIT/blob/v2.1/src/lj_profile.c",
+    "disassembly_distribution": "Proprietary function disassembly retained locally only; no binary or function body distributed.",
+    "upstream_declaration": "https://raw.githubusercontent.com/LuaJIT/LuaJIT/v2.1/src/luajit_rolling.h"
+  },
+  "exact_capability_hypothesis": {
+    "implementation": "The installed LuaJIT integrated C API sampler, controlled via luaJIT_profile_start/stop with luaJIT_profile_dumpstack in a C-only callback; NOT FProfiler or public jit.profile. A compatible native adapter is not currently available/verified.",
+    "mechanism": "Inference: direct LuaJIT stack dumping on callback-supplied lua_State with bounded native buffering could name currently executing Lua work without per-method wrappers or GLua callbacks. No guarantee of safe GMod embedding or usable observer effect.",
+    "difference_from_closed_work": "New direct evidence of implemented installed native exports; uses no public Lua profile module, wrapper calls or external OS instruction-pointer-to-Lua symbol project.",
+    "jit": "Upstream supports interpreted and compiled Lua. Function/line modes flush traces at start and stop, so later comparisons must warm both relevant states outside capture. Inlining prevents simple one-to-one line attribution.",
+    "yield_and_wait": "Only the callback-supplied active state may be inspected. Do not time an entire coroutine lifetime or charge paused yields. Windows timer samples elapsed intervals; delayed C/host samples can carry earlier VMstate with a later stack. Keep VMstate separate and do not call this exclusive CPU.",
+    "realm": "Underlying sampler has one global instance; profile server realm alone in listen-host process, not client and server concurrently.",
+    "embedding": "Facepunch issue3203 documents CLuaInterface wrong-state danger when invoking GLua C functions from Lua callbacks. Avoiding that interface is a rationale for C-only callback, not proof of safety.",
+    "primary_sources": [
+      "https://luajit.org/ext_profiler.html",
+      "https://github.com/LuaJIT/LuaJIT/blob/v2.1/src/lj_profile.c",
+      "https://github.com/Facepunch/garrysmod-requests/issues/3203"
+    ],
+    "callback_cost": "Upstream dumpstack itself can format/grow its internal string buffer; bounded adapter storage does not make sampling allocation-free or overhead-free."
+  },
+  "alternatives_reviewed": {
+    "FProfiler": "Author source uses debug.sethook on every call/return plus SysTime and shared per-function start/recursion tables. Not a verified low-overhead native JIT/yield sampling replacement; not installed or measured.",
+    "FProfiler_source": "https://github.com/FPtje/FProfiler/blob/master/lua/fprofiler/gather.lua",
+    "ready_native_adapter": "None found by bounded primary-source searches; absence from search is not proof none exists."
+  },
+  "conditional_smallest_experiment": {
+    "requires_user_scope_decision": true,
+    "reason": "Earlier instruction closes new profiling/symbol infrastructure. Exports alone do not authorize silently substituting a new adapter project; pending consolidated user decision.",
+    "first_gate": "Finite C API capability smoke only: correct Win64 ABI; bounded native callback with no GLua API; verify named JIT work and two yielding coroutine contexts, clean stop and error handling. No optimized gameplay candidate or performance claim.",
+    "stop": "Stop on unsupported ABI, invalid/missing coroutine stacks, instability or need for engine/runtime replacement. Do not turn it into a framework project.",
+    "later_gate_if_usable": "Before quantitative game attribution, require existing matched bracketed observer-off/on captures, aligned capture windows and warmup, practical5% screen plus pacing/control-variation analysis. No asserted low overhead from API documentation alone.",
+    "retention": "Any eventual source candidate still requires concrete removable work, targeted regressions and matched counterbalanced profiler-off comparisons; full40FPS acceptance unchanged."
+  },
+  "preserved_constraints": "Actual LCDSteamDeck/singleplayerlistenhost/gm_flatgrass1280x800, bothdisplaysON,15WAC, graphics/population/resources/AIcadence/gameplay fixed. Multiplayer/features/Workshop/VPS deferred. No gameplay or software environment changes this checkpoint.",
+  "environment_read_only": {
+    "Steam_GMod_buildid": "25375506",
+    "SteamOS_build": "20261023.100",
+    "kernel": "7.2.7-valve2-2-neptune-72-g31504582a073",
+    "Proton_version_file": "1785139158 proton-10.0-4b",
+    "mounted_dev_link": "/home/deck/Downloads/the-legend-of-deborah",
+    "last_install_label": "2c73471bf7f0c73f1dac21e6eeba08b0e0f29aa4 clean",
+    "label_qualification": "Label predates new main death/respawn fixes; symlink points to current checkout. No running game or fresh loaded-source proof, so do not claim the new main is runtime-validated."
+  },
+  "current_decision": "No game-source candidate justified. New native API feasibility lead preserved, pending user decision on earlier infrastructure limit. No automatic new optimization/profiling tranche.",
+  "reviewed_native_capability": "Read-only independent review agrees a C-only callback proposal is materially different, but not validated safe/usable. No further source algorithm review or implementation was started."
+}
