@@ -1,0 +1,56 @@
+{
+  "kind": "Verified full remote CI for BUG012/013 source checkpoint",
+  "observed_utc": "2026-10-27T17:20:12.145324+00:00",
+  "commit": "4322f105e519fec53c469877998eecd5b4d06a34",
+  "checkout_tree": "54922172280f7388d22bbe8e2a6f09ac20c5aa8d",
+  "matrix_run": 40547301843,
+  "matrix_job": 122341229853,
+  "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40547301843",
+  "job_conclusion": "success",
+  "total": 336,
+  "passed": 336,
+  "all336_returncodes_zero": true,
+  "lua_files": 927,
+  "source_before": "055c7646b76c18cc7a9423df847511842555766f554ece613f885d293feb6d94",
+  "source_after": "055c7646b76c18cc7a9423df847511842555766f554ece613f885d293feb6d94",
+  "changed_during_gate": [],
+  "production_files": 576,
+  "production_sha256": "11e93513fd26f17fb9a5a19bfbe780262adbe252263490900e7c3a329c022a2e",
+  "source_files": 4006,
+  "verified_suite_logs": 336,
+  "receipt_reconstruction": "57 contiguous offset-checked receipt.json chunks and21 contiguous production_manifest.json chunks from decoded successful GitHub job logs; reconstructed receipt and production-manifest digests match FROZEN_MATRIX_PROOF.",
+  "raw_log_summary": "2026-10-27T17:16:44.3520888Z SYSTEMS_MATRIX 336/336; source_changed=0",
+  "all_workflows": [
+    {
+      "name": "Validate VR compatibility",
+      "run": 40547301584,
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40547301584",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate ambient audio and event cues",
+      "run": 40547301649,
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40547301649",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate low-end performance sources",
+      "run": 40547301708,
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40547301708",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate complete frozen source matrix",
+      "run": 40547301843,
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40547301843",
+      "conclusion": "success"
+    }
+  ],
+  "full_receipt": {
+    "archive": "full-receipt.tar.xz",
+    "archive_sha256": "cf8ceb18ca37884856368fd50b98dba9a60d2b99ee8904c58e6a79aae09cfbda",
+    "receipt_sha256": "b2210cbb0ff41fe42f90c40887a770ade7be2d4037340f66fb30700aea19dca9",
+    "production_manifest_file_sha256": "19d3e01f4a001d1450ba0f79cb64b50e5355ba919d5642c2ed9a2112fa96ecfe"
+  },
+  "qualification": "Remote static/integration proof for exact4322. Workflow independently hash-verified all336 stdout/stderr logs; those individual suite logs remain in the GitHub artifact, while this archive preserves the exact full receipt and production manifest. No native gameplay, audio, cooperative or clean-pass acceptance is inferred. Earlier failed evidence remains preserved."
+}
