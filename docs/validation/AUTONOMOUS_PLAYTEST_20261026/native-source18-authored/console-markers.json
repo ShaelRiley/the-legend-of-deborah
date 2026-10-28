@@ -1,0 +1,78 @@
+{
+  "source": "console-through-vending.log.xz",
+  "markers": [
+    {
+      "line": 252,
+      "text": "> local ok,err=LOD.RunManager:NewCampaign() print(\"FRESH_CAMPAIGN18B\",ok,err)..."
+    },
+    {
+      "line": 259,
+      "text": "[LOD:RPG-ABILITIES] Starting abilities: raw total 81 >= 74; STR 4d6[6+4+6+5] drop lowest = 17; DEX 4d6[3+4+5+2] drop lowest = 12; CON 4d6[5+5+3+2] drop lowest = 13; INT 4d6[3+2+5+2] drop lowest = 10; WIS 4d6[5+6+3+2] drop lowest = 14; CHA 4d6[2+5+4+6] drop lowest = 15; INT 10 - 2d2[1+1] = 8; DEX 12 - 1d3[2] = 10; CON 13 - 1d3[1] = 12; final total 76. No post-weakness reroll."
+    },
+    {
+      "line": 262,
+      "text": "FRESH_CAMPAIGN18B\ttrue\ttable: 0xc2d94a2a"
+    },
+    {
+      "line": 409,
+      "text": "EVP_OBS {\"potion_count\":0,\"hp\":100,\"balance_delta\":0,\"label\":\"before-native-use\",\"potion_delta\":0,\"at\":1479.9274386,\"position\":[-3840,-1920,-12271.376953125],\"legal_route\":[],\"admission_current\":false,\"candidate\":[-1824,-1536,-12269.9375],\"simple_same_floor_route\":false,\"balance\":0,\"lives\":3,\"legal_route_nodes\":0,\"str_modifier\":3,\"details\":{\"status\":\"Your STR modifier: +3. Success chance: 60%.\",\"spent\":false,\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":2138,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"},\"transaction_key\":\"event-expansion:campaign:8:1:strength_press:claim:76561198025505071\"}"
+    },
+    {
+      "line": 434,
+      "text": "EVP_OBS {\"potion_count\":0,\"hp\":100,\"balance_delta\":0,\"label\":\"before-native-use\",\"potion_delta\":0,\"at\":1704.8082491,\"position\":[-3840,-1920,-12271.376953125],\"legal_route\":[],\"admission_current\":false,\"candidate\":[-1824,-1536,-12269.9375],\"simple_same_floor_route\":false,\"balance\":0,\"lives\":3,\"legal_route_nodes\":0,\"str_modifier\":3,\"details\":{\"status\":\"Your STR modifier: +3. Success chance: 60%.\",\"spent\":false,\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":2138,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"},\"transaction_key\":\"event-expansion:campaign:8:1:strength_press:claim:76561198025505071\"}"
+    },
+    {
+      "line": 442,
+      "text": "EVP_LOCATOR_WINDOW {\"beyond_progression_locks_fixture\":true,\"scheduled_curtime\":1713.3299617040902,\"pickup_state_before\":{\"recorded_run_is_current\":true,\"jail_key\":false,\"floor_map_mask\":0,\"floor_map_owned\":[],\"cards\":[false,false,false,false],\"gates\":[false,false,false,false]},\"returned\":false,\"move_call_ok\":true,\"target\":[-1824,-1536,-12269.9375],\"capture_scope\":\"Aggregate window only; production console establishes actual first/repeat Use ordering.\",\"accepted\":true,\"timer_scheduled\":true,\"stale\":false,\"move_detail\":\"-1824.000000 -1536.000000 -12269.937500\",\"position_after_move\":[-1824,-1536,-12269.9375],\"scheduled_at\":1746.2623915,\"ordinary_traversal_accepted\":false,\"home\":[-3840,-1920,-12269.9375],\"move_finished_at\":1746.2641488,\"source\":[-3840,-1920,-12271.376953125],\"finished\":false,\"delay_seconds\":4}"
+    },
+    {
+      "line": 443,
+      "text": "STRENGTH PRESS \u2014 1d20 [18] +3 STR = 21 vs 12 \u2014 20 $DEB collected."
+    },
+    {
+      "line": 444,
+      "text": "STRENGTH PRESS \u2014 Your attempt was already spent or storage is unavailable."
+    },
+    {
+      "line": 445,
+      "text": "EVP_OBS {\"claim\":{\"debit\":0,\"account\":\"76561198025505071\",\"message\":\"1d20 [18] +3 STR = 21 vs 12 \u2014 20 $DEB collected.\",\"dc\":12,\"face\":18,\"total\":21,\"modifier\":3,\"credit\":20,\"payout\":20,\"success\":true},\"potion_count\":0,\"hp\":100,\"balance_delta\":20,\"label\":\"auto-four-second-window-aggregate-not-per-use\",\"potion_delta\":0,\"at\":1750.2571748,\"position\":[-1824,-1536,-12271.017578125],\"legal_route\":[{\"key\":\"6:7:0\",\"position\":[-1920,-1536,-12271.96875]}],\"admission_current\":true,\"candidate\":[-1824,-1536,-12269.9375],\"simple_same_floor_route\":true,\"balance\":20,\"lives\":3,\"legal_route_nodes\":1,\"str_modifier\":3,\"details\":{\"spent\":true,\"status\":\"1d20 [18] +3 STR = 21 vs 12 \u2014 20 $DEB collected.\",\"kind\":\"incident\",\"endpoints\":[{\"entityIndex\":2138,\"part\":0,\"name\":\"STRENGTH PRESS\"}],\"action\":\"USE \u2014 make your one Strength attempt this dungeon.\",\"name\":\"STRENGTH PRESS\",\"offer\":\"One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward.\"},\"transaction_key\":\"event-expansion:campaign:8:1:strength_press:claim:76561198025505071\"}"
+    },
+    {
+      "line": 447,
+      "text": "EVP_RETURN {\"detail\":\"-3840.000000 -1920.000000 -12269.937500\",\"pickup_state_after\":{\"recorded_run_is_current\":true,\"jail_key\":false,\"floor_map_mask\":0,\"floor_map_owned\":[],\"cards\":[false,false,false,false],\"gates\":[false,false,false,false]},\"hp_after\":100,\"position_after\":[-3840,-1920,-12269.9375],\"same_body_before\":true,\"same_body_after\":true,\"accepted\":true,\"native_call_ok\":true,\"event_current_before\":true,\"reason\":\"automatic-four-second-window-end\",\"at\":1750.2604177}"
+    },
+    {
+      "line": 448,
+      "text": "EVP_WINDOW_FINISHED {\"beyond_progression_locks_fixture\":true,\"scheduled_curtime\":1713.3299617040902,\"pickup_state_before\":{\"recorded_run_is_current\":true,\"jail_key\":false,\"floor_map_mask\":0,\"floor_map_owned\":[],\"cards\":[false,false,false,false],\"gates\":[false,false,false,false]},\"returned\":true,\"elapsed_wall_seconds\":3.9928273000000445,\"move_call_ok\":true,\"target\":[-1824,-1536,-12269.9375],\"capture_scope\":\"Aggregate window only; production console establishes actual first/repeat Use ordering.\",\"accepted\":true,\"capture_call_ok\":true,\"timer_scheduled\":true,\"stale\":false,\"return_detail\":\"-3840.000000 -1920.000000 -12269.937500\",\"return_accepted\":true,\"move_detail\":\"-1824.000000 -1536.000000 -12269.937500\",\"move_finished_at\":1746.2641488,\"last_return_attempt\":1,\"position_after_move\":[-1824,-1536,-12269.9375],\"return_call_ok\":true,\"scheduled_at\":1746.2623915,\"ordinary_traversal_accepted\":false,\"home\":[-3840,-1920,-12269.9375],\"timer_fired_curtime\":1717.3349616145715,\"source\":[-3840,-1920,-12271.376953125],\"capture_accepted\":true,\"timer_fired_at\":1750.2552188,\"finished\":true,\"delay_seconds\":4}"
+    },
+    {
+      "line": 508,
+      "text": "EVP_OBS {\"potion_count\":0,\"hp\":100,\"balance_delta\":0,\"label\":\"before-native-use\",\"potion_delta\":0,\"at\":1856.7509843,\"position\":[-3840,-1920,-12271.376953125],\"legal_route\":[],\"admission_current\":false,\"candidate\":[-672,-768,-12269.9375],\"simple_same_floor_route\":false,\"balance\":20,\"lives\":3,\"legal_route_nodes\":0,\"str_modifier\":3,\"details\":{\"maxStack\":3,\"price\":10,\"held\":0,\"unavailable\":false,\"quantity\":1,\"item\":\"healing_potion\",\"name\":\"Healing Potion\",\"balance\":20},\"transaction_key\":\"dungeon-vending:campaign:8:1:76561198025505071\"}"
+    },
+    {
+      "line": 520,
+      "text": "EVP_LOCATOR_WINDOW {\"beyond_progression_locks_fixture\":true,\"scheduled_curtime\":1892.714957694523,\"pickup_state_before\":{\"recorded_run_is_current\":true,\"jail_key\":false,\"floor_map_mask\":0,\"floor_map_owned\":[],\"cards\":[false,false,false,false],\"gates\":[false,false,false,false]},\"returned\":false,\"move_call_ok\":true,\"target\":[-672,-768,-12269.9375],\"capture_scope\":\"Aggregate window only; production console establishes actual first/repeat Use ordering.\",\"accepted\":true,\"timer_scheduled\":true,\"stale\":false,\"move_detail\":\"-672.000000 -768.000000 -12269.937500\",\"position_after_move\":[-672,-768,-12269.9375],\"scheduled_at\":1929.1263952,\"ordinary_traversal_accepted\":false,\"home\":[-3840,-1920,-12269.9375],\"move_finished_at\":1929.12805,\"source\":[-3840,-1920,-12271.376953125],\"finished\":false,\"delay_seconds\":4}"
+    },
+    {
+      "line": 521,
+      "text": "DEBBIE VENDING \u2014 Healing Potion added to Equipment for 10 $DEB."
+    },
+    {
+      "line": 522,
+      "text": "DEBBIE VENDING \u2014 You already bought your potion in this dungeon."
+    },
+    {
+      "line": 523,
+      "text": "EVP_OBS {\"potion_record\":{\"definitionId\":\"healing_potion\",\"count\":1},\"claim\":{\"quantity\":1,\"item\":\"healing_potion\",\"name\":\"Healing Potion\",\"price\":10},\"potion_count\":1,\"hp\":100,\"balance_delta\":-10,\"label\":\"auto-four-second-window-aggregate-not-per-use\",\"potion_delta\":1,\"at\":1933.0960783,\"position\":[-672,-768,-12271.017578125],\"legal_route\":[{\"key\":\"9:9:0\",\"position\":[-768,-768,-12271.96875]}],\"admission_current\":true,\"candidate\":[-672,-768,-12269.9375],\"simple_same_floor_route\":true,\"balance\":10,\"lives\":3,\"legal_route_nodes\":1,\"str_modifier\":3,\"details\":{\"maxStack\":3,\"price\":10,\"held\":1,\"unavailable\":false,\"quantity\":1,\"item\":\"healing_potion\",\"name\":\"Healing Potion\",\"balance\":10},\"transaction_key\":\"dungeon-vending:campaign:8:1:76561198025505071\"}"
+    },
+    {
+      "line": 525,
+      "text": "EVP_RETURN {\"detail\":\"-3840.000000 -1920.000000 -12269.937500\",\"pickup_state_after\":{\"recorded_run_is_current\":true,\"jail_key\":false,\"floor_map_mask\":0,\"floor_map_owned\":[],\"cards\":[false,false,false,false],\"gates\":[false,false,false,false]},\"hp_after\":100,\"position_after\":[-3840,-1920,-12269.9375],\"same_body_before\":true,\"same_body_after\":true,\"accepted\":true,\"native_call_ok\":true,\"event_current_before\":true,\"reason\":\"automatic-four-second-window-end\",\"at\":1933.0992993}"
+    },
+    {
+      "line": 526,
+      "text": "EVP_WINDOW_FINISHED {\"beyond_progression_locks_fixture\":true,\"scheduled_curtime\":1892.714957694523,\"pickup_state_before\":{\"recorded_run_is_current\":true,\"jail_key\":false,\"floor_map_mask\":0,\"floor_map_owned\":[],\"cards\":[false,false,false,false],\"gates\":[false,false,false,false]},\"returned\":true,\"elapsed_wall_seconds\":3.968199400000003,\"move_call_ok\":true,\"target\":[-672,-768,-12269.9375],\"capture_scope\":\"Aggregate window only; production console establishes actual first/repeat Use ordering.\",\"accepted\":true,\"capture_call_ok\":true,\"timer_scheduled\":true,\"stale\":false,\"return_detail\":\"-3840.000000 -1920.000000 -12269.937500\",\"return_accepted\":true,\"move_detail\":\"-672.000000 -768.000000 -12269.937500\",\"move_finished_at\":1929.12805,\"last_return_attempt\":1,\"position_after_move\":[-672,-768,-12269.9375],\"return_call_ok\":true,\"scheduled_at\":1929.1263952,\"ordinary_traversal_accepted\":false,\"home\":[-3840,-1920,-12269.9375],\"timer_fired_curtime\":1896.7199576050043,\"source\":[-3840,-1920,-12271.376953125],\"capture_accepted\":true,\"timer_fired_at\":1933.0945946,\"finished\":true,\"delay_seconds\":4}"
+    }
+  ],
+  "ordering": "Lines443/444 actual Strength success then duplicate denial;521/522 Vending purchase then duplicate denial. Auto capture follows these messages, then guarded return. No per-Use snapshot or machine appearance claim."
+}

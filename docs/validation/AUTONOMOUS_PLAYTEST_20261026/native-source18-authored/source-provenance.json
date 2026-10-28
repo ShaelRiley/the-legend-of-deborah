@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-27T23:55:41.128819+00:00",
+  "gameplay_commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "prepared_and_rendered_label": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b",
+  "prepared_source": ".build/autonomous-playtest-20261027/source15-fresh/session-1793142464596271900/prepared.json",
+  "prepared_sha256": "03bc5742fb81c22f2e7c609350848fff73ebf279e52f0656a6047ea0b82d8b45",
+  "production_tree": {
+    "gamemodes": "c42eb4f053321589a7b531ac072cb7914ac1071f",
+    "lua": "e2ab4ef2e3ef451336fa4c60d06dbd9fdac1cf45",
+    "sound": "600815fef14f7b13e7ba2d93d0090d8c3025b14b"
+  },
+  "production_files": 576,
+  "private_all576_hashes_match_frozen_source18_manifest": true,
+  "production_diff_gameplay_to_prepared": [],
+  "same_process_native_source_mapping": "../loot-label-occlusion/native-repaired/source-provenance.json",
+  "executed_fixture_private_copy_sha256": "f0e75ff62948ae445f7c3622100ccb06bdc4c389eacebcfa8238940958bf5227",
+  "executed_fixture_matches_archived_v2": true,
+  "qualification": "Fresh source18 process originally verified both native realms/source mapping; no gameplay source hot refresh. Current private bytes compared against frozen source18 prepared manifest, not mutable current documentation HEAD. NewCampaign/preview changes world/body state, not installed code. No private token/config/account DB archived."
+}

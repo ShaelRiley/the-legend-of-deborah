@@ -1,0 +1,160 @@
+{
+  "kind": "Source18 finite native authored transaction pair and active-weapon stat attribution",
+  "utc": "2026-10-27T23:58:16.026437+00:00",
+  "status": "Finite single-client StrengthPress successful payout/repeat rejection, Vending earned-currency purchase/repeat rejection, owned-potion presentation and active-pistol stat attribution passed. Full event/family/campaign acceptance remains open.",
+  "gameplay_commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "prepared_and_rendered_label": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b",
+  "source_identity": "source-provenance.json",
+  "design": {
+    "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": [
+      "00 AI ENTRYPOINT",
+      "01 AI RULE INDEX",
+      "05 LOD-EVENT-EXPANSION StrengthPress row59821; Vending row57033; active weapon property row50715",
+      "06 LOD-EVENT-EXPANSION account/campaign/dungeon transactional ownership",
+      "02 LOD-ABL-001/002 effective modifiers and persistent Hero base scores"
+    ],
+    "contracts": [
+      "StrengthPress: one ordinary nonexploding d20+canonical STR vs12; success20DEB, failure attempt spent/no cost.",
+      "Vending:10DEB for one ordinary Healing Potion once/account/dungeon; failed admission consumes nothing.",
+      "Owned weapon properties contribute when that weapon is active; Hero base scores persist independently."
+    ]
+  },
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405 / amdgpu1002:163F",
+    "client": "Windows x86 GMod2026.09.17/LuaJIT2.0.4 under Proton10",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "rendered_size": [
+      1280,
+      800
+    ],
+    "real_clients": 1,
+    "campaign_seed": 6102623,
+    "level_seed": 673660301,
+    "roster_seed": 2142430613,
+    "epoch": 2,
+    "run_id": "campaign:8",
+    "dungeon": 1,
+    "hero": "Grace \"After Hours\" Ward",
+    "class": "rogue",
+    "ordinary_feat": "CHA_FEAR_PROC_1 / Daunting",
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true
+  },
+  "ordinary_setup_and_clock": {
+    "observed": "Root started a new campaign through the canonical authority, selected Rogue/Daunting through ordinary UI, claimed the actual procedural Shotgun starter and entered the normal portal. No direct Hero-stat/class/HP/wallet/item/outcome override was used to obtain these results; ordinary canonical generation/starter/deployment and preview rebuild behavior remain explicit.",
+    "photo": "ordinary-grace-starter-deployment.png",
+    "clock": "Photo shows PRISON COLLAPSE IN30:00\u2014DUNGEON CLOCK STARTED and29:59. Same campaign later shows19:12 after Strength and16:09 after Vending. Root reports no deadline extension in this new campaign and no timer reset at either preview regeneration; the old prior campaign had its own separately qualified extension.",
+    "limits": "These are finite ordinary startup/deployment/countdown observations. Developer mode/dense generation and event previews exclude a normal-production timed campaign pass or full clock/rescue/endings acceptance."
+  },
+  "fixture": {
+    "actual_executed_source": "next_authored_pair_probe_v2.lua.txt",
+    "sha256": "f0e75ff62948ae445f7c3622100ccb06bdc4c389eacebcfa8238940958bf5227",
+    "reviewed_proposal": "next_authored_pair_v2_proposal.json",
+    "offline_prediction": "next_authored_pair_offline.json",
+    "qualification": "Prediction used isolated production RNG offline, then the actual natural native result was observed.6102602face1 remains a legitimate native failed attempt;6102603face2 is an unexecuted offline prediction, not another native seed pass.",
+    "preview": "Each canonical single-event preview rebuilds the same dungeon. Ordinary unlocked paths were absent from the fixture home; the optional locator explicitly bypasses progression locks for rare setup. It never grants currency/items, calls Interact/Use, draws RNG, changes HP/stats/class or edits progression flags. Root supplied native E/release/E.",
+    "landing_guards": "Canonical supported standing landing plus key/map/jail radius-and-hull clearance and expanded loot-volume guard, exact body/run/graph/seed/epoch/event/creation ownership. No automatic pickup/progression claim was used for the event tests.",
+    "timing": "A nominal4-second engine timer was installed before outbound MoveBound, read one aggregate window result, then attempted the original supported-home return. Individual post-first-Use and post-repeat snapshots do not exist; production console order and actual input establish the two interactions. The screenshots were taken after return at home, not at either machine."
+  },
+  "strength_press": {
+    "raw": "next_authored_pair_v2_strength_press_latest.json",
+    "event_entity": 2138,
+    "event_creation": 3381,
+    "cell": "6:7:0",
+    "spawn": 8,
+    "native_offer": "Canonical modifier+3,60percent chance; actual current Shotgun contributes no ability bonus.",
+    "actual_first_use": "Console line443 and visible chat: natural face18+STR3=21vs12,20DEB collected. Raw receipt success=true/face18/modifier3/total21/DC12/credit20/debit0. Wallet0\u219220.",
+    "actual_repeat": "Console line444 and visible chat reject a second native E because the attempt is already spent or storage is unavailable. Successful readback has the committed receipt and no claim/storage error; aggregate wallet remains20.",
+    "receipt": {
+      "debit": 0,
+      "account": "76561198025505071",
+      "message": "1d20 [18] +3 STR = 21 vs 12 \u2014 20 $DEB collected.",
+      "dc": 12,
+      "face": 18,
+      "total": 21,
+      "modifier": 3,
+      "credit": 20,
+      "payout": 20,
+      "success": true
+    },
+    "photo": "strength-success-repeat-chat-after-return.png",
+    "returned": "Timer/capture/return accepted; actual wall interval3.9928273seconds, game interval4.005seconds. Same exact body before/after, sampled HP100/lives3. Returned to supported homeXY[-3840,-1920],standingZ\u221212269.9375. Cards/gates/JailKey/floor-map ownership flags match setup.",
+    "finite_result": "Successful payout plus single-account repeat rejection passed on actual source18. Source16 failure/regeneration control remains separately preserved at ../native-source16-events/receipt.json.",
+    "not_accepted": [
+      "Ordinary event traversal or machine visual/interaction-prompt layout",
+      "Success-branch reconnect/replacement-Hero or regenerated-machine persistence",
+      "Simultaneous independent clients/claims and broader trial family"
+    ]
+  },
+  "vending_machine": {
+    "raw": "next_authored_pair_v2_vending_machine_latest.json",
+    "event_entity": 2032,
+    "event_creation": 4451,
+    "cell": "9:9:0",
+    "spawn": 9,
+    "setup": "Same campaign:8/account/dungeon, after naturally earned StrengthPress20DEB. Preview replaces native body/event, then a new exact binding is captured; no money/item fixture.",
+    "actual_first_use": "Console line521: Healing Potion added to Equipment for10DEB. Aggregate wallet20\u219210, potion count0\u21921, native receipt item=healing_potion/quantity1/price10. Vending is a single-use purchase, not the expanded service12-second review flow.",
+    "actual_repeat": "Console line522 and visible chat: You already bought your potion in this dungeon. Aggregate remains10DEB/one potion; no extra debit/reward.",
+    "receipt": {
+      "quantity": 1,
+      "item": "healing_potion",
+      "name": "Healing Potion",
+      "price": 10
+    },
+    "photo": "vending-purchase-repeat-chat-after-return.png",
+    "owned_item_presentation": [
+      "purchased-potion-inventory.png shows one Potion in Throwable and GEAR3/32, with the UI identifying separate consumable stacks.",
+      "purchased-potion-details-quantity1of3.png visibly shows Healing Potion,Quantity1/3 and its ordinary details. Consumption/cure/throw behavior was not exercised by this view."
+    ],
+    "returned": "Timer/capture/return accepted; actual wall interval3.9681994seconds,game interval4.005seconds. Same exact body and sampled HP100/lives3; original supported home and progression/map flags preserved.",
+    "finite_result": "One purchase using actual earned money, owned potion delivery/readability and repeat rejection passed. Across the pair, balance0\u219220\u219210 and potion0\u21921.",
+    "not_accepted": [
+      "Full-stack or insufficient-funds denial boundaries",
+      "Purchase after consuming/dropping the purchased potion; reconnect/next-dungeon/success-regeneration behavior",
+      "Potion healing/status-cure/throw outcomes, machine visual/ordinary route and cooperative cases"
+    ]
+  },
+  "active_weapon_scores": {
+    "concern": "Grace early sheetSTR19/WIS16 versus later serverSTR17/WIS14 initially resembled a stat drop or stale identity bonus.",
+    "design_and_base": "Grace original generation already produced baseSTR17/WIS14. Current native base remains17/14 and identityAbilityDelta is zero; no base reroll is demonstrated. Source generation/active-weapon contribution explains the difference.",
+    "historical_diagnosis": "stat-reconciliation/reconciliation.json retains the then-inferred explanation; native readback below now confirms it.",
+    "initial_attempt": "attempted-doubleclick-still-shotgun17-14.png was named as an active-pistol sheet when captured, but it visibly shows17/14. Exact console ACTIVE18 still reports weapon_shotgun. The attempted XTest double-click did not establish equip success; its input/UI cause is undiagnosed. Do not count native double-click behavior as passed or call it a confirmed game bug.",
+    "successful_ordinary_action": "Root selected the owned Pistol item and clicked the body weapon slot. body-slot-equipped-pistol19-16.png visibly shows19STR/16WIS.",
+    "native_readback": "source18_active_weapon_weapon_pistol.json and console-through-native-pistol.log.xz record actualWeapon=weapon_pistol,base17/14,equipmentDelta+2/+2,effective19/16,spawn9. The same immutable pistol record carries those two affixes; current Shotgun record has none and its properties exactly match the earlier17/14 raw context.",
+    "raw_equipment": "source18_grace_equipment.json",
+    "finite_result": "Active owned pistol ability contribution and sheet/server agreement passed through the body-slot equip path. The apparent stat change is reconciled intended equipment behavior; no BUG019 is filed.",
+    "limits": "This is one ordinary equipment path/property sample. Native double-click acceptance, all equipment swaps/affixes and every stat/status combination remain separate."
+  },
+  "evidence": {
+    "manifest": "artifact-manifest.json",
+    "source": "source-provenance.json",
+    "event_order": "console-markers.json",
+    "event_log": "console-through-vending.log.xz",
+    "native_pistol_order": "pistol-console-markers.json",
+    "native_pistol_log": "console-through-native-pistol.log.xz",
+    "default_package": "No new RPG summary/session snapshot is claimed in this bank; exact frozen console plus structured transaction/native readbacks are preserved. Earlier source18 packages remain independently linked."
+  },
+  "limits": [
+    "No event route, gate bypass prevention, Warp, full campaign/rescue/boss/endings/reset pass or all-family acceptance.",
+    "Native screenshots preserve actual chat/inventory after guarded return; no claim to rendered machine appearance or exact per-Use snapshot timing.",
+    "No perceived-audio acceptance; real-client cooperative coverage remains blocked on the one available Deck/account.",
+    "Client remains running for root navigation testing. This bank makes no terminal cleanup/personal-save-equality claim for an unfinished source18 session.",
+    "No40FPS completion or comparative performance conclusion under developerDense.",
+    "Known earlier failed attempts and errors remain retained in their original campaign evidence; the new finite results do not rewrite history."
+  ],
+  "clean_pass_streak": 0,
+  "full_campaign_pass": false,
+  "cooperative_acceptance": false,
+  "independent_review": {
+    "status": "clear",
+    "reviewer": "native_profile_review",
+    "report": "independent-review.json",
+    "report_sha256": "90ddedc1ba4d8368ba100b3345e5331424f0b69a1843ea222d5241e4ed316b6c",
+    "exact_reviewed_receipt_sha256": "c74fcdcff374295b85b3a60cba42276052c125fc83c100a70606594e98d2afc4",
+    "qualification": "Only this independent-review metadata changed after the reviewed receipt. Original23-artifact manifest snapshot hash is retained in the review; final manifest adds the exact raw review report as artifact24."
+  }
+}

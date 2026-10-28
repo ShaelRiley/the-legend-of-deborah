@@ -1,0 +1,20 @@
+ITEM	weapon_pistol	1212832656	Deborah's Earthly Pistol of Silence and Wisdom	gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol
+PROPERTY	physical	-11.5
+PROPERTY	element_earth	11.5
+PROPERTY	proc_muted	5.3
+PROPERTY	ability_str	2
+PROPERTY	ability_wis	2
+PROPERTY	ward_ice	1
+PROPERTY	ward_electric	1
+ITEM	weapon_lod_crowbar	827122134	Cartographer's Crackling Crowbar of Poisoning and Swiftness	gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar
+PROPERTY	still	-8.8
+PROPERTY	element_electric	18.8
+PROPERTY	proc_poisoned	3.1
+PROPERTY	dodge	4.3
+PROPERTY	movement	4.7
+ITEM	weapon_shotgun	1516737040	Pilgrim's Crackling Shotgun of Repulsion and Earthly Warding	gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun
+PROPERTY	physical	-8.4
+PROPERTY	element_electric	14
+PROPERTY	proc_push	5.8
+PROPERTY	proc_muted	6.6
+PROPERTY	ward_earth	1

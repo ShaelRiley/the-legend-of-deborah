@@ -1,0 +1,313 @@
+-- Reviewable private observer for StrengthPress -> Debbie Vending. No Use,
+-- RNG draw, money/item grant, stat/HP mutation, or campaign mutation occurs.
+-- V2: pickup-clear landing and an identity-bound4-second capture/return window.
+-- Optional LocatorFixture is explicitly a beyond-lock developer setup action.
+if EVP and EVP.autoCycle and not EVP.autoCycle.returned and not EVP.autoCycle.stale
+    and not EVP.autoCycle.cancelled_before_movement then
+    print('EVP_REFUSED: preserve pending previous locator; inspect or explicitly Return first') return
+end
+local expected={sh_rng=4201098941,sv_event_incidents=2218175933,
+    sv_event_vending_machine=3712865010,sv_safe_teleport=377454284}
+for name,crc in pairs(expected) do
+    local source=file.Read('gamemodes/legend_of_deborah/gamemode/lod/'..name..'.lua','GAME') or ''
+    if util.CRC(source)~=tostring(crc) then print('EVP_REFUSED_SOURCE',name) return end
+end
+local R,T,D,N=LOD.RunManager,LOD.SafeTeleport,LOD.EventDirector,LOD.MazeNavigator
+local function vec(v) return v and {v.x,v.y,v.z} or nil end
+local humans=player.GetHumans()
+if #humans~=1 or not GetConVar('lod_developer_mode'):GetBool() then
+    print('EVP_REFUSED: one private developer client required') return
+end
+local p=humans[1]
+if p:SteamID64()~='76561198025505071' or R.State.CampaignSeed~=6102623 or R.State.Level~=1 then
+    print('EVP_REFUSED: reviewed account/campaign6102623/Dungeon1 required') return
+end
+local b=T:Bind(p)
+local context=D.Context
+local instance
+for _,v in ipairs(context and context.plan.instances or {}) do
+    if v.archetype=='strength_press' or v.archetype=='vending_machine' then
+        if instance then print('EVP_REFUSED: use one-event preview or select a bounded target') return end
+        instance=v
+    end
+end
+if not b or not instance or not D:IsCurrent(instance) or instance.state~='active'
+    or not IsValid(instance.entities[1]) then
+    print('EVP_REFUSED: actual active event and ordinary deployed Hero required') return
+end
+local f={p=p,b=b,context=context,instance=instance,entities=instance.entities,owners={},
+    identity=p:SteamID64(),psIdentity=b.ps.identity,hero=b.ps.heroSerial,
+    progression=b.ps.progressionState,runId=b.run.RunId,level=b.run.Level,epoch=b.run.CampaignEpoch,
+    archetype=instance.archetype,cell=instance.cell,cellKey=instance.cellKey,
+    home=Vector(p:GetPos().x,p:GetPos().y,p:GetPos().z),
+    homeAngles=Angle(p:EyeAngles().p,p:EyeAngles().y,p:EyeAngles().r)}
+for k,e in ipairs(instance.entities) do
+    if not IsValid(e) then print('EVP_REFUSED: native part absent') return end
+    f.owners[k]={entity=e,creation=e:GetCreationID()}
+end
+function f:BodyCurrent()
+    if EVP~=self then return false,'another probe owns the client' end
+    if not T:Matches(self.b) then return false,'Hero life/role/run/graph changed' end
+    if self.p:SteamID64()~=self.identity or self.b.ps.identity~=self.psIdentity
+        or self.b.ps.heroSerial~=self.hero or self.b.ps.progressionState~=self.progression
+        or self.b.run.RunId~=self.runId or self.b.run.Level~=self.level
+        or self.b.run.CampaignEpoch~=self.epoch or self.b.run.CampaignSeed~=6102623 then
+        return false,'exact Hero identity or campaign ownership changed'
+    end
+    local s=self.b.run
+    local clock=s.CampaignClock
+    if not s.BuildReady or s.Failed or s.LevelCleared or s.SimulationFrozen
+        or not self.b.ps.deploymentComplete or self.b.ps.inStaging or self.b.ps.eliminated
+        or (self.b.ps.lives or 0)<=0 or not R:IsActivePlayer(self.p) or R:IsSoldierControl(self.p)
+        or clock and (clock.expired or clock.scene or clock.deadline and SysTime()>=clock.deadline) then
+        return false,'inactive/expired/frozen/dead Hero or campaign'
+    end
+    return true
+end
+function f:Current()
+    if not self:BodyCurrent() or D.Context~=self.context or not D:IsCurrent(self.instance)
+        or self.instance.state~='active' or self.instance.archetype~=self.archetype or self.instance.cell~=self.cell
+        or self.instance.cellKey~=self.cellKey or self.b.graph.Cells[self.cellKey]~=self.cell
+        or self.instance.entities~=self.entities or #self.entities~=#self.owners then return false end
+    for k,v in ipairs(self.owners) do
+        local e=v.entity
+        if not IsValid(e) or self.entities[k]~=e or e:GetCreationID()~=v.creation
+            or e.LODEventInstance~=self.instance then return false end
+    end
+    return true
+end
+function f:PickupClear(dest)
+    if not self:BodyCurrent() then return false,'stale Hero' end
+    local lo,hi=self.p:GetHull()
+    local baseRadius=LOD.Config.Progression.KeycardTriggerRadius
+    if type(baseRadius)~='number' or baseRadius<=0 then return false,'canonical pickup radius unavailable' end
+    local radius=baseRadius+8
+    for _,class in ipairs({'lod_keycard','lod_floor_map','lod_jail_key'}) do
+        for _,e in ipairs(ents.FindByClass(class)) do
+            if IsValid(e) then
+                local v=e.GetPickupPosition and e:GetPickupPosition() or e:GetPos()
+                local q=Vector(math.Clamp(v.x,dest.x+lo.x,dest.x+hi.x),
+                    math.Clamp(v.y,dest.y+lo.y,dest.y+hi.y),math.Clamp(v.z,dest.z+lo.z,dest.z+hi.z))
+                if q:DistToSqr(v)<=radius*radius then
+                    return false,{reason='pickup radius intersects expanded standing hull',class=class,
+                        entity=e:EntIndex(),anchor=vec(v),nearest_distance_squared=q:DistToSqr(v)}
+                end
+            end
+        end
+    end
+    for _,e in ipairs(ents.FindInBox(dest+lo-Vector(24,24,24),dest+hi+Vector(24,24,24))) do
+        if IsValid(e) and e:GetClass()=='lod_loot_pickup' then
+            return false,{reason='loot intersects24-unit expanded standing volume',entity=e:EntIndex()}
+        end
+    end
+    if not self:BodyCurrent() then return false,'Hero changed during pickup queries' end
+    return true
+end
+function f:PickupState()
+    local s=self.b.run
+    local maps=s.FloorMaps
+    return {recorded_run_is_current=R.State==s,cards=table.Copy(s.Cards or {}),
+        gates=table.Copy(s.GatesOpen or {}),jail_key=s.JailKey==true,
+        floor_map_mask=maps and maps.mask,floor_map_owned=maps and table.Copy(maps.owned or {})}
+end
+function f:Path()
+    if not self:Current() then return nil end
+    return N:FindPath(self.b.graph,T:CellAt(self.b.graph,self.p:GetPos()),self.cell)
+end
+function f:Candidate()
+    if not self:Current() then return nil end
+    local center=N:CellCenter(self.cell)
+    local primary=self.owners[1].entity
+    for _,o in ipairs({Vector(96,0,0),Vector(-96,0,0),Vector(0,96,0),Vector(0,-96,0),
+        Vector(128,0,0),Vector(-128,0,0),Vector(0,128,0),Vector(0,-128,0)}) do
+        local dest=T:Landing(self.p,self.b.graph,self.cell,center+o)
+        if not self:Current() then return nil end
+        if dest and self:PickupClear(dest) and dest:DistToSqr(primary:GetPos())<=160*160 then
+            local tr=util.TraceLine({start=dest+(self.p:EyePos()-self.p:GetPos()),
+                endpos=primary:WorldSpaceCenter(),filter=self.p,mask=MASK_SOLID})
+            if self:Current() and (not tr.Hit or tr.Entity==primary) then return dest end
+        end
+    end
+end
+f.report={kind='next authored pair v2 private diagnostic',campaign=6102623,level=1,
+    level_seed=b.seed,run=f.runId,epoch=f.epoch,spawn=b.spawn,archetype=f.archetype,
+    entity=f.owners[1].entity:EntIndex(),creation=f.owners[1].creation,cell=f.cellKey,
+    offline_strength_face_prediction=18,observations={},
+    return_attempts={},home=vec(f.home),pickup_clearance={trigger_margin=8,loot_volume_margin=24},
+    qualification='Source-checked observer only; optional locator bypasses locks. Timed capture is aggregate and does not establish which Use occurred before it; production console establishes actual outcome/repeat order. Four-second timer is scheduled before movement; normal combat remains active.'}
+f.path='legend_of_deborah/next_authored_pair_v2_'..f.archetype..'_'..tostring(math.floor(SysTime()*1000))..'.json'
+function f:Save()
+    local json=util.TableToJSON(self.report,true)
+    file.Write(self.path,json)
+    if EVP==self then file.Write('legend_of_deborah/next_authored_pair_v2_'..self.archetype..'_latest.json',json) end
+end
+function f:Capture(label)
+    if not self:Current() then print('EVP_STALE: reload after ordinary redeployment/current event setup') return false end
+    local account,walletError=LOD.CryptoStore:Read(self.identity)
+    local def=LOD.EventRegistry.Definitions[self.archetype]
+    local receipt,claimError=def.Claim(self.instance,self.identity)
+    local details=def.Snapshot(self.instance,self.p,self.identity)
+    local inventory=self.b.ps.equipment
+    local potion=inventory and inventory.items and inventory.items.healing_potion
+    local potionCount=potion and potion.count or 0
+    local derived=LOD.RPGAbilityRules:Derived(self.p)
+    local path=self:Path()
+    local route={}
+    local flat=path~=nil
+    for _,cell in ipairs(path or {}) do
+        route[#route+1]={key=LOD.MazeGenerator.CellKey(cell.x,cell.y,cell.z),position=vec(N:CellCenter(cell))}
+        if cell.z~=self.cell.z or not T:FlatCell(self.b.graph,cell) then flat=false end
+    end
+    local candidate=self:Candidate()
+    local admitted
+    if self.archetype=='strength_press' then
+        admitted=LOD.EventIncidents:Bind(D,self.instance,self.p,self.identity)~=nil
+    else
+        admitted=D:InteractionCurrent(self.instance,self.p,self.identity,self.b.ps,self.owners[1].entity)
+    end
+    if not self:Current() then print('EVP_STALE: discarded native trace observation') return false end
+    if self.beforeBalance==nil and account then self.beforeBalance=account.balance end
+    if self.beforePotion==nil then self.beforePotion=potionCount end
+    local row={label=label or 'snapshot',at=SysTime(),position=vec(self.p:GetPos()),
+        hp=self.p:Health(),lives=self.b.ps.lives,balance=account and account.balance,
+        balance_delta=self.beforeBalance and account and account.balance-self.beforeBalance or nil,
+        wallet_error=walletError,claim=receipt,claim_error=claimError,details=details,
+        transaction_key=self.archetype=='vending_machine' and LOD.EventVendingMachine.EventKey(self.instance,self.identity)
+            or LOD.EventTransactions.Key(self.instance,self.identity),
+        potion_count=potionCount,potion_delta=potionCount-self.beforePotion,
+        potion_record=potion and table.Copy(potion),str_modifier=derived and derived.strMod,
+        admission_current=admitted,legal_route_nodes=path and #path or 0,legal_route=route,
+        simple_same_floor_route=flat and #route<=16,candidate=vec(candidate)}
+    self.report.observations[#self.report.observations+1]=row
+    self:Save()
+    if row.simple_same_floor_route and candidate then
+        local points={}
+        for k=2,#route-1 do points[#points+1]=route[k].position end
+        points[#points+1]=vec(candidate)
+        file.Write('legend_of_deborah/next_authored_pair_route_proposal.json',util.TableToJSON({
+            path=points,seconds=30,tolerance=48,pause_for_targets=false,face_route=true},true))
+    end
+    print('EVP_OBS '..util.TableToJSON(row))
+    print('EVP_DIAGNOSTIC_PATH',self.path)
+    return true
+end
+function f:Return(reason)
+    local record={at=SysTime(),reason=reason or 'explicit-return',accepted=false,
+        same_body_before=false,event_current_before=self:Current()}
+    self.report.return_attempts[#self.report.return_attempts+1]=record
+    local same,why=self:BodyCurrent()
+    record.same_body_before=same
+    if not same then
+        record.stale=true;record.detail=why
+        if self.autoCycle then self.autoCycle.stale=true end
+    elseif not self.homeLanding or not self.homeCell
+        or self.b.graph.Cells[self.homeCellKey]~=self.homeCell then
+        record.detail='original supported home unavailable or replaced'
+    else
+        local dest=T:Landing(self.p,self.b.graph,self.homeCell,self.homeLanding)
+        local clear,detail
+        if dest then clear,detail=self:PickupClear(dest) end
+        if not dest then record.detail='original home is no longer supported/hull-clear'
+        elseif not clear then record.detail='original home is no longer pickup-clear';record.pickup_detail=detail
+        elseif not self:BodyCurrent() then record.stale=true;record.detail='Hero changed during home queries'
+        else
+            local function owned(pure)
+                if not self:BodyCurrent() then return false end
+                if pure then return true end
+                return self:PickupClear(dest) and self:BodyCurrent()
+            end
+            local called,ok,nativeDetail=pcall(T.MoveBound,T,self.b,dest,owned,self.homeCell)
+            record.native_call_ok=called
+            record.accepted=called and ok==true
+            record.detail=tostring(called and nativeDetail or ok)
+            record.same_body_after=self:BodyCurrent()
+            if record.same_body_after then
+                record.position_after=vec(self.p:GetPos());record.hp_after=self.p:Health()
+                if record.accepted then self.p:SetEyeAngles(self.homeAngles) end
+            else record.stale_after_native_call=true end
+            if not called then print('EVP_RETURN_NATIVE_ERROR',record.detail) end
+        end
+    end
+    if self.autoCycle then
+        self.autoCycle.returned=record.accepted and record.same_body_after==true
+        self.autoCycle.last_return_attempt=#self.report.return_attempts
+        if self.autoCycle.returned or record.stale then self.autoCycle.finished=true end
+    end
+    record.pickup_state_after=self:PickupState()
+    self:Save()
+    print('EVP_RETURN '..util.TableToJSON(record))
+    return record.accepted,record.detail
+end
+function f:LocatorFixture()
+    if self.autoCycle then print('EVP_LOCATOR_REFUSED: one timed locator per reviewed binding') return false end
+    if not self:Current() then print('EVP_LOCATOR_REFUSED: stale body/world/event') return false end
+    if not self.homeLanding or not self.homePickupClear then
+        print('EVP_LOCATOR_REFUSED: supported pickup-clear original home required') return false
+    end
+    local home=T:Landing(self.p,self.b.graph,self.homeCell,self.homeLanding)
+    if not home or not self:PickupClear(home) or not self:Current() then
+        print('EVP_LOCATOR_REFUSED: return home changed before setup') return false
+    end
+    local dest=self:Candidate()
+    if not dest then print('EVP_LOCATOR_REFUSED: no pickup-clear supported visible landing') return false end
+    local before=self.p:GetPos()
+    local cycle={scheduled_at=SysTime(),scheduled_curtime=CurTime(),delay_seconds=4,
+        capture_scope='Aggregate window only; production console establishes actual first/repeat Use ordering.',
+        source=vec(before),target=vec(dest),home=vec(home),
+        beyond_progression_locks_fixture=true,ordinary_traversal_accepted=false,
+        pickup_state_before=self:PickupState(),returned=false,stale=false,finished=false}
+    self.autoCycle=cycle;self.report.locator=cycle
+    R:MarkUnranked('Timed4s pickup-clear authored event preview locator; route unaccepted')
+    local function finish()
+        cycle.timer_fired_at=SysTime();cycle.timer_fired_curtime=CurTime()
+        cycle.elapsed_wall_seconds=cycle.timer_fired_at-cycle.scheduled_at
+        if self.autoCycle~=cycle or cycle.finished or cycle.cancelled_before_movement then
+            cycle.timer_disposition='already finished/replaced; no new capture or movement'
+            self:Save();return
+        end
+        local ran,captured=pcall(self.Capture,self,'auto-four-second-window-aggregate-not-per-use')
+        cycle.capture_call_ok=ran;cycle.capture_accepted=ran and captured==true
+        if not ran then cycle.capture_error=tostring(captured);print('EVP_AUTO_CAPTURE_ERROR',cycle.capture_error) end
+        -- Cleanup is attempted even when the capture fails or the event retires.
+        local returned,ok,detail=pcall(self.Return,self,'automatic-four-second-window-end')
+        cycle.return_call_ok=returned
+        if not returned then
+            cycle.return_error=tostring(ok);print('EVP_AUTO_RETURN_ERROR',cycle.return_error)
+        else cycle.return_accepted=ok;cycle.return_detail=detail end
+        cycle.finished=true
+        self:Save()
+        print('EVP_WINDOW_FINISHED '..util.TableToJSON(cycle))
+    end
+    -- Install the same-life capture/return BEFORE the first movement call.
+    local armed,armError=pcall(timer.Simple,4,finish)
+    cycle.timer_scheduled=armed
+    if not armed then
+        cycle.timer_error=tostring(armError);cycle.finished=true;cycle.cancelled_before_movement=true
+        self:Save();print('EVP_LOCATOR_REFUSED: no return timer',cycle.timer_error);return false
+    end
+    local function current(pure)
+        if not self:Current() then return false end
+        if pure then return true end
+        return self:PickupClear(dest) and self:Current()
+    end
+    local called,ok,why=pcall(T.MoveBound,T,self.b,dest,current,self.cell)
+    cycle.move_call_ok=called;cycle.accepted=called and ok==true
+    cycle.move_detail=tostring(called and why or ok);cycle.move_finished_at=SysTime()
+    if cycle.accepted and self:Current() then
+        self.p:SetEyeAngles((self.owners[1].entity:WorldSpaceCenter()-self.p:EyePos()):Angle())
+        cycle.position_after_move=vec(self.p:GetPos())
+    end
+    self:Save()
+    print('EVP_LOCATOR_WINDOW '..util.TableToJSON(cycle))
+    if not cycle.accepted then self:Return('movement-failed-immediate-cleanup') end
+    return cycle.accepted
+end
+EVP=f
+f.homeCell=T:CellAt(b.graph,f.home)
+f.homeCellKey=f.homeCell and LOD.MazeGenerator.CellKey(f.homeCell.x,f.homeCell.y,f.homeCell.z)
+f.homeLanding=f.homeCell and T:Landing(p,b.graph,f.homeCell,f.home)
+if f.homeLanding then f.homePickupClear,f.homePickupDetail=f:PickupClear(f.homeLanding) end
+f.report.home_supported=vec(f.homeLanding)
+f.report.home_pickup_clear=f.homePickupClear==true
+f.report.home_pickup_detail=f.homePickupDetail
+f:Capture('before-native-use')

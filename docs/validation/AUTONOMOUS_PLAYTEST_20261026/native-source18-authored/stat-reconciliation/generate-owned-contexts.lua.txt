@@ -1,0 +1,10 @@
+math.Clamp=function(v,a,b) return math.min(b,math.max(a,v)) end
+local root="gamemodes/legend_of_deborah/gamemode/lod/"
+dofile(root.."sh_rng.lua");dofile(root.."sh_equipment.lua");dofile(root.."sh_equipment_catalog.lua");dofile(root.."sh_equipment_economy.lua")
+for _,class in ipairs({"weapon_pistol","weapon_lod_crowbar","weapon_shotgun"}) do
+ local key="campaign:8:673660301:76561198025505071:life:0:initial:"..class
+ local seed=LOD.Seeds.Derive(6102623,key)
+ local item=LOD.Equipment:Generate(seed,1,class,key)
+ print("ITEM",class,seed,item.name,item.id)
+ for _,p in ipairs(item.properties) do print("PROPERTY",p.id,p.amount) end
+end

@@ -1,0 +1,150 @@
+{
+	"storageCapacity": 32,
+	"items": {
+		"gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar": {
+			"economyExcluded": true,
+			"seed": 827122134,
+			"definitionId": "weapon_lod_crowbar",
+			"id": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar",
+			"dungeonLevel": 1,
+			"properties": [
+				{
+					"amount": -8.8,
+					"power": 17,
+					"id": "still"
+				},
+				{
+					"amount": 18.8,
+					"power": 48,
+					"id": "element_electric"
+				},
+				{
+					"amount": 3.1,
+					"power": 14,
+					"id": "proc_poisoned"
+				},
+				{
+					"amount": 4.3,
+					"power": 41,
+					"id": "dodge"
+				},
+				{
+					"amount": 4.7,
+					"power": 23,
+					"id": "movement"
+				}
+			],
+			"budget": 109,
+			"rarity": 1,
+			"quality": 109,
+			"version": 2,
+			"count": 1,
+			"name": "Cartographer's Crackling Crowbar of Poisoning and Swiftness",
+			"provenance": "Cartographer's"
+		},
+		"healing_potion": {
+			"definitionId": "healing_potion",
+			"count": 1
+		},
+		"gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun": {
+			"economyExcluded": true,
+			"seed": 1516737040,
+			"definitionId": "weapon_shotgun",
+			"id": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun",
+			"dungeonLevel": 1,
+			"properties": [
+				{
+					"amount": -8.4,
+					"power": 13,
+					"id": "physical"
+				},
+				{
+					"amount": 14,
+					"power": 31,
+					"id": "element_electric"
+				},
+				{
+					"amount": 5.8,
+					"power": 30,
+					"id": "proc_push"
+				},
+				{
+					"amount": 6.6,
+					"power": 36,
+					"id": "proc_muted"
+				},
+				{
+					"amount": 1,
+					"power": 25,
+					"id": "ward_earth"
+				}
+			],
+			"budget": 109,
+			"rarity": 1,
+			"quality": 109,
+			"version": 2,
+			"count": 1,
+			"name": "Pilgrim's Crackling Shotgun of Repulsion and Earthly Warding",
+			"provenance": "Pilgrim's"
+		},
+		"gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol": {
+			"economyExcluded": true,
+			"seed": 1212832656,
+			"definitionId": "weapon_pistol",
+			"id": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol",
+			"dungeonLevel": 1,
+			"properties": [
+				{
+					"amount": -11.5,
+					"power": 19,
+					"id": "physical"
+				},
+				{
+					"amount": 11.5,
+					"power": 24,
+					"id": "element_earth"
+				},
+				{
+					"amount": 5.3,
+					"power": 27,
+					"id": "proc_muted"
+				},
+				{
+					"amount": 2,
+					"power": 24,
+					"id": "ability_str"
+				},
+				{
+					"amount": 2,
+					"power": 25,
+					"id": "ability_wis"
+				},
+				{
+					"amount": 1,
+					"power": 25,
+					"id": "ward_ice"
+				},
+				{
+					"amount": 1,
+					"power": 25,
+					"id": "ward_electric"
+				}
+			],
+			"budget": 131,
+			"rarity": 3,
+			"quality": 91,
+			"version": 2,
+			"count": 1,
+			"name": "Deborah's Earthly Pistol of Silence and Wisdom",
+			"provenance": "Deborah's"
+		}
+	},
+	"slots": {
+		"throwable": "healing_potion",
+		"weapon_pistol": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol",
+		"weapon_lod_crowbar": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar",
+		"weapon_shotgun": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun"
+	},
+	"activeWeaponClass": "weapon_shotgun",
+	"blockChance": 0
+}

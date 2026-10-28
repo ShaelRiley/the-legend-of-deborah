@@ -1,0 +1,18 @@
+{
+  "source": "console-through-native-pistol.log.xz",
+  "markers": [
+    {
+      "line": 553,
+      "text": "> local w=player.GetHumans()[1]:GetActiveWeapon() print(\"ACTIVE18\",IsValid(w) and w:GetClass())..."
+    },
+    {
+      "line": 554,
+      "text": "ACTIVE18\tweapon_shotgun"
+    },
+    {
+      "line": 576,
+      "text": "ACTIVE_WEAPON18_READBACK\tlegend_of_deborah/source18_active_weapon_weapon_pistol.json\tweapon_pistol\t19\t16"
+    }
+  ],
+  "qualification": "Initial attempted double-click still reports actual weapon_shotgun. Later selected-item/body-slot interaction reports actual weapon_pistol19STR/16WIS. No native double-click acceptance or game-defect diagnosis."
+}

@@ -1,0 +1,214 @@
+{
+  "kind": "Isolated offline exact production RNG prediction, not native runtime evidence",
+  "utc": "2026-10-27T23:27:12.931810+00:00",
+  "account": "76561198025505071",
+  "exact_formula": "LOD.RNG.New(LOD.Seeds.Derive(LOD.Seeds.DeriveLevel(campaign,1),\"dungeon-events:incident:strength_press:\"..account..\":strength\")):Int(1,20)",
+  "source_hashes": {
+    "gamemodes/legend_of_deborah/gamemode/lod/sh_rng.lua": {
+      "sha256": "69911ddf49d950f4ed327ca75c61c80db2ccbaa91be0d663e084d8fbab6693cd",
+      "crc32": "4201098941"
+    },
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_event_incidents.lua": {
+      "sha256": "edeeb1a2bdc936230ff514a298118dd4d8ba650119e5e01402f21e8a463516cb",
+      "crc32": "2218175933"
+    },
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_event_vending_machine.lua": {
+      "sha256": "34bf8b65b811588996f84cc323215b315b2311623cea7698db184a13b2df4d6b",
+      "crc32": "3712865010"
+    },
+    "gamemodes/legend_of_deborah/gamemode/lod/sv_safe_teleport.lua": {
+      "sha256": "d6bf46baa9034c70c4fe3d3bf5ac139705431e91833bbec2d0d78fa84f220866",
+      "crc32": "377454284"
+    }
+  },
+  "controls": {
+    "6102602": "Predicted face1 matches archived actual source16 failed-attempt receipt; preserved as legitimate failure.",
+    "6102603": "Predicted face2 only; no native use/result claimed."
+  },
+  "bounded_offline_search": [
+    {
+      "campaign": 6102602,
+      "dungeon": 1,
+      "derive_level": 1550561962,
+      "trial_seed": 1548360565,
+      "natural_face": 1
+    },
+    {
+      "campaign": 6102603,
+      "dungeon": 1,
+      "derive_level": 1406543614,
+      "trial_seed": 1371399763,
+      "natural_face": 2
+    },
+    {
+      "campaign": 6102604,
+      "dungeon": 1,
+      "derive_level": 1262525266,
+      "trial_seed": 1194438961,
+      "natural_face": 3
+    },
+    {
+      "campaign": 6102605,
+      "dungeon": 1,
+      "derive_level": 1118506918,
+      "trial_seed": 1017478159,
+      "natural_face": 4
+    },
+    {
+      "campaign": 6102606,
+      "dungeon": 1,
+      "derive_level": 974488570,
+      "trial_seed": 840517357,
+      "natural_face": 4
+    },
+    {
+      "campaign": 6102607,
+      "dungeon": 1,
+      "derive_level": 830470222,
+      "trial_seed": 663556555,
+      "natural_face": 5
+    },
+    {
+      "campaign": 6102608,
+      "dungeon": 1,
+      "derive_level": 686451874,
+      "trial_seed": 486595753,
+      "natural_face": 6
+    },
+    {
+      "campaign": 6102609,
+      "dungeon": 1,
+      "derive_level": 542433526,
+      "trial_seed": 309634951,
+      "natural_face": 7
+    },
+    {
+      "campaign": 6102610,
+      "dungeon": 1,
+      "derive_level": 398415178,
+      "trial_seed": 132674149,
+      "natural_face": 8
+    },
+    {
+      "campaign": 6102611,
+      "dungeon": 1,
+      "derive_level": 254396830,
+      "trial_seed": 2103196994,
+      "natural_face": 8
+    },
+    {
+      "campaign": 6102612,
+      "dungeon": 1,
+      "derive_level": 110378482,
+      "trial_seed": 1926236192,
+      "natural_face": 9
+    },
+    {
+      "campaign": 6102613,
+      "dungeon": 1,
+      "derive_level": 2113843781,
+      "trial_seed": 1749275390,
+      "natural_face": 10
+    },
+    {
+      "campaign": 6102614,
+      "dungeon": 1,
+      "derive_level": 1969825433,
+      "trial_seed": 1572314588,
+      "natural_face": 11
+    },
+    {
+      "campaign": 6102615,
+      "dungeon": 1,
+      "derive_level": 1825807085,
+      "trial_seed": 1395353786,
+      "natural_face": 12
+    },
+    {
+      "campaign": 6102616,
+      "dungeon": 1,
+      "derive_level": 1681788737,
+      "trial_seed": 1218392984,
+      "natural_face": 12
+    },
+    {
+      "campaign": 6102617,
+      "dungeon": 1,
+      "derive_level": 1537770389,
+      "trial_seed": 1041432182,
+      "natural_face": 13
+    },
+    {
+      "campaign": 6102618,
+      "dungeon": 1,
+      "derive_level": 1393752041,
+      "trial_seed": 864471380,
+      "natural_face": 14
+    },
+    {
+      "campaign": 6102619,
+      "dungeon": 1,
+      "derive_level": 1249733693,
+      "trial_seed": 687510578,
+      "natural_face": 15
+    },
+    {
+      "campaign": 6102620,
+      "dungeon": 1,
+      "derive_level": 1105715345,
+      "trial_seed": 510549776,
+      "natural_face": 16
+    },
+    {
+      "campaign": 6102621,
+      "dungeon": 1,
+      "derive_level": 961696997,
+      "trial_seed": 333588974,
+      "natural_face": 16
+    },
+    {
+      "campaign": 6102622,
+      "dungeon": 1,
+      "derive_level": 817678649,
+      "trial_seed": 156628172,
+      "natural_face": 17
+    },
+    {
+      "campaign": 6102623,
+      "dungeon": 1,
+      "derive_level": 673660301,
+      "trial_seed": 2127151017,
+      "natural_face": 18
+    },
+    {
+      "campaign": 6102624,
+      "dungeon": 1,
+      "derive_level": 529641953,
+      "trial_seed": 1950190215,
+      "natural_face": 19
+    },
+    {
+      "campaign": 6102625,
+      "dungeon": 1,
+      "derive_level": 385623605,
+      "trial_seed": 1773229413,
+      "natural_face": 19
+    },
+    {
+      "campaign": 6102626,
+      "dungeon": 1,
+      "derive_level": 241605257,
+      "trial_seed": 1596268611,
+      "natural_face": 20
+    }
+  ],
+  "selected": {
+    "campaign": 6102623,
+    "dungeon": 1,
+    "derive_level": 673660301,
+    "trial_seed": 2127151017,
+    "natural_face": 18
+  },
+  "success_condition": "Native observed canonical STR modifier >= -6 gives total>=12. Confirm actual modifier in the normal UI/probe before Use; no stat edits.",
+  "qualification": "Pure standalone sh_rng.lua calls isolated RNG objects outside the game; no running server state, global combat stream, ledger, resources, Hero, or outcome was modified."
+}

@@ -1,0 +1,33 @@
+{
+  "kind": "Unexecuted reviewed authored-pair v2 fixture proposal",
+  "helper": ".build/autonomous-playtest-20261027/next_authored_pair_probe_v2.lua",
+  "sha256": "f0e75ff62948ae445f7c3622100ccb06bdc4c389eacebcfa8238940958bf5227",
+  "preserved_original": ".build/autonomous-playtest-20261027/next_authored_pair_probe.lua",
+  "original_sha256": "f81678858fe145d54063ed65f8b352f5ca691c6dc783e64ed50881f7e71fe0d3",
+  "private_DATA_target": "legend_of_deborah/next_authored_pair_probe_v2_source.txt",
+  "load": "lua_run RunString(file.Read(\"legend_of_deborah/next_authored_pair_probe_v2_source.txt\",\"DATA\"),\"NextAuthoredPairV2\")",
+  "locator": "lua_run EVP:LocatorFixture()",
+  "explicit_return": "lua_run EVP:Return()",
+  "setup": "Existing reviewed actual6102623/Dungeon1/account/deployed Hero/source guards unchanged. Load while at a supported, pickup-clear home; no new campaign, stats or outcomes are assigned.",
+  "pickup_guards": "All keycard/floor-map/jail-key anchors are checked against the destination standing AABB with canonical KeycardTriggerRadius+8. The standing volume expanded24units rejects lod_loot_pickup. Candidate, outbound commit guard, original home and return commit all recheck clearance.",
+  "timer": "Nominal4-second engine timer is armed before outbound MoveBound. Timer records actual wall/game firing time, attempts a single aggregate capture, then calls Return even if capture fails or event retires. Normal combat remains active;4seconds is not invulnerability or a hard wall-time guarantee.",
+  "aggregate_scope": "Auto capture label is auto-four-second-window-aggregate-not-per-use. It does not claim which input preceded it. Root must correlate actual production first-result and duplicate denial console messages with native E/release/E packet timing.",
+  "return": "Same exact native body/identity/run/graph/seed/epoch only; original home is re-probed for standing support and pickup clearance. Return may retire the event but never move a replacement body/world/probe. Real accepted/blocked/stale result and HP/position when still owned are recorded. Manual Return permits a guarded retry if the timed home was occupied.",
+  "root_sequence": [
+    "Review/copy only to verified private DATA; load at original supported home before locator.",
+    "Prepare one native-control batch: visible console Locator command; close console; E/release/E with actual ordinary inputs within4seconds; wait for auto capture/return. No subsequent manual capture while idling at the event is needed.",
+    "Inspect next_authored_pair_v2_<archetype>_latest.json and immutable timestamped report, plus production console outcome/duplicate denial. Require locator.timer_scheduled and actual returned=true/accepted return record; do not infer return from the scheduled timer.",
+    "If return is blocked, preserve report and use explicit EVP:Return() after ordinary obstruction clears. If stale/body dead, no return or current-body acceptance is claimed. Do not regenerate or bind the next event until this cycle is returned/stale/cancelled; stale old reports only update their unique path."
+  ],
+  "outputs": [
+    "legend_of_deborah/next_authored_pair_v2_strength_press_latest.json",
+    "legend_of_deborah/next_authored_pair_v2_vending_machine_latest.json",
+    "legend_of_deborah/next_authored_pair_v2_<archetype>_<SysTime-ms>.json"
+  ],
+  "checks": [
+    "LuaJIT compilation passed",
+    "Original helper exact SHA retained",
+    "No runtime execution, GUI, private writes, Git or production changes"
+  ],
+  "native_result": "pending"
+}

@@ -1,0 +1,336 @@
+{
+	"spawn": 9,
+	"qualification": "Readback after ordinary inventory selection; no weapon/stat/item setter or grant.",
+	"equipmentDelta": {
+		"con": 0,
+		"str": 2,
+		"cha": 0,
+		"int": 0,
+		"wis": 2,
+		"dex": 0
+	},
+	"equipment": {
+		"storageCapacity": 32,
+		"items": {
+			"gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar": {
+				"economyExcluded": true,
+				"seed": 827122134,
+				"definitionId": "weapon_lod_crowbar",
+				"id": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar",
+				"dungeonLevel": 1,
+				"properties": [
+					{
+						"amount": -8.8,
+						"id": "still",
+						"power": 17
+					},
+					{
+						"amount": 18.8,
+						"id": "element_electric",
+						"power": 48
+					},
+					{
+						"amount": 3.1,
+						"id": "proc_poisoned",
+						"power": 14
+					},
+					{
+						"amount": 4.3,
+						"id": "dodge",
+						"power": 41
+					},
+					{
+						"amount": 4.7,
+						"id": "movement",
+						"power": 23
+					}
+				],
+				"budget": 109,
+				"quality": 109,
+				"name": "Cartographer's Crackling Crowbar of Poisoning and Swiftness",
+				"version": 2,
+				"count": 1,
+				"rarity": 1,
+				"provenance": "Cartographer's"
+			},
+			"healing_potion": {
+				"definitionId": "healing_potion",
+				"count": 1
+			},
+			"gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun": {
+				"economyExcluded": true,
+				"seed": 1516737040,
+				"definitionId": "weapon_shotgun",
+				"id": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun",
+				"dungeonLevel": 1,
+				"properties": [
+					{
+						"amount": -8.4,
+						"id": "physical",
+						"power": 13
+					},
+					{
+						"amount": 14,
+						"id": "element_electric",
+						"power": 31
+					},
+					{
+						"amount": 5.8,
+						"id": "proc_push",
+						"power": 30
+					},
+					{
+						"amount": 6.6,
+						"id": "proc_muted",
+						"power": 36
+					},
+					{
+						"amount": 1,
+						"id": "ward_earth",
+						"power": 25
+					}
+				],
+				"budget": 109,
+				"quality": 109,
+				"name": "Pilgrim's Crackling Shotgun of Repulsion and Earthly Warding",
+				"version": 2,
+				"count": 1,
+				"rarity": 1,
+				"provenance": "Pilgrim's"
+			},
+			"gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol": {
+				"economyExcluded": true,
+				"seed": 1212832656,
+				"definitionId": "weapon_pistol",
+				"id": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol",
+				"dungeonLevel": 1,
+				"properties": [
+					{
+						"amount": -11.5,
+						"id": "physical",
+						"power": 19
+					},
+					{
+						"amount": 11.5,
+						"id": "element_earth",
+						"power": 24
+					},
+					{
+						"amount": 5.3,
+						"id": "proc_muted",
+						"power": 27
+					},
+					{
+						"amount": 2,
+						"id": "ability_str",
+						"power": 24
+					},
+					{
+						"amount": 2,
+						"id": "ability_wis",
+						"power": 25
+					},
+					{
+						"amount": 1,
+						"id": "ward_ice",
+						"power": 25
+					},
+					{
+						"amount": 1,
+						"id": "ward_electric",
+						"power": 25
+					}
+				],
+				"budget": 131,
+				"quality": 91,
+				"name": "Deborah's Earthly Pistol of Silence and Wisdom",
+				"version": 2,
+				"count": 1,
+				"rarity": 3,
+				"provenance": "Deborah's"
+			}
+		},
+		"slots": {
+			"throwable": "healing_potion",
+			"weapon_pistol": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol",
+			"weapon_lod_crowbar": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar",
+			"weapon_shotgun": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun"
+		},
+		"activeWeaponClass": "weapon_pistol",
+		"blockChance": 0
+	},
+	"effective": {
+		"con": 12,
+		"str": 19,
+		"cha": 15,
+		"int": 8,
+		"wis": 16,
+		"dex": 11
+	},
+	"kind": "ordinary-active-weapon-state-readback",
+	"base": {
+		"con": 12,
+		"str": 17,
+		"cha": 15,
+		"int": 8,
+		"wis": 14,
+		"dex": 10
+	},
+	"derived": {
+		"minimumMapDrainPerSecond": 0,
+		"breadcrumbCells": 12,
+		"chaHitStunResistanceMultiplier": 0.94,
+		"floatOnEnabled": false,
+		"quantumCostMultiplier": 1,
+		"bigGuyEnabled": false,
+		"reloadTimeMultiplier": 1,
+		"wizardCapstoneMagicDCBonus": 0,
+		"personalLifeCapBonus": 0,
+		"fighterClassStrBonus": 0,
+		"aimSpreadMultiplier": 1,
+		"burstSizeBonus": 0,
+		"weaponKnockbackProcChance": 0,
+		"damageRecoveryFraction": 0.5,
+		"rogueAllDamageDiceExplode": true,
+		"healthRegenBaseMaxHPPerSecond": 0.01,
+		"strMod": 4,
+		"quantumRank": 0,
+		"aimHoldSeconds": 0.5,
+		"effectiveMagicRegenModifier": -1,
+		"movementSpeedMultiplier": 1,
+		"mapOpenMovementRank": 0,
+		"arcRecoveryEnabled": false,
+		"conRegenMultiplier": 1.1,
+		"mapDrainFeatMultiplier": 1,
+		"dexMod": 0,
+		"magicSaveAdvantage": false,
+		"hasteEnabled": false,
+		"coreMaxHP": 100,
+		"startingHP": 100,
+		"rateOfFireMultiplier": 1,
+		"academicAchievementEnabled": false,
+		"wizardCapstoneMagicPowerMultiplier": 1,
+		"fighterCapstoneWallSlamBonusDice": 0,
+		"deathTetrisMaxSeconds": 60,
+		"heroOfLegendPulseRangeCells": 0,
+		"healthRegenEnabled": false,
+		"fighterStrengthBypassesCon": false,
+		"mapOpenMovementMultiplier": 1,
+		"wallSlamClassExplosionImmune": false,
+		"terrifyingFirstSaveDisadvantage": false,
+		"sizeShifterTransitionSeconds": 3,
+		"smgHeatFeatRank": 0,
+		"manaBarrierFeatDiversionFraction": 0,
+		"cloudStepMagicCost": 3,
+		"ammoRegenFloorFraction": 0.33,
+		"intMod": -1,
+		"hasteMovementMultiplier": 1,
+		"wallJumpLateralKick": 160,
+		"ammoRegenSpeedMultiplier": 1,
+		"hpConBonusPerLevel": 1,
+		"livingAegisHPPerMagic": 1,
+		"manaSpringEnabled": false,
+		"levelProficiency": 0,
+		"strafeSpeedMultiplier": 1,
+		"conMod": 1,
+		"crowbarPushDistance": 0,
+		"sizeShifterEnabled": false,
+		"magicDamageBonus": 3,
+		"frugalMapEnabled": false,
+		"floatOnMaximumSeconds": 6,
+		"hpToMagicDiversionFraction": 0,
+		"rogueCapstoneBoomThresholdShift": 0,
+		"blastProofCooldownSeconds": 2,
+		"featHitStunRank": 0,
+		"enemyDefense": false,
+		"internalCompassEnabled": false,
+		"magnumAimHoldSeconds": 0.5,
+		"weaponKnockbackProcDistance": 0,
+		"wallSlamDieSides": 3,
+		"chaHitStunInflictMultiplier": 1.06,
+		"wallSlamExplodes": false,
+		"russianAsset": false,
+		"rogueBackstabEnabled": true,
+		"pusherRank": 0,
+		"equipmentExtras": {
+			"proc_muted": 5.3,
+			"ward_electric": 1,
+			"ward_ice": 1,
+			"physical": -11.5,
+			"element_earth": 11.5
+		},
+		"pusherProcTargetCooldownSeconds": 0,
+		"ammoRegenFloorRank": 0,
+		"progressionHitDieSides": 8,
+		"rogueAcePrimeSeconds": 0,
+		"boomShift": 0,
+		"utilityMagicCostMultiplier": 0.88,
+		"moraleDCBonus": 0,
+		"maxHP": 100,
+		"mapFinderEnabled": false,
+		"sizeShifterTargetScale": 0.33,
+		"rogueBoomThresholdShift": 1,
+		"wizardCapstoneDiversionBonus": 0,
+		"wallJumpEnabled": false,
+		"fighterClassConBonus": 0,
+		"arcaneItemUseChance": 0.05,
+		"breadcrumbFeatBonusCells": 0,
+		"feedbackLoopEnabled": false,
+		"littleGuyEnabled": false,
+		"breadcrumbFeatRank": 0,
+		"strafeRank": 0,
+		"burstBonusRounds": 0,
+		"fighterCapstonePhysicalDamageMultiplier": 1,
+		"jumpHeightMultiplier": 1,
+		"chaMod": 2,
+		"smgHeatSuppressionChance": 0,
+		"wizardCapstoneMagicRegenMultiplier": 1,
+		"featHitStunMultiplier": 1,
+		"tetrisOverfillMultiplier": 1,
+		"fighterCapstoneMaxHPMultiplier": 1,
+		"crowbarDamageDieSides": 3,
+		"crowbarWallSlamBonusDice": 0,
+		"academicRegenCHAContribution": 0,
+		"floatOnMagicPerSecond": 1,
+		"smgOverheatThreshold": 6,
+		"healthRegenRank": 0,
+		"meleeReachMultiplier": 1,
+		"wisMod": 3,
+		"heroOfLegendPulseEnabled": false,
+		"manaSpringRegenMultiplier": 1,
+		"fighterCapstoneIncomingPushMultiplier": 1,
+		"physicalDamageBonus": 4,
+		"canActivateWandsScrolls": true,
+		"rolledHitPointSubtotal": 0,
+		"winningPersonalityEnabled": false,
+		"springHeelEnabled": false,
+		"steamrollerSuccessfulSaveFraction": 0,
+		"springHeelAirMovementMultiplier": 1,
+		"healthRegenCeilingFraction": 0,
+		"crowbarDamageRank": 0,
+		"backpedalMovementMultiplier": 1,
+		"featExplodingDamageDice": [],
+		"cloudStepEnabled": false,
+		"wizardClassHpToMagicDiversionFraction": 0,
+		"damageResistancePerDie": 1,
+		"bigGuyPhysicalPushMultiplier": 1,
+		"ammoRegenFloorRoundsByFamily": {
+			"weapon_pistol": 18,
+			"weapon_smg1": 25,
+			"weapon_ar2": 20,
+			"weapon_357": 6,
+			"weapon_shotgun": 7
+		},
+		"healthRegenDamageFreeDelaySeconds": 5,
+		"jumpImpulseMultiplier": 1,
+		"dodgeChanceContribution": 0,
+		"magicBoomThresholdShift": 0,
+		"wallJumpProbeDistance": 24,
+		"magicRegenMultiplier": 0.9,
+		"playerTargetScale": 1,
+		"blastProofEnabled": false,
+		"fighterCapstoneOutgoingPushMultiplier": 1
+	},
+	"actualWeapon": "weapon_pistol",
+	"at": 2419.4682101
+}

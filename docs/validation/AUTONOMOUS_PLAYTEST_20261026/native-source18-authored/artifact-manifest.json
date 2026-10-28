@@ -1,0 +1,226 @@
+{
+  "utc": "2026-10-27T23:55:41.132036+00:00",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/next_authored_pair_v2_strength_press_latest.json",
+      "archived_as": "next_authored_pair_v2_strength_press_latest.json",
+      "raw_sha256": "2e87a8844dcd3d6fd4107a61b71c0927896da18e3702ddae90f88d02b1de42dc",
+      "raw_bytes": 5257,
+      "archive_sha256": "2e87a8844dcd3d6fd4107a61b71c0927896da18e3702ddae90f88d02b1de42dc",
+      "archive_bytes": 5257,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/next_authored_pair_v2_vending_machine_latest.json",
+      "archived_as": "next_authored_pair_v2_vending_machine_latest.json",
+      "raw_sha256": "6c768244fcda281035513ec9e79c5dcaae324e29c361397bc41ba56e86886961",
+      "raw_bytes": 4591,
+      "archive_sha256": "6c768244fcda281035513ec9e79c5dcaae324e29c361397bc41ba56e86886961",
+      "archive_bytes": 4591,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/source18_grace_progression.json",
+      "archived_as": "source18_grace_progression.json",
+      "raw_sha256": "286d3d7ca4cef9dedb4a1d78b75e5bb7e9957c515526739cae788df1bc9703df",
+      "raw_bytes": 10655,
+      "archive_sha256": "286d3d7ca4cef9dedb4a1d78b75e5bb7e9957c515526739cae788df1bc9703df",
+      "archive_bytes": 10655,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/source18_grace_derived.json",
+      "archived_as": "source18_grace_derived.json",
+      "raw_sha256": "cc6402762bad646a3ca7e088cd60204dfce98ed31285c5fb3e1c63049534d8db",
+      "raw_bytes": 4447,
+      "archive_sha256": "cc6402762bad646a3ca7e088cd60204dfce98ed31285c5fb3e1c63049534d8db",
+      "archive_bytes": 4447,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/source18_grace_equipment.json",
+      "archived_as": "source18_grace_equipment.json",
+      "raw_sha256": "8dee34d524f30a327de7226328851b281e58afbc253f4bb986c617c1b791f4e3",
+      "raw_bytes": 3432,
+      "archive_sha256": "8dee34d524f30a327de7226328851b281e58afbc253f4bb986c617c1b791f4e3",
+      "archive_bytes": 3432,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/source18_active_weapon_weapon_pistol.json",
+      "archived_as": "source18_active_weapon_weapon_pistol.json",
+      "raw_sha256": "a290313c0fa72ee4e60d595b0ee3009ebddbdb29a8e4e4f365b2b46c46b39635",
+      "raw_bytes": 8717,
+      "archive_sha256": "a290313c0fa72ee4e60d595b0ee3009ebddbdb29a8e4e4f365b2b46c46b39635",
+      "archive_bytes": 8717,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/console-through-strength.log",
+      "archived_as": "console-through-strength.log.xz",
+      "raw_sha256": "abf97621eea568aea43b4017a4dddc5a81d28647b1fbae0aeb7203c63048fb76",
+      "raw_bytes": 267802,
+      "archive_sha256": "ee44c118c7ba2c84a41a6f1fc8a1100668dd34b3826a571d9a8ab1fb2f672c62",
+      "archive_bytes": 11796,
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/console-through-vending.log",
+      "archived_as": "console-through-vending.log.xz",
+      "raw_sha256": "26001a69b2ce1d4ad45c464fef8cf132366c1bfd464ba00c001c741381446596",
+      "raw_bytes": 296256,
+      "archive_sha256": "cd3d3fdfff81fb03281ade5b3a24977edfb511179c8041dc4a7baa424aa99cd0",
+      "archive_bytes": 12764,
+      "compression": "xz"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793143683196087672-source18-grace-normal-deployment.png",
+      "archived_as": "ordinary-grace-starter-deployment.png",
+      "raw_sha256": "d98a2828a84c573b15c2c04f1367d885469044384d3ba3de328fdda87563a674",
+      "raw_bytes": 936001,
+      "archive_sha256": "d98a2828a84c573b15c2c04f1367d885469044384d3ba3de328fdda87563a674",
+      "archive_bytes": 936001,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793144330607404425-source18-strength-natural-use-repeat.png",
+      "archived_as": "strength-success-repeat-chat-after-return.png",
+      "raw_sha256": "7532a95036828ab5b5b72e03b74477d2cd3d385a72b6d50138d6b5a1672ceb1e",
+      "raw_bytes": 1328829,
+      "archive_sha256": "7532a95036828ab5b5b72e03b74477d2cd3d385a72b6d50138d6b5a1672ceb1e",
+      "archive_bytes": 1328829,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793144513363955876-source18-vending-natural-use-repeat.png",
+      "archived_as": "vending-purchase-repeat-chat-after-return.png",
+      "raw_sha256": "6903e48617d527994055a2ec40604d4020c96783c1a8cc63b8ba7bad7930382a",
+      "raw_bytes": 1050867,
+      "archive_sha256": "6903e48617d527994055a2ec40604d4020c96783c1a8cc63b8ba7bad7930382a",
+      "archive_bytes": 1050867,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793144608476197927-source18-vending-potion-inventory.png",
+      "archived_as": "purchased-potion-inventory.png",
+      "raw_sha256": "f618f1ae3a6ab044653d129694cf818f0342a0c516a78d8a00509a47b278c828",
+      "raw_bytes": 244417,
+      "archive_sha256": "f618f1ae3a6ab044653d129694cf818f0342a0c516a78d8a00509a47b278c828",
+      "archive_bytes": 244417,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793144691102539232-source18-purchased-potion-details.png",
+      "archived_as": "purchased-potion-details-quantity1of3.png",
+      "raw_sha256": "90ab0831a93e6cd3574fdb120a1c98f3cab4972d0a30365111022f9a8403998d",
+      "raw_bytes": 260906,
+      "archive_sha256": "90ab0831a93e6cd3574fdb120a1c98f3cab4972d0a30365111022f9a8403998d",
+      "archive_bytes": 260906,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793144735764866450-source18-active-pistol-ability-sheet.png",
+      "archived_as": "attempted-doubleclick-still-shotgun17-14.png",
+      "raw_sha256": "88933c62559d5b4aa3b3dc3c7e70d7712c5dcf9439b2318a2df2ec3e8e2967b3",
+      "raw_bytes": 319113,
+      "archive_sha256": "88933c62559d5b4aa3b3dc3c7e70d7712c5dcf9439b2318a2df2ec3e8e2967b3",
+      "archive_bytes": 319113,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793144838522783547-source18-body-slot-equipped-pistol-stats.png",
+      "archived_as": "body-slot-equipped-pistol19-16.png",
+      "raw_sha256": "d044b6eaa138e0cd786cea1be57050e23935307ee96635c0911337681d75c8be",
+      "raw_bytes": 328054,
+      "archive_sha256": "d044b6eaa138e0cd786cea1be57050e23935307ee96635c0911337681d75c8be",
+      "archive_bytes": 328054,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/screenshots/1793143608572087943-source18-newcampaign-character.png",
+      "archived_as": "early-grace-pistol-buffed-sheet.png",
+      "raw_sha256": "74d70f1b4ff955132d0f08c1d20adca6c6ef9c5eb65482427644b562cdc1868d",
+      "raw_bytes": 584390,
+      "archive_sha256": "74d70f1b4ff955132d0f08c1d20adca6c6ef9c5eb65482427644b562cdc1868d",
+      "archive_bytes": 584390,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/next_authored_pair_probe_v2.lua",
+      "archived_as": "next_authored_pair_probe_v2.lua.txt",
+      "raw_sha256": "f0e75ff62948ae445f7c3622100ccb06bdc4c389eacebcfa8238940958bf5227",
+      "raw_bytes": 17986,
+      "archive_sha256": "f0e75ff62948ae445f7c3622100ccb06bdc4c389eacebcfa8238940958bf5227",
+      "archive_bytes": 17986,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/next_authored_pair_v2_proposal.json",
+      "archived_as": "next_authored_pair_v2_proposal.json",
+      "raw_sha256": "fa11174a21e788cb6f05ce4ad05024847446445e1c69ddbde6048df9c1273616",
+      "raw_bytes": 3562,
+      "archive_sha256": "fa11174a21e788cb6f05ce4ad05024847446445e1c69ddbde6048df9c1273616",
+      "archive_bytes": 3562,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/next_authored_pair_offline.json",
+      "archived_as": "next_authored_pair_offline.json",
+      "raw_sha256": "ddf3f7bcbc002aad3c40a1b9706cd990c57bed0b6729db8353f4a207698e7094",
+      "raw_bytes": 5612,
+      "archive_sha256": "ddf3f7bcbc002aad3c40a1b9706cd990c57bed0b6729db8353f4a207698e7094",
+      "archive_bytes": 5612,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/grace-score-reconciliation/generate-owned-contexts.lua",
+      "archived_as": "stat-reconciliation/generate-owned-contexts.lua.txt",
+      "raw_sha256": "e6e9a62abd5608ff50feb7709a2d629e4e02d139dc909f674910a501535ec70a",
+      "raw_bytes": 636,
+      "archive_sha256": "e6e9a62abd5608ff50feb7709a2d629e4e02d139dc909f674910a501535ec70a",
+      "archive_bytes": 636,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/grace-score-reconciliation/offline-owned-contexts.txt",
+      "archived_as": "stat-reconciliation/offline-owned-contexts.txt",
+      "raw_sha256": "3b5dfb3cdd4d812c58559152166b801d82ea855765a663bbab7888506617502b",
+      "raw_bytes": 946,
+      "archive_sha256": "3b5dfb3cdd4d812c58559152166b801d82ea855765a663bbab7888506617502b",
+      "archive_bytes": 946,
+      "compression": "none"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/grace-score-reconciliation/reconciliation.json",
+      "archived_as": "stat-reconciliation/reconciliation.json",
+      "raw_sha256": "c8ee148053c9a1cd83b3a0cb6cf49c89ff47dfd122dc4f70a7e864f903204ee4",
+      "raw_bytes": 6093,
+      "archive_sha256": "c8ee148053c9a1cd83b3a0cb6cf49c89ff47dfd122dc4f70a7e864f903204ee4",
+      "archive_bytes": 6093,
+      "compression": "none"
+    },
+    {
+      "source": ".build/lod-gmod/garrysmod/console.log",
+      "archived_as": "console-through-native-pistol.log.xz",
+      "raw_sha256": "890ef44a923f9e6b01572178bfd6f3f56e3f78c7c11b2b25f39be0c79914783f",
+      "raw_bytes": 352376,
+      "archive_sha256": "805c0c32d902e0157d39154aa56e9a410bf31097d674013ba119d8f41cd8d72e",
+      "archive_bytes": 13280,
+      "compression": "xz",
+      "derivation": "Exact byte prefix of one later read-only console snapshot through first actual ACTIVE_WEAPON18_READBACK weapon_pistol line; source snapshot full SHA c926c3d3d7f8992c92a875f4dcd3e051f8f86bcbaf336e04d9e3bfee82a025be",
+      "source_prefix_lines": 576,
+      "prior_vending_snapshot_is_exact_prefix": true
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source18-authored-pair/independent-review.json",
+      "archived_as": "independent-review.json",
+      "raw_sha256": "90ddedc1ba4d8368ba100b3345e5331424f0b69a1843ea222d5241e4ed316b6c",
+      "raw_bytes": 2231,
+      "archive_sha256": "90ddedc1ba4d8368ba100b3345e5331424f0b69a1843ea222d5241e4ed316b6c",
+      "archive_bytes": 2231,
+      "compression": "none"
+    }
+  ],
+  "raw_source_scope": "Frozen pair logs/receipts/readbacks plus immutable screenshots and actual executed test helper; no current navigation result is substituted.",
+  "qualification": "Older stat-reconciliation.json records its then-inferred pistol attribution as historical diagnosis; the new receipt and actual native pistol readback supersede only that uncertainty."
+}

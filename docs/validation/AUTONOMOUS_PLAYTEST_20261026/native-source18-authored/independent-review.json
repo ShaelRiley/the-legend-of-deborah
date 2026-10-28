@@ -1,0 +1,27 @@
+{
+  "reviewer": "native_profile_review",
+  "utc": "2026-10-28T00:00:53.024511+00:00",
+  "status": "CLEAR: no actionable evidence/claim defect found",
+  "receipt_reviewed_sha256": "c74fcdcff374295b85b3a60cba42276052c125fc83c100a70606594e98d2afc4",
+  "artifact_manifest_sha256": "eb963868307706425a7c0a5e4c93520e9caee4d84589dc3196c66ad8d3cffbe6",
+  "checks": [
+    "All23 archive hashes/byte counts and decompressed raw hashes/byte counts independently match manifest",
+    "All frozen original source copies match; the current live console is a byte-exact expanding prefix of its frozen capture",
+    "Strength/Vending/Pistol console snapshots are nested exact prefixes; lines443/444,521/522,554/576 independently checked",
+    "Strength native18+3=21/DC12/20credit and wallet0→20; Vending wallet20→10 and potion0→1; repeat rejection native console and rendered chat verified",
+    "Both bounded four-second captures/returns same body, HP100/lives3 and unchanged cards/gates/JailKey/map flags",
+    "Viewed6 native photos: Strength and Vending chat after return, potion inventory and quantity1/3 details, failed doubleclick17/14 sheet, successful body-slot19/16 sheet",
+    "Native pistol actualWeapon and immutable ability affixes reconcile base17/14 plus2/2 to19/16; Shotgun remains confirmed in failed input snapshot",
+    "All576 current private production bytes match pinned source18 prepared manifest; prepared SHA and three Git production tree IDs verified",
+    "Live normalized05 rows StrengthPress and Vending consulted; quoted transaction law matches finite observed outcomes"
+  ],
+  "scope_limits_retained": [
+    "DeveloperDense single client rare fixture bypasses locks; no ordinary event traversal or rendered machine/prompt acceptance",
+    "Aggregate capture cannot independently prove per-Use timing; console order and root input establish order",
+    "Failed attempted doubleclick remains undiagnosed; successful body-slot path does not accept doubleclick",
+    "No potion consumption/cure/throw, reconnect/concurrency, full event family, full campaign or clean pass accepted"
+  ],
+  "production_edits": false,
+  "game_execution_or_private_writes_by_reviewer": false,
+  "git_mutations_by_reviewer": false
+}

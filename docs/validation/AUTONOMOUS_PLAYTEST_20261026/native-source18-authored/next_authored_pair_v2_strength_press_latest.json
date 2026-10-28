@@ -1,0 +1,234 @@
+{
+	"spawn": 8,
+	"offline_strength_face_prediction": 18,
+	"run": "campaign:8",
+	"archetype": "strength_press",
+	"epoch": 2,
+	"home_pickup_clear": true,
+	"cell": "6:7:0",
+	"level": 1,
+	"return_attempts": [
+		{
+			"detail": "-3840.000000 -1920.000000 -12269.937500",
+			"pickup_state_after": {
+				"recorded_run_is_current": true,
+				"jail_key": false,
+				"floor_map_mask": 0,
+				"floor_map_owned": [],
+				"cards": [
+					false,
+					false,
+					false,
+					false
+				],
+				"gates": [
+					false,
+					false,
+					false,
+					false
+				]
+			},
+			"hp_after": 100,
+			"position_after": [
+				-3840,
+				-1920,
+				-12269.9375
+			],
+			"same_body_before": true,
+			"same_body_after": true,
+			"accepted": true,
+			"native_call_ok": true,
+			"event_current_before": true,
+			"reason": "automatic-four-second-window-end",
+			"at": 1750.2604177
+		}
+	],
+	"campaign": 6102623,
+	"observations": [
+		{
+			"potion_count": 0,
+			"hp": 100,
+			"balance_delta": 0,
+			"label": "before-native-use",
+			"potion_delta": 0,
+			"at": 1704.8082491,
+			"position": [
+				-3840,
+				-1920,
+				-12271.376953125
+			],
+			"legal_route": [],
+			"admission_current": false,
+			"candidate": [
+				-1824,
+				-1536,
+				-12269.9375
+			],
+			"simple_same_floor_route": false,
+			"balance": 0,
+			"lives": 3,
+			"legal_route_nodes": 0,
+			"str_modifier": 3,
+			"details": {
+				"status": "Your STR modifier: +3. Success chance: 60%.",
+				"spent": false,
+				"kind": "incident",
+				"endpoints": [
+					{
+						"entityIndex": 2138,
+						"part": 0,
+						"name": "STRENGTH PRESS"
+					}
+				],
+				"action": "USE — make your one Strength attempt this dungeon.",
+				"name": "STRENGTH PRESS",
+				"offer": "One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+			},
+			"transaction_key": "event-expansion:campaign:8:1:strength_press:claim:76561198025505071"
+		},
+		{
+			"claim": {
+				"debit": 0,
+				"account": "76561198025505071",
+				"message": "1d20 [18] +3 STR = 21 vs 12 — 20 $DEB collected.",
+				"dc": 12,
+				"face": 18,
+				"total": 21,
+				"modifier": 3,
+				"credit": 20,
+				"payout": 20,
+				"success": true
+			},
+			"potion_count": 0,
+			"hp": 100,
+			"balance_delta": 20,
+			"label": "auto-four-second-window-aggregate-not-per-use",
+			"potion_delta": 0,
+			"at": 1750.2571748,
+			"position": [
+				-1824,
+				-1536,
+				-12271.017578125
+			],
+			"legal_route": [
+				{
+					"key": "6:7:0",
+					"position": [
+						-1920,
+						-1536,
+						-12271.96875
+					]
+				}
+			],
+			"admission_current": true,
+			"candidate": [
+				-1824,
+				-1536,
+				-12269.9375
+			],
+			"simple_same_floor_route": true,
+			"balance": 20,
+			"lives": 3,
+			"legal_route_nodes": 1,
+			"str_modifier": 3,
+			"details": {
+				"spent": true,
+				"status": "1d20 [18] +3 STR = 21 vs 12 — 20 $DEB collected.",
+				"kind": "incident",
+				"endpoints": [
+					{
+						"entityIndex": 2138,
+						"part": 0,
+						"name": "STRENGTH PRESS"
+					}
+				],
+				"action": "USE — make your one Strength attempt this dungeon.",
+				"name": "STRENGTH PRESS",
+				"offer": "One lift: non-exploding 1d20 + your STR modifier against 12. Success: 20 $DEB. Failure: no cost or reward."
+			},
+			"transaction_key": "event-expansion:campaign:8:1:strength_press:claim:76561198025505071"
+		}
+	],
+	"pickup_clearance": {
+		"trigger_margin": 8,
+		"loot_volume_margin": 24
+	},
+	"qualification": "Source-checked observer only; optional locator bypasses locks. Timed capture is aggregate and does not establish which Use occurred before it; production console establishes actual outcome/repeat order. Four-second timer is scheduled before movement; normal combat remains active.",
+	"home": [
+		-3840,
+		-1920,
+		-12271.376953125
+	],
+	"level_seed": 673660301,
+	"kind": "next authored pair v2 private diagnostic",
+	"locator": {
+		"beyond_progression_locks_fixture": true,
+		"scheduled_curtime": 1713.3299617040902,
+		"pickup_state_before": {
+			"recorded_run_is_current": true,
+			"jail_key": false,
+			"floor_map_mask": 0,
+			"floor_map_owned": [],
+			"cards": [
+				false,
+				false,
+				false,
+				false
+			],
+			"gates": [
+				false,
+				false,
+				false,
+				false
+			]
+		},
+		"returned": true,
+		"elapsed_wall_seconds": 3.9928273000000445,
+		"move_call_ok": true,
+		"target": [
+			-1824,
+			-1536,
+			-12269.9375
+		],
+		"capture_scope": "Aggregate window only; production console establishes actual first/repeat Use ordering.",
+		"accepted": true,
+		"capture_call_ok": true,
+		"timer_scheduled": true,
+		"stale": false,
+		"return_detail": "-3840.000000 -1920.000000 -12269.937500",
+		"return_accepted": true,
+		"move_detail": "-1824.000000 -1536.000000 -12269.937500",
+		"move_finished_at": 1746.2641488,
+		"last_return_attempt": 1,
+		"position_after_move": [
+			-1824,
+			-1536,
+			-12269.9375
+		],
+		"return_call_ok": true,
+		"scheduled_at": 1746.2623915,
+		"ordinary_traversal_accepted": false,
+		"home": [
+			-3840,
+			-1920,
+			-12269.9375
+		],
+		"timer_fired_curtime": 1717.3349616145715,
+		"source": [
+			-3840,
+			-1920,
+			-12271.376953125
+		],
+		"capture_accepted": true,
+		"timer_fired_at": 1750.2552188,
+		"finished": true,
+		"delay_seconds": 4
+	},
+	"entity": 2138,
+	"creation": 3381,
+	"home_supported": [
+		-3840,
+		-1920,
+		-12269.9375
+	]
+}

@@ -1,0 +1,468 @@
+{
+	"equipmentAbilityDelta": {
+		"cha": 0,
+		"int": 0,
+		"str": 0,
+		"dex": 0,
+		"wis": 0,
+		"con": 0
+	},
+	"startingHP": 100,
+	"temporaryAbilityDelta": {
+		"cha": 0,
+		"int": 0,
+		"str": 0,
+		"dex": 0,
+		"wis": 0,
+		"con": 0
+	},
+	"statusImmunities": [],
+	"hitDieRollsByLevel": [],
+	"featQualificationAbilities": {
+		"cha": 15,
+		"int": 8,
+		"str": 17,
+		"dex": 11,
+		"wis": 14,
+		"con": 12
+	},
+	"primaryAbility": "dex",
+	"progressionHitDieSides": 8,
+	"dungeonEntryLevel": 1,
+	"classId": "rogue",
+	"selectedMagicFormId": "missile",
+	"growthAbilities": {
+		"cha": 0,
+		"int": 0,
+		"str": 0,
+		"dex": 1,
+		"wis": 0,
+		"con": 0
+	},
+	"magicGrantMilestones": {
+		"form:level_1_all": true
+	},
+	"equipmentExtras": {
+		"element_electric": 14,
+		"ward_earth": 1,
+		"physical": -8.4,
+		"proc_push": 5.8,
+		"proc_muted": 6.6
+	},
+	"equipmentBlockChanceContribution": 0,
+	"contentIds": [],
+	"actorId": "76561198025505071",
+	"identityAbilityDelta": {
+		"cha": 0,
+		"int": 0,
+		"str": 0,
+		"dex": 0,
+		"wis": 0,
+		"con": 0
+	},
+	"usesMagic": false,
+	"featAbilityDelta": {
+		"cha": 0,
+		"int": 0,
+		"str": 0,
+		"dex": 0,
+		"wis": 0,
+		"con": 0
+	},
+	"equipmentKey": "weapon_shotgun|gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun|||||||||gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol|gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar|gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun||||",
+	"baseAbilityRollAudit": {
+		"rawTotal": 81,
+		"rawDice": {
+			"cha": [
+				2,
+				5,
+				4,
+				6
+			],
+			"int": [
+				3,
+				2,
+				5,
+				2
+			],
+			"str": [
+				6,
+				4,
+				6,
+				5
+			],
+			"dex": [
+				3,
+				4,
+				5,
+				2
+			],
+			"wis": [
+				5,
+				6,
+				3,
+				2
+			],
+			"con": [
+				5,
+				5,
+				3,
+				2
+			]
+		},
+		"penalties": [
+			{
+				"amount": 2,
+				"after": 8,
+				"before": 10,
+				"dice": [
+					1,
+					1
+				],
+				"ability": "int"
+			},
+			{
+				"amount": 2,
+				"after": 10,
+				"before": 12,
+				"dice": [
+					2
+				],
+				"ability": "dex"
+			},
+			{
+				"amount": 1,
+				"after": 12,
+				"before": 13,
+				"dice": [
+					1
+				],
+				"ability": "con"
+			}
+		],
+		"rawAbilities": {
+			"cha": 15,
+			"int": 10,
+			"str": 17,
+			"dex": 12,
+			"wis": 14,
+			"con": 13
+		}
+	},
+	"actorType": "hero",
+	"derivedStats": {
+		"minimumMapDrainPerSecond": 0,
+		"breadcrumbCells": 10,
+		"chaHitStunResistanceMultiplier": 0.94,
+		"floatOnEnabled": false,
+		"quantumCostMultiplier": 1,
+		"bigGuyEnabled": false,
+		"reloadTimeMultiplier": 1,
+		"wizardCapstoneMagicDCBonus": 0,
+		"personalLifeCapBonus": 0,
+		"fighterClassStrBonus": 0,
+		"aimSpreadMultiplier": 1,
+		"burstSizeBonus": 0,
+		"weaponKnockbackProcChance": 0,
+		"damageRecoveryFraction": 0.5,
+		"rogueAllDamageDiceExplode": true,
+		"healthRegenBaseMaxHPPerSecond": 0.01,
+		"strMod": 3,
+		"quantumRank": 0,
+		"wizardCapstoneDiversionBonus": 0,
+		"effectiveMagicRegenModifier": -1,
+		"movementSpeedMultiplier": 1,
+		"mapOpenMovementRank": 0,
+		"arcRecoveryEnabled": false,
+		"conRegenMultiplier": 1.1,
+		"mapDrainFeatMultiplier": 1,
+		"dexMod": 0,
+		"magicSaveAdvantage": false,
+		"hasteEnabled": false,
+		"coreMaxHP": 100,
+		"startingHP": 100,
+		"rateOfFireMultiplier": 1,
+		"bigGuyPhysicalPushMultiplier": 1,
+		"wizardCapstoneMagicPowerMultiplier": 1,
+		"fighterCapstoneWallSlamBonusDice": 0,
+		"deathTetrisMaxSeconds": 60,
+		"damageResistancePerDie": 1,
+		"crowbarDamageDieSides": 3,
+		"fighterStrengthBypassesCon": false,
+		"mapOpenMovementMultiplier": 1,
+		"springHeelAirMovementMultiplier": 1,
+		"terrifyingFirstSaveDisadvantage": false,
+		"sizeShifterTransitionSeconds": 3,
+		"wisMod": 2,
+		"rolledHitPointSubtotal": 0,
+		"cloudStepMagicCost": 3,
+		"ammoRegenFloorFraction": 0.33,
+		"intMod": -1,
+		"hasteMovementMultiplier": 1,
+		"wallJumpLateralKick": 160,
+		"ammoRegenSpeedMultiplier": 1,
+		"hpConBonusPerLevel": 1,
+		"livingAegisHPPerMagic": 1,
+		"tetrisOverfillMultiplier": 1,
+		"levelProficiency": 0,
+		"strafeSpeedMultiplier": 1,
+		"conMod": 1,
+		"crowbarPushDistance": 0,
+		"sizeShifterEnabled": false,
+		"magicDamageBonus": 2,
+		"frugalMapEnabled": false,
+		"floatOnMaximumSeconds": 6,
+		"hpToMagicDiversionFraction": 0,
+		"rogueCapstoneBoomThresholdShift": 0,
+		"blastProofCooldownSeconds": 2,
+		"featHitStunRank": 0,
+		"enemyDefense": false,
+		"internalCompassEnabled": false,
+		"fighterCapstoneOutgoingPushMultiplier": 1,
+		"weaponKnockbackProcDistance": 0,
+		"wallSlamDieSides": 3,
+		"chaHitStunInflictMultiplier": 1.06,
+		"wallSlamExplodes": false,
+		"russianAsset": false,
+		"rogueBackstabEnabled": true,
+		"pusherRank": 0,
+		"academicRegenCHAContribution": 0,
+		"pusherProcTargetCooldownSeconds": 0,
+		"smgOverheatThreshold": 6,
+		"progressionHitDieSides": 8,
+		"rogueAcePrimeSeconds": 0,
+		"boomShift": 0,
+		"utilityMagicCostMultiplier": 0.92,
+		"sizeShifterTargetScale": 0.33,
+		"canActivateWandsScrolls": true,
+		"mapFinderEnabled": false,
+		"equipmentExtras": {
+			"element_electric": 14,
+			"ward_earth": 1,
+			"physical": -8.4,
+			"proc_push": 5.8,
+			"proc_muted": 6.6
+		},
+		"magicRegenMultiplier": 0.9,
+		"magicBoomThresholdShift": 0,
+		"manaBarrierFeatDiversionFraction": 0,
+		"maxHP": 100,
+		"springHeelEnabled": false,
+		"steamrollerSuccessfulSaveFraction": 0,
+		"wizardClassHpToMagicDiversionFraction": 0,
+		"crowbarDamageRank": 0,
+		"backpedalMovementMultiplier": 1,
+		"strafeRank": 0,
+		"burstBonusRounds": 0,
+		"fighterCapstonePhysicalDamageMultiplier": 1,
+		"ammoRegenFloorRank": 0,
+		"chaMod": 2,
+		"manaSpringEnabled": false,
+		"ammoRegenFloorRoundsByFamily": {
+			"weapon_pistol": 18,
+			"weapon_smg1": 25,
+			"weapon_ar2": 20,
+			"weapon_shotgun": 7,
+			"weapon_357": 6
+		},
+		"healthRegenDamageFreeDelaySeconds": 5,
+		"heroOfLegendPulseRangeCells": 0,
+		"fighterCapstoneMaxHPMultiplier": 1,
+		"feedbackLoopEnabled": false,
+		"crowbarWallSlamBonusDice": 0,
+		"dodgeChanceContribution": 0,
+		"floatOnMagicPerSecond": 1,
+		"wallJumpProbeDistance": 24,
+		"healthRegenRank": 0,
+		"meleeReachMultiplier": 1,
+		"rogueBoomThresholdShift": 1,
+		"heroOfLegendPulseEnabled": false,
+		"manaSpringRegenMultiplier": 1,
+		"fighterCapstoneIncomingPushMultiplier": 1,
+		"physicalDamageBonus": 3,
+		"healthRegenEnabled": false,
+		"smgHeatFeatRank": 0,
+		"winningPersonalityEnabled": false,
+		"magnumAimHoldSeconds": 0.5,
+		"aimHoldSeconds": 0.5,
+		"featHitStunMultiplier": 1,
+		"healthRegenCeilingFraction": 0,
+		"wallSlamClassExplosionImmune": false,
+		"academicAchievementEnabled": false,
+		"featExplodingDamageDice": [],
+		"cloudStepEnabled": false,
+		"wizardCapstoneMagicRegenMultiplier": 1,
+		"smgHeatSuppressionChance": 0,
+		"jumpHeightMultiplier": 1,
+		"breadcrumbFeatRank": 0,
+		"littleGuyEnabled": false,
+		"jumpImpulseMultiplier": 1,
+		"breadcrumbFeatBonusCells": 0,
+		"arcaneItemUseChance": 0.05,
+		"fighterClassConBonus": 0,
+		"wallJumpEnabled": false,
+		"playerTargetScale": 1,
+		"blastProofEnabled": false,
+		"moraleDCBonus": 0
+	},
+	"equipmentShieldEquipped": false,
+	"elementalWeaknesses": [],
+	"secondaryAbilities": [
+		"cha",
+		"con"
+	],
+	"featSelectionRevision": "ordinary-unique-20261013-v1",
+	"favoredWeaponStacks": 0,
+	"archetypeId": "hero",
+	"favoredEnemyStacks": 0,
+	"effectiveAbilities": {
+		"cha": 15,
+		"int": 8,
+		"str": 17,
+		"dex": 11,
+		"wis": 14,
+		"con": 12
+	},
+	"moraleBonus": 0,
+	"baseAbilityRollAttempts": 2,
+	"magicContentBindings": {
+		"2": "raw",
+		"4": "raw",
+		"3": "raw",
+		"5": "raw"
+	},
+	"magicFormIds": [
+		"missile"
+	],
+	"equipmentMoveGrants": [],
+	"fighterTraining": {
+		"cha": 0,
+		"int": 0,
+		"str": 0,
+		"dex": 0,
+		"wis": 0,
+		"con": 0
+	},
+	"level": 1,
+	"baseAbilityRollMethod": "4d6_drop_lowest_74_then_weakness",
+	"magicBindings": {
+		"2": "missile"
+	},
+	"baseAbilityRollTotal": 76,
+	"characterIdentityPackage": {
+		"motiveIndex": 16,
+		"nickname": "After Hours",
+		"surnameIndex": 62,
+		"heroIdentityId": "76561198025505071",
+		"presentationSex": "female",
+		"resolvedIdentityPerkIds": [
+			"origin:FAVORED_WEAPON:pistol",
+			"background:FAVORED_ENEMY:HEADCRAB",
+			"motive:FAVORED_WEAPON:ar2"
+		],
+		"surname": "Ward",
+		"nicknameIndex": 59,
+		"originIndex": 35,
+		"firstName": "Grace",
+		"identityPerkRecords": [
+			{
+				"targetId": "pistol",
+				"displayName": "Favored Weapon — Pistol",
+				"targetName": "Pistol",
+				"traitName": "Pistol Range Settlement",
+				"flavorText": "In your hometown, Pistol practice was a family ritual; you learned to make each hit count.",
+				"seed": 766642392,
+				"handlerId": "FAVORED_WEAPON",
+				"traitSlot": "origin",
+				"traitIndex": 35
+			},
+			{
+				"targetId": "HEADCRAB",
+				"displayName": "Favored Enemy — Headcrab",
+				"targetName": "Headcrab",
+				"traitName": "Headcrab Control Contractor",
+				"flavorText": "Paid work against the Headcrab family taught you to exploit its vulnerabilities with whatever weapon was available.",
+				"seed": 1876172046,
+				"handlerId": "FAVORED_ENEMY",
+				"traitSlot": "background",
+				"traitIndex": 37
+			},
+			{
+				"targetId": "ar2",
+				"displayName": "Favored Weapon — Pulse Rifle",
+				"targetName": "Pulse Rifle",
+				"traitName": "Deborah's Pulse Rifle Backup",
+				"flavorText": "You promised Deborah you would cover her escape; your well-practiced Pulse Rifle is how you mean to keep that promise.",
+				"seed": 775082777,
+				"handlerId": "FAVORED_WEAPON",
+				"traitSlot": "motive",
+				"traitIndex": 16
+			}
+		],
+		"favoredWeaponStacks": {
+			"ar2": 1,
+			"pistol": 1
+		},
+		"favoredEnemyStacks": {
+			"HEADCRAB": 1
+		},
+		"identityPerkVersion": "identity-three-handlers-v2",
+		"rosterSeed": 2142430613,
+		"identityAbilityDelta": {
+			"cha": 0,
+			"int": 0,
+			"str": 0,
+			"dex": 0,
+			"wis": 0,
+			"con": 0
+		},
+		"masculineOrFeminineFirstNameIndex": 28,
+		"backgroundIndex": 37,
+		"fullDisplayName": "Grace \"After Hours\" Ward",
+		"portraitCacheKey": "997278997"
+	},
+	"capabilityTags": [],
+	"featIds": [
+		"CHA_FEAR_PROC_1"
+	],
+	"baseAbilities": {
+		"cha": 15,
+		"int": 8,
+		"str": 17,
+		"dex": 10,
+		"wis": 14,
+		"con": 12
+	},
+	"featCatalogRevision": "feat-hair-trigger-20261005-v1",
+	"pendingFeatSlots": [
+		{
+			"selectedFeatId": "CHA_FEAR_PROC_1",
+			"rngSeed": 949988266,
+			"earnedAtLevel": 1,
+			"offerLimit": 4,
+			"resolved": true,
+			"draftType": "ordinary",
+			"exhausted": false,
+			"offerFeatIds": [
+				"WIS_SPELLWARD",
+				"CHA_FEAR_PROC_1",
+				"WIS_MAP_FINDER",
+				"STR_CROWBAR_D6"
+			]
+		}
+	],
+	"replacementXpEarnedThisDungeon": 0,
+	"featSlotsGranted": 1,
+	"classMilestoneAbilityDelta": {
+		"cha": 0,
+		"int": 0,
+		"str": 0,
+		"dex": 0,
+		"wis": 0,
+		"con": 0
+	},
+	"featStackCounts": {
+		"CHA_FEAR_PROC_1": 1
+	},
+	"xp": 0
+}

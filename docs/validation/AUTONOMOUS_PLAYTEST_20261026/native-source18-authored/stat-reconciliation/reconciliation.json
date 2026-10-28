@@ -1,0 +1,130 @@
+{
+  "kind": "Grace apparent score change bounded read-only reconciliation",
+  "utc": "2026-10-27T23:44:58.801636+00:00",
+  "classification": "No actionable stat-reroll or stale-identity defect established. Observed score difference is exactly explained by lawful active-pistol ability bonuses; direct early-native weapon attribution remains inferred pending a normal weapon switch/readback.",
+  "native_base_source": ".build/autonomous-playtest-20261027/source18-authored-pair/source18_grace_progression.json",
+  "native_base_source_sha256": "286d3d7ca4cef9dedb4a1d78b75e5bb7e9957c515526739cae788df1bc9703df",
+  "source_hashes": {
+    "sh_rng.lua": "69911ddf49d950f4ed327ca75c61c80db2ccbaa91be0d663e084d8fbab6693cd",
+    "sh_equipment.lua": "8e2575857731c290daf2eb1baa3853b9f6f44a6f5cd67c4ede0a431bda613bfa",
+    "sh_equipment_catalog.lua": "91f1a9d2d2a06d8ee844146673c9b54279fae8e6ba1472f95bf8561a88a4c1eb",
+    "sh_equipment_economy.lua": "0df12cdbe13c0399135c369e8dc1522f917f5d7016d5606114590d6ccc733a3b",
+    "sv_equipment_economy.lua": "dde79ef79e02bf744754a81aa10cc05285efaeb44a0ffa80cffc0bfa3218708f",
+    "sv_hero_ability_rolls.lua": "4fbc80728db93a2499f0fe7240eebec4eea369ac82f0811508440b6fdc361878",
+    "sv_character_progression.lua": "4e50572cd444082482df3e423d9643eb4fa3d88d76df9b11c6f57017ddb3952b"
+  },
+  "gdd": {
+    "id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "live02_rows": [
+      15440,
+      15476,
+      15763,
+      15828
+    ],
+    "live05_row": 50715,
+    "expectation": "Hero post-weakness baseAbilities persist for that Hero. Effective scores include actual equipment; weapon properties require the active weapon. Modifier=floor((score-10)/2)."
+  },
+  "native_and_rendered": {
+    "base_abilities": {
+      "cha": 15,
+      "int": 8,
+      "str": 17,
+      "dex": 10,
+      "wis": 14,
+      "con": 12
+    },
+    "effective_after_preview": {
+      "cha": 15,
+      "int": 8,
+      "str": 17,
+      "dex": 11,
+      "wis": 14,
+      "con": 12
+    },
+    "equipment_ability_delta_after_preview": {
+      "cha": 0,
+      "int": 0,
+      "str": 0,
+      "dex": 0,
+      "wis": 0,
+      "con": 0
+    },
+    "identity_ability_delta": {
+      "cha": 0,
+      "int": 0,
+      "str": 0,
+      "dex": 0,
+      "wis": 0,
+      "con": 0
+    },
+    "active_weapon_from_equipment_key": "weapon_shotgun",
+    "current_equipment_extras": {
+      "element_electric": 14,
+      "ward_earth": 1,
+      "physical": -8.4,
+      "proc_push": 5.8,
+      "proc_muted": 6.6
+    },
+    "early_preclass_photo": "screenshots/1793143608572087943-source18-newcampaign-character.png",
+    "early_rogue_photo": "screenshots/1793143633908993822-source18-grace-rogue-feats.png",
+    "independently_viewed": "Both Grace screenshots show STR19/WIS16; DEX10 before class and11 after Rogue commit; current server raw STR17/WIS14/DEX11.",
+    "native_generation": "Current RPG session HERO_ABILITY_ROLL/FEEDBACK at970.275 already records Grace rawSTR17/WIS14 and final baseSTR17/WIS14. No later Grace base-generation roll appears around the previews; original base is not shown to have changed."
+  },
+  "exact_offline_owned_context_generation": [
+    {
+      "class": "weapon_pistol",
+      "seed": 1212832656,
+      "name": "Deborah's Earthly Pistol of Silence and Wisdom",
+      "id": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_pistol:weapon_pistol",
+      "properties": {
+        "physical": -11.5,
+        "element_earth": 11.5,
+        "proc_muted": 5.3,
+        "ability_str": 2.0,
+        "ability_wis": 2.0,
+        "ward_ice": 1.0,
+        "ward_electric": 1.0
+      }
+    },
+    {
+      "class": "weapon_lod_crowbar",
+      "seed": 827122134,
+      "name": "Cartographer's Crackling Crowbar of Poisoning and Swiftness",
+      "id": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_lod_crowbar:weapon_lod_crowbar",
+      "properties": {
+        "still": -8.8,
+        "element_electric": 18.8,
+        "proc_poisoned": 3.1,
+        "dodge": 4.3,
+        "movement": 4.7
+      }
+    },
+    {
+      "class": "weapon_shotgun",
+      "seed": 1516737040,
+      "name": "Pilgrim's Crackling Shotgun of Repulsion and Earthly Warding",
+      "id": "gear2:campaign:8:673660301:76561198025505071:life:0:initial:weapon_shotgun:weapon_shotgun",
+      "properties": {
+        "physical": -8.4,
+        "element_electric": 14.0,
+        "proc_push": 5.8,
+        "proc_muted": 6.6,
+        "ward_earth": 1.0
+      }
+    }
+  ],
+  "exact_match": "Offline shotgun properties match every current native equipmentExtras field. Offline pistol has ability_str2/ability_wis2; no additional identity or class bonus is required to explain19/16.",
+  "production_seams": {
+    "sv_hero_ability_rolls.lua": "InitializeHero retains existing progression and generates base array only for new Hero state.",
+    "sv_equipment_economy.lua": "NewItem initial:weapon contexts use the ordinary stored-record generator. RefreshDerived recomputes equipmentAbilityDelta on active-weapon/slot key changes.",
+    "sh_equipment_economy.lua": "Contributions applies weapon properties only when activeWeaponClass matches that record's weapon class.",
+    "sv_character_progression.lua": "Effective scores sum base/growth/training/identity/feat/equipment/temporary deltas; Character Sheet snapshots expose the current effective score."
+  },
+  "finite_native_discriminator": "Ordinarily select the already owned pistol and inspect P/server: expected19STR/16WIS. Return to owned shotgun:17STR/14WIS. Preserve profile/identity/base arrays and use no stat edits, grants or rerolls.",
+  "limits": [
+    "Offline exact production generator output is not a native weapon-switch result.",
+    "Screenshots do not expose the active weapon behind the sheet; attribution of their+2/+2 to the pistol is currently an inference corroborated by the exact stored-context prediction.",
+    "No production/private writes, GUI controls, Git actions or BUG019 creation."
+  ]
+}
