@@ -99,4 +99,8 @@ After pulling a code change, fully quit GMod before relaunching; Lua hot reload 
 cd ~/Downloads/the-legend-of-deborah && git fetch origin main && git switch main && git pull --ff-only origin main && bash tools/install_dev.sh
 ```
 
+The installer exposes only runtime directories through `.build/dev-addon`.
+Source edits remain live; test builds, Proton prefixes, Git metadata and documents
+are kept outside the mounted addon so startup cannot recurse through them.
+
 The required development map is `gm_flatgrass`.

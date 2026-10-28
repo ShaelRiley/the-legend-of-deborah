@@ -47,7 +47,9 @@ fi
 # old pinned copy migrates atomically; modified/duplicate addons are preserved.
 python3 "$REPO_DIR/tools/install_vrmod.py" --garrysmod "$GMOD_DIR" --ensure
 
-ln -sfn "$REPO_DIR" "$TARGET"
+# Whole-checkout mounts expose .build (including private Proton drive links),
+# .git and diagnostics to Source's recursive addon discovery at startup.
+python3 "$REPO_DIR/tools/install_dev_mount.py" --repo "$REPO_DIR" --target "$TARGET"
 
 # A dev checkout is explicitly marked in DATA so the gamemode can enable its
 # developer/test command surface during initialization without relying on a
@@ -266,7 +268,7 @@ if ! kill -0 "$mirror_pid" 2>/dev/null; then
 fi
 
 echo "The Legend of Deborah development checkout is mounted at:"
-echo "  $TARGET -> $REPO_DIR"
+echo "  $TARGET -> $REPO_DIR/.build/dev-addon (runtime content only)"
 echo "Developer mode autostart marker:"
 echo "  $DEV_MODE_MARKER"
 echo

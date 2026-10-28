@@ -535,6 +535,16 @@
       "evidence": [
         "native-source19-manual-investigation/receipt.json"
       ]
+    },
+    {
+      "id": "ENV-STARTUP",
+      "source": "User October28 startup regression report",
+      "expected": "Normal Steam and64-bit Play launch reach rendered menu without recursive development-directory scan",
+      "scenario": "Reproduce original whole-checkout mount; migrate to production-only view and repeat fresh normal launches including actual64-bit Play",
+      "result": "Finite startup PASS; native Options response in first default launch, second fresh menu, actual64-bit SteamPlay menu. No campaign pass.",
+      "evidence": [
+        "dev-mount-startup/receipt.json"
+      ]
     }
   ],
   "deferred": [
@@ -656,6 +666,11 @@
       "id": "BUG-019",
       "record": "feat-card-rates/BUG-019.json",
       "status": "Repaired on main via PR9; complete338/929Lua and fresh native P display PASS. Generated manual content passes static checks; native manual rendering remains an explicit open client HTML-path gap."
+    },
+    {
+      "id": "BUG-020",
+      "record": "dev-mount-startup/receipt.json",
+      "status": "Runtime-only development mount repaired; two default Steam-command menu launches and actual Steam Play64-bit menu observed; focused installer and VR dependency checks pass."
     }
   ],
   "static_fixture_checkpoint": {
@@ -758,5 +773,10 @@
     "main_source_merge": "24b900bf8f6641463e63cd412306b0d97dbd0102",
     "full_matrix": "338/338;929Lua",
     "native_repaired": "native-source19-feat-rate/receipt.json"
+  },
+  "startup_hotfix": {
+    "record": "dev-mount-startup/receipt.json",
+    "gameplay_changes": false,
+    "campaign_status": "remains paused"
   }
 }

@@ -1,0 +1,33 @@
+{
+  "id": "BUG-020",
+  "title": "Development addon mounts test prefixes and hangs normal startup",
+  "utc": "2026-10-28T07:42:26.222254+00:00",
+  "parent": "a3562fa2b0026dbdf013958b09634d2ad7f65b86",
+  "severity": "Startup blocker",
+  "authority": "User-reported loading-screen hang; tools/install_dev.sh development mount, not a game-design change",
+  "environment": "Actual Steam Deck; normal Steam account/install, Proton10; GMod2026.09.17;1280x720 client",
+  "before": {
+    "mount": "addons/the-legend-of-deborah-dev -> entire checkout",
+    "build_files": 28366,
+    "build_apparent_bytes": 10386465449,
+    "drive_link": "Private test prefix dosdevices/z: points to / inside mounted .build",
+    "reproduction": "Normal steam -applaunch4000, process10086 gmod.exe; CPU81.8% at46s, console stalls at Mounted0of1. Four-second file-only trace shows repeated enumeration of Steam common via Proton drive path. Raw trace retained locally; no file contents traced."
+  },
+  "repair": "Atomic migration to an allowlisted runtime-only view .build/dev-addon, linking live gamemodes/lua/sound and other supported runtime asset roots. Never mount repository metadata, documents or private builds. Preserve physical/operator addon content by refusing overwrite. No game-rule/source/asset changes.",
+  "validation": {
+    "focused": "test_dev_mount.py PASS: drive-link trap excluded, source edits live, legacy migration/repeat install, unexpected file and physical addon preserved. bash -n install_dev.sh PASS. Existing test_vrmod_install.py PASS all dependency/migration/toolgun checks.",
+    "native": [
+      "First repaired default Steam command launch10919 reaches rendered main menu; native Options click opens dialog, Cancel then Quit exit observed.",
+      "Second fresh default command launch12134 reaches rendered menu; native console opens and normal quit exits.",
+      "Steam Library Play button launches actual gmod_win64.exe13017; exact GarrysMod64-bit title and rendered main menu observed."
+    ],
+    "integration": "New development-mount regression registered as339th suite. Prior338 evidence remains historical; no new complete339 result claimed here.",
+    "input_tool_qualification": "First normal Quit removes window before control helper post-click geometry read, causing helper exit1. Actual process absence confirms ordinary quit, not a product error. Initial synthetic click only hovered; native click supplies Options evidence."
+  },
+  "preservation": "No personal saves, compatibility preferences or SteamCloud setting reset. No campaign started. Third actual64-bit client left at main menu. Broader gameplay campaign remains paused.",
+  "limits": [
+    "Startup/menu gate only; not a campaign/cooperative/audio/full339 acceptance",
+    "No64-bit causal performance claim",
+    "Earlier private-source19 DHTML investigation remains separate; this gate does not retroactively accept its manual"
+  ]
+}

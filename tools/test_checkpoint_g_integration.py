@@ -35,6 +35,7 @@ SUITES = [
 
     ("Ordinary Feat Duplicate & Rank Guard", ["python3", "tools/run_lua54.py", "tools/test_feat_repeat_guard.lua"]),
     ("Feat Card Fractional Recovery Rates", ["python3", "tools/run_lua54.py", "tools/test_feat_card_rates.lua"]),
+    ("Development Runtime Mount Safety", ["python3", "tools/test_dev_mount.py"]),
     ("Neil Release Native Prop", ["python3", "tools/run_lua54.py", "tools/test_neil_release_prop.lua"]),
     ("Invisible Sanctuary & Nullified Combat", ["python3", "tools/run_lua54.py", "tools/test_invisible_sanctuary.lua"]),
     ("Progression Stock Models & Stable Pickup Anchors", ["python3", "tools/run_lua54.py", "tools/test_progression_stock_props.lua"]),

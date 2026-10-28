@@ -1,0 +1,52 @@
+{
+  "files": [
+    {
+      "path": "before-console.log.xz",
+      "bytes": 204,
+      "sha256": "aada95eb40c261afc7c57900fd806617e6f862345e29d976ee47be9c37824446",
+      "raw_bytes": 220,
+      "raw_sha256": "872f303715d5ffe063bf5307f988981e46656e2a6198077efb5fe507a07a72f3",
+      "compression": "xz"
+    },
+    {
+      "path": "first-repaired-console.log.xz",
+      "bytes": 300,
+      "sha256": "67ca8376b608e95e6848eb83a82ef4a7bb7f347aa2eb345f42503e1d12d7ab1b",
+      "raw_bytes": 378,
+      "raw_sha256": "eea6ed5c59ee8cea9dfffe2ab30755c65a4339c30043a3e63485b999e0462801",
+      "compression": "xz"
+    },
+    {
+      "path": "first-menu.png",
+      "bytes": 1279950,
+      "sha256": "958be215d88c285b03bbd18c3b6a57461b42e5195bf6b8c61f3f398ee19c0f19",
+      "raw_bytes": 1279950,
+      "raw_sha256": "958be215d88c285b03bbd18c3b6a57461b42e5195bf6b8c61f3f398ee19c0f19",
+      "compression": "none"
+    },
+    {
+      "path": "options-responsive.png",
+      "bytes": 561093,
+      "sha256": "391557b3caeb954f2a0c5cb250450c3a14e7b59c1f064052f67bad87a924a295",
+      "raw_bytes": 561093,
+      "raw_sha256": "391557b3caeb954f2a0c5cb250450c3a14e7b59c1f064052f67bad87a924a295",
+      "compression": "none"
+    },
+    {
+      "path": "second-menu.png",
+      "bytes": 913409,
+      "sha256": "5aac6b90aa6ca2717a679290c1265ffaa67c6c8bc778143a63cebfd9447c8341",
+      "raw_bytes": 913409,
+      "raw_sha256": "5aac6b90aa6ca2717a679290c1265ffaa67c6c8bc778143a63cebfd9447c8341",
+      "compression": "none"
+    },
+    {
+      "path": "steam-play-win64-menu.png",
+      "bytes": 1561828,
+      "sha256": "0f8509f291223cf2df30ce7a2a0336b1320b3ce93c053f5af2978daa0fd332c6",
+      "raw_bytes": 1561828,
+      "raw_sha256": "0f8509f291223cf2df30ce7a2a0336b1320b3ce93c053f5af2978daa0fd332c6",
+      "compression": "none"
+    }
+  ]
+}

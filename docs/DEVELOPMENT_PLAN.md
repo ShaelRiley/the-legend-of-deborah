@@ -1,3 +1,13 @@
+# Startup repair — runtime-only development mount
+
+User-reported launch hang reproduced with the whole repository mounted as an
+addon. The mount exposed10GB of private builds and recursive Proton drive links.
+The installer now exposes only live runtime directories. Two fresh default Steam
+launches and the actual64-bit SteamPlay launch reach rendered menus; native
+Options responds. Focused mount and existing VRMod installation checks pass.
+See [startup evidence](validation/AUTONOMOUS_PLAYTEST_20261026/dev-mount-startup/receipt.json).
+The broader campaign remains paused; no gameplay code or personal saves were reset.
+
 # Current checkpoint — user-requested pause
 
 Validated BUG019 source is merged through PR9/main`24b900bf`; actual Deck P display
