@@ -1,0 +1,425 @@
+{
+  "kind": "Finite native source18 single-client floor-map acquisition and cross-floor breadcrumb acceptance",
+  "recorded_utc": "2026-10-28T00:01:47.456229+00:00",
+  "status": "PASS for the bounded ordinary floor0 acquisition / collected-floor guidance to an unfound-floor objective only",
+  "tested_gameplay_commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "prepared_and_rendered_build_label": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b",
+  "source_provenance": "../loot-label-occlusion/native-repaired/source-provenance.json",
+  "source_scope": "Same source18 installed client; navigation helper CRC-checks current sv_minimap/cl_minimap/sv_floor_maps/sv_phase_zero_runtime_optimization before observations. No gameplay edit in this checkpoint.",
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+    "client": "Windows x86 Garrys Mod2026.09.17 / LuaJIT2.0.4 / Proton10",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "host_pid_root_verified": 95782,
+    "host_birth_root_verified": "6693172",
+    "server_campaign_seed": 6102623,
+    "server_level_seed": 673660301,
+    "campaign_epoch": 2,
+    "dungeon_level": 1,
+    "map_build_serial": 4,
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true,
+    "qualification": "Root created this campaign using canonical NewCampaign after changing seed. Prior authored-event setup/return fixtures occurred in this same session. This is a developer-assisted finite scenario, not a clean campaign run."
+  },
+  "design_authority": {
+    "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": "Reused live00/01 and freshly read required normalized05/04; later read03 for separate pending Magic observation. No HUMAN monolith or GDD write.",
+    "rules": [
+      {
+        "tab": "00",
+        "range": [
+          1,
+          368
+        ],
+        "rule": "LOD-FLOOR-MAP-001: one shared map per physical floor; automatic access superseded; party progression, never inventory. 01 explicitly preserves incomplete subsystem mirrors after rejected writes."
+      },
+      {
+        "tab": "05",
+        "range": [
+          195511,
+          195878
+        ],
+        "rule": "LOD-WORLD-001: deterministic solvable maze; canonical procedural graph is navigation truth."
+      },
+      {
+        "tab": "05",
+        "range": [
+          196711,
+          197444
+        ],
+        "rule": "LOD-OBJ-001: ordered key/gate/boss/jail/rescue dependencies; no progression bypass."
+      },
+      {
+        "tab": "05",
+        "range": [
+          179680,
+          180707
+        ],
+        "rule": "LOD-EVENT-SKELETON-001: legitimate required-route combat blockade must remain approachable with unresolved locks; no prerequisites behind its own barrier."
+      }
+    ],
+    "later_explicit_author_decisions": [
+      "docs/validation/FLOOR_MAP_PANEL_20261013.md: Q/M opens a missing-map panel before discovery; personal Magic cost and map-up effects remain. Supersedes earlier denial/close rule.",
+      "docs/validation/NAVIGATION_FEATS_20261013.md: Internal Compass is a specific owned-feat exception for bounded trail on an unfound floor. This native Hero does not own it.",
+      "docs/validation/PROGRESSION_ROUTING_STOCK_PROPS_20261013.md: a collected floor consumes bounded canonical server routing to an unfound-floor objective and its first-stair guidance, without revealing that floor layout."
+    ],
+    "path_qualification": "The authority document names above are repository-root paths; their explicit current author corrections supersede older mirrored paragraphs."
+  },
+  "finite_requirements": [
+    {
+      "expectation": "Non-Compass Hero can open unfound-floor panel; missing-map reminder and no hidden layout.",
+      "result": "PASS rendered native screenshot; initial same-client mask0 and no Compass ownership.",
+      "evidence": "unfound-floor0-map.png; before client JSON"
+    },
+    {
+      "expectation": "Ordinary touch of registered map grants only its own party floor and removes pickup once.",
+      "result": "PASS for ordinary floor0 walk and single acquisition: map2026 valid before, absent after; mask0 to1, owned=[true,false,false].",
+      "evidence": "pilot trace/result/input plan; both realm before/after JSON"
+    },
+    {
+      "expectation": "Acquired floor arrives and renders at actual negative world origin.",
+      "result": "PASS: floor0 layout shown, client301/301 cells and3/3 chunks, build4, origin[0,0,-12271.96875].",
+      "evidence": "floor0-map-after-ordinary-walk.png; after client JSON"
+    },
+    {
+      "expectation": "Current collected floor guides toward an unfound-floor objective through real canonical first stair.",
+      "result": "PASS for displayed guidance: Red objective3:14:1, legal13-edge server route, matching bounded Compass, valid BREADCRUMB10OF13 and up-stair BEARLEFT2303u.",
+      "evidence": "both after JSON; floor0-map-after-ordinary-walk.png; full route existence is diagnostic, not traversed"
+    },
+    {
+      "expectation": "Q/M close, depletion forced-close and ordinary Magic recovery.",
+      "result": "NOT ACCEPTED by this bank. Every banked photo shows an open panel; console-time oracle reports false, possibly because opening console closes it. Separate one-shot Magic sampler prepared, no result included.",
+      "evidence": "all four archived photos; both client snapshots map_open=false"
+    },
+    {
+      "expectation": "Party sharing across multiple real clients; stairs traversal; higher-floor pickup; blocked event lifecycle; navigation feat positives.",
+      "result": "NOT ACCEPTED: only one real client, floor0 walk and display observed.",
+      "evidence": "scope limitations below"
+    }
+  ],
+  "ordinary_input_evidence": {
+    "operator": "Root is sole native GUI/input controller; this agent independently verified frozen evidence.",
+    "method": "Existing bounded native pilot reads telemetry, uses evdev UInput ordinary keyboard/mouse, and releases held keys. No teleport/noclip/graph/cards/maps/feat/resource setter in the pilot or navigation oracle.",
+    "waypoints": [
+      [
+        -3840,
+        -1536,
+        -12271.96875
+      ],
+      [
+        -3456,
+        -1536,
+        -12271.96875
+      ],
+      [
+        -3384,
+        -1464,
+        -12271.96875
+      ]
+    ],
+    "reason": "path_complete",
+    "controller_seconds": 11.038,
+    "waypoints_reached": 3,
+    "telemetry_rows": 65,
+    "telemetry_rows_are_render_FPS": false,
+    "keyboard_sets": [
+      "",
+      "a,w",
+      "d,w",
+      "w"
+    ],
+    "trigger_presses": 0,
+    "reload_presses": 0,
+    "all_sampled_hp": 100,
+    "held_at_end": [],
+    "release_errors": [],
+    "final_native_position": [
+      -3378.883544921875,
+      -1453.054931640625,
+      -12271.9375
+    ],
+    "qualification": "Known protected floor0 path assistance is explicit. Only these three ordinary waypoints establish physical traversal. Earlier setup/return fixtures and the unwalked13-edge route do not establish start-to-finish or stair traversal."
+  },
+  "diagnostic_details": {
+    "oracle_helper_sha256": "35de76766ce1dae0c1f56ef1309eb491b944a39afaabbb8a307297ad5e88b4ee",
+    "pure_readonly_policy": "Does not call FindPath or CanTraverse because they write graph caches. Local diagnostic BFS retains current gate/event/jail/arena locks through existing pure progression-door helper; reads current production cache/Compass only. No refresh/request or gameplay mutation.",
+    "before": {
+      "server_party_mask": 0,
+      "registered_floor0_pickup": 2026,
+      "floor0_map_cell": {
+        "y": 7,
+        "x": 2,
+        "z": 0
+      },
+      "raw_player_cell": {
+        "y": 6,
+        "x": 1,
+        "z": 0
+      },
+      "client_compass_owned": false
+    },
+    "after": {
+      "server_party_mask": 1,
+      "floor_owned": [
+        true,
+        false,
+        false
+      ],
+      "raw_player_cell": {
+        "y": 7,
+        "x": 2,
+        "z": 0
+      },
+      "server_legal_route": {
+        "exists": true,
+        "edges": 13,
+        "prefix": [
+          {
+            "y": 7,
+            "x": 2,
+            "z": 0
+          },
+          {
+            "y": 7,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 8,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 9,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 10,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 11,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 2,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 3,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 4,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 4,
+            "z": 1
+          },
+          {
+            "y": 12,
+            "x": 3,
+            "z": 1
+          },
+          {
+            "y": 13,
+            "x": 3,
+            "z": 1
+          },
+          {
+            "y": 14,
+            "x": 3,
+            "z": 1
+          }
+        ],
+        "first_floor_change": {
+          "to": {
+            "y": 12,
+            "x": 4,
+            "z": 1
+          },
+          "from": {
+            "y": 12,
+            "x": 4,
+            "z": 0
+          }
+        }
+      },
+      "client_compass": {
+        "level": 1,
+        "points": [
+          {
+            "y": 7,
+            "x": 2,
+            "z": 0
+          },
+          {
+            "y": 7,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 8,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 9,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 10,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 11,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 1,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 2,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 3,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 4,
+            "z": 0
+          },
+          {
+            "y": 12,
+            "x": 4,
+            "z": 1
+          }
+        ],
+        "stage": 1,
+        "serial": 4,
+        "origin": {
+          "y": 7,
+          "x": 2,
+          "z": 0
+        },
+        "length": 13,
+        "floor": 0,
+        "gates": 0
+      },
+      "client_cached_display": {
+        "has_route": true,
+        "valid_trail": true,
+        "start_key": "2:7:0",
+        "route_status": "BREADCRUMB — 10 OF 13 CELLS"
+      },
+      "all_cards": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "all_gates": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "active_blockades": []
+    },
+    "disappearing_map_regression": "The actual removed pickup has corresponding ownership/layout gain, so this occurrence is intentional collection. No general all-angle visibility/retention or keycard acceptance is inferred."
+  },
+  "photos": [
+    {
+      "original_name": "1793145002387815154-source18-unfound-floor0-map.png",
+      "archive_member": "photos/1793145002387815154-source18-unfound-floor0-map.png",
+      "caption": "Unfound floor0 panel is visibly open: Map not found / Find this floor's map; no layout. Magic96, HP100, lives3, collapse08:00.",
+      "independently_viewed": true,
+      "sha256": "3285b21d3c2b43c0e76562ea244ecd862143bd9b9f078a2bb192cfeaed66e01b"
+    },
+    {
+      "original_name": "1793145155995125136-source18-floor0-map-after-normal-walk.png",
+      "archive_member": "photos/1793145155995125136-source18-floor0-map-after-normal-walk.png",
+      "caption": "After ordinary assisted floor0 walk, owned layout and BREADCRUMB10OF13, STAIRS up / BEAR LEFT /2303u are visibly rendered. Objective is on unfound physical Floor2. Magic44,HP100,lives3,05:26.",
+      "independently_viewed": true,
+      "sha256": "a6d51075796fb26f12c49f3ef39158ca8811811b41679e96dfeb6e5c61f2ec7a"
+    },
+    {
+      "original_name": "1793145217650063586-source18-map-closed-after-route-check.png",
+      "archive_member": "photos/1793145217650063586-source18-map-closed-after-route-check.png",
+      "caption": "Despite the original filename, the map is visibly OPEN. Magic77, HP100, lives3,04:24. This photo does not prove an ordinary close.",
+      "independently_viewed": true,
+      "sha256": "8aaca698d5b11843b458db14ab66f1fb72e6724828d63377cb4212984fccf512"
+    },
+    {
+      "original_name": "1793145400307983527-source18-map-actually-closed.png",
+      "archive_member": "photos/1793145400307983527-source18-map-actually-closed.png",
+      "caption": "Despite the original filename, the map is visibly OPEN. Magic94, HP100, lives3,01:22. This photo does not prove an ordinary close.",
+      "independently_viewed": true,
+      "sha256": "6f8cb224ed12ff79e20973d90fd599cf1310f2815a719aea32eb60c2afd7b0c0"
+    }
+  ],
+  "errors_and_warnings": {
+    "frozen_console_lines": 610,
+    "Lua_exception_signatures": 0,
+    "retained_unknown_commands": [
+      {
+        "line": 6,
+        "text": "Unknown command \"con_enable\""
+      },
+      {
+        "line": 8,
+        "text": "Unknown command \"con_enable\""
+      },
+      {
+        "line": 327,
+        "text": "Unknown command: psv_allowcslua"
+      }
+    ],
+    "interpretation": "Both bootstrap con_enable warnings and earlier root psv_allowcslua input retry remain in the frozen full-session console. No warning-free-session claim. Anonymous-token warnings are engine boilerplate; no account token was supplied."
+  },
+  "remaining_limits": [
+    "No ordinary traversal of the indicated staircase, floor1/floor2 acquisition or final Red objective is claimed here.",
+    "No Internal Compass, Map Finder, Cartographer/GPS, Omniscience or map-up movement native positive; Hero InternalCompass flag is false.",
+    "Server party ownership and same-client receipt do not establish real cooperative synchronization, late joining, reconnects or party sharing. Only one Deck/client is available.",
+    "No Magic drain slope, zero-pool automatic close or recovery acceptance from separated screenshots; console-induced closure remains an input-observation confound.",
+    "Earlier seed6102602 Blue FindPathnil with SkeletonBlockade6:11:1|6:12:1 remains unaccepted. New seed has no active blockades, so this result neither explains nor fixes the old blocked case.",
+    "No new No-legal-route defect reproduced in this finite scenario. Do not infer general procedural completeness from one route.",
+    "No sound/ditty/controller/hardware-performance acceptance, full campaign/endings/reset/replay, public deployment or three clean-pass claim."
+  ],
+  "clean_pass_streak": 0,
+  "evidence": {
+    "raw_archive": "raw-evidence.tar.xz",
+    "manifest": "artifact-manifest.json",
+    "archive_sha256": "c25a9f4d6479cb8706de9d5f35434975d95737722453066197915280bf7396b9",
+    "archive_bytes": 3163812,
+    "files": 15,
+    "preserved_proposal": "helpers/source18_navigation_proposal.json is the original pre-execution proposal, including its then-unrun status. This receipt governs current bounded results."
+  },
+  "independent_review": "independent-review.json"
+}

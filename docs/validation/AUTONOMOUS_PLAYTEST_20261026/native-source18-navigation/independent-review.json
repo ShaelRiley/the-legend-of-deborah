@@ -1,0 +1,23 @@
+{
+  "kind": "Independent bounded navigation evidence review",
+  "reviewer": "/root/native_profile_review",
+  "received_utc": "2026-10-28T00:05:47.619313+00:00",
+  "reviewed_receipt_sha256": "22ec29937a28140a4c45202370a2c6994ba39765bd1e16b4d5d7b85126593f40",
+  "result": "CLEAR",
+  "scope": "Read-only evidence review; no production, GUI, private installation or Git writes by reviewer.",
+  "verified": [
+    "Outer archive3163812bytes and all15 member hashes/bytes match manifest and original frozen files.",
+    "Before/after native JSON: mask0to1, map2026 disappears, onlyfloor0owned, client301/301cells and3/3chunks.",
+    "Actual production Compass length13 and11 bounded points, agreeing with current legal13-edge diagnostic route and first stair.",
+    "Ordinary input pilot3waypoints/path_complete/65telemetryrows/no firing or reload/released keys.",
+    "All4screenshots independently viewed: unfound reminder then acquired layout/BREADCRUMB10OF13/upcue2303u; both closed-named photos visibly OPEN.",
+    "Receipt keeps Magic/ordinary close, stairs/higher floors, old blocked seed, feats, co-op and full campaign unaccepted."
+  ],
+  "findings": [],
+  "own_bank_validation": [
+    "All archive members individually SHA256/bytes verified; archive digest correct.",
+    "Photo aliases match corresponding archived originals; provenance link resolves; JSON parses.",
+    "Navigation helper and pending Magic sampler Lua5.4 syntax compile passed."
+  ],
+  "publication_note": "The final receipt adds only this review link after the reviewed hash; frozen native evidence and acceptance claims are unchanged."
+}

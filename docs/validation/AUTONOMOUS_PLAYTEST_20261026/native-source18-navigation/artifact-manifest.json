@@ -1,0 +1,77 @@
+{
+  "helpers/source18_navigation_oracle.lua": {
+    "sha256": "35de76766ce1dae0c1f56ef1309eb491b944a39afaabbb8a307297ad5e88b4ee",
+    "bytes": 8244,
+    "origin": ".build/autonomous-playtest-20261027/source18_navigation_oracle.lua"
+  },
+  "helpers/source18_navigation_proposal.json": {
+    "sha256": "f7ba8e04acda444d2ee80febcc5a6e449b939d11fcd0b5696ceec8f3c47b43eb",
+    "bytes": 7459,
+    "origin": ".build/autonomous-playtest-20261027/source18_navigation_proposal.json"
+  },
+  "photos/1793145002387815154-source18-unfound-floor0-map.png": {
+    "sha256": "3285b21d3c2b43c0e76562ea244ecd862143bd9b9f078a2bb192cfeaed66e01b",
+    "bytes": 887308,
+    "origin": ".build/autonomous-playtest-20261027/screenshots/1793145002387815154-source18-unfound-floor0-map.png"
+  },
+  "photos/1793145155995125136-source18-floor0-map-after-normal-walk.png": {
+    "sha256": "a6d51075796fb26f12c49f3ef39158ca8811811b41679e96dfeb6e5c61f2ec7a",
+    "bytes": 762302,
+    "origin": ".build/autonomous-playtest-20261027/screenshots/1793145155995125136-source18-floor0-map-after-normal-walk.png"
+  },
+  "photos/1793145217650063586-source18-map-closed-after-route-check.png": {
+    "sha256": "8aaca698d5b11843b458db14ab66f1fb72e6724828d63377cb4212984fccf512",
+    "bytes": 770249,
+    "origin": ".build/autonomous-playtest-20261027/screenshots/1793145217650063586-source18-map-closed-after-route-check.png"
+  },
+  "photos/1793145400307983527-source18-map-actually-closed.png": {
+    "sha256": "6f8cb224ed12ff79e20973d90fd599cf1310f2815a719aea32eb60c2afd7b0c0",
+    "bytes": 766895,
+    "origin": ".build/autonomous-playtest-20261027/screenshots/1793145400307983527-source18-map-actually-closed.png"
+  },
+  "pilot/deborah-native-pilot.py.txt": {
+    "sha256": "1e5efdd8f1cb973c54b54415986dbfae23b87611fa154779a7017724c393f638",
+    "bytes": 20558,
+    "origin": "/tmp/deborah-native-pilot.py"
+  },
+  "pilot/floor0-map-walk.json": {
+    "sha256": "9112cdfb9b7414b9629d7fc546a53f8d53435b2aa6da31bf87cf8532fc1d2b72",
+    "bytes": 207,
+    "origin": ".build/autonomous-playtest-20261027/source18-native/floor0-map-walk.json"
+  },
+  "pilot/native-pilot-1793145134568765834.jsonl": {
+    "sha256": "d31a68752269329835952a6f774d67d83294463c04eda16cc462bf96e13d86e0",
+    "bytes": 27667,
+    "origin": ".build/autonomous-playtest-20261027/native-pilot-1793145134568765834.jsonl"
+  },
+  "pilot/native-pilot-1793145134568765834.result.json": {
+    "sha256": "776d1d3144e8a8eaf7325b08a6ddd3858fb1b1cfbdf69417211ba313704390e0",
+    "bytes": 674,
+    "origin": ".build/autonomous-playtest-20261027/native-pilot-1793145134568765834.result.json"
+  },
+  "raw/console-through-map-check.log": {
+    "sha256": "cbb856060cd154f7840361dd7909d95628cd13a0efa518ea542139822affe66b",
+    "bytes": 381786,
+    "origin": ".build/autonomous-playtest-20261027/source18-navigation/console-through-map-check.log"
+  },
+  "raw/source18_navigation_oracle_client_2421028.json": {
+    "sha256": "87858130654f10c14788c3156641e7d85f281c4b6b1f895894cdbc96dbfe3ee2",
+    "bytes": 892,
+    "origin": ".build/autonomous-playtest-20261027/source18-navigation/source18_navigation_oracle_client_2421028.json"
+  },
+  "raw/source18_navigation_oracle_client_2636607.json": {
+    "sha256": "4783b8dea72ba67a22f110e02dc5ea3e43435c4050a1ee5ead5d08d96d5fab0d",
+    "bytes": 1827,
+    "origin": ".build/autonomous-playtest-20261027/source18-navigation/source18_navigation_oracle_client_2636607.json"
+  },
+  "raw/source18_navigation_oracle_server_2419473.json": {
+    "sha256": "ecafa37597befe0da99e4ef40d1b5be78103b872420e4315b5cca766d3953394",
+    "bytes": 5977,
+    "origin": ".build/autonomous-playtest-20261027/source18-navigation/source18_navigation_oracle_server_2419473.json"
+  },
+  "raw/source18_navigation_oracle_server_2636588.json": {
+    "sha256": "bb6a4c4aef37d358f7e6d259fb2287d0f97ce1ac0e7ada84496e58c1bf207ad2",
+    "bytes": 5907,
+    "origin": ".build/autonomous-playtest-20261027/source18-navigation/source18_navigation_oracle_server_2636588.json"
+  }
+}
