@@ -637,10 +637,10 @@
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
   "installed_loaded_build": "63bcc03e30233f74208a92e25a1904a87201125f",
-  "last_checkpoint_utc": "2026-10-28T00:39:58.804813+00:00",
-  "next_action": "Review same-gameplay fresh private-session proposal; root owns any new launch and source/gamemode/profile verification. Continue ordinary stair/objective/campaign replay and remaining authored families/endings. Preserve unexplained earlyclosure/staleRPC/Approach18 evidence without crash/lease attribution. Clean0; real-client co-opblocked/audioomitted. OriginalCloudON is restored; any next private launch needs a fresh root-ownedOFFUIproof before execution.",
+  "last_checkpoint_utc": "2026-10-28T02:09:33.755526+00:00",
+  "next_action": "Review/install bounded temporary Neil snapshot/locator/return helper while freshEva/Rogue stagingclockpaused; complete ordinaryfeat/starter/portal, then explicitcanonicalNeiltestkit and actualconsole/prompt/E/repeat/pair-ID gate. Locator/testkit setup never acceptsYellowroute. Bank/review laterBlue-prefix/loss evidence. Continue active single-client campaign/authored/regression work. OnlyDeckconfirmed/co-opblocked, audiohearingunavailable; clean0. FreshreplayCloudOFF mustrestoreoriginalON onclosure.",
   "last_runtime_build": "63bcc03e30233f74208a92e25a1904a87201125f",
-  "current_native_build": "Source18 CLOSED: root host-approvedps owned95782/95912absent and launch45222finished. Prepared0d00da7d was source-equivalent63bcc; finite proofs remain. Next fresh replay proposal only; no new client launched by this checkpoint.",
+  "current_native_build": "Fresh replay LIVE, launch7300/session1793149142685315135; actual primary114400/helper114511. Installed labelf221cc08 source-equivalent gameplay63bcc; bothrealm9guards/576production/118startup. Developer1/dense unranked, not final settings acceptance.",
   "installed_loaded_build_note": "All576Lua/118physical startup entries match frozen source; NearLookCRC84557611, Aim966710964, Safe377454284. Native original BUG018 closed/open finite gate passes; synthetic geometry controls separately labeled.",
   "latest_repair_static_checkpoint": {
     "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
@@ -674,23 +674,26 @@
     "evidence": "ci-source18/verification.json",
     "qualification": "Exact full frozen source18 static gate; native claims require their separate receipts."
   },
-  "latest_verified_main_before_checkpoint": "a8c73060ee9b0708bff593fe557edb569ff8b7ec",
+  "latest_verified_main_before_checkpoint": "e068af21a34766758eaeb2d4ec2f006a4049721b",
   "current_runtime_checkpoint": {
-    "reported_by": "Root last native report before closure; historical state, not a current live client",
+    "reported_by": "Root native observations/readbacks, fresh replay; actual current staging replaces older closed-session state",
     "campaign": 6102623,
     "level_seed": 673660301,
-    "run": "campaign:9",
+    "run": "campaign:12",
     "epoch": 3,
-    "character": "Caroline Wizard/BlastProof",
-    "clock": "Normal first-deployment1800s started; natural priorTIMEOVER/run8→9 reset partial evidence banked.",
-    "latest_root_report": "Protected7-waypoint ordinary floor0 walk25.091s/HP100;7shotgun triggers endout-of-ammunition/HP85;laternaturaldeath/autoRespawn,lives2;4EarthMissile casts at postrespawnentry,20MPeach,nohit/killclaim. Not complete combat/stair/Magic acceptance.",
+    "character": "Eva Long Shot Turner / Rogue, first feat pending",
+    "clock": "Fresh staging30:00 paused after natural priorTIMEOVER/reset; late finalHeroobserver samples onlynewrun12 and cannot proveoldzeroHerostate.",
+    "latest_root_report": "PriorZoe/campaign11 ordinary Redroute banked. Later actual7:8descent and lowerBlueapproach completedHP100; further idlecombatdeaths/timeout are preservedlocally, not a Blue/fullcampaignpass.",
     "unbanked_ignored_results": [
-      ".build/autonomous-playtest-20261027/native-pilot-1793146838111785780.result.json",
-      ".build/autonomous-playtest-20261027/native-pilot-1793146863359545778.result.json"
+      ".build/autonomous-playtest-20261027/native-pilot-1793152286424871272.result.json",
+      ".build/autonomous-playtest-20261027/native-pilot-1793152416274869459.result.json",
+      ".build/autonomous-playtest-20261027/native-pilot-1793152458656219725.result.json",
+      ".build/autonomous-playtest-20261027/source18-replay-checkpoint-loss/",
+      ".build/autonomous-playtest-20261027/replay18_final_hero_observer.lua"
     ],
     "no_full_campaign_pass": true,
     "no_cooperative_acceptance": true,
-    "session_status": "CLOSED; lastCaroline/run9epoch3/lives2 is historical."
+    "session_status": "LIVE; staging before next bounded Neil console fixture. RootsoleGUI."
   },
   "diagnostic_error_audit": "native-source18-reset-magic/diagnostic-error-audit.json",
   "other_tooling_note": "Root separately acknowledged a stale RPC failure. It is preserved by root as a tooling observation; no game-code attribution or gameplay pass is inferred here.",
@@ -715,5 +718,18 @@
     "save_qualification": "Equality covers recorded original configuration only, not all saves/data.",
     "cloud": "OriginalON restored and UI-verified; temporarily_disabledfalse/restore_requiredfalse. Fresh private replay needs newOFFproof, not historicalsource18OFF.",
     "cloud_restoration": "native-source18-reset-magic/steam-cloud-restoration.json"
+  },
+  "source18_replay_session": {
+    "status": "LIVE; separate successor to historical source18_session_closure",
+    "prepared_session": ".build/autonomous-playtest-20261027/source15-fresh/session-1793149142685315135",
+    "prepared_sha256": "53a6fad1319f1ee63457fe4310f4edcaa9a682c96b9e43933ad6cb8878c9f9b5",
+    "primary_pid": 114400,
+    "primary_birth": 7384183,
+    "utility_pid": 114511,
+    "utility_birth": 7384640,
+    "launch_session": 7300,
+    "cloud": "OFF; restore originalON atclosure; active fresh replayguard differs from historical restored oldguard.",
+    "cloud_guard": ".build/autonomous-playtest-20261027/steam-cloud-replay-guard/state.json",
+    "banked_route": "native-source18-replay-route/receipt.json"
   }
 }
