@@ -1,0 +1,37 @@
+{
+  "kind": "Independent bounded native replay18 route and bank mutation review",
+  "utc": "2026-10-28T02:02:29.844419+00:00",
+  "reviewer": "/root/ci16_finalize",
+  "result": "CLEAR",
+  "reviewed_sha256": {
+    ".build/autonomous-playtest-20261027/replay18-route-evidence/receipt.json": "0ce6840d525ff41895d5457bec9bd51f4970fd5edc5282cc681d5580a4b0b821",
+    ".build/autonomous-playtest-20261027/replay18-route-evidence/manifest.json": "825e718bade2c85b3b4e63edd4ca528c3bad8f64b3db25d640729ddefd1bc430",
+    ".build/autonomous-playtest-20261027/replay18-route-bank-proposal/prepare_bank.py": "f68f58e683e941009c77e59ab761b32cc63e96cffacc1e1e557a942ef797f842",
+    ".build/autonomous-playtest-20261027/replay18-route-bank-proposal/proposal.json": "a9e5bdac956a0f098e5ed1fd91e22a8897d38dab78217eb04ee21e6a55ab53e3",
+    ".build/autonomous-playtest-20261027/replay18-route-bank-proposal/coverage-changes.json": "f5d6d92d3ae7bdb171c049cf1703984a323c9d1c552753f7344ae1a3cb5e62c4"
+  },
+  "verified": [
+    "All59frozen source file hashes/bytes and snapshot identity checks pass. All49compact artifacts round-trip byte-exact;7PNGs are unchanged and all52pending preview file hashes pass.",
+    "Independently recomputed7pilot trace/result rowcounts, positions, sampledminimumHP100, waypointcounts and emptyheld/releaseerrors. Incomplete camera3of8/context3of4 and timeout7of9 results are preserved; no weakening or invented completion.",
+    "All7native photos independently viewed: entry29:59,lives2normalrespawn,partialstair/crest/upperdeck,Redcardstage2,RedGatecheckpoint1/Blueobjective. Server supportedupperposition and nextpilotfirstsample corroborate physical arrival. ManualW1.2/W0.55 durations remain rootoperator observations, not inferred from photos.",
+    "CurrentRPGlines186,708,726,749,759 establish ordinarySixthSense selection,life_loss2,postrespawnHP100profile,Redcard acquisition andRedGateopening in order. Old accumulated archives are distinguished from current-session console/RPG prefixes and point summaries.",
+    "Freshprepared53a6 provenance pinsf221main/63bccgameplay;bothrealm proofsgm_flatgrass/legend_of_deborah,9sourcechecks,cfg/data/Cloudmatchestrue. ActualfreshOFFimage18c95288 independently viewed and matches activeguardSHA6f4f2874;restoreRequiredtrue. OnlyoneSteamDeck/client,co-opblocked,audioomitted,dev1dense/unranked,clean0.",
+    "Corrected prelossanalyticserial6 is separated from postrespawnphysicalroute serialunrecorded. Stableplayer1/birth285 does not certify the same life across death. No historical7is invented.",
+    "AnalyticPlayerMovement8 centerlines and legacyNONE0loot hits stay separate from actual traversal;rejectedx−2820 path is not called a game obstruction.",
+    "Eight proposedcoverage results match finite evidence;source/expected/scenario metadata and unrelatedrootstate remain unchanged. Writerf68 now pinsrowproposalSHA/exact8ordereduniqueIDs/IDownership as well as reviewedproposal/sourcepayload, before-row equality and nonexistingtarget. NoGit/private/production or implicitlaunch behavior."
+  ],
+  "findings_resolved": [
+    "Rootidentified unsupported globalprelossserial6 binding; corrected source receipt0ce explicitly separates prelossgeometry from postrespawnroute.",
+    "Reviewerfound unpinnedcoverage after-values/rowlist; writerf68 now requires exactrowproposalhash andIDlist plus reviewedproposalhash in finalize/apply."
+  ],
+  "findings": [],
+  "limits": [
+    "Finite ordinaryoneflight/Redcard/RedGate/onewaypointthrough only;no allupright/no-jump/allstairs/remainingcampaign or endings acceptance.",
+    "Camera-guard cause and priorcombatdeath remain outside this gate;no new production defect/repair is inferred.",
+    "No postrespawnspawnserial was recorded; currentlive readback cannot substitute for historicalbinding.",
+    "The bank includes currentraw evidence losslessly;complete duplicate/historicalarchives remain frozen locally by hash, notnewcurrent-session acceptance.",
+    "CloudOFF is currenttestcontext;originalONrestoration remains root-owned and pending.",
+    "No3cleanpasses,realco-op,perceptualaudio,performance or finalproductionsettings acceptance."
+  ],
+  "reviewer_actions": "Read-only source/evidence/preview inspection and offline hash/decompression calculations; no native execution/input/private writes/production/GDD/Git mutation during review. Root subsequently delegated only scoped bank application/commit for the reviewed payload."
+}

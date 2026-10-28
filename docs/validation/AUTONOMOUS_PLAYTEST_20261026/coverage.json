@@ -15,7 +15,7 @@
       "source": "05 LOD-STAGE-001; 06 LOD-LORE-UI-001",
       "expected": "Startup/title, role and class selection, Hermit chapter, one identity-bound starter, ready portal",
       "scenario": "Fresh session; create disposable Hero, talk/read/manual, select class and legal feat; ordinary portal Use",
-      "result": "Partial native startup/staging/class/feat/starter/portal evidence retained. Source18 Grace Rogue/Daunting and fresh post-timeout Caroline Wizard/BlastProof were selected through ordinary UI. Caroline actual-entry photo shows deployment29:59 and clock-start notice; the normal-deployment-named Spellbook photo is still staging30:00. Role/Soldier, full campaign flow and all class core effects remain open.",
+      "result": "Partial native startup/staging/class/feat/starter/portal evidence retained. Source18 Grace Rogue/Daunting and fresh post-timeout Caroline Wizard/BlastProof were selected through ordinary UI. Replay18 Zoe Fighter has ordinary Sixth Sense confirmation and native entry29:59/starter/deployed/clock feedback. Role/Soldier, full campaign flow and all class core effects remain open.",
       "evidence": [
         "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png",
         "production-2c73471b/deborah-wizard-class-card-fixed.png",
@@ -25,7 +25,8 @@
         "popup-escape/native-afdcbc/deborah-afdcbc-cloud-step-reopen.png",
         "popup-escape/native-afdcbc/deborah-afdcbc-victor-deployed.png",
         "native-source18-authored/receipt.json",
-        "native-source18-reset-magic/receipt.json"
+        "native-source18-reset-magic/receipt.json",
+        "native-source18-replay-route/receipt.json"
       ]
     },
     {
@@ -33,10 +34,11 @@
       "source": "05 LOD-OBJ-001",
       "expected": "Ordered red/blue/yellow cards and gates, Neil release/hunt, black gate, boss/key/jail/rescue",
       "scenario": "Walk ordinary legal route; attempt early interactions and progression bypass",
-      "result": "Partial native Redcard/RedGate progression remains accepted on seed6102602, including source18 same-pickup closed/open visibility fixture with actual card touch/physical gate Use across a legitimate death/respawn. No Blue/Yellow/Neil/Black/boss/rescue acceptance.",
+      "result": "Partial native Redcard/RedGate evidence retained, now including replay18 seed6102623 ordinary post-respawn lower-to-upper stair route, Red acquisition, ordinary RedGate E/checkpoint1/Blue objective, and1/1 waypoint through the open gate. The stair/card pilots stopped at unchanged camera/context guards; gate route timed out7/9 then continuation completed2/2. No Blue/Yellow/Neil/Black/boss/rescue acceptance.",
       "evidence": [
         "native-4322-route/receipt.json",
-        "loot-label-occlusion/native-repaired/receipt.json"
+        "loot-label-occlusion/native-repaired/receipt.json",
+        "native-source18-replay-route/receipt.json"
       ]
     },
     {
@@ -68,10 +70,11 @@
       "source": "05 LOD-WORLD-001; 05 LOD-OBJ-001",
       "expected": "Solvable seeded maze and reachable required objectives without illegal shortcuts",
       "scenario": "Distinct seeds; graph validator plus ordinary route traversal",
-      "result": "Prior ordinary entrance→Redcard/Redreader traversal retained. Source18 seed6102623 actual floor0 entrance-map approach was walked normally; native bounded Compass and independent read-only full-graph diagnostic agree on13 legal edges to unfound-floor Red objective. Only floor0 waypoints were traversed. Old6102602 Blue nil with SkeletonBlockade6:11:1|6:12:1 remains unaccepted; no route defect confirmed.",
+      "result": "Prior ordinary entrance→Redcard/Redreader and source18 found-floor map/Compass evidence retained. Replay18 seed6102623/level673660301 physically walked the post-respawn floor0 approach, actual4:12 stairs to the upper landing, Redcard route and RedGate/through-gate sample with HP100. This is a finite ordinary route sample; no full maze/campaign or all-seed proof. Old6102602 Blue nil with SkeletonBlockade6:11:1|6:12:1 remains unaccepted; no route defect confirmed.",
       "evidence": [
         "native-4322-route/receipt.json",
-        "native-source18-navigation/receipt.json"
+        "native-source18-navigation/receipt.json",
+        "native-source18-replay-route/receipt.json"
       ]
     },
     {
@@ -79,11 +82,12 @@
       "source": "07 LOD-STAIR-HEADROOM-20260927; retained collision integration",
       "expected": "Upright stairs, floor alignment, no blocked passages or accidental bypass",
       "scenario": "Walk ascent/descent and turns, probe signed-floor seams and collision",
-      "result": "Cold stock gate fixture and existing retained collision evidence remain. Source18 native stair metadata4:12:0→4:12:1 is observed, but ordinary staircase ascent/descent and broad seams/bypasses are still unaccepted. Root reports a later protected7-waypoint floor0 walk25.091s/HP100; ignored pilot result is not a complete stair-pass bank. Failed read-only Approach18 table-identity guard is classified separately, not a production obstruction.",
+      "result": "Retained collision evidence remains. Replay18 seed6102623 actual4:12 lower→upper ascent/landing is observed through ordinary native movement: partial3/8 pilot hit a transient camera guard, followed by root W1.2/W0.55 and native position[-2646.079102,302.613892,-11887.937500]/HP100. Pre-loss analytic PLAYER_MOVEMENT8 clear centerlines are separate from post-respawn traversal and legacy NONE0 loot hits. Descent, broader upright/headroom/turn/orientation/seam/bypass acceptance remains open; no camera-guard cause or game obstruction is established.",
       "evidence": [
         "native-d66/receipt.json",
         "native-source18-reset-magic/receipt.json",
-        "native-source18-reset-magic/diagnostic-error-audit.json"
+        "native-source18-reset-magic/diagnostic-error-audit.json",
+        "native-source18-replay-route/receipt.json"
       ]
     },
     {
@@ -99,9 +103,10 @@
       "source": "Author request; 05 LOD-OBJ-001; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
       "expected": "Previously reported No legal route regression",
       "scenario": "Use ordinary found-floor map for objective on another floor; follow stairs",
-      "result": "Finite native display regression PASS on source18/6102623: after actual map0 touch,301/301cells3/3chunks and valid BREADCRUMB10OF13 guide toward Red3:14:1 with firststair4:12:0→4:12:1 and rendered UP/BEARLEFT2303u. Unfound upper layout stays hidden. Full route/stair traversal and the old event-blocked6102602 case remain open.",
+      "result": "Finite native display regression PASS retained: source18/6102623 map0 ownership/layout and BREADCRUMB10OF13 point to Red3:14:1 via4:12 stairs while unfound upper layout stays hidden. Replay18 same level seed adds ordinary post-respawn stair/upper Redcard/RedGate traversal through one open-gate waypoint. This does not validate every route, the full campaign or the old event-blocked6102602 case.",
       "evidence": [
-        "native-source18-navigation/receipt.json"
+        "native-source18-navigation/receipt.json",
+        "native-source18-replay-route/receipt.json"
       ]
     },
     {
@@ -109,12 +114,13 @@
       "source": "Author request; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
       "expected": "Native visible map/cards/Jail Key remain collectible from normal views",
       "scenario": "Near/far and above/below orbit, touch, receipt and entity cleanup",
-      "result": "Map0 actual2026 disappears only after ordinary touch with party mask0→1, floor0 owned and layout rendered; this is intentional collection. Prior normal map/body approach and source16/18 Redcard acquisition retained. Full key/map/JailKey angle/distance/lifecycle and multiplayer boundaries remain open.",
+      "result": "Map0 disappearance after ordinary touch/mask0→1 remains intentional. Prior normal map/body approach and source16/18 Redcard evidence retained; replay18 upper route adds one ordinary Red acquisition with actual keycard feedback and R CARD→OPEN RED GATE HUD. Full key/map/JailKey angle/distance/lifecycle, simultaneous ownership and multiplayer boundaries remain open.",
       "evidence": [
         "production-2c73471b/deborah-normal-map-pedestal-approach.png",
         "production-2c73471b/deborah-map-legend-fixed-native.png",
         "native-source18-navigation/receipt.json",
-        "loot-label-occlusion/native-repaired/receipt.json"
+        "loot-label-occlusion/native-repaired/receipt.json",
+        "native-source18-replay-route/receipt.json"
       ]
     },
     {
@@ -122,13 +128,14 @@
       "source": "Approved Great Crate C3 stock-gate presentation; shared Geometry.GateModel;05 gate progression preserved",
       "expected": "A cold real gate uses the configured stock blastdoor; missing-model fallback remains available without altering collision or locks",
       "scenario": "Fresh client/server with no diagnostic precache; inspect actual gate, then ordinary keycard/Use/open/collision and replay",
-      "result": "Cold stock gate fixture passed on d66; ordinary4322 Redreader close-range E opens stock body/checkpoint1. Full doorway traversal, other gates, collision/bypass and co-op remain pending.",
+      "result": "Cold stock gate fixture and earlier ordinary Redreader E retained. Replay18 adds ordinary RedGate E with checkpoint1/Blue HUD plus a completed1/1 native movement waypoint through the open doorway, HP100. Other gates, closed collision/bypass, presentation extremes, replay breadth and co-op remain open.",
       "evidence": [
         "gate-precache/BUG-011.json",
         "gate-precache/native-causality.json",
         "gate-precache/static-receipt.json",
         "native-d66/receipt.json",
-        "native-4322-route/receipt.json"
+        "native-4322-route/receipt.json",
+        "native-source18-replay-route/receipt.json"
       ]
     },
     {
@@ -342,13 +349,14 @@
       "source": "06 LOD-RETENTION-001/LOD-LIFE/LOD-SOLDIER",
       "expected": "Death, Tetris/revival/no-Hero retention and resource integrity",
       "scenario": "Real deaths/return, spectator state, reconnect without reroll/duplication",
-      "result": "Earlier natural deaths/clock retention and targeted BUG007/008 native loadout/F-respawn gates remain. Source18 closed/open gate scenario includes real Runner death and fresh bound respawn; later root reports Caroline natural death/auto-respawn to lives2. Exact queue/Tetris/life boundaries, no-Hero/zero-life, reconnect/co-op and all resource retention remain open.",
+      "result": "Earlier natural deaths/clock retention and targeted BUG007/008 native loadout/F-respawn gates remain. Replay18 current-session life_lost at1668.675 shows lives2; later spawnPROFILE1728.960/HP100 and native normal-respawn frame precede the finite route. Historical post-respawn serial was not captured in these traces; pre-loss analytic serial6 is not reused. Exact queue/Tetris/zero-life/no-Hero, all resource retention, reconnect/co-op remain open.",
       "evidence": [
         "death-lifecycle/BUG-007.json",
         "death-lifecycle/BUG-008.json",
         "death-lifecycle/fixed-runtime-f604/receipt.json",
         "loot-label-occlusion/native-repaired/receipt.json",
-        "native-source18-reset-magic/receipt.json"
+        "native-source18-reset-magic/receipt.json",
+        "native-source18-replay-route/receipt.json"
       ]
     },
     {

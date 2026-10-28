@@ -1,0 +1,669 @@
+{
+  "kind": "bounded_actual_native_replay18_stair_red_card_red_gate_evidence",
+  "created_utc": "2026-10-28T01:49:42.365062+00:00",
+  "state": "bounded_actual_native_evidence_independently_reviewed; root_owned_integration_pending",
+  "scope": "Actual single-client ordinary movement from normal respawn, stair ascent/upper landing, Red keycard acquisition, RedGate ordinary use and one waypoint through the opened gate in one finite campaign sample.",
+  "build": {
+    "prepared_session": "source15-fresh/session-1793149142685315135",
+    "prepared_sha256": "53a6fad1319f1ee63457fe4310f4edcaa9a682c96b9e43933ad6cb8878c9f9b5",
+    "main_build_label": "f221cc08b3fc385822baa6b99a134cabac0a4b57",
+    "gameplay_source_commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+    "production_lua_manifest_entries": 576,
+    "startup_manifest_entries": 118,
+    "source_guards": 9,
+    "developer_fixtures": true,
+    "production_settings_acceptance": false,
+    "qualification": "Existing verified source18-equivalent build. This evidence assembly does not rerun all source or design gates and changes no production/private bytes."
+  },
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck, AMD Custom APU0405/amdgpu1002:163F (campaign hardware identity, not a new benchmark).",
+    "runtime": "Windows x86 GMod2026.09.17/LuaJIT2.0.4 through Proton10; gm_flatgrass; native1280x800.",
+    "settings": "Developer1/dense diagnostics, unranked; native input/route assistance and read-only geometry observers. Normal campaign30-minute clock shown from29:59 to15:54; no full timed-run result.",
+    "cloud": "Fresh replay CloudOFF guard is active; originalON restoration remains root-owned and pending at this checkpoint. Older restoredON evidence applies to the prior closed test only.",
+    "cooperative": "Blocked: user confirmed only this Steam Deck is available; no second real client/identity acceptance.",
+    "audio": "Perceived game audio remains unavailable; no hearing/sound-effect acceptance."
+  },
+  "binding": {
+    "run": "campaign:11",
+    "campaign_epoch": 2,
+    "campaign_seed": 6102623,
+    "level_seed": 673660301,
+    "pre_loss_analytic_geometry": {
+      "hero_spawn_serial": 6,
+      "player_entity": {
+        "worldMins": [
+          -3856,
+          -1936,
+          -12271.376953125
+        ],
+        "worldMaxs": [
+          -3824,
+          -1904,
+          -12199.376953125
+        ],
+        "position": [
+          -3840,
+          -1920,
+          -12271.376953125
+        ],
+        "id": 1,
+        "class": "player",
+        "birth": 285
+      },
+      "native_readout_at": 1648.6461448,
+      "qualification": "Geometry was measured before life_lost at1668.675. This serial binds the analytic readouts only, not the later physical route."
+    },
+    "post_respawn_physical_route": {
+      "hero_spawn_serial": null,
+      "player_entity_id": 1,
+      "player_entity_creation": 285,
+      "rpg_spawn_profile_line": 726,
+      "qualification": "Historical post-respawn spawnserial was not captured in these pilot traces; do not infer it from current live state. The same entity id/birth can persist across a death. Per-pilot context guards, post-respawnHP100 profile, lives2 photos and actual movement observations support this bounded route without certifying an uncaptured life serial."
+    },
+    "hero": "Zoe \"Cold Coffee\" Mason / Fighter, Level1; WIS_SIXTH_SENSE ordinary selection recorded in RPGline186. Its full mechanical behavior is outside this gate.",
+    "previous_life_loss": {
+      "rpg_line": 708,
+      "event": "life_lost",
+      "lives_after": 2,
+      "qualification": "Preserved preceding loss and normal respawn. Combat/death diagnosis is separate; this is not a no-death run."
+    }
+  },
+  "analytic_geometry": {
+    "status": "Pre-loss native read-only geometry supplement, separate from the post-respawn physical traversal.",
+    "movement_group": 8,
+    "legacy_default_group": 0,
+    "legacy_loot": {
+      "worldMins": [
+        -2704,
+        752,
+        -12243.96875
+      ],
+      "worldMaxs": [
+        -2672,
+        784,
+        -12215.96875
+      ],
+      "position": [
+        -2688,
+        768,
+        -12243.96875
+      ],
+      "id": 113,
+      "class": "lod_loot_pickup",
+      "birth": 2337
+    },
+    "legacy_qualification": "The legacy NONE0 startSolid hit on loot113/birth2337 is not proof of a PLAYER_MOVEMENT8 movement obstruction.",
+    "candidates": [
+      {
+        "name": "root_x_minus2820_center_pickup_approach",
+        "path": [
+          [
+            -3072,
+            384,
+            -12270.46875
+          ],
+          [
+            -2820,
+            384,
+            -12270.46875
+          ],
+          [
+            -2820,
+            768,
+            -12270.46875
+          ],
+          [
+            -2688,
+            768,
+            -12270.46875
+          ]
+        ],
+        "finiteNativeCenterlineClear": false,
+        "fullSegmentsClear": false,
+        "standingSamplesClear": false,
+        "supportSamplesValid": false
+      },
+      {
+        "name": "x_minus2792_center_pickup_approach",
+        "path": [
+          [
+            -3072,
+            384,
+            -12270.46875
+          ],
+          [
+            -2792,
+            384,
+            -12270.46875
+          ],
+          [
+            -2792,
+            768,
+            -12270.46875
+          ],
+          [
+            -2688,
+            768,
+            -12270.46875
+          ]
+        ],
+        "finiteNativeCenterlineClear": true,
+        "fullSegmentsClear": true,
+        "standingSamplesClear": true,
+        "supportSamplesValid": true
+      },
+      {
+        "name": "x_minus2776_center_pickup_approach",
+        "path": [
+          [
+            -3072,
+            384,
+            -12270.46875
+          ],
+          [
+            -2776,
+            384,
+            -12270.46875
+          ],
+          [
+            -2776,
+            768,
+            -12270.46875
+          ],
+          [
+            -2688,
+            768,
+            -12270.46875
+          ]
+        ],
+        "finiteNativeCenterlineClear": true,
+        "fullSegmentsClear": true,
+        "standingSamplesClear": true,
+        "supportSamplesValid": true
+      },
+      {
+        "name": "x_minus2792_offset_before_first_tread",
+        "path": [
+          [
+            -3072,
+            384,
+            -12270.46875
+          ],
+          [
+            -2792,
+            384,
+            -12270.46875
+          ],
+          [
+            -2792,
+            736,
+            -12270.46875
+          ],
+          [
+            -2720,
+            736,
+            -12270.46875
+          ]
+        ],
+        "finiteNativeCenterlineClear": true,
+        "fullSegmentsClear": true,
+        "standingSamplesClear": true,
+        "supportSamplesValid": true
+      }
+    ],
+    "blocked_candidate_qualification": "The x−2820 proposed centerline clips native kind4 wall1616/birth1830. That rejected requested path is not a demonstrated game collision defect; the actual route used clear x−2792.",
+    "stair_lower": "4:12:0",
+    "stair_upper": "4:12:1",
+    "entry_side": "N",
+    "uphill": "S",
+    "qualification": "Finite centerline support/hull samples do not establish margin for every waypoint tolerance, every movement or every stair orientation."
+  },
+  "native_pilots": [
+    {
+      "pilot": "1793151294463617733",
+      "plan": "plans/replay18-protected-direct.json",
+      "result": "pilots/native-pilot-1793151294463617733.result.json",
+      "trace": "pilots/native-pilot-1793151294463617733.jsonl",
+      "reason": "path_complete",
+      "seconds": 13.395,
+      "frames": 92,
+      "waypoints_reached": 4,
+      "waypoints_planned": 4,
+      "minimum_sampled_hp": 100,
+      "first_sample_position": [
+        -3840,
+        -1920,
+        -12271.376953125
+      ],
+      "last_sample_position": [
+        -3842.947509765625,
+        -427.47265625,
+        -12271.9375
+      ],
+      "sampled_keys": [
+        "a",
+        "w"
+      ],
+      "initial_context": [
+        "1791.7068072:1766.6597900391",
+        1,
+        "2:2:1:320963206:4:3:6102623:2:1",
+        1,
+        285,
+        1
+      ],
+      "trigger_presses": 0,
+      "reload_presses": 0,
+      "held_at_end": [],
+      "release_errors": []
+    },
+    {
+      "pilot": "1793151307998178151",
+      "plan": "plans/replay18-approach-purewalk.json",
+      "result": "pilots/native-pilot-1793151307998178151.result.json",
+      "trace": "pilots/native-pilot-1793151307998178151.jsonl",
+      "reason": "path_complete",
+      "seconds": 13.174,
+      "frames": 90,
+      "waypoints_reached": 4,
+      "waypoints_planned": 4,
+      "minimum_sampled_hp": 100,
+      "first_sample_position": [
+        -3839.72802734375,
+        -379.8819885253906,
+        -12271.9375
+      ],
+      "last_sample_position": [
+        -3134.634765625,
+        373.16204833984375,
+        -12271.9375
+      ],
+      "sampled_keys": [
+        "a",
+        "d",
+        "w"
+      ],
+      "initial_context": [
+        "1791.7068072:1766.6597900391",
+        1,
+        "2:2:1:320963206:4:3:6102623:2:1",
+        1,
+        285,
+        1
+      ],
+      "trigger_presses": 0,
+      "reload_presses": 0,
+      "held_at_end": [],
+      "release_errors": []
+    },
+    {
+      "pilot": "1793151321310950207",
+      "plan": "plans/replay18-stair-purewalk.json",
+      "result": "pilots/native-pilot-1793151321310950207.result.json",
+      "trace": "pilots/native-pilot-1793151321310950207.jsonl",
+      "reason": "observer_error:unsupported_third_person_or_external_camera",
+      "seconds": 16.569,
+      "frames": 115,
+      "waypoints_reached": 3,
+      "waypoints_planned": 8,
+      "minimum_sampled_hp": 100,
+      "first_sample_position": [
+        -3077.57763671875,
+        383.04559326171875,
+        -12271.9375
+      ],
+      "last_sample_position": [
+        -2692.982177734375,
+        698.8074951171875,
+        -12239.9375
+      ],
+      "sampled_keys": [
+        "a",
+        "d",
+        "w"
+      ],
+      "initial_context": [
+        "1791.7068072:1766.6597900391",
+        1,
+        "2:2:1:320963206:4:3:6102623:2:1",
+        1,
+        285,
+        1
+      ],
+      "trigger_presses": 0,
+      "reload_presses": 0,
+      "held_at_end": [],
+      "release_errors": []
+    },
+    {
+      "pilot": "1793151510333266877",
+      "plan": "plans/replay18-upper-red-purewalk.json",
+      "result": "pilots/native-pilot-1793151510333266877.result.json",
+      "trace": "pilots/native-pilot-1793151510333266877.jsonl",
+      "reason": "world_body_stage_or_observer_changed",
+      "seconds": 13.853,
+      "frames": 101,
+      "waypoints_reached": 3,
+      "waypoints_planned": 4,
+      "minimum_sampled_hp": 100,
+      "first_sample_position": [
+        -2646.0791015625,
+        302.6138916015625,
+        -11887.9375
+      ],
+      "last_sample_position": [
+        -3066.96826171875,
+        1113.4324951171875,
+        -11887.9375
+      ],
+      "sampled_keys": [
+        "d",
+        "w"
+      ],
+      "initial_context": [
+        "2005.5731447:1980.5278320312",
+        1,
+        "2:2:1:320963206:4:3:6102623:2:1",
+        1,
+        285,
+        1
+      ],
+      "trigger_presses": 0,
+      "reload_presses": 0,
+      "held_at_end": [],
+      "release_errors": []
+    },
+    {
+      "pilot": "1793151667503232239",
+      "plan": "plans/replay18-red-gate-walk.json",
+      "result": "pilots/native-pilot-1793151667503232239.result.json",
+      "trace": "pilots/native-pilot-1793151667503232239.jsonl",
+      "reason": "timeout",
+      "seconds": 30.017,
+      "frames": 238,
+      "waypoints_reached": 7,
+      "waypoints_planned": 9,
+      "minimum_sampled_hp": 100,
+      "first_sample_position": [
+        -3073.255859375,
+        1161.737548828125,
+        -11887.9375
+      ],
+      "last_sample_position": [
+        -2411.115478515625,
+        -1117.912353515625,
+        -11887.9375
+      ],
+      "sampled_keys": [
+        "a",
+        "d",
+        "w"
+      ],
+      "initial_context": [
+        "2145.7476369:2120.7060546875",
+        1,
+        "2:2:1:320963206:4:3:6102623:2:1",
+        1,
+        285,
+        2
+      ],
+      "trigger_presses": 0,
+      "reload_presses": 0,
+      "held_at_end": [],
+      "release_errors": []
+    },
+    {
+      "pilot": "1793151726333900931",
+      "plan": "plans/replay18-red-gate-last-approach.json",
+      "result": "pilots/native-pilot-1793151726333900931.result.json",
+      "trace": "pilots/native-pilot-1793151726333900931.jsonl",
+      "reason": "path_complete",
+      "seconds": 3.899,
+      "frames": 10,
+      "waypoints_reached": 2,
+      "waypoints_planned": 2,
+      "minimum_sampled_hp": 100,
+      "first_sample_position": [
+        -2362.95703125,
+        -1132.88916015625,
+        -11887.9375
+      ],
+      "last_sample_position": [
+        -2219.75341796875,
+        -1137.5831298828125,
+        -11887.9375
+      ],
+      "sampled_keys": [
+        "a",
+        "w"
+      ],
+      "initial_context": [
+        "2145.7476369:2120.7060546875",
+        1,
+        "2:2:1:320963206:4:3:6102623:2:1",
+        1,
+        285,
+        2
+      ],
+      "trigger_presses": 0,
+      "reload_presses": 0,
+      "held_at_end": [],
+      "release_errors": []
+    },
+    {
+      "pilot": "1793151862188386856",
+      "plan": "plans/replay18-through-redgate.json",
+      "result": "pilots/native-pilot-1793151862188386856.result.json",
+      "trace": "pilots/native-pilot-1793151862188386856.jsonl",
+      "reason": "path_complete",
+      "seconds": 4.289,
+      "frames": 13,
+      "waypoints_reached": 1,
+      "waypoints_planned": 1,
+      "minimum_sampled_hp": 100,
+      "first_sample_position": [
+        -2170.517822265625,
+        -1147.6605224609375,
+        -11887.9375
+      ],
+      "last_sample_position": [
+        -1947.6754150390625,
+        -1143.100341796875,
+        -11887.9384765625
+      ],
+      "sampled_keys": [
+        "a",
+        "w"
+      ],
+      "initial_context": [
+        "2145.7476369:2120.7060546875",
+        1,
+        "2:2:1:320963206:4:3:6102623:2:1",
+        1,
+        285,
+        3
+      ],
+      "trigger_presses": 0,
+      "reload_presses": 0,
+      "held_at_end": [],
+      "release_errors": []
+    }
+  ],
+  "ordinary_manual_bridge": {
+    "root_reported_controls": [
+      "native W1.2",
+      "native W0.55"
+    ],
+    "supported_upper_console_lines": [
+      384,
+      385
+    ],
+    "supported_upper_console_text": "REPLAY18_UPPER\t-2646.079102 302.613892 -11887.937500\t100",
+    "supported_upper_position": [
+      -2646.0791015625,
+      302.6138916015625,
+      -11887.9375
+    ],
+    "hp": 100,
+    "qualification": "Manual input durations are root control observations; the frozen frame sequence, exact native server position and next pilot first sample independently establish arrival on the upper floor. The partial pilot remains stopped by the unchanged camera guard."
+  },
+  "finite_results": [
+    {
+      "condition": "Physical ordinary stair ascent from lower approach to upper deck",
+      "result": "runtime_observed_finite_sample",
+      "evidence": [
+        "pilots/native-pilot-1793151321310950207.jsonl",
+        "screenshots/1793151359822791755-replay18-stair-first-attempt.png",
+        "screenshots/1793151420905097391-replay18-stair-upper-landing.png",
+        "raw/console.log:384-385",
+        "pilots/native-pilot-1793151510333266877.jsonl:first_sample"
+      ],
+      "limit": "Pilot3/8 halted by transient camera guard. Root completed normal W input; no guard weakening, route-wide or full-campaign acceptance."
+    },
+    {
+      "condition": "Red keycard acquired along ordinary upper-floor movement",
+      "result": "runtime_observed_finite_sample",
+      "evidence": [
+        "pilots/native-pilot-1793151510333266877.jsonl",
+        "raw-through-red-gate/rpg_session_latest.txt:749",
+        "screenshots/1793151560167818093-replay18-red-card-route-result.png"
+      ],
+      "limit": "Upper pilot reached3/4 then context guard stopped near actual objective change; never reported path_complete. Single acquisition sample does not establish all pickup lifecycles."
+    },
+    {
+      "condition": "Ordinary route to RedGate, then ordinary E opens gate and advances to Blue objective",
+      "result": "runtime_observed_finite_sample",
+      "evidence": [
+        "pilots/native-pilot-1793151667503232239.jsonl",
+        "pilots/native-pilot-1793151726333900931.result.json",
+        "raw-through-red-gate/rpg_session_latest.txt:759",
+        "screenshots/1793151754352998095-replay18-red-gate-normal-use.png"
+      ],
+      "limit": "First gate route timed out at7/9; continuation completed2/2, followed by root-reported native E0.2. The timeout is retained and does not demonstrate a route blockage."
+    },
+    {
+      "condition": "Ordinary movement through the opened RedGate",
+      "result": "runtime_observed_finite_sample",
+      "evidence": [
+        "pilots/native-pilot-1793151862188386856.result.json",
+        "pilots/native-pilot-1793151862188386856.jsonl"
+      ],
+      "limit": "One waypoint completed in4.289s, HP100; final sampled position[-1947.675415,-1143.100342,-11887.938477]. Subsequent Blue route and ammo-ownership transaction are outside this checkpoint."
+    }
+  ],
+  "photos": [
+    {
+      "path": "screenshots/1793150910006497508-replay18-zoe-ordinary-entry.png",
+      "independently_viewed": true,
+      "observation": "Ordinary entry: Zoe, Level1, lives3, HP100, Red-card objective, clock29:59; deployed/starter/clock feedback is visible."
+    },
+    {
+      "path": "screenshots/1793151249176391745-replay18-normal-respawn.png",
+      "independently_viewed": true,
+      "observation": "After the separately preserved life loss: same named Hero, lives2, HP100, Red-card objective, clock24:20."
+    },
+    {
+      "path": "screenshots/1793151359822791755-replay18-stair-first-attempt.png",
+      "independently_viewed": true,
+      "observation": "Partial physical climb at the stairs; HP100/lives2. This image alone does not prove the upper exit."
+    },
+    {
+      "path": "screenshots/1793151390308802394-replay18-stair-manual-crest.png",
+      "independently_viewed": true,
+      "observation": "After root-reported native W1.2: view across upper containers and deck; HP100/lives2. Exact supported position comes from later console output."
+    },
+    {
+      "path": "screenshots/1793151420905097391-replay18-stair-upper-landing.png",
+      "independently_viewed": true,
+      "observation": "After root-reported additional native W0.55: clear upper deck/corridor view; HP100/lives2."
+    },
+    {
+      "path": "screenshots/1793151560167818093-replay18-red-card-route-result.png",
+      "independently_viewed": true,
+      "observation": "Red-card possession visible as R CARD, objective changed to OPEN RED GATE; HP100/lives2."
+    },
+    {
+      "path": "screenshots/1793151754352998095-replay18-red-gate-normal-use.png",
+      "independently_viewed": true,
+      "observation": "After root-reported ordinary E0.2: RED GATE OPEN — CHECKPOINT1 feedback, open frame/corridor, next objective FIND BLUE KEYCARD; HP100/lives2."
+    }
+  ],
+  "log_snapshot_qualification": "console.log and rpg_session_latest are expanding prefixes from this current server session; RPG session header says current server session only. rpg_archive_latest/rpg_test_log are accumulated historical archives beginning2026-10-27T19:07:29Z and are retained locally for preservation, not treated as current-session acceptance. Summaries are separately captured point-in-time summaries, not append-only prefixes. Duplicate test/session/summary aliases are preserved locally but need not be duplicated in a compact Git bank.",
+  "not_claimed": [
+    "Full authored campaign, later Blue/Yellow/Black objectives, rescue or success/failure ending acceptance.",
+    "Three clean varied passes; clean streak remains0.",
+    "Final production settings, balance, combat effectiveness, comprehensive error-free session, FPS/performance or controller acceptance.",
+    "Second real client, cooperative synchronization, audio perception or all random seeds/stair orientations.",
+    "A camera-guard stop is a confirmed game defect; its cause is not established by this receipt.",
+    "A native route helper, no-target pilot or analytic hull trace itself proves physical traversal."
+  ],
+  "mutations_by_this_checkpoint": "Only this ignored .build evidence directory; no GUI/input, private installation/DATA writes, production changes, root matrix/plan edits or Git operations.",
+  "next": "Independent scoped evidence review before any bank. Root continues live testing; later output is outside these two frozen prefixes.",
+  "bank": {
+    "prepared_from_ignored_receipt_sha256": "0ce6840d525ff41895d5457bec9bd51f4970fd5edc5282cc681d5580a4b0b821",
+    "prepared_from_ignored_manifest_sha256": "825e718bade2c85b3b4e63edd4ca528c3bad8f64b3db25d640729ddefd1bc430",
+    "logical_paths": "Raw logical evidence paths in this receipt resolve using artifact-manifest.json. Text/JSON/trace/source artifacts use lossless XZ; photos retain the original PNG bytes. No image re-render or resize.",
+    "local_complete_snapshot": ".build/autonomous-playtest-20261027/replay18-route-evidence",
+    "retained_only_local": [
+      {
+        "path": "assemble_receipt.py",
+        "bytes": 17507,
+        "sha256": "86084d2996080a0cfb3e94d4674174e204fa121dbb863a766a0cca2c0f0c1d1d"
+      },
+      {
+        "path": "raw/rpg_archive_latest.txt",
+        "bytes": 1693267,
+        "sha256": "ba01b83df05f93ea302892cba0fa1692496d9332d20cd150dada414507ef10cd"
+      },
+      {
+        "path": "raw/rpg_test_log.txt",
+        "bytes": 1693267,
+        "sha256": "ba01b83df05f93ea302892cba0fa1692496d9332d20cd150dada414507ef10cd"
+      },
+      {
+        "path": "raw/rpg_test_session.txt",
+        "bytes": 157100,
+        "sha256": "828eab2cdd6f97cf586467a01d02c6e05a44c5e7bbec09a298973e3086fcf1a4"
+      },
+      {
+        "path": "raw/rpg_test_summary.txt",
+        "bytes": 3042,
+        "sha256": "2a6a6f5d8bd684a233be55f56a315404275df61ba8a7dc9956bc758e661a5d82"
+      },
+      {
+        "path": "raw-through-red-gate/rpg_archive_latest.txt",
+        "bytes": 1696320,
+        "sha256": "06783131e9680a05308c9148d62a7e51fff65c660ec75597a9ff80ec71e6e641"
+      },
+      {
+        "path": "raw-through-red-gate/rpg_test_log.txt",
+        "bytes": 1696320,
+        "sha256": "06783131e9680a05308c9148d62a7e51fff65c660ec75597a9ff80ec71e6e641"
+      },
+      {
+        "path": "raw-through-red-gate/rpg_test_session.txt",
+        "bytes": 160153,
+        "sha256": "27fd1aa8015ea087207ede02338bada5bfa1f78f1f5632fca0804ae9421465c6"
+      },
+      {
+        "path": "raw-through-red-gate/rpg_test_summary.txt",
+        "bytes": 3042,
+        "sha256": "8234c667e9e1f4a85e2f4bb2631fdd1de2c09c20ca67f494d2aeb3887e38856b"
+      },
+      {
+        "path": "receipt.json",
+        "bytes": 20677,
+        "sha256": "0ce6840d525ff41895d5457bec9bd51f4970fd5edc5282cc681d5580a4b0b821"
+      }
+    ],
+    "root_coordination": "This bank proposes only the listed coverage rows. Root owns current live status, next action, Cloud restoration, development-plan/checkpoint updates, gates and Git integration."
+  },
+  "independent_review": {
+    "report": "independent-review.json",
+    "report_sha256": "298bce5a6170ef123de4ff93aa981ae137183b760c1721804e54f6f811eb8e50",
+    "source_receipt_sha256": "0ce6840d525ff41895d5457bec9bd51f4970fd5edc5282cc681d5580a4b0b821",
+    "source_manifest_sha256": "825e718bade2c85b3b4e63edd4ca528c3bad8f64b3db25d640729ddefd1bc430",
+    "status": "CLEAR",
+    "qualification": "Review applies to the frozen native source receipt and its explicit limits; no additional gameplay pass, source repair, Git push or integration is implied."
+  }
+}

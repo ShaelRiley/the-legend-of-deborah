@@ -1,0 +1,446 @@
+{
+  "kind": "lossless_native_route_artifacts",
+  "files": [
+    {
+      "logical_source": "geometry/source18_replay_stair_approach_segments_1648651.json",
+      "path": "geometry/source18_replay_stair_approach_segments_1648651.json.xz",
+      "compression": "xz",
+      "raw_bytes": 17291,
+      "raw_sha256": "faf4df22355ebdd4ea2bbfd1a304ba41449d5621c8b041eef7f193055d4bdfc1",
+      "bytes": 1776,
+      "sha256": "755f75032079ff18751a8060e9f73e7eafac147e05797e490b7749cc463e8262"
+    },
+    {
+      "logical_source": "geometry/source18_replay_stair_walk_readout_1647929.json",
+      "path": "geometry/source18_replay_stair_walk_readout_1647929.json.xz",
+      "compression": "xz",
+      "raw_bytes": 34935,
+      "raw_sha256": "a459081bea8e3be43237041860919ac6f729278d5a1db2d41e1185e8de996c38",
+      "bytes": 2688,
+      "sha256": "085904d498b982876060a66495fd16e6ab18c14b25370f0b65f38a9a05ebe1d8"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151294463617733.jsonl",
+      "path": "pilots/native-pilot-1793151294463617733.jsonl.xz",
+      "compression": "xz",
+      "raw_bytes": 39455,
+      "raw_sha256": "9bbf614664a2cd91fb3c6993555e716f139d2c2f002a2a748a46fa0c69505e1a",
+      "bytes": 3332,
+      "sha256": "cd8d5b6261983b2d1906b794204b424bd1b8b73d6eb265bdc69a9086763a74ac"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151294463617733.result.json",
+      "path": "pilots/native-pilot-1793151294463617733.result.json.xz",
+      "compression": "xz",
+      "raw_bytes": 674,
+      "raw_sha256": "bed77e4191ebb3039ce6d50d9fca902192f3637893b076fafe27931d3d94bc2d",
+      "bytes": 432,
+      "sha256": "c2aef968a5113098137745bb4c99f7d40eac169ac4945ce4d1fe96f230478868"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151307998178151.jsonl",
+      "path": "pilots/native-pilot-1793151307998178151.jsonl.xz",
+      "compression": "xz",
+      "raw_bytes": 38962,
+      "raw_sha256": "c9b7b477ee718ecca5493e376aef6774abbd70559103d40622d561c27a6e32a4",
+      "bytes": 3452,
+      "sha256": "f8d6ee92b3d978e2cb2cb3314176a6fea0b883fb4a12f248e9a0246f4cb91a4d"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151307998178151.result.json",
+      "path": "pilots/native-pilot-1793151307998178151.result.json.xz",
+      "compression": "xz",
+      "raw_bytes": 674,
+      "raw_sha256": "2f478007f32e161ab91d89c1ce68fd46a6d435639efe157b666a4d6136857c11",
+      "bytes": 432,
+      "sha256": "a5cb9fd55797618a7262d0d65c9018fac0548b1b4401f56d8088e6873fda4874"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151321310950207.jsonl",
+      "path": "pilots/native-pilot-1793151321310950207.jsonl.xz",
+      "compression": "xz",
+      "raw_bytes": 49446,
+      "raw_sha256": "f0ee7ab5a3e6e793ead4c9977962eff5589f5e15a6fd65df6101ad14f94d89e1",
+      "bytes": 3920,
+      "sha256": "0d2ce83d41f81631637720bb42f0953d745d75af7739c72559278dd84190606f"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151321310950207.result.json",
+      "path": "pilots/native-pilot-1793151321310950207.result.json.xz",
+      "compression": "xz",
+      "raw_bytes": 720,
+      "raw_sha256": "741240e10989f6ea74f260ecd8e015aadacf38f9cfb93c293fe9370e7956be9d",
+      "bytes": 460,
+      "sha256": "376b2837aa670a63692f5e783f1246a3d02be7f9626c246229dc109e2530c267"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151510333266877.jsonl",
+      "path": "pilots/native-pilot-1793151510333266877.jsonl.xz",
+      "compression": "xz",
+      "raw_bytes": 43657,
+      "raw_sha256": "e0c17a8c7cd3ad3ee676a06ef3e795b973d723e00ac9db9c79d2f852b4d0defa",
+      "bytes": 3720,
+      "sha256": "88dd5bc48a9e62c0d00e183d1f5d5b478e2d6f45bd7f339d9751a08004e696fb"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151510333266877.result.json",
+      "path": "pilots/native-pilot-1793151510333266877.result.json.xz",
+      "compression": "xz",
+      "raw_bytes": 698,
+      "raw_sha256": "f46385c326b3191bccd9c4ff242f7804afa9d96541c6813ec78dafa121ae3c78",
+      "bytes": 448,
+      "sha256": "bb62a0aea2d1c357e85feeedae55f9b051399e8acf2d69f39158d540a8825ed2"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151667503232239.jsonl",
+      "path": "pilots/native-pilot-1793151667503232239.jsonl.xz",
+      "compression": "xz",
+      "raw_bytes": 102920,
+      "raw_sha256": "91eedbad705dc78f9c7014c2011959a478a86a2dc8adbc32143ab4f456816b97",
+      "bytes": 7884,
+      "sha256": "f233c7bd633af176c277351183b8af01de4ad8ba60d9a35fe3f5d5969b3be425"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151667503232239.result.json",
+      "path": "pilots/native-pilot-1793151667503232239.result.json.xz",
+      "compression": "xz",
+      "raw_bytes": 669,
+      "raw_sha256": "20930581fe8be01156ab1e5511e73a3646783a30f312a6039cb3754fda619226",
+      "bytes": 428,
+      "sha256": "e0619fa44492605d6753381634267b6eac5bb7b829986442e57d5a5f162aec7f"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151726333900931.jsonl",
+      "path": "pilots/native-pilot-1793151726333900931.jsonl.xz",
+      "compression": "xz",
+      "raw_bytes": 4339,
+      "raw_sha256": "8a3c17204d558b0ef62e429ec360e91e2173ed7d7ad3463a7803e5f0b5f63064",
+      "bytes": 736,
+      "sha256": "d2ee56f70fc4e4fbac348649aefafbed2118acb3895e6594ae231bae3ead38a9"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151726333900931.result.json",
+      "path": "pilots/native-pilot-1793151726333900931.result.json.xz",
+      "compression": "xz",
+      "raw_bytes": 673,
+      "raw_sha256": "4a6c2e68143f06ab9578e7f487591875bdbf8cd09d9887018c0f833f54b077ce",
+      "bytes": 432,
+      "sha256": "06a31ee7e22e50f7aef5dc8ea6b56b3ee98584cff9e88151ab42da00fcf1d9ed"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151862188386856.jsonl",
+      "path": "pilots/native-pilot-1793151862188386856.jsonl.xz",
+      "compression": "xz",
+      "raw_bytes": 5688,
+      "raw_sha256": "3034f51ba7e15588a3899f341cec72ddbfab939b0d43612e317f505172eb6b4b",
+      "bytes": 880,
+      "sha256": "7e26ff6e6092daf10cae1866025e89a80ad33caa9f21acd9db8829aa40593f39"
+    },
+    {
+      "logical_source": "pilots/native-pilot-1793151862188386856.result.json",
+      "path": "pilots/native-pilot-1793151862188386856.result.json.xz",
+      "compression": "xz",
+      "raw_bytes": 673,
+      "raw_sha256": "b1cf7383a7af9c585a35e1253243027febbfefbf12a9a3439d3215549a0cc725",
+      "bytes": 432,
+      "sha256": "cb04f30e28dea69c53835ba882eb9aa4acd693c7575e8239081d28f583643589"
+    },
+    {
+      "logical_source": "plans/replay18-approach-purewalk.json",
+      "path": "plans/replay18-approach-purewalk.json.xz",
+      "compression": "xz",
+      "raw_bytes": 227,
+      "raw_sha256": "258a0d64260bcd6674b903401b7b04c3aea58816e3878d8d062a3a02456a3442",
+      "bytes": 200,
+      "sha256": "702dc3e138312fa1d16560195859cfc2974886dd61d6af2e91d8332a39fbace0"
+    },
+    {
+      "logical_source": "plans/replay18-protected-direct.json",
+      "path": "plans/replay18-protected-direct.json.xz",
+      "compression": "xz",
+      "raw_bytes": 235,
+      "raw_sha256": "d6e46af5f96ad4972d6d45320920c5a7442bb681b9d16a83269165258c728a0e",
+      "bytes": 200,
+      "sha256": "aeca4775e46294017c5d6812a9050320dff08048ef97cf272648045ec8edc8bb"
+    },
+    {
+      "logical_source": "plans/replay18-red-gate-last-approach.json",
+      "path": "plans/replay18-red-gate-last-approach.json.xz",
+      "compression": "xz",
+      "raw_bytes": 176,
+      "raw_sha256": "4ec824ba0ebe1eac215b19f31035bb083f5741d9165a206af414543a13fbe580",
+      "bytes": 192,
+      "sha256": "4a4c460138792fa1986c0b7d6b5a0e5cbc3bcf14c7ae779c647da65c21edcefc"
+    },
+    {
+      "logical_source": "plans/replay18-red-gate-walk.json",
+      "path": "plans/replay18-red-gate-walk.json.xz",
+      "compression": "xz",
+      "raw_bytes": 375,
+      "raw_sha256": "2d0e99fd0fbad12096fccc8880d63c72a71c931e61a2e4e06c30d0ff45da6a8f",
+      "bytes": 228,
+      "sha256": "ec6861ced9d8200de3a54a530aa7316d481385f7eade3340d70d668d4167e2df"
+    },
+    {
+      "logical_source": "plans/replay18-stair-purewalk.json",
+      "path": "plans/replay18-stair-purewalk.json.xz",
+      "compression": "xz",
+      "raw_bytes": 343,
+      "raw_sha256": "09ac0dab9b08e6260d691c185289d1c03fbc1f89f399f5cf23588a48dd0389d3",
+      "bytes": 236,
+      "sha256": "c615946268b7a058f9347c15af3d6a6c2b046c2d1311656383b976923c9a291b"
+    },
+    {
+      "logical_source": "plans/replay18-through-redgate.json",
+      "path": "plans/replay18-through-redgate.json.xz",
+      "compression": "xz",
+      "raw_bytes": 146,
+      "raw_sha256": "769e800ecdbe5638251679a661f7e6cceb239640b52070969aedac73412c4826",
+      "bytes": 184,
+      "sha256": "29f9110a6ece6c2d86b0de74fd8d0f55111a25be58ca7a2c018f86e671c370e0"
+    },
+    {
+      "logical_source": "plans/replay18-upper-red-purewalk.json",
+      "path": "plans/replay18-upper-red-purewalk.json.xz",
+      "compression": "xz",
+      "raw_bytes": 230,
+      "raw_sha256": "a918f63d8abe0c5cf80cc8571ff1a39eaf0d0c6cde3b90ec6beecad05e8ee257",
+      "bytes": 200,
+      "sha256": "242ca25a1f2065c58f265d0568dcdc9a1d90675426a8eb7e09e7392704a03619"
+    },
+    {
+      "logical_source": "raw/console.log",
+      "path": "raw/console.log.xz",
+      "compression": "xz",
+      "raw_bytes": 275708,
+      "raw_sha256": "2396d8b5b4bb6c55a1af2ba0bd6d3983a32cba366bec4142d6cf1aff87989ce9",
+      "bytes": 8408,
+      "sha256": "8e83faeff7135ce6af1eb4ebed5b75fc314ddbe3247b4f838238b2f5426aae56"
+    },
+    {
+      "logical_source": "raw/rpg_session_latest.txt",
+      "path": "raw/rpg_session_latest.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 157100,
+      "raw_sha256": "828eab2cdd6f97cf586467a01d02c6e05a44c5e7bbec09a298973e3086fcf1a4",
+      "bytes": 9588,
+      "sha256": "f746b145462bbba5f0e32938ce8a0bd35c42d4f8a0ca0b3fd2c8582d59ca09d5"
+    },
+    {
+      "logical_source": "raw/rpg_summary_latest.txt",
+      "path": "raw/rpg_summary_latest.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 3042,
+      "raw_sha256": "2a6a6f5d8bd684a233be55f56a315404275df61ba8a7dc9956bc758e661a5d82",
+      "bytes": 1520,
+      "sha256": "67cf975bc890cb92af4f542837ef0c286217d20b88b35b916b9285ce1b47b78b"
+    },
+    {
+      "logical_source": "raw-through-red-gate/console.log",
+      "path": "raw-through-red-gate/console.log.xz",
+      "compression": "xz",
+      "raw_bytes": 303041,
+      "raw_sha256": "9b18b5e376a60e81067b0e0f18a2de60f747645c62f4093d0d907b78db7ee36d",
+      "bytes": 8764,
+      "sha256": "950f884429498153dcd56d779841c9def496a851ffd06e491a5890a2b95153ae"
+    },
+    {
+      "logical_source": "raw-through-red-gate/rpg_session_latest.txt",
+      "path": "raw-through-red-gate/rpg_session_latest.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 160153,
+      "raw_sha256": "27fd1aa8015ea087207ede02338bada5bfa1f78f1f5632fca0804ae9421465c6",
+      "bytes": 9704,
+      "sha256": "5f689c03b51e0e920ad99a06f7e873719379457be3f90f3ae273de3ca3e3bb11"
+    },
+    {
+      "logical_source": "raw-through-red-gate/rpg_summary_latest.txt",
+      "path": "raw-through-red-gate/rpg_summary_latest.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 3042,
+      "raw_sha256": "8234c667e9e1f4a85e2f4bb2631fdd1de2c09c20ca67f494d2aeb3887e38856b",
+      "bytes": 1520,
+      "sha256": "b5cef5d8b18fa40149dcb7460e8d21129635d5e465a1f8720b68f5359c512290"
+    },
+    {
+      "logical_source": "screenshots/1793150910006497508-replay18-zoe-ordinary-entry.png",
+      "path": "screenshots/1793150910006497508-replay18-zoe-ordinary-entry.png",
+      "compression": "none",
+      "raw_bytes": 1111725,
+      "raw_sha256": "15d707c683103950b635ac9656dc00aa14065996bf719479591f09e36f5f0905",
+      "bytes": 1111725,
+      "sha256": "15d707c683103950b635ac9656dc00aa14065996bf719479591f09e36f5f0905"
+    },
+    {
+      "logical_source": "screenshots/1793151249176391745-replay18-normal-respawn.png",
+      "path": "screenshots/1793151249176391745-replay18-normal-respawn.png",
+      "compression": "none",
+      "raw_bytes": 927271,
+      "raw_sha256": "d8eeb262c5900c5d2d8c3ac91f8832961e878969c83e2965067a193931759d82",
+      "bytes": 927271,
+      "sha256": "d8eeb262c5900c5d2d8c3ac91f8832961e878969c83e2965067a193931759d82"
+    },
+    {
+      "logical_source": "screenshots/1793151359822791755-replay18-stair-first-attempt.png",
+      "path": "screenshots/1793151359822791755-replay18-stair-first-attempt.png",
+      "compression": "none",
+      "raw_bytes": 1184376,
+      "raw_sha256": "24fdc318d2066ac2a8309f6966325debc4985ca7f6e5ddcdd8f2ff275bb7b133",
+      "bytes": 1184376,
+      "sha256": "24fdc318d2066ac2a8309f6966325debc4985ca7f6e5ddcdd8f2ff275bb7b133"
+    },
+    {
+      "logical_source": "screenshots/1793151390308802394-replay18-stair-manual-crest.png",
+      "path": "screenshots/1793151390308802394-replay18-stair-manual-crest.png",
+      "compression": "none",
+      "raw_bytes": 1337769,
+      "raw_sha256": "fed9c409f3ae996077e008f9e5bde365fda62f0990c7bfa58d8622ba60fc12bb",
+      "bytes": 1337769,
+      "sha256": "fed9c409f3ae996077e008f9e5bde365fda62f0990c7bfa58d8622ba60fc12bb"
+    },
+    {
+      "logical_source": "screenshots/1793151420905097391-replay18-stair-upper-landing.png",
+      "path": "screenshots/1793151420905097391-replay18-stair-upper-landing.png",
+      "compression": "none",
+      "raw_bytes": 1297404,
+      "raw_sha256": "ccb18e4e951213cb578c49d3a155b01dbffe1a4368addc7d34cbd6ed8d95b9f0",
+      "bytes": 1297404,
+      "sha256": "ccb18e4e951213cb578c49d3a155b01dbffe1a4368addc7d34cbd6ed8d95b9f0"
+    },
+    {
+      "logical_source": "screenshots/1793151560167818093-replay18-red-card-route-result.png",
+      "path": "screenshots/1793151560167818093-replay18-red-card-route-result.png",
+      "compression": "none",
+      "raw_bytes": 954781,
+      "raw_sha256": "86015028244ae977e3931c336e73e87b76e5576a5144413deb6067d3c87eb799",
+      "bytes": 954781,
+      "sha256": "86015028244ae977e3931c336e73e87b76e5576a5144413deb6067d3c87eb799"
+    },
+    {
+      "logical_source": "screenshots/1793151754352998095-replay18-red-gate-normal-use.png",
+      "path": "screenshots/1793151754352998095-replay18-red-gate-normal-use.png",
+      "compression": "none",
+      "raw_bytes": 552470,
+      "raw_sha256": "faa7c60fe55a704ba0d1dc6b16b8c165d50b9b08c0871fbc08c7c6dfa324c355",
+      "bytes": 552470,
+      "sha256": "faa7c60fe55a704ba0d1dc6b16b8c165d50b9b08c0871fbc08c7c6dfa324c355"
+    },
+    {
+      "logical_source": "snapshot-initial.json",
+      "path": "snapshot-initial.json.xz",
+      "compression": "xz",
+      "raw_bytes": 2118,
+      "raw_sha256": "a49c4732548017ebdcd9fb1ab436d0882fa91e8351411a937cf7148df9b8b049",
+      "bytes": 664,
+      "sha256": "94a536b628cc02f355c398ce31bfbd3cca75c9269a842da2817a0afe3fdd0926"
+    },
+    {
+      "logical_source": "snapshot-through-red-gate.json",
+      "path": "snapshot-through-red-gate.json.xz",
+      "compression": "xz",
+      "raw_bytes": 2198,
+      "raw_sha256": "e3d2745bdd8d61db0621f9a264251d0bece72a47291083c6b14189bc6a9fb892",
+      "bytes": 664,
+      "sha256": "d2001f9c91881997de23edef46eb8b57db6f7db04b12ed62fe894908f923c00c"
+    },
+    {
+      "logical_source": "sources/installed_native_pilot_nearest_source18_source.txt",
+      "path": "sources/installed_native_pilot_nearest_source18_source.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 15448,
+      "raw_sha256": "53d3f5368add3ec25a4a2c59616395cb25330dad9a2394d6206cac45fa513b40",
+      "bytes": 5004,
+      "sha256": "a6911ada1e1aca272fb36093abb59d5d8067d179afcc62029965f86687a67417"
+    },
+    {
+      "logical_source": "sources/installed_replay18_stair_readout_source.txt",
+      "path": "sources/installed_replay18_stair_readout_source.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 6903,
+      "raw_sha256": "e1f9c4cbe0f81ad454da7dc4c5654739f42cf6c4cabb4e26abf698d131ddfec2",
+      "bytes": 3164,
+      "sha256": "a1dea1f661adad11862233aaf7476c492b509361d93163ea67ba1638323d527a"
+    },
+    {
+      "logical_source": "sources/installed_replay18_stair_segments_source.txt",
+      "path": "sources/installed_replay18_stair_segments_source.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 7356,
+      "raw_sha256": "c91342dfe7fb6bcfe3c988bafe6320de516e457d9ed92d99b482276ac1465850",
+      "bytes": 3084,
+      "sha256": "2eba63c863a3233426a373bc96aba4730f34c64b3828a3647b574a8381f5133b"
+    },
+    {
+      "logical_source": "sources/launch-start.json",
+      "path": "sources/launch-start.json.xz",
+      "compression": "xz",
+      "raw_bytes": 67266,
+      "raw_sha256": "b903153f10578f61424b4c3a1e1b1100b493ab32592b33dd049f0730ed513325",
+      "bytes": 12824,
+      "sha256": "ae528908f1ac586ad2891ddf1b19207e3b29501f353406fe76e2a7ae6ebc76c1"
+    },
+    {
+      "logical_source": "sources/native_control.py",
+      "path": "sources/native_control.py.xz",
+      "compression": "xz",
+      "raw_bytes": 17054,
+      "raw_sha256": "e355738767fc55589c8fb7edb21a22c33fbdce3f549af08a4fa574e4e6aa3475",
+      "bytes": 4304,
+      "sha256": "f37e3b57afa35b68dde0d77527f13b42205f1198995169009cf687f449ae0e22"
+    },
+    {
+      "logical_source": "sources/native_pilot.py",
+      "path": "sources/native_pilot.py.xz",
+      "compression": "xz",
+      "raw_bytes": 20558,
+      "raw_sha256": "1e5efdd8f1cb973c54b54415986dbfae23b87611fa154779a7017724c393f638",
+      "bytes": 5844,
+      "sha256": "d74c0c769b101602ed7f22f18928b27d514b321612699d98ac4925c890627c28"
+    },
+    {
+      "logical_source": "sources/prepared.json",
+      "path": "sources/prepared.json.xz",
+      "compression": "xz",
+      "raw_bytes": 93338,
+      "raw_sha256": "53a6fad1319f1ee63457fe4310f4edcaa9a682c96b9e43933ad6cb8878c9f9b5",
+      "bytes": 28256,
+      "sha256": "04d150ad8a8dff66be3d0a2bd656afb0a9e8f13e2dcdbe518051f6f80d1f80e8"
+    },
+    {
+      "logical_source": "sources/private_profile_client_proof.json",
+      "path": "sources/private_profile_client_proof.json.xz",
+      "compression": "xz",
+      "raw_bytes": 1283,
+      "raw_sha256": "16fa485507a660b3ecc055d6ababc350e4ddeacfa783f554592ef0429f5c6726",
+      "bytes": 608,
+      "sha256": "0a090b493aa022550cd4cddd3024f068cbe6b4cc2b17f37823d3a82e44412cde"
+    },
+    {
+      "logical_source": "sources/private_profile_server_proof.json",
+      "path": "sources/private_profile_server_proof.json.xz",
+      "compression": "xz",
+      "raw_bytes": 1316,
+      "raw_sha256": "ab2961c4c57f39862609590a938c82ae43d6e4dc9e799965ea10aab93324a43c",
+      "bytes": 628,
+      "sha256": "91679a0195d6509108bee586b492c5631b0e9ef82332432c113476cc2afea302"
+    },
+    {
+      "logical_source": "sources/source18_replay_stair_approach_segments.lua",
+      "path": "sources/source18_replay_stair_approach_segments.lua.xz",
+      "compression": "xz",
+      "raw_bytes": 7356,
+      "raw_sha256": "c91342dfe7fb6bcfe3c988bafe6320de516e457d9ed92d99b482276ac1465850",
+      "bytes": 3084,
+      "sha256": "2eba63c863a3233426a373bc96aba4730f34c64b3828a3647b574a8381f5133b"
+    },
+    {
+      "logical_source": "sources/source18_replay_stair_walk_readout.lua",
+      "path": "sources/source18_replay_stair_walk_readout.lua.xz",
+      "compression": "xz",
+      "raw_bytes": 6903,
+      "raw_sha256": "e1f9c4cbe0f81ad454da7dc4c5654739f42cf6c4cabb4e26abf698d131ddfec2",
+      "bytes": 3164,
+      "sha256": "a1dea1f661adad11862233aaf7476c492b509361d93163ea67ba1638323d527a"
+    }
+  ]
+}
