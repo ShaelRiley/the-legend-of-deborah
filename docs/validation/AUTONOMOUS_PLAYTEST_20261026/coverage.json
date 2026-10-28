@@ -505,6 +505,16 @@
         "loot-label-occlusion/native-repaired/receipt.json",
         "native-source18-adjacent/geometry/receipt.json"
       ]
+    },
+    {
+      "id": "REG-FEAT-RATES",
+      "source": "04 LOD-FEAT-004 HUMAN-DETAIL -> exact HUMAN CON_REGEN_22/sharedCON rules",
+      "expected": "Shared card/sheet/manual preserve authored recovery rates1/1.5/2% beforeCON and22/44/66% ceilings; actual healing stays unchanged.",
+      "scenario": "Actual nativeRapid card after explicit canonicalfixture; production catalog/snapshot and generatedmanual checks; repaired fresh native P/manual recheck.",
+      "result": "BUG019 confirmed original native2% mismatch; one shared conversion repaired,9focused/929Lua syntax and independent source review pass. Full338 and fresh repaired-client acceptance remain pending.",
+      "evidence": [
+        "feat-card-rates/BUG-019.json"
+      ]
     }
   ],
   "deferred": [
@@ -621,6 +631,11 @@
       "id": "BUG-018",
       "record": "loot-label-occlusion/BUG-018.json",
       "status": "Repaired63bcc; full337/337 static matrix and fresh native same-existing-Health closed/open gate control PASS. Native synthetic cargo/door/header controls pass separately; no complete visibility/campaign/co-op acceptance."
+    },
+    {
+      "id": "BUG-019",
+      "record": "feat-card-rates/BUG-019.json",
+      "status": "Shared presentation repaired and9focused gates statically validated on this checkpoint; full338 and fresh native repaired acceptance pending."
     }
   ],
   "static_fixture_checkpoint": {
@@ -637,8 +652,8 @@
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
   "installed_loaded_build": "63bcc03e30233f74208a92e25a1904a87201125f",
-  "last_checkpoint_utc": "2026-10-28T02:09:33.755526+00:00",
-  "next_action": "Review/install bounded temporary Neil snapshot/locator/return helper while freshEva/Rogue stagingclockpaused; complete ordinaryfeat/starter/portal, then explicitcanonicalNeiltestkit and actualconsole/prompt/E/repeat/pair-ID gate. Locator/testkit setup never acceptsYellowroute. Bank/review laterBlue-prefix/loss evidence. Continue active single-client campaign/authored/regression work. OnlyDeckconfirmed/co-opblocked, audiohearingunavailable; clean0. FreshreplayCloudOFF mustrestoreoriginalON onclosure.",
+  "last_checkpoint_utc": "2026-10-28T03:56:32.546575+00:00",
+  "next_action": "Publish finite BUG019 candidate branch/PR, pass complete338 and fresh installed-source19 nativeP/manual1.5% recheck, then validatedmainintegration. Stop/archive ownedoldprivateclient and capturefreshSteamCloudOFF attestation whilepreservingoriginalONrestorationguard. Resume preparedRapidduplicate andNeilconsole gates on reviewednewsource; reset/rebindtemporaryhelpermetadata asneeded. Clean0; broadcampaign/endings/co-op/audio gapsremain.",
   "last_runtime_build": "63bcc03e30233f74208a92e25a1904a87201125f",
   "current_native_build": "Fresh replay LIVE, launch7300/session1793149142685315135; actual primary114400/helper114511. Installed labelf221cc08 source-equivalent gameplay63bcc; bothrealm9guards/576production/118startup. Developer1/dense unranked, not final settings acceptance.",
   "installed_loaded_build_note": "All576Lua/118physical startup entries match frozen source; NearLookCRC84557611, Aim966710964, Safe377454284. Native original BUG018 closed/open finite gate passes; synthetic geometry controls separately labeled.",
@@ -681,9 +696,9 @@
     "level_seed": 673660301,
     "run": "campaign:12",
     "epoch": 3,
-    "character": "Eva Long Shot Turner / Rogue, first feat pending",
+    "character": "Eva Long Shot Turner / Rogue; ordinaryBash committed, canonicalforcedRecovery2 fixture applied",
     "clock": "Fresh staging30:00 paused after natural priorTIMEOVER/reset; late finalHeroobserver samples onlynewrun12 and cannot proveoldzeroHerostate.",
-    "latest_root_report": "PriorZoe/campaign11 ordinary Redroute banked. Later actual7:8descent and lowerBlueapproach completedHP100; further idlecombatdeaths/timeout are preservedlocally, not a Blue/fullcampaignpass.",
+    "latest_root_report": "Oldsource18 stilllive in safe staging30:00paused. NativeRapid card shows2% whileactualparams.015/status1.95(CON16) matchlive1.5%; BUG019 repaired in candidate only pendingfull338/freshnative. PriorRed/Blue-prefix qualifications retained.",
     "unbanked_ignored_results": [
       ".build/autonomous-playtest-20261027/native-pilot-1793152286424871272.result.json",
       ".build/autonomous-playtest-20261027/native-pilot-1793152416274869459.result.json",
@@ -731,5 +746,15 @@
     "cloud": "OFF; restore originalON atclosure; active fresh replayguard differs from historical restored oldguard.",
     "cloud_guard": ".build/autonomous-playtest-20261027/steam-cloud-replay-guard/state.json",
     "banked_route": "native-source18-replay-route/receipt.json"
+  },
+  "pending_repair_checkpoint": {
+    "id": "BUG-019",
+    "record": "feat-card-rates/BUG-019.json",
+    "scope": "Presentation conversion and generatedmanual only; branch candidate before mainintegration",
+    "focused_passed": 9,
+    "lua_syntax": 929,
+    "full_matrix": "338pending",
+    "native_repaired": "pending fresh source19",
+    "old_live_build": "f221label/63bccgameplay"
   }
 }

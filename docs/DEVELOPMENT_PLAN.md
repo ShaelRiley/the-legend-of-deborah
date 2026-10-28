@@ -1,3 +1,27 @@
+# Active repair — preserve fractional recovery descriptions
+
+BUG019 confirmed on the actual Deck: Rapid Recovery's P card says2%MaxHP/s;
+the exact liveGDD row and actual.015 parameter specify1.5% beforeCON. The shared
+presentation formatter rounded the rate. The candidate uses rate*100 with its
+existing%g field; healing, eligibility and all other percent conventions stay
+unchanged. Existing manual generation propagates the same corrected text.
+[Defect/evidence](validation/AUTONOMOUS_PLAYTEST_20261026/feat-card-rates/BUG-019.json).
+
+Nine focused gates/929Lua syntax and independent source review pass. The original
+formatter fails the new real-catalog/snapshot regression; local missingNode was
+resolved with a checksum-verified officialNode22.23.4 binary and the failed log
+is retained. Complete338 and fresh repaired nativeP/manual remain pending; older
+337 proofs are not this candidate's full gate. Keep the candidate on its repair
+branch until finite validation and normal integration; no clean pass is claimed.
+
+Old source18 is still live in paused staging, Eva/Rogue with ordinaryBash and an
+explicit forced Recovery2 fixture. Next: preserve/close owned client, prepare
+source19 from exact published candidate, freshly attest CloudOFF while retaining
+originalON restoration duty, launch/source-verify and reproduce the repaired P
+card/manual. Then resume prepared Rapid duplicate and Neil physical-console
+fixtures with fresh run/body/source labels. The older status below preserves the
+previous route checkpoint; its pending-first-feat detail is superseded here.
+
 # Current checkpoint — autonomous native gameplay and defect campaign
 
 Campaign active; clean streak **0**. Verified evidence main is

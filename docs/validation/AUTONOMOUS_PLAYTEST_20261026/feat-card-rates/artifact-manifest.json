@@ -1,0 +1,302 @@
+{
+  "kind": "Lossless BUG019 native original and static repair evidence",
+  "files": [
+    {
+      "logical_source": "pre-repair/1793153889272204535-replay18-rapid-canonical-fixture.png",
+      "path": "pre-repair/1793153889272204535-replay18-rapid-canonical-fixture.png",
+      "raw_bytes": 528496,
+      "raw_sha256": "2955e7d043661e4ab0f705a43f7fca6be75431708ff535073163f02a9241d6df",
+      "bytes": 528496,
+      "sha256": "2955e7d043661e4ab0f705a43f7fca6be75431708ff535073163f02a9241d6df",
+      "compression": "none"
+    },
+    {
+      "logical_source": "pre-repair/replay18_rapid_before.json",
+      "path": "pre-repair/replay18_rapid_before.json.xz",
+      "raw_bytes": 10690,
+      "raw_sha256": "438a4d8f34dc0dd3e28184f043e4e898f3c9f5b6cb87eed5d875cd780e42a220",
+      "bytes": 3416,
+      "sha256": "09b72fd16c1539853ea9e7ae334c7b0cf49db218c2a6867b2de3d0630fa00323",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/replay18_rapid_after.json",
+      "path": "pre-repair/replay18_rapid_after.json.xz",
+      "raw_bytes": 10771,
+      "raw_sha256": "98337d91dbb0224b6cd6d8b2fb89545f2f7a9413ffa25f77eeee7091587fe039",
+      "bytes": 3440,
+      "sha256": "229e9a6f7e868136073e272915c08ddc501844cf3d62d3342ab92d35e63c3c12",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/native-source18-sv_feat_card_text.lua",
+      "path": "pre-repair/native-source18-sv_feat_card_text.lua.xz",
+      "raw_bytes": 15271,
+      "raw_sha256": "200d74d03377b5f88fa7e2be8845f1ec646a4b204e1e3c8ce60144c6bff3d80b",
+      "bytes": 5700,
+      "sha256": "31bb38ad186f110e774a825a0cdedf93b5da168eeea158802c929dc7f0c291a0",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/native-source18-sv_rpg_gate_e_feats.lua",
+      "path": "pre-repair/native-source18-sv_rpg_gate_e_feats.lua.xz",
+      "raw_bytes": 36699,
+      "raw_sha256": "13ae81475f607027bad6faf585aef8ed9e5e3739912cd089bf4ed37b98765901",
+      "bytes": 6916,
+      "sha256": "1fcc890be407f645ec3aa056c940445f60d66ae95ac55dcb30bfceaa7a53362b",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/native-console-through-regen-line687.log",
+      "path": "pre-repair/native-console-through-regen-line687.log.xz",
+      "raw_bytes": 556532,
+      "raw_sha256": "0de82046ad407e05876cb5d23bdc8378370e808e029aa1af42fd78f3e9617e23",
+      "bytes": 11220,
+      "sha256": "e1c324ca1a34601faee1d7a30b9f925106650c237bf035aa4c19ffac52f31810",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/rapid-header-live.json",
+      "path": "pre-repair/rapid-header-live.json.xz",
+      "raw_bytes": 639,
+      "raw_sha256": "a54ff02bae23bf4ce033f6f0667c1c0743b93036035ec6452cbc0f83ef755cab",
+      "bytes": 484,
+      "sha256": "9152fd3923f119585025bf402d323d5fc3c77cb09a3b234888446178c70ac1fd",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/rapid-effect-live.json",
+      "path": "pre-repair/rapid-effect-live.json.xz",
+      "raw_bytes": 648,
+      "raw_sha256": "2f70dd29d551e037262512809581e558619888804f88633ef67a29f286c27c4e",
+      "bytes": 492,
+      "sha256": "66a1af06dcc55b4254122bdd57d3c25e3f5c5898184bb6085eb7f8dafe0ae41d",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/secondwind-header-live.json",
+      "path": "pre-repair/secondwind-header-live.json.xz",
+      "raw_bytes": 629,
+      "raw_sha256": "d60b1686a694681413a4ba0711dab4a325b48d704afb28438b4581b02f6ee39d",
+      "bytes": 480,
+      "sha256": "0fe9f6e74617bbc50b9190bb8cd0034cf90735c4b980e78437050873dd2f6646",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/shared-recovery-live.json",
+      "path": "pre-repair/shared-recovery-live.json.xz",
+      "raw_bytes": 1415,
+      "raw_sha256": "996c2aed7677dc50df075209a9487cffdf748d48e01fd48195759ee3c83a6500",
+      "bytes": 944,
+      "sha256": "fff1e2e37740d3fcbe67cb7a41a21d5e8769e0d4d06bb3e5899c5ebb273d324b",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/normalized04-fallback-directive-live.json",
+      "path": "pre-repair/normalized04-fallback-directive-live.json.xz",
+      "raw_bytes": 2304,
+      "raw_sha256": "fd2ed22cd364fcafca89e09d98f2a52a4af0e595de3c14b71ed6c575a5c628b8",
+      "bytes": 1284,
+      "sha256": "a7811acf6cf163c35b2689724bdfe65f5c33f2d6605e662ea3976e518c3bce15",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "pre-repair/receipt.json",
+      "path": "pre-repair/receipt.json.xz",
+      "raw_bytes": 5712,
+      "raw_sha256": "1117b675d047d50a703b04d319f6b8acc7f8ff5e6b61f8923078ac5c5b8c08eb",
+      "bytes": 2464,
+      "sha256": "16f87b53ff59ae4c2d357252ba5c2eaadc8f9883d53fd2486e1b6cbe1fe17099",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/before-card-rates.json",
+      "path": "static/before-card-rates.json.xz",
+      "raw_bytes": 330,
+      "raw_sha256": "207adbeaa6fa5e2acd0dc602218e3eaf77ac3e54e6ce4023703ad1a8a34264f7",
+      "bytes": 328,
+      "sha256": "ca0c97fd501a36ab80ee675d30503ee6620eb06766a265577c615003049b8012",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/before-card-rates.txt",
+      "path": "static/before-card-rates.txt.xz",
+      "raw_bytes": 2542,
+      "raw_sha256": "08c58f4f5a96e978cec896d273fb7c63bba380fad8227582655257602ab600c6",
+      "bytes": 924,
+      "sha256": "52c7363c42eb5b0db1e578938f5d0a717c4fac11e152a30ec55983903ce7dce1",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/before-sv_feat_card_text.lua",
+      "path": "static/before-sv_feat_card_text.lua.xz",
+      "raw_bytes": 15271,
+      "raw_sha256": "200d74d03377b5f88fa7e2be8845f1ec646a4b204e1e3c8ce60144c6bff3d80b",
+      "bytes": 5700,
+      "sha256": "31bb38ad186f110e774a825a0cdedf93b5da168eeea158802c929dc7f0c291a0",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/card-rates-luajit.txt",
+      "path": "static/card-rates-luajit.txt.xz",
+      "raw_bytes": 2652,
+      "raw_sha256": "e64aabeeb36306b9a413f2f536b621b0ab321f7524c44c1be0d21a72f2094c88",
+      "bytes": 784,
+      "sha256": "bcfbfed205701eb2882a8d6f00730bc8af50745aa08a08612b4bdda2fc26273e",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/catalog-check.txt",
+      "path": "static/catalog-check.txt.xz",
+      "raw_bytes": 372,
+      "raw_sha256": "d29a5f2d281e04c87f6657c9e954a2b6aafca5066f68ba1137841ef3f12aacb0",
+      "bytes": 340,
+      "sha256": "ff0aa35df0463c3a7dd85e31e257ebb812135ac672d31811f990215a785169cd",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/catalog-export.txt",
+      "path": "static/catalog-export.txt.xz",
+      "raw_bytes": 312,
+      "raw_sha256": "0f8d06884b67e02d004a39cdb3512aa9fe32c10796a27597e9487f84b04d0d80",
+      "bytes": 300,
+      "sha256": "71560c4226ed4d7aa538d0b54ae065c731f12237176f63e53643231f1f0f38fd",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/complete-lua-syntax.txt",
+      "path": "static/complete-lua-syntax.txt.xz",
+      "raw_bytes": 94833,
+      "raw_sha256": "18d1a1b567bb629459ca83faebafa8725c553ed28ea246dac2b3e67a98ca001e",
+      "bytes": 6316,
+      "sha256": "022d4d593bdac5bae23a2ef202dd93d3d9465f386da827375626cbd67dd05727",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/focused-receipt-before-node.json",
+      "path": "static/focused-receipt-before-node.json.xz",
+      "raw_bytes": 1715,
+      "raw_sha256": "aac7423f0148c3878fa1afab67acbe8a57b4772aa29618257f3ab1ef31c3e2b6",
+      "bytes": 760,
+      "sha256": "b3324bc46e43427294a3da504ae8b5f695a611ba4f3eaef0f60d4ee96c03bae4",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/focused-receipt.json",
+      "path": "static/focused-receipt.json.xz",
+      "raw_bytes": 2195,
+      "raw_sha256": "0f2a7bb691df09cbb427a10716159fe7394badedb9f9dc421866dc4e9b4a2cbc",
+      "bytes": 1020,
+      "sha256": "15c001d688433c0fae7e76700a97fb875cb614cdd4b5aa57798f2a3d06d44151",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/generation.json",
+      "path": "static/generation.json.xz",
+      "raw_bytes": 109,
+      "raw_sha256": "4e135766c3ee47ecf1b90f9420f1a2d71a21f5338bc9a9ed6681005b9e7e87a8",
+      "bytes": 132,
+      "sha256": "ae368b956a94b297976bb3c7e1a898e67e2635f0501d716a63fe8546273c3858",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/independent-review.json",
+      "path": "static/independent-review.json.xz",
+      "raw_bytes": 5362,
+      "raw_sha256": "f5f4e277916dfbfd55d17b546c708e06076bec3932c2d091e7c787821ba25ce1",
+      "bytes": 2632,
+      "sha256": "da6e6c9f86a712bf2334125629765b64bb3f80eab3df0231d5d379654c2a5fe1",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/manual-build.txt",
+      "path": "static/manual-build.txt.xz",
+      "raw_bytes": 112,
+      "raw_sha256": "26f7791792ac92dc8bb657d49d1c10db3c578eff29eb5a19366ec838c8ee02c6",
+      "bytes": 172,
+      "sha256": "409d75a511c7d5e98dc44ccf207be5937b85ac2ec1fa89a776a38f9f2120dc4d",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/manual-check.txt",
+      "path": "static/manual-check.txt.xz",
+      "raw_bytes": 112,
+      "raw_sha256": "26f7791792ac92dc8bb657d49d1c10db3c578eff29eb5a19366ec838c8ee02c6",
+      "bytes": 172,
+      "sha256": "409d75a511c7d5e98dc44ccf207be5937b85ac2ec1fa89a776a38f9f2120dc4d",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/manual-document-node22.txt",
+      "path": "static/manual-document-node22.txt.xz",
+      "raw_bytes": 175,
+      "raw_sha256": "e53cdc55a42e08bf8719dd1538bf8328c8e860ef5597c68cf77980bd242ce5b4",
+      "bytes": 212,
+      "sha256": "1e6adf7521109fa37bcaeb3c4b0ca35da9d7f84f0d8baf2cedc9d1b0cce8923c",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/manual-document.txt",
+      "path": "static/manual-document.txt.xz",
+      "raw_bytes": 1180,
+      "raw_sha256": "3ec8c573564365998c87c0b898faaf498b4675ae9bef20e658f68ef680f7f4a6",
+      "bytes": 568,
+      "sha256": "f01f6f01f2862e0f65f268257d4bcf5d9a3092a623d3479d7ef04341eecb0b6f",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/review-original-formatter.lua",
+      "path": "static/review-original-formatter.lua.xz",
+      "raw_bytes": 446,
+      "raw_sha256": "c7919e915db5dda1bfb03a2f742465445a6381763297acab4746ac5aa2a6cbaa",
+      "bytes": 372,
+      "sha256": "0ce184b41bcb2264a31baa4c089feb48df53d3575593f17928423ead47847e8f",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/test-before-identity-fixture-fix.lua",
+      "path": "static/test-before-identity-fixture-fix.lua.xz",
+      "raw_bytes": 1792,
+      "raw_sha256": "d02a11d3c24aad78e5228d8aa3e9e127832d9bbcad96e4b4b901fd29f115bece",
+      "bytes": 992,
+      "sha256": "c25ecd09cae313958d9aef2e2f3f031cb5e36f397195e3ca23125032e0985f07",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/test_feat_card_rates.txt",
+      "path": "static/test_feat_card_rates.txt.xz",
+      "raw_bytes": 2652,
+      "raw_sha256": "e64aabeeb36306b9a413f2f536b621b0ab321f7524c44c1be0d21a72f2094c88",
+      "bytes": 784,
+      "sha256": "bcfbfed205701eb2882a8d6f00730bc8af50745aa08a08612b4bdda2fc26273e",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/test_feat_repeat_guard.txt",
+      "path": "static/test_feat_repeat_guard.txt.xz",
+      "raw_bytes": 2345,
+      "raw_sha256": "2e2a89173f01a98a16228192d466e5b3c7a8446a3eaddcb51597e35ab4153286",
+      "bytes": 820,
+      "sha256": "1eadacb13951a8b4f83c4a1bb77842bde312b736c0648909f8c872349b213771",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/test_instruction_manual.txt",
+      "path": "static/test_instruction_manual.txt.xz",
+      "raw_bytes": 207,
+      "raw_sha256": "2db0bd463f8621c7f4d3a574245b24085f67b31dcb722ef1c4453ffa3cde1685",
+      "bytes": 232,
+      "sha256": "c6509783f2fbdf01eafe5f88b295c6fbdef71ad7a0660e6d7f10539aa0a3bbd4",
+      "compression": "xz"
+    },
+    {
+      "logical_source": "static/test_manual_transport.txt",
+      "path": "static/test_manual_transport.txt.xz",
+      "raw_bytes": 99,
+      "raw_sha256": "63f51a97b5cb50473a5327000e6a501de2fb926c9d46d5b5ca1036110a20145a",
+      "bytes": 156,
+      "sha256": "ccd88f019b7a435ac3328c08649d9baa55e96c0e028421fb833cf5eafd5b9cc8",
+      "compression": "xz"
+    }
+  ]
+}
