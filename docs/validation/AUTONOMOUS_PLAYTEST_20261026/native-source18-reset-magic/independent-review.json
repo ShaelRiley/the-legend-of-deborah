@@ -1,0 +1,25 @@
+{
+  "kind": "Independent bounded reset and map Magic evidence review",
+  "reviewer": "/root/native_profile_review",
+  "received_utc": "2026-10-28T00:25:41.569877+00:00",
+  "reviewed_receipt_sha256": "e4dc5a6ade5e7f694ee488086453292f440b8f690bfa1dee83dc2c0f05ce9148",
+  "result": "CLEAR",
+  "reviewer_actions": "Read-only verification of frozen evidence and current source; no GUI/private writes/Git.",
+  "verified": [
+    "Archive4288140bytes and all14 member/original hashes/bytes/counts.",
+    "Independently recomputed60sample drainOLS−6.671479880880901 and25sample recoveryOLS+1.5009404713074925 with matching residuals.",
+    "101stable observed body/HP/XYZ/mask/build rows, Qindex15 thenopen16through75,zero/closed76,tail9;no later sampledQ/M/UI.",
+    "Actual MAP_PROFILE18 line824drain6.6666666666667/regenmult0.9 and current source100/60×.9=1.5.",
+    "All5photos independently viewed: uncommittedstaging,stillstaging,actual29:59entry,open93/28:32,delayedclosed100/26:06. Captions accurately preserve timing differences.",
+    "Reset oldrun8/epoch2TIMEOVER tocurrentrun9/epoch3notfailed/maps0/deployedfalse agrees native console633/646.",
+    "Limits retain no exact20s or1800stopwatch,explosionvisual/audio,allcleanup,manualmapclose,co-op orfullcampaign acceptance."
+  ],
+  "findings": [],
+  "root_review": "Root approved delayed final closedphoto caption and actual rate reconciliation before commit.",
+  "own_checks": [
+    "JSON parses; source-provenance link and3photoaliases match.",
+    "Sampler/capture helpers pass Lua5.4syntax.",
+    "Archive and all member/current-frozen-origin digests verified."
+  ],
+  "publication_note": "Final receipt differs from reviewed hash only by adding this independent-review link; native evidence and scope unchanged."
+}

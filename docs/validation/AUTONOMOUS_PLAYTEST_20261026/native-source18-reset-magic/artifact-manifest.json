@@ -1,0 +1,72 @@
+{
+  "analysis/profile-comparison.json": {
+    "sha256": "4be7063a4df0a390a524d33930c7507f56e7153141894844afd89066548deed8",
+    "bytes": 1719,
+    "origin": ".build/autonomous-playtest-20261027/source18-reset-magic/profile-comparison.json"
+  },
+  "analysis/sample-analysis.json": {
+    "sha256": "f286c0d08a19e1d28c1a53a5add4ebc8241490f6c653e9255a6828c6f77b7d29",
+    "bytes": 4688,
+    "origin": ".build/autonomous-playtest-20261027/source18-reset-magic/sample-analysis.json"
+  },
+  "helpers/analyze_source18_map_magic.py": {
+    "sha256": "1e4d4618622668f45e7830dabdb0c29321aff6af844da82e65a0b7dfe08f3185",
+    "bytes": 3664,
+    "origin": ".build/autonomous-playtest-20261027/analyze_source18_map_magic.py"
+  },
+  "helpers/source18_map_magic_sampler.lua": {
+    "sha256": "6f012967f484733eaf4f49688e5e3bb0fd3e795e71dec811bfed05a36390fbb4",
+    "bytes": 3202,
+    "origin": ".build/autonomous-playtest-20261027/source18_map_magic_sampler.lua"
+  },
+  "helpers/source18_natural_reset_capture.lua": {
+    "sha256": "588ce80549470ce8a592899e1949a3ccfc4397674d218dfaae2cdfb79c610b06",
+    "bytes": 1435,
+    "origin": ".build/autonomous-playtest-20261027/source18_natural_reset_capture.lua"
+  },
+  "native/console-after-natural-reset.log": {
+    "sha256": "22f7ad3c6d91108e8213e76c74ad42831035aca037c855153b744da43cda59eb",
+    "bytes": 486470,
+    "origin": ".build/autonomous-playtest-20261027/source18-reset-magic/console-after-natural-reset.log"
+  },
+  "native/console-through-map-profile.log": {
+    "sha256": "4b9f41f8881b08c59f000c54fba8c52b658de93be0b6033f8e8b51b8afaaa2bd",
+    "bytes": 570574,
+    "origin": ".build/autonomous-playtest-20261027/source18-reset-magic/console-through-map-profile.log"
+  },
+  "native/source18_map_magic_sampler_3727783296.json": {
+    "sha256": "b3ac58aa7d23d95666f072ef79b9be5ef4a15889abaefe764c42abda241d4777",
+    "bytes": 53294,
+    "origin": ".build/autonomous-playtest-20261027/source18-reset-magic/source18_map_magic_sampler_3727783296.json"
+  },
+  "native/source18_natural_reset_snapshot.json": {
+    "sha256": "d7a012878f715ef808ee5da4734eed566fdb9524f4a20db12402dfe04223e4e1",
+    "bytes": 44958,
+    "origin": ".build/autonomous-playtest-20261027/source18-reset-magic/source18_natural_reset_snapshot.json"
+  },
+  "photos/1793145559826788137-source18-current-natural-clock-state.png": {
+    "sha256": "dc5e8a861b019bacb344cddbd10efffb07d867b1ba21e4cd2f26b3ac562d533e",
+    "bytes": 571577,
+    "origin": ".build/autonomous-playtest-20261027/screenshots/1793145559826788137-source18-current-natural-clock-state.png"
+  },
+  "photos/1793146036371528121-source18-caroline-normal-deployment.png": {
+    "sha256": "48bddd803af160f781b77b031b090d345883f890db74d82ace804f23875ed49a",
+    "bytes": 842305,
+    "origin": ".build/autonomous-playtest-20261027/screenshots/1793146036371528121-source18-caroline-normal-deployment.png"
+  },
+  "photos/1793146225423464021-source18-caroline-actual-entry.png": {
+    "sha256": "e19a92815a16b4e6226068bf363d680da26ad1bb5408956df001de1ce7ee0737",
+    "bytes": 1078923,
+    "origin": ".build/autonomous-playtest-20261027/screenshots/1793146225423464021-source18-caroline-actual-entry.png"
+  },
+  "photos/1793146312077142364-source18-caroline-map-magic-open.png": {
+    "sha256": "d819ee944894be36670fa08848c1e8cd1240d6d466bdc8efceb340ad7a613b38",
+    "bytes": 894817,
+    "origin": ".build/autonomous-playtest-20261027/screenshots/1793146312077142364-source18-caroline-map-magic-open.png"
+  },
+  "photos/1793146458619979641-source18-map-magic-after-25s.png": {
+    "sha256": "244f59a14a091a9661ae0b44c5d3682ef9ecddd5618bd0a984f9bf42c24f62a4",
+    "bytes": 923455,
+    "origin": ".build/autonomous-playtest-20261027/screenshots/1793146458619979641-source18-map-magic-after-25s.png"
+  }
+}

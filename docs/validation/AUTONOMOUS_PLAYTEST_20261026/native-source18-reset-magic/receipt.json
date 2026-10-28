@@ -1,0 +1,382 @@
+{
+  "kind": "Finite native source18 natural timeout/reset state and ordinary map Magic lifecycle",
+  "recorded_utc": "2026-10-28T00:22:16.202020+00:00",
+  "status": "PASS for sampled unfound-map opening, personal drain tozero, automatic zero-pool closure and recovery; timeout/new-campaign state and fresh ordinary entry observed with narrower visual/timing limits.",
+  "tested_gameplay_commit": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "prepared_and_rendered_build_label": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b",
+  "source_provenance": "../loot-label-occlusion/native-repaired/source-provenance.json",
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405",
+    "client": "Windows x86 Garrys Mod2026.09.17 / LuaJIT2.0.4 / Proton10",
+    "map": "gm_flatgrass",
+    "gamemode": "legend_of_deborah",
+    "real_clients": 1,
+    "host_pid_root_verified": 95782,
+    "host_birth_root_verified": "6693172",
+    "campaign_seed": 6102623,
+    "level_seed": 673660301,
+    "old_epoch": 2,
+    "fresh_epoch": 3,
+    "dungeon_level": 1,
+    "fresh_map_build_serial": 5,
+    "developer_mode": 1,
+    "developer_dense": true,
+    "unranked": true,
+    "character": "Root reports normal Caroline Wizard/BlastProof selection after automatic reset; photos independently identify Caroline and the ordinary staging/deployment. No class or feat grant helper used."
+  },
+  "design_authority": {
+    "document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
+    "revision": "AHj4eMSb0l-TOayXny05SAGYLJ5o6QJTx6Pz6jtdvtoXek2A-goOHyMC7RdJmiUVOgYTxfv9jFozq4KjQrs-jIDWtXgcPvRC2XcxKf7z7Q",
+    "navigation": "Reused live00/01 and current normalized05; freshly read03 during immediately preceding bounded map task. No GDD writes or HUMAN monolith read.",
+    "rules": [
+      {
+        "tab": "03",
+        "range": [
+          64822,
+          65185
+        ],
+        "rule": "LOD-MAG-001: exact100 capacity; INT permitted regeneration andWIS utility scaling; map-open suppression precedes regen multipliers."
+      },
+      {
+        "tab": "05",
+        "range": [
+          199362,
+          200587
+        ],
+        "rule": "LOD-TIMER-001:1800 per dungeon, starts once on first cooperative Hero deployment. Menus/map/later deployment do not restart or pause it. Deadline produces TIMEOVER; automatic fresh campaign follows completed collapse after20s. Manual E earlier after5s is separate."
+      },
+      {
+        "source": "docs/validation/FLOOR_MAP_PANEL_20261013.md",
+        "rule": "Explicit later author correction permits Q/M unfound-floor panel with missing-map reminder, ordinary personal Magic cost and map-up effects. This supersedes the older close/deny mirror."
+      }
+    ],
+    "numeric_policy_qualification": "Observed numeric rates are compared with current source/profile only. Broad normalized Magic law does not independently reapprove every historic numeric formula. No design or tuning change is made.",
+    "deferred": "October23 shorter reset/countdown/wording/hourglass/inventory/time-reward changes remain deferred; this evidence activates none."
+  },
+  "map_magic_finite_gate": {
+    "result": "PASS for this single native Hero/unfound-floor session",
+    "operator": "Root sole GUI/input controller reports one ordinary RAW Q0.2 press after loading the read-only sampler and hiding console, then no further input during sampling.",
+    "sampler_sha256": "6f012967f484733eaf4f49688e5e3bb0fd3e795e71dec811bfed05a36390fbb4",
+    "sampler_source_CRC_guards": {
+      "cl_minimap": "538781210",
+      "sv_minimap_magic": "1541306324",
+      "sv_magic": "979323034"
+    },
+    "native_samples": 101,
+    "wall_elapsed": 25.03575520000004,
+    "requested_interval": 0.25,
+    "first_sample": {
+      "index_zero_based": 0,
+      "elapsed": 3.2700000247132266e-05,
+      "cur": 3688.199917562306,
+      "map_open": false,
+      "server_map_active": false,
+      "magic": 100,
+      "console_visible": true,
+      "game_ui_visible": true,
+      "q_down": false,
+      "m_down": false
+    },
+    "observed_Q_down": {
+      "index_zero_based": 15,
+      "elapsed": 3.763560900000357,
+      "cur": 3691.9649174781516,
+      "map_open": false,
+      "server_map_active": false,
+      "magic": 100,
+      "console_visible": false,
+      "game_ui_visible": false,
+      "q_down": true,
+      "m_down": false
+    },
+    "first_open": {
+      "index_zero_based": 16,
+      "elapsed": 4.015608500000326,
+      "cur": 3692.219917472452,
+      "map_open": true,
+      "server_map_active": true,
+      "magic": 99.30000305175781,
+      "console_visible": false,
+      "game_ui_visible": false,
+      "q_down": false,
+      "m_down": false
+    },
+    "last_open": {
+      "index_zero_based": 75,
+      "elapsed": 18.7833112000003,
+      "cur": 3706.97991714254,
+      "map_open": true,
+      "server_map_active": true,
+      "magic": 0.6000022292137146,
+      "console_visible": false,
+      "game_ui_visible": false,
+      "q_down": false,
+      "m_down": false
+    },
+    "first_zero_closed": {
+      "index_zero_based": 76,
+      "elapsed": 19.03846990000011,
+      "cur": 3707.2349171368405,
+      "map_open": false,
+      "server_map_active": false,
+      "magic": 0,
+      "console_visible": false,
+      "game_ui_visible": false,
+      "q_down": false,
+      "m_down": false
+    },
+    "last_sample": {
+      "index_zero_based": 100,
+      "elapsed": 25.035722200000237,
+      "cur": 3713.23491700273,
+      "map_open": false,
+      "server_map_active": false,
+      "magic": 9,
+      "console_visible": false,
+      "game_ui_visible": false,
+      "q_down": false,
+      "m_down": false
+    },
+    "close_wall_bracket": [
+      18.7833112000003,
+      19.03846990000011
+    ],
+    "drain_OLS": {
+      "sample_count": 60,
+      "OLS_magic_per_CurTime_second": -6.671479880880901,
+      "maximum_absolute_residual_magic": 0.3425455195356335
+    },
+    "recovery_OLS": {
+      "sample_count": 25,
+      "OLS_magic_per_CurTime_second": 1.5009404713074925,
+      "maximum_absolute_residual_magic": 0.03188501592921966
+    },
+    "constant_values": {
+      "player_id": 1,
+      "player_birth": 285,
+      "alive": true,
+      "hp": 100,
+      "position": [
+        -3840,
+        -1920,
+        -12271.376953125
+      ],
+      "floor_mask": 0,
+      "build_serial": 5,
+      "client_level": 1,
+      "magic_max": 100,
+      "objective_stage": 1,
+      "synchronized": true
+    },
+    "no_later_sampled_Q_M_console_or_gameUI": true,
+    "both_map_and_NWactive_agree_all101": true,
+    "open_magic_nonincreasing": true,
+    "closed_recovery_magic_nondecreasing": true,
+    "interpretation": "A real sampled Q press precedes ordinary panel/lease activation. Personal Magic falls99.3to0.6, then both panel and replicated server lease are false at0 without another sampled key/UI/body/HP change. It then restores0to9 over the next6CurTime seconds. This resolves earlier console-open observation confounds for the zero-pool closure only.",
+    "precision_limits": "Client NW2 values and.25s sampling bracket the transition; firstopen already99.3, so15.0229s between firstopen and firstzero is not an exact100to0 stopwatch. The helper does not intercept a server forced-close event. Operator input report plus sampled states support automatic exhaustion, not an event-count assertion. It cannot exclude an entire death/respawn between samples; all101 observed rows are aliveHP100/bodyunchanged.",
+    "ordinary_manual_Q_M_close": "Not proved by this exhaustion-only scenario.",
+    "profile_comparison": "analysis/profile-comparison.json: actual current sole-player server MapDrainPerSecond6.6666666666667 and MagicRegenMultiplier0.9, with source normal100/60 regen giving1.5persecond. Sample OLSdrain6.67148/regen1.50094 agrees at native NW2/timer sampling precision. The bare profile print does not include INT/WIS or spawn; those values are not invented."
+  },
+  "timeout_reset_finite_observation": {
+    "result": "Native TIMEOVER and new-campaign state observed; intermediate explosion/rendered failure/restart-delay acceptance remains open.",
+    "operator_report": "Root allowed the existing unmodified1800 deadline to expire during independent preparations; no timer extension, reset command or resource setter. Root reports the subsequent in-place restart was automatic.",
+    "old_run": {
+      "level": 1,
+      "seed": 6102623,
+      "gates": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "failed": true,
+      "available": true,
+      "floorMapMask": 1,
+      "runId": "campaign:8",
+      "failureReason": "TIME OVER",
+      "cards": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "epoch": 2,
+      "levelSeed": 673660301,
+      "buildReady": true
+    },
+    "old_clock_summary": {
+      "deadline": 2902.1712446,
+      "timeManagementSeconds": 0,
+      "scene_started": 2902.2405081,
+      "scene_readyAt": 2909.251973,
+      "scene_ready": true,
+      "retained_scene_geometry_schedule_rows": 973
+    },
+    "new_run": {
+      "level": 1,
+      "seed": 6102623,
+      "gates": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "failed": false,
+      "available": true,
+      "floorMapMask": 0,
+      "runId": "campaign:9",
+      "cards": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "epoch": 3,
+      "levelSeed": 673660301,
+      "buildReady": true,
+      "clock": []
+    },
+    "same_old_and_current_run": false,
+    "current_spawn": 11,
+    "alive": true,
+    "hp": 100,
+    "deployed": false,
+    "balance_observed": 10,
+    "staging_field_qualification": "Capture reads ps.inStaging, which is absent/nil and omitted by JSON. Staging is shown by the fresh uncommitted-Caroline screenshot and deployedfalse, not an invented inStaging field.",
+    "old_table_qualification": "Earlier temporary EVP diagnostic retains the old table. Its Failed/clock/scene fields are stale history, not current Run.State. Geometry scheduler rows with removed entity fields do not establish live entities, successful cleanup or a production memory leak.",
+    "discovery_reset": "Old party mapmask1 is replaced by fresh mask0; current cards/gates allfalse and empty clock before first deployment. This proves only these captured fields, not exhaustive entity/event cleanup.",
+    "fresh_ordinary_entry": "Root reports ordinary class/feat/Hermit/portal input. Staging photo shows30:00 AWAITING FIRST HERO; actual-entry photo shows29:59 and DUNGEON CLOCK STARTED/DEPLOYED notices. Fresh entry is visually observed, not a full new campaign pass.",
+    "not_measured": [
+      "Exact1800elapsed stopwatch",
+      "Explosion viewpoint/animation/sound or TIMEOVER HUD",
+      "Actual20s post-collapse delay or manual5s restart",
+      "All entity/event/inventory/callback cleanup",
+      "New process/fresh-client behavior"
+    ]
+  },
+  "photos": [
+    {
+      "original_name": "1793145559826788137-source18-current-natural-clock-state.png",
+      "archive_member": "photos/1793145559826788137-source18-current-natural-clock-state.png",
+      "caption": "After the old deadline, fresh Caroline in staging with uncommitted Class/Level1Feat, INT9 andWIS10 shown. This is a post-reset view; no explosion is pictured.",
+      "sha256": "dc5e8a861b019bacb344cddbd10efffb07d867b1ba21e4cd2f26b3ac562d533e",
+      "independently_viewed": true
+    },
+    {
+      "original_name": "1793146036371528121-source18-caroline-normal-deployment.png",
+      "archive_member": "photos/1793146036371528121-source18-caroline-normal-deployment.png",
+      "caption": "Despite normal-deployment filename, this photo is still staging:30:00 AWAITING FIRST HERO and Spellbook. No completed deployment is claimed from it.",
+      "sha256": "48bddd803af160f781b77b031b090d345883f890db74d82ace804f23875ed49a",
+      "independently_viewed": true
+    },
+    {
+      "original_name": "1793146225423464021-source18-caroline-actual-entry.png",
+      "archive_member": "photos/1793146225423464021-source18-caroline-actual-entry.png",
+      "caption": "Actual deployed Caroline: COLLAPSE29:59, DUNGEON CLOCK STARTED and DEPLOYED notices, new starter Shotgun, HP100/Magic100.",
+      "sha256": "e19a92815a16b4e6226068bf363d680da26ad1bb5408956df001de1ce7ee0737",
+      "independently_viewed": true
+    },
+    {
+      "original_name": "1793146312077142364-source18-caroline-map-magic-open.png",
+      "archive_member": "photos/1793146312077142364-source18-caroline-map-magic-open.png",
+      "caption": "Native map is open on unfound Floor1/3, missing-map reminder, Magic93 andHP100, collapse28:32. No layout is exposed.",
+      "sha256": "d819ee944894be36670fa08848c1e8cd1240d6d466bdc8efceb340ad7a613b38",
+      "independently_viewed": true
+    },
+    {
+      "original_name": "1793146458619979641-source18-map-magic-after-25s.png",
+      "archive_member": "photos/1793146458619979641-source18-map-magic-after-25s.png",
+      "caption": "Native map is visibly closed with Magic100/HP100 at26:06. Despite the filename, this delayed follow-up is much later than the25s sampler tail (Magic9); no instant/full25s recovery claim.",
+      "sha256": "244f59a14a091a9661ae0b44c5d3682ef9ecddd5618bd0a984f9bf42c24f62a4",
+      "independently_viewed": true
+    }
+  ],
+  "console_evidence": [
+    {
+      "file": "native/console-after-natural-reset.log",
+      "bytes": 486470,
+      "lines": 740,
+      "Lua_exception_signatures": 0,
+      "retained_unknown_commands": [
+        {
+          "line": 6,
+          "text": "Unknown command \"con_enable\""
+        },
+        {
+          "line": 8,
+          "text": "Unknown command \"con_enable\""
+        },
+        {
+          "line": 327,
+          "text": "Unknown command: psv_allowcslua"
+        }
+      ],
+      "important_lines": [
+        {
+          "line": 633,
+          "text": "[LOD] Campaign failed at Level 1. seed=6102623 reason=TIME OVER"
+        },
+        {
+          "line": 646,
+          "text": "[LOD] Campaign restarted in-place after failure. previousLevel=1 previousSeed=6102623 newSeed=6102623 epoch=3"
+        }
+      ]
+    },
+    {
+      "file": "native/console-through-map-profile.log",
+      "bytes": 570574,
+      "lines": 824,
+      "Lua_exception_signatures": 0,
+      "retained_unknown_commands": [
+        {
+          "line": 6,
+          "text": "Unknown command \"con_enable\""
+        },
+        {
+          "line": 8,
+          "text": "Unknown command \"con_enable\""
+        },
+        {
+          "line": 327,
+          "text": "Unknown command: psv_allowcslua"
+        }
+      ],
+      "important_lines": [
+        {
+          "line": 633,
+          "text": "[LOD] Campaign failed at Level 1. seed=6102623 reason=TIME OVER"
+        },
+        {
+          "line": 646,
+          "text": "[LOD] Campaign restarted in-place after failure. previousLevel=1 previousSeed=6102623 newSeed=6102623 epoch=3"
+        },
+        {
+          "line": 768,
+          "text": "MAPMAGIC18 started\tLOD_Source18_MapMagic_Observation_3727783296\t25s read-only; hide console then ordinary Q/M"
+        },
+        {
+          "line": 773,
+          "text": "MAPMAGIC18\tsource18_map_magic_sampler_3727783296.json\t25_seconds_complete\t101\t25.036s"
+        }
+      ]
+    }
+  ],
+  "console_scope": "console-after-natural-reset.log predates the Magic sampler; its zeroLua-signature count does not claim a sampler-wide clean console. Any later frozen console is identified separately in this list. Bootstrap con_enable and root psv_allowcslua retry are retained.",
+  "remaining_limits": [
+    "One actual Deck/client; no cooperative sharing/sync/latejoin acceptance.",
+    "No full authored campaign/success ending, broad reset cleanup, controller/audio or performance acceptance.",
+    "No relevant source was changed; current source18 full337CI evidence remains in ../ci-source18.",
+    "Previous navigation receipt remains intact; this new reset has mask0 and does not retrospectively prove ordinary manual map closing on old epoch2.",
+    "No three varied clean campaign passes; clean-pass streak remains0."
+  ],
+  "clean_pass_streak": 0,
+  "evidence": {
+    "raw_archive": "raw-evidence.tar.xz",
+    "manifest": "artifact-manifest.json",
+    "files": 14,
+    "archive_bytes": 4288140,
+    "archive_sha256": "906dd8496ad224986fe424e05e052b4ab27ee8e425df40b9fd3dcac7f79ebe54",
+    "analysis": "analysis/sample-analysis.json with reproducible helpers/analyze_source18_map_magic.py; derived analysis is not native output."
+  },
+  "independent_review": "independent-review.json"
+}
