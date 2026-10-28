@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "kind": "Targeted live-design reconciliation and finite native coverage plan; no pass claims",
-  "inspected_source_head": "8bea782c",
+  "kind": "Targeted live-design reconciliation, finite native results and remaining authored coverage plan",
+  "inspected_source_head": "63bcc03e30233f74208a92e25a1904a87201125f",
   "read_utc": "2026-10-26 23:44:30 UTC",
   "design": {
     "id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
@@ -134,7 +134,16 @@
       "fixture": "lod_event_preview_generate vending_machine",
       "scenario": "Inspect price; buy below potion-stack capacity; retry at full stack/insufficient funds and after consuming purchased potion.",
       "expected": "10 $DEB buys one ordinary Healing Potion, once/account/dungeon; denial costs nothing; use of potion does not renew purchase.",
-      "result": "not_run_by_this_agent"
+      "result": "Finite source18 single-client earned-currency purchase passes: StrengthPress earned20DEB, Vending10DEB debit leaves10 and delivers oneHealingPotion0→1, native quantity1/3, ordinaryrepeat denied. Both4s guarded locator returns preserve sampledHP/life/progression. Potion consumption/healing/cure/throw and event ordinary route not tested.",
+      "evidence": [
+        "native-source18-authored/receipt.json"
+      ],
+      "pending": [
+        "Insufficient funds/full-stack boundaries",
+        "Consume/drop then repeat denial; reconnect/next-dungeon success lifecycle",
+        "Potion healing/cure/throw outcomes",
+        "Ordinary traversal/rendered machine/real cooperative cases"
+      ]
     },
     {
       "id": "false_floor",
@@ -341,12 +350,14 @@
       "fixture": "lod_event_preview_generate strength_press",
       "scenario": "Read displayed modifier/chance; Use once, compare logged face+STR against threshold, try repeat and reconnect.",
       "expected": "One stable ordinary d20+canonical STR vs12; success20 $DEB, failure no reward/cost; no reroll on retry.",
-      "result": "Partially runtime observed/finite failed-attempt gate accepted on source16: face1+STR−1=0vs12, wallet0; ordinary repeated Use denied, same-dungeon regeneration retains exact spent receipt and replacement-machine Use denied. Explicit beyond-lock preview locator; ordinary route and success20 payout remain unaccepted.",
-      "evidence": "native-source16-events/receipt.json",
+      "result": "Finite single-client failure and success branches observed: prior source16face1+STR−1=0vs12/no payout and receipt across regeneration; source18natural18+STR3=21vs12 credits20DEB and repeated ordinaryE denied. Same-body4s locator/return preservesHP/life/cards/gates/maps. Preview/beyond-lock relocation is explicit; no ordinary event route/co-op acceptance.",
+      "evidence": [
+        "native-source16-events/receipt.json",
+        "native-source18-authored/receipt.json"
+      ],
       "pending": [
-        "Success20 payout",
-        "Ordinary event traversal/admission and combat-adjacent behavior",
-        "Reconnect/replacement-Hero persistence",
+        "Ordinary event route/admission/combat-adjacent behavior",
+        "Reconnect/replacement-Hero persistence for successful entitlement",
         "Cooperative independent/simultaneous attempts"
       ]
     },
@@ -600,7 +611,7 @@
         "sh_equipment_economy.lua supports six existing families only; crossbow and RPG are absent.",
         "Existing sv_magic_progression.lua ClassMilestoneAbilityDelta is older ability-score progression, not the new active abilities/familiar."
       ],
-      "sequencing": "No explicit 5/10/15 implementation deferral/activation entry found in current DEVELOPMENT_PLAN.md, NEXT_DEVELOPMENT_HANDOFF.md or docs/briefs. Live additions repeatedly say design-only. Root's current campaign scope is active implemented systems; preserve this named designed-only coverage gap for the user if overall required-scope interpretation matters.",
+      "sequencing": "Current DEVELOPMENT_PLAN bugfix campaign explicitly preserves the October12Level5/10/15 additions as design-only and separates/deferstheir implementation. Active implemented systems remain this testing scope; the authored milestone gap is retained, not fabricated, runtimepassed or repaired as an active bug.",
       "future_gate_only": "Thresholds4/5,9/10,14/15; automatic cumulative ownership and pending single delivery; real rebound/UI input; collision/cover/rider accounting; one familiar plus one pending return and preserved identity/HP/deadline. Not an instruction to implement within this bugfix tranche."
     }
   },
@@ -612,6 +623,49 @@
     "detail": "rpg_session_latest.txt only for exact ordering/timing",
     "presentation": "Screenshots/video/audio for visual, input and sound rows",
     "finish": "lod_rpg_test_finish <fixture-label>",
-    "results": "No runtime work performed by this agent; root owns client and result matrix"
+    "results": "Finite native source18 transaction/visual/map/resource receipts above now banked and independently reviewed. Root remains sole client controller. Unrun rows and all primary boss native gates stay open; static implementation is not native acceptance."
+  },
+  "latest_verified_main_before_checkpoint": "a8c73060ee9b0708bff593fe557edb569ff8b7ec",
+  "updated_utc": "2026-10-28T00:39:58.804813+00:00",
+  "runtime_checkpoint": {
+    "gameplay": "63bcc03e30233f74208a92e25a1904a87201125f",
+    "prepared_label": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b",
+    "finite_event_identities_with_native_branches": 2,
+    "total_active_event_identities": 28,
+    "accepted_full_event_families": 0,
+    "authored_pair": "native-source18-authored/receipt.json",
+    "adjacent_native": [
+      "native-source18-navigation/receipt.json",
+      "native-source18-reset-magic/receipt.json",
+      "loot-label-occlusion/native-repaired/receipt.json",
+      "native-source18-adjacent/geometry/receipt.json"
+    ],
+    "current_root_report": "Source18 CLOSED. LastCarolineWizardBlastProof/run9epoch3 after protectedwalk/7shotguntriggers/naturaldeathrespawn2lives and4EarthMissile casts20MPeach; no hit/kill/combat/stair acceptance. Fresh same-gameplay proposal only, not executed.",
+    "diagnostic_error": "Approach18 developer guard assertion retained/corrected by coordinate-basedv2; no production fix/defect claimed. See native-source18-reset-magic/diagnostic-error-audit.json.",
+    "cooperative": "Blocked distinct real-client acceptance: only this SteamDeck available.",
+    "audio": "Perceptual audio omitted/unaccepted.",
+    "clean_pass_streak": 0,
+    "session_closure": {
+      "status": "CLOSED; next fresh replay proposal only, no launch by this checkpoint",
+      "host_closure": "native-source18-reset-magic/source18-host-closure.json",
+      "closure_sha256": "3f10d25e2c20f8e61bd108a9da50317fa27102793ee80aae34fc904a44a6fa63",
+      "launch_result": "native-source18-reset-magic/source18-launch-result.json",
+      "launch_result_sha256": "e8ef2ad2bf05401ef6824e6509b583407f181ce4fbca9147d1d6c22da5b81e70",
+      "owned_game_pid": 95782,
+      "owned_utility_pid": 95912,
+      "host_approved_ps_absent": true,
+      "launch45222_finished": true,
+      "configured_seconds_limit": 7200,
+      "elapsed_seconds": 4644.011,
+      "wrapper_exit": -15,
+      "unproven_native_pids": [],
+      "remaining_owned_pids": [],
+      "cleanup_errors": [],
+      "original_config_unchanged": true,
+      "termination_cause": "UNPROVEN. Preserve early ending/wrapper-15; no native crash or lease-expiry claim. Investigate if fresh replay repeats.",
+      "save_qualification": "Equality covers recorded original configuration only, not all saves/data.",
+      "cloud": "OriginalON restored and UI-verified; temporarily_disabledfalse/restore_requiredfalse. Fresh private replay needs newOFFproof, not historicalsource18OFF.",
+      "cloud_restoration": "native-source18-reset-magic/steam-cloud-restoration.json"
+    }
   }
 }

@@ -1,0 +1,58 @@
+{
+  "kind": "Correction of a missed native diagnostic assertion in the source18 console prefix",
+  "utc": "2026-10-28T00:32:46.015759+00:00",
+  "original_published_main": "a8c73060ee9b0708bff593fe557edb569ff8b7ec",
+  "original_receipt": "receipt-before-approach18-audit.json",
+  "original_receipt_sha256": "bd22f1dd384e672da262a26ae82db3a225ac49c25ba8db776c4a23647f5fd608",
+  "result": "One real read-only diagnostic assertion was omitted from the initial error classification. The original evidence and review are preserved; no production repair or new gameplay pass is claimed.",
+  "frozen_console": {
+    "archive": "raw-evidence.tar.xz",
+    "member": "native/console-through-map-profile.log",
+    "sha256": "4b9f41f8881b08c59f000c54fba8c52b658de93be0b6033f8e8b51b8afaaa2bd",
+    "lines": 824,
+    "assertion_line": 817,
+    "stack_lines": [
+      818,
+      819,
+      820,
+      821
+    ],
+    "text": "[ERROR] Approach18:19: actual native flight direction changed",
+    "Magic_sample_completion_line": 773,
+    "subsequent_profile_line": 824
+  },
+  "cause": "Original helper compares VerticalEdges endpoint tables by Lua identity against Graph.Cells tables. Their matching coordinates do not require object identity, so actualEdge can remain nil and the flight-direction guard fails before any trace output. Prior native stair readout already reports lower4:12:0/upper4:12:1/uphillS/entryN.",
+  "correction": "Separate ignored v2 helper matches exact endpoint coordinates, rejects ambiguous matches, and retains the direction/run/source guards. Output kind/path distinguish v2. Syntax checked; successful native v2 execution is not claimed here.",
+  "attribution": "Owned developer diagnostic failure, not a demonstrated stair geometry or game-code defect. Original helper fails before its traces/file output and contains no actor/resource/graph setter. The earlier101sample Magic sequence completed before this assertion; its finite result is unchanged.",
+  "counting_error": "The earlier regex counted Lua Error, SCRIPT ERROR, attempt-to-call/index and stack traceback signatures, but omitted GMod native [ERROR] assertions. Its numeric0 was a narrow pattern result, not a complete error audit. This checkpoint explicitly records the actual error block and stack instead of hiding the preserved0.",
+  "new_error_scan": "Count native ^[ERROR] blocks as well as the legacy signatures; retain diagnostic/input errors separately from attributable production defects.",
+  "review_history": "independent-review.json remains the original CLEAR report; it did not classify this assertion. Root identified the omission and this audit corrects it without rewriting that history.",
+  "artifacts": {
+    "approach18-original.lua.txt": {
+      "sha256": "688348967252e9af73f7cf206eaacbed996cdc3307c578ac79b70c24620c16cf",
+      "bytes": 6381,
+      "origin": ".build/autonomous-playtest-20261027/source18_stair_approach_segments.lua"
+    },
+    "approach18-coordinate-guard-v2.lua.txt": {
+      "sha256": "ab60ce869b801007d39ef5907e5204238d818cd5f52100927e5d1f90a75dff5b",
+      "bytes": 6611,
+      "origin": ".build/autonomous-playtest-20261027/source18_stair_approach_segments_v2.lua"
+    },
+    "stair-readout-before-failed-helper.json": {
+      "sha256": "325f44ccdfc36eabe78569953fdfafa87ae49ef7459cad89df215b4f239a6858",
+      "bytes": 34874,
+      "origin": ".build/autonomous-playtest-20261027/source18-stair/source18_stair_walk_readout_epoch3_3726251.json"
+    }
+  },
+  "failure_excerpt": {
+    "file": "approach18-original-failure.txt",
+    "sha256": "9d7f56d85053fc2529d82b4ed4f9c8f44405286ccdebaaf19dac9ad6dfb3702c"
+  },
+  "production_source_proof": {
+    "path": "gamemodes/legend_of_deborah/gamemode/lod/sv_maze_generator.lua",
+    "line": 273,
+    "sha256": "af5ab9166444d184d84bfe0142ead5931e6fa97425308d92ac55852af3287c21",
+    "statement": "graph.VerticalEdges[#graph.VerticalEdges + 1] = {a = copyCell(e.a), b = copyCell(e.b)}",
+    "meaning": "Vertical edge endpoints are value copies, so exact coordinates need not imply Lua object identity with Graph.Cells."
+  }
+}

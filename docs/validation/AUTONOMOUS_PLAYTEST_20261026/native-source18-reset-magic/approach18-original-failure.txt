@@ -1,0 +1,10 @@
+> RunString(file.Read("legend_of_deborah/source18_stair_approach_segments_source.txt","DATA"),"Approach18")...
+
+[ERROR] Approach18:19: actual native flight direction changed
+  1. assert - [C]:-1
+   2. unknown - Approach18:19
+    3. RunString - [C]:-1
+     4. unknown - lua_run:1
+
+> local p=player.GetHumans()[1] print("MAP_PROFILE18",LOD.RPGAbilityRules:MapDrainPerSecond(p),LOD.RPGAbilityRules:MagicRegenMultiplier(p))...
+MAP_PROFILE18	6.6666666666667	0.9

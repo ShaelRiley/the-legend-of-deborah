@@ -1,0 +1,78 @@
+-- v2: vertical-edge endpoints are matched by exact coordinates, not Lua table identity.
+-- Bounded one-shot read-only native side-aisle probes. No gameplay setters,
+-- graph/cache calls, timers, input, pickup/grant, or actor movement.
+assert(SERVER and game.GetMap()=="gm_flatgrass" and GetConVar("lod_developer_mode"):GetBool(),"private server required")
+for name,crc in pairs({sv_m1_stair_geometry="482833045",sv_safe_teleport="377454284"}) do
+    assert(util.CRC(file.Read("gamemodes/legend_of_deborah/gamemode/lod/"..name..".lua","GAME"))==crc,"wrong source: "..name)
+end
+local s=assert(LOD.RunManager.State) local g=assert(s.Graph)
+assert(s.BuildReady and s.CampaignSeed==6102623 and s.LevelSeed==673660301 and s.CampaignEpoch==3 and s.RunId=="campaign:9","wrong current epoch3 run")
+local humans=player.GetHumans() assert(#humans==1,"sole actual client required")
+local p=humans[1] local ps=LOD.RunManager:GetPlayerState(p)
+assert(IsValid(p) and p:Alive() and p:Health()>0 and ps and ps.deploymentComplete and not ps.inStaging and not ps.eliminated and (ps.lives or 0)>0 and p:GetMoveType()==MOVETYPE_WALK,"living deployed Hero required")
+local B,MC=LOD.MazeBuilder,LOD.Config.Maze
+local lower=assert(g.Cells["4:12:0"]) local west=assert(g.Cells["3:12:0"]) local entry=assert(g.Cells["4:13:0"])
+assert(west.neighbors["4:12:0"] and lower.neighbors["4:13:0"],"actual graph approaches changed")
+local actualEdge
+for _,e in ipairs(g.VerticalEdges or {}) do
+    local function at(c,x,y,z) return c and c.x==x and c.y==y and c.z==z end
+    if (at(e.a,4,12,0) and at(e.b,4,12,1)) or (at(e.b,4,12,0) and at(e.a,4,12,1)) then
+        assert(not actualEdge,"ambiguous actual native flight") actualEdge=e
+    end
+end
+assert(actualEdge and actualEdge.LODStairDirection=="S" and actualEdge.LODStairEntrySide=="N","actual native flight direction changed")
+local base=B:CellCenter(lower) assert(base:DistToSqr(Vector(-2688,384,-12271.96875))<.01,"actual current world geometry changed")
+local lo,hi=p:GetHull() local z=base.z-lo.z+1.5
+local function vec(v) return {v.x,v.y,v.z} end
+local function entity(e)
+    if not IsValid(e) then return nil end
+    local a,b=e:GetCollisionBounds()
+    return {id=e:EntIndex(),birth=e:GetCreationID(),class=e:GetClass(),position=vec(e:GetPos()),
+        worldMins=vec(e:GetPos()+a),worldMaxs=vec(e:GetPos()+b),kind=e.GetBoxKind and e:GetBoxKind() or nil}
+end
+local function trace(t) return {hit=t.Hit,startSolid=t.StartSolid,allSolid=t.AllSolid,fraction=t.Fraction,position=vec(t.HitPos),entity=entity(t.Entity)} end
+local function clear(t) return not t.Hit and not t.StartSolid and not t.AllSolid end
+local loot=Entity(1149) local sameLoot=IsValid(loot) and loot:GetCreationID()==5637 and loot:GetClass()=="lod_loot_pickup"
+assert(isnumber(COLLISION_GROUP_PLAYER_MOVEMENT),"native player movement collision group missing")
+local function sweep(a,b,withoutLoot,legacy)
+    local q={start=a,endpos=b,mins=lo,maxs=hi,mask=MASK_PLAYERSOLID,filter=withoutLoot and sameLoot and {p,loot} or p}
+    if not legacy then q.collisiongroup=COLLISION_GROUP_PLAYER_MOVEMENT end
+    return util.TraceHull(q)
+end
+local function at(x,y) return Vector(x,y,z) end
+local r={kind="source18_epoch3_readonly_native_stair_approach_segments_v2",at=SysTime(),campaign=s.CampaignSeed,levelSeed=s.LevelSeed,epoch=s.CampaignEpoch,run=s.RunId,
+    actualHero=entity(p),actualHeroPosition=vec(p:GetPos()),heroSpawn=p.LODRunSpawnSerial,hullMins=vec(lo),hullMaxs=vec(hi),
+    playerEntityCollisionGroup=p:GetCollisionGroup(),explicitMovementCollisionGroup=COLLISION_GROUP_PLAYER_MOVEMENT,legacyDefaultCollisionGroup=COLLISION_GROUP_NONE,
+    recordedApproachLootStillSame=sameLoot,recordedApproachLoot=sameLoot and entity(loot) or nil,candidates={},
+    qualification="Analytic native full-standing-hull segments/support samples only, using explicit PLAYER_MOVEMENT collision group; legacy default NONE traces retained for comparison. A legacy loot hit alone does not establish a movement obstruction. No player movement or physical traversal acceptance. Separately ignoring only the exact recorded loot is diagnostic, never a clear-path assertion. Paths are exact centerlines; existing pilot24-unit waypoint tolerance is not a proven corridor margin."}
+-- The first exact candidate is root's suggestion. Nearby lanes and an offset
+-- final approach are alternatives to be accepted/rejected by actual traces.
+local candidates={
+    {name="root_x_minus2820_center_pickup_approach",points={at(-3072,384),at(-2820,384),at(-2820,768),at(-2688,768)}},
+    {name="x_minus2792_center_pickup_approach",points={at(-3072,384),at(-2792,384),at(-2792,768),at(-2688,768)}},
+    {name="x_minus2776_center_pickup_approach",points={at(-3072,384),at(-2776,384),at(-2776,768),at(-2688,768)}},
+    {name="x_minus2792_offset_before_first_tread",points={at(-3072,384),at(-2792,384),at(-2792,736),at(-2720,736)}}}
+for _,c in ipairs(candidates) do
+    local row={name=c.name,path={},segments={},fullSegmentsClear=true,standingSamplesClear=true,supportSamplesValid=true,samples=0}
+    for _,v in ipairs(c.points) do row.path[#row.path+1]=vec(v) end
+    for i=2,#c.points do
+        local a,b=c.points[i-1],c.points[i] local raw=sweep(a,b,false)
+        local seg={from=vec(a),to=vec(b),fullHull=trace(raw),legacyDefaultFullHull=trace(sweep(a,b,false,true))}
+        if sameLoot then seg.withoutOnlyRecordedLoot=trace(sweep(a,b,true)) end
+        row.fullSegmentsClear=row.fullSegmentsClear and clear(raw)
+        local count=math.max(1,math.ceil(a:Distance(b)/16))
+        for j=0,count do
+            local v=a+(b-a)*(j/count) local stand=sweep(v,v,false)
+            local support=sweep(v+Vector(0,0,4),v-Vector(0,0,6),false)
+            local supported=support.Hit and not support.StartSolid and not support.AllSolid and support.HitNormal.z>.7
+            row.samples=row.samples+1
+            if not clear(stand) then row.standingSamplesClear=false if not row.firstStandingBlock then row.firstStandingBlock={position=vec(v),trace=trace(stand)} end end
+            if not supported then row.supportSamplesValid=false if not row.firstInvalidSupport then row.firstInvalidSupport={position=vec(v),trace=trace(support)} end end
+        end
+        row.segments[#row.segments+1]=seg
+    end
+    row.finiteNativeCenterlineClear=row.fullSegmentsClear and row.standingSamplesClear and row.supportSamplesValid
+    r.candidates[#r.candidates+1]=row
+end
+local out="legend_of_deborah/source18_stair_approach_segments_v2_"..math.floor(SysTime()*1000)..".json"
+file.Write(out,util.TableToJSON(r,true)) print("SOURCE18_STAIR_APPROACH_SEGMENTS="..out)

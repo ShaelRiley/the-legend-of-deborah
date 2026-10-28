@@ -1,50 +1,81 @@
 # Current checkpoint — autonomous native gameplay and defect campaign
 
-Campaign active; clean streak0. Full authored progression, boss/event families,
-endings/reset and distinct-client cooperation remain open. Only this Deck is
-available, so cooperative client acceptance is blocked. October23 changes,
-40FPS, Workshop/VPS and design-only class5/10/15 rewards remain deferred.
+Campaign active; clean streak0. Verified evidence main
+`a8c73060ee9b0708bff593fe557edb569ff8b7ec` precedes this documentation checkpoint;
+gameplay remains `63bcc03e30233f74208a92e25a1904a87201125f`. Exact frozen337/337,
+928Lua/576production and independent repair review pass:
+[CI](validation/AUTONOMOUS_PLAYTEST_20261026/ci-source18/verification.json).
+Full authored progression/events/bosses, success endings/replay and varied clean
+passes remain open. Only this Deck is available: distinct real-client cooperative
+acceptance is blocked. October23 changes,40FPS, Workshop/VPS and design-only
+class5/10/15 rewards remain separate/deferred; no perceptual-audio acceptance.
 
-Latest gameplay `63bcc03e30233f74208a92e25a1904a87201125f` repairs BUG018 pickup
-names through generated opaque cover. Exact full337/337 CI,928Lua,576production
-files and independent frozen-source review pass: [CI](validation/AUTONOMOUS_PLAYTEST_20261026/ci-source18/verification.json).
-Fresh source18 on the actual Deck proves the same Health1054/birth1269 remains
-present but unnamed behind closed Redgate967; after ordinary card touch, legitimate
-Runner death, normal respawn and physical gate Use it is visible and named again.
-Closed/open eyes and bodies differ; no identical-ray or full-route claim.
-[Natively accepted finite defect gate](validation/AUTONOMOUS_PLAYTEST_20261026/loot-label-occlusion/native-repaired/receipt.json).
+BUG018 finite native source18 gate passes: the same Health remains present but
+unnamed behind closed Redgate, then ordinary card touch, real death/respawn and
+physical gate Use restore visibility/name. Eyes/lives differ; no identical-ray or
+full-route claim. [Visibility evidence](validation/AUTONOMOUS_PLAYTEST_20261026/loot-label-occlusion/native-repaired/receipt.json).
+The16 cargo/door controls across both realms are synthetic native rays only;
+no rendered gap/header/glass/Omniscience acceptance.
+[Supplement](validation/AUTONOMOUS_PLAYTEST_20261026/native-source18-adjacent/geometry/receipt.json).
+Qualified closed-gate samples remain29.7313→30.3647FPS with the same declared
+settings but different client entity/mesh counts and AI state; no causal gain
+or40FPS claim. Preserve BUG012–017
+finite gates and accepted collision/performance improvements.
 
-Native analytic cargo/door controls also pass16 cases across both realms: only
-the two rendered cargo bands and closed door body occlude. Gap/invisible headers
-and an already-open gate remain clear. These are synthetic rays, not rendered
-HUD/glass/Omniscience acceptance. [Supplement](validation/AUTONOMOUS_PLAYTEST_20261026/native-source18-adjacent/geometry/receipt.json).
-Same closed-gate scene measured30.3647FPS,p9539.778/p9947.413ms,max54.976 over910
-active frames, compared with prior29.7313FPS,p9540.291 over891. Entity counts differ;
-no causal performance gain or40FPS acceptance. Earlier BUG012–017 finite evidence
-and preserved collision/performance gains remain regression constraints.
+Source18 Grace Rogue/Daunting earned StrengthPress20DEB (18+STR3=21/DC12), then
+Vending spent10/deliveredPotion1of3; ordinary repeats reject. Supported beyond-lock
+4s locators/returns are explicit and preserve sampled life/HP/progression state;
+no event route/co-op or potion-use acceptance. Active owned Pistol contributes
++2STR/+2WIS: immutable base17/14, effective19/16 matches sheet/server through the
+ordinary body-slot equip path. Failed double-click input is preserved.
+[Authored pair](validation/AUTONOMOUS_PLAYTEST_20261026/native-source18-authored/receipt.json).
 
-Current native install is prepared0d00da7d, production-source-equivalent63bcc,
-private Windowsx86/Proton10 gm_flatgrass1280x800, dev1/dense/cheats0/Workshopoff.
-Both realm nine-source proofs pass. Cloud4000 remains TEMPORARILY OFF (original ON):
-MUST restore after private testing. Perceptual audio remains unavailable despite
-owned-stream capture; stock Chromium fallback remains an environmental gap.
+On seed6102623, ordinary floor0 walk touches actual map2026: mask0→1,301cells/
+3chunks and visible BREADCRUMB10OF13 with UP/BEARLEFT2303u to unfound-Floor2 Red
+objective. Full server route/firststair agree; only floor0 was traversed. Both
+closed-named photos were actuallyOPEN. Old6102602 Blue/event-blocked case and
+actual staircase ascent/descent remain open.
+[Navigation](validation/AUTONOMOUS_PLAYTEST_20261026/native-source18-navigation/receipt.json).
 
-Genuine new campaign6102623/crypto run8/epoch2 generated and normal Rogue+Daunting
-class/feat/starter/portal selected. First normal1800s clock observed. StrengthPress
-preview, supported beyond-lock locator and ordinary E/repeat yield natural18+STR3
-=21/DC12, actual wallet0→20 and duplicate denial. Vending preview in the same
-account/run/dungeon yields wallet20→10, HealingPotion0→1, duplicate denial and
-native Equipment quantity1/3. Both4s locator returns preserve current life, HP100,
-and all card/gate/map flags. Event route and cooperative acceptance remain open;
-raw evidence frozen in .build/autonomous-playtest-20261027/source18-authored-pair
-pending scoped receipt review/bank. Suspected sheet/server stat difference matches
-active pistol+2STR/+2WIS versus shotgun0; source/native inventory attribution is
-being closed, not a confirmed defect.
+NaturalTIMEOVER and in-place run8/epoch2→run9/epoch3 reset state are banked;
+new mapmask0/cards/gatesfalse, fresh Caroline staging and ordinary29:59 first
+deployment observed. No intermediate explosion visual/audio, exact20s interval
+or exhaustive cleanup acceptance. Caroline Wizard/BlastProof ordinary Q then
+drains Magic to0, auto-closes panel/lease and recovers0→9 in101samples25.0358s.
+Actual server rates6.6667drain/0.9regenmult agree with sampled6.6715/1.50094.
+Delayed closed-photoMagic100 is separate from the25s tail9.
+[Reset/resource evidence](validation/AUTONOMOUS_PLAYTEST_20261026/native-source18-reset-magic/receipt.json).
 
-Next: bank authored-pair evidence; ordinary Q and entrance map touch on6102623,
-verify cross-floor Red objective breadcrumb/UP cue and any actual event barrier.
-Continue other authored families, ordinary progression and lifecycle coverage.
-[Requirement matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
+The frozen prefix contains a failed owned read-only Approach18 guard. A narrow
+regex originally missed its native[ERROR] assertion; original receipt/review and
+failure are preserved, and coordinate-based diagnosticv2 is separately prepared.
+This is not a demonstrated production stair defect or a successful native probe.
+[Error audit](validation/AUTONOMOUS_PLAYTEST_20261026/native-source18-reset-magic/diagnostic-error-audit.json).
+Root's separate stale RPC tooling failure is not a gameplay acceptance claim.
+
+Source18 is now CLOSED: host-approved process checks confirm owned95782/95912
+absent and launch45222finished. Wrapper−15 ended at4644.011s versus configured
+7200; exact causeUNPROVEN. Do not call it a crash or lease expiry. Original
+recorded configuration hashes agree; unproven/remaining/cleanup arrays are empty.
+[Closure](validation/AUTONOMOUS_PLAYTEST_20261026/native-source18-reset-magic/source18-host-closure.json).
+The prior actualDeck/Windowsx86/Proton10 gm_flatgrass1280x800,dev1/dense/cheats0/
+Workshopoff/source-verified finite proofs remain. LastCaroline/run9epoch3 had
+protected7-waypoint25.091s/HP100 exploration, seven Shotgun triggers ending empty/
+HP85, later natural death/respawn to lives2, and four EarthMissile casts at entry,
+20MPeach. No hit/kill or complete combat/stair/Magic pass follows.
+OriginalCloud4000ON is restored and UI-verified; guardtemporarily_disabledfalse/
+restore_requiredfalse. [Restoration](validation/AUTONOMOUS_PLAYTEST_20261026/native-source18-reset-magic/steam-cloud-restoration.json).
+HistoricalOFF is not valid new-launch proof: any fresh private replay needs its
+own root-ownedOFF UI verification before launch.
+
+Next: review the fresh same-gameplay private replay proposal; this checkpoint
+launches nothing. Root owns next client/source/profile verification and ordinary
+stair/objective/campaign replay. Preserve the unexplained early closure and
+failed tooling evidence, bank unarchived movement, then continue remaining
+families/endings and varied passes.
+[Requirement matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json) and
+[authored scope](validation/AUTONOMOUS_PLAYTEST_20261026/authored-coverage-plan.json)
+retain unaccepted rows; clean streak remains0.
 
 # Current checkpoint — integrate retained partial performance improvements
 

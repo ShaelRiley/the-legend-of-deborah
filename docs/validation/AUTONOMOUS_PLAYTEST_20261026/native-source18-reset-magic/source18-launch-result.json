@@ -1,0 +1,5677 @@
+{
+  "kind": "bounded_standalone_private_preflight",
+  "commit": "0d00da7de9b8eb4c623cd55c1f2734a94c01699b",
+  "primary_absent_before_launch": true,
+  "seconds_limit": 7200,
+  "cloud_disabled_owner_confirmation": true,
+  "cleanup_reserve_seconds": 5,
+  "original_config_hashes_before": {
+    "cfg/360controller-linux.cfg": "e2a1fd6355616b78a9ee95798a0026bea714773cac6a2a1991e823d18d3423d4",
+    "cfg/360controller.cfg": "83145835d51dea3c499a41c72bc0b350a6372b36ccd4170df678866d9e84be6c",
+    "cfg/ag000.cfg": "0347885185bd77ec72cb1a83ca37b83543d878df48c81f87913234459f05baa1",
+    "cfg/autoexec.cfg": "214afdc17a211ee0e285b28f0dfaa556bf40b5d55d0fa4c4830566a2953d05bb",
+    "cfg/client.vdf": "7d4a75254b734c5aab810d48d76fdca640d7c1f43f44aefe427e5e43b7a9fd56",
+    "cfg/config.cfg": "6ccccd1a27e4936f11d040953d986bf9886d15dae0868131e0bc79b91e7b7196",
+    "cfg/config_default.cfg": "6fe58d8c55a3322093b1a99ec8e556a09ac97141046c38c0dffdeb54e427fff4",
+    "cfg/game.cfg": "318702230feaf7c37f1bf59cf07d0fa82c88e6492694b552fff99c1b262ca63c",
+    "cfg/listenserver.cfg": "dba5166ad9db9ba648c1032ebbd34dcd0d085b50023b839ef5c68ca1db93a563",
+    "cfg/lod_deck_benchmark.cfg": "3d5e404764d1fa10e9abaae0cfdb1532ba067861bb9f82c8f9228825c9db3b72",
+    "cfg/mapcycle.txt": "6291f3ccb4315813b0a3d3ad805f1f8f279beb04ff081a3511f692b08e19a142",
+    "cfg/mount.cfg": "f752dda68030da811b3984f4a996557e4b53b4a5ba8916fa2f953fe181db69bf",
+    "cfg/mountdepots.txt": "ab5ed8d047579648144af66668c2ae360b152763fcd7cb3803140c202eff02b5",
+    "cfg/network.cfg": "e421e7eb4348009b8d83e2a10f9578a2dbddbd73ef2d303d8312eba7f937fc5e",
+    "cfg/server.cfg": "dba5166ad9db9ba648c1032ebbd34dcd0d085b50023b839ef5c68ca1db93a563",
+    "cfg/server.vdf": "7eabc9d94c9054b67776cf700bc034dc6bbabc72339931cf45901ad00fe33d47",
+    "cfg/server_blacklist.txt": "d74146704b557f89697a32946ba00691ff4911f0fdea47c2d1217822d4a50571",
+    "cfg/settings_default.scr": "da6aa10218199bc011aa4d406da1be5a19a69ca8917875f06d43bff1d0cf0af8",
+    "cfg/skill.cfg": "07bf1be0f3e032e1c56800da10cc56ed901721fb5bea92de08c3e5996fbed453",
+    "cfg/skill1.cfg": "9653b901cd9e1c41899d9f2f325ec611cf857d207a1fef3264eafc7156ded0e3",
+    "cfg/skill2.cfg": "1da159c69f32bf0e1982bf808b4d7963a82d140c507be54094b981212895288e",
+    "cfg/skill3.cfg": "b920a0fb6dfd58afaaaeab8b7e29e1b8b27dae3a5a236944631defcfb0f019f7",
+    "cfg/skill_manifest.cfg": "aa41b4e64d2604a54a4affe7fcd1d10a0dc1a4ecec0436b2ceb0eaec94cf356d",
+    "cfg/undo360controller.cfg": "cf08e445c85189c089aa87dfc9fbdc20a3db9b58e3e3861885328cc009f03967",
+    "cfg/valve.rc": "70715871ff257b58dfb25465f786f476f85b7752dcc44aa9a9ec96a1bf1c66ec",
+    "cl.db": "f7283a264377e6d9764825d7f7a3c8f90d280195d41d25f3b5415ad4f1a26195",
+    "mn.db": "70b05d256a9e254549c5322f5fda4c8fbc929ab98cbbfab44d53652046e5d25a",
+    "sv.db": "456f4b9c1ca351552dcc069629ca13e79b1b0703bfb75b0e751987e642e1a89a",
+    "videoconfig_linux.cfg": "1486a7b713703afe0a855f9c9b7fa963c4f7f6ee428b82805d59405427e96774",
+    "data/legend_of_deborah/stat_inventory": {
+      "bench_lod_index_restored.json": [
+        102,
+        1792635502867541269
+      ],
+      "bench_hud_source_black_original.png": [
+        5602,
+        1793037294965875254
+      ],
+      "bench_native_components.json": [
+        183,
+        1792681976730984170
+      ],
+      "bench_release_d20_before.txt": [
+        95,
+        1792810836691966639
+      ],
+      "bench_level_fourteen_prepare.txt": [
+        2733,
+        1792692799234348042
+      ],
+      "m1_support_628041529_l1_2078047509.json": [
+        486,
+        1787334467578607900
+      ],
+      "bench_sweep_arm.txt": [
+        4526,
+        1792684417668178259
+      ],
+      "bench_table_addresses_before.txt": [
+        169,
+        1792778337569946096
+      ],
+      "bench_profiler_api.txt": [
+        882,
+        1792685435923122231
+      ],
+      "bench_loading_precache_started.json": [
+        36,
+        1792957839290956472
+      ],
+      "bench_hud_fade_cached.png": [
+        11349,
+        1792780324738329696
+      ],
+      "bench_soldier_baseline.txt": [
+        496,
+        1792621568146647308
+      ],
+      "bench_jit_mcode.txt": [
+        1850,
+        1792771237309376536
+      ],
+      "bench_native_calls_start.txt": [
+        3957,
+        1792792964825936703
+      ],
+      "bench_client_io_stop.txt": [
+        43,
+        1792694965010468081
+      ],
+      "bench_all_hooks.txt": [
+        1552,
+        1792610988815625075
+      ],
+      "bench_finale_inspect.txt": [
+        677,
+        1792700360768782430
+      ],
+      "bench_hud_cache_receipt.json": [
+        132,
+        1792781013784595935
+      ],
+      "bench_native_floor_candidates.txt": [
+        1250,
+        1792606479462490226
+      ],
+      "bench_gameplay_route.txt": [
+        4101,
+        1792626364593065499
+      ],
+      "bench_animation_probe.txt": [
+        3187,
+        1792704922746085303
+      ],
+      "bench_client_io.json": [
+        5028,
+        1792695701588925600
+      ],
+      "bench_close_fields_restored.json": [
+        94,
+        1792635890870748280
+      ],
+      "bench_hud_black_original.png": [
+        5602,
+        1792780324681595530
+      ],
+      "bench_sample_services.txt": [
+        2370,
+        1792639180423890457
+      ],
+      "bench_hud_raster_source_before.txt": [
+        161,
+        1793037298950361325
+      ],
+      "dev_population_sources.txt": [
+        15537,
+        1793120838406764411
+      ],
+      "bench_native_index_cost.txt": [
+        1954,
+        1792627193115893525
+      ],
+      "bench_entity_fields.txt": [
+        1180,
+        1792613981756319961
+      ],
+      "bench_namespace_arm.json": [
+        934,
+        1792779896798957374
+      ],
+      "bench_state_candidate.txt": [
+        105,
+        1792631842231721033
+      ],
+      "bench_integration_snapshot_client.json": [
+        1408,
+        1793036169003295600
+      ],
+      "bench_nextbot_core.json": [
+        60474,
+        1792690107447572742
+      ],
+      "bench_dense_start_state.json": [
+        20319,
+        1792679228252761251
+      ],
+      "bench_batch_status.txt": [
+        245,
+        1792638395957116720
+      ],
+      "bench_dense_reset.txt": [
+        1470,
+        1792680386067469008
+      ],
+      "bench_hud_fade_original.png": [
+        11349,
+        1792780324719596158
+      ],
+      "bench_typed_proof.json": [
+        367,
+        1792688300941465779
+      ],
+      "bench_behave_direct_state.txt": [
+        697,
+        1792812120129479102
+      ],
+      "bench_native_calls_retirement.json": [
+        86,
+        1792793475572605329
+      ],
+      "bench_cell_key_probe.json": [
+        1107,
+        1792715572341042138
+      ],
+      "bench_bounds_notifications.json": [
+        168,
+        1792687052227451893
+      ],
+      "bench_sample_services.json": [
+        7185,
+        1792639257991694630
+      ],
+      "bench_native_call_cost.json": [
+        3087,
+        1792627127501804090
+      ],
+      "bench_typed_arm.json": [
+        18,
+        1792688300006264008
+      ],
+      "bench_hud_reference_state_client.json": [
+        1477,
+        1793037296732729252
+      ],
+      "bench_gc_pause_client.json": [
+        225,
+        1792627666283893108
+      ],
+      "bench_lod_index_guard.txt": [
+        215,
+        1792635290449456029
+      ],
+      "bench_table_addresses_server_after.json": [
+        92996,
+        1792778506362236480
+      ],
+      "bench_hud_reference_state_server.json": [
+        1639,
+        1793037296382874279
+      ],
+      "bench_hud_visual_receipt.json": [
+        91,
+        1792780324739596489
+      ],
+      "bench_self_query_start.txt": [
+        6787,
+        1792959039531899655
+      ],
+      "bench_motion_cost.txt": [
+        2562,
+        1792624613283423880
+      ],
+      "bench_npc_dispatch_source_proof.txt": [
+        3221,
+        1792774031514176710
+      ],
+      "bench_warden_model.json": [
+        646,
+        1792955262978678293
+      ],
+      "native_pilot_diagnostic_1209_6276831_1174_1516113281.txt": [
+        908648,
+        1793122218451293984
+      ],
+      "bench_native_method_arm.json": [
+        239,
+        1792792209018462522
+      ],
+      "bench_aligned_engine_first.json": [
+        86,
+        1792974244205319252
+      ],
+      "bench_dense_obstacle.json": [
+        785,
+        1792679689273494038
+      ],
+      "rpg_archive_latest.txt": [
+        3284831,
+        1793124560130712191
+      ],
+      "bench_sweep_restored.json": [
+        119,
+        1792684748011516898
+      ],
+      "bench_boss_stop.txt": [
+        354,
+        1792707876259701685
+      ],
+      "bench_stair_collision_inspection.json": [
+        1158,
+        1792990803765956493
+      ],
+      "bench_warden_dispatch_before.txt": [
+        146,
+        1792788377119113681
+      ],
+      "bench_progression_arm.json": [
+        16,
+        1792689957129331412
+      ],
+      "bench_advance_query_before.json": [
+        786,
+        1792987339074178832
+      ],
+      "bench_boss_profile.json": [
+        1957,
+        1792689587436993347
+      ],
+      "bench_release_d20_impl.txt": [
+        1809,
+        1792810836691882496
+      ],
+      "bench_method_index_factory.txt": [
+        637,
+        1792790724719940776
+      ],
+      "bench_loading_precache.json": [
+        1637,
+        1792957862315982591
+      ],
+      "bench_host_thread_capabilities.txt": [
+        764,
+        1792721754298681684
+      ],
+      "bench_collision_coalesce_probe.json": [
+        389,
+        1792713112837649778
+      ],
+      "bench_render_flags.txt": [
+        487,
+        1792640003624324689
+      ],
+      "bench_behave_direct_started.json": [
+        530,
+        1792812799727377731
+      ],
+      "bench_recorder_cpu_stop.txt": [
+        46,
+        1792789984979015828
+      ],
+      "bench_boss_bounds_proof.json": [
+        1370,
+        1792693548334110674
+      ],
+      "bench_query_profile_state.json": [
+        76,
+        1792959578723070833
+      ],
+      "bench_snapshot_route.txt": [
+        1046,
+        1792609803109684385
+      ],
+      "bench_jit_mcode_client.json": [
+        1094,
+        1792771821194632449
+      ],
+      "bench_wall_think_probe.txt": [
+        368,
+        1792612776549641797
+      ],
+      "bench_hurt_membership_arm.json": [
+        281,
+        1792800893590600143
+      ],
+      "bench_navigation_stats_before.txt": [
+        655,
+        1792803468065527127
+      ],
+      "bench_close_target_candidate.txt": [
+        125,
+        1792639327570759508
+      ],
+      "stability_server_latest.txt": [
+        7788,
+        1793123957110269029
+      ],
+      "rpg_test_log.txt": [
+        3284831,
+        1793048384476150419
+      ],
+      "m1_audit_226028529_l1_167758833.json": [
+        986,
+        1786932433763960974
+      ],
+      ".console_mirror.pid": [
+        6,
+        1793120838439765920
+      ],
+      "bench_server_io.json": [
+        34051,
+        1792696249210170589
+      ],
+      "bench_public_thread_capabilities_client.json": [
+        1905,
+        1792766322992723186
+      ],
+      "bench_validity_callers.json": [
+        29681,
+        1792799352900976156
+      ],
+      "bench_boss_scene_ready.txt": [
+        1020,
+        1792688898577310479
+      ],
+      "bench_behaviour_chain_census.json": [
+        41645,
+        1792786062685490089
+      ],
+      "bench_hud_cache.txt": [
+        4112,
+        1792681721155600020
+      ],
+      "bench_ack_client.json": [
+        81,
+        1793037296733632340
+      ],
+      "m1_audit_210406529_l1_607762343.json": [
+        986,
+        1786916934144460763
+      ],
+      "bench_nextbot_core.txt": [
+        1151,
+        1792690106428829579
+      ],
+      "bench_method_index_safety.json": [
+        1449,
+        1792790967744229178
+      ],
+      "bench_profile_lifecycle.json": [
+        737,
+        1792636644185663824
+      ],
+      "bench_sparse_status.json": [
+        2520,
+        1792686402777839027
+      ],
+      "bench_native_floor_mesh.txt": [
+        2341,
+        1792620825283773665
+      ],
+      "bench_boss_bounds_api.json": [
+        839,
+        1792689098049922842
+      ],
+      "bench_batch_on.txt": [
+        42,
+        1792638366188210487
+      ],
+      "bench_boss_commit_profile.txt": [
+        2595,
+        1792691548041907117
+      ],
+      "bench_hash_reserve_impl.txt": [
+        1572,
+        1792776693530145478
+      ],
+      "bench_dense_reset.json": [
+        3648,
+        1792680388852834918
+      ],
+      "bench_batch_off.txt": [
+        42,
+        1792638366188300525
+      ],
+      "bench_hud_cache_arm.json": [
+        246,
+        1792781018149288181
+      ],
+      "bench_beforeai_started.json": [
+        84,
+        1792969955093353172
+      ],
+      "bench_new_campaign.json": [
+        226,
+        1793037285546403303
+      ],
+      "bench_stop_input.txt": [
+        379,
+        1792684063650094928
+      ],
+      "bench_native_validity_before.json": [
+        716,
+        1792798266021891661
+      ],
+      "native_pilot_latest.json": [
+        10980,
+        1793123815155103756
+      ],
+      "bench_engine_window_arm.json": [
+        68,
+        1792974126033866110
+      ],
+      "bench_dense_snapshot.txt": [
+        1574,
+        1792640301475500829
+      ],
+      "bench_hud_source_fade_original.png": [
+        11349,
+        1793037295061723461
+      ],
+      "bench_hud_source_bright_original.png": [
+        9992,
+        1793037294874710830
+      ],
+      "bench_dense_obstacle.txt": [
+        1489,
+        1792679688600971644
+      ],
+      "bench_memory_trace_stop.txt": [
+        787,
+        1792727797083429137
+      ],
+      "bench_gc_parameters_server.json": [
+        332,
+        1793028461109885880
+      ],
+      "bench_scene_before_capture.png": [
+        995220,
+        1792699024069673127
+      ],
+      "bench_collision_matrix.txt": [
+        3815,
+        1792709854117426978
+      ],
+      "bench_jit_capacity.txt": [
+        168,
+        1792617956427303287
+      ],
+      "bench_behaviour_restore.txt": [
+        91,
+        1792690231290723417
+      ],
+      "bench_source_state_install.txt": [
+        1793,
+        1792632419274074992
+      ],
+      "bench_model_precache_probe.txt": [
+        699,
+        1792691875612044900
+      ],
+      "bench_native_method_after.json": [
+        780,
+        1792792376834605612
+      ],
+      "bench_release_twenty_before.json": [
+        1059,
+        1793028487039647795
+      ],
+      "bench_validity_shim_started.json": [
+        468,
+        1792795369705214324
+      ],
+      "bench_validity_callers_started.json": [
+        85,
+        1792799283882620817
+      ],
+      "m1_support_209473529_l1_1674653553.json": [
+        331,
+        1786915896684444423
+      ],
+      "bench_close_target_restore.txt": [
+        50,
+        1792639327570868406
+      ],
+      "bench_warden_dispatch_before.json": [
+        1265,
+        1792789368332411598
+      ],
+      "bench_validity_callers_stop.txt": [
+        50,
+        1792798786372569204
+      ],
+      "bench_hud_raster_source_visual.txt": [
+        3440,
+        1793037298950142251
+      ],
+      "bench_finale_admission_probe.txt": [
+        1202,
+        1792700629101980502
+      ],
+      "playtest_life_dead.txt": [
+        351,
+        1793071587553423835
+      ],
+      "bench_motion_vectors.json": [
+        136,
+        1792696991041926463
+      ],
+      "bench_gc_step_before_server.json": [
+        280,
+        1792729245883563520
+      ],
+      "bench_ai_cost.txt": [
+        1596,
+        1792614647902932257
+      ],
+      "bench_fprofiler_server.json": [
+        278725,
+        1792685879246211805
+      ],
+      "bench_hud_source_black_cached.png": [
+        5602,
+        1793037294982721666
+      ],
+      "bench_jit_flush.txt": [
+        92,
+        1792617174385902473
+      ],
+      "bench_timer_profile_stop.json": [
+        7684,
+        1792769066262651013
+      ],
+      "bench_query_profile_retirement.json": [
+        86,
+        1792959480427781404
+      ],
+      "bench_normal_equipment.json": [
+        3187,
+        1792608329667729280
+      ],
+      "bench_source_state_old.txt": [
+        124,
+        1792632419275166088
+      ],
+      "bench_absent_role_probe.txt": [
+        2356,
+        1792808396834847684
+      ],
+      "bench_aligned_engine_last.json": [
+        85,
+        1792974288669183265
+      ],
+      "bench_validity_shim_retirement.txt": [
+        463,
+        1792794008673487343
+      ],
+      "bench_hud_raster_source_after.txt": [
+        160,
+        1793037298950460977
+      ],
+      "bench_sweep_restore.txt": [
+        77,
+        1792684417668284845
+      ],
+      "bench_hash_reserve.json": [
+        6231,
+        1792777459557074853
+      ],
+      "bench_validity_callers_state.json": [
+        60,
+        1792799456056963605
+      ],
+      "bench_release_twenty_after.json": [
+        1087,
+        1793028607045774970
+      ],
+      "bench_warm_state_client.json": [
+        128,
+        1793027845807717333
+      ],
+      "bench_native_components.txt": [
+        567,
+        1792681976536788866
+      ],
+      "bench_boss_identity.txt": [
+        1148,
+        1792693342637223779
+      ],
+      "bench_motion_cost.json": [
+        5595,
+        1792624762599832715
+      ],
+      "bench_bounds_phases_after.txt": [
+        132,
+        1792809076239021409
+      ],
+      "bench_meta_coverage.json": [
+        186,
+        1792636426885515923
+      ],
+      "bench_validity_callers_arm.json": [
+        73,
+        1792799356654139132
+      ],
+      "bench_behave_direct_factory.txt": [
+        640,
+        1792812120128903300
+      ],
+      "bench_hud_cache_retire.txt": [
+        1124,
+        1792780449055073984
+      ],
+      "bench_components_control.json": [
+        212,
+        1792682518971949207
+      ],
+      "bench_memory_trace_server.json": [
+        282027,
+        1792728009075210233
+      ],
+      "bench_hurt_membership_impl.txt": [
+        2167,
+        1792800024423063054
+      ],
+      "bench_behave_direct_retirement.txt": [
+        471,
+        1792812120129613883
+      ],
+      "bench_heap_profile_disabled_server.json": [
+        57,
+        1792729693131019467
+      ],
+      "bench_input_probe.txt": [
+        266,
+        1792620141831300949
+      ],
+      "bench_animation_source_proof.txt": [
+        1136,
+        1792705077066488872
+      ],
+      "bench_loading_precache_start.txt": [
+        1485,
+        1792955673689693804
+      ],
+      "bench_close_source_restore.txt": [
+        50,
+        1792639687343157727
+      ],
+      "bench_player_query_arm.json": [
+        282,
+        1792708610390570721
+      ],
+      "bench_dense_human_route.json": [
+        41343,
+        1792680135275788749
+      ],
+      "rpg_test_summary.txt": [
+        2155,
+        1793124560121712164
+      ],
+      "bench_warden_precache_impl.txt": [
+        2397,
+        1792955673689918173
+      ],
+      "native_pilot_diagnostic_1556_7045783_1522_1979980469.txt": [
+        658263,
+        1793118741563944183
+      ],
+      "bench_table_addresses_impl.txt": [
+        4026,
+        1792778160029066428
+      ],
+      "bench_npc_dispatch_arm.json": [
+        163,
+        1792774880018316978
+      ],
+      "bench_geometry_probe.txt": [
+        840,
+        1792610842148432333
+      ],
+      "bench_native_calls_stop.txt": [
+        46,
+        1792792547234055695
+      ],
+      "bench_player_query_probe.json": [
+        1603,
+        1792706845556084666
+      ],
+      "bench_finale_native_gate.json": [
+        1145,
+        1792701101339382868
+      ],
+      "bench_release_twenty_impl.txt": [
+        1812,
+        1792811108807121131
+      ],
+      "bench_meta_hot_coverage.txt": [
+        1106,
+        1792636481224190332
+      ],
+      "bench_level_twenty_checkpoint.json": [
+        21128,
+        1793028290952220698
+      ],
+      "bench_instruction_profile_stop.txt": [
+        128,
+        1792714563578516484
+      ],
+      "bench_warden_dispatch_impl.txt": [
+        2108,
+        1792788377119020220
+      ],
+      "bench_hud_source_fade_cached.png": [
+        11349,
+        1793037295077723825
+      ],
+      "bench_movement_sweep_before.json": [
+        829,
+        1792815746010517909
+      ],
+      "bench_collision_coalesce_stop.txt": [
+        137,
+        1792712467023867206
+      ],
+      "bench_jit_trace_capacity_mode.txt": [
+        6,
+        1792714069510634577
+      ],
+      "bench_bounds_phases_arm.json": [
+        247,
+        1792809970519444127
+      ],
+      "bench_typed_restored.json": [
+        100,
+        1792688371929587967
+      ],
+      "bench_boss_snapshot.txt": [
+        1040,
+        1792688822129383664
+      ],
+      "bench_warden_precache_before.txt": [
+        160,
+        1792955673689994180
+      ],
+      "bench_typed_restore.txt": [
+        77,
+        1792687706021523824
+      ],
+      "bench_hud_cache_started.json": [
+        525,
+        1792781117027313349
+      ],
+      "bench_advance_query_after.json": [
+        800,
+        1792987409060511225
+      ],
+      "bench_dense_comparison.json": [
+        190,
+        1792678751247824516
+      ],
+      "bench_bounds_phases_before.json": [
+        727,
+        1792810069793359514
+      ],
+      "native_pilot_diagnostic_2203_9394521_2168_4592285156.txt": [
+        945397,
+        1793123212803190767
+      ],
+      "bench_behaviour_active.json": [
+        415,
+        1792690490885167618
+      ],
+      "bench_jit_trace_capacity_client.json": [
+        1061,
+        1792714141155084720
+      ],
+      "bench_beforeai_clock_start.json": [
+        29,
+        1792969955092353195
+      ],
+      "bench_props_probe.txt": [
+        442,
+        1792610550824595208
+      ],
+      "bench_components_control.txt": [
+        4793,
+        1792682495756575794
+      ],
+      "bench_player_query_source_proof.txt": [
+        1277,
+        1792707876269637169
+      ],
+      "bench_gc_step_stop.txt": [
+        759,
+        1792728601075035258
+      ],
+      "bench_hud_raster_source_impl.txt": [
+        3154,
+        1793037298950262093
+      ],
+      "bench_host_threading_probe.txt": [
+        349,
+        1792618985324062394
+      ],
+      "bench_sparse_status.txt": [
+        2844,
+        1792686360940656658
+      ],
+      "bench_build_dense_continuous.txt": [
+        1714,
+        1792679172598599954
+      ],
+      "bench_gc_step_before_client.json": [
+        280,
+        1792729246293563816
+      ],
+      "bench_batch_status.json": [
+        216,
+        1792638397012535940
+      ],
+      "bench_invisible_boxes.txt": [
+        341,
+        1792610988993637150
+      ],
+      "bench_movement_sweep_arm.json": [
+        235,
+        1792815646040100297
+      ],
+      "bench_loading_precache_stop.txt": [
+        52,
+        1792955673689798403
+      ],
+      "bench_collision_coalesce_started.json": [
+        172,
+        1792712947159141008
+      ],
+      "bench_stair_collision_started.json": [
+        252,
+        1793036149758219015
+      ],
+      "bench_close_native_sanity.json": [
+        271,
+        1792640240145713347
+      ],
+      "bench_hurt_membership_after.txt": [
+        136,
+        1792800024423246574
+      ],
+      "bench_behaviour_restored.json": [
+        3361,
+        1792690560902156827
+      ],
+      "bench_kind_cache_stats.txt": [
+        662,
+        1792606393251259381
+      ],
+      "bench_entity_field_shape.json": [
+        130264,
+        1792789822477863206
+      ],
+      "bench_gameplay_route.json": [
+        12521,
+        1792625964423849989
+      ],
+      "bench_native_calls_state.json": [
+        76,
+        1792793575666100833
+      ],
+      "bench_entry_context_arm.json": [
+        166,
+        1792722062176454396
+      ],
+      "bench_release_twenty_restored.json": [
+        305,
+        1793028607046816564
+      ],
+      "bench_cell_key_source_proof.txt": [
+        1036,
+        1792716379290914271
+      ],
+      "bench_finale_support_hull_probe.json": [
+        6850,
+        1792700708300329386
+      ],
+      "bench_heap_profile_disabled_client.json": [
+        57,
+        1792729694569147439
+      ],
+      "bench_boss_bounds_proof.txt": [
+        1889,
+        1792689330784333509
+      ],
+      "bench_warden_dispatch_after.txt": [
+        145,
+        1792788377119420773
+      ],
+      "bench_hud_source_dark_cached.png": [
+        8937,
+        1793037294796605147
+      ],
+      "bench_jit_profile_capabilities_server.json": [
+        324,
+        1792712306002150036
+      ],
+      "bench_validity_fast.json": [
+        180,
+        1792627580939497158
+      ],
+      "bench_dense_state.txt": [
+        1373,
+        1792679227368441529
+      ],
+      "bench_animation_arm.json": [
+        207,
+        1792705873973491185
+      ],
+      "bench_source_state_restored.json": [
+        86,
+        1792632746751424454
+      ],
+      "bench_meta_coverage.txt": [
+        855,
+        1792636426590841156
+      ],
+      "bench_hud_cache_stop.txt": [
+        105,
+        1792780227315151104
+      ],
+      "bench_hud_cache_visual.txt": [
+        1807,
+        1792681672422310582
+      ],
+      "bench_entry_sweep_on.txt": [
+        542,
+        1792625689174565952
+      ],
+      "bench_lod_index_control.txt": [
+        111,
+        1792635124528500522
+      ],
+      "bench_lower_stair_trace.txt": [
+        1646,
+        1792683168780476961
+      ],
+      "bench_renew_bridge.txt": [
+        120,
+        1792684063650094928
+      ],
+      "bench_lower_stair_trace.json": [
+        18015,
+        1792683169797472497
+      ],
+      "bench_close_target_restored.json": [
+        77,
+        1792639506964763777
+      ],
+      "bench_navigation_stats_before.json": [
+        295,
+        1792804264130222113
+      ],
+      "bench_native_validity_before.txt": [
+        146,
+        1792795622316319073
+      ],
+      "bench_navigation_stats_after.json": [
+        296,
+        1792804333155913785
+      ],
+      "bench_close_target_control.txt": [
+        122,
+        1792639327570380042
+      ],
+      "bench_close_source_candidate.txt": [
+        121,
+        1792639687343078707
+      ],
+      "bench_jit_area.txt": [
+        157,
+        1792617284979071992
+      ],
+      "bench_instruction_profile_started.json": [
+        102,
+        1792714664371895579
+      ],
+      "bench_registry_probe.txt": [
+        981,
+        1792611099313428441
+      ],
+      "bench_native_index_cost.json": [
+        11074,
+        1792627213513734829
+      ],
+      "native_pilot_observer_source.txt": [
+        13949,
+        1793119604279125103
+      ],
+      "bench_recorder_cpu_start.txt": [
+        2867,
+        1792789984978918406
+      ],
+      "bench_behave_direct_stop.json": [
+        555,
+        1792812872730246007
+      ],
+      "bench_boss_precache.txt": [
+        1422,
+        1792691973607772916
+      ],
+      "bench_warden_precache_arm.json": [
+        397,
+        1792957767033945773
+      ],
+      "bench_dense_expected_route.json": [
+        15877,
+        1792642397308587996
+      ],
+      "bench_hud_cache_retired.json": [
+        320,
+        1792781186012545678
+      ],
+      "bench_npc_dispatch_source_proof.json": [
+        768,
+        1792774979488329640
+      ],
+      "bench_native_method_before.json": [
+        781,
+        1792792307823799856
+      ],
+      "bench_animation_source_proof.json": [
+        675,
+        1792705925540022003
+      ],
+      "bench_boss_entrance_checkpoint.json": [
+        513,
+        1793028484042820693
+      ],
+      "bench_sweep_arm.json": [
+        18,
+        1792684677392030457
+      ],
+      "bench_profile_guard_restore.txt": [
+        51,
+        1792636709622013040
+      ],
+      "bench_boss_entrance_prepare.txt": [
+        1705,
+        1792691229182698671
+      ],
+      "bench_gc_parameters_read.txt": [
+        828,
+        1792728127558011197
+      ],
+      "bench_hash_reserve_arm.json": [
+        73,
+        1792777361290189050
+      ],
+      "bench_match_quality.txt": [
+        156,
+        1792616612247209597
+      ],
+      "bench_dense_input.txt": [
+        4442,
+        1792684063712377290
+      ],
+      "bench_state_native_boundary.json": [
+        295,
+        1792632466947155052
+      ],
+      "bench_query_profile_stop.txt": [
+        47,
+        1792772833851660856
+      ],
+      "m1_support_222676529_l1_1788860174.json": [
+        406,
+        1786929204238871412
+      ],
+      "playtest_life_before-tetris.txt": [
+        436,
+        1793071661953231016
+      ],
+      "bench_beforeai.json": [
+        9999715,
+        1792970025997767476
+      ],
+      "bench_gc_pause_server.json": [
+        237,
+        1792627659448296779
+      ],
+      "bench_timer_profile_state.txt": [
+        529,
+        1792768559172644818
+      ],
+      "performance_client_latest.txt": [
+        132876,
+        1793065393935541291
+      ],
+      "bench_server_io_stop.txt": [
+        43,
+        1792696167390874425
+      ],
+      "bench_account_key_before.json": [
+        840,
+        1792802794363002858
+      ],
+      "lan_players_latest.txt": [
+        114,
+        1793119859976848004
+      ],
+      "bench_hud_raster_source_after.json": [
+        1093,
+        1793037295753739187
+      ],
+      "bench_finale_retry_inspect.txt": [
+        754,
+        1792700607968818453
+      ],
+      "bench_collision_coalesce_probe.txt": [
+        2936,
+        1792712380758551027
+      ],
+      "bench_entity_field_shape.txt": [
+        2542,
+        1792789684819172842
+      ],
+      "bench_query_profile_started.json": [
+        53,
+        1792959439427980983
+      ],
+      "bench_entry_sweep_body.txt": [
+        1549,
+        1792625689174472147
+      ],
+      "bench_typed_geometry.txt": [
+        10342,
+        1792687870575452087
+      ],
+      "bench_bounds_phases_impl.txt": [
+        2135,
+        1792809166203927845
+      ],
+      "bench_finale_route_prepare.txt": [
+        2341,
+        1792700411518096864
+      ],
+      "bench_table_addresses_client_after.json": [
+        28220,
+        1792778506674353327
+      ],
+      "bench_finale_support_probe.json": [
+        4106,
+        1792700655259152363
+      ],
+      "bench_dense_compare.txt": [
+        1229,
+        1792642397308734812
+      ],
+      "bench_profile_lifecycle.txt": [
+        963,
+        1792636643267193807
+      ],
+      "bench_timer_profile_arm.json": [
+        76,
+        1792769068956407845
+      ],
+      "bench_method_index_precedence.json": [
+        233729,
+        1792790647682646306
+      ],
+      "bench_wall_collision.txt": [
+        572,
+        1792612098119518862
+      ],
+      "bench_validity_shim_start.txt": [
+        2636,
+        1792794008673014218
+      ],
+      "bench_locomotion_probe.json": [
+        1303,
+        1792627064735883394
+      ],
+      "bench_beforeai_clock_end.json": [
+        30,
+        1792970025101787149
+      ],
+      "bench_release_twenty_prepare.txt": [
+        3412,
+        1792811108807491549
+      ],
+      "bench_boss_input.txt": [
+        4431,
+        1792688898577209651
+      ],
+      "bench_profile_guard_restored.json": [
+        92,
+        1792636803890795179
+      ],
+      "bench_route_obstacle.json": [
+        220,
+        1792626105564823426
+      ],
+      "bench_exact_interior_impl.txt": [
+        3640,
+        1792805219154224405
+      ],
+      "bench_entity_core_source.txt": [
+        16588,
+        1792687157209191798
+      ],
+      "bench_lod_index_restore.txt": [
+        47,
+        1792635124528712612
+      ],
+      "bench_scene_ready.txt": [
+        864,
+        1792684063650094928
+      ],
+      "bench_hash_reserve_start.txt": [
+        2269,
+        1792776693530241344
+      ],
+      "bench_close_source_install.txt": [
+        952,
+        1792639687342867090
+      ],
+      "bench_finale_retry_inspect.json": [
+        235,
+        1792700608260472066
+      ],
+      "bench_native_validity_after.txt": [
+        145,
+        1792795622316434906
+      ],
+      "bench_soldier_candidate.txt": [
+        169,
+        1792621442245350401
+      ],
+      "bench_host_thread_capabilities_server.json": [
+        934,
+        1792722869661242895
+      ],
+      "bench_validity_shim_stop.json": [
+        257,
+        1792795439653998088
+      ],
+      "bench_integration_snapshot_server.json": [
+        1344,
+        1793036169664705502
+      ],
+      "m1_audit_209473529_l1_1674653553.json": [
+        985,
+        1786915896677028200
+      ],
+      "bench_native_method_after.txt": [
+        141,
+        1792791201718530086
+      ],
+      "bench_release_twenty_after.txt": [
+        157,
+        1792811313206546994
+      ],
+      "console_latest.txt.tmp.270849": [
+        44225,
+        1792991448662882615
+      ],
+      "bench_validity_shim_stop.txt": [
+        47,
+        1792794008673107037
+      ],
+      "bench_account_key_before.txt": [
+        129,
+        1792801821285667007
+      ],
+      "bench_audit_profile_cleanup_client.json": [
+        288,
+        1792729695570037479
+      ],
+      "bench_validity_callers_retirement.txt": [
+        481,
+        1792798786372756246
+      ],
+      "bench_sweep_proof.json": [
+        191,
+        1792684678024233620
+      ],
+      "bench_jit_record_length_mode.txt": [
+        6,
+        1792718822397449750
+      ],
+      "bench_warden_precache_before.json": [
+        620,
+        1792957863335268428
+      ],
+      "playtest_probe_latest.txt": [
+        91,
+        1793066742897859137
+      ],
+      "bench_scene_ready.json": [
+        1255,
+        1792699022941924286
+      ],
+      "bench_player_query_parent_source.txt": [
+        45825,
+        1792707456798859016
+      ],
+      "bench_cadence_retirement.txt": [
+        555,
+        1792766789503575339
+      ],
+      "bench_boss_precache.json": [
+        1050,
+        1792692087797059848
+      ],
+      "bench_walk_route.json": [
+        5071,
+        1792683201084868575
+      ],
+      "bench_validity_probe.json": [
+        195,
+        1792627364496243259
+      ],
+      "bench_motion_source_proof.txt": [
+        1142,
+        1792697647671998518
+      ],
+      "bench_exact_interior_probe.txt": [
+        3547,
+        1792804482562833346
+      ],
+      "bench_cadence_retirement.json": [
+        75,
+        1792766789608569979
+      ],
+      "bench_public_thread_capabilities_server.json": [
+        1905,
+        1792765685320902583
+      ],
+      "bench_heap_profile_enable.txt": [
+        571,
+        1792729513567386932
+      ],
+      "bench_exact_interior_before.txt": [
+        135,
+        1792805040363432923
+      ],
+      "bench_native_selection_source_proof.txt": [
+        1248,
+        1792730093960549964
+      ],
+      "bench_jit_trace_events.txt": [
+        643,
+        1792614058038086269
+      ],
+      "bench_hud_black_cached.png": [
+        5602,
+        1792780324699595827
+      ],
+      "bench_gameplay_receipt.json": [
+        4649,
+        1792631573058251381
+      ],
+      "bench_restore_invisible.txt": [
+        222,
+        1792610988996637353
+      ],
+      "bench_account_key_arm.json": [
+        233,
+        1792802695240185045
+      ],
+      "bench_build_dense_human.txt": [
+        2978,
+        1792680135161123468
+      ],
+      "bench_level_ten_checkpoint.json": [
+        19250,
+        1793028473387461080
+      ],
+      "bench_behave_direct_state.json": [
+        134,
+        1792812871731467751
+      ],
+      "bench_release_twenty_checkpoint.json": [
+        21127,
+        1793028483213875790
+      ],
+      "bench_runtime_probe.txt": [
+        406,
+        1792609975744352680
+      ],
+      "bench_native_motion_baseline.json": [
+        145,
+        1792625309589679867
+      ],
+      "bench_statefor_kind_probe.json": [
+        1884,
+        1792785416474892715
+      ],
+      "bench_native_cadence_probe.json": [
+        38297,
+        1792766332657825376
+      ],
+      "bench_audit_profile_cleanup_server.json": [
+        288,
+        1792729694107638575
+      ],
+      "bench_brain_phase_start.txt": [
+        3347,
+        1792696619841010522
+      ],
+      "bench_native_calls_state.txt": [
+        451,
+        1792792547234435585
+      ],
+      "bench_jit_record_length_server.json": [
+        1106,
+        1792718893295816752
+      ],
+      "bench_finale_hulls.json": [
+        1600,
+        1792700390530036850
+      ],
+      "bench_native_motion_baseline.txt": [
+        884,
+        1792625288795567431
+      ],
+      "bench_state_lookup_restored.json": [
+        96,
+        1792632073788429202
+      ],
+      "bench_brain_phase_stop.txt": [
+        45,
+        1792696619841140957
+      ],
+      "bench_collision_profile_stop.txt": [
+        51,
+        1792709342474559726
+      ],
+      "bench_player_query_source_probe.txt": [
+        4091,
+        1792707657291708842
+      ],
+      "bench_state_native_boundary.txt": [
+        1195,
+        1792632419275521800
+      ],
+      "bench_dense_human_corrections.json": [
+        1145,
+        1792680135271715699
+      ],
+      "bench_boss_profile.txt": [
+        2164,
+        1792688898577426197
+      ],
+      "bench_release_d20_prepare.txt": [
+        3295,
+        1792810836690935095
+      ],
+      "bench_query_profile_start.txt": [
+        4678,
+        1792953817237840087
+      ],
+      "bench_collision_profile_start.txt": [
+        2133,
+        1792709342470559506
+      ],
+      "population_latest.txt": [
+        1921870,
+        1793124560110712131
+      ],
+      "bench_motion_vectors.txt": [
+        2214,
+        1792696990837883310
+      ],
+      "bench_heap_profile_enabled_server.json": [
+        123,
+        1792729623084719938
+      ],
+      "bench_close_source_restored.json": [
+        70,
+        1792640015135720636
+      ],
+      "bench_recorder_cpu.json": [
+        879,
+        1792790149711649838
+      ],
+      "bench_progress_dispatch_probe.json": [
+        1246,
+        1792810605350818240
+      ],
+      "bench_movement_sweep_before.txt": [
+        158,
+        1792813655097286273
+      ],
+      "bench_thread_probe.txt": [
+        337,
+        1792621539045789898
+      ],
+      "bench_native_selection_arm.json": [
+        207,
+        1793028392512269419
+      ],
+      "bench_native_calls_started.json": [
+        442,
+        1792793404577418232
+      ],
+      "bench_core_entities_base_nextbot_sv_nextbot.txt": [
+        9893,
+        1792690107439216980
+      ],
+      "rpg_session_latest.txt": [
+        34375,
+        1793124560124786205
+      ],
+      "bench_timer_profile_stop.txt": [
+        312,
+        1792768334743909670
+      ],
+      "bench_identity_key_probe.txt": [
+        2629,
+        1792801318216241855
+      ],
+      "bench_wall_render_isolation.txt": [
+        370,
+        1792619978695646027
+      ],
+      "bench_engine_report.txt": [
+        514,
+        1792962710323651488
+      ],
+      "bench_collision_pair_matrix.txt": [
+        4836,
+        1792710330984846593
+      ],
+      "m1_support_629453529_l1_1987140527.json": [
+        491,
+        1787335887366553340
+      ],
+      "bench_finale_support_hull_probe.txt": [
+        925,
+        1792700707427373510
+      ],
+      "bench_all_hooks_result.json": [
+        15854,
+        1792611018941694219
+      ],
+      "bench_warm_state_server.json": [
+        222,
+        1793027845203773414
+      ],
+      "bench_warden_precache_after.json": [
+        619,
+        1792957932328040025
+      ],
+      "bench_ai_cost.json": [
+        3027,
+        1792619713284090919
+      ],
+      "bench_entry_context_source_proof.txt": [
+        1632,
+        1792719437798377551
+      ],
+      "bench_client_think_retirement.txt": [
+        524,
+        1792808396835443198
+      ],
+      "bench_brain_phase.json": [
+        329509,
+        1792704496604002260
+      ],
+      "bench_instruction_profile_start.txt": [
+        2257,
+        1792714563575516553
+      ],
+      "bench_stair_query_census.json": [
+        1756,
+        1793028362769812438
+      ],
+      "bench_close_native_sanity.txt": [
+        1257,
+        1792640190496025353
+      ],
+      "bench_hud_source_dark_original.png": [
+        8945,
+        1793037294778717026
+      ],
+      "console_latest.txt.tmp.208449": [
+        78939,
+        1792966019664679554
+      ],
+      "bench_validity_shim_state.json": [
+        95,
+        1792795370640253902
+      ],
+      "bench_core_entities_base_nextbot_shared.txt": [
+        1305,
+        1792690107444835905
+      ],
+      "bench_behave_direct_retirement.json": [
+        86,
+        1792812873727444830
+      ],
+      "bench_lod_index_candidate.txt": [
+        109,
+        1792635124528612652
+      ],
+      "bench_method_profile.txt": [
+        1872,
+        1792682805628461478
+      ],
+      "dialogger_history.json": [
+        95204,
+        1789334488197588487
+      ],
+      "bench_aligned_window_started.json": [
+        36,
+        1792974221539960561
+      ],
+      "bench_native_cadence_probe.txt": [
+        1870,
+        1792766279823523673
+      ],
+      "bench_level_fourteen_checkpoint.json": [
+        19941,
+        1793028479787079952
+      ],
+      "bench_source_state_new.txt": [
+        139,
+        1792632419275283555
+      ],
+      "bench_gc_parameters_client.json": [
+        332,
+        1793028461412867042
+      ],
+      "bench_exact_interior_after.json": [
+        979,
+        1792806248946154500
+      ],
+      "bench_progression_restore.txt": [
+        157,
+        1792689957128938684
+      ],
+      "bench_instruction_short_retirement.json": [
+        192,
+        1792803259510922678
+      ],
+      "bench_client_think_short.json": [
+        10366,
+        1792810146777298543
+      ],
+      "bench_jit_trace_capacity_server.json": [
+        1061,
+        1792714140803205059
+      ],
+      "bench_validity_callers_retirement.json": [
+        70,
+        1792799353908365957
+      ],
+      "bench_integration_cache_cleanup.json": [
+        199,
+        1793036165013004491
+      ],
+      "bench_hud_source_bright_cached.png": [
+        9359,
+        1793037294884719437
+      ],
+      "bench_boss_route_prepare.txt": [
+        2224,
+        1792688898577000234
+      ],
+      "bench_jit_loop.txt": [
+        520,
+        1792613865574582889
+      ],
+      "bench_meta_hot_coverage.json": [
+        186,
+        1792636483883766231
+      ],
+      "bench_collision_matrix.json": [
+        6058,
+        1792709931849886918
+      ],
+      "m1_audit_206746529_l1_1457835252.json": [
+        1157,
+        1786913167670783689
+      ],
+      "bench_aligned_last.json": [
+        78,
+        1792974289102790653
+      ],
+      "bench_bounds_phases_before.txt": [
+        133,
+        1792809076238912921
+      ],
+      "bench_hud_raster_source_visual.json": [
+        1628,
+        1793037295079723870
+      ],
+      "bench_stair_collision_result.json": [
+        6321,
+        1793036162959659875
+      ],
+      "bench_native_method_before.txt": [
+        142,
+        1792791201718439709
+      ],
+      "bench_dense_landing_trace.json": [
+        414,
+        1792680187665106036
+      ],
+      "bench_public_thread_capabilities.txt": [
+        1057,
+        1792765684246294152
+      ],
+      "bench_native_validity_arm.json": [
+        268,
+        1792798166388599398
+      ],
+      "bench_cached_index_install.txt": [
+        2561,
+        1792636182459561570
+      ],
+      "bench_hud_dark_cached.png": [
+        8937,
+        1792780324632680788
+      ],
+      "bench_jit_mcode_mode.txt": [
+        6,
+        1792771749146863286
+      ],
+      "bench_validity_callers_start.txt": [
+        3600,
+        1792798786372243520
+      ],
+      "bench_table_addresses_after.txt": [
+        168,
+        1792778337570064395
+      ],
+      "bench_behave_direct_arm.json": [
+        156,
+        1792812700939292603
+      ],
+      "bench_finale_phase_stop.txt": [
+        45,
+        1792701258564201999
+      ],
+      "bench_dense_landing_trace.txt": [
+        997,
+        1792680135162148323
+      ],
+      "bench_hud_bright_cached.png": [
+        9359,
+        1792780324662506654
+      ],
+      "bench_ack_server.json": [
+        81,
+        1793037296383888639
+      ],
+      "m1_audit_628041529_l1_2078047509.json": [
+        984,
+        1787334467567194421
+      ],
+      "bench_table_addresses_client_before.json": [
+        27563,
+        1792778437683568225
+      ],
+      "bench_animation_probe.json": [
+        1088,
+        1792704999079071994
+      ],
+      "bench_aligned_first.json": [
+        77,
+        1792974229150668695
+      ],
+      "bench_jit_trace_capacity.txt": [
+        1805,
+        1792713428618636530
+      ],
+      "bench_cached_index_restore.txt": [
+        50,
+        1792636182460311744
+      ],
+      "bench_method_index_precedence.txt": [
+        2893,
+        1792790552180341396
+      ],
+      "bench_native_validity_impl.txt": [
+        3002,
+        1792797265211713023
+      ],
+      "bench_namespace_source_proof.json": [
+        1995,
+        1792779996084414916
+      ],
+      "bench_jit_profile_capabilities_client.json": [
+        324,
+        1792712306358910849
+      ],
+      "bench_floor_submit_result.json": [
+        65,
+        1792620598454026820
+      ],
+      "bench_query_profile_arm.json": [
+        102,
+        1792959483355322026
+      ],
+      "bench_motion_arm.json": [
+        19,
+        1792699009845083358
+      ],
+      "bench_exact_interior_arm.json": [
+        1053,
+        1792806081120188047
+      ],
+      "bench_aligned_window.txt": [
+        2473,
+        1792961946673191744
+      ],
+      "bench_fullupdate.txt": [
+        266,
+        1792610856393246237
+      ],
+      "bench_progress_dispatch_probe.txt": [
+        2582,
+        1792810508515109847
+      ],
+      "bench_query_profile_retirement.txt": [
+        580,
+        1792772833852131298
+      ],
+      "bench_finale_receipt.json": [
+        36679,
+        1793028556363880940
+      ],
+      "bench_profile_guard_control.txt": [
+        127,
+        1792636709621870480
+      ],
+      "bench_walk_route.txt": [
+        2294,
+        1792610219011581489
+      ],
+      "bench_renderer_info.txt": [
+        232,
+        1792616859439632746
+      ],
+      "bench_profiler_api_client.json": [
+        368,
+        1792685437236874038
+      ],
+      "bench_profiler_api_server.json": [
+        368,
+        1792685436839109036
+      ],
+      "bench_gc_step_start.txt": [
+        1143,
+        1792728601074913267
+      ],
+      "bench_soldier_provider_observed.json": [
+        7004,
+        1792621228113701797
+      ],
+      "bench_locomotion_probe.txt": [
+        824,
+        1792627021747322464
+      ],
+      "bench_engine_report_requested.json": [
+        57,
+        1792974292533703790
+      ],
+      "bench_namespace_source_proof.txt": [
+        2500,
+        1792778884453416052
+      ],
+      "bench_cell_key_source_probe.txt": [
+        2449,
+        1792716232918373073
+      ],
+      "bench_native_motion_none.json": [
+        174,
+        1792625620600872191
+      ],
+      "bench_warden_model_arm.json": [
+        73,
+        1792955168972824869
+      ],
+      "bench_native_selection_source_proof.json": [
+        946,
+        1793036145828203674
+      ],
+      "bench_close_target_install.txt": [
+        1440,
+        1792639327570243664
+      ],
+      "rpg_test_session.txt": [
+        34375,
+        1793048384477150441
+      ],
+      "bench_release_d20_after.txt": [
+        94,
+        1792810836692047462
+      ],
+      "bench_native_motion_none.txt": [
+        1182,
+        1792625423555397778
+      ],
+      "native_pilot_diagnostic_2575_5345567_2540_0546875.txt": [
+        912984,
+        1793123584947093202
+      ],
+      "bench_player_query_source_proof.json": [
+        827,
+        1792708661495254968
+      ],
+      "bench_movement_sweep_impl.txt": [
+        3685,
+        1792813655096938652
+      ],
+      "bench_dense_snapshot.json": [
+        164125,
+        1792678914276159780
+      ],
+      "bench_exact_interior_before.json": [
+        980,
+        1792806179939562073
+      ],
+      "bench_query_profile_state.txt": [
+        491,
+        1792772833852032405
+      ],
+      "m1_support_226028529_l1_167758833.json": [
+        406,
+        1786932433772798788
+      ],
+      "bench_boss_route.json": [
+        43473,
+        1792693390970504301
+      ],
+      "bench_close_source_old.txt": [
+        2394,
+        1792639687342751881
+      ],
+      "bench_state_restore.txt": [
+        71,
+        1792631842231800900
+      ],
+      "bench_movement_sweep_oracle.txt": [
+        1501,
+        1792813655096509573
+      ],
+      "bench_components_restored.json": [
+        100,
+        1792682596955080561
+      ],
+      "bench_release_twenty_before.txt": [
+        1226,
+        1792811313206394372
+      ],
+      "bench_finale_native_gate.txt": [
+        1243,
+        1792701087935574556
+      ],
+      "bench_memory_trace_client.json": [
+        80732,
+        1792728009457015923
+      ],
+      "bench_instruction_short.json": [
+        22893,
+        1792803259070917458
+      ],
+      "bench_native_call_cost.txt": [
+        2290,
+        1792627107293046605
+      ],
+      "bench_close_target_coverage.json": [
+        68,
+        1792639329990463547
+      ],
+      "bench_jit_record_length.txt": [
+        1868,
+        1792718178289589544
+      ],
+      "bench_warden_dispatch_arm.json": [
+        690,
+        1792789271041884653
+      ],
+      "playtest_path_latest.txt": [
+        2,
+        1793123814573103291
+      ],
+      "bench_cell_key_probe.txt": [
+        2397,
+        1792715476666402340
+      ],
+      "bench_movement_sweep_after.json": [
+        828,
+        1792815816038913343
+      ],
+      "bench_close_fields_candidate.txt": [
+        124,
+        1792635723497156733
+      ],
+      "bench_bounds_phases_after.json": [
+        726,
+        1792810139772394843
+      ],
+      "bench_statefor_kind_probe.txt": [
+        3670,
+        1792785271436106663
+      ],
+      "bench_new_campaign.txt": [
+        708,
+        1792683553511046532
+      ],
+      "bench_jit_traces_server.json": [
+        2,
+        1792613798999844008
+      ],
+      "bench_account_key_after.json": [
+        839,
+        1792802863368051976
+      ],
+      "bench_warden_precache_after.txt": [
+        159,
+        1792955673690067785
+      ],
+      "bench_client_think_retirement.json": [
+        88,
+        1792810147751285157
+      ],
+      "bench_finale_route.json": [
+        85194,
+        1793028485044663359
+      ],
+      "bench_behave_direct_start.txt": [
+        4239,
+        1792812120129071710
+      ],
+      "bench_dense_receipt.json": [
+        35066,
+        1792696820876758775
+      ],
+      "bench_behaviour_chain_census.txt": [
+        3661,
+        1792785965278874567
+      ],
+      "bench_navigation_stats_after.txt": [
+        653,
+        1792803468065610678
+      ],
+      "rpg_summary_latest.txt": [
+        2155,
+        1793124560123847635
+      ],
+      "bench_boss_snapshot.json": [
+        11083,
+        1792688822634893162
+      ],
+      "bench_behaviour_arm.txt": [
+        3363,
+        1792690231290629247
+      ],
+      "bench_finale_admission_probe.json": [
+        7006,
+        1792700629577225317
+      ],
+      "playtest_life_after-tetris-f.txt": [
+        436,
+        1793072564444844364
+      ],
+      "bench_jit_interpreter.txt": [
+        100,
+        1792617373452920422
+      ],
+      "console_latest.txt": [
+        30011,
+        1793071945968615162
+      ],
+      "bench_player_query_source_probe.json": [
+        1608,
+        1792707734360197182
+      ],
+      "bench_collision_groups_matrix.txt": [
+        4818,
+        1792806494369288726
+      ],
+      "bench_fprofiler_server.txt": [
+        11182,
+        1792685837147356975
+      ],
+      "bench_exact_interior_probe.json": [
+        1322,
+        1792804581216646718
+      ],
+      "bench_warden_model_precache.txt": [
+        1384,
+        1792954750873132072
+      ],
+      "bench_floor_submit.txt": [
+        3950,
+        1792620533123391616
+      ],
+      "bench_history_cache_proof.json": [
+        340,
+        1793036149474217903
+      ],
+      "bench_jit_mcode_server.json": [
+        1094,
+        1792771820775020932
+      ],
+      "bench_jit_traces.txt": [
+        448,
+        1792613797448443829
+      ],
+      "bench_entry_sweep_off.txt": [
+        165,
+        1792625746514164678
+      ],
+      "bench_validity_fast.txt": [
+        1464,
+        1792627519646008659
+      ],
+      "bench_boss_scene_ready.json": [
+        1256,
+        1792693391662503891
+      ],
+      "dev_vr_sources.txt": [
+        14120,
+        1791349514902916097
+      ],
+      "m1_support_210406529_l1_607762343.json": [
+        406,
+        1786916934151783414
+      ],
+      "bench_bounds_notifications.txt": [
+        1205,
+        1792687052150516662
+      ],
+      "bench_hero_state.txt": [
+        482,
+        1792610183276162151
+      ],
+      "stability_client_latest.txt": [
+        424,
+        1793120927593578308
+      ],
+      "bench_client_think_short.txt": [
+        2832,
+        1792808396835320132
+      ],
+      "bench_history_compare.json": [
+        1568,
+        1792695796776319682
+      ],
+      "bench_collision_coalesce_start.txt": [
+        1660,
+        1792712467021867345
+      ],
+      "m1_audit_629453529_l1_1987140527.json": [
+        984,
+        1787335887356382502
+      ],
+      "bench_finale_scene_ready.txt": [
+        1024,
+        1792699827041492797
+      ],
+      "playtest_life_after-f.txt": [
+        436,
+        1793071615463445941
+      ],
+      "bench_aligned_window.json": [
+        1193,
+        1792974289105142722
+      ],
+      "bench_account_key_after.txt": [
+        128,
+        1792801821285772762
+      ],
+      "bench_progression_dispatch.txt": [
+        3251,
+        1792689957128846435
+      ],
+      "bench_hud_raster_arm.json": [
+        272,
+        1793037298949811696
+      ],
+      "m1_audit_222676529_l1_1788860174.json": [
+        988,
+        1786929204232440001
+      ],
+      "bench_upper_east_trace.json": [
+        3002,
+        1792683909349537429
+      ],
+      "die_logger_history.json": [
+        822602,
+        1793124560259712578
+      ],
+      "bench_dense_continuous_route.json": [
+        41343,
+        1792679173250167749
+      ],
+      "bench_collision_pair_matrix.json": [
+        3466,
+        1792710407861907908
+      ],
+      "bench_jit_profile_capabilities.txt": [
+        962,
+        1792711433816612656
+      ],
+      "bench_exact_interior_after.txt": [
+        134,
+        1792805040363534972
+      ],
+      "bench_state_install.txt": [
+        1683,
+        1792631842231539580
+      ],
+      "playtest_map_target.txt": [
+        43,
+        1793111408238519790
+      ],
+      "bench_engine_window.txt": [
+        3751,
+        1792962710323565535
+      ],
+      "bench_build_dense_route.txt": [
+        1600,
+        1792640366093709300
+      ],
+      "bench_level_ten_prepare.txt": [
+        2504,
+        1792640138926465521
+      ],
+      "bench_audit_profile_cleanup.txt": [
+        1389,
+        1792725358638771262
+      ],
+      "bench_hud_raster_source_before.json": [
+        1003,
+        1793037293707692658
+      ],
+      "bench_cached_index_control.txt": [
+        163,
+        1792636182460185453
+      ],
+      "bench_close_fields_install.txt": [
+        3397,
+        1792635723496805648
+      ],
+      "bench_native_calls.json": [
+        6337,
+        1792793474602631449
+      ],
+      "bench_cached_index_restored.json": [
+        127,
+        1792636349873036036
+      ],
+      "bench_heap_profile_disable.txt": [
+        355,
+        1792729513567513382
+      ],
+      "bench_source_state_restore.txt": [
+        50,
+        1792632419275390883
+      ],
+      "bench_finale_inspect.json": [
+        2446,
+        1792700361500792221
+      ],
+      "bench_vprof_diagnostic.txt": [
+        254,
+        1792609864209724628
+      ],
+      "bench_finale_hulls.txt": [
+        1005,
+        1792700389905406230
+      ],
+      "bench_warm_state.txt": [
+        801,
+        1792766207244247342
+      ],
+      "bench_typed_active.json": [
+        169,
+        1792688300943923563
+      ],
+      "bench_server_io_start.txt": [
+        1989,
+        1792696167390422634
+      ],
+      "bench_level_twenty_prepare.txt": [
+        2840,
+        1792641094879815898
+      ],
+      "bench_jit_probe.txt": [
+        239,
+        1792613084233778230
+      ],
+      "bench_state_control.txt": [
+        104,
+        1792631842231640667
+      ],
+      "bench_hud_dark_original.png": [
+        9247,
+        1792780324613594405
+      ],
+      "bench_components_restore.txt": [
+        91,
+        1792682495756825541
+      ],
+      "bench_absent_role_probe.json": [
+        1572,
+        1792808493792203930
+      ],
+      "bench_gc_pause.txt": [
+        960,
+        1792627220956176077
+      ],
+      "bench_cell_key_source_probe.json": [
+        1527,
+        1792716331063816077
+      ],
+      "bench_host_thread_capabilities_client.json": [
+        934,
+        1792722870004488383
+      ],
+      "bench_gc_step_after_client.json": [
+        280,
+        1792729316452606878
+      ],
+      "bench_hud_cache_prepare.txt": [
+        1870,
+        1792780449054453864
+      ],
+      "bench_gc_step_after_server.json": [
+        280,
+        1792729315922606608
+      ],
+      "bench_method_index_safety.txt": [
+        4275,
+        1792790871516227727
+      ],
+      "bench_finale_input.txt": [
+        4884,
+        1792707876225191532
+      ],
+      "bench_player_query_probe.txt": [
+        4040,
+        1792706766591480723
+      ],
+      "bench_datatable_source.txt": [
+        194,
+        1792687156276177993
+      ],
+      "bench_history_compare.txt": [
+        2301,
+        1792695789129448977
+      ],
+      "bench_animation_parent_source.txt": [
+        9100,
+        1792704860051900627
+      ],
+      "playtest_life_before.txt": [
+        153,
+        1793071581608174969
+      ],
+      "bench_memory_trace_start.txt": [
+        1033,
+        1792727797083324828
+      ],
+      "bench_cached_index_candidate.txt": [
+        175,
+        1792636182459660211
+      ],
+      "bench_profile_guard_install.txt": [
+        2390,
+        1792636709621588800
+      ],
+      "bench_warden_dispatch_after.json": [
+        1264,
+        1792789437333430986
+      ],
+      "bench_render_flags.json": [
+        324,
+        1792679173562123140
+      ],
+      "bench_dense_route.json": [
+        53415,
+        1792684063716623641
+      ],
+      "bench_collision_groups_matrix.json": [
+        106856,
+        1792806590811309236
+      ],
+      "bench_validity_callers_state.txt": [
+        465,
+        1792798786372651084
+      ],
+      "bench_host_server.lock": [
+        0,
+        1793037295862741664
+      ],
+      "bench_route_obstacle.txt": [
+        1007,
+        1792626104582240012
+      ],
+      "bench_client_io_start.txt": [
+        1989,
+        1792694965009782144
+      ],
+      "bench_collision_coalesce_restored.json": [
+        244,
+        1792713015186821792
+      ],
+      "bench_native_validity_after.json": [
+        715,
+        1792798335035738453
+      ],
+      "bench_close_fields_control.txt": [
+        121,
+        1792635723497232644
+      ],
+      "bench_behave_direct_stop.txt": [
+        57,
+        1792812120129697523
+      ],
+      "bench_validity_shim_state.txt": [
+        693,
+        1792794008673399624
+      ],
+      "bench_setup_normal.txt": [
+        1905,
+        1792608369922701950
+      ],
+      "bench_heap_profile_enabled_client.json": [
+        123,
+        1792729623457606593
+      ],
+      "bench_cell_key_source_proof.json": [
+        386,
+        1792724157968708785
+      ],
+      "bench_hurt_membership_after.json": [
+        1115,
+        1792801062159236153
+      ],
+      "bench_wall_think_stop.txt": [
+        197,
+        1792612817017774092
+      ],
+      "bench_validity_shim_retirement.json": [
+        70,
+        1792795440652600993
+      ],
+      "bench_stair_collision_spec.json": [
+        693,
+        1792990498651937038
+      ],
+      "bench_hud_bright_original.png": [
+        9992,
+        1792780324651477686
+      ],
+      "bench_gc_step_arm.json": [
+        71,
+        1792729147541267678
+      ],
+      "bench_route_snapshot.json": [
+        95875,
+        1792609812527886576
+      ],
+      "bench_model_precache_probe.json": [
+        647,
+        1792691875850044246
+      ],
+      "bench_boss_bounds_api.txt": [
+        851,
+        1792689097692039007
+      ],
+      "bench_finale_support_probe.txt": [
+        862,
+        1792700654727699887
+      ],
+      "bench_cell_key_arm.json": [
+        109,
+        1792723586506218108
+      ],
+      "bench_table_addresses_server_before.json": [
+        87847,
+        1792778437372379902
+      ],
+      "bench_recorder_cpu_started.json": [
+        38,
+        1792790081658895952
+      ],
+      "dev_build.txt": [
+        47,
+        1793120838394763862
+      ],
+      "bench_boss_identity.json": [
+        520,
+        1792693547978066879
+      ],
+      "bench_movement_sweep_after.txt": [
+        157,
+        1792813655097373653
+      ],
+      "native_pilot_diagnostic_2805_4062572_2769_9265136719.txt": [
+        913581,
+        1793123814380103138
+      ],
+      "bench_progression_proof.json": [
+        722,
+        1792689957447885310
+      ],
+      "bench_frozen_campaign.txt": [
+        369,
+        1792616344865905733
+      ],
+      "bench_upper_east_trace.txt": [
+        1128,
+        1792683908418451884
+      ],
+      "bench_hurt_membership_before.txt": [
+        137,
+        1792800024423160334
+      ],
+      "bench_query_profile.json": [
+        12552,
+        1792959479461799420
+      ],
+      "bench_entry_context_source_proof.json": [
+        1173,
+        1792720516804360236
+      ],
+      "bench_account_key_impl.txt": [
+        2788,
+        1792801821285535582
+      ],
+      "bench_boss_commit_profile.json": [
+        7103,
+        1792692163333748760
+      ],
+      "bench_lod_index_install.txt": [
+        1680,
+        1792635124528343962
+      ],
+      "bench_instruction_short.txt": [
+        2870,
+        1792803159360301713
+      ],
+      "bench_jit_traces_client.json": [
+        2,
+        1792613798370620762
+      ],
+      "bench_actor_kinds.txt": [
+        312,
+        1792618776665968611
+      ],
+      "bench_native_calls_retirement.txt": [
+        677,
+        1792792547234529605
+      ],
+      "bench_finale_scene_ready.json": [
+        1255,
+        1793028486087559126
+      ],
+      "bench_validity_probe.txt": [
+        600,
+        1792627363603737236
+      ],
+      "bench_identity_key_probe.json": [
+        1256,
+        1792801414613692348
+      ],
+      "bench_profile_guard_candidate.txt": [
+        130,
+        1792636709621954190
+      ],
+      "bench_close_source_control.txt": [
+        113,
+        1792639687342984448
+      ],
+      "bench_components_arm.json": [
+        18,
+        1792682620027938240
+      ],
+      "bench_timer_profile_state.json": [
+        90,
+        1792769168176428215
+      ],
+      "bench_jit_record_length_client.json": [
+        1106,
+        1792718893621124594
+      ],
+      "bench_scene_capture.txt": [
+        391,
+        1792683553511046532
+      ],
+      "bench_native_method_impl.txt": [
+        3519,
+        1792791201718071201
+      ],
+      "bench_hurt_membership_before.json": [
+        1116,
+        1792800993168476500
+      ],
+      "bench_finale_phase_start.txt": [
+        4241,
+        1792704351288474169
+      ],
+      "bench_threaded_render.txt": [
+        451,
+        1792612437577646453
+      ],
+      "bench_host_client.lock": [
+        0,
+        1793037296556757424
+      ],
+      "bench_collision_profile.json": [
+        1231,
+        1792709487703778423
+      ],
+      "bench_close_fields_restore.txt": [
+        50,
+        1792635723497286345
+      ],
+      "bench_history_cache_proof.txt": [
+        2926,
+        1792695529439979302
+      ],
+      "bench_soldier_provider_observed.txt": [
+        936,
+        1792621227462616514
+      ],
+      "bench_behaviour_arm.json": [
+        18,
+        1792690489979209796
+      ],
+      "bench_validity_shim_arm.json": [
+        73,
+        1792795272460005989
+      ],
+      "bench_instruction_short_retirement.txt": [
+        410,
+        1792802995384883483
+      ],
+      "bench_motion_source_proof.json": [
+        655,
+        1792699010405138986
+      ],
+      "bench_focus_watch.txt": [
+        725,
+        1792723506653327351
+      ],
+      "bench_native_calls_arm.json": [
+        73,
+        1792793478229160849
+      ],
+      "crate_sources/models_props_wasteland_cargo_container01.vvd.dat": [
+        42560,
+        1790271113781358764
+      ],
+      "crate_sources/manifest.json": [
+        2346,
+        1790271113822675406
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container01.vtf.dat": [
+        699256,
+        1790271113795215475
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container03.vmt.dat": [
+        242,
+        1790271113815515133
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container01_normal.vtf.dat": [
+        699256,
+        1790271113801423635
+      ],
+      "crate_sources/models_props_wasteland_cargo_container01.dx90.vtx.dat": [
+        12104,
+        1790271113784667385
+      ],
+      "crate_sources/models_props_wasteland_cargo_container01.mdl.dat": [
+        1724,
+        1790271113778177763
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container02.vtf.dat": [
+        699256,
+        1790271113810564878
+      ],
+      "crate_sources/models_props_wasteland_cargo_container01.phy.dat": [
+        722,
+        1790271113787826475
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container02.vmt.dat": [
+        246,
+        1790271113806366660
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container01.vmt.dat": [
+        251,
+        1790271113790818961
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container03.vtf.dat": [
+        699256,
+        1790271113819735753
+      ],
+      "music_cache/f8d76a19a40540ccebab2a71a0c702d7024401a2613521301c694af28de9f716.dat": [
+        2214640,
+        1790718472031536507
+      ],
+      "quarantine/ag002re_test.lua.20260910T035249Z": [
+        4644,
+        1788917725855925440
+      ]
+    },
+    "save/stat_inventory": {
+      "gm_flatgrass.HL3": [
+        4,
+        1787851376770454867
+      ],
+      "gm_flatgrass.HL1": [
+        2509576,
+        1787851376768619827
+      ],
+      "modeswitchsave.sav": [
+        2701987,
+        1787851376283616457
+      ],
+      "lod_saverestore_probe.sav": [
+        2192957,
+        1787343626069711524
+      ],
+      "lod_saverestore_probe.tga": [
+        54018,
+        1787343626069819212
+      ],
+      "modeswitchsave.tga": [
+        54018,
+        1787851376491787567
+      ],
+      "gm_flatgrass.HL2": [
+        186794,
+        1787851376770260556
+      ]
+    },
+    "saves/stat_inventory": {
+      "steam_autocloud.vdf": [
+        51,
+        1793120883973777259
+      ]
+    }
+  },
+  "prepared_sha256": "03bc5742fb81c22f2e7c609350848fff73ebf279e52f0656a6047ea0b82d8b45",
+  "normal_steam_identity": true,
+  "native_accepted": false,
+  "wrapper_pid": 95610,
+  "elapsed_seconds": 4644.011,
+  "owned_native_pids": [
+    95782,
+    95912
+  ],
+  "unproven_native_pids": [],
+  "remaining_owned_pids": [],
+  "wrapper_exit": -15,
+  "original_config_hashes_after": {
+    "cfg/360controller-linux.cfg": "e2a1fd6355616b78a9ee95798a0026bea714773cac6a2a1991e823d18d3423d4",
+    "cfg/360controller.cfg": "83145835d51dea3c499a41c72bc0b350a6372b36ccd4170df678866d9e84be6c",
+    "cfg/ag000.cfg": "0347885185bd77ec72cb1a83ca37b83543d878df48c81f87913234459f05baa1",
+    "cfg/autoexec.cfg": "214afdc17a211ee0e285b28f0dfaa556bf40b5d55d0fa4c4830566a2953d05bb",
+    "cfg/client.vdf": "7d4a75254b734c5aab810d48d76fdca640d7c1f43f44aefe427e5e43b7a9fd56",
+    "cfg/config.cfg": "6ccccd1a27e4936f11d040953d986bf9886d15dae0868131e0bc79b91e7b7196",
+    "cfg/config_default.cfg": "6fe58d8c55a3322093b1a99ec8e556a09ac97141046c38c0dffdeb54e427fff4",
+    "cfg/game.cfg": "318702230feaf7c37f1bf59cf07d0fa82c88e6492694b552fff99c1b262ca63c",
+    "cfg/listenserver.cfg": "dba5166ad9db9ba648c1032ebbd34dcd0d085b50023b839ef5c68ca1db93a563",
+    "cfg/lod_deck_benchmark.cfg": "3d5e404764d1fa10e9abaae0cfdb1532ba067861bb9f82c8f9228825c9db3b72",
+    "cfg/mapcycle.txt": "6291f3ccb4315813b0a3d3ad805f1f8f279beb04ff081a3511f692b08e19a142",
+    "cfg/mount.cfg": "f752dda68030da811b3984f4a996557e4b53b4a5ba8916fa2f953fe181db69bf",
+    "cfg/mountdepots.txt": "ab5ed8d047579648144af66668c2ae360b152763fcd7cb3803140c202eff02b5",
+    "cfg/network.cfg": "e421e7eb4348009b8d83e2a10f9578a2dbddbd73ef2d303d8312eba7f937fc5e",
+    "cfg/server.cfg": "dba5166ad9db9ba648c1032ebbd34dcd0d085b50023b839ef5c68ca1db93a563",
+    "cfg/server.vdf": "7eabc9d94c9054b67776cf700bc034dc6bbabc72339931cf45901ad00fe33d47",
+    "cfg/server_blacklist.txt": "d74146704b557f89697a32946ba00691ff4911f0fdea47c2d1217822d4a50571",
+    "cfg/settings_default.scr": "da6aa10218199bc011aa4d406da1be5a19a69ca8917875f06d43bff1d0cf0af8",
+    "cfg/skill.cfg": "07bf1be0f3e032e1c56800da10cc56ed901721fb5bea92de08c3e5996fbed453",
+    "cfg/skill1.cfg": "9653b901cd9e1c41899d9f2f325ec611cf857d207a1fef3264eafc7156ded0e3",
+    "cfg/skill2.cfg": "1da159c69f32bf0e1982bf808b4d7963a82d140c507be54094b981212895288e",
+    "cfg/skill3.cfg": "b920a0fb6dfd58afaaaeab8b7e29e1b8b27dae3a5a236944631defcfb0f019f7",
+    "cfg/skill_manifest.cfg": "aa41b4e64d2604a54a4affe7fcd1d10a0dc1a4ecec0436b2ceb0eaec94cf356d",
+    "cfg/undo360controller.cfg": "cf08e445c85189c089aa87dfc9fbdc20a3db9b58e3e3861885328cc009f03967",
+    "cfg/valve.rc": "70715871ff257b58dfb25465f786f476f85b7752dcc44aa9a9ec96a1bf1c66ec",
+    "cl.db": "f7283a264377e6d9764825d7f7a3c8f90d280195d41d25f3b5415ad4f1a26195",
+    "mn.db": "70b05d256a9e254549c5322f5fda4c8fbc929ab98cbbfab44d53652046e5d25a",
+    "sv.db": "456f4b9c1ca351552dcc069629ca13e79b1b0703bfb75b0e751987e642e1a89a",
+    "videoconfig_linux.cfg": "1486a7b713703afe0a855f9c9b7fa963c4f7f6ee428b82805d59405427e96774",
+    "data/legend_of_deborah/stat_inventory": {
+      "bench_lod_index_restored.json": [
+        102,
+        1792635502867541269
+      ],
+      "bench_hud_source_black_original.png": [
+        5602,
+        1793037294965875254
+      ],
+      "bench_native_components.json": [
+        183,
+        1792681976730984170
+      ],
+      "bench_release_d20_before.txt": [
+        95,
+        1792810836691966639
+      ],
+      "bench_level_fourteen_prepare.txt": [
+        2733,
+        1792692799234348042
+      ],
+      "m1_support_628041529_l1_2078047509.json": [
+        486,
+        1787334467578607900
+      ],
+      "bench_sweep_arm.txt": [
+        4526,
+        1792684417668178259
+      ],
+      "bench_table_addresses_before.txt": [
+        169,
+        1792778337569946096
+      ],
+      "bench_profiler_api.txt": [
+        882,
+        1792685435923122231
+      ],
+      "bench_loading_precache_started.json": [
+        36,
+        1792957839290956472
+      ],
+      "bench_hud_fade_cached.png": [
+        11349,
+        1792780324738329696
+      ],
+      "bench_soldier_baseline.txt": [
+        496,
+        1792621568146647308
+      ],
+      "bench_jit_mcode.txt": [
+        1850,
+        1792771237309376536
+      ],
+      "bench_native_calls_start.txt": [
+        3957,
+        1792792964825936703
+      ],
+      "bench_client_io_stop.txt": [
+        43,
+        1792694965010468081
+      ],
+      "bench_all_hooks.txt": [
+        1552,
+        1792610988815625075
+      ],
+      "bench_finale_inspect.txt": [
+        677,
+        1792700360768782430
+      ],
+      "bench_hud_cache_receipt.json": [
+        132,
+        1792781013784595935
+      ],
+      "bench_native_floor_candidates.txt": [
+        1250,
+        1792606479462490226
+      ],
+      "bench_gameplay_route.txt": [
+        4101,
+        1792626364593065499
+      ],
+      "bench_animation_probe.txt": [
+        3187,
+        1792704922746085303
+      ],
+      "bench_client_io.json": [
+        5028,
+        1792695701588925600
+      ],
+      "bench_close_fields_restored.json": [
+        94,
+        1792635890870748280
+      ],
+      "bench_hud_black_original.png": [
+        5602,
+        1792780324681595530
+      ],
+      "bench_sample_services.txt": [
+        2370,
+        1792639180423890457
+      ],
+      "bench_hud_raster_source_before.txt": [
+        161,
+        1793037298950361325
+      ],
+      "dev_population_sources.txt": [
+        15537,
+        1793120838406764411
+      ],
+      "bench_native_index_cost.txt": [
+        1954,
+        1792627193115893525
+      ],
+      "bench_entity_fields.txt": [
+        1180,
+        1792613981756319961
+      ],
+      "bench_namespace_arm.json": [
+        934,
+        1792779896798957374
+      ],
+      "bench_state_candidate.txt": [
+        105,
+        1792631842231721033
+      ],
+      "bench_integration_snapshot_client.json": [
+        1408,
+        1793036169003295600
+      ],
+      "bench_nextbot_core.json": [
+        60474,
+        1792690107447572742
+      ],
+      "bench_dense_start_state.json": [
+        20319,
+        1792679228252761251
+      ],
+      "bench_batch_status.txt": [
+        245,
+        1792638395957116720
+      ],
+      "bench_dense_reset.txt": [
+        1470,
+        1792680386067469008
+      ],
+      "bench_hud_fade_original.png": [
+        11349,
+        1792780324719596158
+      ],
+      "bench_typed_proof.json": [
+        367,
+        1792688300941465779
+      ],
+      "bench_behave_direct_state.txt": [
+        697,
+        1792812120129479102
+      ],
+      "bench_native_calls_retirement.json": [
+        86,
+        1792793475572605329
+      ],
+      "bench_cell_key_probe.json": [
+        1107,
+        1792715572341042138
+      ],
+      "bench_bounds_notifications.json": [
+        168,
+        1792687052227451893
+      ],
+      "bench_sample_services.json": [
+        7185,
+        1792639257991694630
+      ],
+      "bench_native_call_cost.json": [
+        3087,
+        1792627127501804090
+      ],
+      "bench_typed_arm.json": [
+        18,
+        1792688300006264008
+      ],
+      "bench_hud_reference_state_client.json": [
+        1477,
+        1793037296732729252
+      ],
+      "bench_gc_pause_client.json": [
+        225,
+        1792627666283893108
+      ],
+      "bench_lod_index_guard.txt": [
+        215,
+        1792635290449456029
+      ],
+      "bench_table_addresses_server_after.json": [
+        92996,
+        1792778506362236480
+      ],
+      "bench_hud_reference_state_server.json": [
+        1639,
+        1793037296382874279
+      ],
+      "bench_hud_visual_receipt.json": [
+        91,
+        1792780324739596489
+      ],
+      "bench_self_query_start.txt": [
+        6787,
+        1792959039531899655
+      ],
+      "bench_motion_cost.txt": [
+        2562,
+        1792624613283423880
+      ],
+      "bench_npc_dispatch_source_proof.txt": [
+        3221,
+        1792774031514176710
+      ],
+      "bench_warden_model.json": [
+        646,
+        1792955262978678293
+      ],
+      "native_pilot_diagnostic_1209_6276831_1174_1516113281.txt": [
+        908648,
+        1793122218451293984
+      ],
+      "bench_native_method_arm.json": [
+        239,
+        1792792209018462522
+      ],
+      "bench_aligned_engine_first.json": [
+        86,
+        1792974244205319252
+      ],
+      "bench_dense_obstacle.json": [
+        785,
+        1792679689273494038
+      ],
+      "rpg_archive_latest.txt": [
+        3284831,
+        1793124560130712191
+      ],
+      "bench_sweep_restored.json": [
+        119,
+        1792684748011516898
+      ],
+      "bench_boss_stop.txt": [
+        354,
+        1792707876259701685
+      ],
+      "bench_stair_collision_inspection.json": [
+        1158,
+        1792990803765956493
+      ],
+      "bench_warden_dispatch_before.txt": [
+        146,
+        1792788377119113681
+      ],
+      "bench_progression_arm.json": [
+        16,
+        1792689957129331412
+      ],
+      "bench_advance_query_before.json": [
+        786,
+        1792987339074178832
+      ],
+      "bench_boss_profile.json": [
+        1957,
+        1792689587436993347
+      ],
+      "bench_release_d20_impl.txt": [
+        1809,
+        1792810836691882496
+      ],
+      "bench_method_index_factory.txt": [
+        637,
+        1792790724719940776
+      ],
+      "bench_loading_precache.json": [
+        1637,
+        1792957862315982591
+      ],
+      "bench_host_thread_capabilities.txt": [
+        764,
+        1792721754298681684
+      ],
+      "bench_collision_coalesce_probe.json": [
+        389,
+        1792713112837649778
+      ],
+      "bench_render_flags.txt": [
+        487,
+        1792640003624324689
+      ],
+      "bench_behave_direct_started.json": [
+        530,
+        1792812799727377731
+      ],
+      "bench_recorder_cpu_stop.txt": [
+        46,
+        1792789984979015828
+      ],
+      "bench_boss_bounds_proof.json": [
+        1370,
+        1792693548334110674
+      ],
+      "bench_query_profile_state.json": [
+        76,
+        1792959578723070833
+      ],
+      "bench_snapshot_route.txt": [
+        1046,
+        1792609803109684385
+      ],
+      "bench_jit_mcode_client.json": [
+        1094,
+        1792771821194632449
+      ],
+      "bench_wall_think_probe.txt": [
+        368,
+        1792612776549641797
+      ],
+      "bench_hurt_membership_arm.json": [
+        281,
+        1792800893590600143
+      ],
+      "bench_navigation_stats_before.txt": [
+        655,
+        1792803468065527127
+      ],
+      "bench_close_target_candidate.txt": [
+        125,
+        1792639327570759508
+      ],
+      "stability_server_latest.txt": [
+        7788,
+        1793123957110269029
+      ],
+      "rpg_test_log.txt": [
+        3284831,
+        1793048384476150419
+      ],
+      "m1_audit_226028529_l1_167758833.json": [
+        986,
+        1786932433763960974
+      ],
+      ".console_mirror.pid": [
+        6,
+        1793120838439765920
+      ],
+      "bench_server_io.json": [
+        34051,
+        1792696249210170589
+      ],
+      "bench_public_thread_capabilities_client.json": [
+        1905,
+        1792766322992723186
+      ],
+      "bench_validity_callers.json": [
+        29681,
+        1792799352900976156
+      ],
+      "bench_boss_scene_ready.txt": [
+        1020,
+        1792688898577310479
+      ],
+      "bench_behaviour_chain_census.json": [
+        41645,
+        1792786062685490089
+      ],
+      "bench_hud_cache.txt": [
+        4112,
+        1792681721155600020
+      ],
+      "bench_ack_client.json": [
+        81,
+        1793037296733632340
+      ],
+      "m1_audit_210406529_l1_607762343.json": [
+        986,
+        1786916934144460763
+      ],
+      "bench_nextbot_core.txt": [
+        1151,
+        1792690106428829579
+      ],
+      "bench_method_index_safety.json": [
+        1449,
+        1792790967744229178
+      ],
+      "bench_profile_lifecycle.json": [
+        737,
+        1792636644185663824
+      ],
+      "bench_sparse_status.json": [
+        2520,
+        1792686402777839027
+      ],
+      "bench_native_floor_mesh.txt": [
+        2341,
+        1792620825283773665
+      ],
+      "bench_boss_bounds_api.json": [
+        839,
+        1792689098049922842
+      ],
+      "bench_batch_on.txt": [
+        42,
+        1792638366188210487
+      ],
+      "bench_boss_commit_profile.txt": [
+        2595,
+        1792691548041907117
+      ],
+      "bench_hash_reserve_impl.txt": [
+        1572,
+        1792776693530145478
+      ],
+      "bench_dense_reset.json": [
+        3648,
+        1792680388852834918
+      ],
+      "bench_batch_off.txt": [
+        42,
+        1792638366188300525
+      ],
+      "bench_hud_cache_arm.json": [
+        246,
+        1792781018149288181
+      ],
+      "bench_beforeai_started.json": [
+        84,
+        1792969955093353172
+      ],
+      "bench_new_campaign.json": [
+        226,
+        1793037285546403303
+      ],
+      "bench_stop_input.txt": [
+        379,
+        1792684063650094928
+      ],
+      "bench_native_validity_before.json": [
+        716,
+        1792798266021891661
+      ],
+      "native_pilot_latest.json": [
+        10980,
+        1793123815155103756
+      ],
+      "bench_engine_window_arm.json": [
+        68,
+        1792974126033866110
+      ],
+      "bench_dense_snapshot.txt": [
+        1574,
+        1792640301475500829
+      ],
+      "bench_hud_source_fade_original.png": [
+        11349,
+        1793037295061723461
+      ],
+      "bench_hud_source_bright_original.png": [
+        9992,
+        1793037294874710830
+      ],
+      "bench_dense_obstacle.txt": [
+        1489,
+        1792679688600971644
+      ],
+      "bench_memory_trace_stop.txt": [
+        787,
+        1792727797083429137
+      ],
+      "bench_gc_parameters_server.json": [
+        332,
+        1793028461109885880
+      ],
+      "bench_scene_before_capture.png": [
+        995220,
+        1792699024069673127
+      ],
+      "bench_collision_matrix.txt": [
+        3815,
+        1792709854117426978
+      ],
+      "bench_jit_capacity.txt": [
+        168,
+        1792617956427303287
+      ],
+      "bench_behaviour_restore.txt": [
+        91,
+        1792690231290723417
+      ],
+      "bench_source_state_install.txt": [
+        1793,
+        1792632419274074992
+      ],
+      "bench_model_precache_probe.txt": [
+        699,
+        1792691875612044900
+      ],
+      "bench_native_method_after.json": [
+        780,
+        1792792376834605612
+      ],
+      "bench_release_twenty_before.json": [
+        1059,
+        1793028487039647795
+      ],
+      "bench_validity_shim_started.json": [
+        468,
+        1792795369705214324
+      ],
+      "bench_validity_callers_started.json": [
+        85,
+        1792799283882620817
+      ],
+      "m1_support_209473529_l1_1674653553.json": [
+        331,
+        1786915896684444423
+      ],
+      "bench_close_target_restore.txt": [
+        50,
+        1792639327570868406
+      ],
+      "bench_warden_dispatch_before.json": [
+        1265,
+        1792789368332411598
+      ],
+      "bench_validity_callers_stop.txt": [
+        50,
+        1792798786372569204
+      ],
+      "bench_hud_raster_source_visual.txt": [
+        3440,
+        1793037298950142251
+      ],
+      "bench_finale_admission_probe.txt": [
+        1202,
+        1792700629101980502
+      ],
+      "playtest_life_dead.txt": [
+        351,
+        1793071587553423835
+      ],
+      "bench_motion_vectors.json": [
+        136,
+        1792696991041926463
+      ],
+      "bench_gc_step_before_server.json": [
+        280,
+        1792729245883563520
+      ],
+      "bench_ai_cost.txt": [
+        1596,
+        1792614647902932257
+      ],
+      "bench_fprofiler_server.json": [
+        278725,
+        1792685879246211805
+      ],
+      "bench_hud_source_black_cached.png": [
+        5602,
+        1793037294982721666
+      ],
+      "bench_jit_flush.txt": [
+        92,
+        1792617174385902473
+      ],
+      "bench_timer_profile_stop.json": [
+        7684,
+        1792769066262651013
+      ],
+      "bench_query_profile_retirement.json": [
+        86,
+        1792959480427781404
+      ],
+      "bench_normal_equipment.json": [
+        3187,
+        1792608329667729280
+      ],
+      "bench_source_state_old.txt": [
+        124,
+        1792632419275166088
+      ],
+      "bench_absent_role_probe.txt": [
+        2356,
+        1792808396834847684
+      ],
+      "bench_aligned_engine_last.json": [
+        85,
+        1792974288669183265
+      ],
+      "bench_validity_shim_retirement.txt": [
+        463,
+        1792794008673487343
+      ],
+      "bench_hud_raster_source_after.txt": [
+        160,
+        1793037298950460977
+      ],
+      "bench_sweep_restore.txt": [
+        77,
+        1792684417668284845
+      ],
+      "bench_hash_reserve.json": [
+        6231,
+        1792777459557074853
+      ],
+      "bench_validity_callers_state.json": [
+        60,
+        1792799456056963605
+      ],
+      "bench_release_twenty_after.json": [
+        1087,
+        1793028607045774970
+      ],
+      "bench_warm_state_client.json": [
+        128,
+        1793027845807717333
+      ],
+      "bench_native_components.txt": [
+        567,
+        1792681976536788866
+      ],
+      "bench_boss_identity.txt": [
+        1148,
+        1792693342637223779
+      ],
+      "bench_motion_cost.json": [
+        5595,
+        1792624762599832715
+      ],
+      "bench_bounds_phases_after.txt": [
+        132,
+        1792809076239021409
+      ],
+      "bench_meta_coverage.json": [
+        186,
+        1792636426885515923
+      ],
+      "bench_validity_callers_arm.json": [
+        73,
+        1792799356654139132
+      ],
+      "bench_behave_direct_factory.txt": [
+        640,
+        1792812120128903300
+      ],
+      "bench_hud_cache_retire.txt": [
+        1124,
+        1792780449055073984
+      ],
+      "bench_components_control.json": [
+        212,
+        1792682518971949207
+      ],
+      "bench_memory_trace_server.json": [
+        282027,
+        1792728009075210233
+      ],
+      "bench_hurt_membership_impl.txt": [
+        2167,
+        1792800024423063054
+      ],
+      "bench_behave_direct_retirement.txt": [
+        471,
+        1792812120129613883
+      ],
+      "bench_heap_profile_disabled_server.json": [
+        57,
+        1792729693131019467
+      ],
+      "bench_input_probe.txt": [
+        266,
+        1792620141831300949
+      ],
+      "bench_animation_source_proof.txt": [
+        1136,
+        1792705077066488872
+      ],
+      "bench_loading_precache_start.txt": [
+        1485,
+        1792955673689693804
+      ],
+      "bench_close_source_restore.txt": [
+        50,
+        1792639687343157727
+      ],
+      "bench_player_query_arm.json": [
+        282,
+        1792708610390570721
+      ],
+      "bench_dense_human_route.json": [
+        41343,
+        1792680135275788749
+      ],
+      "rpg_test_summary.txt": [
+        2155,
+        1793124560121712164
+      ],
+      "bench_warden_precache_impl.txt": [
+        2397,
+        1792955673689918173
+      ],
+      "native_pilot_diagnostic_1556_7045783_1522_1979980469.txt": [
+        658263,
+        1793118741563944183
+      ],
+      "bench_table_addresses_impl.txt": [
+        4026,
+        1792778160029066428
+      ],
+      "bench_npc_dispatch_arm.json": [
+        163,
+        1792774880018316978
+      ],
+      "bench_geometry_probe.txt": [
+        840,
+        1792610842148432333
+      ],
+      "bench_native_calls_stop.txt": [
+        46,
+        1792792547234055695
+      ],
+      "bench_player_query_probe.json": [
+        1603,
+        1792706845556084666
+      ],
+      "bench_finale_native_gate.json": [
+        1145,
+        1792701101339382868
+      ],
+      "bench_release_twenty_impl.txt": [
+        1812,
+        1792811108807121131
+      ],
+      "bench_meta_hot_coverage.txt": [
+        1106,
+        1792636481224190332
+      ],
+      "bench_level_twenty_checkpoint.json": [
+        21128,
+        1793028290952220698
+      ],
+      "bench_instruction_profile_stop.txt": [
+        128,
+        1792714563578516484
+      ],
+      "bench_warden_dispatch_impl.txt": [
+        2108,
+        1792788377119020220
+      ],
+      "bench_hud_source_fade_cached.png": [
+        11349,
+        1793037295077723825
+      ],
+      "bench_movement_sweep_before.json": [
+        829,
+        1792815746010517909
+      ],
+      "bench_collision_coalesce_stop.txt": [
+        137,
+        1792712467023867206
+      ],
+      "bench_jit_trace_capacity_mode.txt": [
+        6,
+        1792714069510634577
+      ],
+      "bench_bounds_phases_arm.json": [
+        247,
+        1792809970519444127
+      ],
+      "bench_typed_restored.json": [
+        100,
+        1792688371929587967
+      ],
+      "bench_boss_snapshot.txt": [
+        1040,
+        1792688822129383664
+      ],
+      "bench_warden_precache_before.txt": [
+        160,
+        1792955673689994180
+      ],
+      "bench_typed_restore.txt": [
+        77,
+        1792687706021523824
+      ],
+      "bench_hud_cache_started.json": [
+        525,
+        1792781117027313349
+      ],
+      "bench_advance_query_after.json": [
+        800,
+        1792987409060511225
+      ],
+      "bench_dense_comparison.json": [
+        190,
+        1792678751247824516
+      ],
+      "bench_bounds_phases_before.json": [
+        727,
+        1792810069793359514
+      ],
+      "native_pilot_diagnostic_2203_9394521_2168_4592285156.txt": [
+        945397,
+        1793123212803190767
+      ],
+      "bench_behaviour_active.json": [
+        415,
+        1792690490885167618
+      ],
+      "bench_jit_trace_capacity_client.json": [
+        1061,
+        1792714141155084720
+      ],
+      "bench_beforeai_clock_start.json": [
+        29,
+        1792969955092353195
+      ],
+      "bench_props_probe.txt": [
+        442,
+        1792610550824595208
+      ],
+      "bench_components_control.txt": [
+        4793,
+        1792682495756575794
+      ],
+      "bench_player_query_source_proof.txt": [
+        1277,
+        1792707876269637169
+      ],
+      "bench_gc_step_stop.txt": [
+        759,
+        1792728601075035258
+      ],
+      "bench_hud_raster_source_impl.txt": [
+        3154,
+        1793037298950262093
+      ],
+      "bench_host_threading_probe.txt": [
+        349,
+        1792618985324062394
+      ],
+      "bench_sparse_status.txt": [
+        2844,
+        1792686360940656658
+      ],
+      "bench_build_dense_continuous.txt": [
+        1714,
+        1792679172598599954
+      ],
+      "bench_gc_step_before_client.json": [
+        280,
+        1792729246293563816
+      ],
+      "bench_batch_status.json": [
+        216,
+        1792638397012535940
+      ],
+      "bench_invisible_boxes.txt": [
+        341,
+        1792610988993637150
+      ],
+      "bench_movement_sweep_arm.json": [
+        235,
+        1792815646040100297
+      ],
+      "bench_loading_precache_stop.txt": [
+        52,
+        1792955673689798403
+      ],
+      "bench_collision_coalesce_started.json": [
+        172,
+        1792712947159141008
+      ],
+      "bench_stair_collision_started.json": [
+        252,
+        1793036149758219015
+      ],
+      "bench_close_native_sanity.json": [
+        271,
+        1792640240145713347
+      ],
+      "bench_hurt_membership_after.txt": [
+        136,
+        1792800024423246574
+      ],
+      "bench_behaviour_restored.json": [
+        3361,
+        1792690560902156827
+      ],
+      "bench_kind_cache_stats.txt": [
+        662,
+        1792606393251259381
+      ],
+      "bench_entity_field_shape.json": [
+        130264,
+        1792789822477863206
+      ],
+      "bench_gameplay_route.json": [
+        12521,
+        1792625964423849989
+      ],
+      "bench_native_calls_state.json": [
+        76,
+        1792793575666100833
+      ],
+      "bench_entry_context_arm.json": [
+        166,
+        1792722062176454396
+      ],
+      "bench_release_twenty_restored.json": [
+        305,
+        1793028607046816564
+      ],
+      "bench_cell_key_source_proof.txt": [
+        1036,
+        1792716379290914271
+      ],
+      "bench_finale_support_hull_probe.json": [
+        6850,
+        1792700708300329386
+      ],
+      "bench_heap_profile_disabled_client.json": [
+        57,
+        1792729694569147439
+      ],
+      "bench_boss_bounds_proof.txt": [
+        1889,
+        1792689330784333509
+      ],
+      "bench_warden_dispatch_after.txt": [
+        145,
+        1792788377119420773
+      ],
+      "bench_hud_source_dark_cached.png": [
+        8937,
+        1793037294796605147
+      ],
+      "bench_jit_profile_capabilities_server.json": [
+        324,
+        1792712306002150036
+      ],
+      "bench_validity_fast.json": [
+        180,
+        1792627580939497158
+      ],
+      "bench_dense_state.txt": [
+        1373,
+        1792679227368441529
+      ],
+      "bench_animation_arm.json": [
+        207,
+        1792705873973491185
+      ],
+      "bench_source_state_restored.json": [
+        86,
+        1792632746751424454
+      ],
+      "bench_meta_coverage.txt": [
+        855,
+        1792636426590841156
+      ],
+      "bench_hud_cache_stop.txt": [
+        105,
+        1792780227315151104
+      ],
+      "bench_hud_cache_visual.txt": [
+        1807,
+        1792681672422310582
+      ],
+      "bench_entry_sweep_on.txt": [
+        542,
+        1792625689174565952
+      ],
+      "bench_lod_index_control.txt": [
+        111,
+        1792635124528500522
+      ],
+      "bench_lower_stair_trace.txt": [
+        1646,
+        1792683168780476961
+      ],
+      "bench_renew_bridge.txt": [
+        120,
+        1792684063650094928
+      ],
+      "bench_lower_stair_trace.json": [
+        18015,
+        1792683169797472497
+      ],
+      "bench_close_target_restored.json": [
+        77,
+        1792639506964763777
+      ],
+      "bench_navigation_stats_before.json": [
+        295,
+        1792804264130222113
+      ],
+      "bench_native_validity_before.txt": [
+        146,
+        1792795622316319073
+      ],
+      "bench_navigation_stats_after.json": [
+        296,
+        1792804333155913785
+      ],
+      "bench_close_target_control.txt": [
+        122,
+        1792639327570380042
+      ],
+      "bench_close_source_candidate.txt": [
+        121,
+        1792639687343078707
+      ],
+      "bench_jit_area.txt": [
+        157,
+        1792617284979071992
+      ],
+      "bench_instruction_profile_started.json": [
+        102,
+        1792714664371895579
+      ],
+      "bench_registry_probe.txt": [
+        981,
+        1792611099313428441
+      ],
+      "bench_native_index_cost.json": [
+        11074,
+        1792627213513734829
+      ],
+      "native_pilot_observer_source.txt": [
+        13949,
+        1793119604279125103
+      ],
+      "bench_recorder_cpu_start.txt": [
+        2867,
+        1792789984978918406
+      ],
+      "bench_behave_direct_stop.json": [
+        555,
+        1792812872730246007
+      ],
+      "bench_boss_precache.txt": [
+        1422,
+        1792691973607772916
+      ],
+      "bench_warden_precache_arm.json": [
+        397,
+        1792957767033945773
+      ],
+      "bench_dense_expected_route.json": [
+        15877,
+        1792642397308587996
+      ],
+      "bench_hud_cache_retired.json": [
+        320,
+        1792781186012545678
+      ],
+      "bench_npc_dispatch_source_proof.json": [
+        768,
+        1792774979488329640
+      ],
+      "bench_native_method_before.json": [
+        781,
+        1792792307823799856
+      ],
+      "bench_animation_source_proof.json": [
+        675,
+        1792705925540022003
+      ],
+      "bench_boss_entrance_checkpoint.json": [
+        513,
+        1793028484042820693
+      ],
+      "bench_sweep_arm.json": [
+        18,
+        1792684677392030457
+      ],
+      "bench_profile_guard_restore.txt": [
+        51,
+        1792636709622013040
+      ],
+      "bench_boss_entrance_prepare.txt": [
+        1705,
+        1792691229182698671
+      ],
+      "bench_gc_parameters_read.txt": [
+        828,
+        1792728127558011197
+      ],
+      "bench_hash_reserve_arm.json": [
+        73,
+        1792777361290189050
+      ],
+      "bench_match_quality.txt": [
+        156,
+        1792616612247209597
+      ],
+      "bench_dense_input.txt": [
+        4442,
+        1792684063712377290
+      ],
+      "bench_state_native_boundary.json": [
+        295,
+        1792632466947155052
+      ],
+      "bench_query_profile_stop.txt": [
+        47,
+        1792772833851660856
+      ],
+      "m1_support_222676529_l1_1788860174.json": [
+        406,
+        1786929204238871412
+      ],
+      "playtest_life_before-tetris.txt": [
+        436,
+        1793071661953231016
+      ],
+      "bench_beforeai.json": [
+        9999715,
+        1792970025997767476
+      ],
+      "bench_gc_pause_server.json": [
+        237,
+        1792627659448296779
+      ],
+      "bench_timer_profile_state.txt": [
+        529,
+        1792768559172644818
+      ],
+      "performance_client_latest.txt": [
+        132876,
+        1793065393935541291
+      ],
+      "bench_server_io_stop.txt": [
+        43,
+        1792696167390874425
+      ],
+      "bench_account_key_before.json": [
+        840,
+        1792802794363002858
+      ],
+      "lan_players_latest.txt": [
+        114,
+        1793119859976848004
+      ],
+      "bench_hud_raster_source_after.json": [
+        1093,
+        1793037295753739187
+      ],
+      "bench_finale_retry_inspect.txt": [
+        754,
+        1792700607968818453
+      ],
+      "bench_collision_coalesce_probe.txt": [
+        2936,
+        1792712380758551027
+      ],
+      "bench_entity_field_shape.txt": [
+        2542,
+        1792789684819172842
+      ],
+      "bench_query_profile_started.json": [
+        53,
+        1792959439427980983
+      ],
+      "bench_entry_sweep_body.txt": [
+        1549,
+        1792625689174472147
+      ],
+      "bench_typed_geometry.txt": [
+        10342,
+        1792687870575452087
+      ],
+      "bench_bounds_phases_impl.txt": [
+        2135,
+        1792809166203927845
+      ],
+      "bench_finale_route_prepare.txt": [
+        2341,
+        1792700411518096864
+      ],
+      "bench_table_addresses_client_after.json": [
+        28220,
+        1792778506674353327
+      ],
+      "bench_finale_support_probe.json": [
+        4106,
+        1792700655259152363
+      ],
+      "bench_dense_compare.txt": [
+        1229,
+        1792642397308734812
+      ],
+      "bench_profile_lifecycle.txt": [
+        963,
+        1792636643267193807
+      ],
+      "bench_timer_profile_arm.json": [
+        76,
+        1792769068956407845
+      ],
+      "bench_method_index_precedence.json": [
+        233729,
+        1792790647682646306
+      ],
+      "bench_wall_collision.txt": [
+        572,
+        1792612098119518862
+      ],
+      "bench_validity_shim_start.txt": [
+        2636,
+        1792794008673014218
+      ],
+      "bench_locomotion_probe.json": [
+        1303,
+        1792627064735883394
+      ],
+      "bench_beforeai_clock_end.json": [
+        30,
+        1792970025101787149
+      ],
+      "bench_release_twenty_prepare.txt": [
+        3412,
+        1792811108807491549
+      ],
+      "bench_boss_input.txt": [
+        4431,
+        1792688898577209651
+      ],
+      "bench_profile_guard_restored.json": [
+        92,
+        1792636803890795179
+      ],
+      "bench_route_obstacle.json": [
+        220,
+        1792626105564823426
+      ],
+      "bench_exact_interior_impl.txt": [
+        3640,
+        1792805219154224405
+      ],
+      "bench_entity_core_source.txt": [
+        16588,
+        1792687157209191798
+      ],
+      "bench_lod_index_restore.txt": [
+        47,
+        1792635124528712612
+      ],
+      "bench_scene_ready.txt": [
+        864,
+        1792684063650094928
+      ],
+      "bench_hash_reserve_start.txt": [
+        2269,
+        1792776693530241344
+      ],
+      "bench_close_source_install.txt": [
+        952,
+        1792639687342867090
+      ],
+      "bench_finale_retry_inspect.json": [
+        235,
+        1792700608260472066
+      ],
+      "bench_native_validity_after.txt": [
+        145,
+        1792795622316434906
+      ],
+      "bench_soldier_candidate.txt": [
+        169,
+        1792621442245350401
+      ],
+      "bench_host_thread_capabilities_server.json": [
+        934,
+        1792722869661242895
+      ],
+      "bench_validity_shim_stop.json": [
+        257,
+        1792795439653998088
+      ],
+      "bench_integration_snapshot_server.json": [
+        1344,
+        1793036169664705502
+      ],
+      "m1_audit_209473529_l1_1674653553.json": [
+        985,
+        1786915896677028200
+      ],
+      "bench_native_method_after.txt": [
+        141,
+        1792791201718530086
+      ],
+      "bench_release_twenty_after.txt": [
+        157,
+        1792811313206546994
+      ],
+      "console_latest.txt.tmp.270849": [
+        44225,
+        1792991448662882615
+      ],
+      "bench_validity_shim_stop.txt": [
+        47,
+        1792794008673107037
+      ],
+      "bench_account_key_before.txt": [
+        129,
+        1792801821285667007
+      ],
+      "bench_audit_profile_cleanup_client.json": [
+        288,
+        1792729695570037479
+      ],
+      "bench_validity_callers_retirement.txt": [
+        481,
+        1792798786372756246
+      ],
+      "bench_sweep_proof.json": [
+        191,
+        1792684678024233620
+      ],
+      "bench_jit_record_length_mode.txt": [
+        6,
+        1792718822397449750
+      ],
+      "bench_warden_precache_before.json": [
+        620,
+        1792957863335268428
+      ],
+      "playtest_probe_latest.txt": [
+        91,
+        1793066742897859137
+      ],
+      "bench_scene_ready.json": [
+        1255,
+        1792699022941924286
+      ],
+      "bench_player_query_parent_source.txt": [
+        45825,
+        1792707456798859016
+      ],
+      "bench_cadence_retirement.txt": [
+        555,
+        1792766789503575339
+      ],
+      "bench_boss_precache.json": [
+        1050,
+        1792692087797059848
+      ],
+      "bench_walk_route.json": [
+        5071,
+        1792683201084868575
+      ],
+      "bench_validity_probe.json": [
+        195,
+        1792627364496243259
+      ],
+      "bench_motion_source_proof.txt": [
+        1142,
+        1792697647671998518
+      ],
+      "bench_exact_interior_probe.txt": [
+        3547,
+        1792804482562833346
+      ],
+      "bench_cadence_retirement.json": [
+        75,
+        1792766789608569979
+      ],
+      "bench_public_thread_capabilities_server.json": [
+        1905,
+        1792765685320902583
+      ],
+      "bench_heap_profile_enable.txt": [
+        571,
+        1792729513567386932
+      ],
+      "bench_exact_interior_before.txt": [
+        135,
+        1792805040363432923
+      ],
+      "bench_native_selection_source_proof.txt": [
+        1248,
+        1792730093960549964
+      ],
+      "bench_jit_trace_events.txt": [
+        643,
+        1792614058038086269
+      ],
+      "bench_hud_black_cached.png": [
+        5602,
+        1792780324699595827
+      ],
+      "bench_gameplay_receipt.json": [
+        4649,
+        1792631573058251381
+      ],
+      "bench_restore_invisible.txt": [
+        222,
+        1792610988996637353
+      ],
+      "bench_account_key_arm.json": [
+        233,
+        1792802695240185045
+      ],
+      "bench_build_dense_human.txt": [
+        2978,
+        1792680135161123468
+      ],
+      "bench_level_ten_checkpoint.json": [
+        19250,
+        1793028473387461080
+      ],
+      "bench_behave_direct_state.json": [
+        134,
+        1792812871731467751
+      ],
+      "bench_release_twenty_checkpoint.json": [
+        21127,
+        1793028483213875790
+      ],
+      "bench_runtime_probe.txt": [
+        406,
+        1792609975744352680
+      ],
+      "bench_native_motion_baseline.json": [
+        145,
+        1792625309589679867
+      ],
+      "bench_statefor_kind_probe.json": [
+        1884,
+        1792785416474892715
+      ],
+      "bench_native_cadence_probe.json": [
+        38297,
+        1792766332657825376
+      ],
+      "bench_audit_profile_cleanup_server.json": [
+        288,
+        1792729694107638575
+      ],
+      "bench_brain_phase_start.txt": [
+        3347,
+        1792696619841010522
+      ],
+      "bench_native_calls_state.txt": [
+        451,
+        1792792547234435585
+      ],
+      "bench_jit_record_length_server.json": [
+        1106,
+        1792718893295816752
+      ],
+      "bench_finale_hulls.json": [
+        1600,
+        1792700390530036850
+      ],
+      "bench_native_motion_baseline.txt": [
+        884,
+        1792625288795567431
+      ],
+      "bench_state_lookup_restored.json": [
+        96,
+        1792632073788429202
+      ],
+      "bench_brain_phase_stop.txt": [
+        45,
+        1792696619841140957
+      ],
+      "bench_collision_profile_stop.txt": [
+        51,
+        1792709342474559726
+      ],
+      "bench_player_query_source_probe.txt": [
+        4091,
+        1792707657291708842
+      ],
+      "bench_state_native_boundary.txt": [
+        1195,
+        1792632419275521800
+      ],
+      "bench_dense_human_corrections.json": [
+        1145,
+        1792680135271715699
+      ],
+      "bench_boss_profile.txt": [
+        2164,
+        1792688898577426197
+      ],
+      "bench_release_d20_prepare.txt": [
+        3295,
+        1792810836690935095
+      ],
+      "bench_query_profile_start.txt": [
+        4678,
+        1792953817237840087
+      ],
+      "bench_collision_profile_start.txt": [
+        2133,
+        1792709342470559506
+      ],
+      "population_latest.txt": [
+        1921870,
+        1793124560110712131
+      ],
+      "bench_motion_vectors.txt": [
+        2214,
+        1792696990837883310
+      ],
+      "bench_heap_profile_enabled_server.json": [
+        123,
+        1792729623084719938
+      ],
+      "bench_close_source_restored.json": [
+        70,
+        1792640015135720636
+      ],
+      "bench_recorder_cpu.json": [
+        879,
+        1792790149711649838
+      ],
+      "bench_progress_dispatch_probe.json": [
+        1246,
+        1792810605350818240
+      ],
+      "bench_movement_sweep_before.txt": [
+        158,
+        1792813655097286273
+      ],
+      "bench_thread_probe.txt": [
+        337,
+        1792621539045789898
+      ],
+      "bench_native_selection_arm.json": [
+        207,
+        1793028392512269419
+      ],
+      "bench_native_calls_started.json": [
+        442,
+        1792793404577418232
+      ],
+      "bench_core_entities_base_nextbot_sv_nextbot.txt": [
+        9893,
+        1792690107439216980
+      ],
+      "rpg_session_latest.txt": [
+        34375,
+        1793124560124786205
+      ],
+      "bench_timer_profile_stop.txt": [
+        312,
+        1792768334743909670
+      ],
+      "bench_identity_key_probe.txt": [
+        2629,
+        1792801318216241855
+      ],
+      "bench_wall_render_isolation.txt": [
+        370,
+        1792619978695646027
+      ],
+      "bench_engine_report.txt": [
+        514,
+        1792962710323651488
+      ],
+      "bench_collision_pair_matrix.txt": [
+        4836,
+        1792710330984846593
+      ],
+      "m1_support_629453529_l1_1987140527.json": [
+        491,
+        1787335887366553340
+      ],
+      "bench_finale_support_hull_probe.txt": [
+        925,
+        1792700707427373510
+      ],
+      "bench_all_hooks_result.json": [
+        15854,
+        1792611018941694219
+      ],
+      "bench_warm_state_server.json": [
+        222,
+        1793027845203773414
+      ],
+      "bench_warden_precache_after.json": [
+        619,
+        1792957932328040025
+      ],
+      "bench_ai_cost.json": [
+        3027,
+        1792619713284090919
+      ],
+      "bench_entry_context_source_proof.txt": [
+        1632,
+        1792719437798377551
+      ],
+      "bench_client_think_retirement.txt": [
+        524,
+        1792808396835443198
+      ],
+      "bench_brain_phase.json": [
+        329509,
+        1792704496604002260
+      ],
+      "bench_instruction_profile_start.txt": [
+        2257,
+        1792714563575516553
+      ],
+      "bench_stair_query_census.json": [
+        1756,
+        1793028362769812438
+      ],
+      "bench_close_native_sanity.txt": [
+        1257,
+        1792640190496025353
+      ],
+      "bench_hud_source_dark_original.png": [
+        8945,
+        1793037294778717026
+      ],
+      "console_latest.txt.tmp.208449": [
+        78939,
+        1792966019664679554
+      ],
+      "bench_validity_shim_state.json": [
+        95,
+        1792795370640253902
+      ],
+      "bench_core_entities_base_nextbot_shared.txt": [
+        1305,
+        1792690107444835905
+      ],
+      "bench_behave_direct_retirement.json": [
+        86,
+        1792812873727444830
+      ],
+      "bench_lod_index_candidate.txt": [
+        109,
+        1792635124528612652
+      ],
+      "bench_method_profile.txt": [
+        1872,
+        1792682805628461478
+      ],
+      "dialogger_history.json": [
+        95204,
+        1789334488197588487
+      ],
+      "bench_aligned_window_started.json": [
+        36,
+        1792974221539960561
+      ],
+      "bench_native_cadence_probe.txt": [
+        1870,
+        1792766279823523673
+      ],
+      "bench_level_fourteen_checkpoint.json": [
+        19941,
+        1793028479787079952
+      ],
+      "bench_source_state_new.txt": [
+        139,
+        1792632419275283555
+      ],
+      "bench_gc_parameters_client.json": [
+        332,
+        1793028461412867042
+      ],
+      "bench_exact_interior_after.json": [
+        979,
+        1792806248946154500
+      ],
+      "bench_progression_restore.txt": [
+        157,
+        1792689957128938684
+      ],
+      "bench_instruction_short_retirement.json": [
+        192,
+        1792803259510922678
+      ],
+      "bench_client_think_short.json": [
+        10366,
+        1792810146777298543
+      ],
+      "bench_jit_trace_capacity_server.json": [
+        1061,
+        1792714140803205059
+      ],
+      "bench_validity_callers_retirement.json": [
+        70,
+        1792799353908365957
+      ],
+      "bench_integration_cache_cleanup.json": [
+        199,
+        1793036165013004491
+      ],
+      "bench_hud_source_bright_cached.png": [
+        9359,
+        1793037294884719437
+      ],
+      "bench_boss_route_prepare.txt": [
+        2224,
+        1792688898577000234
+      ],
+      "bench_jit_loop.txt": [
+        520,
+        1792613865574582889
+      ],
+      "bench_meta_hot_coverage.json": [
+        186,
+        1792636483883766231
+      ],
+      "bench_collision_matrix.json": [
+        6058,
+        1792709931849886918
+      ],
+      "m1_audit_206746529_l1_1457835252.json": [
+        1157,
+        1786913167670783689
+      ],
+      "bench_aligned_last.json": [
+        78,
+        1792974289102790653
+      ],
+      "bench_bounds_phases_before.txt": [
+        133,
+        1792809076238912921
+      ],
+      "bench_hud_raster_source_visual.json": [
+        1628,
+        1793037295079723870
+      ],
+      "bench_stair_collision_result.json": [
+        6321,
+        1793036162959659875
+      ],
+      "bench_native_method_before.txt": [
+        142,
+        1792791201718439709
+      ],
+      "bench_dense_landing_trace.json": [
+        414,
+        1792680187665106036
+      ],
+      "bench_public_thread_capabilities.txt": [
+        1057,
+        1792765684246294152
+      ],
+      "bench_native_validity_arm.json": [
+        268,
+        1792798166388599398
+      ],
+      "bench_cached_index_install.txt": [
+        2561,
+        1792636182459561570
+      ],
+      "bench_hud_dark_cached.png": [
+        8937,
+        1792780324632680788
+      ],
+      "bench_jit_mcode_mode.txt": [
+        6,
+        1792771749146863286
+      ],
+      "bench_validity_callers_start.txt": [
+        3600,
+        1792798786372243520
+      ],
+      "bench_table_addresses_after.txt": [
+        168,
+        1792778337570064395
+      ],
+      "bench_behave_direct_arm.json": [
+        156,
+        1792812700939292603
+      ],
+      "bench_finale_phase_stop.txt": [
+        45,
+        1792701258564201999
+      ],
+      "bench_dense_landing_trace.txt": [
+        997,
+        1792680135162148323
+      ],
+      "bench_hud_bright_cached.png": [
+        9359,
+        1792780324662506654
+      ],
+      "bench_ack_server.json": [
+        81,
+        1793037296383888639
+      ],
+      "m1_audit_628041529_l1_2078047509.json": [
+        984,
+        1787334467567194421
+      ],
+      "bench_table_addresses_client_before.json": [
+        27563,
+        1792778437683568225
+      ],
+      "bench_animation_probe.json": [
+        1088,
+        1792704999079071994
+      ],
+      "bench_aligned_first.json": [
+        77,
+        1792974229150668695
+      ],
+      "bench_jit_trace_capacity.txt": [
+        1805,
+        1792713428618636530
+      ],
+      "bench_cached_index_restore.txt": [
+        50,
+        1792636182460311744
+      ],
+      "bench_method_index_precedence.txt": [
+        2893,
+        1792790552180341396
+      ],
+      "bench_native_validity_impl.txt": [
+        3002,
+        1792797265211713023
+      ],
+      "bench_namespace_source_proof.json": [
+        1995,
+        1792779996084414916
+      ],
+      "bench_jit_profile_capabilities_client.json": [
+        324,
+        1792712306358910849
+      ],
+      "bench_floor_submit_result.json": [
+        65,
+        1792620598454026820
+      ],
+      "bench_query_profile_arm.json": [
+        102,
+        1792959483355322026
+      ],
+      "bench_motion_arm.json": [
+        19,
+        1792699009845083358
+      ],
+      "bench_exact_interior_arm.json": [
+        1053,
+        1792806081120188047
+      ],
+      "bench_aligned_window.txt": [
+        2473,
+        1792961946673191744
+      ],
+      "bench_fullupdate.txt": [
+        266,
+        1792610856393246237
+      ],
+      "bench_progress_dispatch_probe.txt": [
+        2582,
+        1792810508515109847
+      ],
+      "bench_query_profile_retirement.txt": [
+        580,
+        1792772833852131298
+      ],
+      "bench_finale_receipt.json": [
+        36679,
+        1793028556363880940
+      ],
+      "bench_profile_guard_control.txt": [
+        127,
+        1792636709621870480
+      ],
+      "bench_walk_route.txt": [
+        2294,
+        1792610219011581489
+      ],
+      "bench_renderer_info.txt": [
+        232,
+        1792616859439632746
+      ],
+      "bench_profiler_api_client.json": [
+        368,
+        1792685437236874038
+      ],
+      "bench_profiler_api_server.json": [
+        368,
+        1792685436839109036
+      ],
+      "bench_gc_step_start.txt": [
+        1143,
+        1792728601074913267
+      ],
+      "bench_soldier_provider_observed.json": [
+        7004,
+        1792621228113701797
+      ],
+      "bench_locomotion_probe.txt": [
+        824,
+        1792627021747322464
+      ],
+      "bench_engine_report_requested.json": [
+        57,
+        1792974292533703790
+      ],
+      "bench_namespace_source_proof.txt": [
+        2500,
+        1792778884453416052
+      ],
+      "bench_cell_key_source_probe.txt": [
+        2449,
+        1792716232918373073
+      ],
+      "bench_native_motion_none.json": [
+        174,
+        1792625620600872191
+      ],
+      "bench_warden_model_arm.json": [
+        73,
+        1792955168972824869
+      ],
+      "bench_native_selection_source_proof.json": [
+        946,
+        1793036145828203674
+      ],
+      "bench_close_target_install.txt": [
+        1440,
+        1792639327570243664
+      ],
+      "rpg_test_session.txt": [
+        34375,
+        1793048384477150441
+      ],
+      "bench_release_d20_after.txt": [
+        94,
+        1792810836692047462
+      ],
+      "bench_native_motion_none.txt": [
+        1182,
+        1792625423555397778
+      ],
+      "native_pilot_diagnostic_2575_5345567_2540_0546875.txt": [
+        912984,
+        1793123584947093202
+      ],
+      "bench_player_query_source_proof.json": [
+        827,
+        1792708661495254968
+      ],
+      "bench_movement_sweep_impl.txt": [
+        3685,
+        1792813655096938652
+      ],
+      "bench_dense_snapshot.json": [
+        164125,
+        1792678914276159780
+      ],
+      "bench_exact_interior_before.json": [
+        980,
+        1792806179939562073
+      ],
+      "bench_query_profile_state.txt": [
+        491,
+        1792772833852032405
+      ],
+      "m1_support_226028529_l1_167758833.json": [
+        406,
+        1786932433772798788
+      ],
+      "bench_boss_route.json": [
+        43473,
+        1792693390970504301
+      ],
+      "bench_close_source_old.txt": [
+        2394,
+        1792639687342751881
+      ],
+      "bench_state_restore.txt": [
+        71,
+        1792631842231800900
+      ],
+      "bench_movement_sweep_oracle.txt": [
+        1501,
+        1792813655096509573
+      ],
+      "bench_components_restored.json": [
+        100,
+        1792682596955080561
+      ],
+      "bench_release_twenty_before.txt": [
+        1226,
+        1792811313206394372
+      ],
+      "bench_finale_native_gate.txt": [
+        1243,
+        1792701087935574556
+      ],
+      "bench_memory_trace_client.json": [
+        80732,
+        1792728009457015923
+      ],
+      "bench_instruction_short.json": [
+        22893,
+        1792803259070917458
+      ],
+      "bench_native_call_cost.txt": [
+        2290,
+        1792627107293046605
+      ],
+      "bench_close_target_coverage.json": [
+        68,
+        1792639329990463547
+      ],
+      "bench_jit_record_length.txt": [
+        1868,
+        1792718178289589544
+      ],
+      "bench_warden_dispatch_arm.json": [
+        690,
+        1792789271041884653
+      ],
+      "playtest_path_latest.txt": [
+        2,
+        1793123814573103291
+      ],
+      "bench_cell_key_probe.txt": [
+        2397,
+        1792715476666402340
+      ],
+      "bench_movement_sweep_after.json": [
+        828,
+        1792815816038913343
+      ],
+      "bench_close_fields_candidate.txt": [
+        124,
+        1792635723497156733
+      ],
+      "bench_bounds_phases_after.json": [
+        726,
+        1792810139772394843
+      ],
+      "bench_statefor_kind_probe.txt": [
+        3670,
+        1792785271436106663
+      ],
+      "bench_new_campaign.txt": [
+        708,
+        1792683553511046532
+      ],
+      "bench_jit_traces_server.json": [
+        2,
+        1792613798999844008
+      ],
+      "bench_account_key_after.json": [
+        839,
+        1792802863368051976
+      ],
+      "bench_warden_precache_after.txt": [
+        159,
+        1792955673690067785
+      ],
+      "bench_client_think_retirement.json": [
+        88,
+        1792810147751285157
+      ],
+      "bench_finale_route.json": [
+        85194,
+        1793028485044663359
+      ],
+      "bench_behave_direct_start.txt": [
+        4239,
+        1792812120129071710
+      ],
+      "bench_dense_receipt.json": [
+        35066,
+        1792696820876758775
+      ],
+      "bench_behaviour_chain_census.txt": [
+        3661,
+        1792785965278874567
+      ],
+      "bench_navigation_stats_after.txt": [
+        653,
+        1792803468065610678
+      ],
+      "rpg_summary_latest.txt": [
+        2155,
+        1793124560123847635
+      ],
+      "bench_boss_snapshot.json": [
+        11083,
+        1792688822634893162
+      ],
+      "bench_behaviour_arm.txt": [
+        3363,
+        1792690231290629247
+      ],
+      "bench_finale_admission_probe.json": [
+        7006,
+        1792700629577225317
+      ],
+      "playtest_life_after-tetris-f.txt": [
+        436,
+        1793072564444844364
+      ],
+      "bench_jit_interpreter.txt": [
+        100,
+        1792617373452920422
+      ],
+      "console_latest.txt": [
+        30011,
+        1793071945968615162
+      ],
+      "bench_player_query_source_probe.json": [
+        1608,
+        1792707734360197182
+      ],
+      "bench_collision_groups_matrix.txt": [
+        4818,
+        1792806494369288726
+      ],
+      "bench_fprofiler_server.txt": [
+        11182,
+        1792685837147356975
+      ],
+      "bench_exact_interior_probe.json": [
+        1322,
+        1792804581216646718
+      ],
+      "bench_warden_model_precache.txt": [
+        1384,
+        1792954750873132072
+      ],
+      "bench_floor_submit.txt": [
+        3950,
+        1792620533123391616
+      ],
+      "bench_history_cache_proof.json": [
+        340,
+        1793036149474217903
+      ],
+      "bench_jit_mcode_server.json": [
+        1094,
+        1792771820775020932
+      ],
+      "bench_jit_traces.txt": [
+        448,
+        1792613797448443829
+      ],
+      "bench_entry_sweep_off.txt": [
+        165,
+        1792625746514164678
+      ],
+      "bench_validity_fast.txt": [
+        1464,
+        1792627519646008659
+      ],
+      "bench_boss_scene_ready.json": [
+        1256,
+        1792693391662503891
+      ],
+      "dev_vr_sources.txt": [
+        14120,
+        1791349514902916097
+      ],
+      "m1_support_210406529_l1_607762343.json": [
+        406,
+        1786916934151783414
+      ],
+      "bench_bounds_notifications.txt": [
+        1205,
+        1792687052150516662
+      ],
+      "bench_hero_state.txt": [
+        482,
+        1792610183276162151
+      ],
+      "stability_client_latest.txt": [
+        424,
+        1793120927593578308
+      ],
+      "bench_client_think_short.txt": [
+        2832,
+        1792808396835320132
+      ],
+      "bench_history_compare.json": [
+        1568,
+        1792695796776319682
+      ],
+      "bench_collision_coalesce_start.txt": [
+        1660,
+        1792712467021867345
+      ],
+      "m1_audit_629453529_l1_1987140527.json": [
+        984,
+        1787335887356382502
+      ],
+      "bench_finale_scene_ready.txt": [
+        1024,
+        1792699827041492797
+      ],
+      "playtest_life_after-f.txt": [
+        436,
+        1793071615463445941
+      ],
+      "bench_aligned_window.json": [
+        1193,
+        1792974289105142722
+      ],
+      "bench_account_key_after.txt": [
+        128,
+        1792801821285772762
+      ],
+      "bench_progression_dispatch.txt": [
+        3251,
+        1792689957128846435
+      ],
+      "bench_hud_raster_arm.json": [
+        272,
+        1793037298949811696
+      ],
+      "m1_audit_222676529_l1_1788860174.json": [
+        988,
+        1786929204232440001
+      ],
+      "bench_upper_east_trace.json": [
+        3002,
+        1792683909349537429
+      ],
+      "die_logger_history.json": [
+        822602,
+        1793124560259712578
+      ],
+      "bench_dense_continuous_route.json": [
+        41343,
+        1792679173250167749
+      ],
+      "bench_collision_pair_matrix.json": [
+        3466,
+        1792710407861907908
+      ],
+      "bench_jit_profile_capabilities.txt": [
+        962,
+        1792711433816612656
+      ],
+      "bench_exact_interior_after.txt": [
+        134,
+        1792805040363534972
+      ],
+      "bench_state_install.txt": [
+        1683,
+        1792631842231539580
+      ],
+      "playtest_map_target.txt": [
+        43,
+        1793111408238519790
+      ],
+      "bench_engine_window.txt": [
+        3751,
+        1792962710323565535
+      ],
+      "bench_build_dense_route.txt": [
+        1600,
+        1792640366093709300
+      ],
+      "bench_level_ten_prepare.txt": [
+        2504,
+        1792640138926465521
+      ],
+      "bench_audit_profile_cleanup.txt": [
+        1389,
+        1792725358638771262
+      ],
+      "bench_hud_raster_source_before.json": [
+        1003,
+        1793037293707692658
+      ],
+      "bench_cached_index_control.txt": [
+        163,
+        1792636182460185453
+      ],
+      "bench_close_fields_install.txt": [
+        3397,
+        1792635723496805648
+      ],
+      "bench_native_calls.json": [
+        6337,
+        1792793474602631449
+      ],
+      "bench_cached_index_restored.json": [
+        127,
+        1792636349873036036
+      ],
+      "bench_heap_profile_disable.txt": [
+        355,
+        1792729513567513382
+      ],
+      "bench_source_state_restore.txt": [
+        50,
+        1792632419275390883
+      ],
+      "bench_finale_inspect.json": [
+        2446,
+        1792700361500792221
+      ],
+      "bench_vprof_diagnostic.txt": [
+        254,
+        1792609864209724628
+      ],
+      "bench_finale_hulls.txt": [
+        1005,
+        1792700389905406230
+      ],
+      "bench_warm_state.txt": [
+        801,
+        1792766207244247342
+      ],
+      "bench_typed_active.json": [
+        169,
+        1792688300943923563
+      ],
+      "bench_server_io_start.txt": [
+        1989,
+        1792696167390422634
+      ],
+      "bench_level_twenty_prepare.txt": [
+        2840,
+        1792641094879815898
+      ],
+      "bench_jit_probe.txt": [
+        239,
+        1792613084233778230
+      ],
+      "bench_state_control.txt": [
+        104,
+        1792631842231640667
+      ],
+      "bench_hud_dark_original.png": [
+        9247,
+        1792780324613594405
+      ],
+      "bench_components_restore.txt": [
+        91,
+        1792682495756825541
+      ],
+      "bench_absent_role_probe.json": [
+        1572,
+        1792808493792203930
+      ],
+      "bench_gc_pause.txt": [
+        960,
+        1792627220956176077
+      ],
+      "bench_cell_key_source_probe.json": [
+        1527,
+        1792716331063816077
+      ],
+      "bench_host_thread_capabilities_client.json": [
+        934,
+        1792722870004488383
+      ],
+      "bench_gc_step_after_client.json": [
+        280,
+        1792729316452606878
+      ],
+      "bench_hud_cache_prepare.txt": [
+        1870,
+        1792780449054453864
+      ],
+      "bench_gc_step_after_server.json": [
+        280,
+        1792729315922606608
+      ],
+      "bench_method_index_safety.txt": [
+        4275,
+        1792790871516227727
+      ],
+      "bench_finale_input.txt": [
+        4884,
+        1792707876225191532
+      ],
+      "bench_player_query_probe.txt": [
+        4040,
+        1792706766591480723
+      ],
+      "bench_datatable_source.txt": [
+        194,
+        1792687156276177993
+      ],
+      "bench_history_compare.txt": [
+        2301,
+        1792695789129448977
+      ],
+      "bench_animation_parent_source.txt": [
+        9100,
+        1792704860051900627
+      ],
+      "playtest_life_before.txt": [
+        153,
+        1793071581608174969
+      ],
+      "bench_memory_trace_start.txt": [
+        1033,
+        1792727797083324828
+      ],
+      "bench_cached_index_candidate.txt": [
+        175,
+        1792636182459660211
+      ],
+      "bench_profile_guard_install.txt": [
+        2390,
+        1792636709621588800
+      ],
+      "bench_warden_dispatch_after.json": [
+        1264,
+        1792789437333430986
+      ],
+      "bench_render_flags.json": [
+        324,
+        1792679173562123140
+      ],
+      "bench_dense_route.json": [
+        53415,
+        1792684063716623641
+      ],
+      "bench_collision_groups_matrix.json": [
+        106856,
+        1792806590811309236
+      ],
+      "bench_validity_callers_state.txt": [
+        465,
+        1792798786372651084
+      ],
+      "bench_host_server.lock": [
+        0,
+        1793037295862741664
+      ],
+      "bench_route_obstacle.txt": [
+        1007,
+        1792626104582240012
+      ],
+      "bench_client_io_start.txt": [
+        1989,
+        1792694965009782144
+      ],
+      "bench_collision_coalesce_restored.json": [
+        244,
+        1792713015186821792
+      ],
+      "bench_native_validity_after.json": [
+        715,
+        1792798335035738453
+      ],
+      "bench_close_fields_control.txt": [
+        121,
+        1792635723497232644
+      ],
+      "bench_behave_direct_stop.txt": [
+        57,
+        1792812120129697523
+      ],
+      "bench_validity_shim_state.txt": [
+        693,
+        1792794008673399624
+      ],
+      "bench_setup_normal.txt": [
+        1905,
+        1792608369922701950
+      ],
+      "bench_heap_profile_enabled_client.json": [
+        123,
+        1792729623457606593
+      ],
+      "bench_cell_key_source_proof.json": [
+        386,
+        1792724157968708785
+      ],
+      "bench_hurt_membership_after.json": [
+        1115,
+        1792801062159236153
+      ],
+      "bench_wall_think_stop.txt": [
+        197,
+        1792612817017774092
+      ],
+      "bench_validity_shim_retirement.json": [
+        70,
+        1792795440652600993
+      ],
+      "bench_stair_collision_spec.json": [
+        693,
+        1792990498651937038
+      ],
+      "bench_hud_bright_original.png": [
+        9992,
+        1792780324651477686
+      ],
+      "bench_gc_step_arm.json": [
+        71,
+        1792729147541267678
+      ],
+      "bench_route_snapshot.json": [
+        95875,
+        1792609812527886576
+      ],
+      "bench_model_precache_probe.json": [
+        647,
+        1792691875850044246
+      ],
+      "bench_boss_bounds_api.txt": [
+        851,
+        1792689097692039007
+      ],
+      "bench_finale_support_probe.txt": [
+        862,
+        1792700654727699887
+      ],
+      "bench_cell_key_arm.json": [
+        109,
+        1792723586506218108
+      ],
+      "bench_table_addresses_server_before.json": [
+        87847,
+        1792778437372379902
+      ],
+      "bench_recorder_cpu_started.json": [
+        38,
+        1792790081658895952
+      ],
+      "dev_build.txt": [
+        47,
+        1793120838394763862
+      ],
+      "bench_boss_identity.json": [
+        520,
+        1792693547978066879
+      ],
+      "bench_movement_sweep_after.txt": [
+        157,
+        1792813655097373653
+      ],
+      "native_pilot_diagnostic_2805_4062572_2769_9265136719.txt": [
+        913581,
+        1793123814380103138
+      ],
+      "bench_progression_proof.json": [
+        722,
+        1792689957447885310
+      ],
+      "bench_frozen_campaign.txt": [
+        369,
+        1792616344865905733
+      ],
+      "bench_upper_east_trace.txt": [
+        1128,
+        1792683908418451884
+      ],
+      "bench_hurt_membership_before.txt": [
+        137,
+        1792800024423160334
+      ],
+      "bench_query_profile.json": [
+        12552,
+        1792959479461799420
+      ],
+      "bench_entry_context_source_proof.json": [
+        1173,
+        1792720516804360236
+      ],
+      "bench_account_key_impl.txt": [
+        2788,
+        1792801821285535582
+      ],
+      "bench_boss_commit_profile.json": [
+        7103,
+        1792692163333748760
+      ],
+      "bench_lod_index_install.txt": [
+        1680,
+        1792635124528343962
+      ],
+      "bench_instruction_short.txt": [
+        2870,
+        1792803159360301713
+      ],
+      "bench_jit_traces_client.json": [
+        2,
+        1792613798370620762
+      ],
+      "bench_actor_kinds.txt": [
+        312,
+        1792618776665968611
+      ],
+      "bench_native_calls_retirement.txt": [
+        677,
+        1792792547234529605
+      ],
+      "bench_finale_scene_ready.json": [
+        1255,
+        1793028486087559126
+      ],
+      "bench_validity_probe.txt": [
+        600,
+        1792627363603737236
+      ],
+      "bench_identity_key_probe.json": [
+        1256,
+        1792801414613692348
+      ],
+      "bench_profile_guard_candidate.txt": [
+        130,
+        1792636709621954190
+      ],
+      "bench_close_source_control.txt": [
+        113,
+        1792639687342984448
+      ],
+      "bench_components_arm.json": [
+        18,
+        1792682620027938240
+      ],
+      "bench_timer_profile_state.json": [
+        90,
+        1792769168176428215
+      ],
+      "bench_jit_record_length_client.json": [
+        1106,
+        1792718893621124594
+      ],
+      "bench_scene_capture.txt": [
+        391,
+        1792683553511046532
+      ],
+      "bench_native_method_impl.txt": [
+        3519,
+        1792791201718071201
+      ],
+      "bench_hurt_membership_before.json": [
+        1116,
+        1792800993168476500
+      ],
+      "bench_finale_phase_start.txt": [
+        4241,
+        1792704351288474169
+      ],
+      "bench_threaded_render.txt": [
+        451,
+        1792612437577646453
+      ],
+      "bench_host_client.lock": [
+        0,
+        1793037296556757424
+      ],
+      "bench_collision_profile.json": [
+        1231,
+        1792709487703778423
+      ],
+      "bench_close_fields_restore.txt": [
+        50,
+        1792635723497286345
+      ],
+      "bench_history_cache_proof.txt": [
+        2926,
+        1792695529439979302
+      ],
+      "bench_soldier_provider_observed.txt": [
+        936,
+        1792621227462616514
+      ],
+      "bench_behaviour_arm.json": [
+        18,
+        1792690489979209796
+      ],
+      "bench_validity_shim_arm.json": [
+        73,
+        1792795272460005989
+      ],
+      "bench_instruction_short_retirement.txt": [
+        410,
+        1792802995384883483
+      ],
+      "bench_motion_source_proof.json": [
+        655,
+        1792699010405138986
+      ],
+      "bench_focus_watch.txt": [
+        725,
+        1792723506653327351
+      ],
+      "bench_native_calls_arm.json": [
+        73,
+        1792793478229160849
+      ],
+      "crate_sources/models_props_wasteland_cargo_container01.vvd.dat": [
+        42560,
+        1790271113781358764
+      ],
+      "crate_sources/manifest.json": [
+        2346,
+        1790271113822675406
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container01.vtf.dat": [
+        699256,
+        1790271113795215475
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container03.vmt.dat": [
+        242,
+        1790271113815515133
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container01_normal.vtf.dat": [
+        699256,
+        1790271113801423635
+      ],
+      "crate_sources/models_props_wasteland_cargo_container01.dx90.vtx.dat": [
+        12104,
+        1790271113784667385
+      ],
+      "crate_sources/models_props_wasteland_cargo_container01.mdl.dat": [
+        1724,
+        1790271113778177763
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container02.vtf.dat": [
+        699256,
+        1790271113810564878
+      ],
+      "crate_sources/models_props_wasteland_cargo_container01.phy.dat": [
+        722,
+        1790271113787826475
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container02.vmt.dat": [
+        246,
+        1790271113806366660
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container01.vmt.dat": [
+        251,
+        1790271113790818961
+      ],
+      "crate_sources/materials_models_props_wasteland_cargo_container03.vtf.dat": [
+        699256,
+        1790271113819735753
+      ],
+      "music_cache/f8d76a19a40540ccebab2a71a0c702d7024401a2613521301c694af28de9f716.dat": [
+        2214640,
+        1790718472031536507
+      ],
+      "quarantine/ag002re_test.lua.20260910T035249Z": [
+        4644,
+        1788917725855925440
+      ]
+    },
+    "save/stat_inventory": {
+      "gm_flatgrass.HL3": [
+        4,
+        1787851376770454867
+      ],
+      "gm_flatgrass.HL1": [
+        2509576,
+        1787851376768619827
+      ],
+      "modeswitchsave.sav": [
+        2701987,
+        1787851376283616457
+      ],
+      "lod_saverestore_probe.sav": [
+        2192957,
+        1787343626069711524
+      ],
+      "lod_saverestore_probe.tga": [
+        54018,
+        1787343626069819212
+      ],
+      "modeswitchsave.tga": [
+        54018,
+        1787851376491787567
+      ],
+      "gm_flatgrass.HL2": [
+        186794,
+        1787851376770260556
+      ]
+    },
+    "saves/stat_inventory": {
+      "steam_autocloud.vdf": [
+        51,
+        1793120883973777259
+      ]
+    }
+  },
+  "cleanup_errors": [],
+  "native_identity_evidence": {
+    "95782": {
+      "pid": 95782,
+      "birth": "6693172",
+      "kind": "owned_task_marker"
+    },
+    "95912": {
+      "pid": 95912,
+      "birth": "6693628",
+      "kind": "owned_task_marker"
+    }
+  },
+  "original_config_unchanged": true,
+  "qualification": "Rendered client and both private realm proofs require root observation; no fixtures or campaign acceptance inferred."
+}

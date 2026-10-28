@@ -15,16 +15,17 @@
       "source": "05 LOD-STAGE-001; 06 LOD-LORE-UI-001",
       "expected": "Startup/title, role and class selection, Hermit chapter, one identity-bound starter, ready portal",
       "scenario": "Fresh session; create disposable Hero, talk/read/manual, select class and legal feat; ordinary portal Use",
-      "result": "Partial native: previous fresh cheats0 Fighter/Haste and Wizard card checks retained. Freshafdcbc Victor \"The Backup\" Hill selects Fighter and the fourth of four Level1 offers, Cloud Step; ordinary1of1 and locked original hand persist after closing/reopening. Ordinary starter/pedestal and portal deploy again observed. This does not accept Cloud Step combat/movement effects; Role/Soldier and full flow remain pending.",
+      "result": "Partial native startup/staging/class/feat/starter/portal evidence retained. Source18 Grace Rogue/Daunting and fresh post-timeout Caroline Wizard/BlastProof were selected through ordinary UI. Caroline actual-entry photo shows deployment29:59 and clock-start notice; the normal-deployment-named Spellbook photo is still staging30:00. Role/Soldier, full campaign flow and all class core effects remain open.",
       "evidence": [
-        "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png",
         "hermit-dialogue/fixed-runtime/deborah-prod-hermit-bottom.png",
         "production-2c73471b/deborah-wizard-class-card-fixed.png",
         "production-2c73471b/deborah-anthony-deployed-unfound-map.png",
         "popup-escape/native-afdcbc/receipt.json",
         "popup-escape/native-afdcbc/deborah-afdcbc-fourth-feat.png",
         "popup-escape/native-afdcbc/deborah-afdcbc-cloud-step-reopen.png",
-        "popup-escape/native-afdcbc/deborah-afdcbc-victor-deployed.png"
+        "popup-escape/native-afdcbc/deborah-afdcbc-victor-deployed.png",
+        "native-source18-authored/receipt.json",
+        "native-source18-reset-magic/receipt.json"
       ]
     },
     {
@@ -32,9 +33,10 @@
       "source": "05 LOD-OBJ-001",
       "expected": "Ordered red/blue/yellow cards and gates, Neil release/hunt, black gate, boss/key/jail/rescue",
       "scenario": "Walk ordinary legal route; attempt early interactions and progression bypass",
-      "result": "Partial native4322 seed6102602: ordinary physical Redcard acquisition persisted through death; close-range E opened stock Red Gate/checkpoint1 and advanced objective to Blue. No Blue/Yellow/Neil/Black/boss/rescue acceptance.",
+      "result": "Partial native Redcard/RedGate progression remains accepted on seed6102602, including source18 same-pickup closed/open visibility fixture with actual card touch/physical gate Use across a legitimate death/respawn. No Blue/Yellow/Neil/Black/boss/rescue acceptance.",
       "evidence": [
-        "native-4322-route/receipt.json"
+        "native-4322-route/receipt.json",
+        "loot-label-occlusion/native-repaired/receipt.json"
       ]
     },
     {
@@ -66,9 +68,10 @@
       "source": "05 LOD-WORLD-001; 05 LOD-OBJ-001",
       "expected": "Solvable seeded maze and reachable required objectives without illegal shortcuts",
       "scenario": "Distinct seeds; graph validator plus ordinary route traversal",
-      "result": "Partial actual MT2 route from entrance to Redcard and Redreader on seed6102602; no teleport. Cross-floor Blue full-path nil coincides with active SkeletonBlockade6:11:1|6:12:1; approach/physical traversal not yet established; no maze defect confirmed.",
+      "result": "Prior ordinary entrance→Redcard/Redreader traversal retained. Source18 seed6102623 actual floor0 entrance-map approach was walked normally; native bounded Compass and independent read-only full-graph diagnostic agree on13 legal edges to unfound-floor Red objective. Only floor0 waypoints were traversed. Old6102602 Blue nil with SkeletonBlockade6:11:1|6:12:1 remains unaccepted; no route defect confirmed.",
       "evidence": [
-        "native-4322-route/receipt.json"
+        "native-4322-route/receipt.json",
+        "native-source18-navigation/receipt.json"
       ]
     },
     {
@@ -76,9 +79,11 @@
       "source": "07 LOD-STAIR-HEADROOM-20260927; retained collision integration",
       "expected": "Upright stairs, floor alignment, no blocked passages or accidental bypass",
       "scenario": "Walk ascent/descent and turns, probe signed-floor seams and collision",
-      "result": "pending Freshd66 cold gate model validation/stock rendering passes before diagnostic precache, using a15s camera-only fixture; no gate reach/Use/collision/traversal acceptance follows.",
+      "result": "Cold stock gate fixture and existing retained collision evidence remain. Source18 native stair metadata4:12:0→4:12:1 is observed, but ordinary staircase ascent/descent and broad seams/bypasses are still unaccepted. Root reports a later protected7-waypoint floor0 walk25.091s/HP100; ignored pilot result is not a complete stair-pass bank. Failed read-only Approach18 table-identity guard is classified separately, not a production obstruction.",
       "evidence": [
-        "native-d66/receipt.json"
+        "native-d66/receipt.json",
+        "native-source18-reset-magic/receipt.json",
+        "native-source18-reset-magic/diagnostic-error-audit.json"
       ]
     },
     {
@@ -94,18 +99,22 @@
       "source": "Author request; 05 LOD-OBJ-001; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
       "expected": "Previously reported No legal route regression",
       "scenario": "Use ordinary found-floor map for objective on another floor; follow stairs",
-      "result": "pending",
-      "evidence": []
+      "result": "Finite native display regression PASS on source18/6102623: after actual map0 touch,301/301cells3/3chunks and valid BREADCRUMB10OF13 guide toward Red3:14:1 with firststair4:12:0→4:12:1 and rendered UP/BEARLEFT2303u. Unfound upper layout stays hidden. Full route/stair traversal and the old event-blocked6102602 case remain open.",
+      "evidence": [
+        "native-source18-navigation/receipt.json"
+      ]
     },
     {
       "id": "REG-PICKUPS",
       "source": "Author request; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
       "expected": "Native visible map/cards/Jail Key remain collectible from normal views",
       "scenario": "Near/far and above/below orbit, touch, receipt and entity cleanup",
-      "result": "Mapbinder/pedestal visible at normal approach; ordinarytouch acquisition removed pickup and revealed physicalFloor1. Key/JailKey angle/distance checks pending. Source16 ordinary Redcard native body-contact and HUD stage2 passed; key/map broad disappearance/lifecycle regressions remain open.",
+      "result": "Map0 actual2026 disappears only after ordinary touch with party mask0→1, floor0 owned and layout rendered; this is intentional collection. Prior normal map/body approach and source16/18 Redcard acquisition retained. Full key/map/JailKey angle/distance/lifecycle and multiplayer boundaries remain open.",
       "evidence": [
         "production-2c73471b/deborah-normal-map-pedestal-approach.png",
-        "production-2c73471b/deborah-map-legend-fixed-native.png"
+        "production-2c73471b/deborah-map-legend-fixed-native.png",
+        "native-source18-navigation/receipt.json",
+        "loot-label-occlusion/native-repaired/receipt.json"
       ]
     },
     {
@@ -162,10 +171,12 @@
       "source": "00 LOD-FLOOR-MAP-001; approved FLOOR_MAP_PANEL_20261013 and NAVIGATION_FEATS_20261013",
       "expected": "Per-floor maps shared by party; personal Magic drain; unfound panel and navigation feats",
       "scenario": "Open Q/M before/after pickup; two clients on different floors; Compass/Finder/GPS",
-      "result": "Native cheats0 unfound/revealedFloor1 map, Magic drain and breadcrumb observed. Default1280x800 legend fits afterBUG004. Cross-floor route/Compass/Finder/GPS/partysharing pending. Private14 dev1 actual living unfound panel Q-open/M-close and Magic drain observed with sustained native keys; no WorldWalker speed/party sharing claim.",
+      "result": "Finite source18 single-client map0 acquisition/cross-floor breadcrumb display passes. Fresh epoch3 Caroline unfound Q panel drains personal Magic to0, automatically closes and recovers0→9 across101samples25.0358s; actual native rates6.6667drain and0.9regenmult agree with sampled6.6715/1.50094. Both earlier closed-named map photos were actuallyOPEN; the newer exhaustion sequence resolves that limited close question. ManualQ/Mclose, higher-floor traversal/acquisition, Compass/Finder/GPS and real party sharing remain open.",
       "evidence": [
         "production-2c73471b/deborah-map-legend-fixed-native.png",
-        "native-private14/receipt.json"
+        "native-private14/receipt.json",
+        "native-source18-navigation/receipt.json",
+        "native-source18-reset-magic/receipt.json"
       ]
     },
     {
@@ -173,7 +184,7 @@
       "source": "02 LOD-CLS/LOD-MON; 03 LOD-CBT",
       "expected": "Enemy archetypes, native acquisition/telegraphs/attacks and damage/defenses",
       "scenario": "Ordinary early/late combat plus bounded archetype fixtures",
-      "result": "Partial native4322 Fighter/Pusher: actual .357 shots/normal reloads, several normal-history enemy defeats and XP, Dodge contexts and incoming Soldier bolts/natural deaths. Bounded native input assistance; no all-archetype or full combat acceptance. Source16 actual Fallen NPC shared Aim error confirmed asBUG017; source6ac static repair/nativepending.",
+      "result": "Partial earlier native attacks/reloads/defeats/XP/defenses retained. BUG017 now has finite source17 actual FallenNextBot4fires/1realHero hit and separate playerAim/cleanup acceptance. Root later reports source18 Caroline seven ordinary shotgun trigger presses ending out-of-ammunition/HP85, followed by natural death/respawn to lives2; this is limited exploratory observation, not all-archetype/combat/damage-formula acceptance. Other authored enemies/bosses and cooperative combat remain open.",
       "evidence": [
         "environment-input/deborah-native-walk-trial.png",
         "combat-feedback/BUG-012.json",
@@ -181,7 +192,10 @@
         "combat-feedback/before-rogue-backstab.png",
         "combat-feedback/native-4322/receipt.json",
         "combat-feedback/BUG-014.json",
-        "native-4322-route/receipt.json"
+        "native-4322-route/receipt.json",
+        "npc-aim-boundary/BUG-017.json",
+        "native-source17-adjacent/receipt.json",
+        "npc-aim-boundary/native-repaired/receipt.json"
       ]
     },
     {
@@ -197,9 +211,10 @@
       "source": "03 LOD-FORM/LOD-CONTENT/LOD-MAG",
       "expected": "Forms/Contents, resources, Blast/Beam presentation and stable Summon",
       "scenario": "Ordinary acquisition/casting plus rare-form fixtures; multi-body Beam and Summon floors",
-      "result": "Partial: source15 BUG015 finite supported-floor/guarded relocation and actual ThunderCharge movement passed. Full Forms/Contents, FX/audio, authored equipment consumers and lifecycle/co-op coverage remain open.",
+      "result": "Finite supported-floor/ThunderCharge BUG015 evidence retained. New source18 unfound-map resource lifecycle passes separately: actual Q, drain tozero, automatic panel/lease closure and post-close recovery, with source/profile reconciliation. Root reports four EarthMissile casts at post-respawn entry,20MP each; no hit/kill/status/combat or all Forms/Contents/lifecycle/co-op acceptance follows. FX/audio and broad Magic coverage remain open.",
       "evidence": [
-        "floor-support/BUG-015.json"
+        "floor-support/BUG-015.json",
+        "native-source18-reset-magic/receipt.json"
       ]
     },
     {
@@ -226,12 +241,13 @@
       "source": "90 LOD-EQUIP-016; 06 LOD-BIG-LOOT-LIFECYCLE; explicit author retention correction27175f8c",
       "expected": "Owned equipment, capacity, stacks, acquisition, equips, pickup/drop and consumables",
       "scenario": "Ordinary loot/inventory with full/empty/depleted/stale/duplicate boundaries",
-      "result": "Cheats0 initial2records and one ordinary starter observed; P did not grant extras. Fresh f6048a0e controlled Hero death/F respawn preserved all3weapons, exact clips/zero reserve and activeSMG (BUG007 finite gate passed). Other ownership/capacity/economy boundaries pending. Freshd66 bounded ordinary weapon replacement Pistol\u2192Crowbar\u2192Pistol observed, with prior weapon stored, two gear records retained and final rendered Pistol18/0; direct STOW WEAPON, stacking/capacity/economy/co-op and broader inventory remain pending.",
+      "result": "Prior native starter/death retention and Pistol↔Crowbar replacement constraints retained. Source18 earned-currency Vending delivers one owned HealingPotion, native quantity1/3, repeat rejected; healing/cure/throw not exercised. Ordinary body-slot Pistol equip adds actual+2STR/+2WIS and agrees with sheet/server while immutable base stays17/14; failed XTest double-click remains unaccepted input evidence. Broad stacks/capacity/equip/drop/ownership/economy/co-op boundaries remain open.",
       "evidence": [
         "environment-input/receipt.json",
         "death-lifecycle/BUG-007.json",
         "death-lifecycle/fixed-runtime-f604/receipt.json",
-        "native-d66/receipt.json"
+        "native-d66/receipt.json",
+        "native-source18-authored/receipt.json"
       ]
     },
     {
@@ -239,17 +255,20 @@
       "source": "06 LOD-ECON-001; 90 LOD-EQUIP-017",
       "expected": "Atomic buying/selling/exchanges/rewards without duplication",
       "scenario": "Disposable account state; reject insufficient funds/full capacity; repeat/simultaneous Use",
-      "result": "pending",
-      "evidence": []
+      "result": "Finite source18 earned currency transaction pair passes: natural StrengthPress18+STR3=21/DC12 credits0→20, Vending debit20→10 deliversPotion0→1, ordinary repeats denied. Explicit single-event previews and supported beyond-lock4s locators are qualified, not ordinary route proof. Other rewards/exchanges/selling, admission failures, reconnect and simultaneous-client boundaries remain open.",
+      "evidence": [
+        "native-source18-authored/receipt.json"
+      ]
     },
     {
       "id": "EVENT-01",
       "source": "05/06/07 LOD-EVENT-EXPANSION",
       "expected": "Active 28-event catalog, exact density/placement/admission/outcomes",
       "scenario": "Natural event samples plus deterministic setup of each authored family",
-      "result": "Partial native StrengthPress failure: d20face1+STR\u22121=0vs12, wallet unchanged0, spent receipt and repeated nativeE rejection persist across recreated entity. Explicit preview/locator beyondlocks/unranked; ordinary event route, success20payout, replacementHero/reconnect/co-op and other27authored events remain open.",
+      "result": "2of28 authored identities have finite single-client branch evidence, not full family acceptance. StrengthPress source16 failure/receipt across regeneration retained; source18 success20DEB and repeat denial pass. Vending earned-money10DEB purchase/potion1of3/repeat denial pass. Both locator returns preserve sampledHP/life and progression/map flags. All26 other identities, ordinary placement/routes, remaining branch/lifecycle/reconnect/co-op gates stay open.",
       "evidence": [
-        "native-source16-events/receipt.json"
+        "native-source16-events/receipt.json",
+        "native-source18-authored/receipt.json"
       ]
     },
     {
@@ -265,7 +284,7 @@
       "source": "06 LOD-MP-001; 06 LOD-RETENTION-001",
       "expected": "Supported Hero/Soldier counts and shared versus personal state",
       "scenario": "Multiple real clients; split floors, simultaneous interactions and roles",
-      "result": "Pending documented two-real-client LAN smoke on the one available Deck; no native co-op pass yet.",
+      "result": "Blocked for real-client acceptance: user confirms only this Steam Deck; no second authorized authenticated real client/identity is available. Single-client server party masks and NativeNextBot actors do not pass shared Hero/Soldier roles, counts or synchronization. Prior LAN feasibility evidence remains unsuccessful.",
       "evidence": [
         "lan-client-feasibility.json"
       ]
@@ -275,7 +294,7 @@
       "source": "06 LOD-SOLDIER/LOD-LIFE; 02 LOD-SXP",
       "expected": "Late join, death, Soldier queue, disconnect/reconnect and synchronization",
       "scenario": "Multiple real clients across alive/dead/staging/active/boss/reset states",
-      "result": "LAN roles/death/session synchronization pending; distinct authenticated-account reconnect/ownership coverage blocked without an additional authorized authenticated client.",
+      "result": "Blocked for distinct-client/account latejoin, disconnect/reconnect, ownership and simultaneous-interaction acceptance on the one available Deck. Complete independent single-client lifecycle work; no spoofed identities or bot substitute for cooperative claims.",
       "evidence": [
         "lan-client-feasibility.json"
       ]
@@ -285,7 +304,7 @@
       "source": "06 LOD-UI-001 through 010; approved quieter logger amendment",
       "expected": "Menus, direct keys, HUD/log readability, prompts, input and camera modes",
       "scenario": "Rendered desktop input, menu scrolling, bindings, viewport sizes, third person",
-      "result": "Partial native: priorafdcbc Spellbook/CharacterSheet child Escape and next normal pause remain evidenced. Freshd66 ordinary Crowbar/Pistol tooltips wrap completely inside1280x800; settled actual-hover and held physical/UInput Escape close Equipment. Earlier no-settle/XTest anomalies retained as input uncertainty. Short tooltip/other viewports, independent DHTML pixels/focus, rebound/controller/camera/co-op and full UI coverage remain open. Current d66 native incoming combat exposed Backstab subject misattribution and missing hostile kill icons;4322 has shared presentation repairs/static proof, with repaired HUD/log/glyph runtime checks pending. Fresh4322 native shows correct stock bolt kill icon and no attributed warning, while raw #lod_hostile class text exposed BUG014.8a9 adds the generic phrase; repaired native label and actual Backstab HUD/log attribution remain pending. Subsequent source15 finite native BUG012 attacker-prefix and BUG014 Hostile/crossbow/victim label now pass; explicit attack/oneHP fixture qualifications are preserved. Remaining broad UI/controller/camera/co-op coverage stays open. Subsequent source17 confirms Health-label through closed Red gate asBUG018 via exact HUD target and both realm frozen rays; repair investigation active.",
+      "result": "Finite inherited Escape/tooltip/default1280x800 and source15 combat feedback gates retained. BUG018 same actual Health behind closed Red gate is now unnamed; physical gate opening restores its HUD name, independently reviewed. Source18 map reminder/layout/breadcrumb/upcue and resource auto-close are rendered/observed; misleading screenshot names are corrected in receipts. Full menus/rebound/controller/camera/co-op and broad HUD/presentation coverage remain open.",
       "evidence": [
         "popup-escape/native-afdcbc/receipt.json",
         "popup-escape/native-afdcbc/deborah-afdcbc-escape-closed.png",
@@ -296,7 +315,10 @@
         "native-d66/deborah-d66-equipment-escape-probe.png",
         "combat-feedback/receipt.json",
         "combat-feedback/native-4322/receipt.json",
-        "combat-feedback/BUG-014.json"
+        "combat-feedback/BUG-014.json",
+        "loot-label-occlusion/native-repaired/receipt.json",
+        "native-source18-navigation/receipt.json",
+        "native-source18-reset-magic/receipt.json"
       ]
     },
     {
@@ -320,11 +342,13 @@
       "source": "06 LOD-RETENTION-001/LOD-LIFE/LOD-SOLDIER",
       "expected": "Death, Tetris/revival/no-Hero retention and resource integrity",
       "scenario": "Real deaths/return, spectator state, reconnect without reroll/duplication",
-      "result": "Natural deaths consumed lives and retained dungeon clock. BUG007/008 targeted native recheck passed on f6048a0e: controlled death saved activeSMG; fresh F without Tetris restoredHP100, SMG25/pistol18/crowbar/zero reserve. Early F Tetris entry, arrow input sent and later F respawn observed. Full scoring/reward, exact20s/60s boundaries, zero-life/revival and cooperative cases remain pending.",
+      "result": "Earlier natural deaths/clock retention and targeted BUG007/008 native loadout/F-respawn gates remain. Source18 closed/open gate scenario includes real Runner death and fresh bound respawn; later root reports Caroline natural death/auto-respawn to lives2. Exact queue/Tetris/life boundaries, no-Hero/zero-life, reconnect/co-op and all resource retention remain open.",
       "evidence": [
         "death-lifecycle/BUG-007.json",
         "death-lifecycle/BUG-008.json",
-        "death-lifecycle/fixed-runtime-f604/receipt.json"
+        "death-lifecycle/fixed-runtime-f604/receipt.json",
+        "loot-label-occlusion/native-repaired/receipt.json",
+        "native-source18-reset-magic/receipt.json"
       ]
     },
     {
@@ -332,9 +356,11 @@
       "source": "05 LOD-TIMER-001; active LOD-HOURGLASS-001",
       "expected": "Timeout/explosion/reset current timing and subsequent fresh campaign",
       "scenario": "Force near-deadline setup only; observe genuine failure sequence and ordinary restart",
-      "result": "Observed natural30min expiry, approved low-final collapse, automatic in-place reset and new staging epoch. BUG005 confirmed missing failure/restart HUD in two scenes. Timings/manual reset and repaired native HUD pending.",
+      "result": "Earlier BUG005 finite accelerated native HUD gate on278e/19feeda8 shows TIMEOVER/GAMEOVER/bars/manual lockout→PRESS E/countdown and ordinaryEreset, per later fixed-runtime receipt; older defect.json pending metadata is not latest evidence. New source18 naturalTIMEOVER/restart run8epoch2→run9epoch3/maps0 and fresh29:59entry are separate partial observations, not a new source18 explosion/HUD/exactrestart-delay/allcleanup pass.",
       "evidence": [
-        "timeout-hud/defect.json"
+        "timeout-hud/defect.json",
+        "native-source18-reset-magic/receipt.json",
+        "timeout-hud/fixed-runtime/receipt.json"
       ]
     },
     {
@@ -342,7 +368,7 @@
       "source": "07 LOD-IMPL-004; retained optimization integration",
       "expected": "Representative comparable performance; no repair-induced regression",
       "scenario": "Same scene/seed/settings/hardware baseline and candidate captures; no 40-FPS claim",
-      "result": "Representative actualDeck source17\u219218 same closed-gate pose/settings sampled29.7313\u219230.3647FPS, p9540.291\u219239.778ms; all891/910frames independently recomputed.36wanderers/40bodies, different client entity counts. No sampled regression, causal gain/40FPS/full-workload acceptance unclaimed.",
+      "result": "Representative actualDeck source17→18 same closed-gate pose/settings sampled29.7313→30.3647FPS, p9540.291→39.778ms; all891/910frames independently recomputed.36wanderers/40bodies, different client entity counts. No sampled regression, causal gain/40FPS/full-workload acceptance unclaimed.",
       "evidence": [
         "production-2c73471b/performance_client_latest.txt",
         "native-source17-adjacent/receipt.json",
@@ -354,7 +380,7 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "Latest exact frozen source18 full337/337validators,928Lua,576production/4227Gitblobs pass; original negative and target-hit-mutant checks retained. All four candidate workflows green. Native acceptance remains separate.",
+      "result": "Latest gameplay63bcc exact frozen337/337validators,928Lua,576production/4227Gitblobs and independent review pass. Evidence-only main verifieda8c73060 before this checkpoint; gameplay remains unchanged. Original negatives and target-hit mutant preserved. Native assertions are classified separately: owned Approach18 diagnostic failure was missed by a narrow regex and is now audited, not hidden.",
       "evidence": [
         "combined-278e-integration-gate/receipt.json",
         "wizard-class-card/static-repair-receipt.json",
@@ -364,7 +390,8 @@
         "gate-precache/static-receipt.json",
         "gate-precache/ci-fixture/receipt.json",
         "remote-ci-8a9/proof.json",
-        "ci-source18/verification.json"
+        "ci-source18/verification.json",
+        "native-source18-reset-magic/diagnostic-error-audit.json"
       ]
     },
     {
@@ -422,12 +449,15 @@
       "id": "REG-SAFE-FLOOR",
       "source": "03 LOD-THUNDER-HAT-001/LOD-HEAVY-PLUMBER-001;05 LOD-EVENT-WARP-001;06 LOD-SAFE-TRAVEL-001",
       "expected": "Canonical relocation and ground abilities accept valid supported standing footprints; reject holes, walls, hazards, locked routes and stale bodies",
-      "scenario": "Repeat native centeredHero/Rogue\u00b1Y support positives and wall\u00b1X negatives; observe actual movement and authored consumers",
-      "result": "Finite native source74415 passes actual centered-Hero/nearby-supported positives and wall negatives, guarded relocation/return and measured ThunderCharge Up-Down-Up movement. Other authored consumers, obstructions, lifecycle/co-op and full campaign remain open; new BUG016 stale-life repair is separately pending fresh16.",
+      "scenario": "Repeat native centeredHero/Rogue±Y support positives and wall±X negatives; observe actual movement and authored consumers",
+      "result": "Finite native source74415 passes centered-Hero/nearby-supported positives, wall negatives, guarded relocation/return and measuredThunderCharge movement. BUG016 has a separately accepted fresh source16 stale-life rejection plus fresh-binding movement gate; no longer pending16. Other authored consumers, obstructions, full lifecycle/co-op and campaign remain open.",
       "evidence": [
         "floor-support/BUG-015.json",
         "floor-support/static/receipt.json",
-        "floor-support/native-repaired/receipt.json"
+        "floor-support/native-repaired/receipt.json",
+        "stale-life-binding/BUG-016.json",
+        "ci-source16/verification.json",
+        "stale-life-binding/native-repaired/receipt.json"
       ]
     },
     {
@@ -435,7 +465,7 @@
       "source": "06 LOD-SAFE-TRAVEL-001 and exact native Hero body/life lifecycle",
       "expected": "Old body-life relocation binding rejects after real death/respawn; fresh binding still moves to a valid supported destination",
       "scenario": "Capture binding, real death, mandatory20s wait, ordinaryF respawn, stale MoveBound rejection plus fresh move/restore control",
-      "result": "Finite fresh source16 pass: same identity ps and nil legacy life, actual spawn4\u21925 after death/F-respawn; old Matches/MoveBound false with unchanged position, fresh Matches/move/support-return true. HP100/lives2/Tetrisclosed; all576 sources and both realm5guards match. Full lifecycle/consumer/co-op coverage remains open.",
+      "result": "Finite fresh source16 pass: same identity ps and nil legacy life, actual spawn4→5 after death/F-respawn; old Matches/MoveBound false with unchanged position, fresh Matches/move/support-return true. HP100/lives2/Tetrisclosed; all576 sources and both realm5guards match. Full lifecycle/consumer/co-op coverage remains open.",
       "evidence": [
         "stale-life-binding/BUG-016.json",
         "ci-source16/verification.json",
@@ -447,7 +477,7 @@
       "source": "03 LOD-CBT-001 shared actor combat pipeline and active Fallen Hero rules",
       "expected": "Copied NPC firearms use canonical rolls and native fire without player-only method errors; real player Aim/cleanup stays correct",
       "scenario": "Fresh combined source, actual ranged Fallen Hero release/contact through multiple cycles; real player armedAim/nativefire and lifecycle",
-      "result": "Finite fresh source17 pass: actual owned ranged Fallen NextBot without GetActiveWeapon emits4native357fires, copiedammo6\u21922,1realHerohit3.3333/HP100\u219297,noNewErrors; separate ordinaryplayerAimFire/cleanup passes.8s supportedsetup/return explicitlyfixture, broad NPC/ordinarycampaign/co-op remainopen.",
+      "result": "Finite fresh source17 pass: actual owned ranged Fallen NextBot without GetActiveWeapon emits4native357fires, copiedammo6→2,1realHerohit3.3333/HP100→97,noNewErrors; separate ordinaryplayerAimFire/cleanup passes.8s supportedsetup/return explicitlyfixture, broad NPC/ordinarycampaign/co-op remainopen.",
       "evidence": [
         "npc-aim-boundary/BUG-017.json",
         "ci-source17/verification.json",
@@ -488,7 +518,10 @@
     "For nativeafdcbc UI evidence, live garrysmod/console.log is clipped through first DEPLOYED. Canonical console_latest.txt remained stale, and summary contents have old generated_utc/event_count0/sessionunknown; those files are not substituted as current-session mechanics proof. See popup-escape/native-afdcbc/receipt.json.",
     "Freshnative d66 on actualDeck/Windowsx86/Proton10,seed6102602,1280x800,cheats0/dev0,Workshopoff/autorefreshoff:114startup sourcesmatch plus inventoryCRC2838551934 and separate gateinitCRC153563205. Finite ordinary tooltip/weaponreplacement/heldEscape and camera-only coldstockgate evidence in native-d66/receipt.json.3d33CI-fixture successor has identical gamemodes tree; no fullcampaign/clean-pass claim. Earlier no-settle/XTest anomalies are retained as input-delivery/focus uncertainty, without confirmed game-code attribution.",
     "Private14 source-matched dev1/cheats0 native exploration ended normally: both ownedPIDs, none unproven/remaining, personalcfg/SQLite hashes+DATA/save inventories unchanged. Source74415 repair prepared next. Only this Deck is available; earlier sharedprefix LAN attempt failed, no distinct-account cooperation. See native-private14/receipt.json. Steam Cloud remains OFF temporarily and must be restoredON.",
-    "Source15 quit normally but launcher retained unproven PID64241 after live owned PID/birth had been observed. Root normal quit and host-approved process scan confirmed closure; original flag remains preserved in source15-host-closure.json. Fresh16 uses independent empty prefix; sandbox-only process inventories are not accepted as host closure. Only this Deck is available; cooperative acceptance remains blocked."
+    "Source15 quit normally but launcher retained unproven PID64241 after live owned PID/birth had been observed. Root normal quit and host-approved process scan confirmed closure; original flag remains preserved in source15-host-closure.json. Fresh16 uses independent empty prefix; sandbox-only process inventories are not accepted as host closure. Only this Deck is available; cooperative acceptance remains blocked.",
+    "Source18 evidence-only maina8c73060 banks finite visibility,16syntheticgeometry cases, Strength/Vending/stat attribution, map0/cross-floor cue and fresh map resource lifecycle. NaturalTIMEOVER/reset state is partial, not explosion/allcleanup acceptance. Same-session current run9/epoch3; onlyDeckco-opblocked, audio omitted. Cloud remains temporarilyOFF and must be restoredON after testing.",
+    "Source18 CLOSED: host-approvedps95782/95912absent,launch45222finished;wrapper-15 at4644.011s vs7200configured,causeUNPROVEN. Empty unproven/remaining/cleanup arrays, original recordedcfg equalitytrue. RootCloudONrestoration pending; no currentliveclient/crash/lease-expiry/all-save-equality claim.",
+    "OriginalSteamCloud4000ON restored and actualblueONphoto verified at2026-10-28T00:38:40Z; guardtemporarily_disabledfalse/restore_requiredfalse. Historicalsource18OFF cannot prove currentOFF for fresh launch. See native-source18-reset-magic/steam-cloud-restoration.json."
   ],
   "defects": [
     {
@@ -596,10 +629,10 @@
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
   "installed_loaded_build": "63bcc03e30233f74208a92e25a1904a87201125f",
-  "last_checkpoint_utc": "2026-10-27T23:48:16.919324+00:00",
-  "next_action": "Bank native6102623 StrengthPress+20/Vending-10+potion1/repeat denial evidence and lawful active-weapon stat reconciliation; ordinary Q/entrance floor0 map touch, cross-floor Red route/UPcue and real-blockade discrimination. Continue authored families/progression/endings. Clean0; oneDeck co-op/audio gaps remain. Restore CloudON afterprivate tests.",
+  "last_checkpoint_utc": "2026-10-28T00:39:58.804813+00:00",
+  "next_action": "Review same-gameplay fresh private-session proposal; root owns any new launch and source/gamemode/profile verification. Continue ordinary stair/objective/campaign replay and remaining authored families/endings. Preserve unexplained earlyclosure/staleRPC/Approach18 evidence without crash/lease attribution. Clean0; real-client co-opblocked/audioomitted. OriginalCloudON is restored; any next private launch needs a fresh root-ownedOFFUIproof before execution.",
   "last_runtime_build": "63bcc03e30233f74208a92e25a1904a87201125f",
-  "current_native_build": "source18 running owned PID95782/birth6693172, prepared0d00da7d production-equivalent63bcc; nine actual source proofs pass in both realms; private dev1/dense, not a final normal pass",
+  "current_native_build": "Source18 CLOSED: root host-approvedps owned95782/95912absent and launch45222finished. Prepared0d00da7d was source-equivalent63bcc; finite proofs remain. Next fresh replay proposal only; no new client launched by this checkpoint.",
   "installed_loaded_build_note": "All576Lua/118physical startup entries match frozen source; NearLookCRC84557611, Aim966710964, Safe377454284. Native original BUG018 closed/open finite gate passes; synthetic geometry controls separately labeled.",
   "latest_repair_static_checkpoint": {
     "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
@@ -632,5 +665,47 @@
     "production_files": 576,
     "evidence": "ci-source18/verification.json",
     "qualification": "Exact full frozen source18 static gate; native claims require their separate receipts."
+  },
+  "latest_verified_main_before_checkpoint": "a8c73060ee9b0708bff593fe557edb569ff8b7ec",
+  "current_runtime_checkpoint": {
+    "reported_by": "Root last native report before closure; historical state, not a current live client",
+    "campaign": 6102623,
+    "level_seed": 673660301,
+    "run": "campaign:9",
+    "epoch": 3,
+    "character": "Caroline Wizard/BlastProof",
+    "clock": "Normal first-deployment1800s started; natural priorTIMEOVER/run8→9 reset partial evidence banked.",
+    "latest_root_report": "Protected7-waypoint ordinary floor0 walk25.091s/HP100;7shotgun triggers endout-of-ammunition/HP85;laternaturaldeath/autoRespawn,lives2;4EarthMissile casts at postrespawnentry,20MPeach,nohit/killclaim. Not complete combat/stair/Magic acceptance.",
+    "unbanked_ignored_results": [
+      ".build/autonomous-playtest-20261027/native-pilot-1793146838111785780.result.json",
+      ".build/autonomous-playtest-20261027/native-pilot-1793146863359545778.result.json"
+    ],
+    "no_full_campaign_pass": true,
+    "no_cooperative_acceptance": true,
+    "session_status": "CLOSED; lastCaroline/run9epoch3/lives2 is historical."
+  },
+  "diagnostic_error_audit": "native-source18-reset-magic/diagnostic-error-audit.json",
+  "other_tooling_note": "Root separately acknowledged a stale RPC failure. It is preserved by root as a tooling observation; no game-code attribution or gameplay pass is inferred here.",
+  "source18_session_closure": {
+    "status": "CLOSED; next fresh replay proposal only, no launch by this checkpoint",
+    "host_closure": "native-source18-reset-magic/source18-host-closure.json",
+    "closure_sha256": "3f10d25e2c20f8e61bd108a9da50317fa27102793ee80aae34fc904a44a6fa63",
+    "launch_result": "native-source18-reset-magic/source18-launch-result.json",
+    "launch_result_sha256": "e8ef2ad2bf05401ef6824e6509b583407f181ce4fbca9147d1d6c22da5b81e70",
+    "owned_game_pid": 95782,
+    "owned_utility_pid": 95912,
+    "host_approved_ps_absent": true,
+    "launch45222_finished": true,
+    "configured_seconds_limit": 7200,
+    "elapsed_seconds": 4644.011,
+    "wrapper_exit": -15,
+    "unproven_native_pids": [],
+    "remaining_owned_pids": [],
+    "cleanup_errors": [],
+    "original_config_unchanged": true,
+    "termination_cause": "UNPROVEN. Preserve early ending/wrapper-15; no native crash or lease-expiry claim. Investigate if fresh replay repeats.",
+    "save_qualification": "Equality covers recorded original configuration only, not all saves/data.",
+    "cloud": "OriginalON restored and UI-verified; temporarily_disabledfalse/restore_requiredfalse. Fresh private replay needs newOFFproof, not historicalsource18OFF.",
+    "cloud_restoration": "native-source18-reset-magic/steam-cloud-restoration.json"
   }
 }

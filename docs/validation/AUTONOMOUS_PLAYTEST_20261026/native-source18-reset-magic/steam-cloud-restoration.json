@@ -1,0 +1,12 @@
+{
+  "status": "OriginalSteamCloud4000ON restored and UI-verified by root; ONphoto independently viewed by checkpoint reviewer.",
+  "restored_utc": "2026-10-28T00:38:40.035888+00:00",
+  "temporarily_disabled": false,
+  "restore_required": false,
+  "original_enabled": true,
+  "photo": "source18-cloud-restored-on.png",
+  "photo_sha256": "9d68ad468f3c0045b7e1ba7574f9fb1ebf2972330ebbf3e2bbbaa7ac2ed324d7",
+  "guard": "steam-cloud-restored-state.json",
+  "guard_sha256": "af7a6af824017a67a3ed467ff94e7605b411e22df877f5ca995b534b5400b960",
+  "qualification": "HistoricalOFF belongs to ended source18 and is not valid authorization/evidence of currentOFF for a new client. Any next private launch needs its own fresh root-ownedOFF UI proof; proposal only has not launched."
+}

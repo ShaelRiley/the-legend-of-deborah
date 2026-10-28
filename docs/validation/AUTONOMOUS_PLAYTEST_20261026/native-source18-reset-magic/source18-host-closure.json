@@ -1,0 +1,15 @@
+{
+  "kind": "root host-confirmed source18 closure",
+  "at": "2026-10-28T00:32:16.618888+00:00",
+  "owned_game_pid": 95782,
+  "owned_game_birth": "6693172",
+  "owned_utility_pid": 95912,
+  "owned_utility_birth": "6693628",
+  "host_ps_p_approved_exit": 1,
+  "host_ps_output_empty": true,
+  "launch_exec_session": 45222,
+  "launch_exec_finished": true,
+  "result_path": ".build/autonomous-playtest-20261027/source15-fresh/session-1793142464596271900/launch-result.json",
+  "result_sha256": "e8ef2ad2bf05401ef6824e6509b583407f181ce4fbca9147d1d6c22da5b81e70",
+  "qualification": "Root host-approved ps for both exact owned PIDs found none; launcher returned finished_unaccepted/remaining_owned_pids empty. Original detailed result is preserved, including any unproven or cleanup flags. No game crash inferred from missing window."
+}

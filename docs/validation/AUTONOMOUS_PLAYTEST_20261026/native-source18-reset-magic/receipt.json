@@ -320,7 +320,9 @@
           "line": 646,
           "text": "[LOD] Campaign restarted in-place after failure. previousLevel=1 previousSeed=6102623 newSeed=6102623 epoch=3"
         }
-      ]
+      ],
+      "legacy_signature_regex": "Lua Error|SCRIPT ERROR|attempt to (call|index)|stack traceback:",
+      "native_ERROR_block_count": 0
     },
     {
       "file": "native/console-through-map-profile.log",
@@ -358,10 +360,19 @@
           "line": 773,
           "text": "MAPMAGIC18\tsource18_map_magic_sampler_3727783296.json\t25_seconds_complete\t101\t25.036s"
         }
-      ]
+      ],
+      "legacy_signature_regex": "Lua Error|SCRIPT ERROR|attempt to (call|index)|stack traceback:",
+      "native_ERROR_blocks": [
+        {
+          "line": 817,
+          "text": "[ERROR] Approach18:19: actual native flight direction changed",
+          "classification": "Failed owned read-only Approach18 diagnostic guard; see diagnostic-error-audit.json"
+        }
+      ],
+      "native_ERROR_block_count": 1
     }
   ],
-  "console_scope": "console-after-natural-reset.log predates the Magic sampler; its zeroLua-signature count does not claim a sampler-wide clean console. Any later frozen console is identified separately in this list. Bootstrap con_enable and root psv_allowcslua retry are retained.",
+  "console_scope": "The reset-only console predates the sampler. The later prefix covers sampler completion and actual profile, and also contains one owned Approach18 diagnostic assertion at817 after the sampler completed at773. Legacy regex0 did not count that native [ERROR] block; it is now explicitly classified in diagnostic-error-audit.json. Bootstrap con_enable and root psv_allowcslua retry remain preserved. No error-free-session claim.",
   "remaining_limits": [
     "One actual Deck/client; no cooperative sharing/sync/latejoin acceptance.",
     "No full authored campaign/success ending, broad reset cleanup, controller/audio or performance acceptance.",
@@ -378,5 +389,19 @@
     "archive_sha256": "906dd8496ad224986fe424e05e052b4ab27ee8e425df40b9fd3dcac7f79ebe54",
     "analysis": "analysis/sample-analysis.json with reproducible helpers/analyze_source18_map_magic.py; derived analysis is not native output."
   },
-  "independent_review": "independent-review.json"
+  "independent_review": "independent-review.json",
+  "diagnostic_error_audit": "diagnostic-error-audit.json",
+  "session_closure": {
+    "host_closure": "source18-host-closure.json",
+    "launch_result": "source18-launch-result.json",
+    "status": "Later CLOSED; finite Magic/reset evidence above remains unchanged.",
+    "configured_limit": 7200,
+    "elapsed": 4644.011,
+    "wrapper_exit": -15,
+    "cause": "UNPROVEN; no crash/lease-expiryclaim.",
+    "host_owned_processes_absent": true,
+    "recorded_original_cfg_unchanged": true,
+    "no_all_save_equality_claim": true,
+    "cloud_restoration": "steam-cloud-restoration.json"
+  }
 }

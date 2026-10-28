@@ -1,0 +1,2307 @@
+{
+	"pilotProposal": {
+		"path": [
+			[
+				-2688,
+				768,
+				-12270.46875
+			],
+			[
+				-2688,
+				672,
+				-12206.46875
+			],
+			[
+				-2688,
+				608,
+				-12126.46875
+			],
+			[
+				-2688,
+				544,
+				-12046.46875
+			],
+			[
+				-2688,
+				480,
+				-11982.46875
+			],
+			[
+				-2688,
+				319.5,
+				-11886.46875
+			]
+		],
+		"pause_for_targets": false,
+		"tolerance": 24,
+		"face_route": true,
+		"seconds": 15
+	},
+	"actualHeroPosition": [
+		-3840,
+		-1920,
+		-12271.376953125
+	],
+	"flightCenter": [
+		-2688,
+		544,
+		-12271.96875
+	],
+	"entrySide": "N",
+	"run": "campaign:9",
+	"approachCell": "4:13:0",
+	"uphill": "S",
+	"epoch": 3,
+	"actualHero": {
+		"birth": 285,
+		"class": "player",
+		"id": 1
+	},
+	"qualification": "Read-only actual native AABB/TraceHull supplement. No actor movement, no route traversal acceptance; inspect native support/standing/envelope results and actual approach before ordinary WASD. Full upper side/rear landing route must be planned from actual exit direction.",
+	"heroSpawn": 11,
+	"at": 3726.2518942,
+	"boxes": [
+		{
+			"worldMins": [
+				-2624,
+				192,
+				-11919.96875
+			],
+			"worldMaxs": [
+				-2496,
+				576,
+				-11887.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11887.96875,
+			"entity": {
+				"birth": 4739,
+				"class": "lod_static_box",
+				"id": 275
+			},
+			"uMin": -192,
+			"uMax": 192,
+			"kind": 1,
+			"position": [
+				-2688,
+				384,
+				-11903.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2880,
+				192,
+				-11919.96875
+			],
+			"worldMaxs": [
+				-2752,
+				576,
+				-11887.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11887.96875,
+			"entity": {
+				"birth": 4740,
+				"class": "lod_static_box",
+				"id": 276
+			},
+			"uMin": -192,
+			"uMax": 192,
+			"kind": 1,
+			"position": [
+				-2688,
+				384,
+				-11903.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				192,
+				-11919.96875
+			],
+			"worldMaxs": [
+				-2624,
+				384,
+				-11887.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11887.96875,
+			"entity": {
+				"birth": 4741,
+				"class": "lod_static_box",
+				"id": 277
+			},
+			"uMin": 0,
+			"uMax": 192,
+			"kind": 1,
+			"position": [
+				-2688,
+				384,
+				-11903.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				528,
+				-11919.96875
+			],
+			"worldMaxs": [
+				-2624,
+				576,
+				-11887.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11887.96875,
+			"entity": {
+				"birth": 4742,
+				"class": "lod_static_box",
+				"id": 278
+			},
+			"uMin": -192,
+			"uMax": -144,
+			"kind": 1,
+			"position": [
+				-2688,
+				384,
+				-11903.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				690.1666870117188,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				704,
+				-12255.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12255.96875,
+			"entity": {
+				"birth": 5328,
+				"class": "lod_static_box",
+				"id": 864
+			},
+			"uMin": -320,
+			"uMax": -306.16668701171875,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				676.8333129882813,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				690.6666870117188,
+				-12239.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12239.96875,
+			"entity": {
+				"birth": 5329,
+				"class": "lod_static_box",
+				"id": 865
+			},
+			"uMin": -306.66668701171875,
+			"uMax": -292.83331298828125,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				663.5,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				677.3333129882813,
+				-12223.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12223.96875,
+			"entity": {
+				"birth": 5330,
+				"class": "lod_static_box",
+				"id": 866
+			},
+			"uMin": -293.33331298828125,
+			"uMax": -279.5,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				650.1666870117188,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				664,
+				-12207.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12207.96875,
+			"entity": {
+				"birth": 5331,
+				"class": "lod_static_box",
+				"id": 867
+			},
+			"uMin": -280,
+			"uMax": -266.16668701171875,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				636.8333129882813,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				650.6666870117188,
+				-12191.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12191.96875,
+			"entity": {
+				"birth": 5332,
+				"class": "lod_static_box",
+				"id": 868
+			},
+			"uMin": -266.66668701171875,
+			"uMax": -252.83331298828125,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				623.5,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				637.3333129882813,
+				-12175.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12175.96875,
+			"entity": {
+				"birth": 5333,
+				"class": "lod_static_box",
+				"id": 869
+			},
+			"uMin": -253.33331298828125,
+			"uMax": -239.5,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				610.1666870117188,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				624,
+				-12159.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12159.96875,
+			"entity": {
+				"birth": 5334,
+				"class": "lod_static_box",
+				"id": 870
+			},
+			"uMin": -240,
+			"uMax": -226.16668701171875,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				596.8333129882813,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				610.6666870117188,
+				-12143.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12143.96875,
+			"entity": {
+				"birth": 5335,
+				"class": "lod_static_box",
+				"id": 871
+			},
+			"uMin": -226.66668701171875,
+			"uMax": -212.83331298828125,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				583.5,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				597.3333129882813,
+				-12127.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12127.96875,
+			"entity": {
+				"birth": 5336,
+				"class": "lod_static_box",
+				"id": 872
+			},
+			"uMin": -213.33331298828125,
+			"uMax": -199.5,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				570.1666870117188,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				584,
+				-12111.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12111.96875,
+			"entity": {
+				"birth": 5337,
+				"class": "lod_static_box",
+				"id": 873
+			},
+			"uMin": -200,
+			"uMax": -186.16668701171875,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				556.8333129882813,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				570.6666870117188,
+				-12095.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12095.96875,
+			"entity": {
+				"birth": 5338,
+				"class": "lod_static_box",
+				"id": 874
+			},
+			"uMin": -186.66668701171875,
+			"uMax": -172.83331298828125,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				543.5,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				557.3333129882813,
+				-12079.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12079.96875,
+			"entity": {
+				"birth": 5339,
+				"class": "lod_static_box",
+				"id": 875
+			},
+			"uMin": -173.33331298828125,
+			"uMax": -159.5,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				530.1666870117188,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				544,
+				-12063.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12063.96875,
+			"entity": {
+				"birth": 5340,
+				"class": "lod_static_box",
+				"id": 876
+			},
+			"uMin": -160,
+			"uMax": -146.16668701171875,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				516.8333129882813,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				530.6666870117188,
+				-12047.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12047.96875,
+			"entity": {
+				"birth": 5341,
+				"class": "lod_static_box",
+				"id": 877
+			},
+			"uMin": -146.66668701171875,
+			"uMax": -132.83331298828125,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				503.5,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				517.3333129882813,
+				-12031.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12031.96875,
+			"entity": {
+				"birth": 5342,
+				"class": "lod_static_box",
+				"id": 878
+			},
+			"uMin": -133.33331298828125,
+			"uMax": -119.5,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				490.1666564941406,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				504,
+				-12015.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -12015.96875,
+			"entity": {
+				"birth": 5343,
+				"class": "lod_static_box",
+				"id": 879
+			},
+			"uMin": -120,
+			"uMax": -106.16665649414063,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				476.8333435058594,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				490.6666564941406,
+				-11999.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11999.96875,
+			"entity": {
+				"birth": 5344,
+				"class": "lod_static_box",
+				"id": 880
+			},
+			"uMin": -106.66665649414063,
+			"uMax": -92.83334350585938,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				463.5,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				477.3333435058594,
+				-11983.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11983.96875,
+			"entity": {
+				"birth": 5345,
+				"class": "lod_static_box",
+				"id": 881
+			},
+			"uMin": -93.33334350585938,
+			"uMax": -79.5,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				450.1666564941406,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				464,
+				-11967.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11967.96875,
+			"entity": {
+				"birth": 5346,
+				"class": "lod_static_box",
+				"id": 882
+			},
+			"uMin": -80,
+			"uMax": -66.16665649414063,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				436.8333435058594,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				450.6666564941406,
+				-11951.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11951.96875,
+			"entity": {
+				"birth": 5347,
+				"class": "lod_static_box",
+				"id": 883
+			},
+			"uMin": -66.66665649414063,
+			"uMax": -52.833343505859375,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				423.5,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				437.3333435058594,
+				-11935.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11935.96875,
+			"entity": {
+				"birth": 5348,
+				"class": "lod_static_box",
+				"id": 884
+			},
+			"uMin": -53.333343505859375,
+			"uMax": -39.5,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				410.16668701171875,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				424,
+				-11919.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11919.96875,
+			"entity": {
+				"birth": 5349,
+				"class": "lod_static_box",
+				"id": 885
+			},
+			"uMin": -40,
+			"uMax": -26.16668701171875,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				396.83331298828125,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				410.66668701171875,
+				-11903.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11903.96875,
+			"entity": {
+				"birth": 5350,
+				"class": "lod_static_box",
+				"id": 886
+			},
+			"uMin": -26.66668701171875,
+			"uMax": -12.83331298828125,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				383.5,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				397.33331298828125,
+				-11887.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11887.96875,
+			"entity": {
+				"birth": 5351,
+				"class": "lod_static_box",
+				"id": 887
+			},
+			"uMin": -13.33331298828125,
+			"uMax": 0.5,
+			"kind": 2,
+			"position": [
+				-2688,
+				544,
+				-12271.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				576,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2746,
+				704,
+				-11839.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11839.96875,
+			"entity": {
+				"birth": 5352,
+				"class": "lod_static_box",
+				"id": 888
+			},
+			"uMin": -320,
+			"uMax": -192,
+			"kind": 3,
+			"position": [
+				-2688,
+				544,
+				-12079.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2752,
+				384,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2746,
+				528,
+				-11839.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11839.96875,
+			"entity": {
+				"birth": 5353,
+				"class": "lod_static_box",
+				"id": 889
+			},
+			"uMin": -144,
+			"uMax": 0,
+			"kind": 3,
+			"position": [
+				-2688,
+				544,
+				-12079.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2630,
+				576,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				704,
+				-11839.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11839.96875,
+			"entity": {
+				"birth": 5354,
+				"class": "lod_static_box",
+				"id": 890
+			},
+			"uMin": -320,
+			"uMax": -192,
+			"kind": 3,
+			"position": [
+				-2688,
+				544,
+				-12079.96875
+			]
+		},
+		{
+			"worldMins": [
+				-2630,
+				384,
+				-12271.96875
+			],
+			"worldMaxs": [
+				-2624,
+				528,
+				-11839.96875
+			],
+			"angles": [
+				0,
+				-90,
+				0
+			],
+			"top": -11839.96875,
+			"entity": {
+				"birth": 5355,
+				"class": "lod_static_box",
+				"id": 891
+			},
+			"uMin": -144,
+			"uMax": 0,
+			"kind": 3,
+			"position": [
+				-2688,
+				544,
+				-12079.96875
+			]
+		}
+	],
+	"upperForwardExit": [
+		-2688,
+		288,
+		-11886.46875
+	],
+	"sideAxis": [
+		1,
+		0,
+		0
+	],
+	"buildFunctionSource": "addons/the-legend-of-deborah-dev/gamemodes/legend_of_deborah/gamemode/lod/sv_m1_stair_geometry.lua",
+	"campaign": 6102623,
+	"treadSamples": [
+		{
+			"upwardStepEnvelope": {
+				"hit": true,
+				"fraction": 0,
+				"position": [
+					-2688,
+					768,
+					-12270.46875
+				],
+				"entity": {
+					"birth": 5637,
+					"class": "lod_loot_pickup",
+					"id": 1149
+				},
+				"allSolid": true,
+				"startSolid": true
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0,
+				"position": [
+					-2688,
+					768,
+					-12266.46875
+				],
+				"entity": {
+					"birth": 5637,
+					"class": "lod_loot_pickup",
+					"id": 1149
+				},
+				"allSolid": true,
+				"startSolid": true
+			},
+			"along": -384,
+			"position": [
+				-2688,
+				768,
+				-12270.46875
+			],
+			"standing": {
+				"hit": true,
+				"fraction": 0,
+				"position": [
+					-2688,
+					768,
+					-12270.46875
+				],
+				"entity": {
+					"birth": 5637,
+					"class": "lod_loot_pickup",
+					"id": 1149
+				},
+				"allSolid": true,
+				"startSolid": true
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					697.0833740234375,
+					-12220.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					697.0833740234375,
+					-12239.9375
+				],
+				"entity": {
+					"birth": 5329,
+					"class": "lod_static_box",
+					"id": 865
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -313.0833435058594,
+			"position": [
+				-2688,
+				697.0833740234375,
+				-12238.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					697.0833740234375,
+					-12238.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					683.75,
+					-12204.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					683.75,
+					-12223.9375
+				],
+				"entity": {
+					"birth": 5330,
+					"class": "lod_static_box",
+					"id": 866
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -299.75,
+			"position": [
+				-2688,
+				683.75,
+				-12222.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					683.75,
+					-12222.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					670.4166259765625,
+					-12188.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					670.4166259765625,
+					-12207.9375
+				],
+				"entity": {
+					"birth": 5331,
+					"class": "lod_static_box",
+					"id": 867
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -286.4166564941406,
+			"position": [
+				-2688,
+				670.4166259765625,
+				-12206.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					670.4166259765625,
+					-12206.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					657.0833740234375,
+					-12172.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					657.0833740234375,
+					-12191.9375
+				],
+				"entity": {
+					"birth": 5332,
+					"class": "lod_static_box",
+					"id": 868
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -273.0833435058594,
+			"position": [
+				-2688,
+				657.0833740234375,
+				-12190.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					657.0833740234375,
+					-12190.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					643.75,
+					-12156.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					643.75,
+					-12175.9375
+				],
+				"entity": {
+					"birth": 5333,
+					"class": "lod_static_box",
+					"id": 869
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -259.75,
+			"position": [
+				-2688,
+				643.75,
+				-12174.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					643.75,
+					-12174.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					630.4166259765625,
+					-12140.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					630.4166259765625,
+					-12159.9375
+				],
+				"entity": {
+					"birth": 5334,
+					"class": "lod_static_box",
+					"id": 870
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -246.41665649414063,
+			"position": [
+				-2688,
+				630.4166259765625,
+				-12158.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					630.4166259765625,
+					-12158.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					617.0833740234375,
+					-12124.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					617.0833740234375,
+					-12143.9375
+				],
+				"entity": {
+					"birth": 5335,
+					"class": "lod_static_box",
+					"id": 871
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -233.08334350585938,
+			"position": [
+				-2688,
+				617.0833740234375,
+				-12142.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					617.0833740234375,
+					-12142.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					603.75,
+					-12108.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					603.75,
+					-12127.9375
+				],
+				"entity": {
+					"birth": 5336,
+					"class": "lod_static_box",
+					"id": 872
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -219.75,
+			"position": [
+				-2688,
+				603.75,
+				-12126.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					603.75,
+					-12126.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					590.4166259765625,
+					-12092.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					590.4166259765625,
+					-12111.9375
+				],
+				"entity": {
+					"birth": 5337,
+					"class": "lod_static_box",
+					"id": 873
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -206.41665649414063,
+			"position": [
+				-2688,
+				590.4166259765625,
+				-12110.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					590.4166259765625,
+					-12110.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					577.0833740234375,
+					-12076.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					577.0833740234375,
+					-12095.9375
+				],
+				"entity": {
+					"birth": 5338,
+					"class": "lod_static_box",
+					"id": 874
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -193.08334350585938,
+			"position": [
+				-2688,
+				577.0833740234375,
+				-12094.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					577.0833740234375,
+					-12094.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					563.75,
+					-12060.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					563.75,
+					-12079.9375
+				],
+				"entity": {
+					"birth": 5339,
+					"class": "lod_static_box",
+					"id": 875
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -179.75,
+			"position": [
+				-2688,
+				563.75,
+				-12078.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					563.75,
+					-12078.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					550.4166259765625,
+					-12044.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					550.4166259765625,
+					-12063.9375
+				],
+				"entity": {
+					"birth": 5340,
+					"class": "lod_static_box",
+					"id": 876
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -166.41665649414063,
+			"position": [
+				-2688,
+				550.4166259765625,
+				-12062.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					550.4166259765625,
+					-12062.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					537.0833740234375,
+					-12028.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					537.0833740234375,
+					-12047.9375
+				],
+				"entity": {
+					"birth": 5341,
+					"class": "lod_static_box",
+					"id": 877
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -153.08334350585938,
+			"position": [
+				-2688,
+				537.0833740234375,
+				-12046.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					537.0833740234375,
+					-12046.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					523.75,
+					-12012.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					523.75,
+					-12031.9375
+				],
+				"entity": {
+					"birth": 5342,
+					"class": "lod_static_box",
+					"id": 878
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -139.75,
+			"position": [
+				-2688,
+				523.75,
+				-12030.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					523.75,
+					-12030.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					510.4166564941406,
+					-11996.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					510.4166564941406,
+					-12015.9375
+				],
+				"entity": {
+					"birth": 5343,
+					"class": "lod_static_box",
+					"id": 879
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -126.41665649414063,
+			"position": [
+				-2688,
+				510.4166564941406,
+				-12014.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					510.4166564941406,
+					-12014.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					497.08331298828125,
+					-11980.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					497.08331298828125,
+					-11999.9375
+				],
+				"entity": {
+					"birth": 5344,
+					"class": "lod_static_box",
+					"id": 880
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -113.08332824707031,
+			"position": [
+				-2688,
+				497.08331298828125,
+				-11998.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					497.08331298828125,
+					-11998.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					483.75,
+					-11964.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					483.75,
+					-11983.9375
+				],
+				"entity": {
+					"birth": 5345,
+					"class": "lod_static_box",
+					"id": 881
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -99.75,
+			"position": [
+				-2688,
+				483.75,
+				-11982.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					483.75,
+					-11982.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					470.41668701171875,
+					-11948.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					470.41668701171875,
+					-11967.9375
+				],
+				"entity": {
+					"birth": 5346,
+					"class": "lod_static_box",
+					"id": 882
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -86.41667175292969,
+			"position": [
+				-2688,
+				470.41668701171875,
+				-11966.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					470.41668701171875,
+					-11966.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					457.08331298828125,
+					-11932.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					457.08331298828125,
+					-11951.9375
+				],
+				"entity": {
+					"birth": 5347,
+					"class": "lod_static_box",
+					"id": 883
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -73.08332824707031,
+			"position": [
+				-2688,
+				457.08331298828125,
+				-11950.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					457.08331298828125,
+					-11950.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					443.75,
+					-11916.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					443.75,
+					-11935.9375
+				],
+				"entity": {
+					"birth": 5348,
+					"class": "lod_static_box",
+					"id": 884
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -59.75,
+			"position": [
+				-2688,
+				443.75,
+				-11934.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					443.75,
+					-11934.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					430.41668701171875,
+					-11900.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					430.41668701171875,
+					-11919.9375
+				],
+				"entity": {
+					"birth": 5349,
+					"class": "lod_static_box",
+					"id": 885
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -46.41667175292969,
+			"position": [
+				-2688,
+				430.41668701171875,
+				-11918.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					430.41668701171875,
+					-11918.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					417.0833435058594,
+					-11884.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					417.0833435058594,
+					-11903.9375
+				],
+				"entity": {
+					"birth": 5350,
+					"class": "lod_static_box",
+					"id": 886
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -33.083343505859375,
+			"position": [
+				-2688,
+				417.0833435058594,
+				-11902.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					417.0833435058594,
+					-11902.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					403.75,
+					-11868.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					403.75,
+					-11887.9375
+				],
+				"entity": {
+					"birth": 5351,
+					"class": "lod_static_box",
+					"id": 887
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -19.75,
+			"position": [
+				-2688,
+				403.75,
+				-11886.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					403.75,
+					-11886.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					390.4166564941406,
+					-11868.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					390.4166564941406,
+					-11887.9375
+				],
+				"entity": {
+					"birth": 4741,
+					"class": "lod_static_box",
+					"id": 277
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": -6.416656494140625,
+			"position": [
+				-2688,
+				390.4166564941406,
+				-11886.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					390.4166564941406,
+					-11886.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		},
+		{
+			"upwardStepEnvelope": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					319.5,
+					-11868.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			},
+			"support": {
+				"hit": true,
+				"fraction": 0.546875,
+				"position": [
+					-2688,
+					319.5,
+					-11887.9375
+				],
+				"entity": {
+					"birth": 4741,
+					"class": "lod_static_box",
+					"id": 277
+				},
+				"allSolid": false,
+				"startSolid": false
+			},
+			"along": 64.5,
+			"position": [
+				-2688,
+				319.5,
+				-11886.46875
+			],
+			"standing": {
+				"hit": false,
+				"fraction": 1,
+				"position": [
+					-2688,
+					319.5,
+					-11886.46875
+				],
+				"allSolid": false,
+				"startSolid": false
+			}
+		}
+	],
+	"lower": "4:12:0",
+	"approachCellCenter": [
+		-2688,
+		768,
+		-12271.96875
+	],
+	"levelSeed": 673660301,
+	"stepSize": 18,
+	"hullMaxs": [
+		16,
+		16,
+		72
+	],
+	"kind": "source18_readonly_actual_stair_walk_proposal",
+	"axis": [
+		0,
+		-1,
+		0
+	],
+	"hullMins": [
+		-16,
+		-16,
+		0
+	],
+	"base": [
+		-2688,
+		384,
+		-12271.96875
+	],
+	"upper": "4:12:1"
+}

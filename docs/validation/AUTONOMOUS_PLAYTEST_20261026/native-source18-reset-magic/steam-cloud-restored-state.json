@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-27T18:23:36.124165+00:00",
+  "app_id": 4000,
+  "ui": "Steam Gmod Properties General",
+  "window_id": 48234655,
+  "window_pid": 5899,
+  "original_enabled": true,
+  "temporarily_disabled": false,
+  "restore_required": false,
+  "reason": "Keep disposable private profile cfg from replacing personal Cloud configuration",
+  "evidence": {
+    "before": "9d68ad468f3c0045b7e1ba7574f9fb1ebf2972330ebbf3e2bbbaa7ac2ed324d7",
+    "off": "0502b8b10a29823684371cebb621966cd9dd4c818c5a8ef2f0e277b81e876936"
+  },
+  "restored_original_on": true,
+  "restored_utc": "2026-10-28T00:38:40.035888+00:00",
+  "restoration_evidence": "source18-cloud-restored-on.png",
+  "restoration_evidence_sha256": "9d68ad468f3c0045b7e1ba7574f9fb1ebf2972330ebbf3e2bbbaa7ac2ed324d7",
+  "qualification": "Root visually verified original ON restored after host-confirmed source18 closure. Earlier OFF evidence is historical and is not authorization/current proof for a future launch."
+}
