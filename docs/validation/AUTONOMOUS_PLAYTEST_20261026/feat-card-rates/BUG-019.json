@@ -1,0 +1,51 @@
+{
+  "id": "BUG-019",
+  "title": "Rapid Recovery card rounds its authored fractional rate from1.5% to2%",
+  "status": "Shared presentation repaired and9focused gates statically validated on this checkpoint; full338 and fresh native repaired acceptance pending.",
+  "severity": "Minor presentation defect: a misleading feat-rate description; actual healing parameters match active design.",
+  "source_parent": "f1af067c8616f46e8ba70df93399a785ac23901d",
+  "original_gameplay": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "original_installed_label": "f221cc08b3fc385822baa6b99a134cabac0a4b57",
+  "environment": "Actual Valve Jupiter Steam Deck; Windowsx86 GMod2026.09.17/LuaJIT2.0.4/Proton10; gm_flatgrass1280x800; developer1 private profile.",
+  "setup": {
+    "campaign": 6102623,
+    "level_seed": 673660301,
+    "run": "campaign:12",
+    "epoch": 3,
+    "spawn": 10,
+    "class": "Rogue",
+    "hero": "Eva Long Shot Turner",
+    "ordinary_feat": "Bash",
+    "fixture": "Canonical lod_rpg_test_regen2 grants SecondWind+RapidRecovery,count1each,andsetsHP1 in paused staging. This is forced fixture ownership, not ordinary acquisition."
+  },
+  "steps": [
+    "Complete ordinary Rogue/Bash selection in disposable staging.",
+    "Invoke canonical lod_rpg_test_regen2;lod_rpg_gate_e_regen_status.",
+    "Inspect actual P owned-feat text and current server status."
+  ],
+  "expected": {
+    "source": "Exact live GDD04 LOD-FEAT-004 HUMAN-DETAIL navigation, then HUMAN CON_REGEN_22 exact header/effect and shared CON recovery paragraph. See pre-repair receipt and narrow live responses.",
+    "base_rate": "1.5% ordinaryMaxHP/s before CON scaling;44% ceiling for this Rogue.",
+    "native_expected_configured_rate": "CON16/mod3 atMaxHP100 gives1.95HP/s; console reports configured rate, not independent elapsed-healing sampling."
+  },
+  "actual": "Actual P screenshot shows regenerate2%MaxHP/s; original native params.015 and console1.95HP/s agree with1.5.",
+  "cause": "Shared con_health_regeneration card formatter passes base rate through integer-rounded percent() before %g formatting.",
+  "repair": "Use exact base rate*100 for the already-general %g rate field. Preserve integer ceiling/chance formatters and all effect parameters. Regenerate manual catalog, canonical HTML, two affected source chunks and manifest through existing builders.",
+  "regression": "New test_feat_card_rates.lua checks authored1/1.5/2 rates and22/44/66 ceilings in actual production catalog and a fully initialized Rogue client snapshot. The final test also fails the frozen original formatter under independent Lua5.4/LuaJIT overlay. Registered in338-suite matrix.",
+  "validation": {
+    "focused": "9/9 pass;929Lua syntax pass; Lua5.4/LuaJIT fractional-rate test, duplicate guard, manual document/reader/transport, catalog and generated-manual parity.",
+    "prior_environment_failure": "Initial manual-document attempt lacked node; preserved failure and receipt. Official checksum-verified localNode22.23.4 resolved it; rerun passes.",
+    "test_fixture_correction": "Initial new snapshot fixture used a bare state without required identity package. Corrected to real InitializeHero/CommitClass; original fixture retained. No production guard/assertion weakened.",
+    "independent_review": "static/independent-review.json (review predates resolved Node rerun; new focused receipt resolves it).",
+    "full_integration": "PENDING complete338 on frozen candidate; prior337 evidence is not substituted.",
+    "native_repaired": "PENDING fresh installed-source19 character sheet/manual. No hot-reload or static pass establishes it."
+  },
+  "evidence": "artifact-manifest.json resolves raw logical paths to unchanged PNG or losslessXZ; prior failures retained.",
+  "not_claimed": [
+    "Actual regen timing/damage interruption acceptance",
+    "Ordinary high-rank acquisition or duplicate selection acceptance",
+    "Cooperative/audio acceptance",
+    "Any full campaign or clean pass"
+  ],
+  "clean_pass_streak": 0
+}
