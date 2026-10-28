@@ -1,0 +1,76 @@
+{
+  "kind": "OPEN source19 manual and stock local DHTML native investigation",
+  "utc": "2026-10-28T06:29:57.520102+00:00",
+  "status": "OPEN / partially validated evidence; no exact cause classification, no BUG020 assignment, no manual acceptance",
+  "candidate": "658a8c7249a322494b49025e7076c33f78efb511",
+  "shared_source_and_logs": "../native-source19-feat-rate/receipt.json and its source-provenance/error-boundary/console/RPG archives",
+  "document": {
+    "version": "f815fbb2ca4a9026",
+    "bytes": 1536564,
+    "crc": "731183533",
+    "sha256": "f815fbb2ca4a9026970c7c96d9bbf1bae8c24ca457ddfb49d9b9a6efa358cc5d",
+    "chapters": 184,
+    "native_match": true,
+    "qualification": "Valid received document bytes/version/CRC and an assigned live browser do not establish rendered content or navigation."
+  },
+  "actual_manual": {
+    "browser_valid": true,
+    "visible": true,
+    "is_loading": true,
+    "html_material": "nil",
+    "manual_journal": [
+      "651.395 generator-jit-20260917-01 MANUAL_OPEN cached=false",
+      "655.483 generator-jit-20260917-01 MANUAL_HTML bytes=1536564"
+    ],
+    "ready_event_observed": false,
+    "qualification": "Available journal records MANUAL_OPEN and MANUAL_HTML; no Ready event is present in this evidence window. Rolling journal/counter limits are preserved."
+  },
+  "stock_control": {
+    "native_source": "html-control.lua.txt.xz",
+    "state": "native-html-control-state.json.xz",
+    "native_image": "source19-static-html-and-native-label.png",
+    "independently_viewed": true,
+    "observation": "Green native DLabel including1.5% is visible while the separate stock local static DHTML surface remains blank. Its began/ready/finished counters are all0; browser_loadingtrue/materialnil.",
+    "original_manual_frame_same": true,
+    "original_manual_browser_same": true,
+    "limit": "Supports a broader DHTML loading/rendering failure in this session; does not determine engine/Proton/GPU/sandbox/network/content/root cause."
+  },
+  "cleanup": {
+    "console_line": 325,
+    "literal": "HTML_CONTROL_CLOSED own_frame_valid=false",
+    "interpretation": "The control frame was removed; false means no longer valid. Original manual remains visible and blank in the later native frame.",
+    "image": "source19-original-manual-after-control-cleanup.png",
+    "independently_viewed": true
+  },
+  "errors_and_warnings": {
+    "console_source": "console-through-manual-control.log",
+    "console_lines": 339,
+    "console_sha256": "8ce5b39107c4986e184244405fbd3ca03abaf851e60f207d3d1346bf3be59ecb",
+    "lua_error_block_markers_in_this_prefix": 0,
+    "journal": "stability-client-latest-at-bank.txt",
+    "journal_scope": "A rolling64-entry client journal is not the entire session; preserve the earlier before-control journal separately. The native observer lua_errors0 and BUILD_IDENTITY counters are point-in-time instrumentation only. No all-session zero-error claim.",
+    "warnings_retained": [
+      "console9: Failed to load settings/users.txt",
+      "console38: stock map WorldTwoTextureBlend performance warning",
+      "console127: CRATE-SUMMARY sampler missing/materialError true; not attributed to this text repair",
+      "CEF Chromium/debug logs contain native network/GPU-process/sandbox warnings/errors; exact cause and relevance remain unresolved."
+    ],
+    "diagnostic_settings": "Developer1/dense and client Lua diagnostic admission were used; console323 records sv_allowcslua1. Staging clock remained unstarted; no normal production-settings pass."
+  },
+  "cef_evidence": "Both earlier investigation receipt and current raw Chromium/debug logs are preserved losslessly; native errors are not attributed or suppressed. BUILD_IDENTITY lua_errors0 is not an all-session no-error claim.",
+  "excluded_claims": [
+    "No cause established and no BUG020 classification.",
+    "No accepted manual rendering, navigation, search, footer or accessibility behavior.",
+    "No accepted game audio, multi-client co-op, full campaign, production settings or clean pass.",
+    "Independent control creates/closes only owned diagnostic panels; it is not a gameplay repair or public release."
+  ],
+  "ci_reference": {
+    "proposal": ".build/source19-ci/bank-proposal.json",
+    "proposal_sha256": "b98b3d13f575eef0ee6d8e6d8d441b2e61af1831b17c0abcf46906d9b7813cd7",
+    "destination": "docs/validation/AUTONOMOUS_PLAYTEST_20261026/ci-source19",
+    "qualification": "CI artifacts remain owned by ci16_finalize; linked only, not duplicated or applied by this proposal."
+  },
+  "mutations": "Only ignored .build evidence/proposal; root owns later review, docs banking, repair decisions and integration.",
+  "subsequent_diagnostic_outside_this_window": "post-boundary-diagnostic-note.json.xz",
+  "source19_session_error_boundary": "Frozen display/manual console prefix ends at339 before the later RapidStale19:72 diagnostic assertion. Its completeProfileUnchanged=false remains unaccepted and under diagnosis; no all-session zero-error or duplicate gate pass."
+}

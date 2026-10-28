@@ -1,0 +1,132 @@
+{
+  "files": [
+    {
+      "path": "failed-original-receipt.json.xz",
+      "bytes": 820,
+      "sha256": "714c81552cac23ff4b847ee0482dbcb76ff477928e9409a725586fab7185b8a5",
+      "raw_bytes": 1809,
+      "raw_sha256": "7e6d62745b5b0735287d576b1fb0ee2cea42e9f761ba337adffa3e64545295fc",
+      "compression": "xz"
+    },
+    {
+      "path": "passed-alias-snapshot-receipt.json.xz",
+      "bytes": 928,
+      "sha256": "de4429911e8b762631dde3e7e7bbadfe7991583774f71a1ff83025118d079190",
+      "raw_bytes": 2118,
+      "raw_sha256": "96e5b9450e3c356c064f06e8c2604bc876cfb767b8e74ae64192918ecb735c5c",
+      "compression": "xz"
+    },
+    {
+      "path": "failed-original-helper.lua.txt.xz",
+      "bytes": 3000,
+      "sha256": "2e26732a9435b22570cbb54d722d557e5f58755299a5dac9cc669d26bf278fd4",
+      "raw_bytes": 7139,
+      "raw_sha256": "c9da3c2f8a71eaf92ed7b585fea25310e9a46df8329011e9ff0ea5859723d52d",
+      "compression": "xz"
+    },
+    {
+      "path": "alias-snapshot-helper.lua.txt.xz",
+      "bytes": 3824,
+      "sha256": "696f2b8eb9f97f33f758e7449af11379eedf4f2571a4471778281980caa063fc",
+      "raw_bytes": 10062,
+      "raw_sha256": "7eade084b11e75c1927b8c212cddddfc9409f366331c968d2f9d46086038dd4a",
+      "compression": "xz"
+    },
+    {
+      "path": "original-helper-tests.lua.txt.xz",
+      "bytes": 2836,
+      "sha256": "c6498e7f7b147740871e5c04ef1354fe93729c9d7482eb210fdb6d69d3655523",
+      "raw_bytes": 7528,
+      "raw_sha256": "fd10a65d8f3e54cad60bd7cebfeec5bafed2ae686a217611ee7a8f2785751e82",
+      "compression": "xz"
+    },
+    {
+      "path": "alias-helper-tests.lua.txt.xz",
+      "bytes": 3432,
+      "sha256": "01ec53db146a9c7c58846e1ce730a3f22aa5f394ebf7c3bc7d1c75f8f9562d1b",
+      "raw_bytes": 9197,
+      "raw_sha256": "bffdf84d22ae7b5d1bcfc615f60d467e75bc3f11a6e5f4e5986e979b6c6bfca4",
+      "compression": "xz"
+    },
+    {
+      "path": "installed-table-copy-function.lua.txt.xz",
+      "bytes": 332,
+      "sha256": "4dfb78ba12c0f77fa75fdddbf92ea022af4d00da4303144b439c819e425da1f6",
+      "raw_bytes": 518,
+      "raw_sha256": "5d3fed651a6fc1b10208b4b73becca74493e6881d98f23b545424792fe3628d8",
+      "compression": "xz"
+    },
+    {
+      "path": "original-mocks-lua54.log.xz",
+      "bytes": 960,
+      "sha256": "adc717e876cac1b4fc54e49d3c469beaa0052df2b4995bd921dae8010a484ff9",
+      "raw_bytes": 3381,
+      "raw_sha256": "a570bf93837f625a8ec87c21ab84af6a9afd0dee5744f69e7fea89462fbe61af",
+      "compression": "xz"
+    },
+    {
+      "path": "original-mocks-luajit.log.xz",
+      "bytes": 960,
+      "sha256": "adc717e876cac1b4fc54e49d3c469beaa0052df2b4995bd921dae8010a484ff9",
+      "raw_bytes": 3381,
+      "raw_sha256": "a570bf93837f625a8ec87c21ab84af6a9afd0dee5744f69e7fea89462fbe61af",
+      "compression": "xz"
+    },
+    {
+      "path": "alias-mocks-lua54.log.xz",
+      "bytes": 1040,
+      "sha256": "433801ed8164272dca2d9f65ef75402c6be5b91a44e7299169a29afb98a37512",
+      "raw_bytes": 3603,
+      "raw_sha256": "ca7ea12c652a8421dbd59e5337b4b1d62bdba13745e8a4bfbb936f8b2d15059e",
+      "compression": "xz"
+    },
+    {
+      "path": "alias-mocks-luajit.log.xz",
+      "bytes": 1040,
+      "sha256": "433801ed8164272dca2d9f65ef75402c6be5b91a44e7299169a29afb98a37512",
+      "raw_bytes": 3603,
+      "raw_sha256": "ca7ea12c652a8421dbd59e5337b4b1d62bdba13745e8a4bfbb936f8b2d15059e",
+      "compression": "xz"
+    },
+    {
+      "path": "alias-proposal.json.xz",
+      "bytes": 1928,
+      "sha256": "d78eb4bd3d052407b4835e2c0147e5303840e242ee43f92dd2f3613b0a4972e0",
+      "raw_bytes": 3841,
+      "raw_sha256": "a141bbaa9c01497cb3db7c81ee8e03067f601f5b6ef3b3b094c30f06f5a2bf70",
+      "compression": "xz"
+    },
+    {
+      "path": "native-final-console.log.xz",
+      "bytes": 9448,
+      "sha256": "3ec74381af45a22d43550cc5aa322fe4f4d60cb74b3cd56e9100a8587ebe66a6",
+      "raw_bytes": 503586,
+      "raw_sha256": "c7c6fff9de901e32416d5b421b56ec0a9b0547805f1863d28d681539505c9985",
+      "compression": "xz"
+    },
+    {
+      "path": "native-level3-four-offers.png",
+      "bytes": 544436,
+      "sha256": "008a5b705166e28444fd6486a88fd48fa549e52314811010cd77478d61c7c9dc",
+      "raw_bytes": 544436,
+      "raw_sha256": "008a5b705166e28444fd6486a88fd48fa549e52314811010cd77478d61c7c9dc",
+      "compression": "none"
+    },
+    {
+      "path": "native-original-diagnostic-failure.png",
+      "bytes": 461200,
+      "sha256": "e66f72c2f1a149e89edaa8bc75e1acb383145de8cc0f2365ec04b46c1e617cfa",
+      "raw_bytes": 461200,
+      "raw_sha256": "e66f72c2f1a149e89edaa8bc75e1acb383145de8cc0f2365ec04b46c1e617cfa",
+      "compression": "none"
+    },
+    {
+      "path": "native-alias-diagnostic-result.png",
+      "bytes": 472561,
+      "sha256": "649a140055dd8b79ee9b7e518f7e7bc97ca46e8c153c04ccdd6ad3995d9fd2e9",
+      "raw_bytes": 472561,
+      "raw_sha256": "649a140055dd8b79ee9b7e518f7e7bc97ca46e8c153c04ccdd6ad3995d9fd2e9",
+      "compression": "none"
+    }
+  ]
+}

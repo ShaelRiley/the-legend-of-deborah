@@ -1,0 +1,61 @@
+{
+  "kind": "Independent final source19 candidate review",
+  "utc": "2026-10-28T06:34:12.326019+00:00",
+  "result": "CLEAR for narrow BUG019 formatter/generated-reference repair and normal PR9 integration; no candidate-specific code finding. Manual/runtime campaign acceptance remains partial.",
+  "candidate": "658a8c7249a322494b49025e7076c33f78efb511",
+  "base": "f1af067c8616f46e8ba70df93399a785ac23901d",
+  "source_review": [
+    "Exactly one production formatter argument changes integer-rounded percent(baseRate) to baseRate*100 under the existing%g field. Healing parameters, rate scaling, eligibility, other percentage formatters and gameplay mechanics do not change.",
+    "Generated catalog semantic difference is only CON_REGEN_22.effectParams.description. Canonical manual HTML differs only2\u21921.5;1536564bytes/SHAf815fbb2ca4a9026970c7c96d9bbf1bae8c24ca457ddfb49d9b9a6efa358cc5d/CRC731183533. Generated native chunks/manifest use existing builders and pass their registered gates.",
+    "Meaningful new regression uses real catalog and fully initialized production Rogue snapshot, checks all1/1.5/2 rates and22/44/66 ceilings, and retains unchanged rate parameters. Independent frozen-original negative and corrected fixture setup are preserved in static evidence."
+  ],
+  "static_gate": {
+    "reference": ".build/source19-ci/bank-proposal.json",
+    "reference_sha256": "b98b3d13f575eef0ee6d8e6d8d441b2e61af1831b17c0abcf46906d9b7813cd7",
+    "full_run": 40635361503,
+    "full_job": 122640976686,
+    "passed": 338,
+    "total": 338,
+    "lua_files": 929,
+    "production_files": 576,
+    "independent_frozen_git_files": 4399,
+    "receipt_sha256": "f7dedcff753d59b8e30c78b7785c1c793101abd598f6f532b469cb4d3393c34b",
+    "review": "All4workflows/jobs green. Exact receipt/chunk hashes,338effective registered commands, source before/after and all576production hashes independently verified;20archive members rechecked byte-exact in this final review.",
+    "qualifications": "Full/low-end check out exact658a. VR/audio check out syntheticmergeff674d7d6aa23edf82dc809d3f39e8caacf4c322 with API files[] comparison to658a. Runner Node20/forcedNode24 deprecation warnings retained. No nativeVR/audio acceptance or locally downloaded individual stdout/stderr/ZIP claim."
+  },
+  "native_finite_gate": {
+    "receipt": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/preview/native-source19-feat-rate/receipt.json",
+    "receipt_sha256": "47afb201e9ad348bc1f75027d212af9d919b6a70bb9c5095f686eea4a12b4c1a",
+    "image_sha256": "ddba753641edf6a551e1b270c15ce2c28edc78b1b9ada8f9fb8d391ede3790a4",
+    "independently_viewed": "Actual P-sheet clearly renders Rapid Recovery1.5%/44% and SecondWind1%/22%.",
+    "identity": {
+      "run": "campaign:13",
+      "epoch": 1,
+      "spawn": 4,
+      "body": 1,
+      "birth": 285,
+      "campaign_seed": 6102602,
+      "level_seed": 1550561962,
+      "character": "Jonathan \"High Mileage\" Walker",
+      "class": "rogue",
+      "formatterCRC": "4287070347",
+      "formatterSHA256": "1e723f9f0644123acdfc60449022f8e6ac22cb4a0db9e6cc9d312cef3e9fface"
+    },
+    "qualification": "Actual Deck, Windowsx86/Proton, gm_flatgrass, developer1. Ordinary ManaSpring plus explicit canonical regen2 ownership fixture; HP1/undeployed/clockunstarted. Same source19 label and exact new formatter CRC; nine existing regression guards pass in both realms. This accepts displayed text only, not ordinary rank acquisition/healing timing/wholegame."
+  },
+  "native_bank_review": {
+    "proposal": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/bank-proposal.json",
+    "proposal_sha256": "1879e0502ccf767ca08297c4b5575bae05e3eb65aade0865dc31a53b433ec1a2",
+    "verified_payloads": 24,
+    "unchanged_original_PNGs": 4,
+    "claim_review": "All24compressed/raw hashes/sizes and source bytes verified. Native P and both stockDHTML/cleanup PNGs independently viewed. Receipts preserve339-line frozen console boundary and later diagnostic assertion separately.",
+    "resolved_receipt_finding": "Binding originally repeated root UI labelEli despite actual profile Jonathan High Mileage Walker. Author corrected binding to the raw actual name and preserves prior UI label separately as unreconciled; no identity consistency acceptance or cause inference."
+  },
+  "open_unaccepted": [
+    "Manual received exact updated HTML/CRC/version but remains loading/blank with noReady. Independent stock localDHTML is also blank; nativeDLabel visible and owned testpanel cleanup observed. Root cause unknown; no manual render/navigation pass and no BUG020 classification.",
+    "Later malformed Rapid stored-hand diagnostic reports acceptedfalse/slotunconsumed/handrestored/bodyunchanged but completeProfileUnchangedfalse. Preserve that assertion and profile diagnosis. No complete native duplicate gate or production defect conclusion from it.",
+    "No clean campaign passes/fullcampaign/endings/co-op/audio/production-settings acceptance. Clean streak0. Only one Steam Deck; multi-real-client coverage unavailable."
+  ],
+  "integration_and_pause_limit": "Normal integration may preserve this validated narrow fix. Report manual and broader campaign as unfinished/partially validated; do not claim overall goal completion, all-session zero errors or final main/runtime equivalence until root verifies resulting commit/source identity. Root owns cleanup, originalCloud restoration, Git integration and pause status.",
+  "mutations": "This reviewer wrote only ignored .build review evidence; no Git/docs/production/private installation/DATA/GUI/launch change."
+}

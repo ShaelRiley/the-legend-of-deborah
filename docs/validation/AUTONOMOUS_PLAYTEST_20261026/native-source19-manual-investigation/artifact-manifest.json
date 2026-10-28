@@ -1,0 +1,135 @@
+{
+  "kind": "lossless_raw_native_evidence",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/native-manual-state.json",
+      "logical_path": "native-manual-state.json",
+      "path": "native-manual-state.json.xz",
+      "compression": "xz",
+      "raw_bytes": 1451,
+      "raw_sha256": "399b697fe64970d9267b42b742a95ffc0806d4e79278ecbca867017744d5edc7",
+      "bytes": 712,
+      "sha256": "cf2d75b6acd0745ba33c8057ebf304143e935b5343480935839505257faaa9f7"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/native-html-control-state.json",
+      "logical_path": "native-html-control-state.json",
+      "path": "native-html-control-state.json.xz",
+      "compression": "xz",
+      "raw_bytes": 536,
+      "raw_sha256": "77158499a8773ccee0fd79efc8a251e1dea0b5b3f9594ca0d4a487138f8fa870",
+      "bytes": 352,
+      "sha256": "58aa683e51acdbe2703ac6a7aa0fd75f68f0b558e9d685d8f1cd5af2c82f0c1c"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/html-control-proposal.json",
+      "logical_path": "html-control-proposal.json",
+      "path": "html-control-proposal.json.xz",
+      "compression": "xz",
+      "raw_bytes": 2635,
+      "raw_sha256": "7536783ccfad1ade33ccb3abc7b44a565d259ffbd8670f5b1c391f2454af3a85",
+      "bytes": 1404,
+      "sha256": "43c23d76cc3aabe35875bd755389cfb1fba408456f2043467bffd1dc7ac18590"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/observed-before-receipt.json",
+      "logical_path": "observed-before-receipt.json",
+      "path": "observed-before-receipt.json.xz",
+      "compression": "xz",
+      "raw_bytes": 6242,
+      "raw_sha256": "8c1aef52af5654885c49d2a317f76c7ad0678bd5925aad8a076ccb134d9a1624",
+      "bytes": 2092,
+      "sha256": "d2f14f47ac965d031d43d5a76f08e243467bde1115cde23c1f186d445970ed7e"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/stability-client-before-control.txt",
+      "logical_path": "stability-client-before-control.txt",
+      "path": "stability-client-before-control.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 19648,
+      "raw_sha256": "f93a90cab762044b0d23765f1ba8606d8202eee7b489b88f797e0c15cd9a801b",
+      "bytes": 828,
+      "sha256": "19213eb88a5722fe8535cbb45587fbfc4d3a1b4634094955bb77a480e95ac863"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/stability-client-latest-at-bank.txt",
+      "logical_path": "stability-client-latest-at-bank.txt",
+      "path": "stability-client-latest-at-bank.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 28992,
+      "raw_sha256": "ed22e36c8036c643c67a67e055961c142bb46e7cad9812ee313f7a4f15ea4319",
+      "bytes": 976,
+      "sha256": "524b4b1792bb6853cca9ed2648e47ac9412be11af49affb99e7e0edd2a688122"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/chromium-current.log",
+      "logical_path": "chromium-current.log",
+      "path": "chromium-current.log.xz",
+      "compression": "xz",
+      "raw_bytes": 5804,
+      "raw_sha256": "73a5136c71d88908f4b419a1afafcd47e4a957d3463b1864c4dd2e7ad8215f72",
+      "bytes": 552,
+      "sha256": "3decf066384cb6217cb31a368bf8b0d2ffec8b79addac3b2806a817265994d65"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/cef-debug-current.log",
+      "logical_path": "cef-debug-current.log",
+      "path": "cef-debug-current.log.xz",
+      "compression": "xz",
+      "raw_bytes": 15804,
+      "raw_sha256": "75590fe119111b2450aa5449a45fa3def6bd7ef318cfda52f9634d54e2130d90",
+      "bytes": 660,
+      "sha256": "6a7693817847f80292e807f804f1446ca804464bd309626b4c2f8fa3eb7c7111"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/manual-state-observer.lua.txt",
+      "logical_path": "manual-state-observer.lua.txt",
+      "path": "manual-state-observer.lua.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 4475,
+      "raw_sha256": "5fa49d4b9dc12e3f5a9b6b514ae691814bdac49206be5be5d3f4b674637f8326",
+      "bytes": 1800,
+      "sha256": "a90c4d5d1c2d3ee9cf2776d35a2bba0962acdd8a9af337f07f7e02f5725d9d00"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/html-control.lua.txt",
+      "logical_path": "html-control.lua.txt",
+      "path": "html-control.lua.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 6152,
+      "raw_sha256": "1316ad25019794260cb71e5bee21a26d4a6a727d6524d771885978013ec12d2a",
+      "bytes": 2472,
+      "sha256": "eb4aff673bf9b27a3f87fa381f1ecc313595bc537769e65d516dd460c72ac760"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/1793168332975807140-source19-local-html-native-control.png",
+      "logical_path": "source19-static-html-and-native-label.png",
+      "path": "source19-static-html-and-native-label.png",
+      "compression": "none",
+      "raw_bytes": 312480,
+      "raw_sha256": "112215657e5bfd8187cab0ce2f12b42a636c5963aeebe5e10c56953fd4706304",
+      "bytes": 312480,
+      "sha256": "112215657e5bfd8187cab0ce2f12b42a636c5963aeebe5e10c56953fd4706304"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/manual-investigation/raw/1793168386767156069-source19-original-manual-after-control-cleanup.png",
+      "logical_path": "source19-original-manual-after-control-cleanup.png",
+      "path": "source19-original-manual-after-control-cleanup.png",
+      "compression": "none",
+      "raw_bytes": 300405,
+      "raw_sha256": "ce7f259952845df14426c3c047517125ff006e1ae11c143687748f4f319fac3c",
+      "bytes": 300405,
+      "sha256": "ce7f259952845df14426c3c047517125ff006e1ae11c143687748f4f319fac3c"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/post-boundary-diagnostic-note.json",
+      "logical_path": "post-boundary-diagnostic-note.json",
+      "path": "post-boundary-diagnostic-note.json.xz",
+      "compression": "xz",
+      "raw_bytes": 1535,
+      "raw_sha256": "ea9fd3f8394c80536dfa43f717c222a3b471a3ca0586139de30cde064cacc96c",
+      "bytes": 828,
+      "sha256": "5ab52e97f4cc66e4f7af8a4c9b033a7c27e369187ba87bfa962e66ba70293bc3"
+    }
+  ]
+}

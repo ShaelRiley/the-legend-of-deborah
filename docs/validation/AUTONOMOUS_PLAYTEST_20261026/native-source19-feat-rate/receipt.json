@@ -1,0 +1,107 @@
+{
+  "kind": "BUG019 finite repaired native character-sheet evidence",
+  "utc": "2026-10-28T06:29:57.520102+00:00",
+  "status": "Prepared bank proposal; actual finite native P-sheet display observed, root review/integration pending",
+  "candidate": "658a8c7249a322494b49025e7076c33f78efb511",
+  "source_provenance": "source-provenance.json.xz",
+  "ci_reference": {
+    "proposal": ".build/source19-ci/bank-proposal.json",
+    "proposal_sha256": "b98b3d13f575eef0ee6d8e6d8d441b2e61af1831b17c0abcf46906d9b7813cd7",
+    "destination": "docs/validation/AUTONOMOUS_PLAYTEST_20261026/ci-source19",
+    "qualification": "CI artifacts remain owned by ci16_finalize; linked only, not duplicated or applied by this proposal."
+  },
+  "environment": {
+    "hardware": "Actual Valve Jupiter Steam Deck / AMD Custom APU0405, Proton10 Windowsx86 GMod2026.09.17/LuaJIT2.0.4",
+    "map": "gm_flatgrass",
+    "native_viewport": [
+      1280,
+      800
+    ],
+    "private_session": "source15-fresh/session-1793166261876346299",
+    "developer_fixtures": true,
+    "normal_production_settings_pass": false
+  },
+  "binding": {
+    "run": "campaign:13",
+    "epoch": 1,
+    "campaign_seed": 6102602,
+    "level_seed": 1550561962,
+    "spawn": 4,
+    "body": 1,
+    "birth": 285,
+    "character": "Jonathan \"High Mileage\" Walker",
+    "class": "rogue",
+    "effective_con": 16,
+    "lives": 3,
+    "hp": 1,
+    "max_hp": 100,
+    "deployment_complete": false,
+    "campaign_clock_started": false,
+    "reported_ui_label_before_reconciliation": {
+      "value": "Eli",
+      "source": "root prior UI report",
+      "qualification": "Unreconciled with archived raw profile fullDisplayName. This finite display gate binds the actual raw profile/name; no identity/UI consistency acceptance or cause classification is claimed."
+    }
+  },
+  "acquisition": {
+    "ordinary": "Rogue choice and Mana Spring ordinary selection; current RPGline96 confirms INT_MANA_SPRING ordinary. Its mechanics are not accepted by this text case.",
+    "diagnostic": "Root invoked canonical lod_rpg_test_regen2; it grants diagnostic regen ownership and setsHP1/starts5s delay. SecondWind/Rapid Recovery were not acquired through ordinary leveling/eligibility progression."
+  },
+  "rendered_native_observation": {
+    "image": "source19-rapid-repaired-native.png",
+    "independently_viewed": true,
+    "RapidRecovery": "1.5% MaxHP/s and44% ceiling displayed",
+    "SecondWind": "1% MaxHP/s and22% ceiling displayed",
+    "adjacent": "Ordinary Mana Spring entry visible; this does not accept its mechanics."
+  },
+  "native_parameters": {
+    "RapidRecovery": {
+      "text": "After 5 damage-free seconds, regenerate 1.5% MaxHP per second, scaled by CON. Add 44% MaxHP to your regeneration ceiling; this stacks with Fighter’s innate 33% and cannot restore Tetris overfill. Replaces lower ranks.",
+      "ceiling": 0.44,
+      "name": "Rapid Recovery",
+      "rate": 0.015
+    },
+    "SecondWind": {
+      "text": "After 5 damage-free seconds, regenerate 1% MaxHP per second, scaled by CON. Add 22% MaxHP to your regeneration ceiling; this stacks with Fighter’s innate 33% and cannot restore Tetris overfill.",
+      "ceiling": 0.22,
+      "name": "Second Wind",
+      "rate": 0.01
+    },
+    "con_regen_multiplier": 1.3,
+    "equipment_regen_rate_percent": 32.2,
+    "derived_base_maxhp_fraction_per_second": 0.01983,
+    "ceiling_fraction": 0.44,
+    "console_status_lines": [
+      189,
+      190,
+      191
+    ],
+    "console_status_rate_hp_per_second": 2.58,
+    "qualification": "This fixture has gear regen_rate32.2%, so its status2.58HP/s differs from the older fixture1.95. No timed native HP-regeneration fit or healing behavior acceptance is claimed."
+  },
+  "pre_repair_comparison": {
+    "source": "f221 build label /63bcc gameplay",
+    "run": "campaign:12",
+    "epoch": 3,
+    "campaign_seed": 6102623,
+    "level_seed": 673660301,
+    "spawn": 10,
+    "ordinary_build": "Rogue/Bash",
+    "diagnostic": "Two-choice/regen diagnostic grant, HP1; no ordinary regen acquisition acceptance",
+    "image": "pre-repair-rapid-displays2percent.png",
+    "observation": "Old native P-sheet displays2% for Rapid Recovery despite underlying0.015 law; replacement native sheet displays1.5%. These are different runs/heroes/seeds, not a controlled same-body comparison.",
+    "local_complete_evidence": ".build/autonomous-playtest-20261027/source19-feat-rate/pre-repair",
+    "manifest": ".build/autonomous-playtest-20261027/source19-feat-rate/pre-repair/freeze.json",
+    "manifest_sha256": "2f492d0feec20087e8e34d4d7bb9e267f71484ff1b25441017e5a09cdbb1fa7b"
+  },
+  "error_boundary": "error-boundary.json.xz",
+  "limits": [
+    "Manual rendering remains OPEN and separate; no manual content/navigation acceptance.",
+    "No full campaign, normal deployment, reset/replay, three clean passes or co-op acceptance. Clean streak0.",
+    "Only this Steam Deck is available; multi-real-client co-op blocked. Audio perception unavailable.",
+    "Candidate658a native test does not itself prove a later merge/main commit has identical installed bytes; root owns integration/final commit verification."
+  ],
+  "mutations": "This proposal changes only ignored .build evidence; no source/docs/Git/private installation/GUI actions.",
+  "subsequent_diagnostic_outside_this_window": "post-boundary-diagnostic-note.json.xz",
+  "source19_session_error_boundary": "Frozen display/manual console prefix ends at339 before the later RapidStale19:72 diagnostic assertion. Its completeProfileUnchanged=false remains unaccepted and under diagnosis; no all-session zero-error or duplicate gate pass."
+}

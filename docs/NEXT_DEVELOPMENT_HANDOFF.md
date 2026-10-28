@@ -1,3 +1,14 @@
+# Current handoff — paused by user, October28
+
+Main source merge`24b900bf` preserves native-tested candidate`658a`; the later
+evidence checkpoint changes documentation only. Native private game closed;
+SteamCloud restoredON. Full338/929Lua and finite P/duplicate gates pass.
+Manual rendering, full campaign/authored/endings/threecleanpasses and co-op/audio
+remain open. See the [compact paused checkpoint](validation/AUTONOMOUS_PLAYTEST_20261026/PAUSED_CHECKPOINT.md).
+Resume only when requested. Older handoffs below preserve historical evidence.
+
+---
+
 # Current repair checkpoint — gate-reveal enemy engagement
 
 Source parent is verified main `2f4c968518ff29cb9ef206b3f9906d797b017ee1`, preserving

@@ -1,0 +1,115 @@
+{
+  "kind": "lossless_raw_native_evidence",
+  "files": [
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/native-feat-rate/raw/1793167043814200576-source19-rapid-repaired-native.png",
+      "logical_path": "source19-rapid-repaired-native.png",
+      "path": "source19-rapid-repaired-native.png",
+      "compression": "none",
+      "raw_bytes": 553832,
+      "raw_sha256": "ddba753641edf6a551e1b270c15ce2c28edc78b1b9ada8f9fb8d391ede3790a4",
+      "bytes": 553832,
+      "sha256": "ddba753641edf6a551e1b270c15ce2c28edc78b1b9ada8f9fb8d391ede3790a4"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-feat-rate/pre-repair/1793153889272204535-replay18-rapid-canonical-fixture.png",
+      "logical_path": "pre-repair-rapid-displays2percent.png",
+      "path": "pre-repair-rapid-displays2percent.png",
+      "compression": "none",
+      "raw_bytes": 528496,
+      "raw_sha256": "2955e7d043661e4ab0f705a43f7fca6be75431708ff535073163f02a9241d6df",
+      "bytes": 528496,
+      "sha256": "2955e7d043661e4ab0f705a43f7fca6be75431708ff535073163f02a9241d6df"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/raw-shared/source19-identity-328169.json",
+      "logical_path": "native-identity-before-fixture.json",
+      "path": "native-identity-before-fixture.json.xz",
+      "compression": "xz",
+      "raw_bytes": 12475,
+      "raw_sha256": "3efbaf548403f5b93edbfcc7e6d6a8f525cb409ab3fda7f47b86caa96222a3f9",
+      "bytes": 3900,
+      "sha256": "6add3359ce4df9210ed41d42aeb1c8e434ae1e849ded15867db2cf67c084af95"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/raw-shared/source19-identity-629053.json",
+      "logical_path": "native-identity-after-fixture.json",
+      "path": "native-identity-after-fixture.json.xz",
+      "compression": "xz",
+      "raw_bytes": 13074,
+      "raw_sha256": "9778e053b02034ca040cf69210f0b4e4399ef7a6ceb44fdd6ed53640cbcb13a7",
+      "bytes": 4100,
+      "sha256": "3fdf331bf7a932a3ded5842cc0ac24d0b6d2022feec3df01a0a27b00e65c9d8b"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/raw-shared/console-through-manual-control.log",
+      "logical_path": "console-through-manual-control.log",
+      "path": "console-through-manual-control.log.xz",
+      "compression": "xz",
+      "raw_bytes": 251701,
+      "raw_sha256": "8ce5b39107c4986e184244405fbd3ca03abaf851e60f207d3d1346bf3be59ecb",
+      "bytes": 7536,
+      "sha256": "4c3d5729ee4279aff3337da44a780d9440cc561a453d5c6ce0b1c05311969482"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/raw-shared/rpg-session-through-manual-control.txt",
+      "logical_path": "rpg-session-through-manual-control.txt",
+      "path": "rpg-session-through-manual-control.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 63568,
+      "raw_sha256": "485af9f1b49c2f9e2d45775a39622b795a8f170362c7ab221c0a949c6a74e81c",
+      "bytes": 4224,
+      "sha256": "ae5a23d94eebbe2e2e95e921a82ae4b4cc98636ff90313600334ecece6e60c63"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/raw-shared/rpg-summary-through-manual-control.txt",
+      "logical_path": "rpg-summary-through-manual-control.txt",
+      "path": "rpg-summary-through-manual-control.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 2731,
+      "raw_sha256": "9ffe4c1c16df210f58e60f63512ebde0d0b30f11704b739c4a8b219af5ef08ba",
+      "bytes": 1372,
+      "sha256": "4c6aa0b7196304fd58642195d9bb792c386ed854ffeea511c05b2acb8e7847d6"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/native-feat-rate/raw/native-identity-observer.lua.txt",
+      "logical_path": "native-identity-observer.lua.txt",
+      "path": "native-identity-observer.lua.txt.xz",
+      "compression": "xz",
+      "raw_bytes": 1917,
+      "raw_sha256": "bab2b4059c70d020436ad0548ccdd670a37ad87aad2e0bf12d440e03f8db633e",
+      "bytes": 1152,
+      "sha256": "3155e0af4845d8eaa44c5aa71604cfd5fd4c8ff6c4c7ef85e02d5de428a9a4d5"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/source-provenance.json",
+      "logical_path": "source-provenance.json",
+      "path": "source-provenance.json.xz",
+      "compression": "xz",
+      "raw_bytes": 1434,
+      "raw_sha256": "63d55eb4d532bd4b8aa0d8d932571e31d52b06a92d8be2a77a7974151fc84b63",
+      "bytes": 800,
+      "sha256": "c5915c1f0ecd6a41c6976b5dc26df7554f300484960b3a6cfb9904f3ab348d03"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/error-boundary.json",
+      "logical_path": "error-boundary.json",
+      "path": "error-boundary.json.xz",
+      "compression": "xz",
+      "raw_bytes": 1129,
+      "raw_sha256": "0141183e92f2de093b13b4b4ab3b14bb9024e7c9041b38068118eb4c0bf1f924",
+      "bytes": 788,
+      "sha256": "ed1ccb558f8a77a861c643298be7dc20d6869d49aafda006c647be55ea03d56b"
+    },
+    {
+      "source": ".build/autonomous-playtest-20261027/source19-evidence-bank-proposal/post-boundary-diagnostic-note.json",
+      "logical_path": "post-boundary-diagnostic-note.json",
+      "path": "post-boundary-diagnostic-note.json.xz",
+      "compression": "xz",
+      "raw_bytes": 1535,
+      "raw_sha256": "ea9fd3f8394c80536dfa43f717c222a3b471a3ca0586139de30cde064cacc96c",
+      "bytes": 828,
+      "sha256": "5ab52e97f4cc66e4f7af8a4c9b033a7c27e369187ba87bfa962e66ba70293bc3"
+    }
+  ]
+}

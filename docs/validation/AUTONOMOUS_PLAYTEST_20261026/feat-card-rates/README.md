@@ -1,3 +1,3 @@
-Rapid Recovery displayed2%MaxHP/s while the live rule and actual parameters specify1.5% beforeCON. The shared card formatter now preserves fractional rates; generated manual bytes follow the same source.
+Rapid Recovery now displays its authored 1.5% rate. Complete338/929Lua and the fresh native P display pass on candidate658a, merged through PR9. Healing parameters are unchanged.
 
-Read BUG-019.json and artifact-manifest.json for original native proof, forced-ownership setup, static checks, retained failures and exact scope. Full338 and a fresh repaired native sheet/manual remain pending. Clean streak0.
+See BUG-019.json, ../ci-source19/verification.json and ../native-source19-feat-rate/receipt.json. Manual rendering remains open in the separately preserved client HTML-path investigation. The campaign is paused at the user’s request; clean streak0.

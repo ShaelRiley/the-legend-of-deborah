@@ -1,0 +1,34 @@
+{
+  "kind": "Finite native duplicate-Rapid submission gate; diagnostic setup",
+  "utc": "2026-10-28T07:09:03.345487+00:00",
+  "tested_commit": "658a8c7249a322494b49025e7076c33f78efb511",
+  "merged_main_source": "24b900bf8f6641463e63cd412306b0d97dbd0102",
+  "environment": "Actual Steam Deck Jupiter; Windowsx86 GMod2026.09.17/LuaJIT2.0.4/Proton10; gm_flatgrass1280x800",
+  "binding": {
+    "run": "campaign:13",
+    "epoch": 1,
+    "seed": 6102602,
+    "level_seed": 1550561962,
+    "body": 1,
+    "birth": 285,
+    "spawn": 4,
+    "hero": "Jonathan \"High Mileage\" Walker / Eli model",
+    "class": "Rogue",
+    "level": 3,
+    "CON": 16
+  },
+  "setup": "Ordinary Mana Spring selection preceded canonical lod_rpg_test_regen2 and lod_rpg_gate_c_level3 fixtures. Undeployed staging; campaign clock unstarted.",
+  "native_ui": "Actual four Level3 offers: W,A,S,Deborah; Academic Achievement; Aura Burst; Field Supply. No owned Second Wind/Rapid Recovery offered.",
+  "original_failure": "Original helper rejected Rapid correctly but falsely failed complete-profile equality. Preserve failed receipt and native RapidStale19:72 error.",
+  "demonstrated_fixture_cause": "Before any new mutation native table.Copy breaks shared scalar-only equipmentExtras alias; old comparator false on untouched profile. Alias-preserving copy retains the alias and passes the same strict equality selfcheck.",
+  "native_result": "PASS: real CommitFeat rejects injected owned Rapid, no slot consumption, same run/body/life, complete player profile and HP/position/angles unchanged after original-hand-only restoration; counts remain1.",
+  "cleanup_scope": "Only original hand fields/nested identities restored synchronously on same binding. No full-profile rollback, actor/resource/clock changes or production changes by helper.",
+  "offline_checks": "Both original and alias helper eight-case mock suites pass in Lua5.4/LuaJIT, including actual installed copy-function reproduction, exception cleanup, changed-life refusal and unexpected-mutation detection.",
+  "limits": [
+    "Not ordinary high-rank acquisition or all feat/rank boundaries",
+    "No cooperative/client synchronization claim",
+    "No whole-session zero-error claim",
+    "No campaign or clean pass"
+  ],
+  "clean_pass_streak": 0
+}

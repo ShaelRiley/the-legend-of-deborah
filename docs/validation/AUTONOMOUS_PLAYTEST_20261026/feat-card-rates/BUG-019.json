@@ -1,7 +1,7 @@
 {
   "id": "BUG-019",
   "title": "Rapid Recovery card rounds its authored fractional rate from1.5% to2%",
-  "status": "Shared presentation repaired and9focused gates statically validated on this checkpoint; full338 and fresh native repaired acceptance pending.",
+  "status": "Repaired on main via PR9; complete338/929Lua and fresh native P display PASS. Generated manual content passes static checks; native manual rendering remains an explicit open client HTML-path gap.",
   "severity": "Minor presentation defect: a misleading feat-rate description; actual healing parameters match active design.",
   "source_parent": "f1af067c8616f46e8ba70df93399a785ac23901d",
   "original_gameplay": "63bcc03e30233f74208a92e25a1904a87201125f",
@@ -37,8 +37,9 @@
     "prior_environment_failure": "Initial manual-document attempt lacked node; preserved failure and receipt. Official checksum-verified localNode22.23.4 resolved it; rerun passes.",
     "test_fixture_correction": "Initial new snapshot fixture used a bare state without required identity package. Corrected to real InitializeHero/CommitClass; original fixture retained. No production guard/assertion weakened.",
     "independent_review": "static/independent-review.json (review predates resolved Node rerun; new focused receipt resolves it).",
-    "full_integration": "PENDING complete338 on frozen candidate; prior337 evidence is not substituted.",
-    "native_repaired": "PENDING fresh installed-source19 character sheet/manual. No hot-reload or static pass establishes it."
+    "full_integration": "PASS338/338 and929Lua on exact658a; ci-source19/verification.json; all four candidate workflows green.",
+    "native_repaired": "Actual Deck source19 P renders Rapid1.5%/44% and SecondWind1%/22%; diagnostic ownership qualified. native-source19-feat-rate/receipt.json. No measured-healing fit.",
+    "manual_rendering": "OPEN: exact1536564B/CRC731183533 received but noReady; stock staticDHTML also blank/nativeDLabel visible. Exact cause unresolved. native-source19-manual-investigation/receipt.json."
   },
   "evidence": "artifact-manifest.json resolves raw logical paths to unchanged PNG or losslessXZ; prior failures retained.",
   "not_claimed": [
@@ -47,5 +48,11 @@
     "Cooperative/audio acceptance",
     "Any full campaign or clean pass"
   ],
-  "clean_pass_streak": 0
+  "clean_pass_streak": 0,
+  "integration": {
+    "candidate": "658a8c7249a322494b49025e7076c33f78efb511",
+    "main_source_merge": "24b900bf8f6641463e63cd412306b0d97dbd0102",
+    "pr": "https://github.com/ShaelRiley/the-legend-of-deborah/pull/9",
+    "source_diff_candidate_to_main": "empty for gamemodes and tools"
+  }
 }

@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-28T07:09:03.345487+00:00",
+  "session": ".build/autonomous-playtest-20261027/source15-fresh/session-1793166261876346299",
+  "tested_commit": "658a8c7249a322494b49025e7076c33f78efb511",
+  "merged_main_source": "24b900bf8f6641463e63cd412306b0d97dbd0102",
+  "exit": "Root sent normal native console quit at user break; launcher finished with wrapper_exit0.",
+  "launch_result_sha256": "daab94a4ac5345040b568bcb66a14c0f07ae63f10d9e9766e49b651bded50551",
+  "elapsed_seconds": 4349.8,
+  "owned_game_pids": [
+    137157,
+    137333
+  ],
+  "remaining_owned_pids": [],
+  "unproven_native_pids": [],
+  "cleanup_errors": [],
+  "original_config_unchanged": true,
+  "host_confirmation": "Approved host ps -p137157,137333 -opid,comm returned exit1/no rows after normal quit.",
+  "cloud_original_enabled": true,
+  "cloud_restored_enabled": true,
+  "cloud_restore_required": false,
+  "cloud_before_sha256": "18c9528884c947953687644f7415b6f09ecbd14996a441270270be3df8515ca2",
+  "cloud_after_sha256": "16f7d5f864f61687dc59d9b8aae056fe1f1bd24264d30a133dec9f05c1a6fb62",
+  "normal_dev_mount": "Existing normal addon symlink resolves to canonical checkout; no private DATA/profile copied into personal game.",
+  "production_source_equivalence": "git diff658a..24b900bf --gamemodes tools is empty; normal merged source equals native-tested candidate.",
+  "acceptance": "Finite P display and diagnostic duplicate guard accepted only; complete campaign remains paused/partially validated."
+}

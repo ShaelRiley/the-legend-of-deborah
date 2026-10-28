@@ -1,0 +1,250 @@
+{
+  "kind": "independent source19 frozen CI proof",
+  "utc": "2026-10-28T05:11:06.705193+00:00",
+  "commit": "658a8c7249a322494b49025e7076c33f78efb511",
+  "checkout_tree": "dc3df89c165f11d2667bddc05fac5444b02dd06a",
+  "run_id": 40635361503,
+  "job_id": 122640976686,
+  "total": 338,
+  "passed": 338,
+  "lua_files": 929,
+  "production_files": 576,
+  "source_files": 4399,
+  "source_bytes": 262225095,
+  "source_before": "5450d0c806d51d80c84f16d3a7c811778b91791cb14036bec36ae92f8fb6a360",
+  "source_after": "5450d0c806d51d80c84f16d3a7c811778b91791cb14036bec36ae92f8fb6a360",
+  "all_frozen_git_blobs_match_source_digest": true,
+  "all_production_hashes_match_frozen_commit": true,
+  "all_338_result_commands_match_exact_registry": true,
+  "new_fractional_recovery_suite_passed": true,
+  "all_returncodes_zero": true,
+  "unique_log_prefixes": 338,
+  "receipt_sha256": "f7dedcff753d59b8e30c78b7785c1c793101abd598f6f532b469cb4d3393c34b",
+  "receipt_sha256_matches_proof": true,
+  "targeted_boundary_and_syntax_checks": [
+    [
+      "tools/test_wall_batch.lua",
+      0
+    ],
+    [
+      "tools/test_performance_capture.lua",
+      0
+    ],
+    [
+      "tools/test_performance_profile.lua",
+      0
+    ],
+    [
+      "tools/test_population_transport.lua",
+      0
+    ],
+    [
+      "tools/test_low_end_palette.lua",
+      0
+    ],
+    [
+      "tools/test_great_crate_render.lua",
+      0
+    ],
+    [
+      "tools/test_dev_population_manifest.py",
+      0
+    ],
+    [
+      "Lua syntax",
+      0
+    ]
+  ],
+  "CI_step_verified_all_actual_suite_log_hashes": true,
+  "individual_suite_logs_materialized_locally": false,
+  "artifact_zip_materialized_locally": false,
+  "native_gmod_accepted": false,
+  "reconstruction": "Exact contiguous unique4000-character EVIDENCE_CHUNK payloads in canonical decoded GitHub job log; original receipt SHA and independent Git blob digests verified. Actual per-suite stdout/stderr hashes were checked by successful CI verification step, not locally reconstructed.",
+  "qualification": "Static/headless CI only. Source19 native character-sheet/manual acceptance, main integration and broader gameplay/co-op/audio acceptance are separate pending gates.",
+  "all_four_workflows_success": true,
+  "workflow_checkouts": [
+    {
+      "run_id": 40635361503,
+      "job_id": 122640976686,
+      "workflow": "Validate complete frozen source matrix",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_PR_head": "658a8c7249a322494b49025e7076c33f78efb511",
+      "actual_checkout_sha": "658a8c7249a322494b49025e7076c33f78efb511",
+      "checkout_basis": "Canonical job git log -1 --format=%H output",
+      "source_relation": "exact candidate checkout",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40635361503"
+    },
+    {
+      "run_id": 40635361486,
+      "job_id": 122640976593,
+      "workflow": "Validate ambient audio and event cues",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_PR_head": "658a8c7249a322494b49025e7076c33f78efb511",
+      "actual_checkout_sha": "ff674d7d6aa23edf82dc809d3f39e8caacf4c322",
+      "checkout_basis": "Canonical job git log -1 --format=%H output",
+      "source_relation": "GitHub synthetic PR merge; direct API comparison against candidate returns files[] (byte-equivalent source)",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40635361486"
+    },
+    {
+      "run_id": 40635361464,
+      "job_id": 122640976545,
+      "workflow": "Validate VR compatibility",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_PR_head": "658a8c7249a322494b49025e7076c33f78efb511",
+      "actual_checkout_sha": "ff674d7d6aa23edf82dc809d3f39e8caacf4c322",
+      "checkout_basis": "Canonical job git log -1 --format=%H output",
+      "source_relation": "GitHub synthetic PR merge; direct API comparison against candidate returns files[] (byte-equivalent source)",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40635361464"
+    },
+    {
+      "run_id": 40635361563,
+      "job_id": 122640976710,
+      "workflow": "Validate low-end performance sources",
+      "status": "completed",
+      "conclusion": "success",
+      "associated_PR_head": "658a8c7249a322494b49025e7076c33f78efb511",
+      "actual_checkout_sha": "658a8c7249a322494b49025e7076c33f78efb511",
+      "checkout_basis": "Canonical job git log -1 --format=%H output",
+      "source_relation": "exact candidate checkout",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40635361563"
+    }
+  ],
+  "artifact_metadata": [
+    {
+      "id": 12792874736,
+      "name": "frozen-source-matrix",
+      "size_in_bytes": 717368,
+      "digest": "sha256:f3d4cc100b87f2acc03400bb686d534f3bbb066da7fe2d05fb7150800110aa8c",
+      "expired": false,
+      "created_at": "2026-10-28T05:10:14Z",
+      "expires_at": "2027-01-26T04:59:20Z",
+      "url": "https://github.com/ShaelRiley/the-legend-of-deborah/actions/runs/40635361503/artifacts/12792874736",
+      "head_sha": "658a8c7249a322494b49025e7076c33f78efb511",
+      "downloaded_zip": false,
+      "digest_locally_verified": false
+    }
+  ],
+  "warnings": [
+    {
+      "run_id": 40635361503,
+      "job_id": 122640976686,
+      "explicit_ci_warning_markers": [
+        "2026-10-28T05:10:15.2335596Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+      ],
+      "classification": "Pinned GitHub actions runner-runtime deprecation/forcedNode24 notice; original warning retained. Test setup requests Node22. No action-version or gameplay change made in this evidence task."
+    },
+    {
+      "run_id": 40635361486,
+      "job_id": 122640976593,
+      "explicit_ci_warning_markers": [
+        "2026-10-28T04:59:40.4454492Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+      ],
+      "classification": "Pinned GitHub actions runner-runtime deprecation/forcedNode24 notice; original warning retained. Test setup requests Node22. No action-version or gameplay change made in this evidence task."
+    },
+    {
+      "run_id": 40635361464,
+      "job_id": 122640976545,
+      "explicit_ci_warning_markers": [
+        "2026-10-28T04:59:44.2556953Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+      ],
+      "classification": "Pinned GitHub actions runner-runtime deprecation/forcedNode24 notice; original warning retained. Test setup requests Node22. No action-version or gameplay change made in this evidence task."
+    },
+    {
+      "run_id": 40635361563,
+      "job_id": 122640976710,
+      "explicit_ci_warning_markers": [
+        "2026-10-28T05:00:20.8972964Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+      ],
+      "classification": "Pinned GitHub actions runner-runtime deprecation/forcedNode24 notice; original warning retained. Test setup requests Node22. No action-version or gameplay change made in this evidence task."
+    }
+  ],
+  "proof_json_provenance": "Parsed FROZEN_MATRIX_PROOF log JSON, formatted locally. Not claimed as the original artifact proof.json byte encoding. Receipt and production manifest are reconstructed exact original bytes from contiguous EVIDENCE_CHUNK records.",
+  "archived_members": {
+    "artifacts.json": {
+      "bytes": 878,
+      "sha256": "46b2ecdd85fd47e9d89b355c40a572fa99618534647417f4b601c15489dbbfa0"
+    },
+    "assemble_evidence.py": {
+      "bytes": 7334,
+      "sha256": "ff7d53caea4deb4180e2e3e8fb8b29872bd83e2aa88b9182f0bb95add9eccbe9"
+    },
+    "checkout-and-warnings.json": {
+      "bytes": 5069,
+      "sha256": "dbc91b24c753e5abb880c02088ca4b590d448b5b24b70dd9f9a9876a0ec9bef6"
+    },
+    "frozen-git-source-manifest.json": {
+      "bytes": 657103,
+      "sha256": "791e20d4731738c59c56d529034c8168a8671f0397a13e7509d82bf3660b7a46"
+    },
+    "frozen-production_manifest.json": {
+      "bytes": 80388,
+      "sha256": "cf18adac04028a3f01ec8b653c822052da825e35aba9a59040fa214fb311c276"
+    },
+    "frozen-receipt.json": {
+      "bytes": 228024,
+      "sha256": "f7dedcff753d59b8e30c78b7785c1c793101abd598f6f532b469cb4d3393c34b"
+    },
+    "hash_frozen_commit.py": {
+      "bytes": 2592,
+      "sha256": "d904e85b693256f6a6643b0499c25545336018fb663d3032fdb8a89fb3857fa8"
+    },
+    "head-to-synthetic-merge-comparison.json": {
+      "bytes": 937,
+      "sha256": "20fb1ea3eaa9b38838f5a86c86eeda157bad14ae4058bdda2b1750669c98a952"
+    },
+    "job-122640976545.log": {
+      "bytes": 23190,
+      "sha256": "4285e3686697876247d266369d1ac92096575da6b0e76c0bb5b0544a889e2928"
+    },
+    "job-122640976593.log": {
+      "bytes": 17060,
+      "sha256": "8181b89f7002323ebddc220537f5eda2aab685ce2e93e479c6fbfce93748a9db"
+    },
+    "job-122640976686.log": {
+      "bytes": 426832,
+      "sha256": "86ba88d9b1fadd90223cec6e6318017de799a24fdd8027041640c25e7e1f211e"
+    },
+    "job-122640976710.log": {
+      "bytes": 98407,
+      "sha256": "565cc81e76fcf3338e5dc2d3ad7ca170546b9e6a8648a23feaff6da2574f2fba"
+    },
+    "jobs.json": {
+      "bytes": 12234,
+      "sha256": "5fd320c15ec45659fff9206badff4a75ca7cb335780353a7fb3495d9525de6af"
+    },
+    "local-frozen-identity.json": {
+      "bytes": 597,
+      "sha256": "0c8598fc48ef07473a767384393a26ffa455d851192948813e2aa6f7dca77d3f"
+    },
+    "local-frozen-production-manifest.json": {
+      "bytes": 80388,
+      "sha256": "cf18adac04028a3f01ec8b653c822052da825e35aba9a59040fa214fb311c276"
+    },
+    "pr.json": {
+      "bytes": 473,
+      "sha256": "30ce3bacff56ab5160c23e8a9f8e7beb9b57e49cbb4edd53f957ac91626d4fd4"
+    },
+    "proof.json": {
+      "bytes": 676,
+      "sha256": "25034dbc367ca7f800d4ffabcd471b9e5f3e1cc43a9c233141ee975b2795b483"
+    },
+    "verification-core.json": {
+      "bytes": 2183,
+      "sha256": "abf03f52eb2152d042c80c24732d4266e610d0cadf57255654042fb1e3222728"
+    },
+    "verify_frozen_job.py": {
+      "bytes": 6009,
+      "sha256": "29b2633614958a5064e58f611eaf5f44830bde60d7411c06a4896f0d29060114"
+    },
+    "workflows.json": {
+      "bytes": 1756,
+      "sha256": "fe025ed5f599114d0972d9fbe5c1abbaf21ff7288ff2ee9be71a892099059ddd"
+    }
+  },
+  "archive_members": 20,
+  "evidence_archive_sha256": "b82801ba04b37eed7340926aa68dae86d2cc945b8b888e4a26cea17d896c994f",
+  "evidence_archive_bytes": 233264
+}

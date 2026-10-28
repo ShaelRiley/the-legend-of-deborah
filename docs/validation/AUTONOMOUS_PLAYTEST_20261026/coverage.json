@@ -6,7 +6,7 @@
   "baseline_commit": "858941158ed5182a88ab2d7522f534bdd6029c30",
   "gdd_document_id": "1OSpgiWyiGmUCLFdq--WmCSZe6KQIr7_UTkQZklPV8lY",
   "hardware": "Valve Jupiter Steam Deck; AMD Custom APU 0405; amdgpu 1002:163F",
-  "current_candidate": "63bcc03e30233f74208a92e25a1904a87201125f",
+  "current_candidate": "658a8c7249a322494b49025e7076c33f78efb511",
   "clean_pass_streak": 0,
   "passes": [],
   "requirements": [
@@ -70,7 +70,7 @@
       "source": "05 LOD-WORLD-001; 05 LOD-OBJ-001",
       "expected": "Solvable seeded maze and reachable required objectives without illegal shortcuts",
       "scenario": "Distinct seeds; graph validator plus ordinary route traversal",
-      "result": "Prior ordinary entrance→Redcard/Redreader and source18 found-floor map/Compass evidence retained. Replay18 seed6102623/level673660301 physically walked the post-respawn floor0 approach, actual4:12 stairs to the upper landing, Redcard route and RedGate/through-gate sample with HP100. This is a finite ordinary route sample; no full maze/campaign or all-seed proof. Old6102602 Blue nil with SkeletonBlockade6:11:1|6:12:1 remains unaccepted; no route defect confirmed.",
+      "result": "Prior ordinary entrance\u2192Redcard/Redreader and source18 found-floor map/Compass evidence retained. Replay18 seed6102623/level673660301 physically walked the post-respawn floor0 approach, actual4:12 stairs to the upper landing, Redcard route and RedGate/through-gate sample with HP100. This is a finite ordinary route sample; no full maze/campaign or all-seed proof. Old6102602 Blue nil with SkeletonBlockade6:11:1|6:12:1 remains unaccepted; no route defect confirmed.",
       "evidence": [
         "native-4322-route/receipt.json",
         "native-source18-navigation/receipt.json",
@@ -82,7 +82,7 @@
       "source": "07 LOD-STAIR-HEADROOM-20260927; retained collision integration",
       "expected": "Upright stairs, floor alignment, no blocked passages or accidental bypass",
       "scenario": "Walk ascent/descent and turns, probe signed-floor seams and collision",
-      "result": "Retained collision evidence remains. Replay18 seed6102623 actual4:12 lower→upper ascent/landing is observed through ordinary native movement: partial3/8 pilot hit a transient camera guard, followed by root W1.2/W0.55 and native position[-2646.079102,302.613892,-11887.937500]/HP100. Pre-loss analytic PLAYER_MOVEMENT8 clear centerlines are separate from post-respawn traversal and legacy NONE0 loot hits. Descent, broader upright/headroom/turn/orientation/seam/bypass acceptance remains open; no camera-guard cause or game obstruction is established.",
+      "result": "Retained collision evidence remains. Replay18 seed6102623 actual4:12 lower\u2192upper ascent/landing is observed through ordinary native movement: partial3/8 pilot hit a transient camera guard, followed by root W1.2/W0.55 and native position[-2646.079102,302.613892,-11887.937500]/HP100. Pre-loss analytic PLAYER_MOVEMENT8 clear centerlines are separate from post-respawn traversal and legacy NONE0 loot hits. Descent, broader upright/headroom/turn/orientation/seam/bypass acceptance remains open; no camera-guard cause or game obstruction is established.",
       "evidence": [
         "native-d66/receipt.json",
         "native-source18-reset-magic/receipt.json",
@@ -114,7 +114,7 @@
       "source": "Author request; approved PROGRESSION_ROUTING_STOCK_PROPS_20261013",
       "expected": "Native visible map/cards/Jail Key remain collectible from normal views",
       "scenario": "Near/far and above/below orbit, touch, receipt and entity cleanup",
-      "result": "Map0 disappearance after ordinary touch/mask0→1 remains intentional. Prior normal map/body approach and source16/18 Redcard evidence retained; replay18 upper route adds one ordinary Red acquisition with actual keycard feedback and R CARD→OPEN RED GATE HUD. Full key/map/JailKey angle/distance/lifecycle, simultaneous ownership and multiplayer boundaries remain open.",
+      "result": "Map0 disappearance after ordinary touch/mask0\u21921 remains intentional. Prior normal map/body approach and source16/18 Redcard evidence retained; replay18 upper route adds one ordinary Red acquisition with actual keycard feedback and R CARD\u2192OPEN RED GATE HUD. Full key/map/JailKey angle/distance/lifecycle, simultaneous ownership and multiplayer boundaries remain open.",
       "evidence": [
         "production-2c73471b/deborah-normal-map-pedestal-approach.png",
         "production-2c73471b/deborah-map-legend-fixed-native.png",
@@ -143,8 +143,10 @@
       "source": "04 LOD-FEAT; approved FEAT_REPEAT_NEIL_CONSOLE_20261013",
       "expected": "Rapid Recovery and other nonrepeatable feats cannot duplicate",
       "scenario": "Four-choice drafts, repeat reopen, stale saved duplicate repair, legitimate fallback repeat",
-      "result": "pending",
-      "evidence": []
+      "result": "pending Source19 finite native Level3 hand excludes owned recovery ranks; actual deliberately malformed Rapid submission rejected/counts1/slotunconsumed/profile and body unchanged. Original native helper copy-alias false-negative preserved and independently reproduced; strict alias-preserving successor passes. Broader acquisition/rank/fallback/co-op boundaries remain open.",
+      "evidence": [
+        "native-source19-rapid-guard/receipt.json"
+      ]
     },
     {
       "id": "REG-IDLE",
@@ -178,7 +180,7 @@
       "source": "00 LOD-FLOOR-MAP-001; approved FLOOR_MAP_PANEL_20261013 and NAVIGATION_FEATS_20261013",
       "expected": "Per-floor maps shared by party; personal Magic drain; unfound panel and navigation feats",
       "scenario": "Open Q/M before/after pickup; two clients on different floors; Compass/Finder/GPS",
-      "result": "Finite source18 single-client map0 acquisition/cross-floor breadcrumb display passes. Fresh epoch3 Caroline unfound Q panel drains personal Magic to0, automatically closes and recovers0→9 across101samples25.0358s; actual native rates6.6667drain and0.9regenmult agree with sampled6.6715/1.50094. Both earlier closed-named map photos were actuallyOPEN; the newer exhaustion sequence resolves that limited close question. ManualQ/Mclose, higher-floor traversal/acquisition, Compass/Finder/GPS and real party sharing remain open.",
+      "result": "Finite source18 single-client map0 acquisition/cross-floor breadcrumb display passes. Fresh epoch3 Caroline unfound Q panel drains personal Magic to0, automatically closes and recovers0\u21929 across101samples25.0358s; actual native rates6.6667drain and0.9regenmult agree with sampled6.6715/1.50094. Both earlier closed-named map photos were actuallyOPEN; the newer exhaustion sequence resolves that limited close question. ManualQ/Mclose, higher-floor traversal/acquisition, Compass/Finder/GPS and real party sharing remain open.",
       "evidence": [
         "production-2c73471b/deborah-map-legend-fixed-native.png",
         "native-private14/receipt.json",
@@ -248,7 +250,7 @@
       "source": "90 LOD-EQUIP-016; 06 LOD-BIG-LOOT-LIFECYCLE; explicit author retention correction27175f8c",
       "expected": "Owned equipment, capacity, stacks, acquisition, equips, pickup/drop and consumables",
       "scenario": "Ordinary loot/inventory with full/empty/depleted/stale/duplicate boundaries",
-      "result": "Prior native starter/death retention and Pistol↔Crowbar replacement constraints retained. Source18 earned-currency Vending delivers one owned HealingPotion, native quantity1/3, repeat rejected; healing/cure/throw not exercised. Ordinary body-slot Pistol equip adds actual+2STR/+2WIS and agrees with sheet/server while immutable base stays17/14; failed XTest double-click remains unaccepted input evidence. Broad stacks/capacity/equip/drop/ownership/economy/co-op boundaries remain open.",
+      "result": "Prior native starter/death retention and Pistol\u2194Crowbar replacement constraints retained. Source18 earned-currency Vending delivers one owned HealingPotion, native quantity1/3, repeat rejected; healing/cure/throw not exercised. Ordinary body-slot Pistol equip adds actual+2STR/+2WIS and agrees with sheet/server while immutable base stays17/14; failed XTest double-click remains unaccepted input evidence. Broad stacks/capacity/equip/drop/ownership/economy/co-op boundaries remain open.",
       "evidence": [
         "environment-input/receipt.json",
         "death-lifecycle/BUG-007.json",
@@ -262,7 +264,7 @@
       "source": "06 LOD-ECON-001; 90 LOD-EQUIP-017",
       "expected": "Atomic buying/selling/exchanges/rewards without duplication",
       "scenario": "Disposable account state; reject insufficient funds/full capacity; repeat/simultaneous Use",
-      "result": "Finite source18 earned currency transaction pair passes: natural StrengthPress18+STR3=21/DC12 credits0→20, Vending debit20→10 deliversPotion0→1, ordinary repeats denied. Explicit single-event previews and supported beyond-lock4s locators are qualified, not ordinary route proof. Other rewards/exchanges/selling, admission failures, reconnect and simultaneous-client boundaries remain open.",
+      "result": "Finite source18 earned currency transaction pair passes: natural StrengthPress18+STR3=21/DC12 credits0\u219220, Vending debit20\u219210 deliversPotion0\u21921, ordinary repeats denied. Explicit single-event previews and supported beyond-lock4s locators are qualified, not ordinary route proof. Other rewards/exchanges/selling, admission failures, reconnect and simultaneous-client boundaries remain open.",
       "evidence": [
         "native-source18-authored/receipt.json"
       ]
@@ -364,7 +366,7 @@
       "source": "05 LOD-TIMER-001; active LOD-HOURGLASS-001",
       "expected": "Timeout/explosion/reset current timing and subsequent fresh campaign",
       "scenario": "Force near-deadline setup only; observe genuine failure sequence and ordinary restart",
-      "result": "Earlier BUG005 finite accelerated native HUD gate on278e/19feeda8 shows TIMEOVER/GAMEOVER/bars/manual lockout→PRESS E/countdown and ordinaryEreset, per later fixed-runtime receipt; older defect.json pending metadata is not latest evidence. New source18 naturalTIMEOVER/restart run8epoch2→run9epoch3/maps0 and fresh29:59entry are separate partial observations, not a new source18 explosion/HUD/exactrestart-delay/allcleanup pass.",
+      "result": "Earlier BUG005 finite accelerated native HUD gate on278e/19feeda8 shows TIMEOVER/GAMEOVER/bars/manual lockout\u2192PRESS E/countdown and ordinaryEreset, per later fixed-runtime receipt; older defect.json pending metadata is not latest evidence. New source18 naturalTIMEOVER/restart run8epoch2\u2192run9epoch3/maps0 and fresh29:59entry are separate partial observations, not a new source18 explosion/HUD/exactrestart-delay/allcleanup pass.",
       "evidence": [
         "timeout-hud/defect.json",
         "native-source18-reset-magic/receipt.json",
@@ -376,7 +378,7 @@
       "source": "07 LOD-IMPL-004; retained optimization integration",
       "expected": "Representative comparable performance; no repair-induced regression",
       "scenario": "Same scene/seed/settings/hardware baseline and candidate captures; no 40-FPS claim",
-      "result": "Representative actualDeck source17→18 same closed-gate pose/settings sampled29.7313→30.3647FPS, p9540.291→39.778ms; all891/910frames independently recomputed.36wanderers/40bodies, different client entity counts. No sampled regression, causal gain/40FPS/full-workload acceptance unclaimed.",
+      "result": "Representative actualDeck source17\u219218 same closed-gate pose/settings sampled29.7313\u219230.3647FPS, p9540.291\u219239.778ms; all891/910frames independently recomputed.36wanderers/40bodies, different client entity counts. No sampled regression, causal gain/40FPS/full-workload acceptance unclaimed.",
       "evidence": [
         "production-2c73471b/performance_client_latest.txt",
         "native-source17-adjacent/receipt.json",
@@ -388,7 +390,7 @@
       "source": "AGENTS standard loop; current integration suite",
       "expected": "Required checks and regression failures investigated, never suppressed",
       "scenario": "Frozen-source integration gate plus meaningful focused checks",
-      "result": "Latest gameplay63bcc exact frozen337/337validators,928Lua,576production/4227Gitblobs and independent review pass. Evidence-only main verifieda8c73060 before this checkpoint; gameplay remains unchanged. Original negatives and target-hit mutant preserved. Native assertions are classified separately: owned Approach18 diagnostic failure was missed by a narrow regex and is now audited, not hidden.",
+      "result": "Exact658a frozen338/338 suites,929Lua,576production; four candidate workflows green and independent review clear. Preserved original RapidStale19 diagnostic error is a demonstrated helper snapshot-copy false-negative; corrected strict native check passes. No whole-session zero-error claim.",
       "evidence": [
         "combined-278e-integration-gate/receipt.json",
         "wizard-class-card/static-repair-receipt.json",
@@ -399,7 +401,10 @@
         "gate-precache/ci-fixture/receipt.json",
         "remote-ci-8a9/proof.json",
         "ci-source18/verification.json",
-        "native-source18-reset-magic/diagnostic-error-audit.json"
+        "native-source18-reset-magic/diagnostic-error-audit.json",
+        "ci-source19/verification.json",
+        "native-source19-feat-rate/independent-review.json",
+        "native-source19-rapid-guard/receipt.json"
       ]
     },
     {
@@ -415,8 +420,10 @@
       "source": "AGENTS branch discipline; user integration authorization",
       "expected": "Validated final tested source equals verified remote main",
       "scenario": "Non-forced push/integration then remote and installed-source verification",
-      "result": "pending",
-      "evidence": []
+      "result": "BUG019 narrow repair integrated via PR9/main24b900bf; merged gamemodes/tools byte-identical to native-tested658a. Overall final-campaign candidate acceptance remains open; this is a pause checkpoint.",
+      "evidence": [
+        "native-source19-closure/receipt.json"
+      ]
     },
     {
       "id": "REG-BACKSTAB-FEEDBACK",
@@ -457,7 +464,7 @@
       "id": "REG-SAFE-FLOOR",
       "source": "03 LOD-THUNDER-HAT-001/LOD-HEAVY-PLUMBER-001;05 LOD-EVENT-WARP-001;06 LOD-SAFE-TRAVEL-001",
       "expected": "Canonical relocation and ground abilities accept valid supported standing footprints; reject holes, walls, hazards, locked routes and stale bodies",
-      "scenario": "Repeat native centeredHero/Rogue±Y support positives and wall±X negatives; observe actual movement and authored consumers",
+      "scenario": "Repeat native centeredHero/Rogue\u00b1Y support positives and wall\u00b1X negatives; observe actual movement and authored consumers",
       "result": "Finite native source74415 passes centered-Hero/nearby-supported positives, wall negatives, guarded relocation/return and measuredThunderCharge movement. BUG016 has a separately accepted fresh source16 stale-life rejection plus fresh-binding movement gate; no longer pending16. Other authored consumers, obstructions, full lifecycle/co-op and campaign remain open.",
       "evidence": [
         "floor-support/BUG-015.json",
@@ -473,7 +480,7 @@
       "source": "06 LOD-SAFE-TRAVEL-001 and exact native Hero body/life lifecycle",
       "expected": "Old body-life relocation binding rejects after real death/respawn; fresh binding still moves to a valid supported destination",
       "scenario": "Capture binding, real death, mandatory20s wait, ordinaryF respawn, stale MoveBound rejection plus fresh move/restore control",
-      "result": "Finite fresh source16 pass: same identity ps and nil legacy life, actual spawn4→5 after death/F-respawn; old Matches/MoveBound false with unchanged position, fresh Matches/move/support-return true. HP100/lives2/Tetrisclosed; all576 sources and both realm5guards match. Full lifecycle/consumer/co-op coverage remains open.",
+      "result": "Finite fresh source16 pass: same identity ps and nil legacy life, actual spawn4\u21925 after death/F-respawn; old Matches/MoveBound false with unchanged position, fresh Matches/move/support-return true. HP100/lives2/Tetrisclosed; all576 sources and both realm5guards match. Full lifecycle/consumer/co-op coverage remains open.",
       "evidence": [
         "stale-life-binding/BUG-016.json",
         "ci-source16/verification.json",
@@ -485,7 +492,7 @@
       "source": "03 LOD-CBT-001 shared actor combat pipeline and active Fallen Hero rules",
       "expected": "Copied NPC firearms use canonical rolls and native fire without player-only method errors; real player Aim/cleanup stays correct",
       "scenario": "Fresh combined source, actual ranged Fallen Hero release/contact through multiple cycles; real player armedAim/nativefire and lifecycle",
-      "result": "Finite fresh source17 pass: actual owned ranged Fallen NextBot without GetActiveWeapon emits4native357fires, copiedammo6→2,1realHerohit3.3333/HP100→97,noNewErrors; separate ordinaryplayerAimFire/cleanup passes.8s supportedsetup/return explicitlyfixture, broad NPC/ordinarycampaign/co-op remainopen.",
+      "result": "Finite fresh source17 pass: actual owned ranged Fallen NextBot without GetActiveWeapon emits4native357fires, copiedammo6\u21922,1realHerohit3.3333/HP100\u219297,noNewErrors; separate ordinaryplayerAimFire/cleanup passes.8s supportedsetup/return explicitlyfixture, broad NPC/ordinarycampaign/co-op remainopen.",
       "evidence": [
         "npc-aim-boundary/BUG-017.json",
         "ci-source17/verification.json",
@@ -511,9 +518,22 @@
       "source": "04 LOD-FEAT-004 HUMAN-DETAIL -> exact HUMAN CON_REGEN_22/sharedCON rules",
       "expected": "Shared card/sheet/manual preserve authored recovery rates1/1.5/2% beforeCON and22/44/66% ceilings; actual healing stays unchanged.",
       "scenario": "Actual nativeRapid card after explicit canonicalfixture; production catalog/snapshot and generatedmanual checks; repaired fresh native P/manual recheck.",
-      "result": "BUG019 confirmed original native2% mismatch; one shared conversion repaired,9focused/929Lua syntax and independent source review pass. Full338 and fresh repaired-client acceptance remain pending.",
+      "result": "Finite native P display PASS1.5%/44% on fresh exact658a plus complete338/929Lua/staticmanual content parity. Diagnostic ownership; no healing timing fit. Native manual render remains OPEN; stockDHTML also blank, exactcause unknown.",
       "evidence": [
-        "feat-card-rates/BUG-019.json"
+        "feat-card-rates/BUG-019.json",
+        "ci-source19/verification.json",
+        "native-source19-feat-rate/receipt.json",
+        "native-source19-manual-investigation/receipt.json"
+      ]
+    },
+    {
+      "id": "UI-MANUAL",
+      "source": "User presentation/usability coverage; active in-game field-manual implementation",
+      "expected": "Readable manual with working native page/search controls",
+      "scenario": "Ordinary P Manual open; inspect exact transfer, browser readiness and independent local stockDHTML positive control",
+      "result": "OPEN/reproducible in private Windowsx86 client: full correct1536564B/CRC731183533 assigned, noReady/material. Separate staticDHTML also blank while nativeDLabel visible. Exactcause unproven; deferred64comparison not launched. No manual acceptance.",
+      "evidence": [
+        "native-source19-manual-investigation/receipt.json"
       ]
     }
   ],
@@ -635,7 +655,7 @@
     {
       "id": "BUG-019",
       "record": "feat-card-rates/BUG-019.json",
-      "status": "Shared presentation repaired and9focused gates statically validated on this checkpoint; full338 and fresh native repaired acceptance pending."
+      "status": "Repaired on main via PR9; complete338/929Lua and fresh native P display PASS. Generated manual content passes static checks; native manual rendering remains an explicit open client HTML-path gap."
     }
   ],
   "static_fixture_checkpoint": {
@@ -651,11 +671,11 @@
     "native_gmod_accepted": false,
     "native_finite_lifecycle_receipt": "death-lifecycle/fixed-runtime-f604/receipt.json"
   },
-  "installed_loaded_build": "63bcc03e30233f74208a92e25a1904a87201125f",
-  "last_checkpoint_utc": "2026-10-28T03:56:32.546575+00:00",
-  "next_action": "Publish finite BUG019 candidate branch/PR, pass complete338 and fresh installed-source19 nativeP/manual1.5% recheck, then validatedmainintegration. Stop/archive ownedoldprivateclient and capturefreshSteamCloudOFF attestation whilepreservingoriginalONrestorationguard. Resume preparedRapidduplicate andNeilconsole gates on reviewednewsource; reset/rebindtemporaryhelpermetadata asneeded. Clean0; broadcampaign/endings/co-op/audio gapsremain.",
+  "installed_loaded_build": "658a8c7249a322494b49025e7076c33f78efb511",
+  "last_checkpoint_utc": "2026-10-28T07:09:03.345487+00:00",
+  "next_action": "Resume only when user requests: review deferred trusted64-bit comparison before use; resolve manual/stockDHTML render gap, then rebind Neil physicalconsole fixture and continue ordinary campaign/authored families. Multiple real-client cooperative and perceptual audio acceptance remain unavailable. No64launch occurred. Cloud is restoredON; establish a fresh guarded private session before testing.",
   "last_runtime_build": "63bcc03e30233f74208a92e25a1904a87201125f",
-  "current_native_build": "Fresh replay LIVE, launch7300/session1793149142685315135; actual primary114400/helper114511. Installed labelf221cc08 source-equivalent gameplay63bcc; bothrealm9guards/576production/118startup. Developer1/dense unranked, not final settings acceptance.",
+  "current_native_build": "CLOSED source19 after user-requested break; both owned game PIDs exited; original config baseline unchanged and SteamCloud restoredON. Actual native-tested candidate658a source equals mergedmain24b900bf.",
   "installed_loaded_build_note": "All576Lua/118physical startup entries match frozen source; NearLookCRC84557611, Aim966710964, Safe377454284. Native original BUG018 closed/open finite gate passes; synthetic geometry controls separately labeled.",
   "latest_repair_static_checkpoint": {
     "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
@@ -666,16 +686,12 @@
     "native": "finite original closed/open defect gate PASS; loot-label-occlusion/native-repaired/receipt.json; independent cargo/header ray controls are supplementary, not HUD/glass/Omniscience acceptance"
   },
   "latest_full_integration": {
-    "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
-    "run_id": 40599237156,
-    "job_id": 122522912306,
-    "status": "success",
-    "passed": 337,
-    "total": 337,
-    "lua_files": 928,
-    "production_files": 576,
-    "evidence": "ci-source18/verification.json",
-    "qualification": "Exact full frozen source18 static gate; native claims require their separate receipts."
+    "candidate": "658a8c7249a322494b49025e7076c33f78efb511",
+    "passed": 338,
+    "total": 338,
+    "lua_syntax": 929,
+    "evidence": "ci-source19/verification.json",
+    "native_campaign_accepted": false
   },
   "latest_candidate_full_integration": {
     "commit": "63bcc03e30233f74208a92e25a1904a87201125f",
@@ -689,26 +705,14 @@
     "evidence": "ci-source18/verification.json",
     "qualification": "Exact full frozen source18 static gate; native claims require their separate receipts."
   },
-  "latest_verified_main_before_checkpoint": "e068af21a34766758eaeb2d4ec2f006a4049721b",
+  "latest_verified_main_before_checkpoint": "24b900bf8f6641463e63cd412306b0d97dbd0102",
   "current_runtime_checkpoint": {
-    "reported_by": "Root native observations/readbacks, fresh replay; actual current staging replaces older closed-session state",
-    "campaign": 6102623,
-    "level_seed": 673660301,
-    "run": "campaign:12",
-    "epoch": 3,
-    "character": "Eva Long Shot Turner / Rogue; ordinaryBash committed, canonicalforcedRecovery2 fixture applied",
-    "clock": "Fresh staging30:00 paused after natural priorTIMEOVER/reset; late finalHeroobserver samples onlynewrun12 and cannot proveoldzeroHerostate.",
-    "latest_root_report": "Oldsource18 stilllive in safe staging30:00paused. NativeRapid card shows2% whileactualparams.015/status1.95(CON16) matchlive1.5%; BUG019 repaired in candidate only pendingfull338/freshnative. PriorRed/Blue-prefix qualifications retained.",
-    "unbanked_ignored_results": [
-      ".build/autonomous-playtest-20261027/native-pilot-1793152286424871272.result.json",
-      ".build/autonomous-playtest-20261027/native-pilot-1793152416274869459.result.json",
-      ".build/autonomous-playtest-20261027/native-pilot-1793152458656219725.result.json",
-      ".build/autonomous-playtest-20261027/source18-replay-checkpoint-loss/",
-      ".build/autonomous-playtest-20261027/replay18_final_hero_observer.lua"
-    ],
-    "no_full_campaign_pass": true,
-    "no_cooperative_acceptance": true,
-    "session_status": "LIVE; staging before next bounded Neil console fixture. RootsoleGUI."
+    "status": "paused by explicit user request",
+    "native_P": "finitePASS",
+    "duplicate_guard": "finite diagnosticPASS after diagnosed/fixed copy-helper false-negative; original failure retained",
+    "manual": "OPEN client HTML-path render failure; stockDHTML also fails; exactcause unresolved",
+    "cleanup": "native-source19-closure/receipt.json",
+    "clean_pass_streak": 0
   },
   "diagnostic_error_audit": "native-source18-reset-magic/diagnostic-error-audit.json",
   "other_tooling_note": "Root separately acknowledged a stale RPC failure. It is preserved by root as a tooling observation; no game-code attribution or gameplay pass is inferred here.",
@@ -749,12 +753,10 @@
   },
   "pending_repair_checkpoint": {
     "id": "BUG-019",
-    "record": "feat-card-rates/BUG-019.json",
-    "scope": "Presentation conversion and generatedmanual only; branch candidate before mainintegration",
-    "focused_passed": 9,
-    "lua_syntax": 929,
-    "full_matrix": "338pending",
-    "native_repaired": "pending fresh source19",
-    "old_live_build": "f221label/63bccgameplay"
+    "status": "narrow display fix integrated and native P accepted; manual rendering gap remains separate/open",
+    "candidate": "658a8c7249a322494b49025e7076c33f78efb511",
+    "main_source_merge": "24b900bf8f6641463e63cd412306b0d97dbd0102",
+    "full_matrix": "338/338;929Lua",
+    "native_repaired": "native-source19-feat-rate/receipt.json"
   }
 }

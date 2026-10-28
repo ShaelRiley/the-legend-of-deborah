@@ -1,85 +1,14 @@
-# Active repair — preserve fractional recovery descriptions
+# Current checkpoint — user-requested pause
 
-BUG019 confirmed on the actual Deck: Rapid Recovery's P card says2%MaxHP/s;
-the exact liveGDD row and actual.015 parameter specify1.5% beforeCON. The shared
-presentation formatter rounded the rate. The candidate uses rate*100 with its
-existing%g field; healing, eligibility and all other percent conventions stay
-unchanged. Existing manual generation propagates the same corrected text.
-[Defect/evidence](validation/AUTONOMOUS_PLAYTEST_20261026/feat-card-rates/BUG-019.json).
+Validated BUG019 source is merged through PR9/main`24b900bf`; actual Deck P display
+and the finite duplicate-submission gate pass. Full338/929Lua and independent
+review pass. Private game is closed, original SteamCloudON restored. Clean streak0.
+Manual HTML rendering and broad campaign/co-op/audio coverage remain open.
 
-Nine focused gates/929Lua syntax and independent source review pass. The original
-formatter fails the new real-catalog/snapshot regression; local missingNode was
-resolved with a checksum-verified officialNode22.23.4 binary and the failed log
-is retained. Complete338 and fresh repaired nativeP/manual remain pending; older
-337 proofs are not this candidate's full gate. Keep the candidate on its repair
-branch until finite validation and normal integration; no clean pass is claimed.
-
-Old source18 is still live in paused staging, Eva/Rogue with ordinaryBash and an
-explicit forced Recovery2 fixture. Next: preserve/close owned client, prepare
-source19 from exact published candidate, freshly attest CloudOFF while retaining
-originalON restoration duty, launch/source-verify and reproduce the repaired P
-card/manual. Then resume prepared Rapid duplicate and Neil physical-console
-fixtures with fresh run/body/source labels. The older status below preserves the
-previous route checkpoint; its pending-first-feat detail is superseded here.
-
-# Current checkpoint — autonomous native gameplay and defect campaign
-
-Campaign active; clean streak **0**. Verified evidence main is
-`e068af21a34766758eaeb2d4ec2f006a4049721b`; gameplay remains
-`63bcc03e30233f74208a92e25a1904a87201125f`. Frozen337/337 checks,
-928Lua/576production and independent repair review remain passing
-([CI](validation/AUTONOMOUS_PLAYTEST_20261026/ci-source18/verification.json)).
-Documentation checkpoints do not constitute new gameplay passes.
-
-The fresh private replay is LIVE on the actual Steam Deck: Windowsx86 GMod
-2026.09.17/LuaJIT2.0.4 through Proton10, gm_flatgrass1280x800. Installed build
-labelf221cc08 is source-equivalent63bcc; both realm nine-source audits passed.
-Prepared session1793149142685315135 has576production/118startup source guards;
-primary114400/birth7384183 and utility114511/birth7384640 belong to launch7300.
-Developer1/dense diagnostics and labeled setup fixtures are not final production
-settings acceptance. Root alone owns native input. Current Cloud4000 is OFF under
-the fresh replay guard; restore originalON through the supported Steam UI at
-closure. The earlier session's restoredON receipt does not describe this replay.
-
-Replay campaign11/epoch2, seed6102623/level673660301, Zoe Fighter/SixthSense:
-ordinary movement reached the actual4:12 upper landing, collected Red, opened
-RedGate by E/checkpoint1 and traversed it. The stair/card pilots retained their
-camera/context stops and the gate route retained its7/9 timeout before successful
-continuation. Pre-loss analytic spawn6 is separate from the post-respawn route;
-that historical route's spawn serial was not recorded. This is a finite route,
-not a campaign or all-stairs pass.
-[Reviewed native evidence](validation/AUTONOMOUS_PLAYTEST_20261026/native-source18-replay-route/receipt.json).
-
-Subsequent ordinary movement descended7:8 and traversed the lower Blue route to
-11:11's approach, HP100 in the completed pilots. Later idle-period combat caused
-further deaths; these newer traces/diagnoses remain locally preserved under
-`.build/autonomous-playtest-20261027/` pending a separate bank/review. No Bluecard,
-second ascent, Neil, boss or rescue acceptance follows. The final-Hero observer
-started after natural TIMEOVER/reset and cannot prove the old zero-Hero state.
-Current campaign12/epoch3 has fresh Eva Long Shot Turner/Rogue, pending first
-feat, cards/gatesfalse and staging30:00 paused; prepare diagnostics before entry.
-
-Next finite gate: after review, ordinary staging completion and deployment, use
-the existing explicitly labeled Neil testkit to arrange post-Yellow state, then
-inspect the physical release console/prompt, native E release, repeat interaction
-and owned-pair identity. Any supported locator is setup only, never an ordinary
-Yellow-route claim. Root owns installation/execution; agents own bounded read-only
-preparation/review. Continue sanctuary, duplicate-feat, authored systems,
-ordinary campaign/endings/replay and varied final-candidate passes afterward.
-
-Preserve all18 integrated fixes and their stated finite limits, including BUG018
-closed/open Health visibility, native geometry controls, qualified actual-Deck
-performance samples, earlier map/Magic/reset and authored-pair receipts. Preserve
-failed Approach18/tooling evidence and the prior session's unexplained early
-closure; neither is a demonstrated new production stair defect or crash.
-Only this Steam Deck is available: distinct real-client cooperative acceptance is
-blocked; perceived audio remains unavailable. Full campaign/authored families,
-three clean passes and remaining matrix rows remain open. October23 changes,
-40FPS, Workshop/VPS and design-only class5/10/15 rewards remain separate/deferred.
-[Requirement matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json) and
-[authored scope](validation/AUTONOMOUS_PLAYTEST_20261026/authored-coverage-plan.json)
-retain those gaps. Live GDD identity/navigation and approved Oct13 console law
-remain authoritative; no design change is made by this checkpoint.
+Read [paused operational checkpoint](validation/AUTONOMOUS_PLAYTEST_20261026/PAUSED_CHECKPOINT.md)
+and [requirement matrix](validation/AUTONOMOUS_PLAYTEST_20261026/coverage.json).
+Resume only on user request; no64comparison, Workshop or VPS deployment occurred.
+Historical coordination below is superseded by this checkpoint.
 
 # Current checkpoint — integrate retained partial performance improvements
 
